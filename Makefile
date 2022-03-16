@@ -1,4 +1,4 @@
-artifact_name       := overseas-entities
+artifact_name       := overseas-entities-web
 version             := "unversioned"
 
 .PHONY: all

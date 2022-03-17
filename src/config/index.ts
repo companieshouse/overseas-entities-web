@@ -9,7 +9,6 @@ export const getEnvironmentValue = (key: string, defaultValue = ""): string => {
 };
 
 // APP CONFIGs
-export const APPLICATION_NAME = "overseas-entities-web";
 export const PORT = getEnvironmentValue("PORT", "3000");
 export const NODE_ENV = getEnvironmentValue("NODE_ENV");
 export const CDN_HOST = getEnvironmentValue("CDN_HOST");

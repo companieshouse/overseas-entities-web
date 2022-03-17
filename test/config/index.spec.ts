@@ -6,7 +6,7 @@ describe('Config test suite', () => {
     expect(test_cdn_host).toEqual(CDN_HOST);
   });
 
-  it('should thrown an error when passing anyNonExistingEnv to getEnvironmentValue()', () => {
+  it('should throw an error when passing anyNonExistingEnv to getEnvironmentValue()', () => {
     const fakeEnv = 'anyNonExistingEnv';
     expect(() => getEnvironmentValue(fakeEnv)).toThrow(`Please set the environment variable "${fakeEnv}"`);
   });

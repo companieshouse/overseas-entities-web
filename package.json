@@ -1,0 +1,41 @@
+{
+  "name": "overseas-entities-web",
+  "version": "0.0.1",
+  "description": "Web front-end for the Register An Overseas Entity service",
+  "main": "dist/bin/www.js",
+  "scripts": {
+    "start": "node dist/bin/www.js",
+    "build": "tsc && cp -r views dist/",
+    "lint": "eslint '{src,test}/**/*'",
+    "lint:fix": "eslint '{src,test}/**/*' --fix",
+    "test": "jest",
+    "coverage": "jest --coverage --passWithNoTests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/companieshouse/overseas-entities-web.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
+  "dependencies": {
+    "express": "^4.17.3",
+    "govuk-frontend": "^4.0.1",
+    "nunjucks": "^3.2.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.4.1",
+    "@types/node": "^17.0.21",
+    "@types/nunjucks": "^3.2.1",
+    "@types/supertest": "^2.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "jest": "^27.5.1",
+    "supertest": "^6.2.2",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.6.2"
+  }
+}

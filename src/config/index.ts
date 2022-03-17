@@ -9,8 +9,8 @@ export const getEnvironmentValue = (key: string, defaultValue = ""): string => {
 };
 
 // APP CONFIGs
+export const NODE_ENV = process.env["NODE_ENV"];
 export const PORT = getEnvironmentValue("PORT", "3000");
-export const NODE_ENV = getEnvironmentValue("NODE_ENV");
 export const CDN_HOST = getEnvironmentValue("CDN_HOST");
 
 // ROUTING PATH

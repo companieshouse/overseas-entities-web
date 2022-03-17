@@ -1,0 +1,6 @@
+app_name: overseas-entities-web
+group: web
+
+weight: 100
+routes:
+  1: ^/register-an-overseas-entity/*

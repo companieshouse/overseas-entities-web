@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { startController } from "../controllers/index.controller";
+import { get } from "../controllers/index.controller";
 
 import * as config from "../config";
 
 const router = Router();
 
-router.get(config.LANDING_URL, startController);
+router.get(config.LANDING_URL, get);
 
 export default router;

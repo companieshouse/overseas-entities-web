@@ -14,7 +14,8 @@ export const NODE_ENV = getEnvironmentValue("NODE_ENV");
 export const CDN_HOST = getEnvironmentValue("CDN_HOST");
 
 // ROUTING PATH
-export const LANDING_URL = "/";
+export const REGISTER_AN_OVERSEAS_ENTITY_URL = "/register-an-overseas-entity";
+export const LANDING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL;
 
 // TEMPLATE PATH
 export const LANDING_PAGE = "index";

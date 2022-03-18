@@ -6,6 +6,8 @@
 
 import * as http from "http";
 import * as config from "../config";
+import { logger } from "../utils/logger";
+
 import app from "../app";
 
 /**
@@ -39,13 +41,11 @@ function onError(error: any) {
   // handle specific listen errors with friendly messages
   switch (error.code) {
       case "EACCES":
-        // TODO implement logger
-        // logger.error(config.PORT + " requires elevated privileges");
+        logger.error(config.PORT + " requires elevated privileges");
         process.exit(1);
         break;
       case "EADDRINUSE":
-        // TODO implement logger
-        // logger.error(config.PORT + " is already in use");
+        logger.error(config.PORT + " is already in use");
         process.exit(1);
         break;
       default:

@@ -2,6 +2,7 @@ import express from "express";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import * as config from "./config";
+import { logger } from "./utils/logger";
 import router from "./routes";
 
 const app = express();
@@ -30,4 +31,5 @@ app.set("view engine", "html");
 // apply our default router to /
 app.use("/", router);
 
+logger.info("Register an overseas entity has started");
 export default app;

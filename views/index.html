@@ -1,7 +1,54 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1 class="govuk-heading-xl">
-        Placeholder - Index Page
-    </h1>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                Register an overseas entity and tell us about its beneficial owners
+            </h1>
+
+            <p class="govuk-body">Use this service to register an overseas entity's beneficial owner, so that they can buy or sell land in the UK.</p>
+
+            <div class="govuk-warning-text">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    You can be fined £500 a day and have difficulty buying or selling land if you do not register.
+                </strong>
+            </div>
+
+            <p class="govuk-body govuk-!-font-weight-bold">You'll need:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>to sign in to or create a Companies House account</li>
+                <li>a credit or debit card to pay the £100 fee</li>
+            </ul>
+
+            <p class="govuk-body govuk-!-font-weight-bold">You'll need to tell us the overseas entity's:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>contact details</li>
+                <li>registered office address</li>
+                <li>legal authority and legal form</li>
+                <li>country of registration and registration number</li>
+            </ul>
+
+            <p class="govuk-body govuk-!-font-weight-bold">You'll need to tell us the beneficial owner's:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>full name</li>
+                <li>date of birth</li>
+                <li>correspondence address and home address</li>
+                <li>nationality</li>
+                <li>nature of control</li>
+                <li>verification status</li>
+            </ul>
+
+            <p class="govuk-body">Registering takes around 10 minutes.</p>
+
+            <a href="/register-an-overseas-entity/presenter" id="start-now" role="button" draggable="false" class="govuk-button govuk-button--start govuk-!-margin-top-2 govuk-!-margin-bottom-8" data-module="govuk-button">
+                Start now
+                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewbox="0 0 33 40" role="presentation" focusable="false">
+                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+                </svg>
+            </a>
+        </div>
+    </div>
 {% endblock %}

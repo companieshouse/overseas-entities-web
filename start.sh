@@ -6,7 +6,7 @@ APP_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [[ -z "${MESOS_SLAVE_PID}" ]]; then
 
-    # No mesos slave PID - Only on docker, not vagrant
+    echo "No mesos slave PID - Only configured for docker in development, not vagrant"
 
 else
 

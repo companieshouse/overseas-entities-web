@@ -23,6 +23,7 @@
   "license": "MIT",
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
+    "@companieshouse/structured-logging-node": "^1.0.4",
     "express": "^4.17.3",
     "govuk-frontend": "^4.0.1",
     "nunjucks": "^3.2.3"

@@ -1,14 +1,14 @@
 jest.mock("../../src/utils/logger");
-jest.mock("../../src/controllers/index.controller");
+jest.mock("../../src/controllers/landing.controller");
 
 import request from "supertest";
 import app from "../../src/app";
 import { logger } from "../../src/utils/logger";
-import * as indexController from "../../src/controllers/index.controller";
+import * as landingController from "../../src/controllers/landing.controller";
 import * as config from "../../src/config";
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
-const mockGet = indexController.get as jest.Mock;
+const mockGet = landingController.get as jest.Mock;
 
 const EXPECTED_TEXT = "Page not found - Register an overseas entity and tell us about its beneficial owners";
 const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";

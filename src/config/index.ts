@@ -20,3 +20,5 @@ export const LANDING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL;
 
 // TEMPLATE PATH
 export const LANDING_PAGE = "index";
+export const PAGE_NOT_FOUND = "page-not-found";
+export const ERROR_PAGE = "error-page";

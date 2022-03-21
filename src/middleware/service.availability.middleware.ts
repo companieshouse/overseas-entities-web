@@ -2,14 +2,16 @@
  * Shows service offline page if config flag SHOW_SERVICE_OFFLINE_PAGE=true
  */
 import { NextFunction, Request, Response } from "express";
-import { SHOW_SERVICE_OFFLINE_PAGE } from "../utils/properties";
 import { isActiveFeature } from "../utils/feature.flag";
-import { Templates } from "../types/template.paths";
+
+import { SERVICE_OFFLINE_PAGE, SHOW_SERVICE_OFFLINE_PAGE } from "../config";
+import { logger } from "../utils/logger";
 
 export const serviceAvailabilityMiddleware = (req: Request, res: Response, next: NextFunction) => {
 
   if (isActiveFeature(SHOW_SERVICE_OFFLINE_PAGE)) {
-    return res.render(Templates.SERVICE_OFFLINE);
+    logger.info("Service offline flag is set - displaying service offline page");
+    return res.render(SERVICE_OFFLINE_PAGE);
   }
 
   // feature flag SHOW_SERVICE_OFFLINE_PAGE is false - carry on as normal

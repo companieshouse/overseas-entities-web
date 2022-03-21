@@ -12,7 +12,7 @@
     "sonarqube-pull-request": "sonar-scanner -D sonar.pullrequest.base=main",
     "sonarqube": "branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD); if [[ $branch == \"HEAD\" ]]; then echo $branch && npm run sonarqube-base-branch; else echo $branch && npm run sonarqube-pull-request; fi;",
     "test": "jest",
-    "coverage": "jest --coverage --passWithNoTests",
+    "coverage": "jest --coverage --forceExit --passWithNoTests",
     "prepare": "husky install"
   },
   "repository": {
@@ -24,9 +24,12 @@
   "license": "MIT",
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
+    "@companieshouse/node-session-handler": "^4.1.6",
     "@companieshouse/structured-logging-node": "^1.0.4",
+    "cookie-parser": "^1.4.6",
     "express": "^4.17.3",
     "govuk-frontend": "^4.0.1",
+    "ioredis": "^4.28.5",
     "nunjucks": "^3.2.3"
   },
   "devDependencies": {

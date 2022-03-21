@@ -1,5 +1,6 @@
 jest.mock("../../src/utils/feature.flag" );
 
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import request from "supertest";
 import app from "../../src/app";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -12,14 +13,14 @@ describe("service availability middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  it("should return service offline page", async () => {
+  test("should return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     const response = await request(app).get("/register-an-overseas-entity");
 
     expect(response.text).toContain("Service offline - Register an overseas entity");
   });
 
-  it("should not return service offline page", async () => {
+  test("should not return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     const response = await request(app).get("/register-an-overseas-entity");
 

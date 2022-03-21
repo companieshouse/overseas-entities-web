@@ -4,7 +4,6 @@ import * as path from "path";
 import * as config from "./config";
 import { logger } from "./utils/logger";
 import router from "./routes";
-import { serviceAvailabilityMiddleware } from "./middleware/service.availability.middleware";
 
 const app = express();
 
@@ -28,8 +27,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");
-
-app.use(serviceAvailabilityMiddleware);
 
 // apply our default router to /
 app.use("/", router);

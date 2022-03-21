@@ -13,20 +13,20 @@ const mockGet = landingController.get as jest.Mock;
 const EXPECTED_TEXT = "Page not found - Register an overseas entity and tell us about its beneficial owners";
 const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";
 
-describe("Error controller test", () => {
+describe("ERROR controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("Should return page not found screen if page url is not recognised", async () => {
+  test("Should return page not found screen if page url is not recognised", async () => {
     const response = await request(app)
       .get(INCORRECT_URL);
     expect(response.text).toContain(EXPECTED_TEXT);
     expect(response.status).toEqual(404);
   });
 
-  it("Should render the error page", async () => {
+  test("Should render the error page", async () => {
     const message = "Can't connect";
     mockGet.mockImplementationOnce((_req: Request, _res: Response) => {
       throw new Error(message);

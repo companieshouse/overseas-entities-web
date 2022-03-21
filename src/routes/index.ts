@@ -7,7 +7,11 @@ import {
   presenter
 } from "../controllers";
 
+import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+
 const router = Router();
+
+router.use(serviceAvailabilityMiddleware);
 
 router.get(config.LANDING_URL, landing.get);
 router.get(config.PRESENTER_URL, authentication, presenter.get);

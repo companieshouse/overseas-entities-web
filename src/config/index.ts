@@ -16,6 +16,7 @@ export const CDN_HOST = getEnvironmentValue("CDN_HOST");
 export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
+export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 
 // ROUTING PATH
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = "/register-an-overseas-entity";
@@ -25,3 +26,4 @@ export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "/presenter";
 // TEMPLATE PATH
 export const LANDING_PAGE = "landing";
 export const PRESENTER_PAGE = "presenter";
+export const SERVICE_OFFLINE_PAGE = "service-offline";

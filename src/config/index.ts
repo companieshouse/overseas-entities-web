@@ -27,3 +27,5 @@ export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "/presenter";
 export const LANDING_PAGE = "landing";
 export const PRESENTER_PAGE = "presenter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
+export const NOT_FOUND_PAGE = "page-not-found";
+export const ERROR_PAGE = "error-page";

@@ -7,4 +7,5 @@ export const get = (req: Request, res: Response) => {
   logger.info(`GET PRESENTER_PAGE`);
   return res.render(config.PRESENTER_PAGE, {
     backLinkUrl: config.LANDING_URL
-  });};
+  });
+};

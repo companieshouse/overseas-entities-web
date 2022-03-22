@@ -6,14 +6,14 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { authentication } from "../../src/controllers/authentication.controller";
+import { authentication } from "../../src/controllers";
 import { PRESENTER_URL } from "../../src/config";
 import { signedInCookie } from '../__mocks__/session.mock';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const PRESENTER_PAGE_TITLE = "PRESENTER PAGE";
+const PRESENTER_PAGE_TITLE = "Tell us about yourself";
 
 describe("PRESENTER controller", () => {
   test("renders the presenter page", async () => {

@@ -1,11 +1,112 @@
 {% extends "layout.html" %}
 
+{% block pageTitle %}
+  Who is registering – Register an overseas entity – Companies House
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
 {% block content %}
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
-                PLACEHOLDER - PRESENTER PAGE
-            </h1>
-        </div>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Tell us about yourself</h1>
+
+
+      <form>
+        {{ govukInput({
+          label: {
+            text: "What is your full name?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "presenter-name",
+          name: "presenter-name"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "What is your phone number?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "presenter-number",
+          name: "presenter-number",
+          classes: "govuk-!-width-one-third"
+        }) }}
+
+        {% set otherHtml %}
+          {{ govukInput({
+            id: "other-role",
+            name: "other-role",
+            classes: "govuk-!-width-one-third",
+            label: {
+              text: "Role title"
+            }
+          }) }}
+        {% endset -%}
+
+        {{ govukRadios({
+          idPrefix: "presenter-role",
+          name: "presenter-role",
+          fieldset: {
+            legend: {
+              text: "What is your role?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "Select one option."
+          },
+          items: [
+            {
+              value: "adminstrator",
+              text: "Administrator"
+            },
+            {
+              value: "agent",
+              text: "Agent"
+            },
+            {
+              value: "solicitor",
+              text: "Solicitor"
+            },
+            {
+              value: "beneficial-owner",
+              text: "Beneficial owner"
+            },
+            {
+              value: "other",
+              text: "Other",
+              conditional: {
+                html: otherHtml
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "What is your anti-money laundering registration number? (optional)",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "amlr",
+          name: "amlr",
+          classes: "govuk-!-width-one-third"
+        }) }}
+
+        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+        <p class="govuk-body">No third party information will be shown on the online register</p>
+
+        {{ govukButton({
+          text: "Continue",
+          href: "/register/entity"
+        }) }}
+      </form>
     </div>
+  </div>
 {% endblock %}

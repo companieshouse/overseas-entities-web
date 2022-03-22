@@ -30,6 +30,16 @@
 
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+    text: "alpha"
+    }
+  }) }}
+  {% block backLink %}
+  {% endblock %}
+{% endblock %}
+
 {% block header %}
   {{ govukHeader({
     homepageUrl: "https://www.gov.uk",

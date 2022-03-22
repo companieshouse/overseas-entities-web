@@ -3,7 +3,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 
 const pageNotFound = (req: Request, res: Response) => {
-  return res.status(404).render(config.PAGE_NOT_FOUND);
+  return res.status(404).render(config.NOT_FOUND_PAGE);
 };
 
 /**

@@ -9,12 +9,11 @@
 ### Work checklist
 
 - [ ] Tests added where applicable
-- [ ] UI changes look good on mobile
 - [ ] UI changes meet accessibility criteria
 
 ### Merge instructions
 
-We are committed to keeping commit history clean, consistent and linear. To achieve this commit should be structured as follows:
+We are committed to keeping commit history clean, consistent and linear. To achieve this, this commit should be structured as follows:
 
 ```
 <type>[optional scope]: <description>

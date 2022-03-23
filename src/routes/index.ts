@@ -4,7 +4,8 @@ import * as config from "../config";
 import {
   authentication,
   landing,
-  presenter
+  presenter,
+  corporate
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -16,6 +17,7 @@ router.use(serviceAvailabilityMiddleware);
 
 router.get(config.LANDING_URL, landing.get);
 router.get(config.PRESENTER_URL, authentication, presenter.get);
+router.get(config.BENEFIFICAL_OWNER_CORPORATE_URL, corporate.get);
 
 router.use(errorHandler);
 

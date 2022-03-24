@@ -1,23 +1,21 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
-import { Session } from "@companieshouse/node-session-handler";
-
 
 export const get = (req: Request, res: Response) => {
   res.render(config.BENEFICIAL_OWNER_CORPORATE_PAGE);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  try{
+  try {
 
-    //buildCorproateBeneficialOwner(req);
-    const session: Session = req.session as Session;
+    // buildCorproateBeneficialOwner(req);
+    // const session: Session = req.session as Session;
 
     return res.redirect(config.LANDING_URL);
   } catch (e) {
     return next(e);
   }
-}
+};
 /*
 const buildCorproateBeneficialOwner = (req: Request) => {
    const name = req.body.corpName;
@@ -40,4 +38,4 @@ const buildCorproateBeneficialOwner = (req: Request) => {
    const corpStartdate = req.body.corpStartdate;
    const statementCondition = req.body.statementCondition;
    const ownerSanctions = req.body.ownerSanctions;
-}*/
+};*/

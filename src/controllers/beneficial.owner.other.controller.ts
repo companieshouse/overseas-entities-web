@@ -9,3 +9,8 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE
   });
 };
+
+export const post = (req: Request, res: Response) => {
+  logger.debug(`POST BENEFICIAL_OWNER_OTHER_PAGE`);
+  res.redirect(config.MANAGING_OFFICER_PAGE);
+};

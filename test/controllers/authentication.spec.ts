@@ -8,6 +8,7 @@ import { getSessionRequestWithPermission, userMail } from '../__mocks__/session.
 import { authentication } from "../../src/controllers";
 import { logger } from '../../src/utils/logger';
 import { PRESENTER_URL } from '../../src/config';
+import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 
 jest.mock('../../src/utils/logger', () => {
   return {
@@ -57,8 +58,7 @@ describe('Authentication controller', () => {
   });
 
   test('should catch the error and call next(err)', () => {
-    const msgError = "Any msg Error";
-    const error = new Error(msgError);
+    const error = new Error(ANY_MESSAGE_ERROR);
     const resThrowsToBeCatched = { redirect: jest.fn(() => { throw error; }) } as any;
     req.session = undefined;
 

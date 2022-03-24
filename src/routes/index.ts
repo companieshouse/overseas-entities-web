@@ -5,7 +5,9 @@ import {
   authentication,
   beneficialOwnerType,
   landing,
-  presenter
+  presenter,
+  corporate,
+  managingOfficer
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -19,6 +21,8 @@ router.get(config.LANDING_URL, landing.get);
 router.get(config.PRESENTER_URL, authentication, presenter.get);
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType.post);
+router.get(config.BENEFIFICAL_OWNER_CORPORATE_URL, corporate.get);
+router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
 
 router.use(errorHandler);
 

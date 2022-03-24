@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Beneficial owner – {{ serviceName }} – Companies House
+  Beneficial owner - {{ serviceName }}  Companies House
 {% endblock %}
 
-{% block beforeContent %}
-  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% block backLink %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
@@ -277,12 +277,8 @@
         <h2 class="govuk-heading-m">What information is shown on the online register</h2>
         <p>All details provided about the corporate owner will be available on the online register</p>
         <p><a href="/register/beneficial-owner-other-2">Add another corporate beneficial owner</a></p>
-        {{ govukButton({
-          text: "Continue",
-          attributes: {
-            "id": "submit"
-          }
-        }) }}
+
+        {% include "includes/continue-button.html" %}
 
       </form>
 

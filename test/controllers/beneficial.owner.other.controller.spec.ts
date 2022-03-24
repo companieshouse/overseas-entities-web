@@ -5,7 +5,7 @@ import { authentication } from "../../src/controllers";
 import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_OTHER_URL, MANAGING_OFFICER_PAGE } from "../../src/config";
+import { BENEFICIAL_OWNER_OTHER_URL, MANAGING_OFFICER_URL } from "../../src/config";
 import { signedInCookie } from "../__mocks__/session.mock";
 import { NextFunction, Request, Response } from "express";
 
@@ -28,6 +28,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     // make some assertions on the response
     expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(MANAGING_OFFICER_PAGE);
+    expect(resp.header.location).toEqual(MANAGING_OFFICER_URL);
   });
 });

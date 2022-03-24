@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock("../../src/utils/feature.flag" );
 
 import { describe, expect, test, beforeEach } from '@jest/globals';

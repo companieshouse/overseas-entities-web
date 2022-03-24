@@ -14,6 +14,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const PRESENTER_PAGE_TITLE = "Tell us about yourself";
+const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
 
 describe("PRESENTER controller", () => {
   test("renders the presenter page", async () => {
@@ -21,5 +22,11 @@ describe("PRESENTER controller", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+  });
+  test("renders the entity page after a succesful post from presenter page", async () => {
+    const resp = await request(app).post(PRESENTER_URL).set("Cookie", signedInCookie);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(ENTITY_PAGE_TITLE);
   });
 });

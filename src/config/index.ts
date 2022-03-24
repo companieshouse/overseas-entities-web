@@ -22,7 +22,7 @@ export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLI
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = "/register-an-overseas-entity";
 export const LANDING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL;
 export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "/presenter";
-export const BENEFIFICAL_OWNER_CORPORATE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL +  "/beneficial-owner-corporate";
+export const BENEFICIAL_OWNER_CORPORATE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL +  "/beneficial-owner-corporate";
 export const MANAGING_OFFICER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "/managing-officer";
 
 // TEMPLATE PATH
@@ -32,4 +32,4 @@ export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
 export const NOT_FOUND_PAGE = "page-not-found";
 export const ERROR_PAGE = "error-page";
-export const BENEFIFICAL_OWNER_CORPORATE_PAGE = "beneficial-owner-corporate";
+export const BENEFICIAL_OWNER_CORPORATE_PAGE = "beneficial-owner-corporate";

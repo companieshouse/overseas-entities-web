@@ -30,7 +30,7 @@
             isPageHeading: false
           },
           id: "corp-name",
-          name: "corp-name"
+          name: "corpName"
         }) }}
         {% call govukFieldset({
           legend: {
@@ -45,7 +45,7 @@
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
           id: "address-line-1",
-          name: "address-line-1",
+          name: "addressLine1",
           autocomplete: "address-line1"
         }) }}
 
@@ -54,7 +54,7 @@
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
           id: "address-line-2",
-          name: "address-line-2",
+          name: "addressLine2",
           autocomplete: "address-line2"
         }) }}
 
@@ -64,7 +64,7 @@
           },
           classes: "govuk-!-width-two-thirds",
           id: "address-town",
-          name: "address-town",
+          name: "addressTown",
           autocomplete: "address-level2"
         }) }}
 
@@ -73,7 +73,7 @@
            text: "County"
         },
         classes: "govuk-!-width-two-thirds",
-          id: "address-county",
+          id: "addressCounty",
           name: "address-county"
         }) }}
 
@@ -83,7 +83,7 @@
           },
           classes: "govuk-input--width-10",
           id: "address-postcode",
-          name: "address-postcode",
+          name: "addressPostcode",
           autocomplete: "postal-code"
         }) }}
 
@@ -104,7 +104,7 @@
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
           id: "service-address-line-1",
-          name: "service-address-line-1",
+          name: "serviceAddressLine1",
           autocomplete: "service-address-line1"
         }) }}
 
@@ -113,7 +113,7 @@
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
           id: "service-address-line-2",
-          name: "service-address-line-2",
+          name: "serviceAddressLine2",
           autocomplete: "service-address-line2"
         }) }}
 
@@ -123,7 +123,7 @@
           },
           classes: "govuk-!-width-two-thirds",
           id: "service-address-town",
-          name: "service-address-town",
+          name: "serviceAddressTown",
           autocomplete: "service-address-level2"
         }) }}
 
@@ -133,7 +133,7 @@
           },
           classes: "govuk-!-width-two-thirds",
           id: "service-address-county",
-          name: "service-address-county"
+          name: "serviceAddressCounty"
         }) }}
 
         {{ govukInput({
@@ -142,7 +142,7 @@
           },
           classes: "govuk-input--width-10",
           id: "service-address-postcode",
-          name: "service-address-postcode",
+          name: "serviceAddressPostcode",
           autocomplete: "service-postal-code"
         }) }}
 
@@ -152,7 +152,7 @@
         {{ govukRadios({
           classes: "govuk-radios",
           idPrefix: "same-address",
-          name: "same-address",
+          name: "sameAddress",
           fieldset: {
             legend: {
               text: "Is their service address the same as their principle office address?",
@@ -184,11 +184,11 @@
             isPageHeading: false
           },
           id: "corp-law-governed",
-          name: "corp-law-governed"
+          name: "corpLawGoverned"
         }) }}
         {{ govukDateInput({
           id: "corp-startdate",
-          namePrefix: "corp-startdate",
+          namePrefix: "corpStartdate",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -203,7 +203,7 @@
 
         {{ govukRadios({
           idPrefix: "corp-nature-of-control",
-          name: "corp-nature-of-control",
+          name: "corpNatureOfControl",
           fieldset: {
             legend: {
               text: "What is their nature of control?",
@@ -230,7 +230,7 @@
         {{ govukRadios({
           classes: "govuk-radios",
           idPrefix: "statement-condition",
-          name: "statement-condition",
+          name: "statementCondition",
           fieldset: {
             legend: {
               text: "What is the statement of condition?",
@@ -253,7 +253,7 @@
         {{ govukRadios({
           classes: "govuk-radios",
           idPrefix: "owner-sanctions",
-          name: "owner-sanctions",
+          name: "ownerSanctions",
           fieldset: {
             legend: {
               text: "Are there any sactions?",
@@ -279,7 +279,9 @@
         <p><a href="/register/beneficial-owner-other-2">Add another corporate beneficial owner</a></p>
         {{ govukButton({
           text: "Continue",
-          href: "/register/managing-officer"
+          attributes: {
+            "id": "submit"
+          }
         }) }}
 
       </form>

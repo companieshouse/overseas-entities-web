@@ -17,7 +17,8 @@ router.use(serviceAvailabilityMiddleware);
 
 router.get(config.LANDING_URL, landing.get);
 router.get(config.PRESENTER_URL, authentication, presenter.get);
-router.get(config.BENEFIFICAL_OWNER_CORPORATE_URL, corporate.get);
+router.get(config.BENEFICIAL_OWNER_CORPORATE_URL, corporate.get);
+router.post(config.BENEFICIAL_OWNER_CORPORATE_URL, corporate.post);
 
 router.use(errorHandler);
 

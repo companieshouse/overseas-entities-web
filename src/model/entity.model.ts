@@ -7,6 +7,7 @@ export const EntityKey = "entity";
 */
 export const EntityKeys: string[] = ["overseasEntityName", "incorporationCountry", "principalAddress", "isAddressSameToPrincipalAddress",
   "serviceAddress", "email", "legalForm", "governedLaw", "publicRegister", "registrationNumber" ];
+
 export interface Entity {
     overseasEntityName?: string
     incorporationCountry?: string

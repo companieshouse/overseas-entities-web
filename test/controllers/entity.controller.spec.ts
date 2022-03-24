@@ -14,7 +14,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
-const BENEFICIAL_OWNER_TYPE_PAGE_TITLE = "Placeholder - BENEFICIAL OWNER Page";
+const BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to beneficial-owner-type";
 
 describe("ENTITY controller", () => {
   test("renders the entity page on GET method", async () => {
@@ -23,10 +23,10 @@ describe("ENTITY controller", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(ENTITY_PAGE_TITLE);
   });
-  test("renders the beneficial owner type page after a succesful post from ENTIRY page", async () => {
+  test("redirect the beneficial owner type page after a succesful post from ENTIRY page", async () => {
     const resp = await request(app).post(ENTITY_URL).set("Cookie", signedInCookie);
 
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_TITLE);
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
   });
 });

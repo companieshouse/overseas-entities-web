@@ -1,14 +1,13 @@
-import {authentication} from "../../src/controllers";
-
 jest.mock("ioredis");
 jest.mock('../../src/controllers/authentication.controller');
 
-import {describe, expect, jest, test} from "@jest/globals";
+import { authentication } from "../../src/controllers";
+import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_CORPORATE_URL } from "../../src/config";
 import { signedInCookie } from "../__mocks__/session.mock";
-import {NextFunction, Request, Response} from "express";
+import { NextFunction, Request, Response } from "express";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

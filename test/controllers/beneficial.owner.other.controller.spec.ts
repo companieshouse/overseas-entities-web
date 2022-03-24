@@ -5,7 +5,7 @@ import { authentication } from "../../src/controllers";
 import { describe, expect, jest, test } from "@jest/globals";
 import request from "supertest";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_CORPORATE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_OTHER_URL } from "../../src/config";
 import { signedInCookie } from "../__mocks__/session.mock";
 import { NextFunction, Request, Response } from "express";
 
@@ -14,9 +14,9 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const PAGE_TITLE = "Tell us about the corporate beneficial owner";
 
-describe("Beneficial owner corproate controller", () => {
+describe("BENEFICIAL OWNER OTHER controller", () => {
   test("renders the page", async () => {
-    const resp = await request(app).get(BENEFICIAL_OWNER_CORPORATE_URL).set("Cookie", signedInCookie);
+    const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL).set("Cookie", signedInCookie);
 
     // make some assertions on the response
     expect(resp.status).toEqual(200);

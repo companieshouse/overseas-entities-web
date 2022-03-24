@@ -1,3 +1,5 @@
+jest.mock("ioredis");
+
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { Request, Response } from 'express';
 import request from "supertest";

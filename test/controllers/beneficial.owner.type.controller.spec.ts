@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
-import { BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_TYPE_URL, ENTITY_URL } from "../../src/config";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -20,6 +20,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_HEADING);
+      expect(resp.text).toContain(ENTITY_URL);
     });
   });
 

@@ -11,6 +11,8 @@ export const get = (req: Request, res: Response) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
+  logger.debug(`POST BENEFICIAL_OWNER_OTHER_PAGE`);
+  res.redirect(config.MANAGING_OFFICER_URL);
   try {
 
     // buildCorproateBeneficialOwner(req);

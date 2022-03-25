@@ -3,7 +3,7 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, EntityKey, PresenterKey } from "../../src/model";
+import { ApplicationData, APPLICATION_DATA_KEY, entityType, presenterType } from "../../src/model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -38,11 +38,11 @@ const ADDRESS = {
   postcode: "BY 2"
 };
 
-export const ENTITY_OBJECT_MOCK = {
+export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   overseasEntityName: "overseasEntityName",
   incorporationCountry: "incorporationCountry",
   principalAddress: ADDRESS,
-  isAddressSameToPrincipalAddress: 0,
+  isAddressSameAsPrincipalAddress: 0,
   serviceAddress: {},
   email: "email",
   legalForm: "legalForm",
@@ -52,12 +52,12 @@ export const ENTITY_OBJECT_MOCK = {
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
-  [PresenterKey]: {
+  [presenterType.PresenterKey]: {
     fullName: "fullName",
     phoneNumber: "phoneNumber",
     role: 2,
     roleTitle: "roleTitle",
     registrationNumber: 123
   },
-  [EntityKey]: {}
+  [entityType.EntityKey]: {}
 };

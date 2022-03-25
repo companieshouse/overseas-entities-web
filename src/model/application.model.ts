@@ -1,10 +1,10 @@
-import { Entity, Presenter } from "./index";
+import { entityType, presenterType, dataType } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
 
 export interface ApplicationData {
-    presenter?: Presenter;
-    entity?: Entity;
+    presenter?: presenterType.Presenter;
+    entity?: entityType.Entity;
 }
 
-export type ApplicationDataType = Presenter | Entity;
+export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address;

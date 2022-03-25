@@ -6,7 +6,7 @@ export interface Address {
     postcode?: string
 }
 
-export enum userResponse {
+export enum yesNoResponse {
     No = 0,
     Yes = 1
   }

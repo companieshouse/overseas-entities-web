@@ -3,11 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData, PresenterKeys, PresenterKey } from "../model";
+import { ApplicationData, presenterType } from "../model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.info(`GET PRESENTER_PAGE`);
+    logger.debug(`GET PRESENTER_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -23,11 +23,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.info(`POST PRESENTER_PAGE`);
+    logger.debug(`POST PRESENTER_PAGE`);
 
-    setApplicationData(req.session, prepareData(req.body, PresenterKeys), PresenterKey);
+    const data = prepareData(req.body, presenterType.PresenterKeys);
+    setApplicationData(req.session, data, presenterType.PresenterKey);
 
-    return res.redirect(config.ENTITY_PAGE);
+    return res.redirect(config.ENTITY_URL);
   } catch (error) {
     logger.error(error);
     next(error);

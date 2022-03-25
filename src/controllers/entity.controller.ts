@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
 
 import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
-import { ApplicationData, Entity, EntityKey, EntityKeys } from "../model";
+import { ApplicationData, ApplicationDataType, entityType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.info(`GET ENTITY_PAGE`);
+    logger.debug(`GET ENTITY_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -23,13 +23,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.info(`POST ENTITY_PAGE`);
-    // const
-    const data: Entity = prepareData(req.body, EntityKeys);
-    // data.principalAddress = prepareData(req.body, PrincipalAddressKeys);
-    setApplicationData(req.session, data, EntityKey);
+    logger.debug(`POST ENTITY_PAGE`);
 
-    return res.redirect(config.BENEFICIAL_OWNER_TYPE_PAGE);
+    const data: ApplicationDataType = prepareData(req.body, entityType.EntityKeys);
+    data[entityType.PrincipalAddressKey] = prepareData(req.body, entityType.PrincipalAddressKeys);
+    data[entityType.ServiceAddressKey] = prepareData(req.body, entityType.ServiceAddressKeys);
+
+    setApplicationData(req.session, data, entityType.EntityKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.error(error);
     next(error);

@@ -2,6 +2,7 @@ export const INDEX_PAGE_TITLE = "Register an overseas entity and tell us about i
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
 export const BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-type";
+export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Who is a beneficial owner of the overseas entity?";
 export const EXPECTED_TEXT = "Page not found - Register an overseas entity and tell us about its beneficial owners";
 export const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";
 export const MESSAGE_ERROR = "Can't connect";

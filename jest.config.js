@@ -10,7 +10,8 @@ module.exports = {
     "./src/**/*.ts"
   ],
   coveragePathIgnorePatterns: [
-    "/src/bin/"
+    "/src/bin/",
+    "/src/model/"
   ],
   preset: "ts-jest",
   testEnvironment: "node",

@@ -5,7 +5,7 @@ import * as config from "../config";
 
 export const get = (req: Request, res: Response) => {
   logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
-  return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE);
+  return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, { backLinkUrl: config.ENTITY_URL });
 };
 
 export const post = (req: Request, res: Response) => {

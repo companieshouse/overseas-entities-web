@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/controllers/landing.controller");
 

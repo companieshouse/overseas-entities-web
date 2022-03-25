@@ -1,0 +1,288 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Beneficial owner - {{ serviceName }}  Companies House
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the corporate beneficial owner</h1>
+      <p class="govuk-caption-l">You can add more corporate beneficial owners later</p>
+      <br>
+      <form class="form" method="post">
+
+        {{ govukDetails({
+          summaryText: "What is a beneficial owner?",
+          text: "A beneficial owner is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management."
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "What is the name of the beneficial owner?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "corp-name",
+          name: "corp-name"
+        }) }}
+        {% call govukFieldset({
+          legend: {
+            text: "What is their principle office address?",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+        {{ govukInput({
+          label: {
+            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+          },
+          id: "address-line-1",
+          name: "address-line-1",
+          autocomplete: "address-line1"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+          },
+          id: "address-line-2",
+          name: "address-line-2",
+          autocomplete: "address-line2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Town or city"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "address-town",
+          name: "address-town",
+          autocomplete: "address-level2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+           text: "County"
+        },
+        classes: "govuk-!-width-two-thirds",
+          id: "address-county",
+          name: "address-county"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Postcode"
+          },
+          classes: "govuk-input--width-10",
+          id: "address-postcode",
+          name: "address-postcode",
+          autocomplete: "postal-code"
+        }) }}
+
+        {% endcall %}
+
+        {% set serviceAddressHtml %}
+        <br>
+        {% call govukFieldset({
+          legend: {
+            text: "What is their service address?",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+        {{ govukInput({
+          label: {
+            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
+          },
+          id: "service-address-line-1",
+          name: "service-address-line-1",
+          autocomplete: "service-address-line1"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
+          },
+          id: "service-address-line-2",
+          name: "service-address-line-2",
+          autocomplete: "service-address-line2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Town or city"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "service-address-town",
+          name: "service-address-town",
+          autocomplete: "service-address-level2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "County"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "service-address-county",
+          name: "service-address-county"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Postcode"
+          },
+          classes: "govuk-input--width-10",
+          id: "service-address-postcode",
+          name: "service-address-postcode",
+          autocomplete: "service-postal-code"
+        }) }}
+
+        {% endcall %}
+        {% endset -%}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "same-address",
+          name: "same-address",
+          fieldset: {
+            legend: {
+              text: "Is their service address the same as their principle office address?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "A service address is a correspondence address."
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No",
+              conditional: {
+                html: serviceAddressHtml
+              }
+            }
+          ]
+        }) }}
+        {{ govukInput({
+          label: {
+            text: "What is law governed?",
+            classes: "govuk-label--m govuk-input--width-15",
+            isPageHeading: false
+          },
+          id: "corp-law-governed",
+          name: "corp-law-governed"
+        }) }}
+        {{ govukDateInput({
+          id: "corp-startdate",
+          namePrefix: "corp-startdate",
+          fieldset: {
+            legend: {
+              text: "When did it become a beneficial owner for the overseas entity?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "For example, 27 3 2007"
+          }
+        }) }}
+
+        {{ govukRadios({
+          idPrefix: "corp-nature-of-control",
+          name: "corp-nature-of-control",
+          fieldset: {
+            legend: {
+              text: "What is their nature of control?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "25",
+              text: "over 25% up to (and including) 50%"
+            },
+            {
+               value: "50",
+               text: "more than 50% and less than 75%"
+            },
+            {
+               value: "75",
+               text: "75% or more"
+            }
+          ]
+        }) }}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "statement-condition",
+          name: "statement-condition",
+          fieldset: {
+            legend: {
+              text: "What is the statement of condition?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+        items: [
+            {
+              value: "statement1",
+              text: "Statement 1"
+            },
+            {
+              value: "statement2",
+              text: "Statement 2"
+            }
+          ]
+        }) }}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "owner-sanctions",
+          name: "owner-sanctions",
+          fieldset: {
+            legend: {
+              text: "Are there any sactions?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+        <p class="govuk-body">All details provided about the corporate owner will be available on the online register</p>
+        <p class="govuk-body"><a href="/register/beneficial-owner-other-2">Add another corporate beneficial owner</a></p>
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

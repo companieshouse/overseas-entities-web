@@ -7,16 +7,12 @@ import { ApplicationData, APPLICATION_DATA_KEY, entityType, presenterType } from
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
-const COOKIE_NAME = "__SID";
-
 const SIGN_IN_INFO = {
   [SignInInfoKeys.SignedIn]: 1,
   [SignInInfoKeys.UserProfile]: {
     [UserProfileKeys.Email]: userMail
   }
 };
-
-export const signedInCookie = [`${COOKIE_NAME}=4ZhJ6pAmB5NAJbjy/6fU1DWMqqrk`];
 
 export function getSessionRequestWithPermission(): Session {
   return new Session({

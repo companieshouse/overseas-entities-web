@@ -1,6 +1,6 @@
-import { Address, natureOfControl, yesNoResponse } from "./data.types.model";
+import { Address, Date, natureOfControl, yesNoResponse } from "./data.types.model";
 
-enum statementCondition {
+export enum statementCondition {
     statement1,
     statement2
 }
@@ -8,9 +8,9 @@ enum statementCondition {
 export const DateKey: string = "startDate";
 export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 
-export const OtherBeneficialOwnerKey: string = "otherBeneficialOwner";
-export const OtherBeneficialOwnerKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSactioned"];
-export interface OtherBeneficialOwner {
+export const BeneficialOwnerOtherKey: string = "beneficialOwnerOther";
+export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSactioned"];
+export interface BeneficialOwnerOther {
     corporationName: string
     principalAddress: Address
     isSameAddress: yesNoResponse

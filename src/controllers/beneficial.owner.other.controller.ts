@@ -1,40 +1,43 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType, entityType, otherOwnerType } from "../model";
-import {getApplicationData, prepareData, setApplicationData} from "../utils/application.data";
-import {  OtherBeneficialOwnerKey, OtherBeneficialOwnerKeys } from "../model/beneficial-owner/other.model";
-
+import { ApplicationData, ApplicationDataType, entityType, beneficialOwnerOtherType } from "../model";
+import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
+import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/other.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET BENEFICIAL_OWNER_OTHER_PAGE`);
+    logger.debug(`GET ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
-    res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
-      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    logger.debug("LEFT OUT " + JSON.stringify(appData));
+
+    return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
+      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      ...appData.beneficialOwnerOther
     });
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  logger.debug(`POST BENEFICIAL_OWNER_OTHER_PAGE`);
 
   try {
-    const data: ApplicationDataType = prepareData(req.body, OtherBeneficialOwnerKeys);
+    logger.debug(`POST ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
+
+    const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
     data[entityType.PrincipalAddressKey] = prepareData(req.body, entityType.PrincipalAddressKeys);
     data[entityType.ServiceAddressKey] = prepareData(req.body, entityType.ServiceAddressKeys);
-    data[otherOwnerType.DateKey] = prepareData(req.body, otherOwnerType.DateKeys);
-    setApplicationData(req.session, data, OtherBeneficialOwnerKey);
+    data[beneficialOwnerOtherType.DateKey] = prepareData(req.body, beneficialOwnerOtherType.DateKeys);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-    logger.debug("SESSION GET " + JSON.stringify(appData));
+    setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 
-    res.redirect(config.MANAGING_OFFICER_URL);
+    return res.redirect(config.MANAGING_OFFICER_URL);
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };

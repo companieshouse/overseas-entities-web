@@ -3,8 +3,9 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, entityType, presenterType } from "../../src/model";
-import { BeneficialOwnerTypeChoice } from "../../src/model/data.types.model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, entityType, presenterType } from "../../src/model";
+import { BeneficialOwnerTypeChoice, natureOfControl, yesNoResponse } from "../../src/model/data.types.model";
+import { statementCondition } from "../../src/model/other.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -62,3 +63,20 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   },
   [entityType.EntityKey]: {}
 };
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  corporationName: "Test",
+  principalAddress: ADDRESS,
+  isSameAddress: yesNoResponse.Yes,
+  serviceAddress: ADDRESS,
+  lawGoverned: "law",
+  startDate: {
+    day: 1,
+    month: 1,
+    year: 2011
+  },
+  natureOfControl: natureOfControl.over25under50,
+  statementCondition: statementCondition.statement1,
+  isSactioned: yesNoResponse.No
+};
+

@@ -30,7 +30,8 @@
             isPageHeading: false
           },
           id: "corporation-name",
-          name: "corporationName"
+          name: "corporationName",
+          value: corporationName
         }) }}
         {% call govukFieldset({
           legend: {
@@ -46,6 +47,7 @@
           },
           id: "principalAddressLine1",
           name: "principalAddressLine1",
+          value: principalAddress.principalAddressLine1 if principalAddress,
           autocomplete: "principalAddressline1"
         }) }}
 
@@ -55,6 +57,7 @@
           },
           id: "principalAddressLine2",
           name: "principalAddressLine2",
+          value: principalAddress.principalAddressLine2 if principalAddress,
           autocomplete: "principalAddressline2"
         }) }}
 
@@ -65,6 +68,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "principalAddressTown",
           name: "principalAddressTown",
+          value: principalAddress.principalAddressTown if principalAddress,
           autocomplete: "address-level2"
         }) }}
 
@@ -74,7 +78,8 @@
         },
         classes: "govuk-!-width-two-thirds",
           id: "principalAddressCounty",
-          name: "principalAddressCounty"
+          name: "principalAddressCounty",
+          value: principalAddress.principalAddressCounty if principalAddress
         }) }}
 
         {{ govukInput({
@@ -84,6 +89,7 @@
           classes: "govuk-input--width-10",
           id: "principalAddressPostcode",
           name: "principalAddressPostcode",
+          value: principalAddress.principalAddressPostcode if principalAddress,
           autocomplete: "postal-code"
         }) }}
 
@@ -105,6 +111,7 @@
           },
           id: "serviceAddressLine1",
           name: "serviceAddressLine1",
+          value: serviceAddress.serviceAddressLine1 if serviceAddress,
           autocomplete: "address-line1"
         }) }}
 
@@ -114,6 +121,7 @@
           },
           id: "serviceAddressLine2",
           name: "serviceAddressLine2",
+          value: serviceAddress.serviceAddressLine2 if serviceAddress,
           autocomplete: "address-line2"
         }) }}
 
@@ -124,6 +132,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "serviceAddressTown",
           name: "serviceAddressTown",
+          value: serviceAddress.serviceAddressTown if serviceAddress,
           autocomplete: "address-level2"
         }) }}
 
@@ -133,7 +142,8 @@
           },
           classes: "govuk-!-width-two-thirds",
           id: "serviceAddressCounty",
-          name: "serviceAddressCounty"
+          name: "serviceAddressCounty",
+          value: serviceAddress.serviceAddressCounty if serviceAddress
         }) }}
 
         {{ govukInput({
@@ -143,6 +153,7 @@
           classes: "govuk-input--width-10",
           id: "serviceAddressPostcode",
           name: "serviceAddressPostcode",
+          value: serviceAddress.serviceAddressPostcode if serviceAddress,
           autocomplete: "postal-code"
         }) }}
 
@@ -166,11 +177,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: isSameAddress === "yes"
             },
             {
               value: "no",
               text: "No",
+              checked: isSameAddress === "no",
               conditional: {
                 html: serviceAddressHtml
               }
@@ -184,7 +197,8 @@
             isPageHeading: false
           },
           id: "law-governed",
-          name: "lawGoverned"
+          name: "lawGoverned",
+          value: lawGoverned
         }) }}
         {{ govukDateInput({
           id: "start-date",
@@ -201,16 +215,19 @@
           },
           items: [
             {
-              classes: "govuk-input--width-2 govuk-input--error",
-              name: "day"
+              classes: "govuk-input--width-2 govuk-input",
+              name: "day",
+              value: startDate["startDate-day"]
             },
             {
-              classes: "govuk-input--width-2 govuk-input--error",
-              name: "month"
+              classes: "govuk-input--width-2 govuk-input",
+              name: "month",
+              value: startDate["startDate-month"]
             },
             {
-              classes: "govuk-input--width-4 govuk-input--error",
-              name: "year"
+              classes: "govuk-input--width-4 govuk-input",
+              name: "year",
+              value: startDate["startDate-year"]
             }
           ]
         }) }}
@@ -228,15 +245,18 @@
           items: [
             {
               value: "25",
-              text: "over 25% up to (and including) 50%"
+              text: "over 25% up to (and including) 50%",
+              checked: natureOfControl === "25"
             },
             {
                value: "50",
-               text: "more than 50% and less than 75%"
+               text: "more than 50% and less than 75%",
+               checked: natureOfControl === "50"
             },
             {
                value: "75",
-               text: "75% or more"
+               text: "75% or more",
+               checked: natureOfControl === "75"
             }
           ]
         }) }}
@@ -255,11 +275,13 @@
         items: [
             {
               value: "statement1",
-              text: "Statement 1"
+              text: "Statement 1",
+              checked: statementCondition === "statement1"
             },
             {
               value: "statement2",
-              text: "Statement 2"
+              text: "Statement 2",
+              checked: statementCondition === "statement2"
             }
           ]
         }) }}
@@ -278,11 +300,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: isSactioned === "yes"
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              checked: isSactioned === "no"
             }
           ]
         }) }}

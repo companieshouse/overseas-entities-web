@@ -25,7 +25,7 @@
 
         {{ govukCheckboxes({
           idPrefix: "beneficial-owner-type",
-          name: "beneficial-owner-type",
+          name: "beneficialOwnerType",
           fieldset: {
             legend: {
               text: "Who is a beneficial owner of the overseas entity?",
@@ -39,11 +39,13 @@
           items: [
             {
               value: "individual",
-              text: "An individual beneficial owner"
+              text: "An individual beneficial owner",
+              checked: beneficialOwnerType and 'individual' in beneficialOwnerType
             },
             {
-              value: "other-legal",
-              text: "A public authority, or other legal entity"
+              value: "otherLegal",
+              text: "A public authority, or other legal entity",
+              checked: beneficialOwnerType and 'otherLegal' in beneficialOwnerType
             },
             {
               divider: "or"
@@ -51,7 +53,8 @@
             {
               value: "none",
               text: "There is no beneficial owner",
-              behaviour: "exclusive"
+              behaviour: "exclusive",
+              checked: beneficialOwnerType and 'none' in beneficialOwnerType
             }
           ]
         }) }}

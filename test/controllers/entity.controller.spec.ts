@@ -47,7 +47,7 @@ describe("ENTITY controller", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
-  test("catch error when post data from ENTIRY page", async () => {
+  test("catch error when post data from ENTITY page", async () => {
     mockSetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
     const resp = await request(app).post(ENTITY_URL);
 

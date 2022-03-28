@@ -19,13 +19,13 @@ export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 
 // TEMPLATEs
+export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
 export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
 export const ENTITY_PAGE = "entity";
 export const LANDING_PAGE = "landing";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const PRESENTER_PAGE = "presenter";
-export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 
 export const ERROR_PAGE = "error-page";
 export const NOT_FOUND_PAGE = "page-not-found";

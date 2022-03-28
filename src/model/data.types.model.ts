@@ -9,7 +9,13 @@ export interface Address {
 export enum yesNoResponse {
     No = 0,
     Yes = 1
-  }
+}
+
+export enum BeneficialOwnerTypeChoice {
+    individual = "individual",
+    otherLegal = "otherLegal",
+    none = "none"
+}
 
 export interface Date {
     day: number

@@ -1,4 +1,4 @@
-import { Address, natureOfControl, yesNoResponse } from "../data.types.model";
+import { Address, natureOfControl, yesNoResponse } from "./data.types.model";
 
 enum statementCondition {
     statement1,

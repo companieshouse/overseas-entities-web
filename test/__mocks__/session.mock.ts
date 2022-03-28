@@ -3,7 +3,8 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, entityType, presenterType } from "../../src/model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, entityType, presenterType } from "../../src/model";
+import { BeneficialOwnerTypeChoice } from "../../src/model/data.types.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -45,6 +46,10 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   governedLaw: "governedLaw",
   publicRegister: "publicRegister",
   registrationNumber: 123
+};
+
+export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
+  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

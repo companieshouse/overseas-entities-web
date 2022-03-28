@@ -5,6 +5,9 @@ enum statementCondition {
     statement2
 }
 
+export const DateKey: string = "startDate";
+export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
+
 export const OtherBeneficialOwnerKey: string = "otherBeneficialOwner";
 export const OtherBeneficialOwnerKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSactioned"];
 export interface OtherBeneficialOwner {

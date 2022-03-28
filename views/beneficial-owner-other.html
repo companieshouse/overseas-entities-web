@@ -198,7 +198,21 @@
           },
           hint: {
             text: "For example, 27 3 2007"
-          }
+          },
+          items: [
+            {
+              classes: "govuk-input--width-2 govuk-input--error",
+              name: "day"
+            },
+            {
+              classes: "govuk-input--width-2 govuk-input--error",
+              name: "month"
+            },
+            {
+              classes: "govuk-input--width-4 govuk-input--error",
+              name: "year"
+            }
+          ]
         }) }}
 
         {{ govukRadios({

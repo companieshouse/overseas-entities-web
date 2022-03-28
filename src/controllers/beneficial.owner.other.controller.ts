@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationDataType, entityType } from "../model";
-import { prepareData, setApplicationData } from "../utils/application.data";
+import { ApplicationData, ApplicationDataType, entityType, otherOwnerType } from "../model";
+import {getApplicationData, prepareData, setApplicationData} from "../utils/application.data";
 import {  OtherBeneficialOwnerKey, OtherBeneficialOwnerKeys } from "../model/beneficial-owner/other.model";
 
 
@@ -26,7 +26,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = prepareData(req.body, OtherBeneficialOwnerKeys);
     data[entityType.PrincipalAddressKey] = prepareData(req.body, entityType.PrincipalAddressKeys);
     data[entityType.ServiceAddressKey] = prepareData(req.body, entityType.ServiceAddressKeys);
+    data[otherOwnerType.DateKey] = prepareData(req.body, otherOwnerType.DateKeys);
     setApplicationData(req.session, data, OtherBeneficialOwnerKey);
+
+    const appData: ApplicationData = getApplicationData(req.session);
+    logger.debug("SESSION GET " + JSON.stringify(appData));
 
     res.redirect(config.MANAGING_OFFICER_URL);
   } catch (error) {

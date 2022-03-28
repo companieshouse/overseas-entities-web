@@ -3,7 +3,7 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationDataType, entityType } from "../model";
 import { prepareData, setApplicationData } from "../utils/application.data";
-import {  OtherBeneficialOwnerKey, OtherBeneficialOwnerKeys } from "../model/beneficial-owner/owner.model";
+import {  OtherBeneficialOwnerKey, OtherBeneficialOwnerKeys } from "../model/beneficial-owner/other.model";
 
 
 export const get = (req: Request, res: Response, next: NextFunction) => {

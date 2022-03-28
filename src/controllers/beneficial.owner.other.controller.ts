@@ -11,8 +11,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    logger.debug("LEFT OUT " + JSON.stringify(appData));
-
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData.beneficialOwnerOther

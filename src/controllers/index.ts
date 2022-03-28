@@ -5,3 +5,4 @@ export * as landing from "./landing.controller";
 export * as managingOfficer from "./managing.officer.controller";
 export * as presenter from "./presenter.controller";
 export * as entity from "./entity.controller";
+export * as beneficialOwnerIndividual from "./beneficial.owner.individual.controller";

@@ -29,8 +29,8 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corp-name",
-          name: "corpName"
+          id: "corporation-name",
+          name: "corporationName"
         }) }}
         {% call govukFieldset({
           legend: {
@@ -44,18 +44,18 @@
           label: {
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
-          id: "address-line-1",
-          name: "addressLine1",
-          autocomplete: "address-line1"
+          id: "principalAddressLine1",
+          name: "principalAddressLine1",
+          autocomplete: "principalAddressline1"
         }) }}
 
         {{ govukInput({
           label: {
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
-          id: "address-line-2",
-          name: "addressLine2",
-          autocomplete: "address-line2"
+          id: "principalAddressLine2",
+          name: "principalAddressLine2",
+          autocomplete: "principalAddressline2"
         }) }}
 
         {{ govukInput({
@@ -63,8 +63,8 @@
             text: "Town or city"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "address-town",
-          name: "addressTown",
+          id: "principalAddressTown",
+          name: "principalAddressTown",
           autocomplete: "address-level2"
         }) }}
 
@@ -73,8 +73,8 @@
            text: "County"
         },
         classes: "govuk-!-width-two-thirds",
-          id: "addressCounty",
-          name: "address-county"
+          id: "principalAddressCounty",
+          name: "principalAddressCounty"
         }) }}
 
         {{ govukInput({
@@ -82,8 +82,8 @@
             text: "Postcode"
           },
           classes: "govuk-input--width-10",
-          id: "address-postcode",
-          name: "addressPostcode",
+          id: "principalAddressPostcode",
+          name: "principalAddressPostcode",
           autocomplete: "postal-code"
         }) }}
 
@@ -103,18 +103,18 @@
           label: {
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
-          id: "service-address-line-1",
+          id: "serviceAddressLine1",
           name: "serviceAddressLine1",
-          autocomplete: "service-address-line1"
+          autocomplete: "address-line1"
         }) }}
 
         {{ govukInput({
           label: {
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
-          id: "service-address-line-2",
+          id: "serviceAddressLine2",
           name: "serviceAddressLine2",
-          autocomplete: "service-address-line2"
+          autocomplete: "address-line2"
         }) }}
 
         {{ govukInput({
@@ -122,9 +122,9 @@
             text: "Town or city"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service-address-town",
+          id: "serviceAddressTown",
           name: "serviceAddressTown",
-          autocomplete: "service-address-level2"
+          autocomplete: "address-level2"
         }) }}
 
         {{ govukInput({
@@ -132,7 +132,7 @@
             text: "County"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service-address-county",
+          id: "serviceAddressCounty",
           name: "serviceAddressCounty"
         }) }}
 
@@ -141,9 +141,9 @@
             text: "Postcode"
           },
           classes: "govuk-input--width-10",
-          id: "service-address-postcode",
+          id: "serviceAddressPostcode",
           name: "serviceAddressPostcode",
-          autocomplete: "service-postal-code"
+          autocomplete: "postal-code"
         }) }}
 
         {% endcall %}
@@ -152,7 +152,7 @@
         {{ govukRadios({
           classes: "govuk-radios",
           idPrefix: "same-address",
-          name: "sameAddress",
+          name: "isSameAddress",
           fieldset: {
             legend: {
               text: "Is their service address the same as their principle office address?",
@@ -183,12 +183,12 @@
             classes: "govuk-label--m govuk-input--width-15",
             isPageHeading: false
           },
-          id: "corp-law-governed",
-          name: "corpLawGoverned"
+          id: "law-governed",
+          name: "lawGoverned"
         }) }}
         {{ govukDateInput({
-          id: "corp-startdate",
-          namePrefix: "corpStartdate",
+          id: "start-date",
+          namePrefix: "startDate",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -202,8 +202,8 @@
         }) }}
 
         {{ govukRadios({
-          idPrefix: "corp-nature-of-control",
-          name: "corpNatureOfControl",
+          idPrefix: "nature-of-control",
+          name: "natureOfControl",
           fieldset: {
             legend: {
               text: "What is their nature of control?",
@@ -252,8 +252,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "owner-sanctions",
-          name: "ownerSanctions",
+          idPrefix: "is-sactioned",
+          name: "isSactioned",
           fieldset: {
             legend: {
               text: "Are there any sactions?",

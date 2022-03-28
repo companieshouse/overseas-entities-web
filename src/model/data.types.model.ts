@@ -10,3 +10,15 @@ export enum yesNoResponse {
     No = 0,
     Yes = 1
   }
+
+export interface Date {
+    day: number
+    month: number
+    year: number
+}
+
+export enum natureOfControl {
+    over25under50,
+    over50under75,
+    over75
+}

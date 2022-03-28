@@ -18,7 +18,7 @@ export enum BeneficialOwnerTypeChoice {
 }
 
 
-export interface Date {
+export interface InputDate {
     day: number
     month: number
     year: number

@@ -1,4 +1,4 @@
-import { Address, Date, natureOfControl, yesNoResponse } from "./data.types.model";
+import { Address, InputDate, natureOfControl, yesNoResponse } from "./data.types.model";
 
 export enum statementCondition {
     statement1,
@@ -16,7 +16,7 @@ export interface BeneficialOwnerOther {
     isSameAddress: yesNoResponse
     serviceAddress?: Address
     lawGoverned: string
-    startDate: Date
+    startDate: InputDate
     natureOfControl: natureOfControl
     statementCondition: statementCondition
     isSactioned: yesNoResponse

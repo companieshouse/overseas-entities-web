@@ -162,7 +162,7 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "issameAddress",
+          idPrefix: "isSameAddress",
           name: "isSameAddress",
           fieldset: {
             legend: {
@@ -288,11 +288,11 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "isSactioned",
-          name: "isSactioned",
+          idPrefix: "isSanctioned",
+          name: "isSanctioned",
           fieldset: {
             legend: {
-              text: "Are there any sactions?",
+              text: "Are there any sanctions?",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--m"
             }
@@ -301,12 +301,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: isSactioned === "yes"
+              checked: isSanctioned === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: isSactioned === "no"
+              checked: isSanctioned === "no"
             }
           ]
         }) }}

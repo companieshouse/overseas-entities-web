@@ -3,7 +3,10 @@ jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
 import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
-import { BENEFICIAL_OWNER_OTHER_JSON_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from "../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK
+} from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/controllers";
 import { describe, expect, jest, test } from "@jest/globals";
@@ -32,7 +35,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_JSON_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK.beneficialOwnerOther);
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -63,7 +66,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(beneficialOwnerOther.lawGoverned).toEqual("TheLaw");
       expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25upTo50Percent);
       expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
-      expect(beneficialOwnerOther.isSactioned).toEqual(yesNoResponse.No);
+      expect(beneficialOwnerOther.isSanctioned).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(MANAGING_OFFICER_URL);
     });

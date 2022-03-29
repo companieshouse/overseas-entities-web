@@ -8,7 +8,7 @@ export const DateKey: string = "startDate";
 export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 
 export const BeneficialOwnerOtherKey: string = "beneficialOwnerOther";
-export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSactioned"];
+export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSanctioned"];
 
 export interface BeneficialOwnerOther {
     corporationName?: string
@@ -19,5 +19,5 @@ export interface BeneficialOwnerOther {
     startDate?: InputDate
     natureOfControl?: natureOfControl
     statementCondition?: statementCondition
-    isSactioned?: yesNoResponse
+    isSanctioned?: yesNoResponse
 }

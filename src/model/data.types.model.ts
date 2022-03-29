@@ -25,7 +25,7 @@ export interface InputDate {
 
 export enum natureOfControl {
     over25upTo50Percent = "25",
-    over50upTo75Percent = "50",
+    over50under75Percent = "50",
     atLeast75Percent = "75"
 }
 

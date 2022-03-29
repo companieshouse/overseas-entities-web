@@ -36,6 +36,7 @@ router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOt
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
+router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);
 
 router.use(errorHandler);
 

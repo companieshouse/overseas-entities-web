@@ -3,7 +3,7 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, entityType, presenterType } from "../../src/model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, beneficialOwnerIndividualType, entityType, presenterType } from "../../src/model";
 import {
   BeneficialOwnerTypeChoice,
   natureOfControl,
@@ -73,6 +73,17 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   isSanctioned: yesNoResponse.No
 };
 
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  fullName: "Ivan Drago",
+  dateOfBirth: {
+    day: 21,
+    month: 3,
+    year: 1947
+  },
+  ownerNationality: "Russian",
+  natureOfControl: natureOfControl.over50under75Percent
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: {
     fullName: "fullName",
@@ -83,6 +94,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   },
   [entityType.EntityKey]: {},
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK
+  [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
 };
 

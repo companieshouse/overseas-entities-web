@@ -1,4 +1,4 @@
-import { entityType, presenterType, dataType, beneficialOwnerOtherType, beneficialOwnerTypeType } from "./index";
+import { entityType, presenterType, dataType, beneficialOwnerOtherType, beneficialOwnerTypeType, beneficialOwnerIndividualType } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
 
@@ -7,6 +7,7 @@ export interface ApplicationData {
     entity?: entityType.Entity;
     beneficialOwnerType?: beneficialOwnerTypeType.BeneficialOwnerType;
     beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther;
+    beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual;
 }
 
-export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther;
+export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther | beneficialOwnerIndividualType.BeneficialOwnerIndividual;

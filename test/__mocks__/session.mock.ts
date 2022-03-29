@@ -3,8 +3,13 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, entityType, presenterType } from "../../src/model";
-import { BeneficialOwnerTypeChoice } from "../../src/model/data.types.model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, entityType, presenterType } from "../../src/model";
+import {
+  BeneficialOwnerTypeChoice,
+  natureOfControl,
+  statementCondition,
+  yesNoResponse
+} from "../../src/model/data.types.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -60,5 +65,47 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
     roleTitle: "roleTitle",
     registrationNumber: 123
   },
-  [entityType.EntityKey]: {}
+  [entityType.EntityKey]: {},
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: {
+    "corporationName": "TestCorporation",
+    "principalAddress":
+      {
+        "principalAddressLine1": "11",
+        "principalAddressLine2": " North Street",
+        "principalAddressTown": "Notown",
+        "principalAddressCounty": "Nocountty",
+        "principalAddressPostcode": "yty 6uu"
+      },
+    "isSameAddress": "no",
+    "serviceAddress": {
+      "serviceAddressLine1": "67",
+      "serviceAddressLine2": "West Road",
+      "serviceAddressTown": "Notown",
+      "serviceAddressCounty": "Nocounty",
+      "serviceAddressPostcode": "eee 5ty"
+    },
+    "lawGoverned": "TheLaw",
+    "startDate": {
+      "startDate-day": "10", "startDate-month": "12", "startDate-year": "2011"
+    },
+    "natureOfControl": "75",
+    "statementCondition": "statement2",
+    "isSanctioned": "yes"
+  }
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  corporationName: "TestCorporation",
+  principalAddress: ADDRESS,
+  isSameAddress: yesNoResponse.Yes,
+  serviceAddress: ADDRESS,
+  lawGoverned: "TheLaw",
+  startDate: {
+    day: 1,
+    month: 1,
+    year: 2011
+  },
+  natureOfControl: natureOfControl.over25upTo50Percent,
+  statementCondition: statementCondition.statement1,
+  isSanctioned: yesNoResponse.No
 };

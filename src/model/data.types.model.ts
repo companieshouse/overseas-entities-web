@@ -16,3 +16,20 @@ export enum BeneficialOwnerTypeChoice {
     otherLegal = "otherLegal",
     none = "none"
 }
+
+export interface InputDate {
+    day: number
+    month: number
+    year: number
+}
+
+export enum natureOfControl {
+    over25upTo50Percent = "25",
+    over50under75Percent = "50",
+    atLeast75Percent = "75"
+}
+
+export enum statementCondition {
+    statement1 = "statement1",
+    statement2 = "statement2"
+}

@@ -29,8 +29,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corp-name",
-          name: "corp-name"
+          id: "corporationName",
+          name: "corporationName",
+          value: corporationName
         }) }}
         {% call govukFieldset({
           legend: {
@@ -44,18 +45,20 @@
           label: {
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
-          id: "address-line-1",
-          name: "address-line-1",
-          autocomplete: "address-line1"
+          id: "principalAddressLine1",
+          name: "principalAddressLine1",
+          value: principalAddress.principalAddressLine1 if principalAddress,
+          autocomplete: "principalAddressline1"
         }) }}
 
         {{ govukInput({
           label: {
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
-          id: "address-line-2",
-          name: "address-line-2",
-          autocomplete: "address-line2"
+          id: "principalAddressLine2",
+          name: "principalAddressLine2",
+          value: principalAddress.principalAddressLine2 if principalAddress,
+          autocomplete: "principalAddressline2"
         }) }}
 
         {{ govukInput({
@@ -63,9 +66,10 @@
             text: "Town or city"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "address-town",
-          name: "address-town",
-          autocomplete: "address-level2"
+          id: "principalAddressTown",
+          name: "principalAddressTown",
+          value: principalAddress.principalAddressTown if principalAddress,
+          autocomplete: "principalAddressTown"
         }) }}
 
         {{ govukInput({
@@ -73,8 +77,9 @@
            text: "County"
         },
         classes: "govuk-!-width-two-thirds",
-          id: "address-county",
-          name: "address-county"
+          id: "principalAddressCounty",
+          name: "principalAddressCounty",
+          value: principalAddress.principalAddressCounty if principalAddress
         }) }}
 
         {{ govukInput({
@@ -82,9 +87,10 @@
             text: "Postcode"
           },
           classes: "govuk-input--width-10",
-          id: "address-postcode",
-          name: "address-postcode",
-          autocomplete: "postal-code"
+          id: "principalAddressPostcode",
+          name: "principalAddressPostcode",
+          value: principalAddress.principalAddressPostcode if principalAddress,
+          autocomplete: "principalAddressPostcode"
         }) }}
 
         {% endcall %}
@@ -103,18 +109,20 @@
           label: {
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
-          id: "service-address-line-1",
-          name: "service-address-line-1",
-          autocomplete: "service-address-line1"
+          id: "serviceAddressLine1",
+          name: "serviceAddressLine1",
+          value: serviceAddress.serviceAddressLine1 if serviceAddress,
+          autocomplete: "serviceAddressLine1"
         }) }}
 
         {{ govukInput({
           label: {
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
-          id: "service-address-line-2",
-          name: "service-address-line-2",
-          autocomplete: "service-address-line2"
+          id: "serviceAddressLine2",
+          name: "serviceAddressLine2",
+          value: serviceAddress.serviceAddressLine2 if serviceAddress,
+          autocomplete: "serviceAddressLine2"
         }) }}
 
         {{ govukInput({
@@ -122,9 +130,10 @@
             text: "Town or city"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service-address-town",
-          name: "service-address-town",
-          autocomplete: "service-address-level2"
+          id: "serviceAddressTown",
+          name: "serviceAddressTown",
+          value: serviceAddress.serviceAddressTown if serviceAddress,
+          autocomplete: "serviceAddressTown"
         }) }}
 
         {{ govukInput({
@@ -132,8 +141,9 @@
             text: "County"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service-address-county",
-          name: "service-address-county"
+          id: "serviceAddressCounty",
+          name: "serviceAddressCounty",
+          value: serviceAddress.serviceAddressCounty if serviceAddress
         }) }}
 
         {{ govukInput({
@@ -141,9 +151,10 @@
             text: "Postcode"
           },
           classes: "govuk-input--width-10",
-          id: "service-address-postcode",
-          name: "service-address-postcode",
-          autocomplete: "service-postal-code"
+          id: "serviceAddressPostcode",
+          name: "serviceAddressPostcode",
+          value: serviceAddress.serviceAddressPostcode if serviceAddress,
+          autocomplete: "serviceAddressPostcode"
         }) }}
 
         {% endcall %}
@@ -151,8 +162,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "same-address",
-          name: "same-address",
+          idPrefix: "isSameAddress",
+          name: "isSameAddress",
           fieldset: {
             legend: {
               text: "Is their service address the same as their principle office address?",
@@ -166,11 +177,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: isSameAddress === "yes"
             },
             {
               value: "no",
               text: "No",
+              checked: isSameAddress === "no",
               conditional: {
                 html: serviceAddressHtml
               }
@@ -183,12 +196,13 @@
             classes: "govuk-label--m govuk-input--width-15",
             isPageHeading: false
           },
-          id: "corp-law-governed",
-          name: "corp-law-governed"
+          id: "lawGoverned",
+          name: "lawGoverned",
+          value: lawGoverned
         }) }}
         {{ govukDateInput({
-          id: "corp-startdate",
-          namePrefix: "corp-startdate",
+          id: "startDate",
+          namePrefix: "startDate",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -198,12 +212,29 @@
           },
           hint: {
             text: "For example, 27 3 2007"
-          }
+          },
+          items: [
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "day",
+              value: startDate["startDate-day"]
+            },
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "month",
+              value: startDate["startDate-month"]
+            },
+            {
+              classes: "govuk-input--width-4 govuk-input",
+              name: "year",
+              value: startDate["startDate-year"]
+            }
+          ]
         }) }}
 
         {{ govukRadios({
-          idPrefix: "corp-nature-of-control",
-          name: "corp-nature-of-control",
+          idPrefix: "natureOfControl",
+          name: "natureOfControl",
           fieldset: {
             legend: {
               text: "What is their nature of control?",
@@ -214,23 +245,26 @@
           items: [
             {
               value: "25",
-              text: "over 25% up to (and including) 50%"
+              text: "over 25% up to (and including) 50%",
+              checked: natureOfControl === "25"
             },
             {
                value: "50",
-               text: "more than 50% and less than 75%"
+               text: "more than 50% and less than 75%",
+               checked: natureOfControl === "50"
             },
             {
                value: "75",
-               text: "75% or more"
+               text: "75% or more",
+               checked: natureOfControl === "75"
             }
           ]
         }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "statement-condition",
-          name: "statement-condition",
+          idPrefix: "statementCondition",
+          name: "statementCondition",
           fieldset: {
             legend: {
               text: "What is the statement of condition?",
@@ -241,22 +275,24 @@
         items: [
             {
               value: "statement1",
-              text: "Statement 1"
+              text: "Statement 1",
+              checked: statementCondition === "statement1"
             },
             {
               value: "statement2",
-              text: "Statement 2"
+              text: "Statement 2",
+              checked: statementCondition === "statement2"
             }
           ]
         }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "owner-sanctions",
-          name: "owner-sanctions",
+          idPrefix: "isSanctioned",
+          name: "isSanctioned",
           fieldset: {
             legend: {
-              text: "Are there any sactions?",
+              text: "Are there any sanctions?",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--m"
             }
@@ -264,11 +300,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: isSanctioned === "yes"
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              checked: isSanctioned === "no"
             }
           ]
         }) }}

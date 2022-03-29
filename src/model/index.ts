@@ -3,3 +3,4 @@ export * as presenterType from "./presenter.model";
 export * as entityType from "./entity.model";
 export * as beneficialOwnerTypeType from "./beneficial.owner.type.model";
 export * as dataType from "./data.types.model";
+export * as beneficialOwnerOtherType from "./beneficial.owner.other.model";

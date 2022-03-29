@@ -50,6 +50,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("POST tests", () => {
     test("redirects to the next page", async () => {
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK );
+
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(302);
@@ -58,15 +60,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test("adds data to the session", async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK );
+
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
       expect(beneficialOwnerIndividual).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       expect(beneficialOwnerIndividual.fullName).toEqual("Ivan Drago");
-      expect(beneficialOwnerIndividual.dateOfBirth.day).toEqual(21);
-      expect(beneficialOwnerIndividual.dateOfBirth.month).toEqual(3);
-      expect(beneficialOwnerIndividual.dateOfBirth.year).toEqual(1947);
       expect(beneficialOwnerIndividual.natureOfControl).toEqual(natureOfControl.over50under75Percent);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);

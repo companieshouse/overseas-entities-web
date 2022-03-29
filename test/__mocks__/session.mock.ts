@@ -81,6 +81,8 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
     year: 1947
   },
   ownerNationality: "Russian",
+  usualResidentialAddress: ADDRESS,
+  serviceAddress: ADDRESS,
   natureOfControl: natureOfControl.over50under75Percent
 };
 

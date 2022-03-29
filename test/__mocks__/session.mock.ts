@@ -57,43 +57,6 @@ export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.Benefici
   beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
 };
 
-export const APPLICATION_DATA_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: {
-    fullName: "fullName",
-    phoneNumber: "phoneNumber",
-    role: 2,
-    roleTitle: "roleTitle",
-    registrationNumber: 123
-  },
-  [entityType.EntityKey]: {},
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: {
-    "corporationName": "TestCorporation",
-    "principalAddress":
-      {
-        "principalAddressLine1": "11",
-        "principalAddressLine2": " North Street",
-        "principalAddressTown": "Notown",
-        "principalAddressCounty": "Nocountty",
-        "principalAddressPostcode": "yty 6uu"
-      },
-    "isSameAddress": "no",
-    "serviceAddress": {
-      "serviceAddressLine1": "67",
-      "serviceAddressLine2": "West Road",
-      "serviceAddressTown": "Notown",
-      "serviceAddressCounty": "Nocounty",
-      "serviceAddressPostcode": "eee 5ty"
-    },
-    "lawGoverned": "TheLaw",
-    "startDate": {
-      "startDate-day": "10", "startDate-month": "12", "startDate-year": "2011"
-    },
-    "natureOfControl": "75",
-    "statementCondition": "statement2",
-    "isSanctioned": "yes"
-  }
-};
-
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   corporationName: "TestCorporation",
   principalAddress: ADDRESS,
@@ -109,3 +72,17 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   statementCondition: statementCondition.statement1,
   isSanctioned: yesNoResponse.No
 };
+
+export const APPLICATION_DATA_MOCK: ApplicationData = {
+  [presenterType.PresenterKey]: {
+    fullName: "fullName",
+    phoneNumber: "phoneNumber",
+    role: 2,
+    roleTitle: "roleTitle",
+    registrationNumber: 123
+  },
+  [entityType.EntityKey]: {},
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK
+};
+

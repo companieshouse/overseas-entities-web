@@ -17,7 +17,6 @@ export enum BeneficialOwnerTypeChoice {
     none = "none"
 }
 
-
 export interface InputDate {
     day: number
     month: number
@@ -25,9 +24,9 @@ export interface InputDate {
 }
 
 export enum natureOfControl {
-    over25under50Percent = "25",
-    over50under75Percent = "50",
-    over75Percent = "75"
+    over25upTo50Percent = "25",
+    over50upTo75Percent = "50",
+    atLeast75Percent = "75"
 }
 
 export enum statementCondition {

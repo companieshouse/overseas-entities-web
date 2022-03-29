@@ -9,4 +9,4 @@ export interface ApplicationData {
     beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther;
 }
 
-export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType;
+export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther;

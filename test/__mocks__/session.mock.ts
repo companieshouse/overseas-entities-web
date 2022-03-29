@@ -69,18 +69,41 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  corporationName: "Test",
+  corporationName: "TestCorporation",
   principalAddress: ADDRESS,
   isSameAddress: yesNoResponse.Yes,
   serviceAddress: ADDRESS,
-  lawGoverned: "law",
+  lawGoverned: "TheLaw",
   startDate: {
     day: 1,
     month: 1,
     year: 2011
   },
-  natureOfControl: natureOfControl.over25under50Percent,
+  natureOfControl: natureOfControl.over25upTo50Percent,
   statementCondition: statementCondition.statement1,
   isSactioned: yesNoResponse.No
 };
+
+export const BENEFICIAL_OWNER_OTHER_JSON_MOCK =
+  {
+    "beneficialOwnerOther":
+      {
+        "corporationName": "TestCorporation",
+        "principalAddress":
+         {
+           "principalAddressLine1": "11", "principalAddressLine2": " North Street", "principalAddressTown": "Notown", "principalAddressCounty": "Nocountty", "principalAddressPostcode": "yty 6uu"
+         },
+        "isSameAddress": "no",
+        "serviceAddress": {
+          "serviceAddressLine1": "67", "serviceAddressLine2": "West Road", "serviceAddressTown": "Notown", "serviceAddressCounty": "Nocounty", "serviceAddressPostcode": "eee 5ty"
+        },
+        "lawGoverned": "TheLaw",
+        "startDate": {
+          "startDate-day": "10", "startDate-month": "12", "startDate-year": "2011"
+        },
+        "natureOfControl": "75",
+        "statementCondition": "statement2",
+        "isSactioned": "yes"
+      }
+  };
 

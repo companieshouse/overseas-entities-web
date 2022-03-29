@@ -3,7 +3,7 @@ jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
 import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
-import { BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from "../__mocks__/session.mock";
+import { BENEFICIAL_OWNER_OTHER_JSON_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/controllers";
 import { describe, expect, jest, test } from "@jest/globals";
@@ -32,11 +32,13 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_JSON_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE);
+      expect(resp.text).toContain("TestCorporation");
+      expect(resp.text).toContain("TheLaw");
     });
 
     test("Should render the error page", async () => {
@@ -57,9 +59,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.status).toEqual(302);
       const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
       expect(beneficialOwnerOther).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
-      expect(beneficialOwnerOther.corporationName).toEqual("Test");
-      expect(beneficialOwnerOther.lawGoverned).toEqual("law");
-      expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25under50Percent);
+      expect(beneficialOwnerOther.corporationName).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.lawGoverned).toEqual("TheLaw");
+      expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25upTo50Percent);
       expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
       expect(beneficialOwnerOther.isSactioned).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);

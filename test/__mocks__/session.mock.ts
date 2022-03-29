@@ -3,11 +3,10 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, entityType, presenterType } from "../../src/model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, entityType, presenterType } from "../../src/model";
+import { BeneficialOwnerTypeChoice } from "../../src/model/data.types.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
-
-const COOKIE_NAME = "__SID";
 
 const SIGN_IN_INFO = {
   [SignInInfoKeys.SignedIn]: 1,
@@ -15,8 +14,6 @@ const SIGN_IN_INFO = {
     [UserProfileKeys.Email]: userMail
   }
 };
-
-export const signedInCookie = [`${COOKIE_NAME}=4ZhJ6pAmB5NAJbjy/6fU1DWMqqrk`];
 
 export function getSessionRequestWithPermission(): Session {
   return new Session({
@@ -49,6 +46,10 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   governedLaw: "governedLaw",
   publicRegister: "publicRegister",
   registrationNumber: 123
+};
+
+export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
+  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

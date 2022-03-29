@@ -5,8 +5,7 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { LANDING_URL } from "../../src/config";
-
-const INDEX_PAGE_TITLE = "Register an overseas entity and tell us about its beneficial owners";
+import { INDEX_PAGE_TITLE } from '../__mocks__/text.mock';
 
 describe("LANDING controller", () => {
   test("renders the landing page", async () => {

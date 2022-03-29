@@ -15,15 +15,16 @@
       <h1 class="govuk-heading-xl">Tell us about yourself</h1>
 
 
-      <form>
+      <form method="post">
         {{ govukInput({
           label: {
             text: "What is your full name?",
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "presenter-name",
-          name: "presenter-name"
+          id: "fullName",
+          name: "fullName",
+          value: fullName
         }) }}
 
         {{ govukInput({
@@ -32,15 +33,17 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "presenter-number",
-          name: "presenter-number",
+          id: "phoneNumber",
+          name: "phoneNumber",
+          value: phoneNumber,
           classes: "govuk-!-width-one-third"
         }) }}
 
         {% set otherHtml %}
           {{ govukInput({
-            id: "other-role",
-            name: "other-role",
+            id: "roleTitle",
+            name: "roleTitle",
+            value: roleTitle,
             classes: "govuk-!-width-one-third",
             label: {
               text: "Role title"
@@ -49,8 +52,8 @@
         {% endset -%}
 
         {{ govukRadios({
-          idPrefix: "presenter-role",
-          name: "presenter-role",
+          idPrefix: "role",
+          name: "role",
           fieldset: {
             legend: {
               text: "What is your role?",
@@ -64,23 +67,28 @@
           items: [
             {
               value: "adminstrator",
-              text: "Administrator"
+              text: "Administrator",
+              checked: role === 'adminstrator'
             },
             {
               value: "agent",
-              text: "Agent"
+              text: "Agent",
+              checked: role === 'agent'
             },
             {
               value: "solicitor",
-              text: "Solicitor"
+              text: "Solicitor",
+              checked: role === 'solicitor'
             },
             {
-              value: "beneficial-owner",
-              text: "Beneficial owner"
+              value: "beneficialOwner",
+              text: "Beneficial owner",
+              checked: role === 'beneficialOwner'
             },
             {
               value: "other",
               text: "Other",
+              checked: role === 'other',
               conditional: {
                 html: otherHtml
               }
@@ -94,8 +102,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "amlr",
-          name: "amlr",
+          id: "registrationNumber",
+          name: "registrationNumber",
+          value: registrationNumber,
           classes: "govuk-!-width-one-third"
         }) }}
 
@@ -103,8 +112,7 @@
         <p class="govuk-body">No third party information will be shown on the online register</p>
 
         {{ govukButton({
-          text: "Continue",
-          href: "/register/entity"
+          text: "Continue"
         }) }}
       </form>
     </div>

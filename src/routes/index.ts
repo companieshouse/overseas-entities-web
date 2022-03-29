@@ -3,13 +3,14 @@ import { Router } from "express";
 import * as config from "../config";
 import {
   authentication,
+  beneficialOwnerGov,
+  beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerType,
   entity,
   landing,
   managingOfficer,
-  presenter,
-  beneficialOwnerIndividual
+  presenter
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -36,6 +37,9 @@ router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOt
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
+
+router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
+router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.post);
 
 router.use(errorHandler);
 

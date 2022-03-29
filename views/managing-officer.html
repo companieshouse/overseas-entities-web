@@ -31,14 +31,14 @@
           hint: {
             text: "Include any titles if relevant"
           },
-          id: "officer-name",
-          name: "officer-name"
+          id: "officerName",
+          name: "officerName"
         }) }}
 
         {% set formerNameHtml %}
           {{ govukInput({
-            id: "former-full-name",
-            name: "former-full-name",
+            id: "officerFormerName",
+            name: "officerFormerName",
             classes: "govuk-!-width-half",
             label: {
               text: "What is the managing officers former name?"
@@ -47,8 +47,8 @@
         {% endset %}
 
         {{ govukRadios({
-          idPrefix: "former-name",
-          name: "former-name",
+          idPrefix: "hasOfficerAFormerName",
+          name: "hasOfficerAFormerName",
           fieldset: {
             legend: {
               text: "Has the managing officer used a different name in the last 20 years?",
@@ -72,8 +72,8 @@
         }) }}
 
         {{ govukDateInput({
-          id: "officer-dob",
-          namePrefix: "officer-dob",
+          id: "officerDateOfBirth",
+          namePrefix: "officerDateOfBirth",
           fieldset: {
             legend: {
               text: "What is their date of birth?",
@@ -92,8 +92,8 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "officer-nationality",
-          name: "officer-nationality"
+          id: "officerNationality",
+          name: "officerNationality"
         }) }}
 
         {% call govukFieldset({
@@ -108,18 +108,16 @@
           label: {
             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
           },
-          id: "address-line-1",
-          name: "address-line-1",
-          autocomplete: "address-line1"
+          id: "residentialAddressLine1",
+          name: "residentialAddressLine1"
         }) }}
 
         {{ govukInput({
           label: {
             html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
           },
-          id: "address-line-2",
-          name: "address-line-2",
-          autocomplete: "address-line2"
+          id: "residentialAddressLine2",
+          name: "residentialAddressLine2"
         }) }}
 
         {{ govukInput({
@@ -127,9 +125,8 @@
             text: "Town or city"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "address-town",
-          name: "address-town",
-          autocomplete: "address-level2"
+          id: "residentialAddressTown",
+          name: "residentialAddressTown"
         }) }}
 
         {{ govukInput({
@@ -137,8 +134,8 @@
             text: "County"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "address-county",
-          name: "address-county"
+          id: "residentialAddressCounty",
+          name: "residentialAddressCounty"
         }) }}
 
         {{ govukInput({
@@ -146,9 +143,8 @@
             text: "Postcode"
           },
           classes: "govuk-input--width-10",
-          id: "address-postcode",
-          name: "address-postcode",
-          autocomplete: "postal-code"
+          id: "residentialAddressPostcode",
+          name: "residentialAddressPostcode"
         }) }}
         {% endcall %}
 
@@ -161,8 +157,8 @@
           hint: {
             text: "e.g. director"
           },
-          id: "officer-occupation",
-          name: "officer-occupation"
+          id: "officerOccupation",
+          name: "officerOccupation"
         }) }}
 
         {{ govukInput({
@@ -171,8 +167,8 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "officer-responsibilities",
-          name: "officer-responsibilities"
+          id: "officerResponsibilities",
+          name: "officerResponsibilities"
         }) }}
 
 

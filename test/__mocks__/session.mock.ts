@@ -60,5 +60,6 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
     roleTitle: "roleTitle",
     registrationNumber: 123
   },
-  [entityType.EntityKey]: {}
+  [entityType.EntityKey]: {},
+  [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK
 };

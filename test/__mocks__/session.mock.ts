@@ -67,33 +67,30 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   },
   [entityType.EntityKey]: {},
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: {
-    "beneficialOwnerOther":
-     {
-       "corporationName": "TestCorporation",
-       "principalAddress":
-          {
-            "principalAddressLine1": "11",
-            "principalAddressLine2": " North Street",
-            "principalAddressTown": "Notown",
-            "principalAddressCounty": "Nocountty",
-            "principalAddressPostcode": "yty 6uu"
-          },
-       "isSameAddress": "no",
-       "serviceAddress": {
-         "serviceAddressLine1": "67",
-         "serviceAddressLine2": "West Road",
-         "serviceAddressTown": "Notown",
-         "serviceAddressCounty": "Nocounty",
-         "serviceAddressPostcode": "eee 5ty"
-       },
-       "lawGoverned": "TheLaw",
-       "startDate": {
-         "startDate-day": "10", "startDate-month": "12", "startDate-year": "2011"
-       },
-       "natureOfControl": "75",
-       "statementCondition": "statement2",
-       "isSanctioned": "yes"
-     }
+    "corporationName": "TestCorporation",
+    "principalAddress":
+      {
+        "principalAddressLine1": "11",
+        "principalAddressLine2": " North Street",
+        "principalAddressTown": "Notown",
+        "principalAddressCounty": "Nocountty",
+        "principalAddressPostcode": "yty 6uu"
+      },
+    "isSameAddress": "no",
+    "serviceAddress": {
+      "serviceAddressLine1": "67",
+      "serviceAddressLine2": "West Road",
+      "serviceAddressTown": "Notown",
+      "serviceAddressCounty": "Nocounty",
+      "serviceAddressPostcode": "eee 5ty"
+    },
+    "lawGoverned": "TheLaw",
+    "startDate": {
+      "startDate-day": "10", "startDate-month": "12", "startDate-year": "2011"
+    },
+    "natureOfControl": "75",
+    "statementCondition": "statement2",
+    "isSanctioned": "yes"
   }
 };
 

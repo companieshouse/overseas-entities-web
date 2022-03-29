@@ -35,7 +35,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK.beneficialOwnerOther);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);

@@ -69,7 +69,7 @@
           id: "principalAddressTown",
           name: "principalAddressTown",
           value: principalAddress.principalAddressTown if principalAddress,
-          autocomplete: "address-level2"
+          autocomplete: "principalAddressTown"
         }) }}
 
         {{ govukInput({
@@ -90,7 +90,7 @@
           id: "principalAddressPostcode",
           name: "principalAddressPostcode",
           value: principalAddress.principalAddressPostcode if principalAddress,
-          autocomplete: "postal-code"
+          autocomplete: "principalAddressPostcode"
         }) }}
 
         {% endcall %}
@@ -112,7 +112,7 @@
           id: "serviceAddressLine1",
           name: "serviceAddressLine1",
           value: serviceAddress.serviceAddressLine1 if serviceAddress,
-          autocomplete: "address-line1"
+          autocomplete: "serviceAddressLine1"
         }) }}
 
         {{ govukInput({
@@ -122,7 +122,7 @@
           id: "serviceAddressLine2",
           name: "serviceAddressLine2",
           value: serviceAddress.serviceAddressLine2 if serviceAddress,
-          autocomplete: "address-line2"
+          autocomplete: "serviceAddressLine2"
         }) }}
 
         {{ govukInput({
@@ -133,7 +133,7 @@
           id: "serviceAddressTown",
           name: "serviceAddressTown",
           value: serviceAddress.serviceAddressTown if serviceAddress,
-          autocomplete: "address-level2"
+          autocomplete: "serviceAddressTown"
         }) }}
 
         {{ govukInput({
@@ -154,7 +154,7 @@
           id: "serviceAddressPostcode",
           name: "serviceAddressPostcode",
           value: serviceAddress.serviceAddressPostcode if serviceAddress,
-          autocomplete: "postal-code"
+          autocomplete: "serviceAddressPostcode"
         }) }}
 
         {% endcall %}

@@ -4,8 +4,12 @@ import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, entityType, presenterType } from "../../src/model";
-import { BeneficialOwnerTypeChoice, natureOfControl, yesNoResponse } from "../../src/model/data.types.model";
-import { statementCondition } from "../../src/model/other.model";
+import {
+  BeneficialOwnerTypeChoice,
+  natureOfControl,
+  statementCondition,
+  yesNoResponse
+} from "../../src/model/data.types.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -75,7 +79,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
     month: 1,
     year: 2011
   },
-  natureOfControl: natureOfControl.over25under50,
+  natureOfControl: natureOfControl.over25under50Percent,
   statementCondition: statementCondition.statement1,
   isSactioned: yesNoResponse.No
 };

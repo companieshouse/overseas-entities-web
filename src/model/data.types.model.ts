@@ -25,7 +25,12 @@ export interface InputDate {
 }
 
 export enum natureOfControl {
-    over25under50,
-    over50under75,
-    over75
+    over25under50Percent = "25",
+    over50under75Percent = "50",
+    over75Percent = "75"
+}
+
+export enum statementCondition {
+    statement1 = "statement1",
+    statement2 = "statement2"
 }

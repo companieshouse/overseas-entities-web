@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType, entityType, beneficialOwnerOtherType } from "../model";
+import { ApplicationData, ApplicationDataType, beneficialOwnerOtherType } from "../model";
 import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
-import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/other.model";
+import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,8 +27,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
-    data[entityType.PrincipalAddressKey] = prepareData(req.body, entityType.PrincipalAddressKeys);
-    data[entityType.ServiceAddressKey] = prepareData(req.body, entityType.ServiceAddressKeys);
+    data[beneficialOwnerOtherType.PrincipalAddressKey] = prepareData(req.body, beneficialOwnerOtherType.PrincipalAddressKeys);
+    data[beneficialOwnerOtherType.ServiceAddressKey] = prepareData(req.body, beneficialOwnerOtherType.ServiceAddressKeys);
     data[beneficialOwnerOtherType.DateKey] = prepareData(req.body, beneficialOwnerOtherType.DateKeys);
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);

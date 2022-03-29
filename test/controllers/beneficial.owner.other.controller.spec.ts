@@ -2,7 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
-import { natureOfControl, yesNoResponse } from "../../src/model/data.types.model";
+import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
 import { BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/controllers";
@@ -13,7 +13,6 @@ import { BENEFICIAL_OWNER_OTHER_URL, MANAGING_OFFICER_URL } from "../../src/conf
 import { NextFunction, Request, Response } from "express";
 import { MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { beneficialOwnerOtherType } from '../../src/model';
-import { statementCondition } from "../../src/model/other.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -56,17 +55,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(302);
-      const beneficialOwenerOther = mockSetApplicationData.mock.calls[0][1];
-      expect(beneficialOwenerOther).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
-      expect(beneficialOwenerOther.corporationName).toEqual("Test");
-      expect(beneficialOwenerOther.lawGoverned).toEqual("law");
-      expect(beneficialOwenerOther.natureOfControl).toEqual(natureOfControl.over25under50);
-      expect(beneficialOwenerOther.statementCondition).toEqual(statementCondition.statement1);
-      expect(beneficialOwenerOther.isSactioned).toEqual(yesNoResponse.No);
+      const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
+      expect(beneficialOwnerOther).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+      expect(beneficialOwnerOther.corporationName).toEqual("Test");
+      expect(beneficialOwnerOther.lawGoverned).toEqual("law");
+      expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25under50Percent);
+      expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
+      expect(beneficialOwnerOther.isSactioned).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(MANAGING_OFFICER_URL);
     });
-
 
     test("catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });

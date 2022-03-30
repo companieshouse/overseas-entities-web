@@ -9,3 +9,4 @@ export const MESSAGE_ERROR = "Can't connect";
 export const ANY_MESSAGE_ERROR = "Any error message";
 export const PRESENTER_PAGE_TITLE = "Tell us about yourself";
 export const ENTITY_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/entity";
+export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the individual beneficial owner";

@@ -19,6 +19,7 @@ export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 
 // TEMPLATEs
+export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
 export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
@@ -36,6 +37,7 @@ export const SERVICE_OFFLINE_PAGE = "service-offline";
 export const LANDING_URL = "/register-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
+export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;
 export const BENEFICIAL_OWNER_TYPE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_TYPE_PAGE;
 export const BENEFICIAL_OWNER_OTHER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL +  BENEFICIAL_OWNER_OTHER_PAGE;
 export const ENTITY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;

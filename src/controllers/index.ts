@@ -1,4 +1,5 @@
 export { authentication } from "./authentication.controller";
+export * as beneficialOwnerGov from "./beneficial.owner.gov.controller";
 export * as beneficialOwnerOther from "./beneficial.owner.other.controller";
 export * as beneficialOwnerType from "./beneficial.owner.type.controller";
 export * as landing from "./landing.controller";

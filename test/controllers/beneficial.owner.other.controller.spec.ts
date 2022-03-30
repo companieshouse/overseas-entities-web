@@ -14,7 +14,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_URL, MANAGING_OFFICER_URL } from "../../src/config";
 import { NextFunction, Request, Response } from "express";
-import { MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
+import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { beneficialOwnerOtherType } from '../../src/model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -23,8 +23,6 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
-
-const PAGE_TITLE = "Tell us about the corporate beneficial owner";
 
 describe("BENEFICIAL OWNER OTHER controller", () => {
 
@@ -39,7 +37,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(PAGE_TITLE);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain("TestCorporation");
       expect(resp.text).toContain("TheLaw");
     });
@@ -53,7 +51,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
   });
 
-  describe("Post tests", () => {
+  describe("POST tests", () => {
 
     test("sets session data and renders the managing-officer page", async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK );

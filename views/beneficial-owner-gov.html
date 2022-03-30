@@ -1,0 +1,322 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Government or public authority beneficial owner - Register an overseas entity - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the government or public authority beneficial owner</h1>
+      <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more government or public authority beneficial owners later.</p>
+
+      <form class="form" method="post">
+
+        {{ govukDetails({
+          summaryText: "What is a government or public authority beneficial owner?",
+          text: "Here"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "What is its name?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "corpName",
+          name: "corpName"
+        }) }}
+        {% call govukFieldset({
+          legend: {
+            text: "What is its principle or registered office address?",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) %}
+
+        {{ govukInput({
+          label: {
+            html: 'Property name or number (optional)'
+          },
+          hint: {
+           text: "For example, 'The Mill', '116' or 'Flat 37a'"
+         },
+          id: "principleAddressPropertyNameNumber",
+          name: "principleAddressPropertyNameNumber"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Address line 1"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "principleAddressLine1",
+          name: "principleAddressLine1",
+          autocomplete: "principleAddressLine1"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Address line 2 (optional)"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "principleAddressLine2",
+          name: "principleAddressLine2",
+          autocomplete: "principleAddressLine2"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "City or town"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "principleAddressCityTown",
+          name: "principleAddressCityTown"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "County, state, province or region (optional)"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "serviceAddressState",
+          name: "serviceAddressState"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Country"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "principleAddressCountry",
+          name: "principleAddressCountry",
+          autocomplete: "principleAddressCountry"
+        }) }}
+
+        {{ govukInput({
+          label: {
+            text: "Postcode or ZIP"
+          },
+          classes: "govuk-input--width-10",
+          id: "principleAddressPostcode",
+          name: "principleAddressPostcode",
+          autocomplete: "principleAddressPostcode"
+        }) }}
+        {% endcall %}
+
+        {% set serviceAddressHtml %}
+          <br>
+          {% call govukFieldset({
+            legend: {
+              text: "What is its correspondence address?",
+              classes: "govuk-fieldset__legend--m",
+              isPageHeading: false
+            }
+          }) %}
+
+          {{ govukInput({
+            label: {
+              html: 'Property name or number (optional)'
+            },
+            hint: {
+            text: "For example, 'The Mill', '116' or 'Flat 37a'"
+          },
+            id: "serviceAddressPropertyNameNumber",
+            name: "serviceAddressPropertyNameNumber"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 1"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "serviceAddressLine1",
+            name: "serviceAddressLine1",
+            autocomplete: "serviceAddressLine1"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Address line 2 (optional)"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "serviceAddressLine2",
+            name: "serviceAddressLine2",
+            autocomplete: "serviceAddressLine2"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "City or town"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "serviceAddressCityTown",
+            name: "serviceAddressCityTown"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "County, state, province or region (optional)"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "serviceAddressState",
+            name: "serviceAddressState"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Country"
+            },
+            classes: "govuk-!-width-two-thirds",
+            id: "serviceAddressCountry",
+            name: "serviceAddressCountry",
+            autocomplete: "serviceAddressCountry"
+          }) }}
+
+          {{ govukInput({
+            label: {
+              text: "Postcode or ZIP"
+            },
+            classes: "govuk-input--width-10",
+            id: "serviceAddressPostcode",
+            name: "serviceAddressPostcode",
+            autocomplete: "serviceAddressPostcode"
+          }) }}
+
+          {% endcall %}
+        {% endset -%}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "sameAddress",
+          name: "sameAddress",
+          fieldset: {
+            legend: {
+              text: "Is its correspondence address the same as its registered office address?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No",
+              conditional: {
+                html: serviceAddressHtml
+              }
+            }
+          ]
+        }) }}
+        {{ govukInput({
+          label: {
+            text: "What law or legislation does it operate under?",
+            classes: "govuk-label--m govuk-input--width-15",
+            isPageHeading: false
+          },
+          hint: {
+            text: "This is also known as the company or entity's governing law."
+          },
+          id: "corpLawGoverned",
+          name: "corpLawGoverned"
+        }) }}
+        {{ govukDateInput({
+          id: "corpStartdate",
+          namePrefix: "corpStartdate",
+          fieldset: {
+            legend: {
+              text: "When did it become a beneficial owner for the overseas entity?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "For example, 27 3 2007"
+          }
+        }) }}
+
+        {{ govukRadios({
+          idPrefix: "corpNatureOfControl",
+          name: "corpNatureOfControl",
+          fieldset: {
+            legend: {
+              text: "What is its nature of control?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "shares",
+              text: "They hold more than 25% of shares in the overseas entity"
+            },
+            {
+              value: "voting",
+              text: "They hold more than 25% of the voting rights in the overseas entity"
+            },
+            {
+              value: "appoint",
+              text: "They hold the right to appoint or remove a majority of the board of directors of the overseas entity"
+            },
+            {
+              value: "influence",
+              text: "They have the right to exercise significant influence or control over the overseas entity"
+            }
+          ]
+        }) }}
+
+        {{ govukRadios({
+          classes: "govuk-radios",
+          idPrefix: "ownerSanctions",
+          name: "ownerSanctions",
+          fieldset: {
+            legend: {
+              text: "Is it on the sanctions list?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes"
+            },
+            {
+              value: "no",
+              text: "No"
+            }
+          ]
+        }) }}
+
+
+        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+        <p>All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
+
+        {{ govukButton({
+          text: "Add another government or public authority beneficial owner",
+          href: "",
+           classes: "govuk-button--secondary govuk-!-margin-top-6"
+        }) }}
+
+        {{ govukButton({
+          text: "Continue without adding another government or public authority beneficial owner",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

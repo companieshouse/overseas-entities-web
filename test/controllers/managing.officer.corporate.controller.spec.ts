@@ -7,11 +7,10 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
 import { MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
+import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE } from "../__mocks__/text.mock";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
-const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";
 
 describe("MANAGING_OFFICER CORPORATE controller", () => {
 

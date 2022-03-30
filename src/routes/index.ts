@@ -8,6 +8,7 @@ import {
   entity,
   landing,
   managingOfficer,
+  managingOfficerCorporate,
   presenter,
   beneficialOwnerIndividual
 } from "../controllers";
@@ -34,6 +35,8 @@ router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOth
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.post);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
+
+router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
 

@@ -1,0 +1,303 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Corporate managing officer – {{ serviceName }} – GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the corporate managing officer</h1>
+    <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more corporate managing officers later.</p>
+    <form class="form" method="post">
+
+      {{ govukDetails({
+        summaryText: "What is a corporate managing officer?",
+        text: "Here"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "What is its name?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        id: "corporateManagingOfficerName",
+        name: "corporateManagingOfficerName"
+      }) }}
+
+      {% call govukFieldset({
+        legend: {
+          text: "What is its principal or registered office address?",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
+
+      {{ govukInput({
+        label: {
+          html: 'Property name or number (optional)'
+        },
+        hint: {
+          text: "For example, 'The Mill', '116' or 'Flat 37a'"
+        },
+        id: "managingOfficerUsualResidentialAddressPropertyNameNumber",
+        name: "managingOfficerUsualResidentialAddressPropertyNameNumber"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Address line 1"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "managingOfficerUsualResidentialAddressLine1",
+        name: "managingOfficerUsualResidentialAddressLine1",
+        autocomplete: "managingOfficerUsualResidentialAddressLine1"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Address line 2 (optional)"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "managingOfficerUsualResidentialAddressLine2",
+        name: "managingOfficerUsualResidentialAddressLine2",
+        autocomplete: "managingOfficerUsualResidentialAddressLine2"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "City or town"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "managingOfficerUsualResidentialAddressCityTown",
+        name: "managingOfficerUsualResidentialAddressCityTown"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "County, state, province or region (optional)"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "managingOfficerUsualResidentialAddressState",
+        name: "managingOfficerUsualResidentialAddressState"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Country"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "managingOfficerUsualResidentialAddressCountry",
+        name: "managingOfficerUsualResidentialAddressCountry",
+        autocomplete: "managingOfficerUsualResidentialAddressCountry"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Postcode or ZIP"
+        },
+        classes: "govuk-input--width-10",
+        id: "managingOfficerUsualResidentialAddressPostcode",
+        name: "managingOfficerUsualResidentialAddressPostcode",
+        autocomplete: "managingOfficerUsualResidentialAddressPostalcode"
+      }) }}
+
+      {% set serviceAddressHtml %}
+      <br>
+      {% call govukFieldset({
+        legend: {
+          text: "What is the correspondence address?",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
+      {{ govukInput({
+        label: {
+          html: 'Property name or number (optional)'
+        },
+        hint: {
+          text: "For example, 'The Mill', '116' or 'Flat 37a'"
+        },
+        id: "serviceAddressPropertyNameNumber",
+        name: "serviceAddressPropertyNameNumber"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Address line 1"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "serviceAddressLine1",
+        name: "serviceAddressLine1",
+        autocomplete: "serviceAddressLine1"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Address line 2 (optional)"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "serviceAddressLine2",
+        name: "serviceAddressLine2",
+        autocomplete: "serviceAddressLine2"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "City or town"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "serviceAddressCityTown",
+        name: "serviceAddressCityTown"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "County, state, province or region (optional)"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "serviceAddressState",
+        name: "serviceAddressState"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Country"
+        },
+        classes: "govuk-!-width-two-thirds",
+        id: "serviceAddressCountry",
+        name: "serviceAddressCountry",
+        autocomplete: "serviceAddressCountry"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "Postcode or ZIP"
+        },
+        classes: "govuk-input--width-10",
+        id: "serviceAddressPostcode",
+        name: "sserviceAddressPostcode",
+        autocomplete: "serviceAddressPostal"
+      }) }}
+
+      {% endcall %}
+      {% endset -%}
+
+      {{ govukRadios({
+        classes: "govuk-radios",
+        idPrefix: "corporateManagingOfficerSameAddress",
+        name: "corporateManagingOfficerSameAddress",
+        fieldset: {
+          legend: {
+            text: "Is their correspondence address the same as the principal or registered office address?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes"
+          },
+          {
+            value: "no",
+            text: "No",
+            conditional: {
+              html: serviceAddressHtml
+            }
+          }
+        ]
+      }) }}
+
+      {% endcall %}
+
+      {{ govukInput({
+        label: {
+          text: "Where is the corporate managing officer registered?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        id: "corporateManagingOfficerWhereRegistered",
+        name: "corporateManagingOfficerWhereRegistered"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "What is its legal form?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        hint: {
+          text: "For example, limited company or partnership."
+        },
+        id: "corporateManagingOfficerLegalForm",
+        name: "corporateManagingOfficerLegalForm"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "What is its governing law?",
+          classes: "govuk-label--m",
+          isPageHeading: true
+        },
+        hint: {
+          text: "This is the law that the entity operates under."
+        },
+        id: "corporateManagingOfficerLegalAuthority",
+        name: "corporateManagingOfficerLegalAuthority"
+      }) }}
+
+
+      {{ govukInput({
+        label: {
+          text: "What is its registration number?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        classes: "govuk-!-width-one-half",
+        id: "corporateManagingOfficeRegistrationNumber",
+        name: "corporateManagingOfficeRegistrationNumber"
+      }) }}
+
+      {{ govukDateInput({
+        id: "startDate",
+        namePrefix: "startDate",
+        fieldset: {
+          legend: {
+            text: "When did it become a managing officer for the overseas entity?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: "For example, 27 3 2007"
+        }
+      }) }}
+
+      <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+      <p>All information provided on this screen about the corporate managing owner will be available on the public register.</p>
+
+      {{ govukButton({
+        text: "Add another corporate managing officer",
+        href: "",
+        classes: "govuk-button--secondary govuk-!-margin-top-6"
+      }) }}
+
+      {{ govukButton({
+        text: "I do not need to add any more corporate managing officers",
+        href: "/register/check-answers"
+      }) }}
+
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}

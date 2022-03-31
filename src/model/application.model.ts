@@ -6,7 +6,8 @@ import {
   beneficialOwnerOtherType,
   beneficialOwnerTypeType,
   beneficialOwnerIndividualType,
-  managingOfficerCorporateType
+  managingOfficerCorporateType,
+  managingOfficerType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -19,6 +20,7 @@ export interface ApplicationData {
     beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual;
     beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov;
     managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate;
+    managingOfficer?: managingOfficerType.ManagingOfficer;
 }
 
-export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther | beneficialOwnerIndividualType.BeneficialOwnerIndividual | managingOfficerCorporateType.ManagingOfficerCorporate | beneficialOwnerGovType.BeneficialOwnerGov;
+export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther | beneficialOwnerIndividualType.BeneficialOwnerIndividual | managingOfficerCorporateType.ManagingOfficerCorporate | beneficialOwnerGovType.BeneficialOwnerGov | managingOfficerType.ManagingOfficer;

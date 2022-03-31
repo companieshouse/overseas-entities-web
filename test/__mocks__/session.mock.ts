@@ -11,7 +11,7 @@ import {
   beneficialOwnerIndividualType,
   entityType,
   presenterType,
-  managingOfficerCorportateType
+  managingOfficerCorporateType
 } from "../../src/model";
 import {
   BeneficialOwnerTypeChoice,
@@ -97,7 +97,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   natureOfControl: natureOfControl.over50under75Percent
 };
 
-export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorportateType.ManagingOfficerCorporate = {
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
   officerName: "Joe Bloggs",
   usualResidentialAddress: ADDRESS,
   serviceAddress: ADDRESS,
@@ -125,5 +125,5 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  [managingOfficerCorportateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 };

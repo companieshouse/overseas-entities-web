@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType, managingOfficerCorportateType } from "../model";
+import { ApplicationData, ApplicationDataType, managingOfficerCorporateType } from "../model";
 import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 
@@ -27,9 +27,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`POST ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
-    data[managingOfficerCorportateType.UsualResidentialAddressKey] = prepareData(req.body, managingOfficerCorportateType.UsualResidentialAddressKeys);
-    data[managingOfficerCorportateType.ServiceAddressKey] = prepareData(req.body, managingOfficerCorportateType.ServiceAddressKeys);
-    data[managingOfficerCorportateType.DateKey] = prepareData(req.body, managingOfficerCorportateType.DateKeys);
+    data[managingOfficerCorporateType.UsualResidentialAddressKey] = prepareData(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys);
+    data[managingOfficerCorporateType.ServiceAddressKey] = prepareData(req.body, managingOfficerCorporateType.ServiceAddressKeys);
+    data[managingOfficerCorporateType.DateKey] = prepareData(req.body, managingOfficerCorporateType.DateKeys);
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 

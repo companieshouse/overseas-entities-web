@@ -14,7 +14,7 @@ import { authentication } from "../../src/controllers";
 import { MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
-import { managingOfficerCorportateType } from "../../src/model";
+import { managingOfficerCorporateType } from "../../src/model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -68,7 +68,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(managingOfficerCorporate.legalForm).toEqual("legalForm");
       expect(managingOfficerCorporate.legalAuthority).toEqual("LegAuth");
       expect(managingOfficerCorporate.registrationNumber).toEqual("123456789");
-      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorportateType.ManagingOfficerCorporateKey);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
     });
 
     test("catch error when posting data", async () => {

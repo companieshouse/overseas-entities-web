@@ -4,15 +4,20 @@ import * as config from "../config";
 import { ApplicationData, ApplicationDataType, managingOfficerType } from "../model";
 import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
 
-export const get = (req: Request, res: Response) => {
-  logger.debug(`GET ${config.MANAGING_OFFICER_PAGE}`);
+export const get = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`GET ${config.MANAGING_OFFICER_PAGE}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(req.session);
 
-  return res.render(config.MANAGING_OFFICER_PAGE, {
-    backLinkUrl: config.BENEFICIAL_OWNER_OTHER_URL,
-    ...appData.managingOfficer
-  });
+    return res.render(config.MANAGING_OFFICER_PAGE, {
+      backLinkUrl: config.BENEFICIAL_OWNER_OTHER_URL,
+      ...appData.managingOfficer
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
@@ -27,7 +32,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };

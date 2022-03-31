@@ -30,6 +30,9 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain("Andrei Nikolayevich Bolkonsky");
+      expect(resp.text).toContain("Russian");
+
     });
 
     test("catch error when rendering the page", async () => {

@@ -9,13 +9,13 @@ export const ManagingOfficerKeys: string[] = [
   "fullName", "hasAFormerName", "formerName", "dateOfBirth", "nationality", "incorporationCountry", "residentialAddress", "businessOccupation", "roleAndResponsibilities" ];
 
 /*
-  The Entity sub-fields for Date Objects
+  The Officer sub-fields for the Date Object
 */
 export const DateOfBirthKey: string = "dateOfBirth";
 export const DateOfBirthKeys: string[] = ["dateOfBirth-day", "dateOfBirth-month", "dateOfBirth-year"];
 
 /*
-  The Officer sub-fields for Address Object
+  The Officer sub-fields for the Address Object
 */
 export const UsualResidentialAddressKey = "usualResidentialAddress";
 export const UsualResidentialAddressKeys: string[] = [

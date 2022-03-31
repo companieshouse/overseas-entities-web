@@ -28,8 +28,9 @@
           classes: "govuk-label--m",
           isPageHeading: false
         },
-        id: "corporateManagingOfficerName",
-        name: "corporateManagingOfficerName"
+        id: "officerName",
+        name: "officerName",
+        value: officerName
       }) }}
 
       {% call govukFieldset({
@@ -47,8 +48,9 @@
         hint: {
           text: "For example, 'The Mill', '116' or 'Flat 37a'"
         },
-        id: "managingOfficerUsualResidentialAddressPropertyNameNumber",
-        name: "managingOfficerUsualResidentialAddressPropertyNameNumber"
+        id: "usualResidentialAddressPropertyNameNumber",
+        name: "usualResidentialAddressPropertyNameNumber",
+        value: usualResidentialAddress.usualResidentialAddressPropertyNameNumber if usualResidentialAddress
       }) }}
 
       {{ govukInput({
@@ -56,9 +58,10 @@
           text: "Address line 1"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "managingOfficerUsualResidentialAddressLine1",
-        name: "managingOfficerUsualResidentialAddressLine1",
-        autocomplete: "managingOfficerUsualResidentialAddressLine1"
+        id: "usualResidentialAddressLine1",
+        name: "usualResidentialAddressLine1",
+        value: usualResidentialAddress.usualResidentialAddressLine1 if usualResidentialAddress,
+        autocomplete: "usualResidentialAddressLine1"
       }) }}
 
       {{ govukInput({
@@ -66,9 +69,10 @@
           text: "Address line 2 (optional)"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "managingOfficerUsualResidentialAddressLine2",
-        name: "managingOfficerUsualResidentialAddressLine2",
-        autocomplete: "managingOfficerUsualResidentialAddressLine2"
+        id: "usualResidentialAddressLine2",
+        name: "usualResidentialAddressLine2",
+        value: usualResidentialAddress.usualResidentialAddressLine2 if usualResidentialAddress,
+        autocomplete: "usualResidentialAddressLine2"
       }) }}
 
       {{ govukInput({
@@ -76,8 +80,9 @@
           text: "City or town"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "managingOfficerUsualResidentialAddressCityTown",
-        name: "managingOfficerUsualResidentialAddressCityTown"
+        id: "usualResidentialAddressTown",
+        name: "usualResidentialAddressTown",
+        value: usualResidentialAddress.usualResidentialAddressTown if usualResidentialAddress
       }) }}
 
       {{ govukInput({
@@ -85,8 +90,9 @@
           text: "County, state, province or region (optional)"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "managingOfficerUsualResidentialAddressState",
-        name: "managingOfficerUsualResidentialAddressState"
+        id: "usualResidentialAddressState",
+        name: "usualResidentialAddressState",
+        value: usualResidentialAddress.usualResidentialAddressState if usualResidentialAddress
       }) }}
 
       {{ govukInput({
@@ -94,9 +100,10 @@
           text: "Country"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "managingOfficerUsualResidentialAddressCountry",
-        name: "managingOfficerUsualResidentialAddressCountry",
-        autocomplete: "managingOfficerUsualResidentialAddressCountry"
+        id: "usualResidentialAddressCountry",
+        name: "usualResidentialAddressCountry",
+        value: usualResidentialAddress.usualResidentialAddressCountry if usualResidentialAddress,
+        autocomplete: "usualResidentialAddressCountry"
       }) }}
 
       {{ govukInput({
@@ -104,9 +111,10 @@
           text: "Postcode or ZIP"
         },
         classes: "govuk-input--width-10",
-        id: "managingOfficerUsualResidentialAddressPostcode",
-        name: "managingOfficerUsualResidentialAddressPostcode",
-        autocomplete: "managingOfficerUsualResidentialAddressPostalcode"
+        id: "usualResidentialAddressPostcode",
+        name: "usualResidentialAddressPostcode",
+        value: usualResidentialAddress.usualResidentialAddressPostcode if usualResidentialAddress,
+        autocomplete: "usualResidentialAddressPostcode"
       }) }}
 
       {% set serviceAddressHtml %}
@@ -126,7 +134,8 @@
           text: "For example, 'The Mill', '116' or 'Flat 37a'"
         },
         id: "serviceAddressPropertyNameNumber",
-        name: "serviceAddressPropertyNameNumber"
+        name: "serviceAddressPropertyNameNumber",
+        value: serviceAddress.serviceAddressPropertyNameNumber if serviceAddress
       }) }}
 
       {{ govukInput({
@@ -136,6 +145,7 @@
         classes: "govuk-!-width-two-thirds",
         id: "serviceAddressLine1",
         name: "serviceAddressLine1",
+        value: serviceAddress.serviceAddressLine1 if serviceAddress,
         autocomplete: "serviceAddressLine1"
       }) }}
 
@@ -146,6 +156,7 @@
         classes: "govuk-!-width-two-thirds",
         id: "serviceAddressLine2",
         name: "serviceAddressLine2",
+        value: serviceAddress.serviceAddressLine2 if serviceAddress,
         autocomplete: "serviceAddressLine2"
       }) }}
 
@@ -154,8 +165,9 @@
           text: "City or town"
         },
         classes: "govuk-!-width-two-thirds",
-        id: "serviceAddressCityTown",
-        name: "serviceAddressCityTown"
+        id: "serviceAddressTown",
+        name: "serviceAddressTown",
+        value: serviceAddress.serviceAddressTown if serviceAddress
       }) }}
 
       {{ govukInput({
@@ -164,7 +176,8 @@
         },
         classes: "govuk-!-width-two-thirds",
         id: "serviceAddressState",
-        name: "serviceAddressState"
+        name: "serviceAddressState",
+        value: serviceAddress.serviceAddressState if serviceAddress
       }) }}
 
       {{ govukInput({
@@ -174,6 +187,7 @@
         classes: "govuk-!-width-two-thirds",
         id: "serviceAddressCountry",
         name: "serviceAddressCountry",
+        value: serviceAddress.serviceAddressCountry if serviceAddress,
         autocomplete: "serviceAddressCountry"
       }) }}
 
@@ -183,8 +197,9 @@
         },
         classes: "govuk-input--width-10",
         id: "serviceAddressPostcode",
-        name: "sserviceAddressPostcode",
-        autocomplete: "serviceAddressPostal"
+        name: "serviceAddressPostcode",
+        value: serviceAddress.serviceAddressPostcode if serviceAddress,
+        autocomplete: "serviceAddressPostcode"
       }) }}
 
       {% endcall %}
@@ -192,8 +207,8 @@
 
       {{ govukRadios({
         classes: "govuk-radios",
-        idPrefix: "corporateManagingOfficerSameAddress",
-        name: "corporateManagingOfficerSameAddress",
+        idPrefix: "isSameAddress",
+        name: "isSameAddress",
         fieldset: {
           legend: {
             text: "Is their correspondence address the same as the principal or registered office address?",
@@ -204,11 +219,13 @@
         items: [
           {
             value: "yes",
-            text: "Yes"
+            text: "Yes",
+            checked: isSameAddress === "yes"
           },
           {
             value: "no",
             text: "No",
+            checked: isSameAddress === "no",
             conditional: {
               html: serviceAddressHtml
             }
@@ -224,8 +241,9 @@
           classes: "govuk-label--m",
           isPageHeading: false
         },
-        id: "corporateManagingOfficerWhereRegistered",
-        name: "corporateManagingOfficerWhereRegistered"
+        id: "whereOfficerRegistered",
+        name: "whereOfficerRegistered",
+        value: whereOfficerRegistered
       }) }}
 
       {{ govukInput({
@@ -237,8 +255,9 @@
         hint: {
           text: "For example, limited company or partnership."
         },
-        id: "corporateManagingOfficerLegalForm",
-        name: "corporateManagingOfficerLegalForm"
+        id: "legalForm",
+        name: "legalForm",
+        value: legalForm
       }) }}
 
       {{ govukInput({
@@ -250,8 +269,9 @@
         hint: {
           text: "This is the law that the entity operates under."
         },
-        id: "corporateManagingOfficerLegalAuthority",
-        name: "corporateManagingOfficerLegalAuthority"
+        id: "legalAuthority",
+        name: "legalAuthority",
+        value: legalAuthority
       }) }}
 
 
@@ -262,8 +282,9 @@
           isPageHeading: false
         },
         classes: "govuk-!-width-one-half",
-        id: "corporateManagingOfficeRegistrationNumber",
-        name: "corporateManagingOfficeRegistrationNumber"
+        id: "registrationNumber",
+        name: "registrationNumber",
+        value: registrationNumber
       }) }}
 
       {{ govukDateInput({
@@ -278,7 +299,24 @@
         },
         hint: {
           text: "For example, 27 3 2007"
-        }
+        },
+        items: [
+          {
+            classes: "govuk-input--width-2 govuk-input",
+            name: "day",
+            value: startDate["startDate-day"]
+          },
+          {
+            classes: "govuk-input--width-2 govuk-input",
+            name: "month",
+            value: startDate["startDate-month"]
+          },
+          {
+            classes: "govuk-input--width-4 govuk-input",
+            name: "year",
+            value: startDate["startDate-year"]
+          }
+        ]
       }) }}
 
       <h2 class="govuk-heading-m">What information is shown on the online register</h2>

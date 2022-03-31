@@ -1,8 +1,10 @@
 export interface Address {
+    propertyNameNumber?: string
     addressLine1?: string
     addressLine2?: string
     town?: string
     county?: string
+    country?: string
     postcode?: string
 }
 

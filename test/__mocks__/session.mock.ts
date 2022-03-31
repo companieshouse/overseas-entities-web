@@ -3,7 +3,16 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, beneficialOwnerIndividualType, entityType, presenterType } from "../../src/model";
+import {
+  ApplicationData,
+  APPLICATION_DATA_KEY,
+  beneficialOwnerTypeType,
+  beneficialOwnerOtherType,
+  beneficialOwnerIndividualType,
+  entityType,
+  presenterType,
+  managingOfficerCorportateType
+} from "../../src/model";
 import {
   BeneficialOwnerTypeChoice,
   natureOfControl,
@@ -33,10 +42,12 @@ export function getSessionRequestWithExtraData(): Session {
 }
 
 const ADDRESS = {
+  propertyNameNumber: "1",
   addressLine1: "addressLine1",
   addressLine2: "addressLine2",
   town: "town",
   county: "county",
+  country: "country",
   postcode: "BY 2"
 };
 
@@ -86,6 +97,22 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   natureOfControl: natureOfControl.over50under75Percent
 };
 
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorportateType.ManagingOfficerCorporate = {
+  officerName: "Joe Bloggs",
+  usualResidentialAddress: ADDRESS,
+  serviceAddress: ADDRESS,
+  isSameAddress: yesNoResponse.Yes,
+  whereOfficerRegistered: "France",
+  legalForm: "legalForm",
+  legalAuthority: "LegAuth",
+  registrationNumber: "123456789",
+  startDate: {
+    day: 1,
+    month: 1,
+    year: 2011
+  }
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: {
     fullName: "fullName",
@@ -97,6 +124,6 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [entityType.EntityKey]: {},
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  [managingOfficerCorportateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 };
-

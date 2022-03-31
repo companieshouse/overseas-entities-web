@@ -11,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
-import {CHECK_YOUR_ANSWERS_URL, MANAGING_OFFICER_CORPORATE_URL} from "../../src/config";
+import { CHECK_YOUR_ANSWERS_URL, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";

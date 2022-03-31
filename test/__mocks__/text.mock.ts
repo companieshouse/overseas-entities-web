@@ -13,3 +13,4 @@ export const PRESENTER_PAGE_TITLE = "Tell us about yourself";
 export const ENTITY_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/entity";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the individual beneficial owner";
 export const MANAGING_OFFICER_PAGE_HEADING = "Tell us about the managing officer";
+export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";

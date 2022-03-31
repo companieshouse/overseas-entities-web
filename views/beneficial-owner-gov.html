@@ -30,11 +30,12 @@
             isPageHeading: false
           },
           id: "corpName",
-          name: "corpName"
+          name: "corpName",
+          value: corpName
         }) }}
         {% call govukFieldset({
           legend: {
-            text: "What is its principle or registered office address?",
+            text: "What is its principal or registered office address?",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: false
           }
@@ -47,8 +48,9 @@
           hint: {
            text: "For example, 'The Mill', '116' or 'Flat 37a'"
          },
-          id: "principleAddressPropertyNameNumber",
-          name: "principleAddressPropertyNameNumber"
+          id: "principalAddressPropertyNameNumber",
+          name: "principalAddressPropertyNameNumber",
+          value: principalAddress.principalAddressPropertyNameNumber if principalAddress
         }) }}
 
         {{ govukInput({
@@ -56,9 +58,10 @@
             text: "Address line 1"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principleAddressLine1",
-          name: "principleAddressLine1",
-          autocomplete: "principleAddressLine1"
+          id: "principalAddressLine1",
+          name: "principalAddressLine1",
+          autocomplete: "principalAddressLine1",
+          value: principalAddress.principalAddressLine1 if principalAddress
         }) }}
 
         {{ govukInput({
@@ -66,9 +69,10 @@
             text: "Address line 2 (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principleAddressLine2",
-          name: "principleAddressLine2",
-          autocomplete: "principleAddressLine2"
+          id: "principalAddressLine2",
+          name: "principalAddressLine2",
+          autocomplete: "principalAddressLine2",
+          value: principalAddress.principalAddressLine2 if principalAddress
         }) }}
 
         {{ govukInput({
@@ -76,8 +80,9 @@
             text: "City or town"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principleAddressCityTown",
-          name: "principleAddressCityTown"
+          id: "principalAddressCityTown",
+          name: "principalAddressCityTown",
+          value: principalAddress.principalAddressCityTown if principalAddress
         }) }}
 
         {{ govukInput({
@@ -85,8 +90,9 @@
             text: "County, state, province or region (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressState",
-          name: "serviceAddressState"
+          id: "principalAddressState",
+          name: "principalAddressState",
+          value: principalAddress.principalAddressState if principalAddress
         }) }}
 
         {{ govukInput({
@@ -94,9 +100,10 @@
             text: "Country"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principleAddressCountry",
-          name: "principleAddressCountry",
-          autocomplete: "principleAddressCountry"
+          id: "principalAddressCountry",
+          name: "principalAddressCountry",
+          autocomplete: "principalAddressCountry",
+          value: principalAddress.principalAddressCountry if principalAddress
         }) }}
 
         {{ govukInput({
@@ -104,9 +111,10 @@
             text: "Postcode or ZIP"
           },
           classes: "govuk-input--width-10",
-          id: "principleAddressPostcode",
-          name: "principleAddressPostcode",
-          autocomplete: "principleAddressPostcode"
+          id: "principalAddressPostcode",
+          name: "principalAddressPostcode",
+          autocomplete: "principalAddressPostcode",
+          value: principalAddress.principalAddressPostcode if principalAddress
         }) }}
         {% endcall %}
 
@@ -128,7 +136,8 @@
             text: "For example, 'The Mill', '116' or 'Flat 37a'"
           },
             id: "serviceAddressPropertyNameNumber",
-            name: "serviceAddressPropertyNameNumber"
+            name: "serviceAddressPropertyNameNumber",
+            value: serviceAddress.serviceAddressPropertyNameNumber if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -138,7 +147,8 @@
             classes: "govuk-!-width-two-thirds",
             id: "serviceAddressLine1",
             name: "serviceAddressLine1",
-            autocomplete: "serviceAddressLine1"
+            autocomplete: "serviceAddressLine1",
+            value: serviceAddress.serviceAddressLine1 if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -148,7 +158,8 @@
             classes: "govuk-!-width-two-thirds",
             id: "serviceAddressLine2",
             name: "serviceAddressLine2",
-            autocomplete: "serviceAddressLine2"
+            autocomplete: "serviceAddressLine2",
+            value: serviceAddress.serviceAddressLine2 if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -157,7 +168,8 @@
             },
             classes: "govuk-!-width-two-thirds",
             id: "serviceAddressCityTown",
-            name: "serviceAddressCityTown"
+            name: "serviceAddressCityTown",
+            value: serviceAddress.serviceAddressCityTown if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -166,7 +178,8 @@
             },
             classes: "govuk-!-width-two-thirds",
             id: "serviceAddressState",
-            name: "serviceAddressState"
+            name: "serviceAddressState",
+            value: serviceAddress.serviceAddressState if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -176,7 +189,8 @@
             classes: "govuk-!-width-two-thirds",
             id: "serviceAddressCountry",
             name: "serviceAddressCountry",
-            autocomplete: "serviceAddressCountry"
+            autocomplete: "serviceAddressCountry",
+            value: serviceAddress.serviceAddressCountry if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -186,7 +200,8 @@
             classes: "govuk-input--width-10",
             id: "serviceAddressPostcode",
             name: "serviceAddressPostcode",
-            autocomplete: "serviceAddressPostcode"
+            autocomplete: "serviceAddressPostcode",
+            value: serviceAddress.serviceAddressPostcode if serviceAddress
           }) }}
 
           {% endcall %}
@@ -194,8 +209,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "sameAddress",
-          name: "sameAddress",
+          idPrefix: "isServiceAddressSameAsPrincipalAddress",
+          name: "isServiceAddressSameAsPrincipalAddress",
           fieldset: {
             legend: {
               text: "Is its correspondence address the same as its registered office address?",
@@ -206,11 +221,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: isServiceAddressSameAsPrincipalAddress === "yes"
             },
             {
               value: "no",
               text: "No",
+              checked: isServiceAddressSameAsPrincipalAddress === "no",
               conditional: {
                 html: serviceAddressHtml
               }
@@ -227,11 +244,12 @@
             text: "This is also known as the company or entity's governing law."
           },
           id: "corpLawGoverned",
-          name: "corpLawGoverned"
+          name: "corpLawGoverned",
+          value: corpLawGoverned
         }) }}
         {{ govukDateInput({
-          id: "corpStartdate",
-          namePrefix: "corpStartdate",
+          id: "corpStartDate",
+          namePrefix: "corpStartDate",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -241,7 +259,24 @@
           },
           hint: {
             text: "For example, 27 3 2007"
-          }
+          },
+          items: [
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "day",
+              value: corpStartDate["corpStartDate-day"]
+            },
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "month",
+              value: corpStartDate["corpStartDate-month"]
+            },
+            {
+              classes: "govuk-input--width-4 govuk-input",
+              name: "year",
+              value: corpStartDate["corpStartDate-year"]
+            }
+          ]
         }) }}
 
         {{ govukRadios({
@@ -257,27 +292,31 @@
           items: [
             {
               value: "shares",
-              text: "They hold more than 25% of shares in the overseas entity"
+              text: "They hold more than 25% of shares in the overseas entity",
+              checked: corpNatureOfControl === "shares"
             },
             {
               value: "voting",
-              text: "They hold more than 25% of the voting rights in the overseas entity"
+              text: "They hold more than 25% of the voting rights in the overseas entity",
+              checked: corpNatureOfControl === "voting"
             },
             {
               value: "appoint",
-              text: "They hold the right to appoint or remove a majority of the board of directors of the overseas entity"
+              text: "They hold the right to appoint or remove a majority of the board of directors of the overseas entity",
+              checked: corpNatureOfControl === "appoint"
             },
             {
               value: "influence",
-              text: "They have the right to exercise significant influence or control over the overseas entity"
+              text: "They have the right to exercise significant influence or control over the overseas entity",
+              checked: corpNatureOfControl === "influence"
             }
           ]
         }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "ownerSanctions",
-          name: "ownerSanctions",
+          idPrefix: "onSanctionsList",
+          name: "onSanctionsList",
           fieldset: {
             legend: {
               text: "Is it on the sanctions list?",
@@ -288,11 +327,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: onSanctionsList === "yes"
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              checked: onSanctionsList === "no"
             }
           ]
         }) }}

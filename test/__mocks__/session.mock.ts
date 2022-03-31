@@ -3,9 +3,10 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, beneficialOwnerIndividualType, entityType, presenterType } from "../../src/model";
+import { ApplicationData, APPLICATION_DATA_KEY, beneficialOwnerTypeType, beneficialOwnerOtherType, beneficialOwnerIndividualType, entityType, presenterType, beneficialOwnerGovType } from "../../src/model";
 import {
   BeneficialOwnerTypeChoice,
+  corpNatureOfControl,
   natureOfControl,
   statementCondition,
   yesNoResponse
@@ -86,6 +87,21 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   natureOfControl: natureOfControl.over50under75Percent
 };
 
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  corpLawGoverned: "a11",
+  corpName: "my company name",
+  corpNatureOfControl: corpNatureOfControl.influence,
+  corpStartDate: {
+    day: 12,
+    month: 11,
+    year: 1965
+  },
+  isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
+  onSanctionsList: yesNoResponse.No,
+  principalAddress: ADDRESS,
+  serviceAddress: ADDRESS
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: {
     fullName: "fullName",
@@ -97,6 +113,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [entityType.EntityKey]: {},
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK
 };
 

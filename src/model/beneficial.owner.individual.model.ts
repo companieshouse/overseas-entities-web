@@ -9,7 +9,7 @@ export const BeneficialOwnerIndividualKeys: string[] = ["fullName", "dateOfBirth
   "serviceAddress", "startDate", "natureOfControl", "trustee", "onSanctionsList"];
 
 /*
-  The Entity sub-fields for Date Objects
+  The sub-fields for Date Objects
 */
 export const DateOfBirthKey: string = "dateOfBirth";
 export const DateOfBirthKeys: string[] = ["dateOfBirth-day", "dateOfBirth-month", "dateOfBirth-year"];
@@ -18,7 +18,7 @@ export const StartDateKey: string = "startDate";
 export const StartDateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 
 /*
-  The Entity sub-fields for Address Objects
+  The sub-fields for Address Objects
 */
 export const UsualResidentialAddressKey = "usualResidentialAddress";
 export const UsualResidentialAddressKeys: string[] = ["usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty", "usualResidentialAddressPostcode"];

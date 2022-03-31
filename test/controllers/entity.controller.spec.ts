@@ -29,7 +29,7 @@ describe("ENTITY controller", () => {
     expect(resp.text).toContain(ENTITY_PAGE_TITLE);
   });
 
-  test("redirect the beneficial owner type page after a succesful post from ENTIRY page", async () => {
+  test("redirect the beneficial owner type page after a successful post from ENTITY page", async () => {
 
     mockPrepareData.mockImplementation( () => ENTITY_OBJECT_MOCK );
     mockSetApplicationData.mockImplementation( () => setApplicationData);

@@ -11,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
-import { MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
+import { CHECK_YOUR_ANSWERS_URL, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";
@@ -62,6 +62,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
 
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
       expect(managingOfficerCorporate).toEqual(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       expect(managingOfficerCorporate.officerName).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.whereOfficerRegistered).toEqual("France");

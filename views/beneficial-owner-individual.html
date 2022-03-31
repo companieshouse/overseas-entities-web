@@ -225,12 +225,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: isAddressSameAsUsusalResidentialAddress === 'Yes'
+              checked: isAddressSameAsUsusalResidentialAddress === 'yes'
             },
             {
               value: "no",
               text: "No",
-              checked: isAddressSameAsUsusalResidentialAddress === 'No',
+              checked: isAddressSameAsUsusalResidentialAddress === 'no',
               conditional: {
                 html: serviceAddressHtml
               }
@@ -301,8 +301,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "owner-trustee",
-          name: "owner-trustee",
+          idPrefix: "trustee",
+          name: "trustee",
           fieldset: {
             legend: {
               text: "Do they meet the condition by virtue of being a trustee?",
@@ -316,19 +316,21 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: trustee === 'yes'
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              checked: trustee === 'no'
             }
           ]
         }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "owner-sanctions",
-          name: "owner-sanctions",
+          idPrefix: "onSanctionsList",
+          name: "onSanctionsList",
           fieldset: {
             legend: {
               text: "Are they on the sanctions list?",
@@ -339,11 +341,13 @@
           items: [
             {
               value: "yes",
-              text: "Yes"
+              text: "Yes",
+              checked: onSanctionsList === 'yes'
             },
             {
               value: "no",
-              text: "No"
+              text: "No",
+              checked: onSanctionsList === 'no'
             }
           ]
         }) }}

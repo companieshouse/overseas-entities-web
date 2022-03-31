@@ -11,7 +11,8 @@ import {
   beneficialOwnerIndividualType,
   entityType,
   presenterType,
-  managingOfficerCorporateType
+  managingOfficerCorporateType,
+  managingOfficerType
 } from "../../src/model";
 import {
   BeneficialOwnerTypeChoice,
@@ -97,6 +98,21 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   natureOfControl: natureOfControl.over50under75Percent
 };
 
+export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
+  fullName: "Andrei Nikolayevich Bolkonsky",
+  hasAFormerName: yesNoResponse.No,
+  formerName: "",
+  dateOfBirth: {
+    day: 4,
+    month: 11,
+    year: 1830
+  },
+  nationality: "Russian",
+  usualResidentialAddress: ADDRESS,
+  businessOccupation: "Prince",
+  roleAndResponsibilities: "None"
+};
+
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
   officerName: "Joe Bloggs",
   usualResidentialAddress: ADDRESS,
@@ -125,5 +141,6 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK
 };

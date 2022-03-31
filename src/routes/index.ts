@@ -7,6 +7,7 @@ import {
   beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerType,
+  checkYourAnswers,
   entity,
   landing,
   managingOfficer,
@@ -38,12 +39,15 @@ router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOt
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
+router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.post);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);
 
 router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
 router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.post);
+
+router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 
 router.use(errorHandler);
 

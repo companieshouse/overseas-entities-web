@@ -8,5 +8,3 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: config.MANAGING_OFFICER_CORPORATE_URL
   });
 };
-
-

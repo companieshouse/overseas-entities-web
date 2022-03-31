@@ -33,7 +33,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 
-    return res.redirect("/tba");
+    return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

@@ -4,7 +4,6 @@ import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, managingOfficerCorportateType } from "../model";
 import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
-import { PRESENTER_URL } from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,7 +33,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 
-    return res.redirect(PRESENTER_URL);
+    return res.redirect("/tba");
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

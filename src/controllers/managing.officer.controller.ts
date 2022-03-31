@@ -9,8 +9,6 @@ export const get = (req: Request, res: Response) => {
 
   const appData: ApplicationData = getApplicationData(req.session);
 
-  console.log(JSON.stringify(appData, null, 2));
-
   return res.render(config.MANAGING_OFFICER_PAGE, {
     backLinkUrl: config.BENEFICIAL_OWNER_OTHER_URL,
     ...appData.managingOfficer
@@ -26,8 +24,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[managingOfficerType.DateOfBirthKey] = prepareData(req.body, managingOfficerType.DateOfBirthKeys);
 
     setApplicationData(req.session, data, managingOfficerType.ManagingOfficerKey);
-
-    console.log(JSON.stringify(data, null, 2));
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

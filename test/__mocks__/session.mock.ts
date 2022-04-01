@@ -4,17 +4,19 @@ import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 import {
-  ApplicationData,
   APPLICATION_DATA_KEY,
-  beneficialOwnerTypeType,
-  beneficialOwnerOtherType,
+  ApplicationData,
   beneficialOwnerIndividualType,
+  beneficialOwnerOtherType,
+  beneficialOwnerStatementType,
+  beneficialOwnerTypeType,
   entityType,
-  presenterType,
   managingOfficerCorporateType,
-  managingOfficerType
+  managingOfficerType,
+  presenterType
 } from "../../src/model";
 import {
+  beneficialOwnerStatementChoice,
   BeneficialOwnerTypeChoice,
   natureOfControl,
   statementCondition,
@@ -63,6 +65,10 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   governedLaw: "governedLaw",
   publicRegister: "publicRegister",
   registrationNumber: 123
+};
+
+export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
+  beneficialOwnerStatement: beneficialOwnerStatementChoice.allIdentifiedAllSupplied
 };
 
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {

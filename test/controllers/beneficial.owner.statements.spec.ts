@@ -20,7 +20,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   describe("GET tests", () => {
     test("renders the beneficial owner type page", async () => {
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);

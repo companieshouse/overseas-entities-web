@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
-      backLinkUrl: config.ENTITY_URL,
+      backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
       ...appData.beneficialOwnerType
     });
   } catch (error) {

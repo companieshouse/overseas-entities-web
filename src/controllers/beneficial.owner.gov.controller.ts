@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerGovType.BeneficialOwnerGovKeys);
     data[beneficialOwnerGovType.PrincipalAddressKey] = prepareData(req.body, beneficialOwnerGovType.PrincipalAddressKeys);
     data[beneficialOwnerGovType.ServiceAddressKey] = prepareData(req.body, beneficialOwnerGovType.ServiceAddressKeys);
-    data[beneficialOwnerGovType.CorpStartDateKey] = prepareData(req.body, beneficialOwnerGovType.CorpStartDateKeys);
+    data[beneficialOwnerGovType.CorporationStartDateKey] = prepareData(req.body, beneficialOwnerGovType.CorporationStartDateKeys);
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 
     return res.redirect(config.MANAGING_OFFICER_URL);

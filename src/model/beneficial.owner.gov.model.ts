@@ -5,13 +5,13 @@ export const BeneficialOwnerGovKey = "beneficialOwnerGov";
   The Beneficial Owner Gov fields will have to match the name field on the HTML file to
   be able to do the mapping correctly
 */
-export const BeneficialOwnerGovKeys: string[] = [ "corpName", "isServiceAddressSameAsPrincipalAddress", "corpLawGoverned", "corpStartDate", "corpNatureOfControl", "corpNatureOfControl", "onSanctionsList" ];
+export const BeneficialOwnerGovKeys: string[] = [ "corporationName", "isServiceAddressSameAsPrincipalAddress", "corporationLawGoverned", "corporationStartDate", "corporationNatureOfControl", "isOnSanctionsList" ];
 
 /*
   The sub-fields for Date Objects
 */
-export const CorpStartDateKey: string = "corpStartDate";
-export const CorpStartDateKeys: string[] = ["corpStartDate-day", "corpStartDate-month", "corpStartDate-year"];
+export const CorporationStartDateKey: string = "corporationStartDate";
+export const CorporationStartDateKeys: string[] = ["corporationStartDate-day", "corporationStartDate-month", "corporationStartDate-year"];
 
 /*
   The sub-fields for Address Objects
@@ -22,12 +22,12 @@ export const ServiceAddressKey = "serviceAddress";
 export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressCityTown", "serviceAddressState", "serviceAddressCountry", "serviceAddressPostcode"];
 
 export interface BeneficialOwnerGov {
-    corpName?: string
+    corporationName?: string
     principalAddress?: Address
     serviceAddress?: Address
     isServiceAddressSameAsPrincipalAddress?: yesNoResponse
-    corpLawGoverned?: string
-    corpStartDate?: InputDate
-    corpNatureOfControl?: corpNatureOfControl
-    onSanctionsList?: yesNoResponse
+    corporationLawGoverned?: string
+    corporationStartDate?: InputDate
+    corporationNatureOfControl?: corpNatureOfControl
+    isOnSanctionsList?: yesNoResponse
 }

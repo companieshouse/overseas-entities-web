@@ -29,9 +29,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corpName",
-          name: "corpName",
-          value: corpName
+          id: "corporationName",
+          name: "corporationName",
+          value: corporationName
         }) }}
         {% call govukFieldset({
           legend: {
@@ -243,13 +243,13 @@
           hint: {
             text: "This is also known as the company or entity's governing law."
           },
-          id: "corpLawGoverned",
-          name: "corpLawGoverned",
-          value: corpLawGoverned
+          id: "corporationLawGoverned",
+          name: "corporationLawGoverned",
+          value: corporationLawGoverned
         }) }}
         {{ govukDateInput({
-          id: "corpStartDate",
-          namePrefix: "corpStartDate",
+          id: "corporationStartDate",
+          namePrefix: "corporationStartDate",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -264,24 +264,24 @@
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "day",
-              value: corpStartDate["corpStartDate-day"]
+              value: corporationStartDate["corporationStartDate-day"]
             },
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "month",
-              value: corpStartDate["corpStartDate-month"]
+              value: corporationStartDate["corporationStartDate-month"]
             },
             {
               classes: "govuk-input--width-4 govuk-input",
               name: "year",
-              value: corpStartDate["corpStartDate-year"]
+              value: corporationStartDate["corporationStartDate-year"]
             }
           ]
         }) }}
 
         {{ govukRadios({
-          idPrefix: "corpNatureOfControl",
-          name: "corpNatureOfControl",
+          idPrefix: "corporationNatureOfControl",
+          name: "corporationNatureOfControl",
           fieldset: {
             legend: {
               text: "What is its nature of control?",
@@ -293,30 +293,30 @@
             {
               value: "shares",
               text: "They hold more than 25% of shares in the overseas entity",
-              checked: corpNatureOfControl === "shares"
+              checked: corporationNatureOfControl === "shares"
             },
             {
               value: "voting",
               text: "They hold more than 25% of the voting rights in the overseas entity",
-              checked: corpNatureOfControl === "voting"
+              checked: corporationNatureOfControl === "voting"
             },
             {
               value: "appoint",
               text: "They hold the right to appoint or remove a majority of the board of directors of the overseas entity",
-              checked: corpNatureOfControl === "appoint"
+              checked: corporationNatureOfControl === "appoint"
             },
             {
               value: "influence",
               text: "They have the right to exercise significant influence or control over the overseas entity",
-              checked: corpNatureOfControl === "influence"
+              checked: corporationNatureOfControl === "influence"
             }
           ]
         }) }}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "onSanctionsList",
-          name: "onSanctionsList",
+          idPrefix: "isOnSanctionsList",
+          name: "isOnSanctionsList",
           fieldset: {
             legend: {
               text: "Is it on the sanctions list?",
@@ -328,19 +328,19 @@
             {
               value: "yes",
               text: "Yes",
-              checked: onSanctionsList === "yes"
+              checked: isOnSanctionsList === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: onSanctionsList === "no"
+              checked: isOnSanctionsList === "no"
             }
           ]
         }) }}
 
 
         <h2 class="govuk-heading-m">What information is shown on the online register</h2>
-        <p>All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
+        <p class="govuk-body">All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
 
         {{ govukButton({
           text: "Add another government or public authority beneficial owner",

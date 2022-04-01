@@ -61,21 +61,28 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("adds data to the session", async () => {
-      mockPrepareData.mockReturnValueOnce({ name: "test" });
-      mockPrepareData.mockReturnValueOnce({ addressLine1: "line1" });
-      mockPrepareData.mockReturnValueOnce({ addressLine1: "line1" });
+      // controller will make several calls to prepare data, we have to mock them in order they are called by controller
+      // mock the call to prepareData for beneficialOwnerGov object
+      mockPrepareData.mockReturnValueOnce({ corporationName: "test" });
+      // mock the call to prepareData for principalAddress object
+      mockPrepareData.mockReturnValueOnce({ addressLine1: "principalAddressLine1", addressLine2: "principalAddressLine2" });
+      // mock the call to prepareData for serviceAddress object
+      mockPrepareData.mockReturnValueOnce({ addressLine1: "serviceAddressLine1", addressLine2: "serviceAddressLine2" });
+      // mock the call to prepareData for corporationStartDate object
       mockPrepareData.mockReturnValueOnce({ day: 1, month: 2, year: 1934 });
 
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
 
       const beneficialOwnerGov = mockSetApplicationData.mock.calls[0][1];
 
-      expect(beneficialOwnerGov.name).toEqual("test");
-      expect(beneficialOwnerGov.principalAddress.addressLine1).toEqual("line1");
-      expect(beneficialOwnerGov.serviceAddress.addressLine1).toEqual("line1");
-      expect(beneficialOwnerGov.corpStartDate.day).toEqual(1);
-      expect(beneficialOwnerGov.corpStartDate.month).toEqual(2);
-      expect(beneficialOwnerGov.corpStartDate.year).toEqual(1934);
+      expect(beneficialOwnerGov.corporationName).toEqual("test");
+      expect(beneficialOwnerGov.principalAddress.addressLine1).toEqual("principalAddressLine1");
+      expect(beneficialOwnerGov.principalAddress.addressLine2).toEqual("principalAddressLine2");
+      expect(beneficialOwnerGov.serviceAddress.addressLine1).toEqual("serviceAddressLine1");
+      expect(beneficialOwnerGov.serviceAddress.addressLine2).toEqual("serviceAddressLine2");
+      expect(beneficialOwnerGov.corporationStartDate.day).toEqual(1);
+      expect(beneficialOwnerGov.corporationStartDate.month).toEqual(2);
+      expect(beneficialOwnerGov.corporationStartDate.year).toEqual(1934);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.MANAGING_OFFICER_URL);
     });

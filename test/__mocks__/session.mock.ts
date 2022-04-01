@@ -101,16 +101,16 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
 };
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
-  corpLawGoverned: "a11",
-  corpName: "my company name",
-  corpNatureOfControl: corpNatureOfControl.influence,
-  corpStartDate: {
+  corporationLawGoverned: "a11",
+  corporationName: "my company name",
+  corporationNatureOfControl: corpNatureOfControl.influence,
+  corporationStartDate: {
     day: 12,
     month: 11,
     year: 1965
   },
   isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
-  onSanctionsList: yesNoResponse.No,
+  isOnSanctionsList: yesNoResponse.No,
   principalAddress: ADDRESS,
   serviceAddress: ADDRESS
 };

@@ -9,5 +9,5 @@ export const BeneficialOwnerTypeKeys: string[] = [ "beneficialOwnerType" ];
 
 
 export interface BeneficialOwnerType {
-  beneficialOwnerType?: BeneficialOwnerTypeChoice[];
+  beneficialOwnerType?: BeneficialOwnerTypeChoice;
 }

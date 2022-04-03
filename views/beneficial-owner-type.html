@@ -15,52 +15,127 @@
 
       <form method="post">
 
-        <h1 class="govuk-heading-xl govuk-!-margin-0">Who is a beneficial owner of the overseas entity?</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-0">You now need to tell us about beneficial owners and managing officers</h1>
         <br/>
-        {% set ownerHint %}
-          {{ govukDetails({
-            summaryText: "What is a beneficial owner?",
-            text: "A beneficial owner is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management."
-          }) }}
-          <p class="govuk-hint">Select all that apply.</p>
-        {% endset %}
 
-        {{ govukCheckboxes({
+        {{ govukDetails({
+          summaryText: "What is a beneficial owner or managing officer?",
+          html: "<p>A <strong>beneficial owner</strong> is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management.</p><p>A <strong>managing officer</strong> is a director, manager or company secretary of the overseas entity.</p>"
+        }) }}
+
+        {{ govukRadios({
           idPrefix: "beneficial-owner-type",
           name: "beneficialOwnerType",
           fieldset: {
             legend: {
+              text: "Select the type of beneficial owner or managing officer you want to add",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--l"
             }
           },
           hint: {
-            html: ownerHint
+            text: "You can add more later"
           },
           items: [
             {
-              value: "individual",
-              text: "An individual beneficial owner",
-              checked: beneficialOwnerType and 'individual' in beneficialOwnerType
+              value: "individualOwner",
+              text: "Individual beneficial owners",
+              checked: beneficialOwnerType === 'individualOwner'
             },
             {
-              value: "otherLegal",
-              text: "A public authority, or other legal entity",
-              checked: beneficialOwnerType and 'otherLegal' in beneficialOwnerType
+              value: "otherLegalOwner",
+              text: "Other legal entity beneficial owners",
+              checked: beneficialOwnerType === 'otherLegalOwner'
             },
             {
-              divider: "or"
+              value: "governmentOrPublicOwner",
+              text: "Government or public authority beneficial owners",
+              checked: beneficialOwnerType === 'governmentOrPublicOwner'
             },
             {
-              value: "none",
-              text: "There is no beneficial owner",
-              behaviour: "exclusive",
-              checked: beneficialOwnerType and 'none' in beneficialOwnerType
+              value: "individualOfficer",
+              text: "Individual managing officers",
+              checked: beneficialOwnerType === 'individualOfficer'
+            },
+            {
+              value: "corporateOfficer",
+              text: "Corporate managing officers",
+              checked: beneficialOwnerType === 'corporateOfficer'
             }
           ]
         }) }}
-        {% include "includes/continue-button.html" %}
 
+        <!-- {% if not beneficialOwnerIndividual or beneficialOwnerIndividual.length == 0 %}
+          {% include "includes/continue-button.html" %}
+        {% else %}
+          something else
+        {% endif %}
+  
+        {% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
+          something else
+        {% endif %} -->
+        {{ govukButton({
+          text: "Add beneficial owner or managing officer",
+          attributes: {
+            "id": "submit"
+          },
+          classes: "govuk-button--secondary govuk-!-margin-top-6"
+        }) }}
+
+        {% set individualOwnerHtml %} {% include "includes/list-beneficial-owner/individual.html" %} {% endset -%}
+        {% set otherOwnerHtml %} {% include "includes/list-beneficial-owner/other.html" %} {% endset -%}
+        {% set govOwnerHtml %} {% include "includes/list-beneficial-owner/gov.html" %} {% endset -%}
+        {% set individuaOfficerlHtml %} {% include "includes/list-managing-officer/individual.html" %} {% endset -%}
+        {% set corporateOfficerHtml %} {% include "includes/list-managing-officer/corporate.html" %} {% endset -%}
+
+        {{ govukAccordion({
+          id: "accordion-default",
+          items: [ {
+              heading: {
+                text: "Individual beneficial owners"
+              },
+              content: {
+                html: individualOwnerHtml
+              }
+            }, {
+              heading: {
+                text: "Other legal entity beneficial owners"
+              },
+              content: {
+                html: otherOwnerHtml
+              }
+            }, {
+              heading: {
+                text: "Government or public authority beneficial owners"
+              },
+              content: {
+                html: govOwnerHtml
+              }
+            }, {
+              heading: {
+                text: "Individual managing officers"
+              },
+              content: {
+                html: individuaOfficerlHtml
+              }
+            }, {
+              heading: {
+                text: "Corporate managing officers"
+              },
+              content: {
+                html: corporateOfficerHtml
+              }
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Continue without adding another beneficial owner or managing officer",
+          attributes: {
+            "id": "submit"
+          },
+          href: "/register-an-overseas-entity/check-your-answers"
+        }) }}
       </form>
 
     </div>

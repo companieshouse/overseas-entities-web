@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
-import { ApplicationData, ApplicationDataType, beneficialOwnerIndividualType } from "../model";
+import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { ApplicationDataType, beneficialOwnerIndividualType } from "../model";
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
@@ -8,29 +8,70 @@ import * as config from "../config";
 export const get = (req: Request, res: Response) => {
   logger.debug(`GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
-
   return res.render(config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-    ...appData.beneficialOwnerIndividual
+    id: req.params.id,
+    ...getFromApplicationData(req.session, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey, +req.params.id)
   });
 };
 
+// Add new beneficialOwnerIndividual
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
-    const data: ApplicationDataType = prepareData(req.body, beneficialOwnerIndividualType.BeneficialOwnerIndividualKeys);
-    data[beneficialOwnerIndividualType.UsualResidentialAddressKey] = prepareData(req.body, beneficialOwnerIndividualType.UsualResidentialAddressKeys);
-    data[beneficialOwnerIndividualType.ServiceAddressKey] = prepareData(req.body, beneficialOwnerIndividualType.ServiceAddressKeys);
-    data[beneficialOwnerIndividualType.DateOfBirthKey] = prepareData(req.body, beneficialOwnerIndividualType.DateOfBirthKeys);
-    data[beneficialOwnerIndividualType.StartDateKey] = prepareData(req.body, beneficialOwnerIndividualType.StartDateKeys);
+    const data: ApplicationDataType = prepareBeneficialOwnerIndividualData(req.body);
 
     setApplicationData(req.session, data, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
 
-    return res.redirect("/next-page");
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+
+// Update existing beneficialOwnerIndividual
+export const update = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`UPDATE ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+
+    // Remove old beneficialOwnerIndividual
+    removeFromApplicationData(req.session, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey, +req.params.id);
+
+    // Generate new data for beneficialOwnerIndividual
+    const data: ApplicationDataType = prepareBeneficialOwnerIndividualData(req.body);
+
+    // Save new beneficialOwnerIndividual
+    setApplicationData(req.session, data, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+// Remove beneficialOwnerIndividual
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+
+    removeFromApplicationData(req.session, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey, +req.params.id);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+const prepareBeneficialOwnerIndividualData = (reqBody): ApplicationDataType => {
+  const data: ApplicationDataType = prepareData(reqBody, beneficialOwnerIndividualType.BeneficialOwnerIndividualKeys);
+  data[beneficialOwnerIndividualType.UsualResidentialAddressKey] = prepareData(reqBody, beneficialOwnerIndividualType.UsualResidentialAddressKeys);
+  data[beneficialOwnerIndividualType.ServiceAddressKey] = prepareData(reqBody, beneficialOwnerIndividualType.ServiceAddressKeys);
+  data[beneficialOwnerIndividualType.DateOfBirthKey] = prepareData(reqBody, beneficialOwnerIndividualType.DateOfBirthKeys);
+  data[beneficialOwnerIndividualType.StartDateKey] = prepareData(reqBody, beneficialOwnerIndividualType.StartDateKeys);
+
+  return data;
 };

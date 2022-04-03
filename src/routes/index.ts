@@ -44,6 +44,9 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOffic
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/:id", authentication, beneficialOwnerIndividual.get);
+router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/:id", authentication, beneficialOwnerIndividual.update);
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/remove/:id", authentication, beneficialOwnerIndividual.remove);
 
 router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
 router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.post);

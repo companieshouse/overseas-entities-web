@@ -2,7 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
@@ -35,8 +35,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL); // back button
-      expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.individual}" checked`);
-      expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.otherLegal}" checked`);
+      expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.individualOwner}" checked`);
+      expect(resp.text).not.toContain(`"${BeneficialOwnerTypeChoice.otherLegalOwner}" checked`);
     });
 
     test("catch error when rendering the page", async () => {
@@ -58,7 +58,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test("redirects to the beneficial owner other page", async () => {
-      mockPrepareData.mockReturnValueOnce({ beneficialOwnerType: [ BeneficialOwnerTypeChoice.otherLegal ] });
+      mockPrepareData.mockReturnValueOnce({ beneficialOwnerType: BeneficialOwnerTypeChoice.otherLegalOwner });
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(302);
@@ -66,7 +66,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test("redirects to the managing officer page", async () => {
-      mockPrepareData.mockReturnValueOnce({ beneficialOwnerType: [ BeneficialOwnerTypeChoice.none ] });
+      mockPrepareData.mockReturnValueOnce({ beneficialOwnerType: BeneficialOwnerTypeChoice.individualOfficer });
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(302);

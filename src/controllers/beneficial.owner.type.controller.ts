@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.ENTITY_URL,
-      ...appData.beneficialOwnerType
+      ...appData
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -26,26 +26,28 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
+    // to be removed
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerTypeType.BeneficialOwnerTypeKeys);
     setApplicationData(req.session, data, beneficialOwnerTypeType.BeneficialOwnerTypeKey);
 
     const beneficialOwnerTypeData: BeneficialOwnerType = data as BeneficialOwnerType;
-    const nextPage: string = getNextPage(beneficialOwnerTypeData.beneficialOwnerType);
-    return res.redirect(nextPage);
+    return res.redirect(getNextPage(beneficialOwnerTypeData.beneficialOwnerType));
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
 
-const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice[]): string => {
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.individual)) {
+const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice): string => {
+  if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individualOwner) {
     return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
-  }
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.otherLegal)) {
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegalOwner) {
     return config.BENEFICIAL_OWNER_OTHER_URL;
-  }
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.none)) {
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.governmentOrPublicOwner) {
+    return config.BENEFICIAL_OWNER_GOV_URL;
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.corporateOfficer) {
+    return config.MANAGING_OFFICER_CORPORATE_URL;
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individualOfficer) {
     return config.MANAGING_OFFICER_URL;
   }
   return config.BENEFICIAL_OWNER_TYPE_URL;

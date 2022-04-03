@@ -354,9 +354,28 @@
 
         <h2 class="govuk-heading-m">What information is shown on the online register</h2>
         <p class="govuk-body">All details provided about the individual owner will be available on the online register</p>
-        <p class="govuk-body"><a href="/register/beneficial-owner-individual-2">Add another individual beneficial owner</a></p>
-        {% include "includes/continue-button.html" %}
+        
+        <div class="govuk-button-group">
 
+          {{ govukButton({
+            text: "Save and continue",
+            attributes: {
+              "id": "submit"
+            }
+          }) }}
+        
+          {% if fullName and id !== undefined %}
+            {{ govukButton({
+              text: "Remove Individual beneficial owner",
+              attributes: {
+                "id": "submit"
+              },
+              href: "/register-an-overseas-entity/beneficial-owner-individual/remove/"+id,
+              classes: "govuk-button--warning"
+            }) }}
+          {% endif %}
+        </div>
+        
       </form>
     </div>
   </div>

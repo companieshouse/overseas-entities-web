@@ -66,7 +66,7 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
 };
 
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
-  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
+  beneficialOwnerType: BeneficialOwnerTypeChoice.individualOwner
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {

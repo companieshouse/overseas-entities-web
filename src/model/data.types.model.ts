@@ -14,9 +14,11 @@ export enum yesNoResponse {
 }
 
 export enum BeneficialOwnerTypeChoice {
-    individual = "individual",
-    otherLegal = "otherLegal",
-    none = "none"
+    individualOwner = "individualOwner",
+    otherLegalOwner = "otherLegalOwner",
+    governmentOrPublicOwner = "governmentOrPublicOwner",
+    individualOfficer = "individualOfficer",
+    corporateOfficer = "corporateOfficer"
 }
 
 export interface InputDate {

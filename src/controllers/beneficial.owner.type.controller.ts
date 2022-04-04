@@ -12,7 +12,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const isBeneficialOwners: boolean = areBeneficialOwnersIdenitified(appData.beneficialOwnerStatement);
+    const isBeneficialOwners: boolean = areBeneficialOwnersIdentified(appData.beneficialOwnerStatement);
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
@@ -25,7 +25,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const areBeneficialOwnersIdenitified = (statement: BeneficialOwnerStatement | undefined): boolean => {
+const areBeneficialOwnersIdentified = (statement: BeneficialOwnerStatement | undefined): boolean => {
   if (statement) {
     return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedAllSupplied ||
       statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||

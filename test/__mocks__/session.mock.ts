@@ -5,11 +5,12 @@ import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/sessio
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 import {
   APPLICATION_DATA_KEY,
+  beneficialOwnerGovType,
+  beneficialOwnerTypeType,
+  beneficialOwnerOtherType,
   ApplicationData,
   beneficialOwnerIndividualType,
-  beneficialOwnerOtherType,
   beneficialOwnerStatementType,
-  beneficialOwnerTypeType,
   entityType,
   managingOfficerCorporateType,
   managingOfficerType,
@@ -18,6 +19,7 @@ import {
 import {
   BeneficialOwnerStatementChoice,
   BeneficialOwnerTypeChoice,
+  corpNatureOfControl,
   natureOfControl,
   statementCondition,
   yesNoResponse
@@ -104,6 +106,21 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   natureOfControl: natureOfControl.over50under75Percent
 };
 
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  corporationLawGoverned: "a11",
+  corporationName: "my company name",
+  corporationNatureOfControl: corpNatureOfControl.influence,
+  corporationStartDate: {
+    day: 12,
+    month: 11,
+    year: 1965
+  },
+  isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
+  isOnSanctionsList: yesNoResponse.No,
+  principalAddress: ADDRESS,
+  serviceAddress: ADDRESS
+};
+
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
   fullName: "Andrei Nikolayevich Bolkonsky",
   hasAFormerName: yesNoResponse.No,
@@ -147,6 +164,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK,
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 };

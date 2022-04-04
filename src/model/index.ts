@@ -7,4 +7,5 @@ export * as managingOfficerType from "./managing.officer.model";
 export * as dataType from "./data.types.model";
 export * as beneficialOwnerOtherType from "./beneficial.owner.other.model";
 export * as beneficialOwnerIndividualType from "./beneficial.owner.individual.model";
+export * as beneficialOwnerGovType from "./beneficial.owner.gov.model";
 export * as managingOfficerCorporateType from "./managing.officer.corporate.model";

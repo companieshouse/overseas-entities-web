@@ -2,6 +2,7 @@ import {
   entityType,
   presenterType,
   dataType,
+  beneficialOwnerGovType,
   beneficialOwnerOtherType,
   beneficialOwnerTypeType,
   beneficialOwnerStatementType,
@@ -19,8 +20,9 @@ export interface ApplicationData {
     beneficialOwnerStatement?: beneficialOwnerStatementType.BeneficialOwnerStatement;
     beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther;
     beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual;
+    beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov;
     managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate;
     managingOfficer?: managingOfficerType.ManagingOfficer;
 }
 
-export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther | beneficialOwnerIndividualType.BeneficialOwnerIndividual | managingOfficerCorporateType.ManagingOfficerCorporate | managingOfficerType.ManagingOfficer;
+export type ApplicationDataType = presenterType.Presenter | entityType.Entity | dataType.Address | beneficialOwnerTypeType.BeneficialOwnerType | beneficialOwnerOtherType.BeneficialOwnerOther | beneficialOwnerIndividualType.BeneficialOwnerIndividual | managingOfficerCorporateType.ManagingOfficerCorporate | beneficialOwnerGovType.BeneficialOwnerGov | managingOfficerType.ManagingOfficer;

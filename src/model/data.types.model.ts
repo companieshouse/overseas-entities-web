@@ -38,6 +38,13 @@ export enum natureOfControl {
     atLeast75Percent = "75"
 }
 
+export enum corpNatureOfControl {
+    shares = "shares",
+    voting = "voting",
+    appoint = "appoint",
+    influence = "influence"
+}
+
 export enum statementCondition {
     statement1 = "statement1",
     statement2 = "statement2"

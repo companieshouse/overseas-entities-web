@@ -82,13 +82,13 @@
           classes: "govuk-button--secondary govuk-!-margin-top-6"
         }) }}
 
-        {% set individualOwnerHtml %} {% include "includes/list-beneficial-owner/individual.html" %} {% endset -%}
-        {% set otherOwnerHtml %} {% include "includes/list-beneficial-owner/other.html" %} {% endset -%}
-        {% set govOwnerHtml %} {% include "includes/list-beneficial-owner/gov.html" %} {% endset -%}
-        {% set individuaOfficerlHtml %} {% include "includes/list-managing-officer/individual.html" %} {% endset -%}
-        {% set corporateOfficerHtml %} {% include "includes/list-managing-officer/corporate.html" %} {% endset -%}
+        {% include "includes/list-beneficial-owner/individual.html" %}
+        <!-- {% set otherOwnerHtml %} {% include "includes/list-beneficial-owner/other.html" %} {% endset -%}
+        {% set govOwnerHtml %} {% include "includes/list-beneficial-owner/gov.html" %} {% endset -%} -->
+        {% include "includes/list-managing-officer/individual.html" %}
+        <!-- {% set corporateOfficerHtml %} {% include "includes/list-managing-officer/corporate.html" %} {% endset -%} -->
 
-        {{ govukAccordion({
+        <!-- {{ govukAccordion({
           id: "accordion-default",
           items: [ {
               heading: {
@@ -127,7 +127,7 @@
               }
             }
           ]
-        }) }}
+        }) }} -->
 
         {{ govukButton({
           text: "Continue without adding another beneficial owner or managing officer",

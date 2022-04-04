@@ -1,7 +1,29 @@
-{% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
-<dl class="govuk-summary-list">
-    TBD
-</dl>
-{% else %}
-    <p>Empty list of Individual managing officers</p>
+{% if (managingOfficer and managingOfficer.length > 0) or (managingOfficerCorporate and managingOfficerCorporate.length > 0) %}
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--s">Managing officers</caption>
+    <tbody class="govuk-table__body">
+        {% for mo in managingOfficer %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Individual</th>
+                <td class="govuk-table__cell">{{ mo.fullName }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="/register-an-overseas-entity/managing-officer/{{ loop.index0 }}">
+                        Change or remove
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for moc in managingOfficerCorporate %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Corporate</th>
+                <td class="govuk-table__cell">{{ moc.officerName }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="/register-an-overseas-entity/managing-officer-corporate/{{ loop.index0 }}">
+                        Change or remove
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endif %}

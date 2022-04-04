@@ -38,9 +38,15 @@ router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOt
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
 router.post(config.MANAGING_OFFICER_URL, authentication, managingOfficer.post);
+router.get(config.MANAGING_OFFICER_URL + "/:id", authentication, managingOfficer.get);
+router.post(config.MANAGING_OFFICER_URL + "/:id", authentication, managingOfficer.update);
+router.get(config.MANAGING_OFFICER_URL + "/remove/:id", authentication, managingOfficer.remove);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.post);
+router.get(config.MANAGING_OFFICER_CORPORATE_URL + "/:id", authentication, managingOfficerCorporate.get);
+router.post(config.MANAGING_OFFICER_CORPORATE_URL + "/:id", authentication, managingOfficerCorporate.update);
+router.get(config.MANAGING_OFFICER_CORPORATE_URL + "/remove/:id", authentication, managingOfficerCorporate.remove);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);

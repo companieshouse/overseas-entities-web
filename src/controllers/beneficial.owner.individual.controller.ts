@@ -20,7 +20,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
-    const data: ApplicationDataType = prepareBeneficialOwnerIndividualData(req.body);
+    const data: ApplicationDataType = prepareOwnerData(req.body);
 
     setApplicationData(req.session, data, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
 
@@ -40,7 +40,7 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
     removeFromApplicationData(req.session, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey, +req.params.id);
 
     // Generate new data for beneficialOwnerIndividual
-    const data: ApplicationDataType = prepareBeneficialOwnerIndividualData(req.body);
+    const data: ApplicationDataType = prepareOwnerData(req.body);
 
     // Save new beneficialOwnerIndividual
     setApplicationData(req.session, data, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
@@ -66,7 +66,7 @@ export const remove = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const prepareBeneficialOwnerIndividualData = (reqBody): ApplicationDataType => {
+const prepareOwnerData = (reqBody): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, beneficialOwnerIndividualType.BeneficialOwnerIndividualKeys);
   data[beneficialOwnerIndividualType.UsualResidentialAddressKey] = prepareData(reqBody, beneficialOwnerIndividualType.UsualResidentialAddressKeys);
   data[beneficialOwnerIndividualType.ServiceAddressKey] = prepareData(reqBody, beneficialOwnerIndividualType.ServiceAddressKeys);

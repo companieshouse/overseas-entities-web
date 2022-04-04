@@ -1,21 +1,18 @@
 {% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
-<dl class="govuk-summary-list">
-    {% for boi in beneficialOwnerIndividual %}
-        <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
-                {{ boi.fullName }}
-            </dt>
-            <dd class="govuk-summary-list__value">
-                <p class="govuk-body">{{ boi.dateOfBirth["dateOfBirth-day"] }}/{{ boi.dateOfBirth["dateOfBirth-month"] }}/{{ boi.dateOfBirth["dateOfBirth-year"] }}</p>
-            </dd>
-            <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/register-an-overseas-entity/beneficial-owner-individual/{{ loop.index0 }}">
-                Change or Remove<span class="govuk-visually-hidden"> beneficialOwnerIndividual details</span>
-                </a>
-            </dd>
-        </div>
-    {% endfor %}
-</dl>
-{% else %}
-    <p>Empty list of Individual beneficial owners</p>
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--s">Beneficial Owners</caption>
+    <tbody class="govuk-table__body">
+        {% for boi in beneficialOwnerIndividual %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Individual</th>
+                <td class="govuk-table__cell">{{ boi.fullName }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="/register-an-overseas-entity/beneficial-owner-individual/{{ loop.index0 }}">
+                        Change or remove
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endif %}

@@ -23,6 +23,7 @@ export enum BeneficialOwnerStatementChoice {
 export enum BeneficialOwnerTypeChoice {
     individual = "individual",
     otherLegal = "otherLegal",
+    government = "government",
     none = "none"
 }
 

@@ -72,7 +72,7 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementTyp
 };
 
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
-  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
+  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal, BeneficialOwnerTypeChoice.government ]
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {

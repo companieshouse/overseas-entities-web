@@ -11,10 +11,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
+    const statement = appData.beneficialOwnerStatement;
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
-      ...appData.beneficialOwnerType
+      ...appData.beneficialOwnerType,
+      statement
     });
   } catch (error) {
     logger.errorRequest(req, error);

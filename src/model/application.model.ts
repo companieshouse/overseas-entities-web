@@ -5,6 +5,7 @@ import {
   beneficialOwnerGovType,
   beneficialOwnerOtherType,
   beneficialOwnerTypeType,
+  beneficialOwnerStatementType,
   beneficialOwnerIndividualType,
   managingOfficerCorporateType,
   managingOfficerType
@@ -16,6 +17,7 @@ export interface ApplicationData {
     presenter?: presenterType.Presenter;
     entity?: entityType.Entity;
     beneficialOwnerType?: beneficialOwnerTypeType.BeneficialOwnerType;
+    beneficialOwnerStatement?: beneficialOwnerStatementType.BeneficialOwnerStatement;
     beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther;
     beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual;
     beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov;

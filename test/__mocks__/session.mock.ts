@@ -16,7 +16,7 @@ import {
   presenterType
 } from "../../src/model";
 import {
-  beneficialOwnerStatementChoice,
+  BeneficialOwnerStatementChoice,
   BeneficialOwnerTypeChoice,
   natureOfControl,
   statementCondition,
@@ -68,7 +68,7 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
-  beneficialOwnerStatement: beneficialOwnerStatementChoice.allIdentifiedAllSupplied
+  beneficialOwnerStatement: BeneficialOwnerStatementChoice.allIdentifiedAllSupplied
 };
 
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {

@@ -14,6 +14,7 @@ import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING, SERVICE_UN
 import { authentication } from "../../src/controllers";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
+import { beneficialOwnerStatementType } from '../../src/model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -32,6 +33,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     test("renders the beneficial owner statements page", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
@@ -51,15 +53,17 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     test("redirects to the beneficial owner type page", async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK);
       const resp = await request(app).post(config.BENEFICIAL_OWNER_STATEMENTS_URL);
-      const beneficialOwnerStatement = mockSetApplicationData.mock.calls[0][1];
+
+      expect(mockSetApplicationData.mock.calls[0][1]).toEqual(BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerStatementType.BeneficialOwnerStatementKey);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
-      expect(beneficialOwnerStatement).toEqual(BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK);
     });
 
     test("catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce(() =>  { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

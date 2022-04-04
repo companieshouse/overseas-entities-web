@@ -13,7 +13,7 @@ export enum yesNoResponse {
     Yes = 1
 }
 
-export enum beneficialOwnerStatementChoice {
+export enum BeneficialOwnerStatementChoice {
     allIdentifiedAllSupplied = "allIdentifiedAllSupplied",
     allIdentifiedSomeSupplied = "allIdentifiedSomeSupplied",
     someIdentifiedSomeDetails = "someIdentifiedSomeDetails",

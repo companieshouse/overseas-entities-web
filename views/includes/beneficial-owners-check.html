@@ -1,0 +1,40 @@
+{{ govukCheckboxes({
+  idPrefix: "beneficial-owner-type",
+  name: "beneficialOwnerType",
+  fieldset: {
+    legend: {
+      text: "Which types of beneficial owners have been identified?",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--xl"
+    }
+  },
+  hint: {
+    text: "Select all that apply."
+  },
+  items: [
+    {
+      value: "individual",
+      text: "Individual beneficial owners",
+      checked: beneficialOwnerType and 'individual' in beneficialOwnerType,
+      hint: {
+        text: "Hint"
+      }
+    },
+    {
+      value: "otherLegal",
+      text: "Other legal entity beneficial owners",
+      checked: beneficialOwnerType and 'otherLegal' in beneficialOwnerType,
+      hint: {
+        text: "Hint"
+      }
+    },
+    {
+      value: "government",
+      text: "Government or public authority beneficial owners",
+      checked: beneficialOwnerType and 'government' in beneficialOwnerType,
+      hint: {
+        text: "Hint"
+      }
+    }
+  ]
+}) }}

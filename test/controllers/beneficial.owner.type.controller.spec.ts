@@ -37,6 +37,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
       expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.individual}" checked`);
       expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.otherLegal}" checked`);
+      expect(resp.text).toContain(`"${BeneficialOwnerTypeChoice.government}" checked`);
     });
 
     test("catch error when rendering the page", async () => {

@@ -15,9 +15,7 @@
 
       <form>
 
-        {% if (statement.beneficialOwnerStatement === "allIdentifiedAllSupplied") %}
-          {% include "includes/beneficial-owners-check.html" %}
-        {% else %}
+        {% if (isBeneficialOwners) %}
           {% include "includes/beneficial-owners-check.html" %}
         {% endif %}
 

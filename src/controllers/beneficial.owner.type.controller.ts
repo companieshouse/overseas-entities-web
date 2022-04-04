@@ -4,24 +4,34 @@ import { ApplicationData, ApplicationDataType, beneficialOwnerTypeType } from ".
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { BeneficialOwnerType } from "../model/beneficial.owner.type.model";
-import { BeneficialOwnerTypeChoice } from "../model/data.types.model";
+import { BeneficialOwnerStatementChoice, BeneficialOwnerTypeChoice } from "../model/data.types.model";
+import { BeneficialOwnerStatement } from "../model/beneficial.owner.statement.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const statement = appData.beneficialOwnerStatement;
+    const isBeneficialOwners: boolean = areBeneficialOwnersIdneitified(appData.beneficialOwnerStatement);
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       ...appData.beneficialOwnerType,
-      statement
+      isBeneficialOwners
     });
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+
+const areBeneficialOwnersIdneitified = (statement: BeneficialOwnerStatement | undefined): boolean => {
+  if (statement) {
+    return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedAllSupplied ||
+      statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||
+      statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.someIdentifiedSomeDetails;
+  }
+  return false;
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

@@ -12,12 +12,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const isBeneficialOwners: boolean = areBeneficialOwnersIdentified(appData.beneficialOwnerStatement);
-
+    const statement: BeneficialOwnerStatement | undefined   = appData.beneficialOwnerStatement;
+    const isBeneficialOwners: boolean = areBeneficialOwnersIdentified(statement);
+    const isManagingOfficers: boolean = areManagingOfficersIdentified(statement);
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       ...appData.beneficialOwnerType,
-      isBeneficialOwners
+      ...appData.managingOfficerType,
+      isBeneficialOwners,
+      isManagingOfficers
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -30,6 +33,15 @@ const areBeneficialOwnersIdentified = (statement: BeneficialOwnerStatement | und
     return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedAllSupplied ||
       statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||
       statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.someIdentifiedSomeDetails;
+  }
+  return false;
+};
+
+const areManagingOfficersIdentified = (statement: BeneficialOwnerStatement | undefined): boolean => {
+  if (statement) {
+    return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||
+        statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.someIdentifiedSomeDetails ||
+        statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.noneIdentified;
   }
   return false;
 };

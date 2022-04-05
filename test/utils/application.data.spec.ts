@@ -1,6 +1,16 @@
 import { describe, expect, test } from '@jest/globals';
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, ENTITY_OBJECT_MOCK, getSessionRequestWithExtraData } from '../__mocks__/session.mock';
+import {
+  getApplicationData,
+  setApplicationData,
+  prepareData,
+  deleteApplicationData,
+} from "../../src/utils/application.data";
+import {
+  APPLICATION_DATA_MOCK,
+  ENTITY_OBJECT_MOCK,
+  getSessionRequestWithExtraData,
+  getSessionRequestWithPermission,
+} from "../__mocks__/session.mock";
 import { entityType } from "../../src/model";
 
 describe("Application data utils", () => {
@@ -33,6 +43,20 @@ describe("Application data utils", () => {
     const data = prepareData(ENTITY_OBJECT_MOCK, ['legalForm', 'email']);
     const { legalForm, email } = ENTITY_OBJECT_MOCK;
     expect(data).toEqual( { legalForm, email } );
+  });
+
+  test("deleteApplicationData should return undefined if session is undefined", () => {
+    const data = deleteApplicationData(undefined);
+    expect(data).toEqual(undefined);
+  });
+
+  test("deleteApplicationData should delete stored application data from the session", () => {
+    const sessionWithExtraData = getSessionRequestWithExtraData();
+    const sessionWithOutExtraData = getSessionRequestWithPermission();
+    const response = deleteApplicationData(sessionWithExtraData);
+
+    expect(response).toEqual(true);
+    expect(sessionWithExtraData).toEqual( sessionWithOutExtraData );
   });
 
 });

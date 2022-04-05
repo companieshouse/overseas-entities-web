@@ -1,10 +1,34 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<h1 class="govuk-heading-l">Which types of managing officers have been identified?</h1>
+
+{{ govukDetails({
+  summaryText: "What is a managing officer?",
+  text: "Here"
+}) }}
+
+
+{{ govukCheckboxes({
+  idPrefix: "managing-officer-type",
+  name: "managingOfficerType",
+  fieldset: {
+    legend: {
+      text: "Which types of managing officers have been identified?",
+      isPageHeading: false,
+      classes: "govuk-visually-hidden"
+    }
+  },
+  hint: {
+    text: "Select all that apply."
+  },
+  items: [
+    {
+      value: "individual",
+      text: "Individual managing officers",
+      checked: managingOfficerType and 'individual' in managingOfficerType
+    },
+    {
+      value: "corporate",
+      text: "Corporate managing officers",
+      checked: managingOfficerType and 'corporate' in managingOfficerType
+    }
+  ]
+}) }}

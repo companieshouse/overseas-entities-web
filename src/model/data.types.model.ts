@@ -27,6 +27,11 @@ export enum BeneficialOwnerTypeChoice {
     none = "none"
 }
 
+export enum ManagingOfficerTypeChoice {
+    individual = "individual",
+    corporate = "corporate"
+}
+
 export interface InputDate {
     day: number
     month: number

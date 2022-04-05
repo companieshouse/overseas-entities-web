@@ -6,6 +6,7 @@ export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the corporate 
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Which types of beneficial owners have been identified?";
+export const MANAGING_OFFICER_TYPE_PAGE_HEADING = "Which types of managing officers have been identified?";
 export const EXPECTED_TEXT = "Page not found - Register an overseas entity and tell us about its beneficial owners";
 export const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";
 export const MESSAGE_ERROR = "Can't connect";

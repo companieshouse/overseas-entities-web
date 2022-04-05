@@ -19,6 +19,10 @@
           {% include "includes/beneficial-owners-check.html" %}
         {% endif %}
 
+        {% if (isManagingOfficers) %}
+          {% include "includes/managing-officers-check.html" %}
+        {% endif %}
+
         {% include "includes/continue-button.html" %}
 
       </form>

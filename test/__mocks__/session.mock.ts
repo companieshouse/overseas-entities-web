@@ -7,6 +7,7 @@ import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
   beneficialOwnerTypeType,
+  managingOfficerTypeType,
   beneficialOwnerOtherType,
   ApplicationData,
   beneficialOwnerIndividualType,
@@ -19,7 +20,7 @@ import {
 import {
   BeneficialOwnerStatementChoice,
   BeneficialOwnerTypeChoice,
-  corpNatureOfControl,
+  corpNatureOfControl, ManagingOfficerTypeChoice,
   natureOfControl,
   statementCondition,
   yesNoResponse
@@ -75,6 +76,10 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementTyp
 
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
   beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal, BeneficialOwnerTypeChoice.government ]
+};
+
+export const MANAGING_OFFICER_TYPE_OBJECT_MOCK: managingOfficerTypeType.ManagingOfficerType = {
+  managingOfficerType: [ ManagingOfficerTypeChoice.individual, ManagingOfficerTypeChoice.corporate ]
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -164,6 +169,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
+  [managingOfficerTypeType.ManagingOfficerTypeKey]: MANAGING_OFFICER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK,

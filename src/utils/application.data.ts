@@ -5,6 +5,10 @@ export const getApplicationData = (session: Session | undefined): ApplicationDat
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
 };
 
+export const deleteApplicationData = (session: Session | undefined): boolean | undefined => {
+  return session?.deleteExtraData(APPLICATION_DATA_KEY);
+};
+
 export const setApplicationData = (session: Session | undefined, data: any, key: string): undefined | void => {
   let appData: ApplicationData = getApplicationData(session);
   appData = { ...appData, [key]: { ...data } } as ApplicationData;

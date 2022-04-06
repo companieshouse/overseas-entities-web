@@ -12,8 +12,7 @@
     "sonarqube-pull-request": "sonar-scanner -D sonar.pullrequest.base=main",
     "sonarqube": "branch=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD); if [[ $branch == \"HEAD\" ]]; then echo $branch && npm run sonarqube-base-branch; else echo $branch && npm run sonarqube-pull-request; fi;",
     "test": "jest",
-    "coverage": "jest --coverage --forceExit --passWithNoTests",
-    "prepare": "husky install"
+    "coverage": "jest --coverage --forceExit --passWithNoTests"
   },
   "repository": {
     "type": "git",
@@ -41,7 +40,6 @@
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
-    "husky": "^7.0.0",
     "jest": "^27.5.1",
     "sonarqube-scanner": "^2.8.1",
     "supertest": "^6.2.2",

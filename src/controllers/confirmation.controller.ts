@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { logger } from "../utils/logger";
-import * as config from "../config";
+import { CONFIRMATION_PAGE } from "../config";
 
 export const get = (req: Request, res: Response) => {
-  logger.debug(`GET ${config.CONFIRMATION_PAGE}`);
-  return res.render(config.CONFIRMATION_PAGE, {
+  logger.debug(`GET ${CONFIRMATION_PAGE}`);
+  return res.render(CONFIRMATION_PAGE, {
     referenceNumber: "TBC123"
   });
 };

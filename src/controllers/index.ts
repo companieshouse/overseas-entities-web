@@ -10,3 +10,4 @@ export * as managingOfficerCorporate from "./managing.officer.corporate.controll
 export * as presenter from "./presenter.controller";
 export * as entity from "./entity.controller";
 export * as beneficialOwnerIndividual from "./beneficial.owner.individual.controller";
+export * as confirmation from "./confirmation.controller";

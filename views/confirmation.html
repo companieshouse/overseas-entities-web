@@ -1,0 +1,38 @@
+
+
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Confirmation - Register an overseas entity - GOV.UK
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <div class="govuk-panel govuk-panel--confirmation">
+        <h1 class="govuk-panel__title">Application submitted</h1>
+        <div class="govuk-panel__body">
+          Your application reference number: <br>
+          <strong>{{ referenceNumber }}</strong>
+        </div>
+      </div>
+
+      <p>
+        We have sent a confirmation email to <strong>sarahphilips@sugar.com</strong>.
+      </p>
+
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <p>We will email you within XX working days to let you know if your application to register an overseas entity has been accepted or rejected.</p>
+
+      <p>If the application is accepted, the overseas entity and its beneficial owners will be added to the <a href="#">Register of Overseas Entities.</a></p>
+
+      <p>We will also send you its Overseas Entity ID number by email. You will need to provide this ID number to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK.</p>
+
+      <p><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a> (takes 30 seconds)</p>
+
+    </div>
+  </div>
+
+{% endblock %}

@@ -12,10 +12,10 @@ export interface Presenter {
     registrationNumber?: number
 }
 
-enum presenterRole {
-  administrator,
-  agent,
-  solicitor,
-  beneficialOwner,
-  other
+export enum presenterRole {
+  administrator = "administrator",
+  agent = "agent",
+  solicitor = "solicitor",
+  beneficialOwner = "beneficialOwner",
+  other = "other"
 }

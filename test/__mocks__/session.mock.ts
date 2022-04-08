@@ -20,6 +20,7 @@ import {
   statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
+import {presenterRole} from "../../src/model/presenter.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -44,20 +45,41 @@ export function getSessionRequestWithExtraData(): Session {
 
 const ADDRESS = {
   propertyNameNumber: "1",
-  addressLine1: "addressLine1",
-  addressLine2: "addressLine2",
-  town: "town",
-  county: "county",
-  country: "country",
-  postcode: "BY 2"
+  principalAddressLine1: "addressLine1",
+  principalAddressLine2: "addressLine2",
+  principalAddressTown: "town",
+  principalAddressCounty: "county",
+  principalAddressPostcode: "BY 2"
+};
+
+export const SERVICE_ADDRESS = {
+  propertyNameNumber: "1",
+  serviceAddressLine1: "serviceAddressLine1",
+  serviceAddressLine2: "serviceAddressLine2",
+  serviceAddressTown: "serviceTown",
+  serviceAddressCounty: "serviceCounty",
+  serviceAddressPostcode: "SBY 2"
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   overseasEntityName: "overseasEntityName",
   incorporationCountry: "incorporationCountry",
   principalAddress: ADDRESS,
-  isAddressSameAsPrincipalAddress: 0,
+  isAddressSameAsPrincipalAddress: "Yes",
   serviceAddress: {},
+  email: "email",
+  legalForm: "legalForm",
+  governedLaw: "governedLaw",
+  publicRegister: "publicRegister",
+  registrationNumber: 123
+};
+
+export const ENTITY_WITH_SERVICE_ADDRESS_OBJECT_MOCK: entityType.Entity = {
+  overseasEntityName: "overseasEntityName",
+  incorporationCountry: "incorporationCountry",
+  principalAddress: ADDRESS,
+  isAddressSameAsPrincipalAddress: "No",
+  serviceAddress: SERVICE_ADDRESS,
   email: "email",
   legalForm: "legalForm",
   governedLaw: "governedLaw",
@@ -133,11 +155,11 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: {
     fullName: "fullName",
     phoneNumber: "phoneNumber",
-    role: 2,
+    role: presenterRole.other,
     roleTitle: "roleTitle",
     registrationNumber: 123
   },
-  [entityType.EntityKey]: {},
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,

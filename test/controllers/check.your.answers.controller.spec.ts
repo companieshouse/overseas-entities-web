@@ -16,7 +16,6 @@ import {
   PRESENTER_OTHER_ROLE_OBJECT_MOCK
 } from "../__mocks__/session.mock";
 import { entityType, presenterType } from "../../src/model";
-import { Presenter } from "../../src/model/presenter.model";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -68,11 +67,13 @@ describe("GET tests", () => {
   test("renders the check your answers page with mock data (undefined presenter role)", async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const tempPresenter = APPLICATION_DATA_MOCK[presenterType.PresenterKey];
-    const presenter: Presenter = APPLICATION_DATA_MOCK[presenterType.PresenterKey] as Presenter;
-    if (presenter) {
-      presenter.role = undefined;
-    }
-
+    APPLICATION_DATA_MOCK[presenterType.PresenterKey] = {
+      fullName: "fullName",
+      phoneNumber: "phoneNumber",
+      role: undefined,
+      roleTitle: "Administrator",
+      registrationNumber: 123
+    };
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
     APPLICATION_DATA_MOCK[presenterType.PresenterKey] = tempPresenter;
 

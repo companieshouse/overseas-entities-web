@@ -2,7 +2,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
-import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
+import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
+import { DESCRIPTION, REFERENCE } from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
@@ -25,14 +26,15 @@ import {
   statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
+import { ANY_MESSAGE_ERROR } from "./text.mock";
 
 export const userMail = "userWithPermission@ch.gov.uk";
+export const ACCESS_TOKEN_MOCK: IAccessToken = { access_token: 'accessToken' };
 
 const SIGN_IN_INFO = {
   [SignInInfoKeys.SignedIn]: 1,
-  [SignInInfoKeys.UserProfile]: {
-    [UserProfileKeys.Email]: userMail
-  }
+  [SignInInfoKeys.UserProfile]: { [UserProfileKeys.Email]: userMail },
+  [SignInInfoKeys.AccessToken]: ACCESS_TOKEN_MOCK
 };
 
 export function getSessionRequestWithPermission(): Session {
@@ -47,27 +49,37 @@ export function getSessionRequestWithExtraData(): Session {
   return session;
 }
 
-const ADDRESS = {
-  propertyNameNumber: "1",
-  addressLine1: "addressLine1",
-  addressLine2: "addressLine2",
+export const ADDRESS = {
+  property_name_number: "1",
+  line_1: "addressLine1",
+  line_2: "addressLine2",
   town: "town",
   county: "county",
   country: "country",
   postcode: "BY 2"
 };
+export const ADDRESS_FIELDS_MOCK = ["propertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
+export const ADDRESS_MOCK = {
+  propertyNameNumber: "1",
+  serviceAddressLine1: "addressLine1",
+  serviceAddressLine2: "addressLine2",
+  serviceAddressTown: "town",
+  serviceAddressCounty: "county",
+  country: "country",
+  serviceAddressPostcode: "BY 2"
+};
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
-  overseasEntityName: "overseasEntityName",
-  incorporationCountry: "incorporationCountry",
-  principalAddress: ADDRESS,
-  isAddressSameAsPrincipalAddress: 0,
-  serviceAddress: {},
+  name: "overseasEntityName",
+  incorporation_country: "incorporationCountry",
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: 0,
+  service_address: {},
   email: "email",
-  legalForm: "legalForm",
-  governedLaw: "governedLaw",
-  publicRegister: "publicRegister",
-  registrationNumber: 123
+  legal_form: "legalForm",
+  law_governed: "governedLaw",
+  public_register_name: "publicRegister",
+  registration_number: "123"
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
@@ -157,15 +169,17 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   }
 };
 
+const BENEFICIAL_OWNER_PRESENTER_OBJECT_MOCK = {
+  fullName: "fullName",
+  phoneNumber: "phoneNumber",
+  role: "other",
+  roleTitle: "roleTitle",
+  registrationNumber: "123"
+} as presenterType.Presenter;
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: {
-    fullName: "fullName",
-    phoneNumber: "phoneNumber",
-    role: 2,
-    roleTitle: "roleTitle",
-    registrationNumber: 123
-  },
-  [entityType.EntityKey]: {},
+  [presenterType.PresenterKey]: BENEFICIAL_OWNER_PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
@@ -175,3 +189,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK,
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 };
+
+export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
+export const TRANSACTION_ID = "12345";
+export const TRANSACTION = { reference: REFERENCE, description: DESCRIPTION };

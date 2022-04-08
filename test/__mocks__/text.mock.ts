@@ -18,3 +18,4 @@ export const MANAGING_OFFICER_PAGE_HEADING = "Tell us about the managing officer
 export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
+export const UNAUTHORISED = "Unauthorised";

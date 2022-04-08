@@ -17,6 +17,11 @@ export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
+export const API_URL = getEnvironmentValue("API_URL");
+export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
+
+export const DESCRIPTION = "Overseas Entities Transaction";
+export const REFERENCE = "OverseasEntitiestReference";
 
 // TEMPLATEs
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";

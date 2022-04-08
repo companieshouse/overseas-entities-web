@@ -31,7 +31,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, entityType.EntityKey);
 
-    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {
     logger.error(error);
     next(error);

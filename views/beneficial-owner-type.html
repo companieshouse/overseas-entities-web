@@ -10,55 +10,19 @@
 
 {% block content %}
 
-  <div class="govuk-grid-row govuk-body">
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
       <form method="post">
 
-        <h1 class="govuk-heading-xl govuk-!-margin-0">Who is a beneficial owner of the overseas entity?</h1>
-        <br/>
-        {% set ownerHint %}
-          {{ govukDetails({
-            summaryText: "What is a beneficial owner?",
-            text: "A beneficial owner is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management."
-          }) }}
-          <p class="govuk-hint">Select all that apply.</p>
-        {% endset %}
+        {% if (isBeneficialOwners) %}
+          {% include "includes/beneficial-owners-check.html" %}
+        {% endif %}
 
-        {{ govukCheckboxes({
-          idPrefix: "beneficial-owner-type",
-          name: "beneficialOwnerType",
-          fieldset: {
-            legend: {
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--l"
-            }
-          },
-          hint: {
-            html: ownerHint
-          },
-          items: [
-            {
-              value: "individual",
-              text: "An individual beneficial owner",
-              checked: beneficialOwnerType and 'individual' in beneficialOwnerType
-            },
-            {
-              value: "otherLegal",
-              text: "A public authority, or other legal entity",
-              checked: beneficialOwnerType and 'otherLegal' in beneficialOwnerType
-            },
-            {
-              divider: "or"
-            },
-            {
-              value: "none",
-              text: "There is no beneficial owner",
-              behaviour: "exclusive",
-              checked: beneficialOwnerType and 'none' in beneficialOwnerType
-            }
-          ]
-        }) }}
+        {% if (isManagingOfficers) %}
+          {% include "includes/managing-officers-check.html" %}
+        {% endif %}
+
         {% include "includes/continue-button.html" %}
 
       </form>

@@ -4,23 +4,27 @@ import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
 import {
-  ApplicationData,
   APPLICATION_DATA_KEY,
+  beneficialOwnerGovType,
   beneficialOwnerTypeType,
+  managingOfficerTypeType,
   beneficialOwnerOtherType,
+  ApplicationData,
   beneficialOwnerIndividualType,
+  beneficialOwnerStatementType,
   entityType,
-  presenterType,
   managingOfficerCorporateType,
-  managingOfficerType
+  managingOfficerType,
+  presenterType
 } from "../../src/model";
 import {
+  BeneficialOwnerStatementChoice,
   BeneficialOwnerTypeChoice,
+  corpNatureOfControl, ManagingOfficerTypeChoice,
   natureOfControl,
   statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
-import { presenterRole } from "../../src/model/presenter.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 
@@ -87,8 +91,16 @@ export const ENTITY_WITH_SERVICE_ADDRESS_OBJECT_MOCK: entityType.Entity = {
   registrationNumber: 123
 };
 
+export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
+  beneficialOwnerStatement: BeneficialOwnerStatementChoice.allIdentifiedAllSupplied
+};
+
 export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
-  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal ]
+  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal, BeneficialOwnerTypeChoice.government ]
+};
+
+export const MANAGING_OFFICER_TYPE_OBJECT_MOCK: managingOfficerTypeType.ManagingOfficerType = {
+  managingOfficerType: [ ManagingOfficerTypeChoice.individual, ManagingOfficerTypeChoice.corporate ]
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -118,6 +130,21 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   usualResidentialAddress: ADDRESS,
   serviceAddress: ADDRESS,
   natureOfControl: natureOfControl.over50under75Percent
+};
+
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  corporationLawGoverned: "a11",
+  corporationName: "my company name",
+  corporationNatureOfControl: corpNatureOfControl.influence,
+  corporationStartDate: {
+    day: 12,
+    month: 11,
+    year: 1965
+  },
+  isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
+  isOnSanctionsList: yesNoResponse.No,
+  principalAddress: ADDRESS,
+  serviceAddress: ADDRESS
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
@@ -155,14 +182,17 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: {
     fullName: "fullName",
     phoneNumber: "phoneNumber",
-    role: presenterRole.other,
+    role: presenterType.presenterRole.other,
     roleTitle: "roleTitle",
     registrationNumber: 123
   },
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
+  [managingOfficerTypeType.ManagingOfficerTypeKey]: MANAGING_OFFICER_TYPE_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK,
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 };

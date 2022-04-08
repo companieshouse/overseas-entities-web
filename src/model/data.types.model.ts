@@ -13,10 +13,23 @@ export enum yesNoResponse {
     Yes = 1
 }
 
+export enum BeneficialOwnerStatementChoice {
+    allIdentifiedAllSupplied = "allIdentifiedAllSupplied",
+    allIdentifiedSomeSupplied = "allIdentifiedSomeSupplied",
+    someIdentifiedSomeDetails = "someIdentifiedSomeDetails",
+    noneIdentified = "noneIdentified"
+}
+
 export enum BeneficialOwnerTypeChoice {
     individual = "individual",
     otherLegal = "otherLegal",
+    government = "government",
     none = "none"
+}
+
+export enum ManagingOfficerTypeChoice {
+    individual = "individual",
+    corporate = "corporate"
 }
 
 export interface InputDate {
@@ -29,6 +42,13 @@ export enum natureOfControl {
     over25upTo50Percent = "25",
     over50under75Percent = "50",
     atLeast75Percent = "75"
+}
+
+export enum corpNatureOfControl {
+    shares = "shares",
+    voting = "voting",
+    appoint = "appoint",
+    influence = "influence"
 }
 
 export enum statementCondition {

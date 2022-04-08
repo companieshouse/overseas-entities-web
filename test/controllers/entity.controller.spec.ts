@@ -11,7 +11,7 @@ import { ENTITY_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/controllers";
 import { ENTITY_OBJECT_MOCK } from '../__mocks__/session.mock';
-import { BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT, ENTITY_PAGE_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import { BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT, ENTITY_PAGE_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -36,7 +36,7 @@ describe("ENTITY controller", () => {
     const resp = await request(app).post(ENTITY_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
+    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
   });
 
   test("catch error when renders the entity page on GET method", async () => {

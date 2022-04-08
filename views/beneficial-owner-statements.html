@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Beneficial owner statements - Register an overseas entity - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <form method="post">
+
+        <h1 class="govuk-heading-xl">Have you identified any beneficial owners?</h1>
+
+        {{ govukDetails({
+          summaryText: "What is a beneficial owner?",
+          text: "A beneficial owner of an overseas entity is a person, entity, government or public authority that meets one or more of the conditions known as the ‘nature of control’. For example, if they hold more than 25% of the shares or voting rights in the overseas entity."
+        }) }}
+
+        {{ govukRadios({
+          idPrefix: "beneficialOwnerStatement",
+          name: "beneficialOwnerStatement",
+          fieldset: {
+            legend: {
+              text: "Have you identified any beneficial owners?",
+              isPageHeading: false,
+              classes: "govuk-visually-hidden"
+            }
+          },
+          items: [
+            {
+              value: "allIdentifiedAllSupplied",
+              text: "All beneficial owners have been identified and all relevant information can be supplied",
+              hint: {
+                text: "Only beneficial owners required"
+              },
+              checked: beneficialOwnerStatement == "allIdentifiedAllSupplied"
+            },
+            {
+              value: "allIdentifiedSomeSupplied",
+              text: "All beneficial owners identified but only some relevant information can be supplied",
+              hint: {
+                text: "At least one managing officer will be required"
+              },
+              checked: beneficialOwnerStatement == "allIdentifiedSomeSupplied"
+            },
+            {
+              value: "someIdentifiedSomeDetails",
+              text: "Some beneficial owners have been identified but not all details can be obtained",
+              hint: {
+                text: "At least one managing officer will be required"
+              },
+              checked: beneficialOwnerStatement == "someIdentifiedSomeDetails"
+            },
+            {
+              value: "noneIdentified",
+              text: "No beneficial owners have been identified",
+              hint: {
+                text: "At least one managing officer will be required"
+              },
+              checked: beneficialOwnerStatement == "noneIdentified"
+            }
+          ]
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

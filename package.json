@@ -2,7 +2,7 @@
   "name": "overseas-entities-web",
   "version": "0.0.1",
   "description": "Web front-end for the Register An Overseas Entity service",
-  "main": "dist/bin/www.js",
+  "main": "app.ts",
   "scripts": {
     "start": "node dist/bin/www.js",
     "build": "tsc && cp -r views dist/",

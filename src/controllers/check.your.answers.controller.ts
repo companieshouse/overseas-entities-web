@@ -17,7 +17,10 @@ export const get = (req: Request, res: Response) => {
 };
 
 const getPresenterRoleDisplayText = (appData: ApplicationData): string | undefined => {
-  const roleEnum: presenterRole | undefined = appData.presenter?.role;
+  if (!appData.presenter) {
+    return "";
+  }
+  const roleEnum: presenterRole | undefined = appData.presenter.role;
   if (roleEnum === undefined) {
     return "";
   }
@@ -26,7 +29,7 @@ const getPresenterRoleDisplayText = (appData: ApplicationData): string | undefin
     [presenterRole.agent]: "Agent",
     [presenterRole.solicitor]: "Solicitor",
     [presenterRole.beneficialOwner]: "Beneficial owner",
-    [presenterRole.other]: appData.presenter?.roleTitle
+    [presenterRole.other]: appData.presenter.roleTitle
   };
 
   return roleMap[roleEnum];

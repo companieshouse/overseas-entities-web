@@ -65,6 +65,22 @@ export const SERVICE_ADDRESS = {
   serviceAddressPostcode: "SBY 2"
 };
 
+export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
+  fullName: "fullName",
+  phoneNumber: "phoneNumber",
+  role: presenterType.presenterRole.administrator,
+  roleTitle: "Administrator",
+  registrationNumber: 123
+};
+
+export const PRESENTER_OTHER_ROLE_OBJECT_MOCK: presenterType.Presenter = {
+  fullName: "fullName",
+  phoneNumber: "phoneNumber",
+  role: presenterType.presenterRole.other,
+  roleTitle: "roleTitle",
+  registrationNumber: 123
+};
+
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   overseasEntityName: "overseasEntityName",
   incorporationCountry: "incorporationCountry",
@@ -179,13 +195,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: {
-    fullName: "fullName",
-    phoneNumber: "phoneNumber",
-    role: presenterType.presenterRole.other,
-    roleTitle: "roleTitle",
-    registrationNumber: 123
-  },
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,

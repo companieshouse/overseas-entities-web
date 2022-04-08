@@ -4,3 +4,9 @@ import ApplicationLogger from "@companieshouse/structured-logging-node/lib/Appli
 import { APPLICATION_NAME } from "../config";
 
 export const logger: ApplicationLogger = createLogger(APPLICATION_NAME);
+
+export const createAndLogError = (description: string): Error => {
+  const error = new Error (description);
+  logger.error(`${error.stack}`);
+  return error;
+};

@@ -40,7 +40,6 @@ describe("GET tests", () => {
 
   test("renders the check your answers page with mock data (service address not same as principal address)", async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    console.log(JSON.stringify(APPLICATION_DATA_MOCK, null, 2));
     const tempAddress = APPLICATION_DATA_MOCK[entityType.EntityKey];
     APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_WITH_SERVICE_ADDRESS_OBJECT_MOCK;
 

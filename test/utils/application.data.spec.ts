@@ -4,8 +4,13 @@ import {
   setApplicationData,
   prepareData,
   deleteApplicationData,
+  mapAddressToObjectField,
+  mapObjectFieldToAddress,
 } from "../../src/utils/application.data";
 import {
+  ADDRESS,
+  ADDRESS_FIELDS_MOCK,
+  ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
   ENTITY_OBJECT_MOCK,
   getSessionRequestWithExtraData,
@@ -40,9 +45,9 @@ describe("Application data utils", () => {
   });
 
   test("prepareData should store application data into the session", () => {
-    const data = prepareData(ENTITY_OBJECT_MOCK, ['legalForm', 'email']);
-    const { legalForm, email } = ENTITY_OBJECT_MOCK;
-    expect(data).toEqual( { legalForm, email } );
+    const data = prepareData(ENTITY_OBJECT_MOCK, ['legal_form', 'email']);
+    const { legal_form, email } = ENTITY_OBJECT_MOCK;
+    expect(data).toEqual( { legal_form, email } );
   });
 
   test("deleteApplicationData should return undefined if session is undefined", () => {
@@ -57,6 +62,16 @@ describe("Application data utils", () => {
 
     expect(response).toEqual(true);
     expect(sessionWithExtraData).toEqual( sessionWithOutExtraData );
+  });
+
+  test("mapAddressToObjectField should map address to address fields present on the view", () => {
+    const response = mapAddressToObjectField(ADDRESS, ADDRESS_FIELDS_MOCK);
+    expect(response).toEqual(ADDRESS_MOCK);
+  });
+
+  test("mapObjectFieldToAddress should map address fields coming from the view to address", () => {
+    const response = mapObjectFieldToAddress(ADDRESS_MOCK, ADDRESS_FIELDS_MOCK);
+    expect(response).toEqual(ADDRESS);
   });
 
 });

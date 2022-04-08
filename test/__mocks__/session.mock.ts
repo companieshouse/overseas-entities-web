@@ -20,7 +20,7 @@ import {
   statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
-import {presenterRole} from "../../src/model/presenter.model";
+import { presenterRole } from "../../src/model/presenter.model";
 
 export const userMail = "userWithPermission@ch.gov.uk";
 

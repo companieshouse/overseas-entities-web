@@ -47,9 +47,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[entityType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, entityType.PrincipalAddressKeys);
 
     data["is_service_address_same_as_principal_address"] = +data["is_service_address_same_as_principal_address"];
-    (!data["is_service_address_same_as_principal_address"])
-      ?  data[entityType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, entityType.ServiceAddressKeys)
-      :  data[entityType.ServiceAddressKey] = {};
+    data[entityType.ServiceAddressKey] = (!data["is_service_address_same_as_principal_address"])
+      ?  mapObjectFieldToAddress(req.body, entityType.ServiceAddressKeys)
+      :  {};
 
     setApplicationData(req.session, data, entityType.EntityKey);
 

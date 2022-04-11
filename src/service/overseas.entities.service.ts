@@ -2,7 +2,7 @@ import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/se
 import { OverseasEntityCreated } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { Session } from "@companieshouse/node-session-handler";
 
-import { createApiKeyClient } from "./api.service";
+import { createOAuthApiClient } from "./api.service";
 import { logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 
@@ -11,7 +11,7 @@ export const createOverseasEntity = async (
   transactionId: string
 ): Promise<Resource<OverseasEntityCreated> | ApiErrorResponse> => {
   try {
-    const client = createApiKeyClient();
+    const client = createOAuthApiClient(session);
     return await client.overseasEntity.postOverseasEntity(
       transactionId,
       getApplicationData(session)

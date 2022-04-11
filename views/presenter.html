@@ -22,9 +22,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "fullName",
-          name: "fullName",
-          value: fullName
+          id: "full_name",
+          name: "full_name",
+          value: full_name
         }) }}
 
         {{ govukInput({
@@ -33,17 +33,17 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "phoneNumber",
-          name: "phoneNumber",
-          value: phoneNumber,
+          id: "phone_number",
+          name: "phone_number",
+          value: phone_number,
           classes: "govuk-!-width-one-third"
         }) }}
 
         {% set otherHtml %}
           {{ govukInput({
-            id: "roleTitle",
-            name: "roleTitle",
-            value: roleTitle,
+            id: "role_title",
+            name: "role_title",
+            value: role_title,
             classes: "govuk-!-width-one-third",
             label: {
               text: "Role title"
@@ -81,9 +81,9 @@
               checked: role === 'solicitor'
             },
             {
-              value: "beneficialOwner",
+              value: "beneficial_owner",
               text: "Beneficial owner",
-              checked: role === 'beneficialOwner'
+              checked: role === 'beneficial_owner'
             },
             {
               value: "other",
@@ -102,9 +102,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "registrationNumber",
-          name: "registrationNumber",
-          value: registrationNumber,
+          id: "anti_money_laundering_registration_number",
+          name: "anti_money_laundering_registration_number",
+          value: anti_money_laundering_registration_number,
           classes: "govuk-!-width-one-third"
         }) }}
 

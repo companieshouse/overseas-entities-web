@@ -5,4 +5,6 @@ export default () => {
   process.env.COOKIE_DOMAIN = "test";
   process.env.CACHE_SERVER = "test";
   process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
+  process.env.API_URL = "test";
+  process.env.CHS_API_KEY = "test";
 };

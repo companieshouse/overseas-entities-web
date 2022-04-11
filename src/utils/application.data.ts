@@ -1,5 +1,5 @@
 import { Session } from '@companieshouse/node-session-handler';
-import { ApplicationData, APPLICATION_DATA_KEY, ApplicationDataType } from '../model';
+import { ApplicationData, APPLICATION_DATA_KEY, ApplicationDataType, dataType } from '../model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -17,4 +17,12 @@ export const setApplicationData = (session: Session | undefined, data: any, key:
 
 export const prepareData = (data: any, keys: string[]): ApplicationDataType => {
   return keys.reduce((o, key) => Object.assign(o, { [key]: data[key] }), {});
+};
+
+export const mapObjectFieldToAddress = (data: any, keys: string[]) => {
+  return keys.reduce((o, key, i) => Object.assign(o, { [dataType.AddressKeys[i]]: data[key] }), {});
+};
+
+export const mapAddressToObjectField = (data: any, keys: string[]) => {
+  return keys.reduce((o, key, i) => Object.assign(o, { [key]: data[dataType.AddressKeys[i]] }), {});
 };

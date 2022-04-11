@@ -183,14 +183,14 @@
                 },
                 items: [
                     {
-                        value: "Yes",
+                        value: 1,
                         text: "Yes",
-                        checked: is_service_address_same_as_principal_address === 'Yes'
+                        checked: is_service_address_same_as_principal_address === 1
                     },
                     {
-                        value: "No",
+                        value: 0,
                         text: "No",
-                        checked: is_service_address_same_as_principal_address === 'No',
+                        checked: is_service_address_same_as_principal_address === 0,
                         conditional: {
                             html: serviceAddressHtml
                         }

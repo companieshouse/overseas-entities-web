@@ -73,13 +73,19 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   principal_address: ADDRESS,
-  is_service_address_same_as_principal_address: 0,
+  is_service_address_same_as_principal_address: 1,
   service_address: {},
   email: "email",
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
   registration_number: "123"
+};
+
+export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
+  ...ENTITY_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: 0,
+  service_address: ADDRESS_MOCK
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {

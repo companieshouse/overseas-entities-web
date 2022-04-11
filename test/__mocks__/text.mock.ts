@@ -19,3 +19,5 @@ export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporat
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UNAUTHORISED = "Unauthorised";
+export const HTTP_STATUS_CODE_500 = "Http status code 500";
+export const TRANSACTION_ERROR = "Transaction API POST request returned no response";

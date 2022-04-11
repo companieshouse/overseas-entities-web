@@ -1,12 +1,13 @@
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import { Session } from "@companieshouse/node-session-handler";
 
-import { createApiKeyClient } from "./api.service";
+import { createOAuthApiClient } from "./api.service";
 import { createAndLogError, logger } from "../utils/logger";
 import { DESCRIPTION, REFERENCE } from "../config";
 
-export const postTransaction = async (): Promise<Transaction> => {
-  const apiClient: ApiClient = createApiKeyClient();
+export const postTransaction = async (session: Session): Promise<Transaction> => {
+  const apiClient: ApiClient = createOAuthApiClient(session);
 
   const transaction: Transaction = { reference: REFERENCE, description: DESCRIPTION };
   const response = await apiClient.transaction.postTransaction(transaction) as any;

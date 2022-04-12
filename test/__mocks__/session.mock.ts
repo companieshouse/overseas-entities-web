@@ -198,4 +198,5 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "12345";
+export const OVERSEAS_ENTITY_ID = "54321";
 export const TRANSACTION = { reference: REFERENCE, description: DESCRIPTION };

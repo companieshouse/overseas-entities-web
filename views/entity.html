@@ -26,9 +26,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "overseasEntityName",
-                name: "overseasEntityName",
-                value: overseasEntityName
+                id: "name",
+                name: "name",
+                value: name
             }) }}
 
             {{ govukInput({
@@ -37,9 +37,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "incorporationCountry",
-                name: "incorporationCountry",
-                value: incorporationCountry
+                id: "incorporation_country",
+                name: "incorporation_country",
+                value: incorporation_country
             }) }}
 
             {% call govukFieldset({
@@ -57,7 +57,7 @@
                     id: "principalAddressLine1",
                     name: "principalAddressLine1",
                     autocomplete: "principalAddressline1",
-                    value: principalAddress.principalAddressLine1 if principalAddress
+                    value: principal_address.principalAddressLine1 if principal_address
                 }) }}
 
                 {{ govukInput({
@@ -67,7 +67,7 @@
                     id: "principalAddressLine2",
                     name: "principalAddressLine2",
                     autocomplete: "principalAddressline2",
-                    value: principalAddress.principalAddressLine2 if principalAddress
+                    value: principal_address.principalAddressLine2 if principal_address
                 }) }}
 
                 {{ govukInput({
@@ -78,7 +78,7 @@
                     id: "principalAddressTown",
                     name: "principalAddressTown",
                     autocomplete: "address-level2",
-                    value: principalAddress.principalAddressTown if principalAddress
+                    value: principal_address.principalAddressTown if principal_address
                 }) }}
 
                 {{ govukInput({
@@ -88,7 +88,7 @@
                     classes: "govuk-!-width-two-thirds",
                     id: "principalAddressCounty",
                     name: "principalAddressCounty",
-                    value: principalAddress.principalAddressCounty if principalAddress
+                    value: principal_address.principalAddressCounty if principal_address
                 }) }}
 
                 {{ govukInput({
@@ -99,7 +99,7 @@
                     id: "principalAddressPostcode",
                     name: "principalAddressPostcode",
                     autocomplete: "postal-code",
-                    value: principalAddress.principalAddressPostcode if principalAddress
+                    value: principal_address.principalAddressPostcode if principal_address
                 }) }}
 
             {% endcall %}
@@ -120,7 +120,7 @@
                         id: "serviceAddressLine1",
                         name: "serviceAddressLine1",
                         autocomplete: "address-line1",
-                        value: serviceAddress.serviceAddressLine1 if serviceAddress
+                        value: service_address.serviceAddressLine1 if service_address
                     }) }}
 
                     {{ govukInput({
@@ -130,7 +130,7 @@
                         id: "serviceAddressLine2",
                         name: "serviceAddressLine2",
                         autocomplete: "address-line2",
-                        value: serviceAddress.serviceAddressLine2 if serviceAddress
+                        value: service_address.serviceAddressLine2 if service_address
                     }) }}
 
                     {{ govukInput({
@@ -141,7 +141,7 @@
                         id: "serviceAddressTown",
                         name: "serviceAddressTown",
                         autocomplete: "address-level2",
-                        value: serviceAddress.serviceAddressTown if serviceAddress
+                        value: service_address.serviceAddressTown if service_address
                     }) }}
 
                     {{ govukInput({
@@ -151,7 +151,7 @@
                         classes: "govuk-!-width-two-thirds",
                         id: "serviceAddressCounty",
                         name: "serviceAddressCounty",
-                        value: serviceAddress.serviceAddressCounty if serviceAddress
+                        value: service_address.serviceAddressCounty if service_address
                     }) }}
 
                     {{ govukInput({
@@ -162,15 +162,15 @@
                         id: "serviceAddressPostcode",
                         name: "serviceAddressPostcode",
                         autocomplete: "postal-code",
-                        value: serviceAddress.serviceAddressPostcode if serviceAddress
+                        value: service_address.serviceAddressPostcode if service_address
                     }) }}
 
                 {% endcall %}
             {% endset -%}
 
             {{ govukRadios({
-                idPrefix: "isAddressSameAsPrincipalAddress",
-                name: "isAddressSameAsPrincipalAddress",
+                idPrefix: "is_service_address_same_as_principal_address",
+                name: "is_service_address_same_as_principal_address",
                 fieldset: {
                     legend: {
                         text: "Is the service address the same as the principal address?",
@@ -183,14 +183,14 @@
                 },
                 items: [
                     {
-                        value: "Yes",
+                        value: 1,
                         text: "Yes",
-                        checked: isAddressSameAsPrincipalAddress === 'Yes'
+                        checked: is_service_address_same_as_principal_address === 1
                     },
                     {
-                        value: "No",
+                        value: 0,
                         text: "No",
-                        checked: isAddressSameAsPrincipalAddress === 'No',
+                        checked: is_service_address_same_as_principal_address === 0,
                         conditional: {
                             html: serviceAddressHtml
                         }
@@ -215,9 +215,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "legalForm",
-                name: "legalForm",
-                value: legalForm
+                id: "legal_form",
+                name: "legal_form",
+                value: legal_form
             }) }}
 
             {{ govukInput({
@@ -226,9 +226,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "governedLaw",
-                name: "governedLaw",
-                value: governedLaw
+                id: "law_governed",
+                name: "law_governed",
+                value: law_governed
             }) }}
 
             {{ govukInput({
@@ -237,9 +237,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "publicRegister",
-                name: "publicRegister",
-                value: publicRegister
+                id: "public_register_name",
+                name: "public_register_name",
+                value: public_register_name
             }) }}
 
             {{ govukInput({
@@ -248,9 +248,9 @@
                     classes: "govuk-label--m",
                     isPageHeading: false
                 },
-                id: "registrationNumber",
-                name: "registrationNumber",
-                value: registrationNumber
+                id: "registration_number",
+                name: "registration_number",
+                value: registration_number
             }) }}
 
             <h2 class="govuk-heading-m">What information is shown on the online register</h2>

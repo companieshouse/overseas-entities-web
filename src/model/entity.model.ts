@@ -6,25 +6,25 @@ import { Address, yesNoResponse } from "./data.types.model";
 */
 export const EntityKey = "entity";
 export const EntityKeys: string[] = [
-  "overseasEntityName", "incorporationCountry", "principalAddress", "isAddressSameAsPrincipalAddress",
-  "serviceAddress", "email", "legalForm", "governedLaw", "publicRegister", "registrationNumber" ];
+  "name", "incorporation_country", "principal_address", "is_service_address_same_as_principal_address",
+  "service_address", "email", "legal_form", "law_governed", "public_register_name", "registration_number" ];
 /*
-  The Entity sub-fields for Address Object
+  The Entity sub-fields for Address Object - Used to map View and Data
 */
-export const PrincipalAddressKey = "principalAddress";
-export const PrincipalAddressKeys: string[] = ["principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "principalAddressPostcode"];
-export const ServiceAddressKey = "serviceAddress";
-export const ServiceAddressKeys: string[] = ["serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressPostcode"];
+export const PrincipalAddressKey = "principal_address";
+export const PrincipalAddressKeys: string[] = ["property_name_number", "principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "country", "principalAddressPostcode"];
+export const ServiceAddressKey = "service_address";
+export const ServiceAddressKeys: string[] = ["property_name_number", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
 
 export interface Entity {
-    overseasEntityName?: string
-    incorporationCountry?: string
-    principalAddress?: Address
-    isAddressSameAsPrincipalAddress?: yesNoResponse
-    serviceAddress?: Address
+    name?: string
+    incorporation_country?: string
+    principal_address?: Address
+    is_service_address_same_as_principal_address?: yesNoResponse
+    service_address?: Address
     email?: string
-    legalForm?: string
-    governedLaw?: string
-    publicRegister?: string
-    registrationNumber?: number
+    legal_form?: string
+    law_governed?: string
+    public_register_name?: string
+    registration_number?: string
 }

@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { Session } from '@companieshouse/node-session-handler';
 
-import { getSessionRequestWithPermission, userMail } from '../__mocks__/session.mock';
-import { checkUserSignedIn, getLoggedInUserEmail } from "../../src/utils/session";
+import { ACCESS_TOKEN_MOCK, getSessionRequestWithPermission, userMail } from '../__mocks__/session.mock';
+import { checkUserSignedIn, getAccessToken, getLoggedInUserEmail } from "../../src/utils/session";
 
 describe('Utils Session', () => {
   const testSessionWithPermission: Session = getSessionRequestWithPermission();
@@ -21,5 +21,13 @@ describe('Utils Session', () => {
 
   test('Test function checkUserSignedIn() return false if session is null', () => {
     expect(checkUserSignedIn(null)).toBeFalsy;
+  });
+
+  test('Test function getAccessToken() return Access Token from session', () => {
+    expect(getAccessToken(testSessionWithPermission)).toEqual(ACCESS_TOKEN_MOCK.access_token);
+  });
+
+  test('Test function getAccessToken() return blank values if session is null', () => {
+    expect(getAccessToken(null)).toBeFalsy;
   });
 });

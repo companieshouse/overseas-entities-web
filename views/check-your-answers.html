@@ -9,46 +9,36 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row" xmlns="http://www.w3.org/1999/html">
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       {% set formattedPrincipalAddressHtml %}
-        {% if appData.entity.principalAddress.principalAddressLine1 %}
-          {{ appData.entity.principalAddress.principalAddressLine1 }}
-        {% endif %}
-        {% if appData.entity.principalAddress.principalAddressLine2 %}
-          <br>{{ appData.entity.principalAddress.principalAddressLine2 }}
-        {% endif %}
-        {% if appData.entity.principalAddress.principalAddressTown %}
-          <br>{{ appData.entity.principalAddress.principalAddressTown }}
-        {% endif %}
-        {% if appData.entity.principalAddress.principalAddressCounty %}
-          <br>{{ appData.entity.principalAddress.principalAddressCounty }}
-        {% endif %}
-        {% if appData.entity.principalAddress.principalAddressPostcode %}
-          <br>{{ appData.entity.principalAddress.principalAddressPostcode }}
-        {% endif %}
+        {% set address = appData.entity.principal_address %}
+        {% include "includes/display_address.html" %}
       {% endset %}
 
       {% set formattedServiceAddressHtml %}
-        {% if appData.entity.isAddressSameAsPrincipalAddress == 'Yes' %}
+        {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
           The correspondence address is the same as the principal or registered office address
         {% else %}
-          {% if appData.entity.serviceAddress.serviceAddressLine1 %}
-            {{ appData.entity.serviceAddress.serviceAddressLine1 }}
-          {% endif %}
-          {% if appData.entity.serviceAddress.serviceAddressLine2 %}
-            <br>{{ appData.entity.serviceAddress.serviceAddressLine2 }}
-          {% endif %}
-          {% if appData.entity.serviceAddress.principalAddressTown %}
-            <br>{{ appData.entity.serviceAddress.principalAddressTown }}
-          {% endif %}
-          {% if appData.entity.serviceAddress.serviceAddressCounty %}
-            <br>{{ appData.entity.serviceAddress.serviceAddressCounty }}
-          {% endif %}
-          {% if appData.entity.serviceAddress.serviceAddressPostcode %}
-            <br>{{ appData.entity.serviceAddress.serviceAddressPostcode }}
-          {% endif %}
+          {% set address = appData.entity.service_address %}
+          {% include "includes/display_address.html" %}
+        {% endif %}
+      {% endset %}
+
+      {% set presenterRoleText %}
+        {% if appData.presenter and appData.presenter.role %}
+            {% if appData.presenter.role === "administrator" %}
+                Administrator
+            {% elif appData.presenter.role === "agent" %}
+                Agent
+            {% elif appData.presenter.role === "solicitor" %}
+                Solicitor
+            {% elif appData.presenter.role === "beneficial_owner" %}
+                Beneficial owner
+            {% elif appData.presenter.role_title %}
+                {{ appData.presenter.role_title }}
+            {% endif %}
         {% endif %}
       {% endset %}
 
@@ -63,7 +53,7 @@
               text: "Name"
             },
             value: {
-              text: appData.presenter.fullName
+              text: appData.presenter.full_name
             }
           },
           {
@@ -71,7 +61,7 @@
               text: "Phone number"
             },
             value: {
-              text: appData.presenter.phoneNumber
+              text: appData.presenter.phone_number
             }
           },
           {
@@ -79,7 +69,7 @@
               text: "Role"
             },
             value: {
-            text: presenterRole
+            text: presenterRoleText
             }
           },
           {
@@ -87,7 +77,7 @@
               text: "Anti-money laundering number"
             },
             value: {
-              text: appData.presenter.registrationNumber
+              text: appData.presenter.anti_money_laundering_registration_number
             }
           }
         ]
@@ -102,7 +92,7 @@
               text: "Name"
             },
             value: {
-              text: appData.entity.overseasEntityName
+              text: appData.entity.name
             }
           },
           {
@@ -110,7 +100,7 @@
               text: "Country of incorporation"
             },
             value: {
-              text: appData.entity.incorporationCountry
+              text: appData.entity.incorporation_country
             }
           },
           {
@@ -142,7 +132,7 @@
               text: "Legal Form"
             },
             value: {
-              text: appData.entity.legalForm
+              text: appData.entity.legal_form
             }
           },
           {
@@ -150,7 +140,7 @@
               text: "Governing law"
             },
             value: {
-              text: appData.entity.governedLaw
+              text: appData.entity.law_governed
             }
           },
           {
@@ -158,7 +148,7 @@
               text: "Overseas public register"
             },
             value: {
-              text: appData.entity.publicRegister
+              text: appData.entity.public_register_name
             }
           },
           {
@@ -166,7 +156,7 @@
               text: "Registration Number"
             },
             value: {
-              text: appData.entity.registrationNumber
+              text: appData.entity.registration_number
             }
           }
         ]

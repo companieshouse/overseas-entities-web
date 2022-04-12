@@ -20,7 +20,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( { httpStatusCode: 200, resource: TRANSACTION } );
+mockTransactionService.mockReturnValue( { httpStatusCode: 201, resource: TRANSACTION } );
 
 const mockOverseasEntity = createOverseasEntity as jest.Mock;
 mockOverseasEntity.mockReturnValue( { id: OVERSEAS_ENTITY_ID } );

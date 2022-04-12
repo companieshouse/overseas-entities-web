@@ -33,7 +33,7 @@ describe('Overseas Entity Service test suite', () => {
   });
 
   test('createOverseasEntity should responde with created httpStatusCode', async () => {
-    mockPostOverseasEntity.mockResolvedValueOnce({ id: OVERSEAS_ENTITY_ID });
+    mockPostOverseasEntity.mockResolvedValueOnce( { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } });
     const response = await createOverseasEntity(getSessionRequestWithExtraData(), TRANSACTION_ID);
 
     expect(response.id).toEqual(OVERSEAS_ENTITY_ID);

@@ -10,7 +10,7 @@ export const createOverseasEntity = async ( session: Session, transactionId: str
   const response = await client.overseasEntity.postOverseasEntity(
     transactionId,
     getApplicationData(session)
-  );
+  ) as any;
 
   if (response.httpStatusCode && [201, 400].indexOf(response.httpStatusCode) === -1) {
     const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
@@ -19,5 +19,5 @@ export const createOverseasEntity = async ( session: Session, transactionId: str
 
   logger.debug(`created Overseas Entity, ${JSON.stringify(response)}`);
 
-  return response as OverseasEntityCreated;
+  return response.resource as OverseasEntityCreated;
 };

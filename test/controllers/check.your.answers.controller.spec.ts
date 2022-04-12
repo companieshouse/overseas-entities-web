@@ -19,7 +19,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const SERVICE_ADDRESS_SAME_AS_PRONCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the principal or registered office address";
+const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the principal or registered office address";
 const ERROR_MSG = "error";
 
 describe("GET tests", () => {
@@ -36,7 +36,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("BY 2");
-    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRONCIPAL_ADDRESS_TEXT);
+    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
     expect(resp.text).toContain("legalForm");
   });
 
@@ -47,7 +47,7 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRONCIPAL_ADDRESS_TEXT);
+    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
   test("renders the check your answers page (service address not same as principal address)", async () => {

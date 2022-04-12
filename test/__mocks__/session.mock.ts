@@ -58,6 +58,17 @@ export const ADDRESS = {
   country: "country",
   postcode: "BY 2"
 };
+
+export const SERVICE_ADDRESS = {
+  property_name_number: "service1",
+  line_1: "serviceAddressLine1",
+  line_2: "serviceAddressLine2",
+  town: "serviceTown",
+  county: "serviceCounty",
+  country: "serviceCountry",
+  postcode: "SBY 2"
+};
+
 export const ADDRESS_FIELDS_MOCK = ["propertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
 export const ADDRESS_MOCK = {
   propertyNameNumber: "1",
@@ -85,7 +96,7 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
 export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
   ...ENTITY_OBJECT_MOCK,
   is_service_address_same_as_principal_address: 0,
-  service_address: ADDRESS_MOCK
+  service_address: SERVICE_ADDRESS
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
@@ -175,16 +186,16 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   }
 };
 
-const BENEFICIAL_OWNER_PRESENTER_OBJECT_MOCK = {
-  fullName: "fullName",
-  phoneNumber: "phoneNumber",
+const PRESENTER_OBJECT_MOCK = {
+  full_name: "fullName",
+  phone_number: "phoneNumber",
   role: "other",
-  roleTitle: "roleTitle",
-  registrationNumber: "123"
+  role_title: "roleTitle",
+  registration_number: "123"
 } as presenterType.Presenter;
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: BENEFICIAL_OWNER_PRESENTER_OBJECT_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,

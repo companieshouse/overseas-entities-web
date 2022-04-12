@@ -1,23 +1,23 @@
-import Resource, { ApiErrorResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { OverseasEntityCreated } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { Session } from "@companieshouse/node-session-handler";
 
 import { createOAuthApiClient } from "./api.service";
-import { logger } from "../utils/logger";
+import { createAndLogError, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 
-export const createOverseasEntity = async (
-  session: Session,
-  transactionId: string
-): Promise<Resource<OverseasEntityCreated> | ApiErrorResponse> => {
-  try {
-    const client = createOAuthApiClient(session);
-    return await client.overseasEntity.postOverseasEntity(
-      transactionId,
-      getApplicationData(session)
-    );
-  } catch (error) {
-    logger.error(error);
-    return error;
+export const createOverseasEntity = async ( session: Session, transactionId: string ): Promise<OverseasEntityCreated> => {
+  const client = createOAuthApiClient(session);
+  const response = await client.overseasEntity.postOverseasEntity(
+    transactionId,
+    getApplicationData(session)
+  );
+
+  if (response.httpStatusCode && [201, 400].indexOf(response.httpStatusCode) === -1) {
+    const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
+    throw createAndLogError(errorMsg);
   }
+
+  logger.debug(`created Overseas Entity, ${JSON.stringify(response)}`);
+
+  return response as OverseasEntityCreated;
 };

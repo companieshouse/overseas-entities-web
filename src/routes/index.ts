@@ -54,6 +54,7 @@ router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.g
 router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
+router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);
 
 router.get(config.CONFIRMATION_URL, authentication, confirmation.get);
 

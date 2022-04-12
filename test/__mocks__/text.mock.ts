@@ -20,4 +20,4 @@ export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending 
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UNAUTHORISED = "Unauthorised";
 export const HTTP_STATUS_CODE_500 = "Http status code 500";
-export const TRANSACTION_ERROR = "Transaction API POST request returned no response";
+export const TRANSACTION_ERROR = "Transaction API request returned no response";

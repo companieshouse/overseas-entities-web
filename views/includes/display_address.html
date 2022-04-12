@@ -1,0 +1,15 @@
+{% if address.line_1 %}
+  {{ address.line_1 }}
+{% endif %}
+{% if address.line_2 %}
+  <br>{{ address.line_2 }}
+{% endif %}
+{% if address.town %}
+  <br>{{ address.town }}
+{% endif %}
+{% if address.county %}
+  <br>{{ address.county }}
+{% endif %}
+{% if address.postcode %}
+  <br>{{ address.postcode }}
+{% endif %}

@@ -2,22 +2,44 @@ jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../src/app";
-import { CHECK_YOUR_ANSWERS_PAGE, CHECK_YOUR_ANSWERS_URL, CONFIRMATION_PAGE, CONFIRMATION_URL } from "../../src/config";
-import { CHECK_YOUR_ANSWERS_PAGE_TITLE, FOUND_REDIRECT_TO, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
+import {
+  CHECK_YOUR_ANSWERS_PAGE,
+  CHECK_YOUR_ANSWERS_URL,
+  CONFIRMATION_PAGE,
+  CONFIRMATION_URL,
+} from "../../src/config";
+import {
+  CHECK_YOUR_ANSWERS_PAGE_TITLE,
+  FOUND_REDIRECT_TO,
+  SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
+  SERVICE_UNAVAILABLE,
+} from "../__mocks__/text.mock";
+import {
+  ERROR,
+  OVERSEAS_ENTITY_ID,
+  TRANSACTION,
+  APPLICATION_DATA_MOCK,
+  ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+} from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/controllers";
 import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
-import { ERROR, OVERSEAS_ENTITY_ID, TRANSACTION } from "../__mocks__/session.mock";
+import { getApplicationData } from "../../src/utils/application.data";
 
+import { entityType } from "../../src/model";
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( { httpStatusCode: 201, resource: TRANSACTION } );
@@ -31,11 +53,59 @@ describe("GET tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+  test("renders the ${CHECK_YOUR_ANSWERS_PAGE} page (Other role)", async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain("fullName");
+    expect(resp.text).toContain("roleTitle");
+    expect(resp.text).toContain("overseasEntityName");
+    expect(resp.text).toContain("incorporationCountry");
+    expect(resp.text).toContain("addressLine1");
+    expect(resp.text).toContain("BY 2");
+    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
+    expect(resp.text).toContain("legalForm");
+  });
+
+  test("renders the check your answers page (service address not same as principal address)", async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
+    APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+    APPLICATION_DATA_MOCK[entityType.EntityKey] = tempEntity;
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain("fullName");
+    expect(resp.text).toContain("roleTitle");
+    expect(resp.text).toContain("overseasEntityName");
+    expect(resp.text).toContain("incorporationCountry");
+    expect(resp.text).toContain("addressLine1");
+    expect(resp.text).toContain("BY 2");
+    expect(resp.text).toContain("serviceAddressLine1");
+    expect(resp.text).toContain("SBY 2");
+    expect(resp.text).toContain("legalForm");
+  });
+
+  test("renders the check your answers page (service address same as principal address)", async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
+  });
+
+  test("catch error when getting data", async () => {
+    mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(500);
+    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after a succesful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
@@ -52,4 +122,5 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+
 });

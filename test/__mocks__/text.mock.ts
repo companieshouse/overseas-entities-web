@@ -23,3 +23,4 @@ export const HTTP_STATUS_CODE_500 = "Http status code 500";
 export const TRANSACTION_ERROR = "Transaction API request returned no response";
 export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Entity, transactionId =";
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
+export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the principal or registered office address";

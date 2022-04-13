@@ -16,6 +16,7 @@ export enum yesNoResponse {
 export enum BeneficialOwnerStatementChoice {
   allIdentifiedAllSupplied = "allIdentifiedAllSupplied",
   allIdentifiedSomeSupplied = "allIdentifiedSomeSupplied",
+  someIdentifiedAllDetails = "someIdentifiedAllDetails",
   someIdentifiedSomeDetails = "someIdentifiedSomeDetails",
   noneIdentified = "noneIdentified",
 }

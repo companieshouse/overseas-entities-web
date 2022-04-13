@@ -36,33 +36,26 @@
             {
               value: "allIdentifiedAllSupplied",
               text: "All beneficial owners have been identified and all relevant information can be supplied",
-              hint: {
-                text: "Only beneficial owners required"
-              },
               checked: beneficialOwnerStatement == "allIdentifiedAllSupplied"
             },
             {
               value: "allIdentifiedSomeSupplied",
               text: "All beneficial owners identified but only some relevant information can be supplied",
-              hint: {
-                text: "At least one managing officer will be required"
-              },
+              checked: beneficialOwnerStatement == "allIdentifiedSomeSupplied"
+            },
+            {
+              value: "someIdentifiedAllSupplied",
+              text: "Some beneficial owners identified and all relevant information can be supplied",
               checked: beneficialOwnerStatement == "allIdentifiedSomeSupplied"
             },
             {
               value: "someIdentifiedSomeDetails",
-              text: "Some beneficial owners have been identified but not all details can be obtained",
-              hint: {
-                text: "At least one managing officer will be required"
-              },
+              text: "Some beneficial owners have been identified but only some relevant information can be supplied",
               checked: beneficialOwnerStatement == "someIdentifiedSomeDetails"
             },
             {
               value: "noneIdentified",
               text: "No beneficial owners have been identified",
-              hint: {
-                text: "At least one managing officer will be required"
-              },
               checked: beneficialOwnerStatement == "noneIdentified"
             }
           ]

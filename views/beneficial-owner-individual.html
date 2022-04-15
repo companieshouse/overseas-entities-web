@@ -54,17 +54,17 @@
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "day",
-              value: dateOfBirth["dateOfBirth-day"]
+              value: dateOfBirth["dateOfBirth-day"] if dateOfBirth
             },
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "month",
-              value: dateOfBirth["dateOfBirth-month"]
+              value: dateOfBirth["dateOfBirth-month"] if dateOfBirth
             },
             {
               classes: "govuk-input--width-4 govuk-input",
               name: "year",
-              value: dateOfBirth["dateOfBirth-year"]
+              value: dateOfBirth["dateOfBirth-year"] if dateOfBirth
             }
           ]
         }) }}
@@ -354,8 +354,13 @@
 
         <h2 class="govuk-heading-m">What information is shown on the online register</h2>
         <p class="govuk-body">All details provided about the individual owner will be available on the online register</p>
-        <p class="govuk-body"><a href="/register/beneficial-owner-individual-2">Add another individual beneficial owner</a></p>
-        {% include "includes/continue-button.html" %}
+
+        {{ govukButton({
+          text: "Save and continue",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
 
       </form>
     </div>

@@ -45,7 +45,7 @@ export const closeTransaction = async (
     throw createAndLogError(`Http status code ${response.httpStatusCode}`);
   }
 
-  logger.debug(`Received transaction ${JSON.stringify(response)}`);
+  logger.debug(`Closed transaction ${JSON.stringify(response)}`);
 
   return response;
 };

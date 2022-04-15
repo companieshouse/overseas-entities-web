@@ -38,6 +38,19 @@ describe("Application data utils", () => {
     expect(data).toEqual( { ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
   });
 
+  // test("setApplicationData should store application data into the session for an empty array type object (MOs)", () => {
+  //   const session = getSessionRequestWithExtraData();
+  //   // to be done
+  //   setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+
+  // });
+
+  // test("setApplicationData should store application data into the session for an array type object (BOs)", () => {
+  //   const session = getSessionRequestWithExtraData();
+  //   // to be done
+  //   setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+  // });
+
   test("setApplicationData should return undefined if session is not defined", () => {
     // Session at this level can not be undefined, avoid checking req.session type, so
     // we return void if everything is ok, otherwise undefined, where void is not an alias for undefined.

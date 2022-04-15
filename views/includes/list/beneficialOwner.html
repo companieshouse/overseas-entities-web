@@ -1,0 +1,13 @@
+{% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--s">Beneficial Owners</caption>
+    <tbody class="govuk-table__body">
+        {% for boi in beneficialOwnerIndividual %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">Individual</th>
+                <td class="govuk-table__cell">{{ boi.fullName }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

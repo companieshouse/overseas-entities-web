@@ -10,20 +10,74 @@
 
 {% block content %}
 
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row govuk-body">
     <div class="govuk-grid-column-two-thirds">
 
       <form method="post">
 
-        {% if (isBeneficialOwners) %}
-          {% include "includes/beneficial-owners-check.html" %}
-        {% endif %}
+        <h1 class="govuk-heading-xl govuk-!-margin-0">You now need to tell us about beneficial owners and managing officers</h1>
+        <br/>
 
-        {% if (isManagingOfficers) %}
-          {% include "includes/managing-officers-check.html" %}
-        {% endif %}
+        {{ govukDetails({
+          summaryText: "What is a beneficial owner or managing officer?",
+          html: "<p>A <strong>beneficial owner</strong> is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management.</p><p>A <strong>managing officer</strong> is a director, manager or company secretary of the overseas entity.</p>"
+        }) }}
 
-        {% include "includes/continue-button.html" %}
+        {{ govukRadios({
+          idPrefix: "beneficial-owner-type",
+          name: "selectedOwnerOfficerType",
+          fieldset: {
+            legend: {
+              text: "Select the type of beneficial owner or managing officer you want to add",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "You can add more later"
+          },
+          items: [
+            {
+              value: "individualOwner",
+              text: "Individual beneficial owners"
+            },
+            {
+              value: "otherLegalOwner",
+              text: "Other legal entity beneficial owners"
+            },
+            {
+              value: "governmentOrPublicOwner",
+              text: "Government or public authority beneficial owners"
+            },
+            {
+              value: "individualOfficer",
+              text: "Individual managing officers"
+            },
+            {
+              value: "corporateOfficer",
+              text: "Corporate managing officers"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Add beneficial owner or managing officer",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
+
+        {% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
+          {% include "includes/list/beneficialOwner.html" %}
+          {{ govukButton({
+            text: "Continue without adding another beneficial owner or managing officer",
+            attributes: {
+              "id": "submit"
+            },
+            classes: "govuk-button--secondary govuk-!-margin-top-6",
+            href: "/register-an-overseas-entity/check-your-answers"
+          }) }}
+        {% endif %}
 
       </form>
 

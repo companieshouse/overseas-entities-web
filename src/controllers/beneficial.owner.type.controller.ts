@@ -1,26 +1,23 @@
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
-import { ApplicationData, ApplicationDataType, beneficialOwnerTypeType } from "../model";
+
+import { getApplicationData } from "../utils/application.data";
+import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { BeneficialOwnerType } from "../model/beneficial.owner.type.model";
-import { BeneficialOwnerStatementChoice, BeneficialOwnerTypeChoice } from "../model/data.types.model";
-import { BeneficialOwnerStatement } from "../model/beneficial.owner.statement.model";
+import {
+  BeneficialOwnerTypeChoice,
+  ManagingOfficerTypeChoice,
+} from "../model/beneficial.owner.type.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const statement: BeneficialOwnerStatement | undefined   = appData.beneficialOwnerStatement;
-    const isBeneficialOwners: boolean = areBeneficialOwnersIdentified(statement);
-    const isManagingOfficers: boolean = areManagingOfficersIdentified(statement);
+
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
-      ...appData.beneficialOwnerType,
-      ...appData.managingOfficerType,
-      isBeneficialOwners,
-      isManagingOfficers
+      ...appData
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -28,48 +25,23 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const areBeneficialOwnersIdentified = (statement: BeneficialOwnerStatement | undefined): boolean => {
-  if (statement) {
-    return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedAllSupplied ||
-      statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||
-      statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.someIdentifiedSomeDetails;
-  }
-  return false;
+export const post = (req: Request, res: Response) => {
+  logger.debug(`POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
+  const { selectedOwnerOfficerType } = req.body;
+
+  return res.redirect(getNextPage(selectedOwnerOfficerType));
 };
 
-const areManagingOfficersIdentified = (statement: BeneficialOwnerStatement | undefined): boolean => {
-  if (statement) {
-    return statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.allIdentifiedSomeSupplied ||
-        statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.someIdentifiedSomeDetails ||
-        statement.beneficialOwnerStatement ===  BeneficialOwnerStatementChoice.noneIdentified;
-  }
-  return false;
-};
-
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debug(`POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
-
-    const data: ApplicationDataType = prepareData(req.body, beneficialOwnerTypeType.BeneficialOwnerTypeKeys);
-    setApplicationData(req.session, data, beneficialOwnerTypeType.BeneficialOwnerTypeKey);
-
-    const beneficialOwnerTypeData: BeneficialOwnerType = data as BeneficialOwnerType;
-    const nextPage: string = getNextPage(beneficialOwnerTypeData.beneficialOwnerType);
-    return res.redirect(nextPage);
-  } catch (error) {
-    logger.errorRequest(req, error);
-    next(error);
-  }
-};
-
-const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice[]): string => {
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.individual)) {
+const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice): string => {
+  if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
-  }
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.otherLegal)) {
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
     return config.BENEFICIAL_OWNER_OTHER_URL;
-  }
-  if (beneficialOwnerTypeChoices?.includes(BeneficialOwnerTypeChoice.none)) {
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
+    return config.BENEFICIAL_OWNER_GOV_URL;
+  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
+    return config.MANAGING_OFFICER_CORPORATE_URL;
+  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.individual) {
     return config.MANAGING_OFFICER_URL;
   }
   return config.BENEFICIAL_OWNER_TYPE_URL;

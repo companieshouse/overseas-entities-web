@@ -21,18 +21,6 @@ export enum BeneficialOwnerStatementChoice {
   noneIdentified = "noneIdentified",
 }
 
-export enum BeneficialOwnerTypeChoice {
-  individual = "individual",
-  otherLegal = "otherLegal",
-  government = "government",
-  none = "none"
-}
-
-export enum ManagingOfficerTypeChoice {
-  individual = "individual",
-  corporate = "corporate"
-}
-
 export interface InputDate {
   day: number;
   month: number;

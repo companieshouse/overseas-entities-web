@@ -12,11 +12,12 @@ import {
   ADDRESS_FIELDS_MOCK,
   ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ENTITY_OBJECT_MOCK,
   getSessionRequestWithExtraData,
   getSessionRequestWithPermission,
 } from "../__mocks__/session.mock";
-import { entityType } from "../../src/model";
+import { beneficialOwnerIndividualType, entityType } from "../../src/model";
 
 describe("Application data utils", () => {
 
@@ -38,18 +39,20 @@ describe("Application data utils", () => {
     expect(data).toEqual( { ...APPLICATION_DATA_MOCK, [entityType.EntityKey]: { ...ENTITY_OBJECT_MOCK } });
   });
 
-  // test("setApplicationData should store application data into the session for an empty array type object (MOs)", () => {
-  //   const session = getSessionRequestWithExtraData();
-  //   // to be done
-  //   setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
+  test("setApplicationData should store application data into the session for an empty array type object (BOs)", () => {
+    const session = getSessionRequestWithPermission();
+    setApplicationData(
+      session,
+      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      beneficialOwnerIndividualType.BeneficialOwnerIndividualKey
+    );
 
-  // });
-
-  // test("setApplicationData should store application data into the session for an array type object (BOs)", () => {
-  //   const session = getSessionRequestWithExtraData();
-  //   // to be done
-  //   setApplicationData(session, ENTITY_OBJECT_MOCK, entityType.EntityKey);
-  // });
+    expect(getApplicationData(session)).toEqual({
+      [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [
+        BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      ],
+    });
+  });
 
   test("setApplicationData should return undefined if session is not defined", () => {
     // Session at this level can not be undefined, avoid checking req.session type, so

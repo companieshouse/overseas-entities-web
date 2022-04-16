@@ -3,28 +3,32 @@ import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Session } from "@companieshouse/node-session-handler";
 
 import { createOAuthApiClient } from "./api.service";
-import { createAndLogError, logger } from "../utils/logger";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { DESCRIPTION, REFERENCE } from "../config";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { Request } from "express";
 
-export const postTransaction = async (session: Session): Promise<Transaction> => {
+
+export const postTransaction = async (req: Request, session: Session): Promise<Transaction> => {
   const apiClient: ApiClient = createOAuthApiClient(session);
 
   const transaction: Transaction = { reference: REFERENCE, description: DESCRIPTION };
   const response = await apiClient.transaction.postTransaction(transaction) as any;
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogError(`Http status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `Http status code ${response.httpStatusCode}`);
   } else if (!response.resource) {
-    throw createAndLogError(`POST - Transaction API request returned no response`);
+    throw createAndLogErrorRequest(req, `POST - Transaction API request returned no response`);
   }
 
-  logger.debug(`Received transaction ${JSON.stringify(response)}`);
+  logger.debugRequest(req, `Received transaction ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Transaction created with ID ${response.resource.id}`);
 
   return response.resource;
 };
 
 export const closeTransaction = async (
+  req: Request,
   session: Session,
   transactionId: string,
   overseasEntityId: string
@@ -40,12 +44,12 @@ export const closeTransaction = async (
   const response = await apiClient.transaction.putTransaction(transaction) as any;
 
   if (!response) {
-    throw createAndLogError(`PUT - Transaction API request returned no response`);
+    throw createAndLogErrorRequest(req, `PUT - Transaction API request returned no response`);
   } else if (!response.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogError(`Http status code ${response.httpStatusCode}`);
+    throw createAndLogErrorRequest(req, `PUT - Transaction API returned Http status code ${response.httpStatusCode}`);
   }
 
-  logger.debug(`Received transaction ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Closed transaction ${transactionId}`);
 
   return response;
 };

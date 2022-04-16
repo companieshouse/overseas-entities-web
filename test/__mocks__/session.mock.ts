@@ -17,7 +17,6 @@ import {
   presenterType
 } from "../../src/model";
 import {
-  BeneficialOwnerStatementChoice,
   corpNatureOfControl,
   natureOfControl,
   statementCondition,
@@ -96,9 +95,9 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
   service_address: SERVICE_ADDRESS
 };
 
-export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
-  beneficialOwnerStatement: BeneficialOwnerStatementChoice.allIdentifiedAllSupplied
-};
+export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
+  beneficialOwnerStatementType.BeneficialOwnerStatementChoice
+    .allIdentifiedAllSupplied;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   corporationName: "TestCorporation",

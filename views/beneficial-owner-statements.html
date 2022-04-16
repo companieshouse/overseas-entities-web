@@ -23,8 +23,8 @@
         }) }}
 
         {{ govukRadios({
-          idPrefix: "beneficialOwnerStatement",
-          name: "beneficialOwnerStatement",
+          idPrefix: "beneficial_owners_statement",
+          name: "beneficial_owners_statement",
           fieldset: {
             legend: {
               text: "Have you identified any beneficial owners?",
@@ -36,27 +36,27 @@
             {
               value: "allIdentifiedAllSupplied",
               text: "All beneficial owners have been identified and all relevant information can be supplied",
-              checked: beneficialOwnerStatement == "allIdentifiedAllSupplied"
+              checked: beneficial_owners_statement == "allIdentifiedAllSupplied"
             },
             {
               value: "allIdentifiedSomeSupplied",
               text: "All beneficial owners identified but only some relevant information can be supplied",
-              checked: beneficialOwnerStatement == "allIdentifiedSomeSupplied"
+              checked: beneficial_owners_statement == "allIdentifiedSomeSupplied"
             },
             {
               value: "someIdentifiedAllSupplied",
               text: "Some beneficial owners identified and all relevant information can be supplied",
-              checked: beneficialOwnerStatement == "allIdentifiedSomeSupplied"
+              checked: beneficial_owners_statement == "someIdentifiedAllSupplied"
             },
             {
               value: "someIdentifiedSomeDetails",
               text: "Some beneficial owners have been identified but only some relevant information can be supplied",
-              checked: beneficialOwnerStatement == "someIdentifiedSomeDetails"
+              checked: beneficial_owners_statement == "someIdentifiedSomeDetails"
             },
             {
               value: "noneIdentified",
               text: "No beneficial owners have been identified",
-              checked: beneficialOwnerStatement == "noneIdentified"
+              checked: beneficial_owners_statement == "noneIdentified"
             }
           ]
         }) }}

@@ -12,15 +12,6 @@ export enum yesNoResponse {
   No = 0,
   Yes = 1
 }
-
-export enum BeneficialOwnerStatementChoice {
-  allIdentifiedAllSupplied = "allIdentifiedAllSupplied",
-  allIdentifiedSomeSupplied = "allIdentifiedSomeSupplied",
-  someIdentifiedAllDetails = "someIdentifiedAllDetails",
-  someIdentifiedSomeDetails = "someIdentifiedSomeDetails",
-  noneIdentified = "noneIdentified",
-}
-
 export interface InputDate {
   day: number;
   month: number;

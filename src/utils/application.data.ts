@@ -25,6 +25,10 @@ export const setApplicationData = (session: Session | undefined, data: any, key:
     appData = { ...appData, [key]: { ...data } } as ApplicationData;
   }
 
+  return setExtraData(session, appData);
+};
+
+export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {
   return session?.setExtraData(APPLICATION_DATA_KEY, appData);
 };
 

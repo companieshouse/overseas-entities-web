@@ -1,8 +1,9 @@
-import { BeneficialOwnerStatementChoice } from "./data.types.model";
+export const BeneficialOwnerStatementKey = "beneficial_owners_statement";
 
-export const BeneficialOwnerStatementKey = "beneficialOwnerStatement";
-export const BeneficialOwnerStatementKeys: string[] = [ "beneficialOwnerStatement" ];
-
-export interface BeneficialOwnerStatement {
-    beneficialOwnerStatement?: BeneficialOwnerStatementChoice;
+export enum BeneficialOwnerStatementChoice {
+    allIdentifiedAllSupplied = "allIdentifiedAllSupplied",
+    allIdentifiedSomeSupplied = "allIdentifiedSomeSupplied",
+    someIdentifiedAllDetails = "someIdentifiedAllDetails",
+    someIdentifiedSomeDetails = "someIdentifiedSomeDetails",
+    noneIdentified = "noneIdentified"
 }

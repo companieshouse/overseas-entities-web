@@ -15,12 +15,12 @@
 
       <form method="post">
 
-        <h1 class="govuk-heading-xl govuk-!-margin-0">You now need to tell us about beneficial owners and managing officers</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-0">Which type of beneficial owner or managing officer do you want to add?</h1>
         <br/>
 
         {{ govukDetails({
-          summaryText: "What is a beneficial owner or managing officer?",
-          html: "<p>A <strong>beneficial owner</strong> is an individual who ultimately owns or controls more than 25% of a company's shares or voting rights, or who otherwise exercise control over the company or its management.</p><p>A <strong>managing officer</strong> is a director, manager or company secretary of the overseas entity.</p>"
+          summaryText: "What is a managing officer?",
+          html: "<p>To be confirmed</p>"
         }) }}
 
         {{ govukRadios({
@@ -28,49 +28,50 @@
           name: "selectedOwnerOfficerType",
           fieldset: {
             legend: {
-              text: "Select the type of beneficial owner or managing officer you want to add",
               isPageHeading: false,
               classes: "govuk-fieldset__legend--l"
             }
           },
           hint: {
-            text: "You can add more later"
+            text: "You can add more later."
           },
           items: [
             {
               value: "individualOwner",
-              text: "Individual beneficial owners"
+              text: "Individual beneficial owner"
             },
             {
               value: "otherLegalOwner",
-              text: "Other legal entity beneficial owners"
+              text: "Corporate beneficial owner"
             },
             {
               value: "governmentOrPublicOwner",
-              text: "Government or public authority beneficial owners"
+              text: "Government or public authority beneficial owner"
             },
             {
               value: "individualOfficer",
-              text: "Individual managing officers"
+              text: "Individual managing officer"
             },
             {
               value: "corporateOfficer",
-              text: "Corporate managing officers"
+              text: "Corporate managing officer"
             }
           ]
         }) }}
 
         {{ govukButton({
-          text: "Add beneficial owner or managing officer",
+          text: "Add",
           attributes: {
             "id": "submit"
           }
         }) }}
 
         {% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
+          <h2 class="govuk-heading-l govuk-!-margin-0">What you have added so far:</h2>
+          <br>
           {% include "includes/list/beneficialOwner.html" %}
           {{ govukButton({
-            text: "Continue without adding another beneficial owner or managing officer",
+            text: "No more to add",
             attributes: {
               "id": "submit"
             },

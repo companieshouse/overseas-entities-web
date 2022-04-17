@@ -205,7 +205,13 @@
         <h2 class="govuk-heading-m">What information is shown on the online register</h2>
         <p class="govuk-body">All details provided about the managing officer will be available on the online register</p>
 
-        {% include "includes/continue-button.html" %}
+        {{ govukButton({
+          text: "Save and continue",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
+
       </form>
     </div>
   </div>

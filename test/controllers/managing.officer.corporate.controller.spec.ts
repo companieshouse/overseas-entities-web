@@ -2,19 +2,18 @@ jest.mock("ioredis");
 jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
-import {
-  APPLICATION_DATA_MOCK,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
-} from "../__mocks__/session.mock";
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
+import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK } from "../__mocks__/session.mock";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
-import { CHECK_YOUR_ANSWERS_URL, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";
+import { ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -32,7 +31,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test("renders the managing officer corporate page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ [ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK });
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -56,13 +55,13 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
 
   describe("POST tests", () => {
-    test("renders the managing officer corporate page", async () => {
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
       const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(managingOfficerCorporate).toEqual(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       expect(managingOfficerCorporate.officerName).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.whereOfficerRegistered).toEqual("France");

@@ -17,18 +17,18 @@ export interface ApplicationData {
     entity?: entityType.Entity;
     beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnerStatementChoice;
     beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
-    beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther;
-    beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov;
-    managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate;
-    managingOfficer?: managingOfficerType.ManagingOfficer;
+    beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther[];
+    beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov[];
+    managingOfficer?: managingOfficerType.ManagingOfficer[];
+    managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
 }
 
 export const ApplicationDataArrayType = [
-  "beneficialOwnerOther",
   "beneficialOwnerIndividual",
+  "beneficialOwnerOther",
   "beneficialOwnerGov",
-  "managingOfficerCorporate",
   "managingOfficer",
+  "managingOfficerCorporate"
 ];
 
 export type ApplicationDataType =

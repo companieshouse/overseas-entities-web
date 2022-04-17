@@ -13,7 +13,7 @@ import { getApplicationData, prepareData, setApplicationData } from '../../src/u
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { natureOfControl } from "../../src/model/data.types.model";
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK } from '../__mocks__/session.mock';
-import { beneficialOwnerIndividualType } from '../../src/model';
+import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -30,7 +30,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("GET tests", () => {
     test("renders the beneficial owner individual page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
@@ -58,7 +58,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("adds data to the session", async () => {
+    test(`adds data to the session and redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK );
 
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
@@ -68,7 +68,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(beneficialOwnerIndividual).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       expect(beneficialOwnerIndividual.fullName).toEqual("Ivan Drago");
       expect(beneficialOwnerIndividual.natureOfControl).toEqual(natureOfControl.over50under75Percent);
-      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);

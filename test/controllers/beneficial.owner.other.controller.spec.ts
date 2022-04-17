@@ -2,20 +2,19 @@ jest.mock("ioredis");
 jest.mock('../../src/controllers/authentication.controller');
 jest.mock('../../src/utils/application.data');
 
-import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
-import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK
-} from "../__mocks__/session.mock";
+import { describe, expect, jest, test, beforeEach } from "@jest/globals";
+import request from "supertest";
+import { NextFunction, Request, Response } from "express";
+
+import { BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/controllers";
-import { describe, expect, jest, test } from "@jest/globals";
-import request from "supertest";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_OTHER_URL, MANAGING_OFFICER_URL } from "../../src/config";
-import { NextFunction, Request, Response } from "express";
+import { BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
+import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
 import { beneficialOwnerOtherType } from '../../src/model';
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -33,7 +32,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK });
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -53,7 +52,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("POST tests", () => {
 
-    test("sets session data and renders the managing-officer page", async () => {
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK );
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
 
@@ -66,7 +65,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
       expect(beneficialOwnerOther.isSanctioned).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);
-      expect(resp.header.location).toEqual(MANAGING_OFFICER_URL);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test("catch error when posting data", async () => {

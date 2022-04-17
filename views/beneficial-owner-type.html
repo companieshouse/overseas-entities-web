@@ -66,10 +66,15 @@
           }
         }) }}
 
-        {% if beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0 %}
+        {% if (beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0) 
+          or (beneficialOwnerOther and beneficialOwnerOther.length > 0) 
+          or (beneficialOwnerGov and beneficialOwnerGov.length > 0) 
+          or (managingOfficer and managingOfficer.length > 0) 
+          or (managingOfficerCorporate and managingOfficerCorporate.length > 0) %}
           <h2 class="govuk-heading-l govuk-!-margin-0">What you have added so far:</h2>
           <br>
-          {% include "includes/list/beneficialOwner.html" %}
+          {% include "includes/list/beneficial-owner.html" %}
+          {% include "includes/list/managing-officer.html" %}
           {{ govukButton({
             text: "No more to add",
             attributes: {

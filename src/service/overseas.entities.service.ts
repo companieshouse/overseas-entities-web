@@ -18,7 +18,7 @@ export const createOverseasEntity = async (req: Request, session: Session, trans
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.infoRequest(req, `Created Overseas Entity submission with id ${response.id}`);
+  logger.infoRequest(req, `Created Overseas Entity submission with id ${response.resource.id}`);
 
   return response.resource as OverseasEntityCreated;
 };

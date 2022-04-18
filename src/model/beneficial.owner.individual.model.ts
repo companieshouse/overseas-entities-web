@@ -21,9 +21,9 @@ export const StartDateKeys: string[] = ["startDate-day", "startDate-month", "sta
   The sub-fields for Address Objects
 */
 export const UsualResidentialAddressKey = "usualResidentialAddress";
-export const UsualResidentialAddressKeys: string[] = ["usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty", "usualResidentialAddressPostcode"];
+export const UsualResidentialAddressKeys: string[] = ["usualResidentialAddressPropertyNameNumber", "usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty", "usualResidentialAddressCountry", "usualResidentialAddressPostcode"];
 export const ServiceAddressKey = "serviceAddress";
-export const ServiceAddressKeys: string[] = ["serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressPostcode"];
+export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressCountry", "serviceAddressPostcode"];
 
 export interface BeneficialOwnerIndividual {
     fullName?: string

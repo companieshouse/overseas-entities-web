@@ -19,7 +19,7 @@ export const DateOfBirthKeys: string[] = ["dateOfBirth-day", "dateOfBirth-month"
 */
 export const UsualResidentialAddressKey = "usualResidentialAddress";
 export const UsualResidentialAddressKeys: string[] = [
-  "usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty", "usualResidentialAddressPostcode"];
+  "usualResidentialAddressPropertyNameNumber", "usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty",  "usualResidentialAddressCountry", "usualResidentialAddressPostcode"];
 
 export interface ManagingOfficer {
   fullName?: string

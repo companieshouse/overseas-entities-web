@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
 import { ApplicationData, ApplicationDataType, beneficialOwnerIndividualType } from "../model";
 
 import { logger } from "../utils/logger";
@@ -21,8 +21,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerIndividualType.BeneficialOwnerIndividualKeys);
-    data[beneficialOwnerIndividualType.UsualResidentialAddressKey] = prepareData(req.body, beneficialOwnerIndividualType.UsualResidentialAddressKeys);
-    data[beneficialOwnerIndividualType.ServiceAddressKey] = prepareData(req.body, beneficialOwnerIndividualType.ServiceAddressKeys);
+    data[beneficialOwnerIndividualType.UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerIndividualType.UsualResidentialAddressKeys);
+    data[beneficialOwnerIndividualType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerIndividualType.ServiceAddressKeys);
     data[beneficialOwnerIndividualType.DateOfBirthKey] = prepareData(req.body, beneficialOwnerIndividualType.DateOfBirthKeys);
     data[beneficialOwnerIndividualType.StartDateKey] = prepareData(req.body, beneficialOwnerIndividualType.StartDateKeys);
 

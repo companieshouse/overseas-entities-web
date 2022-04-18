@@ -177,10 +177,10 @@
               text: "Town or city"
             },
             classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressLineTown",
-            name: "serviceAddressLineTown",
+            id: "serviceAddressTown",
+            name: "serviceAddressTown",
             autocomplete: "serviceAddressTown",
-            value: serviceAddress.serviceAddressLineTown if serviceAddress
+            value: serviceAddress.serviceAddressTown if serviceAddress
           }) }}
 
           {{ govukInput({
@@ -191,7 +191,7 @@
             id: "serviceAddressCounty",
             name: "serviceAddressCounty",
             value: serviceAddress.serviceAddressCounty if serviceAddress
-}) }}
+          }) }}
 
           {{ govukInput({
             label: {
@@ -202,7 +202,7 @@
             name: "serviceAddressPostcode",
             autocomplete: "serviceAddressPostcode",
             value: serviceAddress.serviceAddressPostcode if serviceAddress
-}) }}
+          }) }}
 
         {% endcall %}
         {% endset -%}

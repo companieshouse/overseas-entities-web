@@ -7,7 +7,15 @@ import {
   mapObjectFieldToAddress,
   mapAddressToObjectField,
 } from "../utils/application.data";
-import { ApplicationData, ApplicationDataType, entityType } from "../model";
+import {
+  EntityKey,
+  EntityKeys,
+  PrincipalAddressKey,
+  PrincipalAddressKeys,
+  ServiceAddressKey,
+  ServiceAddressKeys,
+} from "../model/entity.model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 
@@ -16,22 +24,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`GET ENTITY_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const entityData = appData[entityType.EntityKey] as any;
-
-    if (entityData){
-      entityData[entityType.PrincipalAddressKey] = mapAddressToObjectField(
-        entityData[entityType.PrincipalAddressKey],
-        entityType.PrincipalAddressKeys
-      );
-      entityData[entityType.ServiceAddressKey] = mapAddressToObjectField(
-        entityData[entityType.ServiceAddressKey],
-        entityType.ServiceAddressKeys
-      );
-    }
+    const entityData = appData[EntityKey] as any;
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: config.PRESENTER_URL,
-      ...entityData
+      ...entityData,
+      [PrincipalAddressKey]: (entityData) ? mapAddressToObjectField(entityData[PrincipalAddressKey], PrincipalAddressKeys) : {},
+      [ServiceAddressKey]: (entityData) ? mapAddressToObjectField(entityData[ServiceAddressKey], ServiceAddressKeys) : {}
     });
   } catch (error) {
     logger.error(error);
@@ -43,15 +42,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debug(`POST ENTITY_PAGE`);
 
-    const data: ApplicationDataType = prepareData(req.body, entityType.EntityKeys);
-    data[entityType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, entityType.PrincipalAddressKeys);
+    const data: ApplicationDataType = prepareData(req.body, EntityKeys);
+    data[PrincipalAddressKey] = mapObjectFieldToAddress(req.body, PrincipalAddressKeys);
 
     data["is_service_address_same_as_principal_address"] = +data["is_service_address_same_as_principal_address"];
-    data[entityType.ServiceAddressKey] = (!data["is_service_address_same_as_principal_address"])
-      ?  mapObjectFieldToAddress(req.body, entityType.ServiceAddressKeys)
+    data[ServiceAddressKey] = (!data["is_service_address_same_as_principal_address"])
+      ?  mapObjectFieldToAddress(req.body, ServiceAddressKeys)
       :  {};
 
-    setApplicationData(req.session, data, entityType.EntityKey);
+    setApplicationData(req.session, data, EntityKey);
 
     return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {

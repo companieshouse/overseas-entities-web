@@ -18,6 +18,14 @@ export interface InputDate {
   year: number;
 }
 
+export enum NatureOfControlType {
+  over_25_percent_of_shares = "over_25_percent_of_shares",
+  over_25_percent_of_voting_rights = "over_25_percent_of_voting_rights",
+  appoint_or_remove_majority_board_directors = "appoint_or_remove_majority_board_directors",
+  significant_influence_or_control = "significant_influence_or_control"
+}
+
+// To be removed
 export enum natureOfControl {
   over25upTo50Percent = "25",
   over50under75Percent = "50",

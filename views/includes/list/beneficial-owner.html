@@ -1,11 +1,11 @@
-{% if (beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0) 
+{% if (beneficial_owners_individual and beneficial_owners_individual.length > 0) 
     or (beneficialOwnerOther and beneficialOwnerOther.length > 0) 
     or (beneficialOwnerGov and beneficialOwnerGov.length > 0) 
 %}
 <table class="govuk-table">
     <caption class="govuk-table__caption govuk-table__caption--m">Beneficial owners</caption>
     <tbody class="govuk-table__body">
-        {% for boi in beneficialOwnerIndividual %}
+        {% for boi in beneficial_owners_individual %}
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Individual</th>
                 <td class="govuk-table__cell">{{ boi.fullName }}</td>

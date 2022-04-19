@@ -37,8 +37,9 @@
 {% block beforeContent %}
   {{ govukPhaseBanner({
     tag: {
-    text: "alpha"
-    }
+      text: "alpha"
+    },
+    html: 'This is a new service - your <a class="govuk-link" href="javascript:void(0)">feedback</a> will help us to improve it.'
   }) }}
   {% block backLink %}
   {% endblock %}
@@ -47,7 +48,7 @@
 {% block header %}
   {{ govukHeader({
     homepageUrl: "https://www.gov.uk",
-    serviceName: "Register an overseas entity",
+    serviceName: "Register an overseas entity and tell us about its beneficial owners",
     serviceUrl: "/register-an-overseas-entity",
     containerClasses: "govuk-width-container"
   }) }}

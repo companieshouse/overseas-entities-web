@@ -28,7 +28,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, beneficialOwnerIndividualType.BeneficialOwnerIndividualKey);
 
-    return res.redirect("/next-page");
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

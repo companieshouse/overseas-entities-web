@@ -1,8 +1,6 @@
-export { ApplicationData, APPLICATION_DATA_KEY, ApplicationDataType } from "./application.model";
+export { ApplicationData, APPLICATION_DATA_KEY, ApplicationDataType, ApplicationDataArrayType } from "./application.model";
 export * as presenterType from "./presenter.model";
 export * as entityType from "./entity.model";
-export * as beneficialOwnerTypeType from "./beneficial.owner.type.model";
-export * as managingOfficerTypeType from "./managing.officer.type.model";
 export * as beneficialOwnerStatementType from "./beneficial.owner.statement.model";
 export * as managingOfficerType from "./managing.officer.model";
 export * as dataType from "./data.types.model";
@@ -10,3 +8,4 @@ export * as beneficialOwnerOtherType from "./beneficial.owner.other.model";
 export * as beneficialOwnerIndividualType from "./beneficial.owner.individual.model";
 export * as beneficialOwnerGovType from "./beneficial.owner.gov.model";
 export * as managingOfficerCorporateType from "./managing.officer.corporate.model";
+export * as beneficialOwnerType from "./beneficial.owner.type.model";

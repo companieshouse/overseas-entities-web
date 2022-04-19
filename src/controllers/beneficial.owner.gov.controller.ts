@@ -30,7 +30,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[beneficialOwnerGovType.CorporationStartDateKey] = prepareData(req.body, beneficialOwnerGovType.CorporationStartDateKeys);
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 
-    return res.redirect(config.MANAGING_OFFICER_URL);
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

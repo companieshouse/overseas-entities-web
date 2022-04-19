@@ -8,11 +8,12 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
-import { MANAGING_OFFICER_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
-import { APPLICATION_DATA_MOCK, MANAGING_OFFICER_OBJECT_MOCK } from '../__mocks__/session.mock';
+import { MANAGING_OFFICER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ANY_MESSAGE_ERROR, MANAGING_OFFICER_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { managingOfficerType } from '../../src/model';
+import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -25,7 +26,7 @@ describe("MANAGING_OFFICER controller", () => {
 
   describe("GET tests", () => {
     test("renders the managing officer page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ [ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK });
       const resp = await request(app).get(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
@@ -46,16 +47,16 @@ describe("MANAGING_OFFICER controller", () => {
 
   describe("POST tests", () => {
 
-    test("redirects to the next page", async () => {
+    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app).post(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual("/register-an-overseas-entity/beneficial-owner-type");
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("adds data to the session", async () => {
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app).post(MANAGING_OFFICER_URL);
@@ -69,7 +70,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual("/register-an-overseas-entity/beneficial-owner-type");
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test("catch error when posting data", async () => {

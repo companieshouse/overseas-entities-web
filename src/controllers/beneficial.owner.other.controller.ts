@@ -33,7 +33,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 
-    return res.redirect(config.MANAGING_OFFICER_URL);
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

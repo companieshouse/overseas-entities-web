@@ -1,13 +1,10 @@
-import { BeneficialOwnerTypeChoice } from "./data.types.model";
+export enum BeneficialOwnerTypeChoice {
+    individual = "individualOwner",
+    otherLegal = "otherLegalOwner",
+    government = "governmentOrPublicOwner"
+}
 
-/*
-  The BeneficialOwnerType fields will have to match the name field on the HTML file to
-  be able to do the mapping correctly
-*/
-export const BeneficialOwnerTypeKey = "beneficialOwnerType";
-export const BeneficialOwnerTypeKeys: string[] = [ "beneficialOwnerType" ];
-
-
-export interface BeneficialOwnerType {
-  beneficialOwnerType?: BeneficialOwnerTypeChoice[];
+export enum ManagingOfficerTypeChoice {
+    individual = "individualOfficer",
+    corporate = "corporateOfficer"
 }

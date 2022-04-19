@@ -3,16 +3,18 @@ jest.mock('../../src/controllers/authentication.controller');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/utils/application.data');
 
-import { authentication } from "../../src/controllers";
-import { describe, expect, jest, test } from "@jest/globals";
+import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
+import { NextFunction, Request, Response } from "express";
+
+import { authentication } from "../../src/controllers";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
-import { NextFunction, Request, Response } from "express";
 import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_GOV_OBJECT_MOCK } from "../__mocks__/session.mock";
+import { BENEFICIAL_OWNER_GOV_OBJECT_MOCK } from "../__mocks__/session.mock";
+import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -31,7 +33,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   describe("GET tests", () => {
 
     test("renders the beneficial owner gov page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
@@ -52,15 +54,15 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("POST tests", () => {
 
-    test("redirects to the managing-officer page", async () => {
+    test(`redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.MANAGING_OFFICER_URL);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("adds data to the session", async () => {
+    test(`adds data to the session and redirects to the ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       // controller will make several calls to prepare data, we have to mock them in order they are called by controller
       // mock the call to prepareData for beneficialOwnerGov object
       mockPrepareData.mockReturnValueOnce({ corporationName: "test" });
@@ -84,7 +86,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(beneficialOwnerGov.corporationStartDate.month).toEqual(2);
       expect(beneficialOwnerGov.corporationStartDate.year).toEqual(1934);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.MANAGING_OFFICER_URL);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test("catch error when posting data", async () => {

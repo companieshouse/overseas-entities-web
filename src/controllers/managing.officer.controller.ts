@@ -11,7 +11,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.MANAGING_OFFICER_PAGE, {
-      backLinkUrl: config.BENEFICIAL_OWNER_OTHER_URL,
+      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
       ...appData.managingOfficer
     });
   } catch (error) {

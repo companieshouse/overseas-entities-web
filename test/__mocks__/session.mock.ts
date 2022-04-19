@@ -7,8 +7,6 @@ import { DESCRIPTION, REFERENCE } from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
-  beneficialOwnerTypeType,
-  managingOfficerTypeType,
   beneficialOwnerOtherType,
   ApplicationData,
   beneficialOwnerIndividualType,
@@ -19,9 +17,7 @@ import {
   presenterType
 } from "../../src/model";
 import {
-  BeneficialOwnerStatementChoice,
-  BeneficialOwnerTypeChoice,
-  corpNatureOfControl, ManagingOfficerTypeChoice,
+  corpNatureOfControl,
   natureOfControl,
   statementCondition,
   yesNoResponse
@@ -99,17 +95,9 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
   service_address: SERVICE_ADDRESS
 };
 
-export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK: beneficialOwnerStatementType.BeneficialOwnerStatement = {
-  beneficialOwnerStatement: BeneficialOwnerStatementChoice.allIdentifiedAllSupplied
-};
-
-export const BENEFICIAL_OWNER_TYPE_OBJECT_MOCK: beneficialOwnerTypeType.BeneficialOwnerType = {
-  beneficialOwnerType: [ BeneficialOwnerTypeChoice.individual, BeneficialOwnerTypeChoice.otherLegal, BeneficialOwnerTypeChoice.government ]
-};
-
-export const MANAGING_OFFICER_TYPE_OBJECT_MOCK: managingOfficerTypeType.ManagingOfficerType = {
-  managingOfficerType: [ ManagingOfficerTypeChoice.individual, ManagingOfficerTypeChoice.corporate ]
-};
+export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
+  beneficialOwnerStatementType.BeneficialOwnerStatementChoice
+    .allIdentifiedAllSupplied;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   corporationName: "TestCorporation",
@@ -197,14 +185,12 @@ const PRESENTER_OBJECT_MOCK = {
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
-  [beneficialOwnerTypeType.BeneficialOwnerTypeKey]: BENEFICIAL_OWNER_TYPE_OBJECT_MOCK,
-  [managingOfficerTypeType.ManagingOfficerTypeKey]: MANAGING_OFFICER_TYPE_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  [managingOfficerType.ManagingOfficerKey]: MANAGING_OFFICER_OBJECT_MOCK,
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
 };
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);

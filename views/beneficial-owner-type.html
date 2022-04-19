@@ -10,20 +10,80 @@
 
 {% block content %}
 
-  <div class="govuk-grid-row">
+  <div class="govuk-grid-row govuk-body">
     <div class="govuk-grid-column-two-thirds">
 
       <form method="post">
 
-        {% if (isBeneficialOwners) %}
-          {% include "includes/beneficial-owners-check.html" %}
-        {% endif %}
+        <h1 class="govuk-heading-xl govuk-!-margin-0">Which type of beneficial owner or managing officer do you want to add?</h1>
+        <br/>
 
-        {% if (isManagingOfficers) %}
-          {% include "includes/managing-officers-check.html" %}
-        {% endif %}
+        {{ govukDetails({
+          summaryText: "What is a managing officer?",
+          html: "<p>To be confirmed</p>"
+        }) }}
 
-        {% include "includes/continue-button.html" %}
+        {{ govukRadios({
+          idPrefix: "beneficial-owner-type",
+          name: "selectedOwnerOfficerType",
+          fieldset: {
+            legend: {
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "You can add more later."
+          },
+          items: [
+            {
+              value: "individualOwner",
+              text: "Individual beneficial owner"
+            },
+            {
+              value: "otherLegalOwner",
+              text: "Corporate beneficial owner"
+            },
+            {
+              value: "governmentOrPublicOwner",
+              text: "Government or public authority beneficial owner"
+            },
+            {
+              value: "individualOfficer",
+              text: "Individual managing officer"
+            },
+            {
+              value: "corporateOfficer",
+              text: "Corporate managing officer"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Add",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
+
+        {% if (beneficialOwnerIndividual and beneficialOwnerIndividual.length > 0) 
+          or (beneficialOwnerOther and beneficialOwnerOther.length > 0) 
+          or (beneficialOwnerGov and beneficialOwnerGov.length > 0) 
+          or (managingOfficer and managingOfficer.length > 0) 
+          or (managingOfficerCorporate and managingOfficerCorporate.length > 0) %}
+          <h2 class="govuk-heading-l govuk-!-margin-0">What you have added so far:</h2>
+          <br>
+          {% include "includes/list/beneficial-owner.html" %}
+          {% include "includes/list/managing-officer.html" %}
+          {{ govukButton({
+            text: "No more to add",
+            attributes: {
+              "id": "submit"
+            },
+            classes: "govuk-button--secondary govuk-!-margin-top-6",
+            href: "/register-an-overseas-entity/check-your-answers"
+          }) }}
+        {% endif %}
 
       </form>
 

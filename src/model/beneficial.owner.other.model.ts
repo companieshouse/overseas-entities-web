@@ -1,9 +1,9 @@
 import { Address, InputDate, natureOfControl, yesNoResponse, statementCondition } from "./data.types.model";
 
 export const PrincipalAddressKey = "principalAddress";
-export const PrincipalAddressKeys: string[] = ["principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "principalAddressPostcode"];
+export const PrincipalAddressKeys: string[] = ["principalAddressPropertyNameNumber", "principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "principalAddressCountry", "principalAddressPostcode"];
 export const ServiceAddressKey = "serviceAddress";
-export const ServiceAddressKeys: string[] = ["serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressPostcode"];
+export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressCountry", "serviceAddressPostcode"];
 export const DateKey: string = "startDate";
 export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 

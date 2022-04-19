@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, beneficialOwnerGovType } from "../model";
-import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,8 +25,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`POST ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerGovType.BeneficialOwnerGovKeys);
-    data[beneficialOwnerGovType.PrincipalAddressKey] = prepareData(req.body, beneficialOwnerGovType.PrincipalAddressKeys);
-    data[beneficialOwnerGovType.ServiceAddressKey] = prepareData(req.body, beneficialOwnerGovType.ServiceAddressKeys);
+    data[beneficialOwnerGovType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.PrincipalAddressKeys);
+    data[beneficialOwnerGovType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.ServiceAddressKeys);
     data[beneficialOwnerGovType.CorporationStartDateKey] = prepareData(req.body, beneficialOwnerGovType.CorporationStartDateKeys);
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 

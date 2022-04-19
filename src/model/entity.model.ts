@@ -12,9 +12,9 @@ export const EntityKeys: string[] = [
   The Entity sub-fields for Address Object - Used to map View and Data
 */
 export const PrincipalAddressKey = "principal_address";
-export const PrincipalAddressKeys: string[] = ["property_name_number", "principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "country", "principalAddressPostcode"];
+export const PrincipalAddressKeys: string[] = ["principalAddressPropertyNameNumber", "principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "principalAddressCountry", "principalAddressPostcode"];
 export const ServiceAddressKey = "service_address";
-export const ServiceAddressKeys: string[] = ["property_name_number", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
+export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressCountry", "serviceAddressPostcode"];
 
 export interface Entity {
     name?: string

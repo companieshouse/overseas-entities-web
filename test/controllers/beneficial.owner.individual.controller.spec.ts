@@ -11,7 +11,6 @@ import { authentication } from "../../src/controllers";
 import { BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
-import { natureOfControl } from "../../src/model/data.types.model";
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 
@@ -35,7 +34,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain("Ivan Drago");
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");
     });
 
@@ -49,7 +49,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirects to the next page", async () => {
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK );
 
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
@@ -66,8 +66,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
       expect(beneficialOwnerIndividual).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      expect(beneficialOwnerIndividual.fullName).toEqual("Ivan Drago");
-      expect(beneficialOwnerIndividual.natureOfControl).toEqual(natureOfControl.over50under75Percent);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 

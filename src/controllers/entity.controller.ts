@@ -10,6 +10,7 @@ import {
 import {
   EntityKey,
   EntityKeys,
+  HasSameAddressKey,
   PrincipalAddressKey,
   PrincipalAddressKeys,
   ServiceAddressKey,
@@ -45,8 +46,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = prepareData(req.body, EntityKeys);
     data[PrincipalAddressKey] = mapObjectFieldToAddress(req.body, PrincipalAddressKeys);
 
-    data["is_service_address_same_as_principal_address"] = +data["is_service_address_same_as_principal_address"];
-    data[ServiceAddressKey] = (!data["is_service_address_same_as_principal_address"])
+    data[HasSameAddressKey] = +data[HasSameAddressKey];
+    data[ServiceAddressKey] = (!data[HasSameAddressKey])
       ?  mapObjectFieldToAddress(req.body, ServiceAddressKeys)
       :  {};
 

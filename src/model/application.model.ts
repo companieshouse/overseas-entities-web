@@ -16,7 +16,7 @@ export interface ApplicationData {
     presenter?: presenterType.Presenter;
     entity?: entityType.Entity;
     beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnerStatementChoice;
-    beneficialOwnerIndividual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
+    beneficial_owners_individual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
     beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther[];
     beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managingOfficer?: managingOfficerType.ManagingOfficer[];
@@ -24,7 +24,7 @@ export interface ApplicationData {
 }
 
 export const ApplicationDataArrayType = [
-  "beneficialOwnerIndividual",
+  "beneficial_owners_individual",
   "beneficialOwnerOther",
   "beneficialOwnerGov",
   "managingOfficer",

@@ -19,6 +19,7 @@ import {
 import {
   corpNatureOfControl,
   natureOfControl,
+  NatureOfControlType,
   statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
@@ -116,16 +117,17 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  fullName: "Ivan Drago",
-  dateOfBirth: {
-    day: 21,
-    month: 3,
-    year: 1947
-  },
-  ownerNationality: "Russian",
-  usualResidentialAddress: ADDRESS,
-  serviceAddress: ADDRESS,
-  natureOfControl: natureOfControl.over50under75Percent
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: 21, month: 3, year: 1947 },
+  nationality: "Russian",
+  usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+  trustees_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
+  is_on_sanctions_list: 0
 };
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {

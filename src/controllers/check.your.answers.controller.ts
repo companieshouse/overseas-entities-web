@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debug(`GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    logger.debug(`GET ${JSON.stringify(appData, null, '\t')}`);
+
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
       appData
@@ -37,8 +37,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req.session as Session, transaction.id as string);
     logger.info(`Overseas Entity Created, ID: ${overseaEntity.id}`);
 
-    const responseClosedTransaction = await closeTransaction(req.session as Session, transaction.id as string, overseaEntity.id);
-    logger.info(`Transaction Closed,  ${JSON.stringify(responseClosedTransaction)}`);
+    await closeTransaction(req.session as Session, transaction.id as string, overseaEntity.id);
+    logger.info(`Transaction Closed, ID: ${transaction.id}`);
 
     return res.redirect(config.CONFIRMATION_URL);
   } catch (error) {

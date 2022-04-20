@@ -9,10 +9,10 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/controllers";
 import { BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
-import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
+import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK } from '../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { BeneficialOwnerIndividualKey, UsualResidentialAddressKeys } from '../../src/model/beneficial.owner.individual.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -20,6 +20,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockMapObjectFieldToAddress = mapObjectFieldToAddress as jest.Mock;
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
@@ -66,6 +67,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
       expect(beneficialOwnerIndividual).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      expect(mockMapObjectFieldToAddress.mock.calls[0][1]).toEqual(UsualResidentialAddressKeys);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 

@@ -28,6 +28,7 @@ const nunjucksEnv = nunjucks.configure([
   express: app,
 });
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
+nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

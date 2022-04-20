@@ -124,6 +124,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   usual_residential_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
+  start_date: { day: 1, month: 3, year: 1999 },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
   trustees_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],

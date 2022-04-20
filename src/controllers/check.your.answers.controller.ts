@@ -38,7 +38,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.info(`Overseas Entity Created, ID: ${overseaEntity.id}`);
 
     await closeTransaction(req.session as Session, transaction.id as string, overseaEntity.id);
-    logger.info(`Transaction Closed,  ${JSON.stringify(transaction.id)}`);
+    logger.info(`Transaction Closed, ID: ${transaction.id}`);
 
     return res.redirect(config.CONFIRMATION_URL);
   } catch (error) {

@@ -29,6 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     appData[BeneficialOwnerStatementKey] = req.body[BeneficialOwnerStatementKey];
     setExtraData(req.session, appData);
 
+    console.log(JSON.parse(JSON.stringify(appData)));
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);

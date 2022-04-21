@@ -39,7 +39,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
-      expect(resp.text).toContain("allIdentifiedAllSupplied");
+      expect(resp.text).toContain("all_identified_all_details");
     });
 
     test("catch error when rendering the page", async () => {

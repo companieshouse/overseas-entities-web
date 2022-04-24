@@ -6,7 +6,7 @@ import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicatio
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
+    logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
+    logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerGovType.BeneficialOwnerGovKeys);
     data[beneficialOwnerGovType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.PrincipalAddressKeys);

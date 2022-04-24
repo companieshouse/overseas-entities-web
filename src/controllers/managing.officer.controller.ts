@@ -6,7 +6,7 @@ import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicatio
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.MANAGING_OFFICER_PAGE}`);
+    logger.debugRequest(req, `GET ${config.MANAGING_OFFICER_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ${config.MANAGING_OFFICER_PAGE}`);
+    logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, managingOfficerType.ManagingOfficerKeys);
     data[managingOfficerType.UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, managingOfficerType.UsualResidentialAddressKeys);

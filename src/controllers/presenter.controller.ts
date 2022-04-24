@@ -7,7 +7,7 @@ import { ApplicationData, presenterType } from "../model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET PRESENTER_PAGE`);
+    logger.debugRequest(req, `GET PRESENTER_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -16,21 +16,21 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...appData.presenter
     });
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST PRESENTER_PAGE`);
+    logger.debugRequest(req, `POST PRESENTER_PAGE`);
 
     const data = prepareData(req.body, presenterType.PresenterKeys);
     setApplicationData(req.session, data, presenterType.PresenterKey);
 
     return res.redirect(config.ENTITY_URL);
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };

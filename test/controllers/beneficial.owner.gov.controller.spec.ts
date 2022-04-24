@@ -19,7 +19,7 @@ import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.mode
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockLoggerDebug = logger.debug as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
@@ -43,7 +43,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockLoggerDebug.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(response.status).toEqual(500);
@@ -62,7 +62,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockLoggerDebug.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(500);

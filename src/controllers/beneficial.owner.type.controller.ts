@@ -11,7 +11,7 @@ import {
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
+    logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -26,7 +26,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response) => {
-  logger.debug(`POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
+  logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
   const { selectedOwnerOfficerType } = req.body;
 
   return res.redirect(getNextPage(selectedOwnerOfficerType));

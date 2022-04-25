@@ -7,7 +7,7 @@ import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/ben
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
+    logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -24,7 +24,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
 
   try {
-    logger.debug(`POST ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
+    logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
     data[beneficialOwnerOtherType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerOtherType.PrincipalAddressKeys);

@@ -7,7 +7,7 @@ import { BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
+    logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
+    logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
     appData[BeneficialOwnerStatementKey] = req.body[BeneficialOwnerStatementKey];

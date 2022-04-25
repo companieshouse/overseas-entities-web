@@ -22,7 +22,7 @@ import * as config from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ENTITY_PAGE`);
+    logger.debugRequest(req, `GET ENTITY_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
     const entityData = appData[EntityKey] as any;
@@ -34,14 +34,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       [ServiceAddressKey]: (entityData) ? mapAddressToObjectField(entityData[ServiceAddressKey], ServiceAddressKeys) : {}
     });
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ENTITY_PAGE`);
+    logger.debugRequest(req, `POST ENTITY_PAGE`);
 
     const data: ApplicationDataType = prepareData(req.body, EntityKeys);
     data[PrincipalAddressKey] = mapObjectFieldToAddress(req.body, PrincipalAddressKeys);
@@ -55,7 +55,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };

@@ -10,7 +10,7 @@ import {
 } from "../model/beneficial.owner.individual.model";
 
 export const get = (req: Request, res: Response) => {
-  logger.debug(`GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+  logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
   const appData: ApplicationData = getApplicationData(req.session);
 
@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+    logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerIndividualKeys);
     data[UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, UsualResidentialAddressKeys);

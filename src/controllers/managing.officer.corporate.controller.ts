@@ -7,7 +7,7 @@ import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../mo
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+    logger.debugRequest(req, `GET ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -24,7 +24,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
 
   try {
-    logger.debug(`POST ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+    logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
     data[managingOfficerCorporateType.UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys);

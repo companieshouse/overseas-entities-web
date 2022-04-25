@@ -14,7 +14,7 @@ import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 
 jest.mock('../../src/utils/logger', () => {
   return {
-    logger: { info: jest.fn(), error: jest.fn() }
+    logger: { info: jest.fn(), infoRequest: jest.fn(), errorRequest: jest.fn() }
   };
 });
 
@@ -35,9 +35,9 @@ describe('Authentication controller', () => {
 
     expect(next).toHaveBeenCalledTimes(1);
 
-    expect(logger.info).toHaveBeenCalledTimes(1);
-    expect(logger.info).toHaveBeenCalledWith(mockLogInfoMsg);
-    expect(logger.error).not.toHaveBeenCalled();
+    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
+    expect(logger.infoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(logger.errorRequest).not.toHaveBeenCalled();
 
     expect(res.redirect).not.toHaveBeenCalled();
   });
@@ -54,9 +54,9 @@ describe('Authentication controller', () => {
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
 
-    expect(logger.info).toHaveBeenCalledTimes(1);
-    expect(logger.info).toHaveBeenCalledWith(mockLogInfoMsg);
-    expect(logger.error).not.toHaveBeenCalled();
+    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
+    expect(logger.infoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
   test('should catch the error and call next(err)', () => {
@@ -69,8 +69,8 @@ describe('Authentication controller', () => {
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);
 
-    expect(logger.info).toHaveBeenCalledTimes(1);
-    expect(logger.error).toHaveBeenCalledTimes(1);
+    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
   test("should redirect to signin page", async () => {

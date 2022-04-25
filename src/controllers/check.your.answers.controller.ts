@@ -13,7 +13,7 @@ import { getApplicationData } from "../utils/application.data";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
+    logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -29,20 +29,20 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
+    logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
-    const transaction: Transaction = await postTransaction(req.session as Session);
-    logger.info(`Transaction created, ID: ${transaction.id}`);
+    const transaction: Transaction = await postTransaction(req, req.session as Session);
+    logger.infoRequest(req, `Transaction created, ID: ${transaction.id}`);
 
-    const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req.session as Session, transaction.id as string);
-    logger.info(`Overseas Entity Created, ID: ${overseaEntity.id}`);
+    const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, req.session as Session, transaction.id as string);
+    logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntity.id}`);
 
-    await closeTransaction(req.session as Session, transaction.id as string, overseaEntity.id);
-    logger.info(`Transaction Closed, ID: ${transaction.id}`);
+    await closeTransaction(req, req.session as Session, transaction.id as string, overseaEntity.id);
+    logger.infoRequest(req, `Transaction Closed, ID: ${transaction.id}`);
 
     return res.redirect(config.CONFIRMATION_URL);
   } catch (error) {
-    logger.error(error);
+    logger.errorRequest(req, error);
     next(error);
   }
 };

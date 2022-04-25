@@ -170,9 +170,9 @@
 
         {% set fullName = boi.first_name + " " + boi.last_name %}
 
-        {% set dateOfBirth = boi.date_of_birth.date_of_birth-day|string + " " + boi.date_of_birth.date_of_birth-month|string + " " + boi.date_of_birth.date_of_birth-year|string %}
+        {% set dateOfBirth = boi.date_of_birth.date_of_birth-day + " " + boi.date_of_birth.date_of_birth-month + " " + boi.date_of_birth.date_of_birth-year %}
 
-        {% set startDate = boi.start_date.start_date-day|string + " " + boi.start_date.start_date-month|string + " " + boi.start_date.start_date-year|string %}
+        {% set startDate = boi.start_date.start_date-day + " " + boi.start_date.start_date-month + " " + boi.start_date.start_date-year %}
 
         {% set formattedResidentialAddressHtml %}
           {% set address = boi.usual_residential_address %}

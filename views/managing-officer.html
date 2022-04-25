@@ -16,6 +16,8 @@
       <p class="govuk-caption-l">You can add more managing officers later</p>
       <br>
 
+      {% include "includes/list/errors.html" %}
+
       <form class="form" method="post">
         {{ govukDetails({
           summaryText: "What is a managing officer?",
@@ -23,6 +25,7 @@
         }) }}
 
         {{ govukInput({
+          errorMessage: errors.fullName if errors,
           label: {
             text: "What is the full name of the managing officer?",
             classes: "govuk-label--m",

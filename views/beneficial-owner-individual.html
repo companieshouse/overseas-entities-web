@@ -17,10 +17,12 @@
       <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the individual person</h1>
       <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
+      {% include "includes/list/errors.html" %}
 
       <form method="post">
 
         {{ govukInput({
+          errorMessage: errors.first_name if errors,
           label: {
             text: "What is their first name?",
             classes: "govuk-label--m",

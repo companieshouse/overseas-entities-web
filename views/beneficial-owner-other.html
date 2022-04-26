@@ -353,8 +353,8 @@
         }) %}
 
         {{ govukCheckboxes({
-          idPrefix: "bo-noc-individual",
-          name: "bo-noc-individual",
+          idPrefix: "natureOfControlIndividual",
+          name: "natureOfControlIndividual",
           fieldset: {
             legend: {
             text: "The beneficial owner:",
@@ -365,27 +365,31 @@
 
         items: [
           {
-            value: "noc-individual-shares",
-            text: "holds, directly or indirectly, more than 25% of the shares in the entity"
+            value: "nocIndividualShares",
+            text: "holds, directly or indirectly, more than 25% of the shares in the entity",
+            checked: natureOfControlIndividual and 'shares' in natureOfControlIndividual
           },
           {
-            value: "noc-individual-voting",
-            text: "holds, directly or indirectly, more than 25% of the voting rights in the entity"
+            value: "nocIndividualVoting",
+            text: "holds, directly or indirectly, more than 25% of the voting rights in the entity",
+            checked: natureOfControlIndividual and 'voting' in natureOfControlIndividual
           },
           {
-            value: "noc-individual-board",
-            text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity"
+            value: "nocIndividualBoard",
+            text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity",
+            checked: natureOfControlIndividual and 'board' in natureOfControlIndividual
           },
           {
-            value: "noc-individual-influence",
-            text: "has the right to exercise, or actually exercises, significant influence or control over the entity"
+            value: "nocIndividualInfluence",
+            text: "has the right to exercise, or actually exercises, significant influence or control over the entity",
+            checked: natureOfControlIndividual and 'influence' in natureOfControlIndividual
           }
         ]
         }) }}
 
         {{ govukCheckboxes({
-          idPrefix: "bo-noc-trust",
-          name: "bo-noc-trust",
+          idPrefix: "natureOfControlTrust",
+          name: "natureOfControlTrust",
           fieldset: {
             legend: {
               text: "The beneficial owner is a trustee of a trust and:",
@@ -396,27 +400,31 @@
 
           items: [
             {
-              value: "noc-trusts-shares",
-              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity"
+              value: "nocTrustShares",
+              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
+              checked: natureOfControlTrust and 'shares' in natureOfControlTrust
             },
             {
-              value: "noc-trusts-voting",
-              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity"
+              value: "nocTrustVoting",
+              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
+              checked: natureOfControlTrust and 'voting' in natureOfControlTrust
             },
             {
-              value: "noc-trusts-board",
-              text: "the trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company"
+              value: "nocTrustBoard",
+              text: "the trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
+              checked: natureOfControlTrust and 'board' in natureOfControlTrust
             },
             {
-              value: "noc-trusts-influence",
-              text: "the trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company"
+              value: "nocTrustInfluence",
+              text: "the trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
+              checked: natureOfControlTrust and 'influence' in natureOfControlTrust
             }
           ]
         }) }}
 
         {{ govukCheckboxes({
-          idPrefix: "bo-noc-firms",
-          name: "bo-noc-firms",
+          idPrefix: "natureOfControlFirm",
+          name: "natureOfControlFirm",
           fieldset: {
           legend: {
             text: "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:",
@@ -428,20 +436,24 @@
         items:
           [
             {
-              value: "noc-firm-shares",
-              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity"
+              value: "nocFirmShares",
+              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
+              checked: natureOfControlFirm and 'shares' in natureOfControlFirm
             },
             {
-              value: "noc-firm-voting",
-              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity"
+              value: "nocFirmVoting",
+              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
+              checked: natureOfControlFirm and 'voting' in natureOfControlFirm
             },
             {
-              value: "noc-firm-board",
-              text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company"
+              value: "nocFirmBoard",
+              text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
+              checked: natureOfControlFirm and 'board' in natureOfControlFirm
             },
             {
-              value: "noc-firm-influence",
-              text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company"
+              value: "nocFirmInfluence",
+              text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
+              checked: natureOfControlFirm and 'influence' in natureOfControlFirm
             }
           ]
         }) }}

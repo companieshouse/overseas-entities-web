@@ -1,4 +1,4 @@
-import { Address, InputDate, natureOfControl, yesNoResponse, statementCondition } from "./data.types.model";
+import { Address, InputDate, natureOfControl, yesNoResponse } from "./data.types.model";
 
 export const PrincipalAddressKey = "principalAddress";
 export const PrincipalAddressKeys: string[] = ["principalAddressPropertyNameNumber", "principalAddressLine1", "principalAddressLine2", "principalAddressTown", "principalAddressCounty", "principalAddressCountry", "principalAddressPostcode"];
@@ -8,7 +8,7 @@ export const DateKey: string = "startDate";
 export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 
 export const BeneficialOwnerOtherKey: string = "beneficialOwnerOther";
-export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "startDate", "natureOfControl", "statementCondition", "isSanctioned"];
+export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "legalForm", "registerName", "registerNumber", "publicRegister", "startDate", "natureOfControl", "isSanctioned"];
 
 export interface BeneficialOwnerOther {
     corporationName?: string
@@ -16,8 +16,11 @@ export interface BeneficialOwnerOther {
     isSameAddress?: yesNoResponse
     serviceAddress?: Address
     lawGoverned?: string
+    legalForm?: string,
+    registerName?: string,
+    registerNumber?: string,
+    publicRegister?: yesNoResponse,
     startDate?: InputDate
     natureOfControl?: natureOfControl
-    statementCondition?: statementCondition
     isSanctioned?: yesNoResponse
 }

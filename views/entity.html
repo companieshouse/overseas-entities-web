@@ -66,6 +66,7 @@
                 }) }}
 
                 {{ govukInput({
+                    errorMessage: errors.principalAddressline2 if errors,
                     label: {
                         html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
                     },
@@ -76,6 +77,7 @@
                 }) }}
 
                 {{ govukInput({
+                    errorMessage: errors.principalAddressTown if errors,
                     label: {
                         text: "Town or city"
                     },
@@ -97,6 +99,7 @@
                 }) }}
 
                 {{ govukInput({
+                    errorMessage: errors.principalAddressPostcode if errors,
                     label: {
                         text: "Postcode"
                     },
@@ -119,6 +122,7 @@
                 }) %}
 
                     {{ govukInput({
+                        errorMessage: errors.serviceAddressLine1 if errors,
                         label: {
                             html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
                         },
@@ -139,6 +143,7 @@
                     }) }}
 
                     {{ govukInput({
+                        errorMessage: errors.serviceAddressTown if errors,
                         label: {
                             text: "Town or city"
                         },
@@ -160,6 +165,7 @@
                     }) }}
 
                     {{ govukInput({
+                        errorMessage: errors.serviceAddressPostcode if errors,
                         label: {
                             text: "Postcode"
                         },
@@ -174,6 +180,7 @@
             {% endset -%}
 
             {{ govukRadios({
+                errorMessage: errors.is_service_address_same_as_principal_address if errors,
                 idPrefix: "is_service_address_same_as_principal_address",
                 name: "is_service_address_same_as_principal_address",
                 fieldset: {
@@ -204,6 +211,7 @@
             }) }}
 
             {{ govukInput({
+                errorMessage: errors.email if errors,
                 label: {
                     text: "What is the email address?",
                     classes: "govuk-label--m",
@@ -215,6 +223,7 @@
             }) }}
 
             {{ govukInput({
+                errorMessage: errors.legal_form if errors,
                 label: {
                     text: "What is legal form?",
                     classes: "govuk-label--m",
@@ -226,6 +235,7 @@
             }) }}
 
             {{ govukInput({
+                errorMessage: errors.law_governed if errors,
                 label: {
                     text: "What is law governed?",
                     classes: "govuk-label--m",
@@ -237,6 +247,7 @@
             }) }}
 
             {{ govukInput({
+                errorMessage: errors.public_register_name if errors,
                 label: {
                     text: "On which public register is the overseas entity registered?",
                     classes: "govuk-label--m",
@@ -248,6 +259,7 @@
             }) }}
 
             {{ govukInput({
+                errorMessage: errors.registration_number if errors,
                 label: {
                     text: "What is the registration number of the entity?",
                     classes: "govuk-label--m",

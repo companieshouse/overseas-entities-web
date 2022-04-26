@@ -162,6 +162,12 @@
         ]
       }) }}
 
+      <h2 class="govuk-heading-l">Beneficial owner details</h2>
+
+      {% for boi in appData.beneficial_owners_individual %}
+        {% include "includes/check-your-answers/individual-beneficial-owner.html" %}
+      {% endfor %}
+
       {{ govukCheckboxes({
         idPrefix: "due-diligence",
         name: "due-diligence",

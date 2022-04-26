@@ -62,7 +62,7 @@
                     id: "principalAddressLine1",
                     name: "principalAddressLine1",
                     autocomplete: "principalAddressline1",
-                    value: principal_address.principalAddressLine1 if principal_address
+                    value: principalAddressLine1 or ( principal_address.principalAddressLine1 if principal_address )
                 }) }}
 
                 {{ govukInput({
@@ -72,7 +72,7 @@
                     id: "principalAddressLine2",
                     name: "principalAddressLine2",
                     autocomplete: "principalAddressline2",
-                    value: principal_address.principalAddressLine2 if principal_address
+                    value: principalAddressLine2 or ( principal_address.principalAddressLine2 if principal_address )
                 }) }}
 
                 {{ govukInput({
@@ -83,7 +83,7 @@
                     id: "principalAddressTown",
                     name: "principalAddressTown",
                     autocomplete: "address-level2",
-                    value: principal_address.principalAddressTown if principal_address
+                    value: principalAddressTown or ( principal_address.principalAddressTown if principal_address )
                 }) }}
 
                 {{ govukInput({
@@ -93,7 +93,7 @@
                     classes: "govuk-!-width-two-thirds",
                     id: "principalAddressCounty",
                     name: "principalAddressCounty",
-                    value: principal_address.principalAddressCounty if principal_address
+                    value: principalAddressCounty or ( principal_address.principalAddressCounty if principal_address )
                 }) }}
 
                 {{ govukInput({
@@ -104,7 +104,7 @@
                     id: "principalAddressPostcode",
                     name: "principalAddressPostcode",
                     autocomplete: "postal-code",
-                    value: principal_address.principalAddressPostcode if principal_address
+                    value: principalAddressPostcode or ( principal_address.principalAddressPostcode if principal_address )
                 }) }}
 
             {% endcall %}
@@ -125,7 +125,7 @@
                         id: "serviceAddressLine1",
                         name: "serviceAddressLine1",
                         autocomplete: "address-line1",
-                        value: service_address.serviceAddressLine1 if service_address
+                        value: serviceAddressLine1 or ( service_address.serviceAddressLine1 if service_address )
                     }) }}
 
                     {{ govukInput({
@@ -135,7 +135,7 @@
                         id: "serviceAddressLine2",
                         name: "serviceAddressLine2",
                         autocomplete: "address-line2",
-                        value: service_address.serviceAddressLine2 if service_address
+                        value: serviceAddressLine2 or ( service_address.serviceAddressLine2 if service_address )
                     }) }}
 
                     {{ govukInput({
@@ -146,7 +146,7 @@
                         id: "serviceAddressTown",
                         name: "serviceAddressTown",
                         autocomplete: "address-level2",
-                        value: service_address.serviceAddressTown if service_address
+                        value: serviceAddressTown or ( service_address.serviceAddressTown if service_address )
                     }) }}
 
                     {{ govukInput({
@@ -156,7 +156,7 @@
                         classes: "govuk-!-width-two-thirds",
                         id: "serviceAddressCounty",
                         name: "serviceAddressCounty",
-                        value: service_address.serviceAddressCounty if service_address
+                        value: serviceAddressCounty or ( service_address.serviceAddressCounty if service_address )
                     }) }}
 
                     {{ govukInput({
@@ -167,7 +167,7 @@
                         id: "serviceAddressPostcode",
                         name: "serviceAddressPostcode",
                         autocomplete: "postal-code",
-                        value: service_address.serviceAddressPostcode if service_address
+                        value: serviceAddressPostcode or ( service_address.serviceAddressPostcode if service_address )
                     }) }}
 
                 {% endcall %}
@@ -190,12 +190,12 @@
                     {
                         value: 1,
                         text: "Yes",
-                        checked: is_service_address_same_as_principal_address === 1
+                        checked: is_service_address_same_as_principal_address == 1
                     },
                     {
                         value: 0,
                         text: "No",
-                        checked: is_service_address_same_as_principal_address === 0,
+                        checked: is_service_address_same_as_principal_address == 0,
                         conditional: {
                             html: serviceAddressHtml
                         }

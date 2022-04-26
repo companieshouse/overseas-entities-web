@@ -18,7 +18,8 @@ import {
 } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
-import * as config from "../config";
+import { NAVIGATION } from "../utils/navigation";
+import { ENTITY_URL } from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,9 +28,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
     const entityData = appData[EntityKey] as any;
 
-    return res.render(config.ENTITY_PAGE, {
-      backLinkUrl: config.PRESENTER_URL,
+    return res.render(NAVIGATION[ENTITY_URL].currentPage, {
       ...entityData,
+      backLinkUrl: NAVIGATION[ENTITY_URL].previusPage,
       [PrincipalAddressKey]: (entityData) ? mapAddressToObjectField(entityData[PrincipalAddressKey], PrincipalAddressKeys) : {},
       [ServiceAddressKey]: (entityData) ? mapAddressToObjectField(entityData[ServiceAddressKey], ServiceAddressKeys) : {}
     });
@@ -53,7 +54,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, EntityKey);
 
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+    return res.redirect(NAVIGATION[ENTITY_URL].nextPage);
   } catch (error) {
     logger.error(error);
     next(error);

@@ -1,6 +1,6 @@
-{% if errorList.length > 0 %}
+{% if errors and errors.errorList and errors.errorList.length > 0 %}
   {{ govukErrorSummary({
     titleText: "There is a problem",
-    errorList: errorList
+    errorList: errors.errorList if errors
   }) }}
 {% endif %}

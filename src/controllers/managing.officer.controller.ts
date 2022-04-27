@@ -26,9 +26,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, managingOfficerType.ManagingOfficerKeys);
+
     data[managingOfficerType.UsualResidentialAddressKey] =
-         mapFieldsToDataObject(req.body, managingOfficerType.UsualResidentialAddressKeys, AddressKeys);
-    data[managingOfficerType.DateOfBirthKey] = prepareData(req.body, managingOfficerType.DateOfBirthKeys);
+        mapFieldsToDataObject(req.body, managingOfficerType.UsualResidentialAddressKeys, AddressKeys);
+
+    data[managingOfficerType.DateOfBirthKey] =
+        mapFieldsToDataObject(req.body, managingOfficerType.DateOfBirthKeys, AddressKeys);
 
     setApplicationData(req.session, data, managingOfficerType.ManagingOfficerKey);
 

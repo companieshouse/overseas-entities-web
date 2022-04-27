@@ -4,7 +4,7 @@ import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, beneficialOwnerOtherType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
-import { AddressKeys } from "../model/data.types.model";
+import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,11 +28,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
+
     data[beneficialOwnerOtherType.PrincipalAddressKey] =
-         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.PrincipalAddressKeys, AddressKeys);
+        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.PrincipalAddressKeys, AddressKeys);
     data[beneficialOwnerOtherType.ServiceAddressKey] =
-         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.ServiceAddressKeys, AddressKeys);
-    data[beneficialOwnerOtherType.DateKey] = prepareData(req.body, beneficialOwnerOtherType.DateKeys);
+        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.ServiceAddressKeys, AddressKeys);
+
+    data[beneficialOwnerOtherType.DateKey] =
+        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.DateKeys, InputDateKeys);
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 

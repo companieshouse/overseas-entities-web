@@ -4,7 +4,7 @@ import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, managingOfficerCorporateType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
-import { AddressKeys } from "../model/data.types.model";
+import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,11 +28,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
+
     data[managingOfficerCorporateType.UsualResidentialAddressKey] =
-          mapFieldsToDataObject(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys, AddressKeys);
+        mapFieldsToDataObject(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys, AddressKeys);
     data[managingOfficerCorporateType.ServiceAddressKey] =
-          mapFieldsToDataObject(req.body, managingOfficerCorporateType.ServiceAddressKeys, AddressKeys);
-    data[managingOfficerCorporateType.DateKey] = prepareData(req.body, managingOfficerCorporateType.DateKeys);
+        mapFieldsToDataObject(req.body, managingOfficerCorporateType.ServiceAddressKeys, AddressKeys);
+
+    data[managingOfficerCorporateType.DateKey] =
+        mapFieldsToDataObject(req.body, managingOfficerCorporateType.DateKeys, InputDateKeys);
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 

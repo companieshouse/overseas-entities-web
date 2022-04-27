@@ -45,7 +45,7 @@ export enum statementCondition {
 }
 
 /*
-  Address key fields - Position is important for the mapping of sub-fields Address Objects!
+  Address and InputDate key fields - Position is important for the mapping of sub-fields Address Objects!
 */
 export const AddressKeys: string[] = [
   "property_name_number",
@@ -55,4 +55,10 @@ export const AddressKeys: string[] = [
   "county",
   "country",
   "postcode"
+];
+
+export const InputDateKeys: string[] = [
+  "day",
+  "month",
+  "year"
 ];

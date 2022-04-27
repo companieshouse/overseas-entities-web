@@ -13,9 +13,9 @@ export enum yesNoResponse {
   Yes = 1
 }
 export interface InputDate {
-  day: number;
-  month: number;
-  year: number;
+  day: string;
+  month: string;
+  year: string;
 }
 
 export enum NatureOfControlType {

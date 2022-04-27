@@ -63,9 +63,9 @@ export interface BeneficialOwnerIndividual {
   is_service_address_same_as_usual_residential_address?: yesNoResponse;
   service_address?: Address;
   start_date?: InputDate;
-  beneficial_owner_nature_of_control_types?: [NatureOfControlType];
-  trustees_nature_of_control_types?: [NatureOfControlType];
-  non_legal_firm_members_nature_of_control_types?: [NatureOfControlType];
+  beneficial_owner_nature_of_control_types?: NatureOfControlType[];
+  trustees_nature_of_control_types?: NatureOfControlType[];
+  non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
   is_on_sanctions_list?: yesNoResponse;
 }
 

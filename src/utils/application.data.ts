@@ -3,8 +3,7 @@ import {
   ApplicationData,
   APPLICATION_DATA_KEY,
   ApplicationDataType,
-  ApplicationDataArrayType,
-  dataType,
+  ApplicationDataArrayType
 } from "../model";
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {

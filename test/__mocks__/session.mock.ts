@@ -97,7 +97,7 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
-  beneficialOwnerStatementType.BeneficialOwnerStatementType
+  beneficialOwnerStatementType.BeneficialOwnersStatementType
     .all_identified_all_details;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -106,11 +106,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   isSameAddress: yesNoResponse.Yes,
   serviceAddress: ADDRESS,
   lawGoverned: "TheLaw",
-  startDate: {
-    day: 1,
-    month: 1,
-    year: 2011
-  },
+  startDate: { day: "1", month: "1", year: "2011" },
   natureOfControl: natureOfControl.over25upTo50Percent,
   statementCondition: statementCondition.statement1,
   isSanctioned: yesNoResponse.No
@@ -119,12 +115,12 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   first_name: "Ivan",
   last_name: "Drago",
-  date_of_birth: { day: 21, month: 3, year: 1947 },
+  date_of_birth: { day: "21", month: "3", year: "1947" },
   nationality: "Russian",
   usual_residential_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
-  start_date: { day: 1, month: 3, year: 1999 },
+  start_date: { day: "1", month: "3", year: "1999" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
   trustees_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
@@ -135,11 +131,7 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   corporationLawGoverned: "a11",
   corporationName: "my company name",
   corporationNatureOfControl: corpNatureOfControl.influence,
-  corporationStartDate: {
-    day: 12,
-    month: 11,
-    year: 1965
-  },
+  corporationStartDate: { day: "12", month: "11", year: "1965" },
   isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
   isOnSanctionsList: yesNoResponse.No,
   principalAddress: ADDRESS,
@@ -150,11 +142,7 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer =
   fullName: "Andrei Nikolayevich Bolkonsky",
   hasAFormerName: yesNoResponse.No,
   formerName: "",
-  dateOfBirth: {
-    day: 4,
-    month: 11,
-    year: 1830
-  },
+  dateOfBirth: { day: "4", month: "11", year: "1830" },
   nationality: "Russian",
   usualResidentialAddress: ADDRESS,
   businessOccupation: "Prince",
@@ -170,11 +158,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   legalForm: "legalForm",
   legalAuthority: "LegAuth",
   registrationNumber: "123456789",
-  startDate: {
-    day: 1,
-    month: 1,
-    year: 2011
-  }
+  startDate: { day: "1", month: "1", year: "2011" }
 };
 
 const PRESENTER_OBJECT_MOCK = {

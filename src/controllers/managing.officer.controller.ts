@@ -3,7 +3,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, managingOfficerType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
-import { AddressKeys } from "../model/data.types.model";
+import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,7 +31,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         mapFieldsToDataObject(req.body, managingOfficerType.UsualResidentialAddressKeys, AddressKeys);
 
     data[managingOfficerType.DateOfBirthKey] =
-        mapFieldsToDataObject(req.body, managingOfficerType.DateOfBirthKeys, AddressKeys);
+        mapFieldsToDataObject(req.body, managingOfficerType.DateOfBirthKeys, InputDateKeys);
 
     setApplicationData(req.session, data, managingOfficerType.ManagingOfficerKey);
 

@@ -14,7 +14,8 @@
     <div class="govuk-grid-column-two-thirds">
       <span class="govuk-caption-xl">Beneficial owner</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the other legal entity</h1>
-      <p class="govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
+      <br>
+      <p class="govuk-body">You can add more later.</p>
       <br>
       <form class="form" method="post">
 
@@ -35,7 +36,7 @@
         }) }}
         {% call govukFieldset({
           legend: {
-            text: "What is its principal or registered office address",
+            text: "What is its principal or registered office address?",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: false
           }
@@ -96,11 +97,15 @@
           value: principalAddress.principalAddressCounty if principalAddress
         }) }}
 
-        <div class="govuk-form-group">
-          <label for="autocomplete-default" class="govuk-label">Country</label>
-          <p class="govuk-hint">Start typing a country, then choose from the list</p>
-          <div id="country" class="autocomplete-wrapper"></div>
-        </div>
+        {{ govukInput({
+         label: {
+           text: "Country"
+         },
+         classes: "govuk-!-width-two-thirds",
+         id: "principalAddressCountry",
+         name: "principalAddressCountry",
+         value: principalAddress.principalAddressCountry if principalAddress
+        }) }}
 
         {{ govukInput({
           label: {
@@ -119,7 +124,7 @@
         <br>
         {% call govukFieldset({
           legend: {
-            text: "What is their service address?",
+            text: "What is its correspondence address?",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: false
           }
@@ -161,7 +166,7 @@
 
         {{ govukInput({
           label: {
-            text: "city or Town"
+            text: "City or town"
           },
           classes: "govuk-!-width-two-thirds",
           id: "serviceAddressTown",
@@ -172,7 +177,7 @@
 
         {{ govukInput({
           label: {
-            text: "County"
+            text: "County, state, province or region (optional)"
           },
           classes: "govuk-!-width-two-thirds",
           id: "serviceAddressCounty",
@@ -180,15 +185,19 @@
           value: serviceAddress.serviceAddressCounty if serviceAddress
         }) }}
 
-        <div class="govuk-form-group">
-          <label for="autocomplete-default" class="govuk-label">Country</label>
-          <p class="govuk-hint">Start typing a country, then choose from the list</p>
-          <div id="country" class="autocomplete-wrapper"></div>
-        </div>
+        {{ govukInput({
+          label: {
+            text: "Country"
+          },
+          classes: "govuk-!-width-two-thirds",
+          id: "serviceAddressCountry",
+          name: "serviceAddressCountry",
+          value: serviceAddress.serviceAddressCountry if serviceAddress
+        }) }}
 
         {{ govukInput({
           label: {
-            text: "Postcode"
+            text: "Postcode or ZIP code (if applicable)"
           },
           classes: "govuk-input--width-10",
           id: "serviceAddressPostcode",
@@ -210,9 +219,6 @@
               isPageHeading: false,
               classes: "govuk-fieldset__legend--m"
             }
-          },
-          hint: {
-            text: "A service address is a correspondence address."
           },
           items: [
             {
@@ -242,7 +248,7 @@
           },
           id: "legalForm",
           name: "legalForm",
-          value: "legalForm"
+          value: legalForm
         }) }}
 
         {{ govukInput({
@@ -250,6 +256,9 @@
             text: "What is the governing law?",
             classes: "govuk-label--m govuk-input--width-15",
             isPageHeading: false
+          },
+          hint: {
+            text: "This is the law that the beneficial owner operates under"
           },
           id: "lawGoverned",
           name: "lawGoverned",
@@ -471,6 +480,9 @@
               classes: "govuk-fieldset__legend--m"
             }
           },
+          hint: {
+            text: "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018."
+          },
           items: [
             {
               value: "yes",
@@ -486,8 +498,12 @@
         }) }}
 
 
-        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
-        <p class="govuk-body">All details provided about the corporate owner will be available on the online register</p>
+        {{ govukInsetText({
+          html: '
+           <h2 class="govuk-heading-m">Information shown on the public register</h2>
+           <p>All information provided in this section about the other legal entity will be shown on the public Register of Overseas Entities.</p>
+          '
+        }) }}
 
         {{ govukButton({
           text: "Continue",

@@ -17,7 +17,7 @@ export interface ApplicationData {
     entity?: entityType.Entity;
     beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnerStatementType;
     beneficial_owners_individual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
-    beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther[];
+    beneficial_owners_other?: beneficialOwnerOtherType.BeneficialOwnerOther[];
     beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managingOfficer?: managingOfficerType.ManagingOfficer[];
     managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];

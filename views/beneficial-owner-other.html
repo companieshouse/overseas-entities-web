@@ -30,9 +30,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corporationName",
-          name: "corporationName",
-          value: corporationName
+          id: "corporation_name",
+          name: "corporation_name",
+          value: corporation_name
         }) }}
         {% call govukFieldset({
           legend: {
@@ -49,9 +49,9 @@
           hint: {
             text: "For example, 'Saron House', '116' or 'Unit 37a'"
           },
-          id: "principalAddressPropertyNameNumber",
-          name: "principalAddressPropertyNameNumber",
-          value: "principalAddress.principalAddressPropertyNameNumber" if principalAddress
+          id: "principal_address_property_name_number",
+          name: "principal_address_property_name_number",
+          value: "principal_address.principal_address_property_name_number" if principal_address
         }) }}
 
         {{ govukInput({
@@ -59,10 +59,10 @@
             text: "Address line 1"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine1",
-          name: "principalAddressLine1",
-          value: principalAddress.principalAddressLine1 if principalAddress,
-          autocomplete: "principalAddressline1"
+          id: "principal_address_line1",
+          name: "principal_address_line1",
+          value: principal_address.principal_address_line1 if principal_address,
+          autocomplete: "principal_address_line1"
         }) }}
 
         {{ govukInput({
@@ -70,10 +70,10 @@
             text: "Address line 2 (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine2",
-          name: "principalAddressLine2",
-          value: principalAddress.principalAddressLine2 if principalAddress,
-          autocomplete: "principalAddressline2"
+          id: "principal_address_line2",
+          name: "principal_address_line2",
+          value: principal_address.principal_address_line2 if principal_address,
+          autocomplete: "principal_address_line2"
         }) }}
 
         {{ govukInput({
@@ -81,10 +81,10 @@
             text: "City or town"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principalAddressTown",
-          name: "principalAddressTown",
-          value: principalAddress.principalAddressTown if principalAddress,
-          autocomplete: "principalAddressTown"
+          id: "principal_address_town",
+          name: "principal_address_town",
+          value: principal_address.principal_address_town if principal_address,
+          autocomplete: "principal_address_town"
         }) }}
 
         {{ govukInput({
@@ -92,9 +92,9 @@
            text: "County, state, province or region (optional)"
         },
         classes: "govuk-!-width-two-thirds",
-          id: "principalAddressCounty",
-          name: "principalAddressCounty",
-          value: principalAddress.principalAddressCounty if principalAddress
+          id: "principal_address_county",
+          name: "principal_address_county",
+          value: principal_address.principal_address_county if principal_address
         }) }}
 
         {{ govukInput({
@@ -102,9 +102,9 @@
            text: "Country"
          },
          classes: "govuk-!-width-two-thirds",
-         id: "principalAddressCountry",
-         name: "principalAddressCountry",
-         value: principalAddress.principalAddressCountry if principalAddress
+         id: "principal_address_country",
+         name: "principal_address_country",
+         value: principal_address.principal_address_country if principal_address
         }) }}
 
         {{ govukInput({
@@ -112,10 +112,10 @@
             text: "Postcode or ZIP code (if applicable)"
           },
           classes: "govuk-input--width-10",
-          id: "principalAddressPostcode",
-          name: "principalAddressPostcode",
-          value: principalAddress.principalAddressPostcode if principalAddress,
-          autocomplete: "principalAddressPostcode"
+          id: "principal_address_postcode",
+          name: "principal_address_postcode",
+          value: principal_address.principal_address_postcode if principal_address,
+          autocomplete: "principal_address_postcode"
         }) }}
 
         {% endcall %}
@@ -137,9 +137,9 @@
           hint: {
             text: "For example, 'Saron House', '116' or 'Unit 37a'"
           },
-          id: "serviceAddressPropertyNameNumber",
-          name: "serviceAddressPropertyNameNumber",
-          value: "serviceAddress.serviceAddresssPropertyNameNumber" if serviceAddress
+          id: "service_address_property_name_number",
+          name: "service_address_property_name_number",
+          value: "service_address.service_addresss_property_name_number" if service_address
         }) }}
 
         {{ govukInput({
@@ -147,10 +147,10 @@
             text: "Address line 1"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressLine1",
-          name: "serviceAddressLine1",
-          value: serviceAddress.serviceAddressLine1 if serviceAddress,
-          autocomplete: "serviceAddressLine1"
+          id: "service_address_line1",
+          name: "service_address_line1",
+          value: service_address.service_address_line1 if service_address,
+          autocomplete: "service_address_line1"
         }) }}
 
         {{ govukInput({
@@ -158,10 +158,10 @@
             text: "Address line 2 (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressLine2",
-          name: "serviceAddressLine2",
-          value: serviceAddress.serviceAddressLine2 if serviceAddress,
-          autocomplete: "serviceAddressLine2"
+          id: "service_address_line2",
+          name: "service_address_line2",
+          value: service_address.service_address_line2 if service_address,
+          autocomplete: "service_address_line2"
         }) }}
 
         {{ govukInput({
@@ -169,10 +169,10 @@
             text: "City or town"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressTown",
-          name: "serviceAddressTown",
-          value: serviceAddress.serviceAddressTown if serviceAddress,
-          autocomplete: "serviceAddressTown"
+          id: "service_address_town",
+          name: "service_address_town",
+          value: service_address.service_address_town if service_address,
+          autocomplete: "service_address_town"
         }) }}
 
         {{ govukInput({
@@ -180,9 +180,9 @@
             text: "County, state, province or region (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressCounty",
-          name: "serviceAddressCounty",
-          value: serviceAddress.serviceAddressCounty if serviceAddress
+          id: "service_address_county",
+          name: "service_address_county",
+          value: service_address.service_address_county if service_address
         }) }}
 
         {{ govukInput({
@@ -190,9 +190,9 @@
             text: "Country"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressCountry",
-          name: "serviceAddressCountry",
-          value: serviceAddress.serviceAddressCountry if serviceAddress
+          id: "service_address_country",
+          name: "service_address_country",
+          value: service_address.service_address_country if service_address
         }) }}
 
         {{ govukInput({
@@ -200,10 +200,10 @@
             text: "Postcode or ZIP code (if applicable)"
           },
           classes: "govuk-input--width-10",
-          id: "serviceAddressPostcode",
-          name: "serviceAddressPostcode",
-          value: serviceAddress.serviceAddressPostcode if serviceAddress,
-          autocomplete: "serviceAddressPostcode"
+          id: "service_address_postcode",
+          name: "service_address_postcode",
+          value: service_address.service_address_postcode if service_address,
+          autocomplete: "service_address_postcode"
         }) }}
 
         {% endcall %}
@@ -211,8 +211,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "isSameAddress",
-          name: "isSameAddress",
+          idPrefix: "is_same_address",
+          name: "is_same_address",
           fieldset: {
             legend: {
               text: "Is its correspondence address the same as its principal or registered office address?",
@@ -224,12 +224,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: isSameAddress === "yes"
+              checked: is_same_address === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: isSameAddress === "no",
+              checked: is_same_address === "no",
               conditional: {
                 html: serviceAddressHtml
               }
@@ -246,9 +246,9 @@
           hint: {
             text: "For example, limited company or partnership"
           },
-          id: "legalForm",
-          name: "legalForm",
-          value: legalForm
+          id: "legal_form",
+          name: "legal_form",
+          value: legal_form
         }) }}
 
         {{ govukInput({
@@ -260,16 +260,16 @@
           hint: {
             text: "This is the law that the beneficial owner operates under"
           },
-          id: "lawGoverned",
-          name: "lawGoverned",
-          value: lawGoverned
+          id: "law_governed",
+          name: "law_governed",
+          value: law_governed
         }) }}
 
         {% set entityPublicRegisterHtml %}
         {{ govukInput({
-          id: "registerName",
-          name: "registerName",
-          value: registerName,
+          id: "register_name",
+          name: "register_name",
+          value: register_name,
           hint: {
             text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
           },
@@ -279,9 +279,9 @@
         }) }}
 
         {{ govukInput({
-          id: "registerNumber",
-          name: "registerNumber",
-          value: registerNumber,
+          id: "register_number",
+          name: "register_number",
+          value: register_number,
           classes: "govuk-!-width-one-half",
           label: {
             text: "Entity's registration number"
@@ -290,8 +290,8 @@
         {% endset -%}
 
         {{ govukRadios({
-          idPrefix: "bo-corp-public-register",
-          name: "bo-corp-public-register",
+          idPrefix: "public_register",
+          name: "public_register",
           fieldset: {
             legend: {
               text: "Is the other legal entity already on a public register in the country it was formed in?",
@@ -301,14 +301,14 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
               conditional: {
                 html: entityPublicRegisterHtml
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
               conditional: {
                 html: phoneHtml
@@ -318,8 +318,8 @@
         }) }}
 
         {{ govukDateInput({
-          id: "startDate",
-          namePrefix: "startDate",
+          id: "start_date",
+          namePrefix: "start_date",
           fieldset: {
             legend: {
               text: "When did it become a beneficial owner for the overseas entity?",
@@ -334,17 +334,17 @@
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "day",
-              value: startDate["startDate-day"]
+              value: start_date["start_date_day"]
             },
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "month",
-              value: startDate["startDate-month"]
+              value: startDate["start_date_month"]
             },
             {
               classes: "govuk-input--width-4 govuk-input",
               name: "year",
-              value: startDate["startDate-year"]
+              value: startDate["start_date_year"]
             }
           ],
           hint: {
@@ -362,81 +362,11 @@
         }) %}
 
         {{ govukCheckboxes({
-          idPrefix: "natureOfControlIndividual",
-          name: "natureOfControlIndividual",
-          fieldset: {
-            legend: {
-            text: "The beneficial owner:",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--s"
-          }
-        },
-
-        items: [
-          {
-            value: "nocIndividualShares",
-            text: "holds, directly or indirectly, more than 25% of the shares in the entity",
-            checked: natureOfControlIndividual and 'shares' in natureOfControlIndividual
-          },
-          {
-            value: "nocIndividualVoting",
-            text: "holds, directly or indirectly, more than 25% of the voting rights in the entity",
-            checked: natureOfControlIndividual and 'voting' in natureOfControlIndividual
-          },
-          {
-            value: "nocIndividualBoard",
-            text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity",
-            checked: natureOfControlIndividual and 'board' in natureOfControlIndividual
-          },
-          {
-            value: "nocIndividualInfluence",
-            text: "has the right to exercise, or actually exercises, significant influence or control over the entity",
-            checked: natureOfControlIndividual and 'influence' in natureOfControlIndividual
-          }
-        ]
-        }) }}
-
-        {{ govukCheckboxes({
-          idPrefix: "natureOfControlTrust",
-          name: "natureOfControlTrust",
-          fieldset: {
-            legend: {
-              text: "The beneficial owner is a trustee of a trust and:",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--s"
-            }
-          },
-
-          items: [
-            {
-              value: "nocTrustShares",
-              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
-              checked: natureOfControlTrust and 'shares' in natureOfControlTrust
-            },
-            {
-              value: "nocTrustVoting",
-              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
-              checked: natureOfControlTrust and 'voting' in natureOfControlTrust
-            },
-            {
-              value: "nocTrustBoard",
-              text: "the trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
-              checked: natureOfControlTrust and 'board' in natureOfControlTrust
-            },
-            {
-              value: "nocTrustInfluence",
-              text: "the trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
-              checked: natureOfControlTrust and 'influence' in natureOfControlTrust
-            }
-          ]
-        }) }}
-
-        {{ govukCheckboxes({
-          idPrefix: "natureOfControlFirm",
-          name: "natureOfControlFirm",
+          idPrefix: "beneficial_owner_nature_of_control_types",
+          name: "beneficial_owner_nature_of_control_types",
           fieldset: {
           legend: {
-            text: "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:",
+            text: "The beneficial owner:",
             isPageHeading: false,
             classes: "govuk-fieldset__legend--s"
           }
@@ -445,34 +375,107 @@
         items:
           [
             {
-              value: "nocFirmShares",
-              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
-              checked: natureOfControlFirm and 'shares' in natureOfControlFirm
+              value: "over_25_percent_of_shares",
+              text: "holds, directly or indirectly, more than 25% of the shares in the entity",
+              checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_shares' in beneficial_owner_nature_of_control_types
             },
             {
-              value: "nocFirmVoting",
-              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
-              checked: natureOfControlFirm and 'voting' in natureOfControlFirm
+              value: "over_25_percent_of_voting_rights",
+              text: "holds, directly or indirectly, more than 25% of the voting rights in the entity",
+              checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_voting_rights' in beneficial_owner_nature_of_control_types
             },
             {
-              value: "nocFirmBoard",
-              text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
-              checked: natureOfControlFirm and 'board' in natureOfControlFirm
+              value: "appoint_or_remove_majority_board_directors",
+              text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity",
+              checked: beneficial_owner_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in beneficial_owner_nature_of_control_types
             },
             {
-              value: "nocFirmInfluence",
-              text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
-              checked: natureOfControlFirm and 'influence' in natureOfControlFirm
+              value: "significant_influence_or_control",
+              text: "has the right to exercise, or actually exercises, significant influence or control over the entity",
+              checked: beneficial_owner_nature_of_control_types and 'significant_influence_or_control' in beneficial_owner_nature_of_control_types
             }
           ]
         }) }}
+
+        {{ govukCheckboxes({
+          idPrefix: "trustees_nature_of_control_types",
+          name: "trustees_nature_of_control_types",
+          fieldset: {
+            legend: {
+              text: "The beneficial owner is a trustee of a trust and:",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--s"
+            }
+        },
+
+        items:
+          [
+            {
+              value: "over_25_percent_of_shares",
+              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
+              checked: trustees_nature_of_control_types and 'over_25_percent_of_shares' in trustees_nature_of_control_types
+            },
+            {
+              value: "over_25_percent_of_voting_rights",
+              text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
+              checked: trustees_nature_of_control_types and 'over_25_percent_of_voting_rights' in trustees_nature_of_control_types
+            },
+            {
+              value: "appoint_or_remove_majority_board_directors",
+              text: "the trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
+              checked: trustees_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in trustees_nature_of_control_types
+            },
+            {
+              value: "significant_influence_or_control",
+              text: "the trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
+              checked: trustees_nature_of_control_types and 'significant_influence_or_control' in trustees_nature_of_control_types
+            }
+          ]
+        }) }}
+
+        {{ govukCheckboxes({
+          idPrefix: "non_legal_firm_members_nature_of_control_types",
+          name: "non_legal_firm_members_nature_of_control_types",
+          fieldset: {
+            legend: {
+              text: "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--s"
+          }
+        },
+
+        items:
+          [
+            {
+              value: "over_25_percent_of_shares",
+              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
+              checked: non_legal_firm_members_nature_of_control_types and 'over_25_percent_of_shares' in non_legal_firm_members_nature_of_control_types
+            },
+            {
+              value: "over_25_percent_of_voting_rights",
+              text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
+              checked: non_legal_firm_members_nature_of_control_types and 'over_25_percent_of_voting_rights' in non_legal_firm_members_nature_of_control_types
+            },
+            {
+              value: "appoint_or_remove_majority_board_directors",
+              text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
+              checked: non_legal_firm_members_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in non_legal_firm_members_nature_of_control_types
+            },
+            {
+              value: "significant_influence_or_control",
+              text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
+              checked: non_legal_firm_members_nature_of_control_types and 'significant_influence_or_control' in non_legal_firm_members_nature_of_control_types
+            }
+          ]
+        }) }}
+
 
         {% endcall %}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "isSanctioned",
-          name: "isSanctioned",
+          idPrefix: "is_sanctioned",
+          name: "is_sanctioned",
           fieldset: {
             legend: {
               text: "Is it on the sanctions list?",
@@ -487,12 +490,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: isSanctioned === "yes"
+              checked: is_sanctioned === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: isSanctioned === "no"
+              checked: is_sanctioned === "no"
             }
           ]
         }) }}

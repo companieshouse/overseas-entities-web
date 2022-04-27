@@ -99,24 +99,24 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
     .all_identified_all_details;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  corporationName: "TestCorporation",
-  principalAddress: ADDRESS,
-  isSameAddress: yesNoResponse.Yes,
-  serviceAddress: ADDRESS,
-  legalForm: "TheLegalForm",
-  lawGoverned: "TheLaw",
-  registerName: "ThisRegister",
-  registerNumber: "123456789",
-  publicRegister: yesNoResponse.Yes,
-  startDate: {
+  corporation_name: "TestCorporation",
+  principal_address: ADDRESS,
+  is_same_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  register_name: "ThisRegister",
+  register_number: "123456789",
+  public_register: yesNoResponse.Yes,
+  start_date: {
     day: 1,
     month: 1,
     year: 2011
   },
-  natureOfControlIndividual: [NatureOfControlType.voting],
-  natureOfControlTrust: [NatureOfControlType.board],
-  natureOfControlFirm: [NatureOfControlType.shares],
-  isSanctioned: yesNoResponse.No
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
+  trustees_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+  is_sanctioned: yesNoResponse.No
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {

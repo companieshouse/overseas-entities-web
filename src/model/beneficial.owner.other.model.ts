@@ -8,21 +8,21 @@ export const DateKey: string = "startDate";
 export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
 
 export const BeneficialOwnerOtherKey: string = "beneficialOwnerOther";
-export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "lawGoverned", "legalForm", "registerName", "registerNumber", "publicRegister", "startDate", "natureOfControlIndividual",  "natureOfControlTrust", "natureOfControlFirm", "isSanctioned"];
+export const BeneficialOwnerOtherKeys: string[] = ["corporationName", "principalAddress", "isSameAddress", "serviceAddress", "legalForm", "lawGoverned", "registerName", "registerNumber", "publicRegister", "startDate", "natureOfControlIndividual",  "natureOfControlTrust", "natureOfControlFirm", "isSanctioned"];
 
 export interface BeneficialOwnerOther {
-    corporationName?: string
-    principalAddress?: Address
-    isSameAddress?: yesNoResponse
-    serviceAddress?: Address
-    lawGoverned?: string
-    legalForm?: string,
-    registerName?: string,
-    registerNumber?: string,
-    publicRegister?: yesNoResponse,
-    startDate?: InputDate,
-    natureOfControlIndividual?: [NatureOfControlType],
-    natureOfControlTrust?: [NatureOfControlType],
-    natureOfControlFirm?: [NatureOfControlType],
-    isSanctioned?: yesNoResponse
+    corporationName?: string;
+    principalAddress?: Address;
+    isSameAddress?: yesNoResponse;
+    serviceAddress?: Address;
+    legalForm?: string;
+    lawGoverned?: string;
+    registerName?: string;
+    registerNumber?: string;
+    publicRegister?: yesNoResponse;
+    startDate?: InputDate;
+    natureOfControlIndividual?: [NatureOfControlType];
+    natureOfControlTrust?: [NatureOfControlType];
+    natureOfControlFirm?: [NatureOfControlType];
+    isSanctioned?: yesNoResponse;
 }

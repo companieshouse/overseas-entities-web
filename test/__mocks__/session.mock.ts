@@ -18,9 +18,7 @@ import {
 } from "../../src/model";
 import {
   corpNatureOfControl,
-  natureOfControl,
   NatureOfControlType,
-  statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -105,14 +103,19 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   principalAddress: ADDRESS,
   isSameAddress: yesNoResponse.Yes,
   serviceAddress: ADDRESS,
+  legalForm: "TheLegalForm",
   lawGoverned: "TheLaw",
+  registerName: "ThisRegister",
+  registerNumber: "123456789",
+  publicRegister: yesNoResponse.Yes,
   startDate: {
     day: 1,
     month: 1,
     year: 2011
   },
-  natureOfControl: natureOfControl.over25upTo50Percent,
-  statementCondition: statementCondition.statement1,
+  natureOfControlIndividual: [NatureOfControlType.voting],
+  natureOfControlTrust: [NatureOfControlType.board],
+  natureOfControlFirm: [NatureOfControlType.shares],
   isSanctioned: yesNoResponse.No
 };
 

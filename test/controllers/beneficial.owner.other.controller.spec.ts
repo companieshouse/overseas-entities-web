@@ -12,7 +12,7 @@ import { authentication } from "../../src/controllers";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
-import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
+import { NatureOfControlType, yesNoResponse } from "../../src/model/data.types.model";
 import { beneficialOwnerOtherType } from '../../src/model';
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 
@@ -60,9 +60,14 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
       expect(beneficialOwnerOther).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
       expect(beneficialOwnerOther.corporationName).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legalForm).toEqual("TheLegalForm");
       expect(beneficialOwnerOther.lawGoverned).toEqual("TheLaw");
-      expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25upTo50Percent);
-      expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
+      expect(beneficialOwnerOther.registerName).toEqual( "ThisRegister");
+      expect(beneficialOwnerOther.registerNumber).toEqual("123456789");
+      expect(beneficialOwnerOther.publicRegister).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.natureOfControlIndividual).toEqual([NatureOfControlType.voting]);
+      expect(beneficialOwnerOther.natureOfControlTrust).toEqual([NatureOfControlType.board]);
+      expect(beneficialOwnerOther.natureOfControlFirm).toEqual([NatureOfControlType.shares]);
       expect(beneficialOwnerOther.isSanctioned).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);

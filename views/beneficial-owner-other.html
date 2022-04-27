@@ -30,9 +30,9 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corporation_name",
-          name: "corporation_name",
-          value: corporation_name
+          id: "name",
+          name: "name",
+          value: name
         }) }}
         {% call govukFieldset({
           legend: {
@@ -211,8 +211,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "is_same_address",
-          name: "is_same_address",
+          idPrefix: "is_service_address_same_as_principal_address",
+          name: "is_service_address_same_as_principal_address",
           fieldset: {
             legend: {
               text: "Is its correspondence address the same as its principal or registered office address?",
@@ -224,12 +224,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: is_same_address === "yes"
+              checked: is_service_address_same_as_principal_address === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: is_same_address === "no",
+              checked: is_service_address_same_as_principal_address === "no",
               conditional: {
                 html: serviceAddressHtml
               }
@@ -279,9 +279,9 @@
         }) }}
 
         {{ govukInput({
-          id: "register_number",
-          name: "register_number",
-          value: register_number,
+          id: "registration_number",
+          name: "registration_number",
+          value: registration_number,
           classes: "govuk-!-width-one-half",
           label: {
             text: "Entity's registration number"
@@ -290,8 +290,8 @@
         {% endset -%}
 
         {{ govukRadios({
-          idPrefix: "public_register",
-          name: "public_register",
+          idPrefix: "is_on_register_in_country_formed_in",
+          name: "is_on_register_in_country_formed_in",
           fieldset: {
             legend: {
               text: "Is the other legal entity already on a public register in the country it was formed in?",
@@ -474,8 +474,8 @@
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "is_sanctioned",
-          name: "is_sanctioned",
+          idPrefix: "is_on_sanctions_list",
+          name: "is_on_sanctions_list",
           fieldset: {
             legend: {
               text: "Is it on the sanctions list?",
@@ -490,12 +490,12 @@
             {
               value: "yes",
               text: "Yes",
-              checked: is_sanctioned === "yes"
+              checked: is_on_sanctions_list === "yes"
             },
             {
               value: "no",
               text: "No",
-              checked: is_sanctioned === "no"
+              checked: is_on_sanctions_list === "no"
             }
           ]
         }) }}

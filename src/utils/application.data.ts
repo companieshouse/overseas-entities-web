@@ -36,10 +36,10 @@ export const prepareData = (data: any, keys: string[]): ApplicationDataType => {
   return keys.reduce((o, key) => Object.assign(o, { [key]: data[key] }), {});
 };
 
-export const mapObjectFieldToAddress = (data: any, keys: string[]) => {
-  return keys.reduce((o, key, i) => Object.assign(o, { [dataType.AddressKeys[i]]: data[key] }), {});
+export const mapFieldsToDataObject = (data: any, keys: string[], mapKeys: string[]) => {
+  return keys.reduce((o, key, i) => Object.assign(o, { [mapKeys[i]]: data[key] }), {});
 };
 
-export const mapAddressToObjectField = (data: any, keys: string[]) => {
-  return keys.reduce((o, key, i) => Object.assign(o, { [key]: data[dataType.AddressKeys[i]] }), {});
+export const mapDataObjectToFields = (data: any, keys: string[], mapKeys: string[]) => {
+  return keys.reduce((o, key, i) => Object.assign(o, { [key]: data[mapKeys[i]] }), {});
 };

@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, managingOfficerCorporateType } from "../model";
-import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
+import { AddressKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,8 +28,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
-    data[managingOfficerCorporateType.UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys);
-    data[managingOfficerCorporateType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, managingOfficerCorporateType.ServiceAddressKeys);
+    data[managingOfficerCorporateType.UsualResidentialAddressKey] =
+          mapFieldsToDataObject(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys, AddressKeys);
+    data[managingOfficerCorporateType.ServiceAddressKey] =
+          mapFieldsToDataObject(req.body, managingOfficerCorporateType.ServiceAddressKeys, AddressKeys);
     data[managingOfficerCorporateType.DateKey] = prepareData(req.body, managingOfficerCorporateType.DateKeys);
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);

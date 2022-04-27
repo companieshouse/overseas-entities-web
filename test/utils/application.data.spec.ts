@@ -4,8 +4,8 @@ import {
   setApplicationData,
   prepareData,
   deleteApplicationData,
-  mapAddressToObjectField,
-  mapObjectFieldToAddress,
+  mapDataObjectToFields,
+  mapFieldsToDataObject
 } from "../../src/utils/application.data";
 import {
   ADDRESS,
@@ -17,7 +17,7 @@ import {
   getSessionRequestWithExtraData,
   getSessionRequestWithPermission,
 } from "../__mocks__/session.mock";
-import { beneficialOwnerIndividualType, entityType } from "../../src/model";
+import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 
 describe("Application data utils", () => {
 
@@ -80,13 +80,13 @@ describe("Application data utils", () => {
     expect(sessionWithExtraData).toEqual( sessionWithOutExtraData );
   });
 
-  test("mapAddressToObjectField should map address to address fields present on the view", () => {
-    const response = mapAddressToObjectField(ADDRESS, ADDRESS_FIELDS_MOCK);
+  test("mapDataObjectToFields should map address to address fields present on the view", () => {
+    const response = mapDataObjectToFields(ADDRESS, ADDRESS_FIELDS_MOCK, dataType.AddressKeys);
     expect(response).toEqual(ADDRESS_MOCK);
   });
 
-  test("mapObjectFieldToAddress should map address fields coming from the view to address", () => {
-    const response = mapObjectFieldToAddress(ADDRESS_MOCK, ADDRESS_FIELDS_MOCK);
+  test("mapFieldsToDataObject should map address fields coming from the view to address", () => {
+    const response = mapFieldsToDataObject(ADDRESS_MOCK, ADDRESS_FIELDS_MOCK, dataType.AddressKeys);
     expect(response).toEqual(ADDRESS);
   });
 

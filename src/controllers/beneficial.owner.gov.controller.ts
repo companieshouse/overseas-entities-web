@@ -2,7 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, beneficialOwnerGovType } from "../model";
-import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { AddressKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,8 +26,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, beneficialOwnerGovType.BeneficialOwnerGovKeys);
-    data[beneficialOwnerGovType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.PrincipalAddressKeys);
-    data[beneficialOwnerGovType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.ServiceAddressKeys);
+    data[beneficialOwnerGovType.PrincipalAddressKey] =
+         mapFieldsToDataObject(req.body, beneficialOwnerGovType.PrincipalAddressKeys, AddressKeys);
+    data[beneficialOwnerGovType.ServiceAddressKey] =
+         mapFieldsToDataObject(req.body, beneficialOwnerGovType.ServiceAddressKeys, AddressKeys);
     data[beneficialOwnerGovType.CorporationStartDateKey] = prepareData(req.body, beneficialOwnerGovType.CorporationStartDateKeys);
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 

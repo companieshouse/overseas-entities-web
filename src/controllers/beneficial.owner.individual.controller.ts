@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
@@ -8,6 +8,7 @@ import {
   BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys, DateOfBirthKey, DateOfBirthKeys, HasSameAddressKey, IsOnSanctionsListKey,
   ServiceAddressKey, ServiceAddressKeys, StartDateKey, StartDateKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys,
 } from "../model/beneficial.owner.individual.model";
+import { AddressKeys } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
@@ -25,8 +26,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerIndividualKeys);
-    data[UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, UsualResidentialAddressKeys);
-    data[ServiceAddressKey] = mapObjectFieldToAddress(req.body, ServiceAddressKeys);
+    data[UsualResidentialAddressKey] = mapFieldsToDataObject(req.body, UsualResidentialAddressKeys, AddressKeys);
+    data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
     data[DateOfBirthKey] = prepareData(req.body, DateOfBirthKeys);
     data[StartDateKey] = prepareData(req.body, StartDateKeys);
     data[HasSameAddressKey] = +data[HasSameAddressKey];

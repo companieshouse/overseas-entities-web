@@ -25,7 +25,7 @@ export const ServiceAddressKeys: string[] = [
 export const StartDateKey: string = "start_date";
 export const StartDateKeys: string[] = ["start_date-day", "start_date-month", "start_date-year"];
 
-export const BeneficialOwnerOtherKey: string = "beneficial_owners_other";
+export const BeneficialOwnerOtherKey: string = "beneficial_owners_corporate";
 export const BeneficialOwnerOtherKeys: string[] = [
   "name",
   "principal_address",

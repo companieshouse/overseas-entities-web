@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.beneficial_owners_other
+      ...appData.beneficial_owners_corporate
     });
   } catch (error) {
     logger.errorRequest(req, error);

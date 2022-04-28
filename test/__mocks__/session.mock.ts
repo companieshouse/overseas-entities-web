@@ -18,9 +18,7 @@ import {
 } from "../../src/model";
 import {
   corpNatureOfControl,
-  natureOfControl,
   NatureOfControlType,
-  statementCondition,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -101,19 +99,20 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
     .all_identified_all_details;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  corporationName: "TestCorporation",
-  principalAddress: ADDRESS,
-  isSameAddress: yesNoResponse.Yes,
-  serviceAddress: ADDRESS,
-  lawGoverned: "TheLaw",
-  startDate: {
-    day: 1,
-    month: 1,
-    year: 2011
-  },
-  natureOfControl: natureOfControl.over25upTo50Percent,
-  statementCondition: statementCondition.statement1,
-  isSanctioned: yesNoResponse.No
+  name: "TestCorporation",
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  register_name: "ThisRegister",
+  registration_number: "123456789",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  start_date: { day: 1, month: 1, year: 2011 },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
+  trustees_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+  is_on_sanctions_list: 0
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {

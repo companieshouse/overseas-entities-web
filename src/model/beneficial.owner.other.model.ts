@@ -3,19 +3,19 @@ import { Address, InputDate, NatureOfControlType, yesNoResponse } from "./data.t
 export const PrincipalAddressKey = "principal_address";
 export const PrincipalAddressKeys: string[] = [
   "principal_address_property_name_number",
-  "principal_address_line1",
-  "principal_address_line2",
+  "principal_address_line_1",
+  "principal_address_line_2",
   "principal_address_town",
   "principal_address_county",
   "principal_address_country",
   "principal_address_postcode"
 ];
 
-export const CorrespondenceAddressKey = "service_address";
-export const CorrespondenceAddressKeys: string[] = [
+export const ServiceAddressKey = "service_address";
+export const ServiceAddressKeys: string[] = [
   "service_address_property_name_number",
-  "service_address_line1",
-  "service_address_line2",
+  "service_address_line_1",
+  "service_address_line_2",
   "service_address_town",
   "service_address_county",
   "service_address_country",

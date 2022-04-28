@@ -51,7 +51,7 @@
           },
           id: "principal_address_property_name_number",
           name: "principal_address_property_name_number",
-          value: "principal_address.principal_address_property_name_number" if principal_address
+          value: principal_address.property_name_number if principal_address
         }) }}
 
         {{ govukInput({
@@ -59,10 +59,10 @@
             text: "Address line 1"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principal_address_line1",
-          name: "principal_address_line1",
-          value: principal_address.principal_address_line1 if principal_address,
-          autocomplete: "principal_address_line1"
+          id: "principal_address_line_1",
+          name: "principal_address_line_1",
+          value: principal_address.line_1 if principal_address,
+          autocomplete: "principal_address_line_1"
         }) }}
 
         {{ govukInput({
@@ -70,10 +70,10 @@
             text: "Address line 2 (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "principal_address_line2",
-          name: "principal_address_line2",
-          value: principal_address.principal_address_line2 if principal_address,
-          autocomplete: "principal_address_line2"
+          id: "principal_address_line_2",
+          name: "principal_address_line_2",
+          value: principal_address.line_2 if principal_address,
+          autocomplete: "principal_address_line_2"
         }) }}
 
         {{ govukInput({
@@ -83,7 +83,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "principal_address_town",
           name: "principal_address_town",
-          value: principal_address.principal_address_town if principal_address,
+          value: principal_address.town if principal_address,
           autocomplete: "principal_address_town"
         }) }}
 
@@ -94,7 +94,7 @@
         classes: "govuk-!-width-two-thirds",
           id: "principal_address_county",
           name: "principal_address_county",
-          value: principal_address.principal_address_county if principal_address
+          value: principal_address.county if principal_address
         }) }}
 
         {{ govukInput({
@@ -104,7 +104,7 @@
          classes: "govuk-!-width-two-thirds",
          id: "principal_address_country",
          name: "principal_address_country",
-         value: principal_address.principal_address_country if principal_address
+         value: principal_address.country if principal_address
         }) }}
 
         {{ govukInput({
@@ -114,7 +114,7 @@
           classes: "govuk-input--width-10",
           id: "principal_address_postcode",
           name: "principal_address_postcode",
-          value: principal_address.principal_address_postcode if principal_address,
+          value: principal_address.postcode if principal_address,
           autocomplete: "principal_address_postcode"
         }) }}
 
@@ -139,7 +139,7 @@
           },
           id: "service_address_property_name_number",
           name: "service_address_property_name_number",
-          value: "service_address.service_addresss_property_name_number" if service_address
+          value: service_address.property_name_number if service_address
         }) }}
 
         {{ govukInput({
@@ -147,10 +147,10 @@
             text: "Address line 1"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service_address_line1",
-          name: "service_address_line1",
-          value: service_address.service_address_line1 if service_address,
-          autocomplete: "service_address_line1"
+          id: "service_address_line_1",
+          name: "service_address_line_1",
+          value: service_address.line_1 if service_address,
+          autocomplete: "service_address_line_1"
         }) }}
 
         {{ govukInput({
@@ -158,10 +158,10 @@
             text: "Address line 2 (optional)"
           },
           classes: "govuk-!-width-two-thirds",
-          id: "service_address_line2",
-          name: "service_address_line2",
-          value: service_address.service_address_line2 if service_address,
-          autocomplete: "service_address_line2"
+          id: "service_address_line_2",
+          name: "service_address_line_2",
+          value: service_address.line_2 if service_address,
+          autocomplete: "service_address_line_2"
         }) }}
 
         {{ govukInput({
@@ -171,7 +171,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "service_address_town",
           name: "service_address_town",
-          value: service_address.service_address_town if service_address,
+          value: service_address.town if service_address,
           autocomplete: "service_address_town"
         }) }}
 
@@ -182,7 +182,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "service_address_county",
           name: "service_address_county",
-          value: service_address.service_address_county if service_address
+          value: service_address.county if service_address
         }) }}
 
         {{ govukInput({
@@ -192,7 +192,7 @@
           classes: "govuk-!-width-two-thirds",
           id: "service_address_country",
           name: "service_address_country",
-          value: service_address.service_address_country if service_address
+          value: service_address.country if service_address
         }) }}
 
         {{ govukInput({
@@ -202,7 +202,7 @@
           classes: "govuk-input--width-10",
           id: "service_address_postcode",
           name: "service_address_postcode",
-          value: service_address.service_address_postcode if service_address,
+          value: service_address.postcode if service_address,
           autocomplete: "service_address_postcode"
         }) }}
 
@@ -222,12 +222,12 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
               checked: is_service_address_same_as_principal_address === "yes"
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
               checked: is_service_address_same_as_principal_address === "no",
               conditional: {

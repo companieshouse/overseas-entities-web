@@ -39,6 +39,10 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain("TestCorporation");
       expect(resp.text).toContain("TheLaw");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
+      expect(resp.text).toContain("country");
+      expect(resp.text).toContain("BY 2");
     });
 
     test("Should render the error page", async () => {

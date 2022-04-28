@@ -11,6 +11,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    console.log(">>>>>>>>>>>>>>>>>>>>>> " + JSON.stringify(appData.beneficial_owners_other));
+
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
       ...appData.beneficial_owners_other
@@ -28,7 +30,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
     data[beneficialOwnerOtherType.PrincipalAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerOtherType.PrincipalAddressKeys);
-    data[beneficialOwnerOtherType.CorrespondenceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerOtherType.CorrespondenceAddressKeys);
+    data[beneficialOwnerOtherType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerOtherType.ServiceAddressKeys);
     data[beneficialOwnerOtherType.DateKey] = prepareData(req.body, beneficialOwnerOtherType.DateKeys);
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);

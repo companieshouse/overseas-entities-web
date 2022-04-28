@@ -5,8 +5,19 @@ import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import {
-  BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys, DateOfBirthKey, DateOfBirthKeys, HasSameAddressKey, IsOnSanctionsListKey,
-  ServiceAddressKey, ServiceAddressKeys, StartDateKey, StartDateKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys,
+  BENEFICIAL_OWNER_NOC,
+  BeneficialOwnerIndividualKey,
+  BeneficialOwnerIndividualKeys,
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  HasSameAddressKey,
+  IsOnSanctionsListKey, NON_LEGAL_FIRM_NOC,
+  ServiceAddressKey,
+  ServiceAddressKeys,
+  StartDateKey,
+  StartDateKeys, TRUSTEE_NOC,
+  UsualResidentialAddressKey,
+  UsualResidentialAddressKeys,
 } from "../model/beneficial.owner.individual.model";
 
 export const get = (req: Request, res: Response) => {
@@ -29,6 +40,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[ServiceAddressKey] = mapObjectFieldToAddress(req.body, ServiceAddressKeys);
     data[DateOfBirthKey] = prepareData(req.body, DateOfBirthKeys);
     data[StartDateKey] = prepareData(req.body, StartDateKeys);
+
+    data[BENEFICIAL_OWNER_NOC] = (data[BENEFICIAL_OWNER_NOC]) ? [].concat(data[BENEFICIAL_OWNER_NOC]) : [];
+    data[TRUSTEE_NOC] = (data[TRUSTEE_NOC]) ? [].concat(data[TRUSTEE_NOC]) : [];
+    data[NON_LEGAL_FIRM_NOC] = (data[NON_LEGAL_FIRM_NOC]) ? [].concat(data[NON_LEGAL_FIRM_NOC]) : [];
 
     data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';

@@ -41,9 +41,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[DateOfBirthKey] = prepareData(req.body, DateOfBirthKeys);
     data[StartDateKey] = prepareData(req.body, StartDateKeys);
 
-    data[BENEFICIAL_OWNER_NOC] = [].concat(req.body[BENEFICIAL_OWNER_NOC]);
-    data[TRUSTEE_NOC] = [].concat(req.body[TRUSTEE_NOC]);
-    data[NON_LEGAL_FIRM_NOC] = [].concat(req.body[NON_LEGAL_FIRM_NOC]);
+    data[BENEFICIAL_OWNER_NOC] = (data[BENEFICIAL_OWNER_NOC]) ? [].concat(data[BENEFICIAL_OWNER_NOC]) : [];
+    data[TRUSTEE_NOC] = (data[TRUSTEE_NOC]) ? [].concat(data[TRUSTEE_NOC]) : [];
+    data[NON_LEGAL_FIRM_NOC] = (data[NON_LEGAL_FIRM_NOC]) ? [].concat(data[NON_LEGAL_FIRM_NOC]) : [];
 
     data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';

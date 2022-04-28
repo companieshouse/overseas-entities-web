@@ -130,6 +130,21 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   is_on_sanctions_list: 0
 };
 
+export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
+  first_name: "",
+  last_name: "",
+  date_of_birth: { 'date_of_birth-day': "",  "date_of_birth-month": "", "date_of_birth-year": "" },
+  nationality: "",
+  usual_residential_address: {},
+  is_service_address_same_as_usual_residential_address: "",
+  service_address: {},
+  start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
+  beneficial_owner_nature_of_control_types: "",
+  trustees_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: "",
+  is_on_sanctions_list: ""
+};
+
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   corporationLawGoverned: "a11",
   corporationName: "my company name",

@@ -49,7 +49,7 @@ mockOverseasEntity.mockReturnValue( { id: OVERSEAS_ENTITY_ID } );
 
 describe("GET tests", () => {
 
-  beforeEach (() => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
@@ -69,7 +69,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
   });
 
-  test("renders the check your answers page (service address not same as principal address)", async () => {
+  test("renders the check your answers page (entity service address not same as principal address)", async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
     APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
@@ -90,7 +90,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
   });
 
-  test("renders the check your answers page (service address same as principal address)", async () => {
+  test("renders the check your answers page (entity service address same as principal address)", async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -100,15 +100,45 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
+  test("renders the check your answers page (individual beneficial owner)", async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain("Ivan Drago");
+    // expect(resp.text).toContain("21 March 1947");
+    expect(resp.text).toContain("Russian");
+    expect(resp.text).toContain("addressLine1");
+    expect(resp.text).toContain("addressLine2");
+    expect(resp.text).toContain("town");
+    expect(resp.text).toContain("county");
+    expect(resp.text).toContain("BY 2");
+    // expect(resp.text).toContain("1 March 1999");
+    expect(resp.text).toContain("Holds, directly or indirectly, more than 25% of the shares in the entity");
+    expect(resp.text).toContain("The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity");
+    expect(resp.text).toContain("The members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company");
+  });
+
   test("catch error when getting data", async () => {
-    mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+    mockGetApplicationData.mockImplementationOnce(() => {
+      throw ERROR;
+    });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+});
 
-  test(`redirect the ${CONFIRMATION_PAGE} page after a succesful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+describe("POST tests", () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(302);
@@ -116,11 +146,12 @@ describe("GET tests", () => {
   });
 
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockOverseasEntity.mockImplementation( () => { throw ERROR; });
+    mockOverseasEntity.mockImplementation(() => {
+      throw ERROR;
+    });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
-
 });

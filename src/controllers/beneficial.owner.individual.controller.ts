@@ -29,8 +29,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[ServiceAddressKey] = mapObjectFieldToAddress(req.body, ServiceAddressKeys);
     data[DateOfBirthKey] = prepareData(req.body, DateOfBirthKeys);
     data[StartDateKey] = prepareData(req.body, StartDateKeys);
-    data[HasSameAddressKey] = +data[HasSameAddressKey];
-    data[IsOnSanctionsListKey] = +data[IsOnSanctionsListKey];
+
+    data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
+    data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
     setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 

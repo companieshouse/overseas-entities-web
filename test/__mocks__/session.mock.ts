@@ -18,7 +18,6 @@ import {
 } from "../../src/model";
 import {
   corpNatureOfControl,
-  InputDate,
   natureOfControl,
   NatureOfControlType,
   statementCondition,

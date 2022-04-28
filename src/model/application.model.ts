@@ -25,7 +25,7 @@ export interface ApplicationData {
 
 export const ApplicationDataArrayType = [
   "beneficial_owners_individual",
-  "beneficialOwnerOther",
+  "beneficial_owners_other",
   "beneficialOwnerGov",
   "managingOfficer",
   "managingOfficerCorporate"

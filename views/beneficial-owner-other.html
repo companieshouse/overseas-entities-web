@@ -224,12 +224,12 @@
             {
               value: 1,
               text: "Yes",
-              checked: is_service_address_same_as_principal_address === "yes"
+              checked: is_service_address_same_as_principal_address === 1
             },
             {
               value: 0,
               text: "No",
-              checked: is_service_address_same_as_principal_address === "no",
+              checked: is_service_address_same_as_principal_address === 0,
               conditional: {
                 html: serviceAddressHtml
               }
@@ -488,14 +488,14 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
-              checked: is_on_sanctions_list === "yes"
+              checked: is_on_sanctions_list === 1
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
-              checked: is_on_sanctions_list === "no"
+              checked: is_on_sanctions_list === 0
             }
           ]
         }) }}

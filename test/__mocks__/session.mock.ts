@@ -108,15 +108,11 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   register_name: "ThisRegister",
   registration_number: "123456789",
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
-  start_date: {
-    day: 1,
-    month: 1,
-    year: 2011
-  },
+  start_date: { day: 1, month: 1, year: 2011 },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
   trustees_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
-  is_on_sanctions_list: yesNoResponse.No
+  is_on_sanctions_list: 0
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {

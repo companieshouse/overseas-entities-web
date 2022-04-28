@@ -334,17 +334,17 @@
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "day",
-              value: start_date["start_date_day"]
+              value: start_date["start_date-day"] if start_date
             },
             {
               classes: "govuk-input--width-2 govuk-input",
               name: "month",
-              value: startDate["start_date_month"]
+              value: start_date["start_date-month"] if start_date
             },
             {
               classes: "govuk-input--width-4 govuk-input",
               name: "year",
-              value: startDate["start_date_year"]
+              value: start_date["start_date-year"] if start_date
             }
           ],
           hint: {

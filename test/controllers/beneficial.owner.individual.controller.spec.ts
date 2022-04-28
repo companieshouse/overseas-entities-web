@@ -11,8 +11,8 @@ import { authentication } from "../../src/controllers";
 import { BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK } from '../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
+import { BeneficialOwnerIndividualKey, HasSameAddressKey, IsOnSanctionsListKey } from '../../src/model/beneficial.owner.individual.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -51,6 +51,24 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("POST tests", () => {
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK );
+
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnSanctionsListKey]: "1", [HasSameAddressKey]: "0" }; } );
+
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
 
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 

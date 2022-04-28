@@ -33,8 +33,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[DateOfBirthKey] = mapFieldsToDataObject(req.body, DateOfBirthKeys, InputDateKeys);
     data[StartDateKey] = mapFieldsToDataObject(req.body, StartDateKeys, InputDateKeys);
 
-    data[HasSameAddressKey] = +data[HasSameAddressKey];
-    data[IsOnSanctionsListKey] = +data[IsOnSanctionsListKey];
+    data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
+    data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
     setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 

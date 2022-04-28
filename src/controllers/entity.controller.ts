@@ -51,7 +51,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = prepareData(req.body, EntityKeys);
     data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
 
-    data[HasSameAddressKey] = +data[HasSameAddressKey];
+    data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
     data[ServiceAddressKey] = (!data[HasSameAddressKey])
       ?  mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
       :  {};

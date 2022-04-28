@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.beneficialOwnerOther
+      ...appData.beneficial_owners_corporate
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -34,8 +34,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[beneficialOwnerOtherType.ServiceAddressKey] =
         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.ServiceAddressKeys, AddressKeys);
 
-    data[beneficialOwnerOtherType.DateKey] =
-        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.DateKeys, InputDateKeys);
+    data[beneficialOwnerOtherType.StartDateKey] =
+        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.StartDateKeys, InputDateKeys);
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 

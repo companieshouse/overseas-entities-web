@@ -12,7 +12,7 @@ import { authentication } from "../../src/controllers";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
-import { natureOfControl, statementCondition, yesNoResponse } from "../../src/model/data.types.model";
+import { NatureOfControlType, yesNoResponse } from "../../src/model/data.types.model";
 import { beneficialOwnerOtherType } from '../../src/model';
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 
@@ -39,6 +39,10 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain("TestCorporation");
       expect(resp.text).toContain("TheLaw");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
+      expect(resp.text).toContain("country");
+      expect(resp.text).toContain("BY 2");
     });
 
     test("Should render the error page", async () => {
@@ -59,11 +63,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.status).toEqual(302);
       const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
       expect(beneficialOwnerOther).toEqual(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
-      expect(beneficialOwnerOther.corporationName).toEqual("TestCorporation");
-      expect(beneficialOwnerOther.lawGoverned).toEqual("TheLaw");
-      expect(beneficialOwnerOther.natureOfControl).toEqual(natureOfControl.over25upTo50Percent);
-      expect(beneficialOwnerOther.statementCondition).toEqual(statementCondition.statement1);
-      expect(beneficialOwnerOther.isSanctioned).toEqual(yesNoResponse.No);
+      expect(beneficialOwnerOther.name).toEqual("TestCorporation");
+      expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
+      expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
+      expect(beneficialOwnerOther.register_name).toEqual( "ThisRegister");
+      expect(beneficialOwnerOther.registration_number).toEqual("123456789");
+      expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.over_25_percent_of_voting_rights]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.appoint_or_remove_majority_board_directors]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.over_25_percent_of_shares]);
+      expect(beneficialOwnerOther.is_on_sanctions_list).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(beneficialOwnerOtherType.BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });

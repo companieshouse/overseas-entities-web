@@ -174,6 +174,18 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
 };
 
+export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
+  name: "",
+  principal_address: {},
+  is_service_address_same_as_principal_address: "",
+  service_address: {},
+  legal_form: "",
+  law_governed: "",
+  start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
+  beneficial_owner_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: "",
+};
+
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
   fullName: "Andrei Nikolayevich Bolkonsky",
   hasAFormerName: yesNoResponse.No,

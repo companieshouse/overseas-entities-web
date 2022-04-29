@@ -68,10 +68,3 @@ export interface BeneficialOwnerIndividual {
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
   is_on_sanctions_list?: yesNoResponse;
 }
-
-// Boolean fields need to parsed from string to number
-export const HasSameAddressKey = "is_service_address_same_as_usual_residential_address";
-export const IsOnSanctionsListKey = "is_on_sanctions_list";
-export const BENEFICIAL_OWNER_NOC = "beneficial_owner_nature_of_control_types";
-export const TRUSTEE_NOC = "trustees_nature_of_control_types";
-export const NON_LEGAL_FIRM_NOC = "non_legal_firm_members_nature_of_control_types";

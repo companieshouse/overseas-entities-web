@@ -1,10 +1,13 @@
 import { NextFunction, Request, Response } from "express";
+
 import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, beneficialOwnerOtherType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
-import { AddressKeys, InputDateKeys } from "../model/data.types.model";
+import {
+  AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
+} from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,6 +39,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     data[beneficialOwnerOtherType.StartDateKey] =
         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.StartDateKeys, InputDateKeys);
+
+    data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
+    data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
+    data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+
+    data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+    data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 

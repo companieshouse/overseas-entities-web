@@ -115,6 +115,24 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   is_on_sanctions_list: 0
 };
 
+
+export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
+  name: "",
+  principal_address: {},
+  is_service_address_same_as_principal_address: "",
+  service_address: {},
+  legal_form: "",
+  law_governed: "",
+  register_name: "",
+  registration_number: "",
+  is_on_register_in_country_formed_in: "",
+  start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
+  beneficial_owner_nature_of_control_types: "",
+  trustees_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: "",
+  is_on_sanctions_list: ""
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   first_name: "Ivan",
   last_name: "Drago",

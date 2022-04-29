@@ -10,14 +10,13 @@ import {
 import {
   EntityKey,
   EntityKeys,
-  HasSameAddressKey,
   PrincipalAddressKey,
   PrincipalAddressKeys,
   ServiceAddressKey,
   ServiceAddressKeys,
 } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { AddressKeys } from "../model/data.types.model";
+import { AddressKeys, HasSamePrincipalAddressKey } from "../model/data.types.model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 
@@ -51,8 +50,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = prepareData(req.body, EntityKeys);
     data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
 
-    data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
-    data[ServiceAddressKey] = (!data[HasSameAddressKey])
+    data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+    data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
       ?  mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
       :  {};
 

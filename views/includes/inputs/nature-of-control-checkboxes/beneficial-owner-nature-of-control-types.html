@@ -1,0 +1,35 @@
+{{ govukCheckboxes({
+idPrefix: "beneficial_owner_nature_of_control_types",
+name: "beneficial_owner_nature_of_control_types",
+fieldset: {
+legend: {
+text: "The beneficial owner:",
+isPageHeading: false,
+classes: "govuk-fieldset__legend--s"
+}
+},
+
+items:
+[
+{
+value: "over_25_percent_of_shares",
+text: "holds, directly or indirectly, more than 25% of the shares in the entity",
+checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_shares' in beneficial_owner_nature_of_control_types
+},
+{
+value: "over_25_percent_of_voting_rights",
+text: "holds, directly or indirectly, more than 25% of the voting rights in the entity",
+checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_voting_rights' in beneficial_owner_nature_of_control_types
+},
+{
+value: "appoint_or_remove_majority_board_directors",
+text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity",
+checked: beneficial_owner_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in beneficial_owner_nature_of_control_types
+},
+{
+value: "significant_influence_or_control",
+text: "has the right to exercise, or actually exercises, significant influence or control over the entity",
+checked: beneficial_owner_nature_of_control_types and 'significant_influence_or_control' in beneficial_owner_nature_of_control_types
+}
+]
+}) }}

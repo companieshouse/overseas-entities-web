@@ -1,0 +1,193 @@
+{% call govukFieldset({
+legend: {
+text: "What is its principal or registered office address?",
+classes: "govuk-fieldset__legend--m",
+isPageHeading: false
+}
+}) %}
+
+{{ govukInput({
+label: {
+html: 'Property name or number (optional)'
+},
+hint: {
+text: "For example, 'Saron House', '116' or 'Unit 37a'"
+},
+id: "principal_address_property_name_number",
+name: "principal_address_property_name_number",
+value: principal_address.property_name_number if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Address line 1"
+},
+classes: "govuk-!-width-two-thirds",
+id: "principal_address_line_1",
+name: "principal_address_line_1",
+value: principal_address.line_1 if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Address line 2 (optional)"
+},
+classes: "govuk-!-width-two-thirds",
+id: "principal_address_line_2",
+name: "principal_address_line_2",
+value: principal_address.line_2 if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "City or town"
+},
+classes: "govuk-!-width-two-thirds",
+id: "principal_address_town",
+name: "principal_address_town",
+value: principal_address.town if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "County, state, province or region (optional)"
+},
+classes: "govuk-!-width-two-thirds",
+id: "principal_address_county",
+name: "principal_address_county",
+value: principal_address.county if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Country"
+},
+classes: "govuk-!-width-two-thirds",
+id: "principal_address_country",
+name: "principal_address_country",
+value: principal_address.country if principal_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Postcode or ZIP"
+},
+classes: "govuk-input--width-10",
+id: "principal_address_postcode",
+name: "principal_address_postcode",
+value: principal_address.postcode if principal_address
+}) }}
+{% endcall %}
+
+{% set serviceAddressHtml %}
+<br>
+{% call govukFieldset({
+legend: {
+text: "What is its correspondence address?",
+classes: "govuk-fieldset__legend--m",
+isPageHeading: false
+}
+}) %}
+
+{{ govukInput({
+label: {
+html: 'Property name or number (optional)'
+},
+hint: {
+text: "For example, 'Saron House', '116' or 'Unit 37a'"
+},
+id: "service_address_property_name_number",
+name: "service_address_property_name_number",
+value: service_address.property_name_number if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Address line 1"
+},
+classes: "govuk-!-width-two-thirds",
+id: "service_address_line_1",
+name: "service_address_line_1",
+value: service_address.line_1 if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Address line 2 (optional)"
+},
+classes: "govuk-!-width-two-thirds",
+id: "service_address_line_2",
+name: "service_address_line_2",
+value: service_address.line_2 if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "City or town"
+},
+classes: "govuk-!-width-two-thirds",
+id: "service_address_town",
+name: "service_address_town",
+value: service_address.town if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "County, state, province or region (optional)"
+},
+classes: "govuk-!-width-two-thirds",
+id: "service_address_county",
+name: "service_address_county",
+value: service_address.county if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Country"
+},
+classes: "govuk-!-width-two-thirds",
+id: "service_address_country",
+name: "service_address_country",
+value: service_address.country if service_address
+}) }}
+
+{{ govukInput({
+label: {
+text: "Postcode or ZIP"
+},
+classes: "govuk-input--width-10",
+id: "service_address_postcode",
+name: "service_address_postcode",
+value: service_address.postcode if service_address
+}) }}
+
+{% endcall %}
+{% endset -%}
+
+{{ govukRadios({
+classes: "govuk-radios",
+idPrefix: "is_service_address_same_as_principal_address",
+name: "is_service_address_same_as_principal_address",
+fieldset: {
+legend: {
+text: "Is its correspondence address the same as its registered office address?",
+isPageHeading: false,
+classes: "govuk-fieldset__legend--m"
+}
+},
+items: [
+{
+value: "yes",
+text: "Yes",
+checked: is_service_address_same_as_principal_address === 1
+},
+{
+value: "no",
+text: "No",
+checked: is_service_address_same_as_principal_address === 2,
+conditional: {
+html: serviceAddressHtml
+}
+}
+]
+}) }}

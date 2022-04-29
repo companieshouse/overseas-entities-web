@@ -290,37 +290,7 @@
           ]
         }) }}
 
-        {{ govukDateInput({
-          id: "start_date",
-          namePrefix: "start_date",
-          fieldset: {
-            legend: {
-              text: "When did they become a beneficial owner for the overseas entity?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "For example, 27 3 2007"
-          },
-          items: [
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "day",
-              value: start_date["start_date-day"] if start_date
-            },
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "month",
-              value: start_date["start_date-month"] if start_date
-            },
-            {
-              classes: "govuk-input--width-4 govuk-input",
-              name: "year",
-              value: start_date["start_date-year"] if start_date
-            }
-          ]
-        }) }}
+        {% include "includes/inputs/start-date-input.html" %}
 
         {% call govukFieldset({
           legend: {
@@ -330,110 +300,11 @@
           }
         }) %}
 
-          {{ govukCheckboxes({
-            idPrefix: "beneficial_owner_nature_of_control_types",
-            name: "beneficial_owner_nature_of_control_types",
-            fieldset: {
-              legend: {
-                text: "The beneficial owner:",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--s"
-              }
-            },
+        {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
-            items: [
-              {
-                value: "over_25_percent_of_shares",
-                text: "holds, directly or indirectly, more than 25% of the shares in the entity",
-                checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_shares' in beneficial_owner_nature_of_control_types
-              },
-              {
-                value: "over_25_percent_of_voting_rights",
-                text: "holds, directly or indirectly, more than 25% of the voting rights in the entity",
-                checked: beneficial_owner_nature_of_control_types and 'over_25_percent_of_voting_rights' in beneficial_owner_nature_of_control_types
-              },
-              {
-                value: "appoint_or_remove_majority_board_directors",
-                text: "holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity",
-                checked: beneficial_owner_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in beneficial_owner_nature_of_control_types
-              },
-              {
-                value: "significant_influence_or_control",
-                text: "has the right to exercise, or actually exercises, significant influence or control over the entity",
-                checked: beneficial_owner_nature_of_control_types and 'significant_influence_or_control' in beneficial_owner_nature_of_control_types
-              }
-            ]
-          }) }}
+        {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
 
-          {{ govukCheckboxes({
-            idPrefix: "trustees_nature_of_control_types",
-            name: "trustees_nature_of_control_types",
-            fieldset: {
-              legend: {
-                text: "The beneficial owner is a trustee of a trust and:",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--s"
-              }
-            },
-
-            items: [
-              {
-                value: "over_25_percent_of_shares",
-                text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
-                checked: trustees_nature_of_control_types and 'over_25_percent_of_shares' in trustees_nature_of_control_types
-              },
-              {
-                value: "over_25_percent_of_voting_rights",
-                text: "the trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
-                checked: trustees_nature_of_control_types and 'over_25_percent_of_voting_rights' in trustees_nature_of_control_types
-              },
-              {
-                value: "appoint_or_remove_majority_board_directors",
-                text: "the trustees of that trust (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
-                checked: trustees_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in trustees_nature_of_control_types
-              },
-              {
-                value: "significant_influence_or_control",
-                text: "the trustees of that trust (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
-                checked: trustees_nature_of_control_types and 'significant_influence_or_control' in trustees_nature_of_control_types
-              }
-            ]
-          }) }}
-
-          {{ govukCheckboxes({
-            idPrefix: "non_legal_firm_members_nature_of_control_types",
-            name: "non_legal_firm_members_nature_of_control_types",
-            fieldset: {
-              legend: {
-                text: "The beneficial owner is a member of a firm that is not a legal person under its governing law, and:",
-                isPageHeading: false,
-                classes: "govuk-fieldset__legend--s"
-              }
-            },
-
-            items: [
-              {
-                value: "over_25_percent_of_shares",
-                text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the shares in the entity",
-                checked: non_legal_firm_members_nature_of_control_types and 'over_25_percent_of_shares' in non_legal_firm_members_nature_of_control_types
-              },
-              {
-                value: "over_25_percent_of_voting_rights",
-                text: "the members of that firm (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity",
-                checked: non_legal_firm_members_nature_of_control_types and 'over_25_percent_of_voting_rights' in non_legal_firm_members_nature_of_control_types
-              },
-              {
-                value: "appoint_or_remove_majority_board_directors",
-                text: "the members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company",
-                checked: non_legal_firm_members_nature_of_control_types and 'appoint_or_remove_majority_board_directors' in non_legal_firm_members_nature_of_control_types
-              },
-              {
-                value: "significant_influence_or_control",
-                text: "the members of that firm (in their capacity as such) have the right to exercise, or actually exercise, significant influence or control over the company",
-                checked: non_legal_firm_members_nature_of_control_types and 'significant_influence_or_control' in non_legal_firm_members_nature_of_control_types
-              }
-            ]
-          }) }}
+        {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
 
         {% endcall %}
 

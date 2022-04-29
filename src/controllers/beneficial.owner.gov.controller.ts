@@ -29,7 +29,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[beneficialOwnerGovType.ServiceAddressKey] = mapObjectFieldToAddress(req.body, beneficialOwnerGovType.ServiceAddressKeys);
     data[beneficialOwnerGovType.StartDateKey] = prepareData(req.body, beneficialOwnerGovType.StartDateKeys);
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
-    console.log(JSON.stringify(data, null, 2));
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);

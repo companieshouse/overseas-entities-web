@@ -33,7 +33,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         mapFieldsToDataObject(req.body, beneficialOwnerGovType.ServiceAddressKeys, AddressKeys);
 
     data[beneficialOwnerGovType.StartDateKey] =
-        mapFieldsToDataObject(req.body, beneficialOwnerGovType.StartDateKey, InputDateKeys);
+        mapFieldsToDataObject(req.body, beneficialOwnerGovType.StartDateKeys, InputDateKeys);
 
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 

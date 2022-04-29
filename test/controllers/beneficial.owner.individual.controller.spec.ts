@@ -12,7 +12,8 @@ import { BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../.
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey, HasSameAddressKey, IsOnSanctionsListKey } from '../../src/model/beneficial.owner.individual.model';
+import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
+import { IsOnSanctionsListKey, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -59,7 +60,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnSanctionsListKey]: "1", [HasSameAddressKey]: "0" }; } );
+      mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnSanctionsListKey]: "1", [HasSameResidentialAddressKey]: "0" }; } );
 
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 

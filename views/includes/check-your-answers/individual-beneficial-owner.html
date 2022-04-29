@@ -2,9 +2,9 @@
 
 {% set fullName = boi.first_name + " " + boi.last_name %}
 
-{% set dateOfBirth = dateMacros.formatDate(boi.date_of_birth["date_of_birth-day"], boi.date_of_birth["date_of_birth-month"], boi.date_of_birth["date_of_birth-year"]) %}
+{% set dateOfBirth = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
 
-{% set startDate = dateMacros.formatDate(boi.start_date["start_date-day"], boi.start_date["start_date-month"], boi.start_date["start_date-year"]) %}
+{% set startDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
 
 {% set formattedResidentialAddressHtml %}
   {% set address = boi.usual_residential_address %}

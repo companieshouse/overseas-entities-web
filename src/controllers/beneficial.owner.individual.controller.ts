@@ -1,24 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 
-import { getApplicationData, mapObjectFieldToAddress, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import {
-  BENEFICIAL_OWNER_NOC,
-  BeneficialOwnerIndividualKey,
-  BeneficialOwnerIndividualKeys,
-  DateOfBirthKey,
-  DateOfBirthKeys,
-  HasSameAddressKey,
-  IsOnSanctionsListKey, NON_LEGAL_FIRM_NOC,
-  ServiceAddressKey,
-  ServiceAddressKeys,
-  StartDateKey,
-  StartDateKeys, TRUSTEE_NOC,
-  UsualResidentialAddressKey,
-  UsualResidentialAddressKeys,
+  BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys, DateOfBirthKey, DateOfBirthKeys, ServiceAddressKey,
+  ServiceAddressKeys, StartDateKey, StartDateKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys
 } from "../model/beneficial.owner.individual.model";
+import {
+  AddressKeys, BeneficialOwnerNoc, HasSameResidentialAddressKey, InputDateKeys, IsOnSanctionsListKey,
+  NonLegalFirmNoc, TrusteesNoc
+} from "../model/data.types.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
@@ -36,16 +29,20 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerIndividualKeys);
-    data[UsualResidentialAddressKey] = mapObjectFieldToAddress(req.body, UsualResidentialAddressKeys);
-    data[ServiceAddressKey] = mapObjectFieldToAddress(req.body, ServiceAddressKeys);
-    data[DateOfBirthKey] = prepareData(req.body, DateOfBirthKeys);
-    data[StartDateKey] = prepareData(req.body, StartDateKeys);
 
-    data[BENEFICIAL_OWNER_NOC] = (data[BENEFICIAL_OWNER_NOC]) ? [].concat(data[BENEFICIAL_OWNER_NOC]) : [];
-    data[TRUSTEE_NOC] = (data[TRUSTEE_NOC]) ? [].concat(data[TRUSTEE_NOC]) : [];
-    data[NON_LEGAL_FIRM_NOC] = (data[NON_LEGAL_FIRM_NOC]) ? [].concat(data[NON_LEGAL_FIRM_NOC]) : [];
+    data[UsualResidentialAddressKey] = mapFieldsToDataObject(req.body, UsualResidentialAddressKeys, AddressKeys);
+    data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
 
-    data[HasSameAddressKey] = (data[HasSameAddressKey]) ? +data[HasSameAddressKey] : '';
+    data[DateOfBirthKey] = mapFieldsToDataObject(req.body, DateOfBirthKeys, InputDateKeys);
+    data[StartDateKey] = mapFieldsToDataObject(req.body, StartDateKeys, InputDateKeys);
+
+    // It needs concatenations because if in the check boxes we select only one option
+    // nunjucks returns just a string and with concat we will return an array.
+    data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
+    data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
+    data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
+
+    data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
     setApplicationData(req.session, data, BeneficialOwnerIndividualKey);

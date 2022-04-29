@@ -37,9 +37,12 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain("a11");
       expect(resp.text).toContain("my company name");
-      expect(resp.text).toContain(`"influence" checked`);
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("town");
+      expect(resp.text).toContain("country");
+      expect(resp.text).toContain("LegalForm");
+      expect(resp.text).toContain("a11");
     });
 
     test("Should render the error page", async () => {

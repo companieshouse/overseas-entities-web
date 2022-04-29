@@ -1,7 +1,7 @@
 export const INDEX_PAGE_TITLE = "Register an overseas entity and tell us about its beneficial owners";
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
-export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government or public authority beneficial owner";
+export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government or public authority";
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";

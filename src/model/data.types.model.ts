@@ -67,6 +67,7 @@ export const InputDateKeys: string[] = [
 export const HasSameResidentialAddressKey = "is_service_address_same_as_usual_residential_address";
 export const HasSamePrincipalAddressKey = "is_service_address_same_as_principal_address";
 export const IsOnSanctionsListKey = "is_on_sanctions_list";
+export const IsOnRegisterInCountryFormedInKey = "is_on_register_in_country_formed_in";
 
 // Array NOC fields
 export const BeneficialOwnerNoc = "beneficial_owner_nature_of_control_types";

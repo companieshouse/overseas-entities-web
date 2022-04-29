@@ -40,6 +40,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[beneficialOwnerOtherType.StartDateKey] =
         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.StartDateKeys, InputDateKeys);
 
+    // It needs concatenations because if in the check boxes we select only one option
+    // nunjucks returns just a string and with concat we will return an array.
     data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
     data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
     data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];

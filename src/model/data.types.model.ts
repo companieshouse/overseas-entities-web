@@ -13,9 +13,9 @@ export enum yesNoResponse {
   Yes = 1
 }
 export interface InputDate {
-  day: number;
-  month: number;
-  year: number;
+  day: string;
+  month: string;
+  year: string;
 }
 
 export enum NatureOfControlType {
@@ -45,7 +45,7 @@ export enum statementCondition {
 }
 
 /*
-  Address key fields - Position is important for the mapping of sub-fields Address Objects!
+  Address and InputDate key fields - Position is important for the mapping of sub-fields Address Objects!
 */
 export const AddressKeys: string[] = [
   "property_name_number",
@@ -56,3 +56,19 @@ export const AddressKeys: string[] = [
   "country",
   "postcode"
 ];
+
+export const InputDateKeys: string[] = [
+  "day",
+  "month",
+  "year"
+];
+
+// Boolean fields need to parsed from string to number
+export const HasSameResidentialAddressKey = "is_service_address_same_as_usual_residential_address";
+export const HasSamePrincipalAddressKey = "is_service_address_same_as_principal_address";
+export const IsOnSanctionsListKey = "is_on_sanctions_list";
+
+// Array NOC fields
+export const BeneficialOwnerNoc = "beneficial_owner_nature_of_control_types";
+export const TrusteesNoc = "trustees_nature_of_control_types";
+export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";

@@ -15,9 +15,9 @@ export const APPLICATION_DATA_KEY = 'roe';
 export interface ApplicationData {
     presenter?: presenterType.Presenter;
     entity?: entityType.Entity;
-    beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnerStatementType;
+    beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnersStatementType;
     beneficial_owners_individual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
-    beneficialOwnerOther?: beneficialOwnerOtherType.BeneficialOwnerOther[];
+    beneficial_owners_corporate?: beneficialOwnerOtherType.BeneficialOwnerOther[];
     beneficialOwnerGov?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managingOfficer?: managingOfficerType.ManagingOfficer[];
     managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
@@ -25,7 +25,7 @@ export interface ApplicationData {
 
 export const ApplicationDataArrayType = [
   "beneficial_owners_individual",
-  "beneficialOwnerOther",
+  "beneficial_owners_corporate",
   "beneficialOwnerGov",
   "managingOfficer",
   "managingOfficerCorporate"

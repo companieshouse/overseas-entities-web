@@ -4,19 +4,19 @@ import {
   getApplicationData,
   setApplicationData,
   prepareData,
-  mapObjectFieldToAddress,
-  mapAddressToObjectField,
+  mapDataObjectToFields,
+  mapFieldsToDataObject
 } from "../utils/application.data";
 import {
   EntityKey,
   EntityKeys,
-  HasSameAddressKey,
   PrincipalAddressKey,
   PrincipalAddressKeys,
   ServiceAddressKey,
   ServiceAddressKeys,
 } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
+import { AddressKeys, HasSamePrincipalAddressKey } from "../model/data.types.model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 
@@ -30,8 +30,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: config.PRESENTER_URL,
       ...entityData,
-      [PrincipalAddressKey]: (entityData) ? mapAddressToObjectField(entityData[PrincipalAddressKey], PrincipalAddressKeys) : {},
-      [ServiceAddressKey]: (entityData) ? mapAddressToObjectField(entityData[ServiceAddressKey], ServiceAddressKeys) : {}
+      [PrincipalAddressKey]: (entityData)
+        ? mapDataObjectToFields(entityData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
+        : {},
+      [ServiceAddressKey]: (entityData)
+        ? mapDataObjectToFields(entityData[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
+        : {}
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -44,11 +48,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ENTITY_PAGE`);
 
     const data: ApplicationDataType = prepareData(req.body, EntityKeys);
-    data[PrincipalAddressKey] = mapObjectFieldToAddress(req.body, PrincipalAddressKeys);
+    data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
 
-    data[HasSameAddressKey] = +data[HasSameAddressKey];
-    data[ServiceAddressKey] = (!data[HasSameAddressKey])
-      ?  mapObjectFieldToAddress(req.body, ServiceAddressKeys)
+    data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+    data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
+      ?  mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
       :  {};
 
     setApplicationData(req.session, data, EntityKey);

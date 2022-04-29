@@ -16,8 +16,6 @@ export const PrincipalAddressKeys: string[] = ["principalAddressPropertyNameNumb
 export const ServiceAddressKey = "service_address";
 export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "serviceAddressCountry", "serviceAddressPostcode"];
 
-export const HasSameAddressKey = "is_service_address_same_as_principal_address";
-
 export interface Entity {
     name?: string
     incorporation_country?: string

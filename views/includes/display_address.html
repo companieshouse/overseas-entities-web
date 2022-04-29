@@ -1,5 +1,8 @@
+{% if address.property_name_number %}
+  {{ address.property_name_number }}
+{% endif %}
 {% if address.line_1 %}
-  {{ address.line_1 }}
+  <br>{{ address.line_1 }}
 {% endif %}
 {% if address.line_2 %}
   <br>{{ address.line_2 }}
@@ -9,6 +12,9 @@
 {% endif %}
 {% if address.county %}
   <br>{{ address.county }}
+{% endif %}
+{% if address.country %}
+  <br>{{ address.country }}
 {% endif %}
 {% if address.postcode %}
   <br>{{ address.postcode }}

@@ -1,6 +1,6 @@
-{% if (beneficial_owners_individual and beneficial_owners_individual.length > 0) 
-    or (beneficialOwnerOther and beneficialOwnerOther.length > 0) 
-    or (beneficialOwnerGov and beneficialOwnerGov.length > 0) 
+{% if (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+    or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+    or (beneficialOwnerGov and beneficialOwnerGov.length > 0)
 %}
 <table class="govuk-table">
     <caption class="govuk-table__caption govuk-table__caption--m">Beneficial owners</caption>
@@ -11,10 +11,10 @@
                 <td class="govuk-table__cell">{{ boi.first_name }} {{ boi.last_name }}</td>
             </tr>
         {% endfor %}
-        {% for boo in beneficialOwnerOther %}
+        {% for boo in beneficial_owners_corporate %}
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Corporate</th>
-                <td class="govuk-table__cell">{{ boo.corporationName }}</td>
+                <td class="govuk-table__cell">{{ boo.name }}</td>
             </tr>
         {% endfor %}
         {% for bog in beneficialOwnerGov %}

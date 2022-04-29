@@ -3,7 +3,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, beneficialOwnerGovType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
-import { AddressKeys, InputDateKeys } from "../model/data.types.model";
+import { AddressKeys, BeneficialOwnerNoc, InputDateKeys, NonLegalFirmNoc } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.beneficialOwnerGov
+      ...appData.beneficial_owners_government_or_public_authority
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -32,8 +32,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[beneficialOwnerGovType.ServiceAddressKey] =
         mapFieldsToDataObject(req.body, beneficialOwnerGovType.ServiceAddressKeys, AddressKeys);
 
-    data[beneficialOwnerGovType.CorporationStartDateKey] =
-        mapFieldsToDataObject(req.body, beneficialOwnerGovType.CorporationStartDateKeys, InputDateKeys);
+    data[beneficialOwnerGovType.StartDateKey] =
+        mapFieldsToDataObject(req.body, beneficialOwnerGovType.StartDateKeys, InputDateKeys);
+
+    // It needs concatenations because if in the check boxes we select only one option
+    // nunjucks returns just a string and with concat we will return an array.
+    data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
+    data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
 
     setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
 

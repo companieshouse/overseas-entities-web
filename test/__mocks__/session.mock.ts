@@ -17,7 +17,6 @@ import {
   presenterType
 } from "../../src/model";
 import {
-  corpNatureOfControl,
   NatureOfControlType,
   yesNoResponse
 } from "../../src/model/data.types.model";
@@ -164,14 +163,27 @@ export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
 };
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
-  corporationLawGoverned: "a11",
-  corporationName: "my company name",
-  corporationNatureOfControl: corpNatureOfControl.influence,
-  corporationStartDate: { day: "12", month: "11", year: "1965" },
-  isServiceAddressSameAsPrincipalAddress: yesNoResponse.No,
-  isOnSanctionsList: yesNoResponse.No,
-  principalAddress: ADDRESS,
-  serviceAddress: ADDRESS
+  name: "my company name",
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "LegalForm",
+  law_governed: "a11",
+  start_date: { day: "12", month: "11", year: "1965" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+};
+
+export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
+  name: "",
+  principal_address: {},
+  is_service_address_same_as_principal_address: "",
+  service_address: {},
+  legal_form: "",
+  law_governed: "",
+  start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
+  beneficial_owner_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: "",
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {

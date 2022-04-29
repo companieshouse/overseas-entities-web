@@ -12,16 +12,11 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
-      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the government or public authority beneficial owner</h1>
-      <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more government or public authority beneficial owners later.</p>
+      <span class="govuk-caption-xl">Beneficial owner</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the government or public authority</h1>
+      <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
       <form class="form" method="post">
-
-        {{ govukDetails({
-          summaryText: "What is a government or public authority beneficial owner?",
-          text: "Here"
-        }) }}
 
         {{ govukInput({
           label: {
@@ -29,325 +24,41 @@
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "corporationName",
-          name: "corporationName",
-          value: corporationName
+          id: "name",
+          name: "name",
+          value: name
         }) }}
+
+        {% include "includes/inputs/principal-address-input.html" %}
+
+        {% include "includes/inputs/legal-form-input.html" %}
+
+        {% include "includes/inputs/governing-law-input.html" %}
+
+        {% include "includes/inputs/start-date-input.html" %}
+
         {% call govukFieldset({
           legend: {
-            text: "What is its principal or registered office address?",
+            text: "What is its nature of control?",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: false
           }
         }) %}
 
-        {{ govukInput({
-          label: {
-            html: 'Property name or number (optional)'
-          },
-          hint: {
-           text: "For example, 'The Mill', '116' or 'Flat 37a'"
-         },
-          id: "principalAddressPropertyNameNumber",
-          name: "principalAddressPropertyNameNumber",
-          value: principalAddress.principalAddressPropertyNameNumber if principalAddress
-        }) }}
+          {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "Address line 1"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine1",
-          name: "principalAddressLine1",
-          autocomplete: "principalAddressLine1",
-          value: principalAddress.principalAddressLine1 if principalAddress
-        }) }}
+          {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "Address line 2 (optional)"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine2",
-          name: "principalAddressLine2",
-          autocomplete: "principalAddressLine2",
-          value: principalAddress.principalAddressLine2 if principalAddress
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "City or town"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressCityTown",
-          name: "principalAddressCityTown",
-          value: principalAddress.principalAddressCityTown if principalAddress
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "County, state, province or region (optional)"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressState",
-          name: "principalAddressState",
-          value: principalAddress.principalAddressState if principalAddress
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Country"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressCountry",
-          name: "principalAddressCountry",
-          autocomplete: "principalAddressCountry",
-          value: principalAddress.principalAddressCountry if principalAddress
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Postcode or ZIP"
-          },
-          classes: "govuk-input--width-10",
-          id: "principalAddressPostcode",
-          name: "principalAddressPostcode",
-          autocomplete: "principalAddressPostcode",
-          value: principalAddress.principalAddressPostcode if principalAddress
-        }) }}
         {% endcall %}
 
-        {% set serviceAddressHtml %}
-          <br>
-          {% call govukFieldset({
-            legend: {
-              text: "What is its correspondence address?",
-              classes: "govuk-fieldset__legend--m",
-              isPageHeading: false
-            }
-          }) %}
-
-          {{ govukInput({
-            label: {
-              html: 'Property name or number (optional)'
-            },
-            hint: {
-            text: "For example, 'The Mill', '116' or 'Flat 37a'"
-          },
-            id: "serviceAddressPropertyNameNumber",
-            name: "serviceAddressPropertyNameNumber",
-            value: serviceAddress.serviceAddressPropertyNameNumber if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "Address line 1"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressLine1",
-            name: "serviceAddressLine1",
-            autocomplete: "serviceAddressLine1",
-            value: serviceAddress.serviceAddressLine1 if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "Address line 2 (optional)"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressLine2",
-            name: "serviceAddressLine2",
-            autocomplete: "serviceAddressLine2",
-            value: serviceAddress.serviceAddressLine2 if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "City or town"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressCityTown",
-            name: "serviceAddressCityTown",
-            value: serviceAddress.serviceAddressCityTown if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "County, state, province or region (optional)"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressState",
-            name: "serviceAddressState",
-            value: serviceAddress.serviceAddressState if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "Country"
-            },
-            classes: "govuk-!-width-two-thirds",
-            id: "serviceAddressCountry",
-            name: "serviceAddressCountry",
-            autocomplete: "serviceAddressCountry",
-            value: serviceAddress.serviceAddressCountry if serviceAddress
-          }) }}
-
-          {{ govukInput({
-            label: {
-              text: "Postcode or ZIP"
-            },
-            classes: "govuk-input--width-10",
-            id: "serviceAddressPostcode",
-            name: "serviceAddressPostcode",
-            autocomplete: "serviceAddressPostcode",
-            value: serviceAddress.serviceAddressPostcode if serviceAddress
-          }) }}
-
-          {% endcall %}
-        {% endset -%}
-
-        {{ govukRadios({
-          classes: "govuk-radios",
-          idPrefix: "isServiceAddressSameAsPrincipalAddress",
-          name: "isServiceAddressSameAsPrincipalAddress",
-          fieldset: {
-            legend: {
-              text: "Is its correspondence address the same as its registered office address?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes",
-              checked: isServiceAddressSameAsPrincipalAddress === "yes"
-            },
-            {
-              value: "no",
-              text: "No",
-              checked: isServiceAddressSameAsPrincipalAddress === "no",
-              conditional: {
-                html: serviceAddressHtml
-              }
-            }
-          ]
-        }) }}
-        {{ govukInput({
-          label: {
-            text: "What law or legislation does it operate under?",
-            classes: "govuk-label--m govuk-input--width-15",
-            isPageHeading: false
-          },
-          hint: {
-            text: "This is also known as the company or entity's governing law."
-          },
-          id: "corporationLawGoverned",
-          name: "corporationLawGoverned",
-          value: corporationLawGoverned
-        }) }}
-        {{ govukDateInput({
-          id: "corporationStartDate",
-          namePrefix: "corporationStartDate",
-          fieldset: {
-            legend: {
-              text: "When did it become a beneficial owner for the overseas entity?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "For example, 27 3 2007"
-          },
-          items: [
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "day",
-              value: corporationStartDate["corporationStartDate-day"]
-            },
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "month",
-              value: corporationStartDate["corporationStartDate-month"]
-            },
-            {
-              classes: "govuk-input--width-4 govuk-input",
-              name: "year",
-              value: corporationStartDate["corporationStartDate-year"]
-            }
-          ]
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+            <p class="govuk-body">All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
+          '
         }) }}
 
-        {{ govukRadios({
-          idPrefix: "corporationNatureOfControl",
-          name: "corporationNatureOfControl",
-          fieldset: {
-            legend: {
-              text: "What is its nature of control?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "shares",
-              text: "They hold more than 25% of shares in the overseas entity",
-              checked: corporationNatureOfControl === "shares"
-            },
-            {
-              value: "voting",
-              text: "They hold more than 25% of the voting rights in the overseas entity",
-              checked: corporationNatureOfControl === "voting"
-            },
-            {
-              value: "appoint",
-              text: "They hold the right to appoint or remove a majority of the board of directors of the overseas entity",
-              checked: corporationNatureOfControl === "appoint"
-            },
-            {
-              value: "influence",
-              text: "They have the right to exercise significant influence or control over the overseas entity",
-              checked: corporationNatureOfControl === "influence"
-            }
-          ]
-        }) }}
-
-        {{ govukRadios({
-          classes: "govuk-radios",
-          idPrefix: "isOnSanctionsList",
-          name: "isOnSanctionsList",
-          fieldset: {
-            legend: {
-              text: "Is it on the sanctions list?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: "yes",
-              text: "Yes",
-              checked: isOnSanctionsList === "yes"
-            },
-            {
-              value: "no",
-              text: "No",
-              checked: isOnSanctionsList === "no"
-            }
-          ]
-        }) }}
-
-
-        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
-        <p class="govuk-body">All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
-
-        {{ govukButton({
-          text: "Save and continue",
-          attributes: {
-            "id": "submit"
-          }
-        }) }}
+        {% include "includes/continue-button.html" %}
 
       </form>
 

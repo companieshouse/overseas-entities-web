@@ -12,7 +12,10 @@ import { HasSameResidentialAddressKey, IsOnSanctionsListKey } from '../../src/mo
 describe("BO Individua model", () => {
   const session = getSessionRequestWithExtraData();
   const appData = getApplicationData(session) as ApplicationData;
-  const boiData = appData.beneficial_owners_individual[0] as BeneficialOwnerIndividual;
+  let boiData = {};
+  if (appData.beneficial_owners_individual) {
+    boiData = appData.beneficial_owners_individual[0] as BeneficialOwnerIndividual;
+  }
   const boiDataKeys = Object.keys(boiData);
 
   test("BOI keys to be equal to BeneficialOwnerIndividualKeys object", () => {

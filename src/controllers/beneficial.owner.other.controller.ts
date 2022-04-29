@@ -6,7 +6,7 @@ import { ApplicationData, ApplicationDataType, beneficialOwnerOtherType } from "
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
-  AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
+  AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnRegisterInCountryFormedInKey, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
 } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -48,6 +48,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
+    data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
 

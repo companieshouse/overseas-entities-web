@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { ApplicationData } from '../../src/model';
+import { HasSamePrincipalAddressKey } from '../../src/model/data.types.model';
 
-import { Entity, EntityKeys, HasSameAddressKey } from '../../src/model/entity.model';
+import { Entity, EntityKeys } from '../../src/model/entity.model';
 import { getApplicationData } from "../../src/utils/application.data";
 import { getSessionRequestWithExtraData } from "../__mocks__/session.mock";
 
@@ -14,6 +15,6 @@ describe("ENTITY model", () => {
     expect(entityDataKeys).toEqual(EntityKeys);
   });
   test("HasSameAddressKey is a ENTITY key", () => {
-    expect(entityDataKeys.includes(HasSameAddressKey)).toBeTruthy();
+    expect(entityDataKeys.includes(HasSamePrincipalAddressKey)).toBeTruthy();
   });
 });

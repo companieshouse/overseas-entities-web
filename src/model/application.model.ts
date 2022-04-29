@@ -15,7 +15,7 @@ export const APPLICATION_DATA_KEY = 'roe';
 export interface ApplicationData {
     presenter?: presenterType.Presenter;
     entity?: entityType.Entity;
-    beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnerStatementType;
+    beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnersStatementType;
     beneficial_owners_individual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
     beneficial_owners_corporate?: beneficialOwnerOtherType.BeneficialOwnerOther[];
     beneficial_owners_government_or_public_authority?: beneficialOwnerGovType.BeneficialOwnerGov[];

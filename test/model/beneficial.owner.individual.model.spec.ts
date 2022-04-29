@@ -4,11 +4,10 @@ import { getApplicationData } from "../../src/utils/application.data";
 import { getSessionRequestWithExtraData } from "../__mocks__/session.mock";
 import {
   BeneficialOwnerIndividual,
-  BeneficialOwnerIndividualKeys,
-  HasSameAddressKey,
-  IsOnSanctionsListKey,
+  BeneficialOwnerIndividualKeys
 } from "../../src/model/beneficial.owner.individual.model";
 import { ApplicationData } from '../../src/model';
+import { HasSameResidentialAddressKey, IsOnSanctionsListKey } from '../../src/model/data.types.model';
 
 describe("BO Individua model", () => {
   const session = getSessionRequestWithExtraData();
@@ -20,7 +19,7 @@ describe("BO Individua model", () => {
     expect(boiDataKeys).toEqual(BeneficialOwnerIndividualKeys);
   });
   test("HasSameAddressKey is a BOI key", () => {
-    expect(boiDataKeys.includes(HasSameAddressKey)).toBeTruthy();
+    expect(boiDataKeys.includes(HasSameResidentialAddressKey)).toBeTruthy();
   });
   test("IsOnSanctionsListKey is a BOI key", () => {
     expect(boiDataKeys.includes(IsOnSanctionsListKey)).toBeTruthy();

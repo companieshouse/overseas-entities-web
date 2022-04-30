@@ -25,25 +25,6 @@ export enum NatureOfControlType {
   significant_influence_or_control = "significant_influence_or_control"
 }
 
-// To be removed
-export enum natureOfControl {
-  over25upTo50Percent = "25",
-  over50under75Percent = "50",
-  atLeast75Percent = "75"
-}
-
-export enum corpNatureOfControl {
-  shares = "shares",
-  voting = "voting",
-  appoint = "appoint",
-  influence = "influence"
-}
-
-export enum statementCondition {
-  statement1 = "statement1",
-  statement2 = "statement2"
-}
-
 /*
   Address and InputDate key fields - Position is important for the mapping of sub-fields Address Objects!
 */

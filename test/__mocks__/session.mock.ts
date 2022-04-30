@@ -95,7 +95,7 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
   beneficialOwnerStatementType.BeneficialOwnersStatementType
-    .all_identified_all_details;
+    .ALL_IDENTIFIED_ALL_DETAILS;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   name: "TestCorporation",

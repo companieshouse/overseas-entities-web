@@ -95,7 +95,7 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
   beneficialOwnerStatementType.BeneficialOwnersStatementType
-    .all_identified_all_details;
+    .ALL_IDENTIFIED_ALL_DETAILS;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   name: "TestCorporation",
@@ -108,9 +108,9 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   registration_number: "123456789",
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   start_date: { day: "1", month: "1", year: "2011" },
-  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
-  trustees_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
-  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0
 };
 
@@ -141,9 +141,9 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
   start_date: { day: "1", month: "3", year: "1999" },
-  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
-  trustees_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
-  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.appoint_or_remove_majority_board_directors],
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   is_on_sanctions_list: 0
 };
 
@@ -170,8 +170,8 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   legal_form: "LegalForm",
   law_governed: "a11",
   start_date: { day: "12", month: "11", year: "1965" },
-  beneficial_owner_nature_of_control_types: [NatureOfControlType.over_25_percent_of_voting_rights],
-  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.over_25_percent_of_shares],
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {

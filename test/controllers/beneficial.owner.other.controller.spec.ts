@@ -69,9 +69,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(beneficialOwnerOther.register_name).toEqual( "ThisRegister");
       expect(beneficialOwnerOther.registration_number).toEqual("123456789");
       expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
-      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.over_25_percent_of_voting_rights]);
-      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.appoint_or_remove_majority_board_directors]);
-      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.over_25_percent_of_shares]);
+      expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);
+      expect(beneficialOwnerOther.trustees_nature_of_control_types).toEqual([NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS]);
+      expect(beneficialOwnerOther.non_legal_firm_members_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_SHARES]);
       expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);

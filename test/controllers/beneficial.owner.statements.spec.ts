@@ -19,6 +19,7 @@ import {
 } from "../__mocks__/text.mock";
 import { authentication } from "../../src/controllers";
 import { getApplicationData } from "../../src/utils/application.data";
+import { BeneficialOwnersStatementType } from "../../src/model/beneficial.owner.statement.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -39,7 +40,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
-      expect(resp.text).toContain("all_identified_all_details");
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
     });
 
     test("catch error when rendering the page", async () => {

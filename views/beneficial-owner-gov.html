@@ -35,6 +35,7 @@
 
         {% include "includes/inputs/governing-law-input.html" %}
 
+        {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
         {% include "includes/inputs/start-date-input.html" %}
 
         {% call govukFieldset({
@@ -53,7 +54,7 @@
 
         {{ govukInsetText({
           html: '
-            <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+            <h2 class="govuk-heading-m">Information shown on the public register</h2>
             <p class="govuk-body">All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
           '
         }) }}

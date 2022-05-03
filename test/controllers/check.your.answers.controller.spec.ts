@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
@@ -29,7 +29,7 @@ import {
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
 } from "../__mocks__/session.mock";
 
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { getApplicationData } from "../../src/utils/application.data";

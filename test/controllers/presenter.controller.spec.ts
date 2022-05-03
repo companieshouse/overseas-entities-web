@@ -1,5 +1,5 @@
 jest.mock("ioredis");
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { describe, expect, test, jest } from '@jest/globals';
@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { PRESENTER_URL } from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import { ANY_MESSAGE_ERROR, ENTITY_PAGE_REDIRECT, PRESENTER_PAGE_TITLE, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';

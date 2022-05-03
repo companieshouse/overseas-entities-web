@@ -1,9 +1,9 @@
 jest.mock("ioredis");
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 
 import request from "supertest";
 import { describe, expect, jest, test } from "@jest/globals";
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import { CONFIRMATION_URL } from "../../src/config";

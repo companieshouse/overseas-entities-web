@@ -1,5 +1,5 @@
 jest.mock("ioredis");
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
@@ -17,7 +17,7 @@ import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
 } from "../__mocks__/text.mock";
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { getApplicationData } from "../../src/utils/application.data";
 import { BeneficialOwnersStatementType } from "../../src/model/beneficial.owner.statement.model";
 

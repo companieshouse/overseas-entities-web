@@ -31,8 +31,10 @@
 
         {% include "includes/inputs/principal-address-input.html" %}
 
+        {% set hintText = "For example, limited company or partnership" %}
         {% include "includes/inputs/legal-form-input.html" %}
 
+        {% set hintText = "This is the law that the beneficial owner operates under" %}
         {% include "includes/inputs/governing-law-input.html" %}
 
         {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}

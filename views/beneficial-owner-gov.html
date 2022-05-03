@@ -35,7 +35,37 @@
 
         {% include "includes/inputs/governing-law-input.html" %}
 
-        {% include "includes/inputs/start-date-input.html" %}
+        {{ govukDateInput({
+          id: "start_date",
+          namePrefix: "start_date",
+          fieldset: {
+            legend: {
+              text: "When did it become a beneficial owner for the overseas entity?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          hint: {
+            text: "For example, 27 3 2007"
+          },
+          items: [
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "day",
+              value: start_date["start_date-day"] if start_date
+            },
+            {
+              classes: "govuk-input--width-2 govuk-input",
+              name: "month",
+              value: start_date["start_date-month"] if start_date
+            },
+            {
+              classes: "govuk-input--width-4 govuk-input",
+              name: "year",
+              value: start_date["start_date-year"] if start_date
+            }
+          ]
+        }) }}
 
         {% call govukFieldset({
           legend: {
@@ -53,7 +83,7 @@
 
         {{ govukInsetText({
           html: '
-            <h2 class="govuk-heading-m">What information is shown on the online register</h2>
+            <h2 class="govuk-heading-m">Information shown on the public register</h2>
             <p class="govuk-body">All information provided on this screen about the government or public authority beneficial owner will be available on the public register.</p>
           '
         }) }}

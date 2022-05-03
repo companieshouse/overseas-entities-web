@@ -43,91 +43,7 @@
         value: incorporation_country
       }) }}
 
-      {% call govukFieldset({
-        legend: {
-          text: "What is the principal or registered office address?",
-          classes: "govuk-fieldset__legend--m",
-            isPageHeading: false
-          }
-      }) %}
-
-        {{ govukInput({
-          label: {
-            html: 'Property name or number (optional)'
-          },
-          hint: {
-            text: "For example, 'Saron House', '116' or 'Unit 37a'"
-          },
-          id: "principal-address-property-name-number",
-          name: "principal-address-property-name-number",
-          value: principal_address.principalAddressPropertyNameNumber  if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Address line 1"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine1",
-          name: "principalAddressLine1",
-          autocomplete: "principalAddressline1",
-          value: principal_address.principalAddressLine1 if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Address line 2 (optional)"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressLine2",
-          name: "principalAddressLine2",
-          autocomplete: "principalAddressline2",
-          value: principal_address.principalAddressLine2 if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "City or town"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressTown",
-          name: "principalAddressTown",
-          autocomplete: "address-level2",
-          value: principal_address.principalAddressTown if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "County, state, province or region (optional)"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressCounty",
-          name: "principalAddressCounty",
-          value: principal_address.principalAddressCounty if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Country"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "principalAddressCountry",
-          name: "principalAddressCountry",
-          value: principal_address.principalAddressCountry if principal_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Postcode or ZIP code (if applicable)"
-          },
-          classes: "govuk-input--width-10",
-          id: "principalAddressPostcode",
-          name: "principalAddressPostcode",
-          autocomplete: "postal-code",
-          value: principal_address.principalAddressPostcode if principal_address
-        }) }}
-
-      {% endcall %}
+      {% include "includes/inputs/principal-address-input.html" %}
 
       {% set serviceAddressHtml %}
         {% call govukFieldset({
@@ -257,33 +173,9 @@
         value: email
       }) }}
 
-      {{ govukInput({
-        label: {
-          text: "What is its legal form?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        hint: {
-          text: "For example, limited company"
-        },
-        id: "legal_form",
-        name: "legal_form",
-        value: legal_form
-      }) }}
+      {% include "includes/inputs/legal-form-input.html" %}
 
-      {{ govukInput({
-        label: {
-          text: "What is the governing law?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        hint: {
-          text: "This is the law that the entity operates under"
-        },
-        id: "law_governed",
-        name: "law_governed",
-        value: law_governed
-      }) }}
+      {% include "includes/inputs/governing-law-input.html" %}
 
       {% set entityPublicRegisterHtml %}
         {{ govukInput({

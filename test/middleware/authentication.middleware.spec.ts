@@ -7,10 +7,10 @@ import request from "supertest";
 import app from "../../src/app";
 
 import { getSessionRequestWithPermission, userMail } from '../__mocks__/session.mock';
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from '../../src/utils/logger';
 import { PRESENTER_URL } from '../../src/config';
-import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
 
 jest.mock('../../src/utils/logger', () => {
   return {
@@ -22,7 +22,7 @@ const req = {} as Request;
 const res = { redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
-describe('Authentication controller', () => {
+describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -43,7 +43,6 @@ describe('Authentication controller', () => {
   });
 
   test("should redirect to signin page with presenter page as return page", () => {
-    const mockLogInfoMsg = 'User not authenticated, status_code=401, redirecting to sign in page';
     const signinRedirectPath = `/signin?return_to=${PRESENTER_URL}`;
     req.session = undefined;
 
@@ -55,7 +54,7 @@ describe('Authentication controller', () => {
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
 
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
-    expect(logger.infoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 

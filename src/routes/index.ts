@@ -2,7 +2,6 @@ import { Router } from "express";
 
 import * as config from "../config";
 import {
-  authentication,
   beneficialOwnerGov,
   beneficialOwnerIndividual,
   beneficialOwnerOther,
@@ -18,6 +17,7 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+import { authentication } from "../middleware/authentication.middleware";
 import errorHandler from "../controllers/error.controller";
 
 const router = Router();

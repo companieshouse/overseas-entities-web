@@ -1,5 +1,5 @@
 jest.mock("ioredis");
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY } from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";

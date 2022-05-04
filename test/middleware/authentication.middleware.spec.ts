@@ -22,7 +22,7 @@ const req = {} as Request;
 const res = { redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
-describe('Authentication controller', () => {
+describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });

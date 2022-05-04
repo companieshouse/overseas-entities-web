@@ -9,8 +9,7 @@ import {
 } from "../../src/utils/application.data";
 import {
   ADDRESS,
-  ADDRESS_FIELDS_MOCK,
-  ADDRESS_MOCK,
+  SERVICE_ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ENTITY_OBJECT_MOCK,
@@ -18,6 +17,7 @@ import {
   getSessionRequestWithPermission,
 } from "../__mocks__/session.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
+import { ServiceAddressKeys } from '../../src/model/address.model';
 
 describe("Application data utils", () => {
 
@@ -81,12 +81,12 @@ describe("Application data utils", () => {
   });
 
   test("mapDataObjectToFields should map address to address fields present on the view", () => {
-    const response = mapDataObjectToFields(ADDRESS, ADDRESS_FIELDS_MOCK, dataType.AddressKeys);
-    expect(response).toEqual(ADDRESS_MOCK);
+    const response = mapDataObjectToFields(ADDRESS, ServiceAddressKeys, dataType.AddressKeys);
+    expect(response).toEqual(SERVICE_ADDRESS_MOCK);
   });
 
   test("mapFieldsToDataObject should map address fields coming from the view to address", () => {
-    const response = mapFieldsToDataObject(ADDRESS_MOCK, ADDRESS_FIELDS_MOCK, dataType.AddressKeys);
+    const response = mapFieldsToDataObject(SERVICE_ADDRESS_MOCK, ServiceAddressKeys, dataType.AddressKeys);
     expect(response).toEqual(ADDRESS);
   });
 

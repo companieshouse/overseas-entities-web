@@ -63,15 +63,14 @@ export const SERVICE_ADDRESS = {
   postcode: "SBY 2"
 };
 
-export const ADDRESS_FIELDS_MOCK = ["propertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
-export const ADDRESS_MOCK = {
-  propertyNameNumber: "1",
-  serviceAddressLine1: "addressLine1",
-  serviceAddressLine2: "addressLine2",
-  serviceAddressTown: "town",
-  serviceAddressCounty: "county",
-  country: "country",
-  serviceAddressPostcode: "BY 2"
+export const SERVICE_ADDRESS_MOCK = {
+  service_address_property_name_number: "1",
+  service_address_line_1: "addressLine1",
+  service_address_line_2: "addressLine2",
+  service_address_town: "town",
+  service_address_county: "county",
+  service_address_country: "country",
+  service_address_postcode: "BY 2"
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {

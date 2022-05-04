@@ -29,14 +29,14 @@
           value: name
         }) }}
 
-        {% include "includes/inputs/principal-address-input.html" %}
+        {% include "includes/inputs/address/principal-address-input.html" %}
 
         {% include "includes/inputs/legal-form-input.html" %}
 
         {% include "includes/inputs/governing-law-input.html" %}
 
         {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
-        {% include "includes/inputs/start-date-input.html" %}
+        {% include "includes/inputs/date/start-date-input.html" %}
 
         {% call govukFieldset({
           legend: {

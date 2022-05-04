@@ -1,11 +1,5 @@
 import { Address, InputDate, NatureOfControlType, yesNoResponse } from "./data.types.model";
 
-/*
-  The sub-fields for Date Objects
-*/
-export const StartDateKey: string = "start_date";
-export const StartDateKeys: string[] = ["start_date-day", "start_date-month", "start_date-year"];
-
 export const BeneficialOwnerGovKey = "beneficial_owners_government_or_public_authority";
 
 /*

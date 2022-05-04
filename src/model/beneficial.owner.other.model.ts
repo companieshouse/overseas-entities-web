@@ -1,9 +1,10 @@
 import { Address, InputDate, NatureOfControlType, yesNoResponse } from "./data.types.model";
 
-export const StartDateKey: string = "start_date";
-export const StartDateKeys: string[] = ["start_date-day", "start_date-month", "start_date-year"];
-
 export const BeneficialOwnerOtherKey: string = "beneficial_owners_corporate";
+
+/*
+  These fields should match the name field on the HTML file to be able to do the mapping correctly
+*/
 export const BeneficialOwnerOtherKeys: string[] = [
   "name",
   "principal_address",

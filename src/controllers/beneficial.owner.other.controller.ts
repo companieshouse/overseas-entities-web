@@ -4,10 +4,11 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType, beneficialOwnerOtherType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
-import {  BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
+import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnRegisterInCountryFormedInKey, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
 } from "../model/data.types.model";
+import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,10 +33,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerOtherKeys);
 
-    data[beneficialOwnerOtherType.PrincipalAddressKey] =
-        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.PrincipalAddressKeys, AddressKeys);
-    data[beneficialOwnerOtherType.ServiceAddressKey] =
-        mapFieldsToDataObject(req.body, beneficialOwnerOtherType.ServiceAddressKeys, AddressKeys);
+    data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
+    data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
 
     data[beneficialOwnerOtherType.StartDateKey] =
         mapFieldsToDataObject(req.body, beneficialOwnerOtherType.StartDateKeys, InputDateKeys);

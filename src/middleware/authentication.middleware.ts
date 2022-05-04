@@ -11,7 +11,7 @@ import {
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
     if (!checkUserSignedIn(req.session)) {
-      logger.info("User not authenticated, status_code=401");
+      logger.infoRequest(req, 'user not authenticated, status_code=401');
       logger.infoRequest(req, 'redirecting to sign in page, status_code=302');
       return res.redirect(`/signin?return_to=${PRESENTER_URL}`);
     }

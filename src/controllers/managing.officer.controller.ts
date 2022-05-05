@@ -1,9 +1,14 @@
 import { NextFunction, Request, Response } from "express";
+
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData, ApplicationDataType, managingOfficerType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
-import { AddressKeys, InputDateKeys } from "../model/data.types.model";
+
+import { AddressKeys, HasFormerNames, HasSameResidentialAddressKey, InputDateKeys } from "../model/data.types.model";
+import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
+import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
+import { ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.MANAGING_OFFICER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managingOfficer
+      ...appData.managing_officers_individual
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -25,15 +30,16 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.MANAGING_OFFICER_PAGE}`);
 
-    const data: ApplicationDataType = prepareData(req.body, managingOfficerType.ManagingOfficerKeys);
+    const data: ApplicationDataType = prepareData(req.body, ManagingOfficerKeys);
 
-    data[managingOfficerType.UsualResidentialAddressKey] =
-        mapFieldsToDataObject(req.body, managingOfficerType.UsualResidentialAddressKeys, AddressKeys);
+    data[UsualResidentialAddressKey] = mapFieldsToDataObject(req.body, UsualResidentialAddressKeys, AddressKeys);
+    data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
+    data[DateOfBirthKey] = mapFieldsToDataObject(req.body, DateOfBirthKeys, InputDateKeys);
 
-    data[managingOfficerType.DateOfBirthKey] =
-        mapFieldsToDataObject(req.body, managingOfficerType.DateOfBirthKeys, InputDateKeys);
+    data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
+    data[HasFormerNames] = (data[HasFormerNames]) ? +data[HasFormerNames] : '';
 
-    setApplicationData(req.session, data, managingOfficerType.ManagingOfficerKey);
+    setApplicationData(req.session, data, ManagingOfficerKey);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -41,4 +47,3 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-

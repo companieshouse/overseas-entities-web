@@ -33,7 +33,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     data[UsualResidentialAddressKey] = mapFieldsToDataObject(req.body, UsualResidentialAddressKeys, AddressKeys);
     data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
-
     data[DateOfBirthKey] = mapFieldsToDataObject(req.body, DateOfBirthKeys, InputDateKeys);
     data[StartDateKey] = mapFieldsToDataObject(req.body, StartDateKeys, InputDateKeys);
 

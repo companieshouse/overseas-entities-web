@@ -132,33 +132,6 @@
         {% endcall %}
       {% endset -%}
 
-      {{ govukRadios({
-        idPrefix: "is_service_address_same_as_principal_address",
-        name: "is_service_address_same_as_principal_address",
-          fieldset: {
-            legend: {
-              text: "Is the correspondence address the same as the principal or registered office address?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: 1,
-              text: "Yes",
-              checked: is_service_address_same_as_principal_address === 1
-            },
-            {
-              value: 0,
-              text: "No",
-              checked: is_service_address_same_as_principal_address === 0,
-              conditional: {
-                html: serviceAddressHtml
-              }
-            }
-         ]
-      }) }}
-
       {{ govukInput({
         label: {
           text: "Which email address at the overseas entity should we send communications to?",

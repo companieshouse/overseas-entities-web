@@ -14,52 +14,17 @@
 
 
       <span class="govuk-caption-xl">Beneficial owner</span>
-      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the individual person</h1>
-      <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
-
+      {% include "includes/heading/bo-and-mo-individuals-heading.html" %}
 
       <form method="post">
 
-        {{ govukInput({
-          label: {
-            text: "What is their first name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            text: "This is also known as their given name. Include any professional or honorary titles, if relevant."
-          },
-          id: "first_name",
-          name: "first_name",
-          value: first_name
-        }) }}
+        {% include "includes/inputs/fields/first-name-input.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "What is their last name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            text: "This is also known as your family name."
-          },
-          id: "last_name",
-          name: "last_name",
-          value: last_name
-        }) }}
+        {% include "includes/inputs/fields/last-name-input.html" %}
 
         {% include "includes/inputs/date/date-of-birth-input.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "What is their nationality?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "nationality",
-          name: "nationality",
-          value: nationality
-        }) }}
+        {% include "includes/inputs/fields/nationality-input.html" %}
 
         {% include "includes/inputs/address/residential-address-input.html" %}
 

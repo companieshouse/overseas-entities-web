@@ -18,21 +18,14 @@
 
       <form class="form" method="post">
 
-        {{ govukInput({
-          label: {
-            text: "What is its name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "name",
-          name: "name",
-          value: name
-        }) }}
+        {% include "includes/inputs/fields/name-input.html" %}
 
         {% include "includes/inputs/address/principal-address-input.html" %}
 
+        {% set hintText = "For example, limited company or partnership" %}
         {% include "includes/inputs/legal-form-input.html" %}
 
+        {% set hintText = "This is the law that the beneficial owner operates under" %}
         {% include "includes/inputs/governing-law-input.html" %}
 
         {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
@@ -46,9 +39,9 @@
           }
         }) %}
 
-          {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
+        {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
-          {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+        {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
 
         {% endcall %}
 

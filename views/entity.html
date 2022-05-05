@@ -45,8 +45,6 @@
 
       {% include "includes/inputs/address/principal-address-input.html" %}
 
-      {% include "includes/inputs/address/service-address-input.html" %}
-
       {{ govukInput({
         label: {
           text: "Which email address at the overseas entity should we send communications to?",
@@ -54,7 +52,7 @@
           isPageHeading: false
         },
         hint: {
-          text: "We’ll use this to send the Overseas Entity ID number, the notice of registration, and any other digital correspondence"
+          text: "We'll use this to send the Overseas Entity ID number, the notice of registration, and any other digital correspondence"
         },
         id: "email",
         name: "email",
@@ -84,7 +82,7 @@
           value: registration_number,
           classes: "govuk-!-width-one-half",
           label: {
-            text: "Entity’s registration number"
+            text: "Entity's registration number"
           }
         }) }}
       {% endset -%}

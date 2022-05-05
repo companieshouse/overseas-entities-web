@@ -10,8 +10,8 @@ import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
-import { MANAGING_OFFICER_OBJECT_MOCK } from '../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, MANAGING_OFFICER_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import { MANAGING_OFFICER_OBJECT_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY } from '../__mocks__/session.mock';
+import { ANY_MESSAGE_ERROR, MANAGING_OFFICER, MANAGING_OFFICER_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { managingOfficerType } from '../../src/model';
 import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
@@ -31,9 +31,8 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).toContain("Andrei Nikolayevich Bolkonsky");
-      expect(resp.text).toContain("Russian");
-
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).toContain("Utopian");
     });
 
     test("catch error when rendering the page", async () => {
@@ -64,12 +63,21 @@ describe("MANAGING_OFFICER controller", () => {
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
       expect(beneficialOwnerIndividual).toEqual(MANAGING_OFFICER_OBJECT_MOCK);
-      expect(beneficialOwnerIndividual.fullName).toEqual("Andrei Nikolayevich Bolkonsky");
-      expect(beneficialOwnerIndividual.nationality).toEqual("Russian");
-      expect(beneficialOwnerIndividual.businessOccupation).toEqual("Prince");
+      expect(beneficialOwnerIndividual.first_name).toEqual("Joe");
+      expect(beneficialOwnerIndividual.nationality).toEqual("Utopian");
+      expect(beneficialOwnerIndividual.occupation).toEqual("Some Occupation");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);
 
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () => REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY );
+
+      const resp = await request(app).post(MANAGING_OFFICER_URL);
+
+      expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 

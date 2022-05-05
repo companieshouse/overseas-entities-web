@@ -1,33 +1,35 @@
 import { Address, InputDate, yesNoResponse } from "./data.types.model";
 
+export const ManagingOfficerKey = "managing_officers_individual";
+
 /*
   The Officer fields will have to match the name field on the HTML file to
   be able to do the mapping correctly
 */
-export const ManagingOfficerKey = "managingOfficer";
 export const ManagingOfficerKeys: string[] = [
-  "fullName", "hasAFormerName", "formerName", "dateOfBirth", "nationality", "incorporationCountry", "residentialAddress", "businessOccupation", "roleAndResponsibilities" ];
+  "first_name",
+  "last_name",
+  "has_former_names",
+  "former_names",
+  "date_of_birth",
+  "nationality",
+  "usual_residential_address",
+  "service_address",
+  "is_service_address_same_as_usual_residential_address",
+  "occupation",
+  "role_and_responsibilities"
+];
 
-/*
-  The Officer sub-fields for the Date Object
-*/
-export const DateOfBirthKey: string = "dateOfBirth";
-export const DateOfBirthKeys: string[] = ["dateOfBirth-day", "dateOfBirth-month", "dateOfBirth-year"];
-
-/*
-  The Officer sub-fields for the Address Object
-*/
-export const UsualResidentialAddressKey = "usualResidentialAddress";
-export const UsualResidentialAddressKeys: string[] = [
-  "usualResidentialAddressPropertyNameNumber", "usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressCounty",  "usualResidentialAddressCountry", "usualResidentialAddressPostcode"];
-
-export interface ManagingOfficer {
-  fullName?: string
-  hasAFormerName?: yesNoResponse
-  formerName?: string
-  dateOfBirth?: InputDate
+export interface ManagingOfficerIndividual {
+  first_name?: string
+  last_name?: string
+  has_former_names?: yesNoResponse
+  former_names?: string
+  date_of_birth?: InputDate
   nationality?: string
-  usualResidentialAddress?: Address
-  businessOccupation?: string
-  roleAndResponsibilities?: string
+  usual_residential_address?: Address
+  service_address?: Address
+  is_service_address_same_as_usual_residential_address?: yesNoResponse
+  occupation?: string
+  role_and_responsibilities?: string
 }

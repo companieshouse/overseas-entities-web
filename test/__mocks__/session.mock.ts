@@ -185,15 +185,32 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
   non_legal_firm_members_nature_of_control_types: "",
 };
 
-export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
-  fullName: "Andrei Nikolayevich Bolkonsky",
-  hasAFormerName: yesNoResponse.No,
-  formerName: "",
-  dateOfBirth: { day: "4", month: "11", year: "1830" },
-  nationality: "Russian",
-  usualResidentialAddress: ADDRESS,
-  businessOccupation: "Prince",
-  roleAndResponsibilities: "None"
+export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Utopian",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities"
+};
+
+export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
+  first_name: "",
+  last_name: "",
+  has_former_names: "",
+  former_names: "",
+  date_of_birth: { 'date_of_birth-day': "",  "date_of_birth-month": "", "date_of_birth-year": "" },
+  nationality: "",
+  usual_residential_address: {},
+  service_address: {},
+  is_service_address_same_as_usual_residential_address: "",
+  occupation: "",
+  role_and_responsibilities: ""
 };
 
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {

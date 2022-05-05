@@ -11,7 +11,7 @@ import {
   confirmation,
   entity,
   landing,
-  managingOfficer,
+  managingOfficerIndividual,
   managingOfficerCorporate,
   presenter
 } from "../controllers";
@@ -41,8 +41,8 @@ router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerTyp
 router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.get);
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.post);
 
-router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficer.get);
-router.post(config.MANAGING_OFFICER_URL, authentication, managingOfficer.post);
+router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.get);
+router.post(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.post);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.post);

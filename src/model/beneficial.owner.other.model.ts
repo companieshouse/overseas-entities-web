@@ -1,31 +1,10 @@
 import { Address, InputDate, NatureOfControlType, yesNoResponse } from "./data.types.model";
 
-export const PrincipalAddressKey = "principal_address";
-export const PrincipalAddressKeys: string[] = [
-  "principal_address_property_name_number",
-  "principal_address_line_1",
-  "principal_address_line_2",
-  "principal_address_town",
-  "principal_address_county",
-  "principal_address_country",
-  "principal_address_postcode"
-];
-
-export const ServiceAddressKey = "service_address";
-export const ServiceAddressKeys: string[] = [
-  "service_address_property_name_number",
-  "service_address_line_1",
-  "service_address_line_2",
-  "service_address_town",
-  "service_address_county",
-  "service_address_country",
-  "service_address_postcode"
-];
-
-export const StartDateKey: string = "start_date";
-export const StartDateKeys: string[] = ["start_date-day", "start_date-month", "start_date-year"];
-
 export const BeneficialOwnerOtherKey: string = "beneficial_owners_corporate";
+
+/*
+  These fields should match the name field on the HTML file to be able to do the mapping correctly
+*/
 export const BeneficialOwnerOtherKeys: string[] = [
   "name",
   "principal_address",

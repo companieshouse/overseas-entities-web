@@ -1,5 +1,5 @@
 jest.mock("ioredis");
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/utils/application.data');
 
@@ -7,7 +7,7 @@ import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { getApplicationData, prepareData } from '../../src/utils/application.data';

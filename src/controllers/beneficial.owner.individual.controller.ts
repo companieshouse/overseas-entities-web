@@ -4,14 +4,15 @@ import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationD
 import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import {
-  BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys, DateOfBirthKey, DateOfBirthKeys, ServiceAddressKey,
-  ServiceAddressKeys, StartDateKey, StartDateKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys
-} from "../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys } from "../model/beneficial.owner.individual.model";
 import {
   AddressKeys, BeneficialOwnerNoc, HasSameResidentialAddressKey, InputDateKeys, IsOnSanctionsListKey,
   NonLegalFirmNoc, TrusteesNoc
 } from "../model/data.types.model";
+import {
+  ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys
+} from "../model/address.model";
+import { DateOfBirthKey, DateOfBirthKeys, StartDateKey, StartDateKeys } from "../model/date.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);

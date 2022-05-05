@@ -43,94 +43,9 @@
         value: incorporation_country
       }) }}
 
-      {% include "includes/inputs/principal-address-input.html" %}
+      {% include "includes/inputs/address/principal-address-input.html" %}
 
-      {% set serviceAddressHtml %}
-        {% call govukFieldset({
-          legend: {
-            text: "What is the correspondence address?",
-            classes: "govuk-fieldset__legend--l",
-            isPageHeading: true
-          }
-        }) %}
-
-
-        {{ govukInput({
-          label: {
-            html: 'Property name or number (optional)'
-          },
-          hint: {
-            text: "For example, 'Saron House', '116' or 'Unit 37a'"
-          },
-          id: "service-address-property-name-number",
-          name: "service-address-property-name-number",
-          value: service_address.serviceAddressPropertyNameNumber if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-          },
-          id: "serviceAddressLine1",
-          name: "serviceAddressLine1",
-          autocomplete: "address-line1",
-          value: service_address.serviceAddressLine1 if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-          },
-          id: "serviceAddressLine2",
-          name: "serviceAddressLine2",
-          autocomplete: "address-line2",
-          value: service_address.serviceAddressLine2 if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "City or town"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressTown",
-          name: "serviceAddressTown",
-          autocomplete: "address-level2",
-          value: service_address.serviceAddressTown if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "County, state, province or region (optional)"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressCounty",
-          name: "serviceAddressCounty",
-          value: service_address.serviceAddressCounty if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Country"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "serviceAddressCountry",
-          name: "serviceAddressCountry",
-          value: service_address.serviceAddressCountry if service_address
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Postcode or ZIP code (if applicable)"
-          },
-          classes: "govuk-input--width-10",
-          id: "serviceAddressPostcode",
-          name: "serviceAddressPostcode",
-          autocomplete: "postal-code",
-          value: service_address.serviceAddressPostcode if service_address
-        }) }}
-
-        {% endcall %}
-      {% endset -%}
+      {% include "includes/inputs/address/service-address-input.html" %}
 
       {{ govukInput({
         label: {

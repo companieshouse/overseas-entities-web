@@ -1,11 +1,11 @@
-{% if (managingOfficer and managingOfficer.length > 0) or (managingOfficerCorporate and managingOfficerCorporate.length > 0) %}
+{% if (managing_officers_individual and managing_officers_individual.length > 0) or (managingOfficerCorporate and managingOfficerCorporate.length > 0) %}
 <table class="govuk-table">
     <caption class="govuk-table__caption govuk-table__caption--m">Managing officers</caption>
     <tbody class="govuk-table__body">
-        {% for mo in managingOfficer %}
+        {% for mo in managing_officers_individual %}
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Individual</th>
-                <td class="govuk-table__cell">{{ mo.fullName }}</td>
+                <td class="govuk-table__cell">{{ mo.first_name }} {{ mo.last_name }}</td>
             </tr>
         {% endfor %}
         {% for moc in managingOfficerCorporate %}

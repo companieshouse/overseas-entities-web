@@ -18,17 +18,19 @@ export const EntityKeys: string[] = [
   "law_governed",
   "public_register_name",
   "registration_number",
+  "is_on_register_in_country_formed_in"
 ];
 
 export interface Entity {
-    name?: string
-    incorporation_country?: string
-    principal_address?: Address
-    is_service_address_same_as_principal_address?: yesNoResponse
-    service_address?: Address
-    email?: string
-    legal_form?: string
-    law_governed?: string
-    public_register_name?: string
-    registration_number?: string
+    name?: string;
+    incorporation_country?: string;
+    principal_address?: Address;
+    is_service_address_same_as_principal_address?: yesNoResponse;
+    service_address?: Address;
+    email?: string;
+    legal_form?: string;
+    law_governed?: string;
+    public_register_name?: string;
+    registration_number?: string;
+    is_on_register_in_country_formed_in?: yesNoResponse;
 }

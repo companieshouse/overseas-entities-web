@@ -67,8 +67,9 @@
 
       {% set entityPublicRegisterHtml %}
         {{ govukInput({
-          id: "entity-public-register-name",
-          name: "entity-public-register-name",
+          id: "public_register_name",
+          name: "public_register_name",
+          value: public_register_name,
           hint: {
             text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
           },
@@ -81,8 +82,8 @@
       {% endset -%}
 
       {{ govukRadios({
-        idPrefix: "entity-public-register",
-        name: "entity-public-register",
+        idPrefix: "is_on_register_in_country_formed_in",
+        name: "is_on_register_in_country_formed_in",
         fieldset: {
           legend: {
             text: "Is the overseas entity already on a public register in the country it was formed in?",
@@ -96,13 +97,11 @@
             text: "Yes",
             conditional: {
                html: entityPublicRegisterHtml
-            },
-            checked: is_on_sanctions_list === 1
+            }
           },
           {
             value: 0,
-            text: "No",
-            checked: is_on_sanctions_list === 0
+            text: "No"
           }
         ]
       }) }}

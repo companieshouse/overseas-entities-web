@@ -8,7 +8,7 @@ import {
 } from "../utils/application.data";
 import { EntityKey, EntityKeys } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { AddressKeys, HasSamePrincipalAddressKey } from "../model/data.types.model";
+import { AddressKeys, HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from "../model/data.types.model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
@@ -42,6 +42,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
       ?  mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
       :  {};
+    data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
     setApplicationData(req.session, data, EntityKey);
 

@@ -83,7 +83,8 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
-  registration_number: "123"
+  registration_number: "123",
+  is_on_register_in_country_formed_in: 1
 };
 
 export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {

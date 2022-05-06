@@ -29,22 +29,7 @@
         {% set hintText = "This is the law that the beneficial owner operates under" %}
         {% include "includes/inputs/governing-law-input.html" %}
 
-        {% set entityPublicRegisterHtml %}
-        {{ govukInput({
-          id: "register_name",
-          name: "register_name",
-          value: register_name,
-          hint: {
-            text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
-          },
-          label: {
-            text: "Name of register"
-          }
-        }) }}
-
-          {% include "includes/inputs/fields/registration-number-input.html" %}
-        {% endset -%}
-
+        {% set registerNameField = "register_name" %}
         {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was formed in?" %}
         {% include "includes/inputs/fields/is_on_register_in_country_formed_input.html" %}
 

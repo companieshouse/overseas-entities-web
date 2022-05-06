@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Beneficial owner - Register an overseas entity - Companies House
+  Managing officer - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -19,6 +19,7 @@
 
         {% include "includes/inputs/fields/first-name-input.html" %}
 
+        {% set hintLastNameText = "This is also known as their family name." %}
         {% include "includes/inputs/fields/last-name-input.html" %}
 
         {% set formerNameHtml %}

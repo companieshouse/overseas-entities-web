@@ -1,0 +1,24 @@
+{{ govukCheckboxes({
+    idPrefix: "due-diligence",
+    name: "due-diligence",
+    fieldset: {
+      legend: {
+        text: "Due diligence",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    hint: {
+      text: "Companies House has processes in place to check the accuracy of the information you provide in this service."
+    },
+    items: [
+      {
+        value: "due-diligence-1",
+        text: "I confirm that due diligence has been done to confirm the accuracy of all the information provided."
+      },
+      {
+        value: "due-diligence-2",
+        text: "I confirm that all beneficial owners and managing officers of the overseas entity will be informed of their legal responsibility to keep their information up to date."
+      }
+    ]
+}) }}

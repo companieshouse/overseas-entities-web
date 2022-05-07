@@ -12,155 +12,11 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
-      {% set formattedPrincipalAddressHtml %}
-        {% set address = appData.entity.principal_address %}
-        {% include "includes/display_address.html" %}
-      {% endset %}
-
-      {% set formattedServiceAddressHtml %}
-        {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
-          The correspondence address is the same as the principal or registered office address
-        {% else %}
-          {% set address = appData.entity.service_address %}
-          {% include "includes/display_address.html" %}
-        {% endif %}
-      {% endset %}
-
-      {% set presenterRoleText %}
-        {% if appData.presenter and appData.presenter.role %}
-            {% if appData.presenter.role === "administrator" %}
-                Administrator
-            {% elif appData.presenter.role === "agent" %}
-                Agent
-            {% elif appData.presenter.role === "solicitor" %}
-                Solicitor
-            {% elif appData.presenter.role === "beneficial_owner" %}
-                Beneficial owner
-            {% elif appData.presenter.role_title %}
-                {{ appData.presenter.role_title }}
-            {% endif %}
-        {% endif %}
-      {% endset %}
-
       <h1 class="govuk-heading-xl">Check your answers before sending your application</h1>
 
-      <h2 class="govuk-heading-l">Your details</h2>
+      {% include "includes/check-your-answers/presenter.html" %}
 
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Name"
-            },
-            value: {
-              text: appData.presenter.full_name
-            }
-          },
-          {
-            key: {
-              text: "Phone number"
-            },
-            value: {
-              text: appData.presenter.phone_number
-            }
-          },
-          {
-            key: {
-              text: "Role"
-            },
-            value: {
-            text: presenterRoleText
-            }
-          },
-          {
-            key: {
-              text: "Anti-money laundering number"
-            },
-            value: {
-              text: appData.presenter.anti_money_laundering_registration_number
-            }
-          }
-        ]
-      }) }}
-
-      <h2 class="govuk-heading-l">Overseas entity details</h2>
-
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Name"
-            },
-            value: {
-              text: appData.entity.name
-            }
-          },
-          {
-            key: {
-              text: "Country of incorporation"
-            },
-            value: {
-              text: appData.entity.incorporation_country
-            }
-          },
-          {
-            key: {
-              text: "Principal or registered office address"
-            },
-            value: {
-              html: formattedPrincipalAddressHtml
-            }
-          },
-          {
-            key: {
-              text: "Correspondence address"
-            },
-            value: {
-              html: formattedServiceAddressHtml
-            }
-          },
-          {
-            key: {
-              text: "Email"
-            },
-            value: {
-              text: appData.entity.email
-            }
-          },
-          {
-            key: {
-              text: "Legal Form"
-            },
-            value: {
-              text: appData.entity.legal_form
-            }
-          },
-          {
-            key: {
-              text: "Governing law"
-            },
-            value: {
-              text: appData.entity.law_governed
-            }
-          },
-          {
-            key: {
-              text: "Overseas public register"
-            },
-            value: {
-              text: appData.entity.public_register_name
-            }
-          },
-          {
-            key: {
-              text: "Registration Number"
-            },
-            value: {
-              text: appData.entity.registration_number
-            }
-          }
-        ]
-      }) }}
+      {% include "includes/check-your-answers/entity.html" %}
 
       <h2 class="govuk-heading-l">Beneficial owner details</h2>
 
@@ -168,30 +24,7 @@
         {% include "includes/check-your-answers/individual-beneficial-owner.html" %}
       {% endfor %}
 
-      {{ govukCheckboxes({
-        idPrefix: "due-diligence",
-        name: "due-diligence",
-        fieldset: {
-          legend: {
-            text: "Due diligence",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-          }
-        },
-        hint: {
-          text: "Companies House has processes in place to check the accuracy of the information you provide in this service."
-        },
-        items: [
-          {
-            value: "due-diligence-1",
-            text: "I confirm that due diligence has been done to confirm the accuracy of all the information provided."
-          },
-          {
-            value: "due-diligence-2",
-            text: "I confirm that all beneficial owners and managing officers of the overseas entity will be informed of their legal responsibility to keep their information up to date."
-          }
-        ]
-      }) }}
+      {% include "includes/check-your-answers/due-diligence.html" %}
 
       <form method="post">
         {{ govukButton({

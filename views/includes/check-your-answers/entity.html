@@ -1,0 +1,92 @@
+{% set formattedPrincipalAddressHtml %}
+  {% set address = appData.entity.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set formattedServiceAddressHtml %}
+  {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the principal or registered office address
+  {% else %}
+    {% set address = appData.entity.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+<h2 class="govuk-heading-l">Overseas entity details</h2>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name"
+        },
+        value: {
+          text: appData.entity.name
+        }
+      },
+      {
+        key: {
+          text: "Country of incorporation"
+        },
+        value: {
+          text: appData.entity.incorporation_country
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          html: formattedPrincipalAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: formattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Email"
+        },
+        value: {
+          text: appData.entity.email
+        }
+      },
+      {
+        key: {
+          text: "Legal Form"
+        },
+        value: {
+          text: appData.entity.legal_form
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          text: appData.entity.law_governed
+        }
+      },
+      {
+        key: {
+          text: "Overseas public register"
+        },
+        value: {
+          text: appData.entity.public_register_name
+        }
+      },
+      {
+        key: {
+          text: "Registration Number"
+        },
+        value: {
+          text: appData.entity.registration_number
+        }
+      }
+    ]
+}) }}     

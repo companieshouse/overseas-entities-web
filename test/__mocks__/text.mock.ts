@@ -25,4 +25,4 @@ export const TRANSACTION_ERROR = "Transaction API request returned no response";
 export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Entity, transactionId =";
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
-export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the principal or registered office address";
+export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";

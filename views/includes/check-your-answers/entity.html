@@ -5,7 +5,7 @@
 
 {% set formattedServiceAddressHtml %}
   {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
-    The correspondence address is the same as the principal or registered office address
+    The correspondence address is the same as the entity's principal or registered office address
   {% else %}
     {% set address = appData.entity.service_address %}
     {% include "includes/display_address.html" %}
@@ -18,7 +18,7 @@
     rows: [
       {
         key: {
-          text: "Name"
+          text: "Name of the overseas entity"
         },
         value: {
           text: appData.entity.name
@@ -26,7 +26,7 @@
       },
       {
         key: {
-          text: "Country of incorporation"
+          text: "Country it was formed in"
         },
         value: {
           text: appData.entity.incorporation_country
@@ -50,7 +50,7 @@
       },
       {
         key: {
-          text: "Email"
+          text: "Email address at the overseas entity should we send communications to"
         },
         value: {
           text: appData.entity.email
@@ -58,7 +58,7 @@
       },
       {
         key: {
-          text: "Legal Form"
+          text: "Legal form"
         },
         value: {
           text: appData.entity.legal_form
@@ -77,16 +77,8 @@
           text: "Overseas public register"
         },
         value: {
-          text: appData.entity.public_register_name
-        }
-      },
-      {
-        key: {
-          text: "Registration Number"
-        },
-        value: {
-          text: appData.entity.registration_number
+          text: appData.entity.public_register_name + " / " + appData.entity.registration_number
         }
       }
     ]
-}) }}     
+}) }}

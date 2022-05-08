@@ -12,6 +12,12 @@
   {% endif %}
 {% endset %}
 
+{% set formattedPublicRegister %}
+  {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
+    {{ appData.entity.public_register_name }} / {{ appData.entity.registration_number }}
+  {% endif %}
+{% endset %}
+
 <h2 class="govuk-heading-l">Overseas entity details</h2>
 
 {{ govukSummaryList({
@@ -77,7 +83,7 @@
           text: "Overseas public register"
         },
         value: {
-          text: appData.entity.public_register_name + " / " + appData.entity.registration_number
+          text: formattedPublicRegister
         }
       }
     ]

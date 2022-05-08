@@ -1,0 +1,93 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set formattedPrincipalAddressHtml %}
+  {% set address = bog.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set formattedServiceAddressHtml %}
+  {% if bog.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the principal or registered office address
+  {% else %}
+    {% set address = bog.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set startDate = dateMacros.formatDate(bog.start_date["day"], bog.start_date["month"], bog.start_date["year"]) %}
+
+{% set beneficialOwnerIndividualNOCs %}
+  {% set boNOCTypesArray = bog.beneficial_owner_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
+{% endset %}
+
+{% set beneficialOwnerNonLegalFirmNOCs %}
+  {% set boNOCNonLegalTypesArray = bog.non_legal_firm_members_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
+{% endset %}
+
+{% set beneficialOwnerNOCsHTML = beneficialOwnerIndividualNOCs + beneficialOwnerNonLegalFirmNOCs %}
+
+<h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Example public authority"
+        },
+        value: {
+          text: bog.name
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          text: formattedPrincipalAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          text: formattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Legal form"
+        },
+        value: {
+          text: bog.legal_form
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          html: bog.law_governed
+        }
+      },
+      {
+        key: {
+          text: "Date it became a beneficial owner"
+        },
+        value: {
+          text: startDate
+        }
+      },
+      {
+        key: {
+          text: "Nature of control"
+        },
+        value: {
+          html: beneficialOwnerNOCsHTML
+        }
+      }
+    ]
+}) }}
+  

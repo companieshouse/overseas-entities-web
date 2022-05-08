@@ -1,0 +1,16 @@
+{% if ( boNOCTypesArray and boNOCTypesArray.length > 0 ) %}
+    <p>The beneficial owner:</p>
+    {% for bonoc in boNOCTypesArray %}
+        <ul>
+            {% if bonoc == "OVER_25_PERCENT_OF_SHARES" %}
+                <li>Holds, directly or indirectly, more than 25% of the shares in the entity</li>
+            {% elif bonoc == "OVER_25_PERCENT_OF_VOTING_RIGHTS" %}
+                <li>Holds, directly or indirectly, more than 25% of the voting rights in the entity</li>
+            {% elif bonoc == "APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS" %}
+                <li>Holds the right, directly or indirectly, to appoint or remove a majority of the board of directors of the entity</li>
+            {% elif bonoc == "SIGNIFICANT_INFLUENCE_OR_CONTROL" %}
+                <li>Has the right to exercise, or actually exercises, significant influence or control over the entity</li>
+            {% endif %}
+        </ul>
+    {% endfor %}
+{% endif %}

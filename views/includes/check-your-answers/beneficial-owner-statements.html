@@ -1,0 +1,28 @@
+{% set statementText %}
+    {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
+        All beneficial owners have been identified and all relevant information can be supplied
+    {% elif appData.beneficial_owners_statement == "ALL_IDENTIFIED_SOME_DETAILS" %}
+        All beneficial owners identified but only some relevant information can be supplied
+    {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
+        Some beneficial owners identified and all relevant information can be supplied
+    {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_SOME_DETAILS" %}
+        Some beneficial owners have been identified but only some relevant information can be supplied
+    {% elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" %}
+        No beneficial owners have been identified
+    {% endif %}
+{% endset %}
+
+<h2 class="govuk-heading-l">Have any beneficial owners been identified?</h2>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Statement"
+        },
+        value: {
+          text: statementText
+        }
+      }
+    ]
+}) }}

@@ -15,20 +15,40 @@
       <h1 class="govuk-heading-xl">Check your answers before sending your application</h1>
 
       {% include "includes/check-your-answers/presenter.html" %}
-
+      <br>
       {% include "includes/check-your-answers/entity.html" %}
+      <br>
+      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
 
-      <h2 class="govuk-heading-l">Beneficial owner details</h2>
+      {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0)
+        or (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0)
+        or (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
+        <br><h2 class="govuk-heading-l">Beneficial owner details</h2>
+        {% for boi in appData.beneficial_owners_individual %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+        {% for boc in appData.beneficial_owners_corporate %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+        {% for bog in appData.beneficial_owners_government_or_public_authority %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
 
-      {% for boi in appData.beneficial_owners_individual %}
-        {% include "includes/check-your-answers/individual-beneficial-owner.html" %}
-      {% endfor %}
-
-      {% include "includes/check-your-answers/due-diligence.html" %}
+      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0)
+          or (appData.managingOfficerCorporate and appData.managingOfficerCorporate.length > 0) %}
+        <br><h2 class="govuk-heading-l">Managing officer details</h2>
+        {% for moi in appData.managing_officers_individual %}
+          {% include "includes/check-your-answers/managing-officer-individual.html" %}
+        {% endfor %}
+        {% for moc in appData.managingOfficerCorporate %}
+          {% include "includes/check-your-answers/managing-officer-corporate.html" %}
+        {% endfor %}
+      {% endif %}
 
       <form method="post">
         {{ govukButton({
-          text: "Accept and pay",
+          text: "Continue to payment",
           attributes: {
             id: submit
           }

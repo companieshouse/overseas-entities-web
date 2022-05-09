@@ -1,11 +1,13 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set formattedPrincipalAddressHtml %}
+{% set bogStartDate = dateMacros.formatDate(bog.start_date["day"], bog.start_date["month"], bog.start_date["year"]) %}
+
+{% set bogFormattedPrincipalAddressHtml %}
   {% set address = bog.principal_address %}
   {% include "includes/display_address.html" %}
 {% endset %}
 
-{% set formattedServiceAddressHtml %}
+{% set bogFormattedServiceAddressHtml %}
   {% if bog.is_service_address_same_as_principal_address == 1 %}
     The correspondence address is the same as the principal or registered office address
   {% else %}
@@ -14,19 +16,15 @@
   {% endif %}
 {% endset %}
 
-{% set startDate = dateMacros.formatDate(bog.start_date["day"], bog.start_date["month"], bog.start_date["year"]) %}
-
-{% set beneficialOwnerIndividualNOCs %}
+{% set bogBeneficialOwnerIndividualNOCs %}
   {% set boNOCTypesArray = bog.beneficial_owner_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerNonLegalFirmNOCs %}
+{% set bogBeneficialOwnerNonLegalFirmNOCs %}
   {% set boNOCNonLegalTypesArray = bog.non_legal_firm_members_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
 {% endset %}
-
-{% set beneficialOwnerNOCsHTML = beneficialOwnerIndividualNOCs + beneficialOwnerNonLegalFirmNOCs %}
 
 <h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>
 
@@ -45,7 +43,7 @@
           text: "Principal or registered office address"
         },
         value: {
-          text: formattedPrincipalAddressHtml
+          html: bogFormattedPrincipalAddressHtml
         }
       },
       {
@@ -53,7 +51,7 @@
           text: "Correspondence address"
         },
         value: {
-          text: formattedServiceAddressHtml
+          html: bogFormattedServiceAddressHtml
         }
       },
       {
@@ -77,7 +75,7 @@
           text: "Date it became a beneficial owner"
         },
         value: {
-          text: startDate
+          text: bogStartDate
         }
       },
       {
@@ -85,7 +83,7 @@
           text: "Nature of control"
         },
         value: {
-          html: beneficialOwnerNOCsHTML
+          html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs
         }
       }
     ]

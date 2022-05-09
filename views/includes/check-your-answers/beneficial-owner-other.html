@@ -1,11 +1,13 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set formattedPrincipalAddressHtml %}
+{% set bocStartDate = dateMacros.formatDate(boc.start_date["day"], boc.start_date["month"], boc.start_date["year"]) %}
+
+{% set bocFormattedPrincipalAddressHtml %}
   {% set address = boc.principal_address %}
   {% include "includes/display_address.html" %}
 {% endset %}
 
-{% set formattedServiceAddressHtml %}
+{% set bocFormattedServiceAddressHtml %}
   {% if boc.is_service_address_same_as_principal_address == 1 %}
     The correspondence address is the same as the principal or registered office address
   {% else %}
@@ -14,7 +16,7 @@
   {% endif %}
 {% endset %}
 
-{% set formattedPublicRegister %}
+{% set bocFormattedPublicRegister %}
   {% if boc.is_on_register_in_country_formed_in == 1 %}
     {{ boc.register_name }} / {{ boc.registration_number }}
   {% else %}
@@ -22,26 +24,22 @@
   {% endif %}
 {% endset %}
 
-{% set startDate = dateMacros.formatDate(boc.start_date["day"], boc.start_date["month"], boc.start_date["year"]) %}
-
-{% set beneficialOwnerIndividualNOCs %}
+{% set bocBeneficialOwnerIndividualNOCs %}
   {% set boNOCTypesArray = boc.beneficial_owner_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerTrusteeNOCs %}
+{% set bocBeneficialOwnerTrusteeNOCs %}
   {% set boNOCTrusteesTypesArray = boc.trustees_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerNonLegalFirmNOCs %}
+{% set bocBeneficialOwnerNonLegalFirmNOCs %}
   {% set boNOCNonLegalTypesArray = boc.non_legal_firm_members_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerNOCsHTML = beneficialOwnerIndividualNOCs + beneficialOwnerTrusteeNOCs + beneficialOwnerNonLegalFirmNOCs %}
-
-{% set isOnSanctionsListHtml %}
+{% set bocIsOnSanctionsListHtml %}
   {% if boc.is_on_sanctions_list == 1 %}
     Yes
   {% else %}
@@ -66,7 +64,7 @@
           text: "Principal or registered office address"
         },
         value: {
-          text: formattedPrincipalAddressHtml
+          html: bocFormattedPrincipalAddressHtml
         }
       },
       {
@@ -74,7 +72,7 @@
           text: "Correspondence address"
         },
         value: {
-          text: formattedServiceAddressHtml
+          html: bocFormattedServiceAddressHtml
         }
       },
       {
@@ -98,7 +96,7 @@
           text: "On a public register in the country it was formed in"
         },
         value: {
-          html: formattedPublicRegister
+          html: bocFormattedPublicRegister
         }
       },
       {
@@ -106,7 +104,7 @@
           text: "Date it became a beneficial owner"
         },
         value: {
-          text: startDate
+          text: bocStartDate
         }
       },
       {
@@ -114,7 +112,7 @@
           text: "Nature of control"
         },
         value: {
-          html: beneficialOwnerNOCsHTML
+          html: bocBeneficialOwnerIndividualNOCs + bocBeneficialOwnerTrusteeNOCs + bocBeneficialOwnerNonLegalFirmNOCs
         }
       },
       {
@@ -122,7 +120,7 @@
           text: "Is it on the sanctions list?"
         },
         value: {
-          html: isOnSanctionsListHtml
+          html: bocIsOnSanctionsListHtml
         }
       }
     ]

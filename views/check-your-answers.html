@@ -35,14 +35,10 @@
         {% endfor %}
       {% endif %}
 
-      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0)
-          or (appData.managingOfficerCorporate and appData.managingOfficerCorporate.length > 0) %}
+      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0)  %}
         <br><h2 class="govuk-heading-l">Managing officer details</h2>
         {% for moi in appData.managing_officers_individual %}
           {% include "includes/check-your-answers/managing-officer-individual.html" %}
-        {% endfor %}
-        {% for moc in appData.managingOfficerCorporate %}
-          {% include "includes/check-your-answers/managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
 

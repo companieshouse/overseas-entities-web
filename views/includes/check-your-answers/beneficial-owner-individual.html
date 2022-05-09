@@ -1,15 +1,15 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set dateOfBirth = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
+{% set boiDateOfBirth = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
 
-{% set startDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
+{% set boiStartDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
 
-{% set formattedResidentialAddressHtml %}
+{% set boiFormattedResidentialAddressHtml %}
   {% set address = boi.usual_residential_address %}
   {% include "includes/display_address.html" %}
 {% endset %}
 
-{% set formattedServiceAddressHtml %}
+{% set boiFormattedServiceAddressHtml %}
   {% if boi.is_service_address_same_as_usual_residential_address == 1 %}
     The correspondence address is the same as the home address
   {% else %}
@@ -18,24 +18,22 @@
   {% endif %}
 {% endset %}
 
-{% set beneficialOwnerIndividualNOCs %}
+{% set boiBeneficialOwnerIndividualNOCs %}
   {% set boNOCTypesArray = boi.beneficial_owner_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerTrusteeNOCs %}
+{% set boiBeneficialOwnerTrusteeNOCs %}
   {% set boNOCTrusteesTypesArray = boi.trustees_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerNonLegalFirmNOCs %}
+{% set boiBeneficialOwnerNonLegalFirmNOCs %}
   {% set boNOCNonLegalTypesArray = boi.non_legal_firm_members_nature_of_control_types %}
   {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
 {% endset %}
 
-{% set beneficialOwnerNOCsHTML = beneficialOwnerIndividualNOCs + beneficialOwnerTrusteeNOCs + beneficialOwnerNonLegalFirmNOCs %}
-
-{% set isOnSanctionsListHtml %}
+{% set boiIsOnSanctionsListHtml %}
   {% if boi.is_on_sanctions_list == 1 %}
     Yes
   {% else %}
@@ -69,7 +67,7 @@
         text: "Date of birth"
       },
       value: {
-        text: dateOfBirth
+        text: boiDateOfBirth
       }
     },
     {
@@ -85,7 +83,7 @@
         text: "Home address"
       },
       value: {
-        html: formattedResidentialAddressHtml
+        html: boiFormattedResidentialAddressHtml
       }
     },
     {
@@ -93,7 +91,7 @@
         text: "Correspondence address"
       },
       value: {
-        html: formattedServiceAddressHtml
+        html: boiFormattedServiceAddressHtml
       }
     },
     {
@@ -101,7 +99,7 @@
         text: "Date they became a beneficial owner"
       },
       value: {
-        text: startDate
+        text: boiStartDate
       }
     },
     {
@@ -109,7 +107,7 @@
         text: "Nature of control"
       },
       value: {
-        html: beneficialOwnerNOCsHTML
+        html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
       }
     },
     {
@@ -117,7 +115,7 @@
         text: "Are they on the sanctions list?"
       },
       value: {
-        html: isOnSanctionsListHtml
+        html: boiIsOnSanctionsListHtml
       }
     }
   ]

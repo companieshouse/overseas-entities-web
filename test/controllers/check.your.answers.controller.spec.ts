@@ -53,14 +53,14 @@ describe("GET tests", () => {
     jest.clearAllMocks();
   });
 
-  test("renders the ${CHECK_YOUR_ANSWERS_PAGE} page (Other role)", async () => {
+  test("renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details", async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain("fullName");
-    expect(resp.text).toContain("roleTitle");
+    expect(resp.text).toContain("user@domain.roe");
     expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
@@ -79,8 +79,6 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("fullName");
-    expect(resp.text).toContain("roleTitle");
     expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");

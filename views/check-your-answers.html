@@ -26,22 +26,6 @@
         {% endif %}
       {% endset %}
 
-      {% set presenterRoleText %}
-        {% if appData.presenter and appData.presenter.role %}
-            {% if appData.presenter.role === "administrator" %}
-                Administrator
-            {% elif appData.presenter.role === "agent" %}
-                Agent
-            {% elif appData.presenter.role === "solicitor" %}
-                Solicitor
-            {% elif appData.presenter.role === "beneficial_owner" %}
-                Beneficial owner
-            {% elif appData.presenter.role_title %}
-                {{ appData.presenter.role_title }}
-            {% endif %}
-        {% endif %}
-      {% endset %}
-
       <h1 class="govuk-heading-xl">Check your answers before sending your application</h1>
 
       <h2 class="govuk-heading-l">Your details</h2>
@@ -58,26 +42,10 @@
           },
           {
             key: {
-              text: "Phone number"
+              text: "email"
             },
             value: {
-              text: appData.presenter.phone_number
-            }
-          },
-          {
-            key: {
-              text: "Role"
-            },
-            value: {
-            text: presenterRoleText
-            }
-          },
-          {
-            key: {
-              text: "Anti-money laundering number"
-            },
-            value: {
-              text: appData.presenter.anti_money_laundering_registration_number
+              text: appData.presenter.email
             }
           }
         ]

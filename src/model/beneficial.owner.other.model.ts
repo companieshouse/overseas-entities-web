@@ -12,7 +12,7 @@ export const BeneficialOwnerOtherKeys: string[] = [
   "service_address",
   "legal_form",
   "law_governed",
-  "register_name",
+  "public_register_name",
   "registration_number",
   "is_on_register_in_country_formed_in",
   "start_date",
@@ -29,7 +29,7 @@ export interface BeneficialOwnerOther {
   service_address?: Address;
   legal_form?: string;
   law_governed?: string;
-  register_name?: string;
+  public_register_name?: string;
   registration_number?: string;
   is_on_register_in_country_formed_in?: yesNoResponse;
   start_date?: InputDate;

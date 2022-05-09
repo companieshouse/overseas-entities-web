@@ -66,7 +66,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(beneficialOwnerOther.name).toEqual("TestCorporation");
       expect(beneficialOwnerOther.legal_form).toEqual("TheLegalForm");
       expect(beneficialOwnerOther.law_governed).toEqual("TheLaw");
-      expect(beneficialOwnerOther.register_name).toEqual( "ThisRegister");
+      expect(beneficialOwnerOther.public_register_name).toEqual( "ThisRegister");
       expect(beneficialOwnerOther.registration_number).toEqual("123456789");
       expect(beneficialOwnerOther.is_on_register_in_country_formed_in).toEqual(yesNoResponse.Yes);
       expect(beneficialOwnerOther.beneficial_owner_nature_of_control_types).toEqual([NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS]);

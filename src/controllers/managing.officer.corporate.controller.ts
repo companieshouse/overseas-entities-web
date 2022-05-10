@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managingOfficerCorporate
+      ...appData.managing_officers_corporate
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -29,13 +29,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
 
-    data[managingOfficerCorporateType.UsualResidentialAddressKey] =
-        mapFieldsToDataObject(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys, AddressKeys);
+    data[managingOfficerCorporateType.PrincipalAddressKey] =
+        mapFieldsToDataObject(req.body, managingOfficerCorporateType.PrincipalAddressKeys, AddressKeys);
     data[managingOfficerCorporateType.ServiceAddressKey] =
         mapFieldsToDataObject(req.body, managingOfficerCorporateType.ServiceAddressKeys, AddressKeys);
 
-    data[managingOfficerCorporateType.DateKey] =
-        mapFieldsToDataObject(req.body, managingOfficerCorporateType.DateKeys, InputDateKeys);
+    data[managingOfficerCorporateType.StartDateKey] =
+        mapFieldsToDataObject(req.body, managingOfficerCorporateType.StartDateKeys, InputDateKeys);
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 

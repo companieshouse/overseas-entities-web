@@ -1,0 +1,122 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set boiDateOfBirth = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
+
+{% set boiStartDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
+
+{% set boiFormattedResidentialAddressHtml %}
+  {% set address = boi.usual_residential_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set boiFormattedServiceAddressHtml %}
+  {% if boi.is_service_address_same_as_usual_residential_address == 1 %}
+    The correspondence address is the same as the home address
+  {% else %}
+    {% set address = boi.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set boiBeneficialOwnerIndividualNOCs %}
+  {% set boNOCTypesArray = boi.beneficial_owner_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
+{% endset %}
+
+{% set boiBeneficialOwnerTrusteeNOCs %}
+  {% set boNOCTrusteesTypesArray = boi.trustees_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
+{% endset %}
+
+{% set boiBeneficialOwnerNonLegalFirmNOCs %}
+  {% set boNOCNonLegalTypesArray = boi.non_legal_firm_members_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
+{% endset %}
+
+{% set boiIsOnSanctionsListHtml %}
+  {% if boi.is_on_sanctions_list == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+
+<h3 class="govuk-heading-m">Individual beneficial owner</h3>
+
+{{ govukSummaryList({
+  rows: [
+    {
+      key: {
+        text: "First name"
+      },
+      value: {
+        text: boi.first_name
+      }
+    },
+    {
+      key: {
+        text: "Last name"
+      },
+      value: {
+        text: boi.last_name
+      }
+    },
+    {
+      key: {
+        text: "Date of birth"
+      },
+      value: {
+        text: boiDateOfBirth
+      }
+    },
+    {
+      key: {
+        text: "Nationality"
+      },
+      value: {
+        text: boi.nationality
+      }
+    },
+    {
+      key: {
+        text: "Home address"
+      },
+      value: {
+        html: boiFormattedResidentialAddressHtml
+      }
+    },
+    {
+      key: {
+        text: "Correspondence address"
+      },
+      value: {
+        html: boiFormattedServiceAddressHtml
+      }
+    },
+    {
+      key: {
+        text: "Date they became a beneficial owner"
+      },
+      value: {
+        text: boiStartDate
+      }
+    },
+    {
+      key: {
+        text: "Nature of control"
+      },
+      value: {
+        html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
+      }
+    },
+    {
+      key: {
+        text: "Are they on the sanctions list?"
+      },
+      value: {
+        html: boiIsOnSanctionsListHtml
+      }
+    }
+  ]
+}) }}

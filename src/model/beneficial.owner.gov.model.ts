@@ -15,7 +15,6 @@ export const BeneficialOwnerGovKeys: string[] = [
   "law_governed",
   "start_date",
   "beneficial_owner_nature_of_control_types",
-  "trustees_nature_of_control_types",
   "non_legal_firm_members_nature_of_control_types"
 ];
 

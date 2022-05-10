@@ -1,0 +1,97 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set moiDateOfBirth = dateMacros.formatDate(moi.date_of_birth["day"], moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
+
+{% set moiFormattedResidentialAddressHtml %}
+  {% set address = moi.usual_residential_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set moiFormattedServiceAddressHtml %}
+  {% if moi.is_service_address_same_as_usual_residential_address == 1 %}
+    The correspondence address is the same as the home address
+  {% else %}
+    {% set address = moi.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+<h3 class="govuk-heading-m">Individual managing officer</h3>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "First name"
+        },
+        value: {
+          text: moi.first_name
+        }
+      },
+      {
+        key: {
+          text: "Last name"
+        },
+        value: {
+          text: moi.last_name
+        }
+      },
+      {
+        key: {
+          text: "Former names"
+        },
+        value: {
+          text: moi.former_names if moi.has_former_names == 1
+        }
+      },
+      {
+        key: {
+          text: "Date of birth"
+        },
+        value: {
+          text: moiDateOfBirth
+        }
+      },
+      {
+        key: {
+          text: "Nationality"
+        },
+        value: {
+          text: moi.nationality
+        }
+      },
+      {
+        key: {
+          text: "Home address"
+        },
+        value: {
+          html: moiFormattedResidentialAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: moiFormattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Occupation"
+        },
+        value: {
+          html: moi.occupation
+        }
+      },
+      {
+        key: {
+          text: "Role and responsibilities"
+        },
+        value: {
+          html: moi.role_and_responsibilities
+        }
+      }
+    ]
+}) }}
+  

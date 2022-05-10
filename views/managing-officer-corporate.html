@@ -24,9 +24,9 @@
           classes: "govuk-label--m",
           isPageHeading: false
         },
-        id: "officerName",
-        name: "officerName",
-        value: officerName
+        id: "name",
+        name: "name",
+        value: name
       }) }}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -38,10 +38,11 @@
       {% include "includes/inputs/governing-law-input.html" %}
 
       {% set registerInCountryFormedText = "Is the corporate managing officer already on a public register in the country it was formed?" %}
+      {% set registrationNumberText = "Corporate managing officer's registration number" %}
       {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
       {% set dateText = "When did it become a managing officer for the overseas entity?" %}
-      {% include "includes/inputs/start-date-input.html" %}
+      {% include "includes/inputs/date/start-date-input.html" %}
 
       {{ govukInsetText({
         html: '

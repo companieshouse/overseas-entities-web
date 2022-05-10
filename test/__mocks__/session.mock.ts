@@ -215,15 +215,16 @@ export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
 };
 
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
-  officerName: "Joe Bloggs",
-  usualResidentialAddress: ADDRESS,
-  serviceAddress: ADDRESS,
-  isSameAddress: yesNoResponse.Yes,
-  whereOfficerRegistered: "France",
-  legalForm: "legalForm",
-  legalAuthority: "LegAuth",
-  registrationNumber: "123456789",
-  startDate: { day: "1", month: "1", year: "2011" }
+  name: "Joe Bloggs Ltd",
+  principal_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  legal_form: "legalForm",
+  law_governed: "LegAuth",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "register",
+  registration_number: "123456789",
+  start_date: { day: "1", month: "1", year: "2011" }
 };
 
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {

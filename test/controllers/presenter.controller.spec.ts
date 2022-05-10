@@ -34,7 +34,6 @@ describe("PRESENTER controller", () => {
   });
 
   test("redirect the entity page after a succesful post from presenter page", async () => {
-    // mockSetApplicationData.mockImplementation( () => setApplicationData);
     const resp = await request(app).post(PRESENTER_URL);
 
     expect(resp.status).toEqual(302);

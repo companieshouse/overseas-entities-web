@@ -226,7 +226,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   startDate: { day: "1", month: "1", year: "2011" }
 };
 
-const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
+export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"
 } ;

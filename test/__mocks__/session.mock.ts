@@ -63,15 +63,14 @@ export const SERVICE_ADDRESS = {
   postcode: "SBY 2"
 };
 
-export const ADDRESS_FIELDS_MOCK = ["propertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressCounty", "country", "serviceAddressPostcode"];
-export const ADDRESS_MOCK = {
-  propertyNameNumber: "1",
-  serviceAddressLine1: "addressLine1",
-  serviceAddressLine2: "addressLine2",
-  serviceAddressTown: "town",
-  serviceAddressCounty: "county",
-  country: "country",
-  serviceAddressPostcode: "BY 2"
+export const SERVICE_ADDRESS_MOCK = {
+  service_address_property_name_number: "1",
+  service_address_line_1: "addressLine1",
+  service_address_line_2: "addressLine2",
+  service_address_town: "town",
+  service_address_county: "county",
+  service_address_country: "country",
+  service_address_postcode: "BY 2"
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
@@ -84,7 +83,8 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
-  registration_number: "123"
+  registration_number: "123",
+  is_on_register_in_country_formed_in: 1
 };
 
 export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
@@ -104,7 +104,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   service_address: ADDRESS,
   legal_form: "TheLegalForm",
   law_governed: "TheLaw",
-  register_name: "ThisRegister",
+  public_register_name: "ThisRegister",
   registration_number: "123456789",
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   start_date: { day: "1", month: "1", year: "2011" },
@@ -122,7 +122,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
   service_address: {},
   legal_form: "",
   law_governed: "",
-  register_name: "",
+  public_register_name: "",
   registration_number: "",
   is_on_register_in_country_formed_in: "",
   start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
@@ -186,15 +186,32 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
   non_legal_firm_members_nature_of_control_types: "",
 };
 
-export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficer = {
-  fullName: "Andrei Nikolayevich Bolkonsky",
-  hasAFormerName: yesNoResponse.No,
-  formerName: "",
-  dateOfBirth: { day: "4", month: "11", year: "1830" },
-  nationality: "Russian",
-  usualResidentialAddress: ADDRESS,
-  businessOccupation: "Prince",
-  roleAndResponsibilities: "None"
+export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Utopian",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities"
+};
+
+export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
+  first_name: "",
+  last_name: "",
+  has_former_names: "",
+  former_names: "",
+  date_of_birth: { 'date_of_birth-day': "",  "date_of_birth-month": "", "date_of_birth-year": "" },
+  nationality: "",
+  usual_residential_address: {},
+  service_address: {},
+  is_service_address_same_as_usual_residential_address: "",
+  occupation: "",
+  role_and_responsibilities: ""
 };
 
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
@@ -209,13 +226,10 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   startDate: { day: "1", month: "1", year: "2011" }
 };
 
-const PRESENTER_OBJECT_MOCK = {
+export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
-  phone_number: "phoneNumber",
-  role: "other",
-  role_title: "roleTitle",
-  registration_number: "123"
-} as presenterType.Presenter;
+  email: "user@domain.roe"
+} ;
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

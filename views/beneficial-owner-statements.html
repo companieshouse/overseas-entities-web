@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Beneficial owner statements - Register an overseas entity - GOV.UK
+  Beneficial owner statements - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -15,11 +15,11 @@
 
       <form method="post">
 
-        <h1 class="govuk-heading-xl">Have you identified any beneficial owners?</h1>
+        <h1 class="govuk-heading-xl">Have any beneficial owners been identified?</h1>
 
         {{ govukDetails({
           summaryText: "What is a beneficial owner?",
-          text: "A beneficial owner of an overseas entity is a person, entity, government or public authority that meets one or more of the conditions known as the ‘nature of control’. For example, if they hold more than 25% of the shares or voting rights in the overseas entity."
+          html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>You must provide details of any beneficial owners that meet one or more of the conditions known as the 'nature of control'.</p>"
         }) }}
 
         {{ govukRadios({
@@ -35,22 +35,22 @@
           items: [
             {
               value: "ALL_IDENTIFIED_ALL_DETAILS",
-              text: "All beneficial owners have been identified and all relevant information can be supplied",
+              text: "All beneficial owners have been identified and all required information can be provided",
               checked: beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS"
             },
             {
               value: "ALL_IDENTIFIED_SOME_DETAILS",
-              text: "All beneficial owners identified but only some relevant information can be supplied",
+              text: "All beneficial owners have been identified but only some required information can be provided",
               checked: beneficial_owners_statement == "ALL_IDENTIFIED_SOME_DETAILS"
             },
             {
               value: "SOME_IDENTIFIED_ALL_DETAILS",
-              text: "Some beneficial owners identified and all relevant information can be supplied",
+              text: "Some beneficial owners have been identified and all required information can be provided",
               checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS"
             },
             {
               value: "SOME_IDENTIFIED_SOME_DETAILS",
-              text: "Some beneficial owners have been identified but only some relevant information can be supplied",
+              text: "Some beneficial owners have been identified but only some required information can be provided",
               checked: beneficial_owners_statement == "SOME_IDENTIFIED_SOME_DETAILS"
             },
             {

@@ -1,0 +1,92 @@
+{% set formattedPrincipalAddressHtml %}
+  {% set address = appData.entity.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set formattedServiceAddressHtml %}
+  {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the entity's principal or registered office address
+  {% else %}
+    {% set address = appData.entity.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set formattedPublicRegister %}
+  {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
+    {{ appData.entity.public_register_name }} / {{ appData.entity.registration_number }}
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+<h2 class="govuk-heading-l">Overseas entity details</h2>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name of the overseas entity"
+        },
+        value: {
+          text: appData.entity.name
+        }
+      },
+      {
+        key: {
+          text: "Country it was formed in"
+        },
+        value: {
+          text: appData.entity.incorporation_country
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          html: formattedPrincipalAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: formattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Email address at the overseas entity should we send communications to"
+        },
+        value: {
+          text: appData.entity.email
+        }
+      },
+      {
+        key: {
+          text: "Legal form"
+        },
+        value: {
+          text: appData.entity.legal_form
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          text: appData.entity.law_governed
+        }
+      },
+      {
+        key: {
+          text: "Overseas public register"
+        },
+        value: {
+          text: formattedPublicRegister
+        }
+      }
+    ]
+}) }}

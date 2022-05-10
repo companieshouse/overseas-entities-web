@@ -19,77 +19,21 @@
       <br>
       <form class="form" method="post">
 
-        {{ govukInput({
-          label: {
-            text: "What is its name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "name",
-          name: "name",
-          value: name
-        }) }}
+        {% include "includes/inputs/fields/name-input.html" %}
 
-        {% include "includes/inputs/principal-address-input.html" %}
+        {% include "includes/inputs/address/principal-address-input.html" %}
 
+        {% set hintText = "For example, limited company or partnership" %}
         {% include "includes/inputs/legal-form-input.html" %}
 
+        {% set hintText = "This is the law that the beneficial owner operates under" %}
         {% include "includes/inputs/governing-law-input.html" %}
 
-        {% set entityPublicRegisterHtml %}
-        {{ govukInput({
-          id: "register_name",
-          name: "register_name",
-          value: register_name,
-          hint: {
-            text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
-          },
-          label: {
-            text: "Name of register"
-          }
-        }) }}
-
-        {{ govukInput({
-          id: "registration_number",
-          name: "registration_number",
-          value: registration_number,
-          classes: "govuk-!-width-one-half",
-          label: {
-            text: "Entity's registration number"
-          }
-        }) }}
-        {% endset -%}
-
-        {{ govukRadios({
-          idPrefix: "is_on_register_in_country_formed_in",
-          name: "is_on_register_in_country_formed_in",
-          fieldset: {
-            legend: {
-              text: "Is the other legal entity already on a public register in the country it was formed in?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          items: [
-            {
-              value: 1,
-              text: "Yes",
-              conditional: {
-                html: entityPublicRegisterHtml
-              }
-            },
-            {
-              value: 0,
-              text: "No",
-              conditional: {
-                html: phoneHtml
-              }
-            }
-          ]
-        }) }}
+        {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was formed in?" %}
+        {% include "includes/inputs/fields/is_on_register_in_country_formed_input.html" %}
 
         {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
-        {% include "includes/inputs/start-date-input.html" %}
+        {% include "includes/inputs/date/start-date-input.html" %}
 
         {% call govukFieldset({
           legend: {

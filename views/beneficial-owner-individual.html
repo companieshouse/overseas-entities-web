@@ -14,87 +14,23 @@
 
 
       <span class="govuk-caption-xl">Beneficial owner</span>
-      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the individual person</h1>
-      <p class="govuk-body govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
-
+      {% include "includes/heading/bo-and-mo-individuals-heading.html" %}
 
       <form method="post">
 
-        {{ govukInput({
-          label: {
-            text: "What is their first name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            text: "This is also known as their given name. Include any professional or honorary titles, if relevant."
-          },
-          id: "first_name",
-          name: "first_name",
-          value: first_name
-        }) }}
+        {% include "includes/inputs/fields/first-name-input.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "What is their last name?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            text: "This is also known as your family name."
-          },
-          id: "last_name",
-          name: "last_name",
-          value: last_name
-        }) }}
+        {% set hintLastNameText = "This is also known as your family name." %}
+        {% include "includes/inputs/fields/last-name-input.html" %}
 
-        {{ govukDateInput({
-          id: "date_of_birth",
-          namePrefix: "date_of_birth",
-          fieldset: {
-            legend: {
-              text: "What is their date of birth?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "For example, 27 3 2007"
-          },
-          items: [
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "day",
-              value: date_of_birth["date_of_birth-day"] if date_of_birth
-            },
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "month",
-              value: date_of_birth["date_of_birth-month"] if date_of_birth
-            },
-            {
-              classes: "govuk-input--width-4 govuk-input",
-              name: "year",
-              value: date_of_birth["date_of_birth-year"] if date_of_birth
-            }
-          ]
-        }) }}
+        {% include "includes/inputs/date/date-of-birth-input.html" %}
 
-        {{ govukInput({
-          label: {
-            text: "What is their nationality?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "nationality",
-          name: "nationality",
-          value: nationality
-        }) }}
+        {% include "includes/inputs/fields/nationality-input.html" %}
 
-        {% include "includes/inputs/residential-address-input.html" %}
+        {% include "includes/inputs/address/residential-address-input.html" %}
 
         {% set dateText = "When did they become a beneficial owner for the overseas entity?" %}
-        {% include "includes/inputs/start-date-input.html" %}
+        {% include "includes/inputs/date/start-date-input.html" %}
 
         {% call govukFieldset({
           legend: {
@@ -140,9 +76,13 @@
           ]
         }) }}
 
-        <h2 class="govuk-heading-m">Information shown on the public register</h2>
-        <p class="govuk-body">The beneficial owner's home address will not be shown. Only the month and year of their date of birth will be shown.</p>
-        <p class="govuk-body">All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
+        {{ govukInsetText({
+          html: "
+            <h2 class='govuk-heading-m'>Information shown on the public register</h2>
+            <p class='govuk-body'>The beneficial owner's home address will not be shown. Only the month and year of their date of birth will be shown.</p>
+            <p class='govuk-body'>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
+          "
+        }) }}
 
         {% include "includes/continue-button.html" %}
 

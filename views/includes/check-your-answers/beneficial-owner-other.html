@@ -1,0 +1,128 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set bocStartDate = dateMacros.formatDate(boc.start_date["day"], boc.start_date["month"], boc.start_date["year"]) %}
+
+{% set bocFormattedPrincipalAddressHtml %}
+  {% set address = boc.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set bocFormattedServiceAddressHtml %}
+  {% if boc.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the principal or registered office address
+  {% else %}
+    {% set address = boc.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set bocFormattedPublicRegister %}
+  {% if boc.is_on_register_in_country_formed_in == 1 %}
+    {{ boc.public_register_name }} / {{ boc.registration_number }}
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set bocBeneficialOwnerIndividualNOCs %}
+  {% set boNOCTypesArray = boc.beneficial_owner_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
+{% endset %}
+
+{% set bocBeneficialOwnerTrusteeNOCs %}
+  {% set boNOCTrusteesTypesArray = boc.trustees_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
+{% endset %}
+
+{% set bocBeneficialOwnerNonLegalFirmNOCs %}
+  {% set boNOCNonLegalTypesArray = boc.non_legal_firm_members_nature_of_control_types %}
+  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
+{% endset %}
+
+{% set bocIsOnSanctionsListHtml %}
+  {% if boc.is_on_sanctions_list == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+<h3 class="govuk-heading-m">Corporate beneficial owner</h3>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name"
+        },
+        value: {
+          text: boc.name
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          html: bocFormattedPrincipalAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: bocFormattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Legal form"
+        },
+        value: {
+          text: boc.legal_form
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          html: boc.law_governed
+        }
+      },
+      {
+        key: {
+          text: "On a public register in the country it was formed in"
+        },
+        value: {
+          html: bocFormattedPublicRegister
+        }
+      },
+      {
+        key: {
+          text: "Date it became a beneficial owner"
+        },
+        value: {
+          text: bocStartDate
+        }
+      },
+      {
+        key: {
+          text: "Nature of control"
+        },
+        value: {
+          html: bocBeneficialOwnerIndividualNOCs + bocBeneficialOwnerTrusteeNOCs + bocBeneficialOwnerNonLegalFirmNOCs
+        }
+      },
+      {
+        key: {
+          text: "Is it on the sanctions list?"
+        },
+        value: {
+          html: bocIsOnSanctionsListHtml
+        }
+      }
+    ]
+}) }}
+  

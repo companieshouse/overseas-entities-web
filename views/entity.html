@@ -10,254 +10,73 @@
 
 {% block content %}
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
+    <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
 
-        {{ govukDetails({
-            summaryText: "What is an overseas entity?",
-            text: "An overseas entity is an entity which is a legal person in its home country."
-        }) }}
+    {{ govukDetails({
+      summaryText: "What is an overseas entity?",
+      text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
+    }) }}
 
-        <form method="post">
-            {{ govukInput({
-                label: {
-                    text: "What is the name of the overseas entity?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "name",
-                name: "name",
-                value: name
-            }) }}
+    <form method="post">
 
-            {{ govukInput({
-                label: {
-                    text: "What is the country of incorporation?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "incorporation_country",
-                name: "incorporation_country",
-                value: incorporation_country
-            }) }}
+      {{ govukInput({
+        label: {
+          text: "What is the name of the overseas entity?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "name",
+          name: "name",
+          value: name
+      }) }}
 
-            {% call govukFieldset({
-            legend: {
-                text: "What is the principal address?",
-                classes: "govuk-fieldset__legend--l",
-                isPageHeading: true
-            }
-            }) %}
+      {{ govukInput({
+        label: {
+          text: "Which country was it formed in?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        id: "incorporation_country",
+        name: "incorporation_country",
+        value: incorporation_country
+      }) }}
 
-                {{ govukInput({
-                    label: {
-                        html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-                    },
-                    id: "principalAddressLine1",
-                    name: "principalAddressLine1",
-                    autocomplete: "principalAddressline1",
-                    value: principal_address.principalAddressLine1 if principal_address
-                }) }}
+      {% include "includes/inputs/address/principal-address-input.html" %}
 
-                {{ govukInput({
-                    label: {
-                        html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-                    },
-                    id: "principalAddressLine2",
-                    name: "principalAddressLine2",
-                    autocomplete: "principalAddressline2",
-                    value: principal_address.principalAddressLine2 if principal_address
-                }) }}
+      {{ govukInput({
+        label: {
+          text: "Which email address at the overseas entity should we send communications to?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        hint: {
+          text: "We'll use this to send the Overseas Entity ID number, the notice of registration, and any other digital correspondence"
+        },
+        id: "email",
+        name: "email",
+        value: email
+      }) }}
 
-                {{ govukInput({
-                    label: {
-                        text: "Town or city"
-                    },
-                    classes: "govuk-!-width-two-thirds",
-                    id: "principalAddressTown",
-                    name: "principalAddressTown",
-                    autocomplete: "address-level2",
-                    value: principal_address.principalAddressTown if principal_address
-                }) }}
+      {% set hintText = "For example, limited company" %}
+      {% include "includes/inputs/legal-form-input.html" %}
 
-                {{ govukInput({
-                    label: {
-                        text: "County"
-                    },
-                    classes: "govuk-!-width-two-thirds",
-                    id: "principalAddressCounty",
-                    name: "principalAddressCounty",
-                    value: principal_address.principalAddressCounty if principal_address
-                }) }}
+      {% set hintText = "This is the law that the entity operates under" %}
+      {% include "includes/inputs/governing-law-input.html" %}
 
-                {{ govukInput({
-                    label: {
-                        text: "Postcode"
-                    },
-                    classes: "govuk-input--width-10",
-                    id: "principalAddressPostcode",
-                    name: "principalAddressPostcode",
-                    autocomplete: "postal-code",
-                    value: principal_address.principalAddressPostcode if principal_address
-                }) }}
+      {% set registerInCountryFormedText = "Is the overseas entity already on a public register in the country it was formed in?" %}
+      {% include "includes/inputs/fields/is_on_register_in_country_formed_input.html" %}
 
-            {% endcall %}
+      {{ govukInsetText({
+        html: '
+         <h2 class="govuk-heading-m">Information shown on the public register</h2>
+         <p>To be confirmed.</p>
+        '
+      }) }}
 
-            {% set serviceAddressHtml %}
-                {% call govukFieldset({
-                    legend: {
-                        text: "What is the service address?",
-                        classes: "govuk-fieldset__legend--l",
-                        isPageHeading: true
-                    }
-                }) %}
-
-                    {{ govukInput({
-                        label: {
-                            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-                        },
-                        id: "serviceAddressLine1",
-                        name: "serviceAddressLine1",
-                        autocomplete: "address-line1",
-                        value: service_address.serviceAddressLine1 if service_address
-                    }) }}
-
-                    {{ govukInput({
-                        label: {
-                            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-                        },
-                        id: "serviceAddressLine2",
-                        name: "serviceAddressLine2",
-                        autocomplete: "address-line2",
-                        value: service_address.serviceAddressLine2 if service_address
-                    }) }}
-
-                    {{ govukInput({
-                        label: {
-                            text: "Town or city"
-                        },
-                        classes: "govuk-!-width-two-thirds",
-                        id: "serviceAddressTown",
-                        name: "serviceAddressTown",
-                        autocomplete: "address-level2",
-                        value: service_address.serviceAddressTown if service_address
-                    }) }}
-
-                    {{ govukInput({
-                        label: {
-                            text: "County"
-                        },
-                        classes: "govuk-!-width-two-thirds",
-                        id: "serviceAddressCounty",
-                        name: "serviceAddressCounty",
-                        value: service_address.serviceAddressCounty if service_address
-                    }) }}
-
-                    {{ govukInput({
-                        label: {
-                            text: "Postcode"
-                        },
-                        classes: "govuk-input--width-10",
-                        id: "serviceAddressPostcode",
-                        name: "serviceAddressPostcode",
-                        autocomplete: "postal-code",
-                        value: service_address.serviceAddressPostcode if service_address
-                    }) }}
-
-                {% endcall %}
-            {% endset -%}
-
-            {{ govukRadios({
-                idPrefix: "is_service_address_same_as_principal_address",
-                name: "is_service_address_same_as_principal_address",
-                fieldset: {
-                    legend: {
-                        text: "Is the service address the same as the principal address?",
-                        isPageHeading: false,
-                        classes: "govuk-fieldset__legend--m"
-                    }
-                },
-                hint: {
-                    text: "Select one option."
-                },
-                items: [
-                    {
-                        value: 1,
-                        text: "Yes",
-                        checked: is_service_address_same_as_principal_address === 1
-                    },
-                    {
-                        value: 0,
-                        text: "No",
-                        checked: is_service_address_same_as_principal_address === 0,
-                        conditional: {
-                            html: serviceAddressHtml
-                        }
-                    }
-                ]
-            }) }}
-
-            {{ govukInput({
-                label: {
-                    text: "What is the email address?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "email",
-                name: "email",
-                value: email
-            }) }}
-
-            {{ govukInput({
-                label: {
-                    text: "What is legal form?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "legal_form",
-                name: "legal_form",
-                value: legal_form
-            }) }}
-
-            {{ govukInput({
-                label: {
-                    text: "What is law governed?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "law_governed",
-                name: "law_governed",
-                value: law_governed
-            }) }}
-
-            {{ govukInput({
-                label: {
-                    text: "On which public register is the overseas entity registered?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "public_register_name",
-                name: "public_register_name",
-                value: public_register_name
-            }) }}
-
-            {{ govukInput({
-                label: {
-                    text: "What is the registration number of the entity?",
-                    classes: "govuk-label--m",
-                    isPageHeading: false
-                },
-                id: "registration_number",
-                name: "registration_number",
-                value: registration_number
-            }) }}
-
-            <h2 class="govuk-heading-m">What information is shown on the online register</h2>
-            <p class="govuk-body">All details provided about the overseas entity will be available on the online register</p>
-
-            {% include "includes/continue-button.html" %}
-        </form>
-    </div>
+      {% include "includes/continue-button.html" %}
+    </form>
+  </div>
 </div>
 {% endblock %}

@@ -1,0 +1,31 @@
+{{ govukDateInput({
+  id: "date_of_birth",
+  namePrefix: "date_of_birth",
+  fieldset: {
+    legend: {
+      text: "What is their date of birth?",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: "For example, 27 3 2007"
+  },
+  items: [
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: "day",
+      value: date_of_birth["date_of_birth-day"] if date_of_birth
+    },
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: "month",
+      value: date_of_birth["date_of_birth-month"] if date_of_birth
+    },
+    {
+      classes: "govuk-input--width-4 govuk-input",
+      name: "year",
+      value: date_of_birth["date_of_birth-year"] if date_of_birth
+    }
+  ]
+}) }}

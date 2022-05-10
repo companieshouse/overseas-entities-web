@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
-jest.mock('../../src/controllers/authentication.controller');
+jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
@@ -16,6 +16,12 @@ import {
   CONFIRMATION_URL,
 } from "../../src/config";
 import {
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
   FOUND_REDIRECT_TO,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
@@ -29,7 +35,7 @@ import {
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
 } from "../__mocks__/session.mock";
 
-import { authentication } from "../../src/controllers";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { getApplicationData } from "../../src/utils/application.data";
@@ -53,14 +59,14 @@ describe("GET tests", () => {
     jest.clearAllMocks();
   });
 
-  test("renders the ${CHECK_YOUR_ANSWERS_PAGE} page (Other role)", async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain("fullName");
-    expect(resp.text).toContain("roleTitle");
+    expect(resp.text).toContain("user@domain.roe");
     expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
@@ -69,7 +75,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
   });
 
-  test("renders the check your answers page (entity service address not same as principal address)", async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const tempEntity = APPLICATION_DATA_MOCK[entityType.EntityKey];
     APPLICATION_DATA_MOCK[entityType.EntityKey] = ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS;
@@ -79,8 +85,6 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("fullName");
-    expect(resp.text).toContain("roleTitle");
     expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
@@ -90,7 +94,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
   });
 
-  test("renders the check your answers page (entity service address same as principal address)", async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address same as principal address)`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -100,25 +104,58 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
-  test("renders the check your answers page (individual beneficial owner)", async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
+
+    // Beneficial Owner Individual
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("Ivan Drago");
-    // expect(resp.text).toContain("21 March 1947");
+    expect(resp.text).toContain("Ivan");
+    expect(resp.text).toContain("Drago");
+    expect(resp.text).toContain("March");
     expect(resp.text).toContain("Russian");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("addressLine2");
     expect(resp.text).toContain("town");
     expect(resp.text).toContain("county");
     expect(resp.text).toContain("BY 2");
-    // expect(resp.text).toContain("1 March 1999");
+    expect(resp.text).toContain("1999");
     expect(resp.text).toContain("Holds, directly or indirectly, more than 25% of the shares in the entity");
     expect(resp.text).toContain("The trustees of that trust (in their capacity as such) hold, directly or indirectly, more than 25% of the voting rights in the entity");
     expect(resp.text).toContain("The members of that firm (in their capacity as such) hold the right, directly or indirectly, to appoint or remove a majority of the board of directors of the company");
+
+    // Beneficial Owner Statement
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
+
+    // Beneficial Owner Other
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE);
+    expect(resp.text).toContain("TestCorporation");
+    expect(resp.text).toContain("TheLegalForm");
+    expect(resp.text).toContain("January");
+    expect(resp.text).toContain("TheLaw");
+    expect(resp.text).toContain("Russian");
+    expect(resp.text).toContain("ThisRegister / 123456789");
+
+    // Beneficial Owner Gov
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE);
+    expect(resp.text).toContain("my company name");
+    expect(resp.text).toContain("LegalForm");
+    expect(resp.text).toContain("a11");
+    expect(resp.text).toContain("November");
+    expect(resp.text).toContain("1965");
+
+    // Managing Officer Individual
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE);
+    expect(resp.text).toContain("Joe");
+    expect(resp.text).toContain("Bloggs");
+    expect(resp.text).toContain("Utopian");
+    expect(resp.text).toContain("Some Occupation");
+    expect(resp.text).toContain("Some role and responsibilities");
   });
 
   test("catch error when getting data", async () => {

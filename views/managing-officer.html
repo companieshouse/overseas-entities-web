@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Beneficial owner - Register an overseas entity - Companies House
+  Managing officer - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -12,205 +12,97 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the managing officer</h1>
-      <p class="govuk-caption-l">You can add more managing officers later</p>
-      <br>
+      <span class="govuk-caption-xl">Managing officer</span>
+      {% include "includes/heading/bo-and-mo-individuals-heading.html" %}
 
       <form class="form" method="post">
-        {{ govukDetails({
-          summaryText: "What is a managing officer?",
-          text: "Managing officer has been defined in the draft legislation as a director, manager or secretary of an overseas company."
-        }) }}
 
-        {{ govukInput({
-          label: {
-            text: "What is the full name of the managing officer?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          hint: {
-            text: "Include any titles if relevant"
-          },
-          id: "fullName",
-          name: "fullName",
-          value: fullName
-        }) }}
+        {% include "includes/inputs/fields/first-name-input.html" %}
+
+        {% set hintLastNameText = "This is also known as their family name." %}
+        {% include "includes/inputs/fields/last-name-input.html" %}
 
         {% set formerNameHtml %}
           {{ govukInput({
-            id: "formerName",
-            name: "formerName",
-            value: formerName,
+            id: "former_names",
+            name: "former_names",
+            value: former_names,
             classes: "govuk-!-width-half",
             label: {
-              text: "What is the managing officers former name?"
+              text: "Former name or names"
             }
           }) }}
         {% endset %}
 
         {{ govukRadios({
           classes: "govuk-radios",
-          idPrefix: "hasAFormerName",
-          name: "hasAFormerName",
+          idPrefix: "has_former_names",
+          name: "has_former_names",
           fieldset: {
             legend: {
-              text: "Has the managing officer used a different name in the last 20 years?",
+              text: "Do they have any former names?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--m"
             }
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
-              checked: hasAFormerName === 'yes',
+              checked: has_former_names == 1,
               conditional: {
                 html: formerNameHtml
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
-              checked: hasAFormerName === 'no'
+              checked: has_former_names == 0
             }
           ]
         }) }}
 
-        {{ govukDateInput({
-          id: "dateOfBirth",
-          namePrefix: "dateOfBirth",
-          fieldset: {
-            legend: {
-              text: "What is their date of birth?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "For example, 27 3 2007"
-          },
-          items: [
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "day",
-              value: dateOfBirth["dateOfBirth-day"]
-            },
-            {
-              classes: "govuk-input--width-2 govuk-input",
-              name: "month",
-              value: dateOfBirth["dateOfBirth-month"]
-            },
-            {
-              classes: "govuk-input--width-4 govuk-input",
-              name: "year",
-              value: dateOfBirth["dateOfBirth-year"]
-            }
-          ]
-        }) }}
+        {% include "includes/inputs/date/date-of-birth-input.html" %}
+
+        {% include "includes/inputs/fields/nationality-input.html" %}
+
+        {% include "includes/inputs/address/residential-address-input.html" %}
 
         {{ govukInput({
           label: {
-            text: "What is their nationality?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "nationality",
-          name: "nationality",
-          value: nationality
-        }) }}
-
-        {% call govukFieldset({
-          legend: {
-            text: "What is their usual residential address?",
-            classes: "govuk-fieldset__legend--m",
-            isPageHeading: false
-          }
-        }) %}
-
-        {{ govukInput({
-          label: {
-            html: 'Building and street <span class="govuk-visually-hidden">line 1 of 2</span>'
-          },
-          id: "usualResidentialAddressLine1",
-          name: "usualResidentialAddressLine1",
-          value: usualResidentialAddress.usualResidentialAddressLine1
-        }) }}
-
-        {{ govukInput({
-          label: {
-            html: '<span class="govuk-visually-hidden">Building and street line 2 of 2</span>'
-          },
-          id: "usualResidentialAddressLine2",
-          name: "usualResidentialAddressLine2",
-          value: usualResidentialAddress.usualResidentialAddressLine2
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Town or city"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "usualResidentialAddressTown",
-          name: "usualResidentialAddressTown",
-          value: usualResidentialAddress.usualResidentialAddressTown
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "County"
-          },
-          classes: "govuk-!-width-two-thirds",
-          id: "usualResidentialAddressCounty",
-          name: "usualResidentialAddressCounty",
-          value: usualResidentialAddress.usualResidentialAddressCounty
-        }) }}
-
-        {{ govukInput({
-          label: {
-            text: "Postcode"
-          },
-          classes: "govuk-input--width-10",
-          id: "usualResidentialAddressPostcode",
-          name: "usualResidentialAddressPostcode",
-          value: usualResidentialAddress.usualResidentialAddressPostcode
-        }) }}
-        {% endcall %}
-
-        {{ govukInput({
-          label: {
-            text: "What is the managing officer's business occupation? (optional)",
+            text: "What is their occupation? (Optional)",
             classes: "govuk-label--m",
             isPageHeading: false
           },
           hint: {
-            text: "e.g. director"
+            html: "For example, consultant."
           },
-          id: "businessOccupation",
-          name: "businessOccupation",
-          value: businessOccupation
+          id: "occupation",
+          name: "occupation",
+          value: occupation
         }) }}
 
-        {{ govukInput({
+        {{ govukTextarea({
           label: {
-            text: "Describe the role and responsibilities in relation to the entity (optional)",
+            text: "Describe their role and responsibilities in relation to the entity",
             classes: "govuk-label--m",
             isPageHeading: false
           },
-          id: "roleAndResponsibilities",
-          name: "roleAndResponsibilities",
-          value: roleAndResponsibilities
+          id: "role_and_responsibilities",
+          name: "role_and_responsibilities",
+          value: role_and_responsibilities
         }) }}
 
 
-        <h2 class="govuk-heading-m">What information is shown on the online register</h2>
-        <p class="govuk-body">All details provided about the managing officer will be available on the online register</p>
-
-        {{ govukButton({
-          text: "Save and continue",
-          attributes: {
-            "id": "submit"
-          }
+        {{ govukInsetText({
+          html: "
+                    <h2 class='govuk-heading-m'>Information shown on the public register</h2>
+                    <p>The managing officer's home address will not be shown. Only the month and year of their date of birth will be shown.</p>
+                    <p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
+                "
         }) }}
+
+        {% include "includes/continue-button.html" %}
 
       </form>
     </div>

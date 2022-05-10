@@ -76,7 +76,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnRegisterInCountryFormedInKey]: "1", [HasSamePrincipalAddressKey]: "0" }; } );
+      mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; } );
 
       const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
 

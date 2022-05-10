@@ -29,72 +29,16 @@
         value: officerName
       }) }}
 
-      {% include "includes/inputs/principal-address-input.html" %}
+      {% include "includes/inputs/address/principal-address-input.html" %}
 
+      {% set hintText = "For example, limited company or partnership" %}
       {% include "includes/inputs/legal-form-input.html" %}
 
-      {{ govukInput({
-        label: {
-          text: "What is the governing law?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        hint: {
-          text: "This is the law it operates under"
-        },
-        id: "law_governed",
-        name: "law_governed",
-        value: law_governed
-      }) }}
+      {% set hintText = "This is the law it operates under" %}
+      {% include "includes/inputs/governing-law-input.html" %}
 
-      {% set entityPublicRegisterHtml %}
-        {{ govukInput({
-          id: "register_name",
-          name: "register_name",
-          value: register_name,
-          hint: {
-            text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
-          },
-          label: {
-            text: "Name of register"
-          }
-        }) }}
-
-        {{ govukInput({
-          id: "registration_number",
-          name: "registration_number",
-          value: registration_number,
-          classes: "govuk-!-width-one-half",
-          label: {
-            text: "Entity's registration number"
-          }
-        }) }}
-      {% endset -%}
-
-      {{ govukRadios({
-        idPrefix: "is_on_register_in_country_formed_in",
-        name: "is_on_register_in_country_formed_in",
-        fieldset: {
-          legend: {
-            text: "Is the corporate managing officer already on a public register in the country it was formed?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-          }
-        },
-        items: [
-          {
-            value: 1,
-            text: "Yes",
-            conditional: {
-              html: entityPublicRegisterHtml
-            }
-          },
-          {
-            value: 0,
-            text: "No"
-          }
-        ]
-      }) }}
+      {% set registerInCountryFormedText = "Is the corporate managing officer already on a public register in the country it was formed?" %}
+      {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
       {% set dateText = "When did it become a managing officer for the overseas entity?" %}
       {% include "includes/inputs/start-date-input.html" %}

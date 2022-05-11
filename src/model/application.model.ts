@@ -20,7 +20,7 @@ export interface ApplicationData {
     beneficial_owners_corporate?: beneficialOwnerOtherType.BeneficialOwnerOther[];
     beneficial_owners_government_or_public_authority?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managing_officers_individual?: managingOfficerType.ManagingOfficerIndividual[];
-    managingOfficerCorporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
+    managing_officers_corporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
 }
 
 export const ApplicationDataArrayType = [
@@ -28,7 +28,7 @@ export const ApplicationDataArrayType = [
   "beneficial_owners_corporate",
   "beneficial_owners_government_or_public_authority",
   "managing_officers_individual",
-  "managingOfficerCorporate"
+  "managing_officers_corporate"
 ];
 
 export type ApplicationDataType =

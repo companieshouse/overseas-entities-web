@@ -1,10 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType, managingOfficerCorporateType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
-import { AddressKeys, InputDateKeys } from "../model/data.types.model";
+import {
+  AddressKeys,
+  HasSamePrincipalAddressKey,
+  InputDateKeys,
+  IsOnRegisterInCountryFormedInKey
+} from "../model/data.types.model";
+import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
+import { StartDateKey, StartDateKeys } from "../model/date.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,7 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managingOfficerCorporate
+      ...appData.managing_officers_corporate
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -29,13 +36,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = prepareData(req.body, ManagingOfficerCorporateKeys);
 
-    data[managingOfficerCorporateType.UsualResidentialAddressKey] =
-        mapFieldsToDataObject(req.body, managingOfficerCorporateType.UsualResidentialAddressKeys, AddressKeys);
-    data[managingOfficerCorporateType.ServiceAddressKey] =
-        mapFieldsToDataObject(req.body, managingOfficerCorporateType.ServiceAddressKeys, AddressKeys);
+    data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
+    data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
 
-    data[managingOfficerCorporateType.DateKey] =
-        mapFieldsToDataObject(req.body, managingOfficerCorporateType.DateKeys, InputDateKeys);
+    data[StartDateKey] = mapFieldsToDataObject(req.body, StartDateKeys, InputDateKeys);
+
+    data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+
+    data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
 

@@ -1,23 +1,28 @@
 import { Address, InputDate, yesNoResponse } from "./data.types.model";
 
-export const UsualResidentialAddressKey = "usualResidentialAddress";
-export const UsualResidentialAddressKeys: string[] = ["usualResidentialAddressPropertyNameNumber", "usualResidentialAddressLine1", "usualResidentialAddressLine2", "usualResidentialAddressTown", "usualResidentialAddressState", "usualResidentialAddressCountry", "usualResidentialAddressPostcode"];
-export const ServiceAddressKey = "serviceAddress";
-export const ServiceAddressKeys: string[] = ["serviceAddressPropertyNameNumber", "serviceAddressLine1", "serviceAddressLine2", "serviceAddressTown", "serviceAddressState", "serviceAddressCountry", "serviceAddressPostcode"];
-export const DateKey: string = "startDate";
-export const DateKeys: string[] = ["startDate-day", "startDate-month", "startDate-year"];
-export const ManagingOfficerCorporateKey: string = "managingOfficerCorporate";
-export const ManagingOfficerCorporateKeys: string[] = ["officerName", "usualResidentialAddress", "serviceAddress", "isSameAddress",
-  "whereOfficerRegistered", "legalForm", "legalAuthority", "registrationNumber", "startDate"];
+export const ManagingOfficerCorporateKey: string = "managing_officers_corporate";
+export const ManagingOfficerCorporateKeys: string[] = [
+  "name",
+  "principal_address",
+  "service_address",
+  "is_service_address_same_as_principal_address",
+  "legal_form",
+  "law_governed",
+  "is_on_register_in_country_formed_in",
+  "public_register_name",
+  "registration_number",
+  "start_date"
+];
 
 export interface ManagingOfficerCorporate {
-    officerName?: string,
-    usualResidentialAddress?: Address,
-    serviceAddress?: Address,
-    isSameAddress?: yesNoResponse,
-    whereOfficerRegistered?: string,
-    legalForm?: string,
-    legalAuthority?: string,
-    registrationNumber?: string,
-    startDate?: InputDate
+  name?: string;
+  principal_address?: Address;
+  is_service_address_same_as_principal_address?: yesNoResponse;
+  service_address?: Address;
+  legal_form?: string;
+  law_governed?: string;
+  is_on_register_in_country_formed_in?: yesNoResponse;
+  public_register_name?: string;
+  registration_number?: string;
+  start_date?: InputDate;
 }

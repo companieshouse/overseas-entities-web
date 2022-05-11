@@ -24,21 +24,6 @@
   {% endif %}
 {% endset %}
 
-{% set mocBeneficialOwnerIndividualNOCs %}
-  {% set boNOCTypesArray = moc.beneficial_owner_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-noc.html" %}
-{% endset %}
-
-{% set mocBeneficialOwnerTrusteeNOCs %}
-  {% set boNOCTrusteesTypesArray = moc.trustees_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-trustee-of-trust-noc.html" %}
-{% endset %}
-
-{% set mocBeneficialOwnerNonLegalFirmNOCs %}
-  {% set boNOCNonLegalTypesArray = moc.non_legal_firm_members_nature_of_control_types %}
-  {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
-{% endset %}
-
 <h3 class="govuk-heading-m">Corporate managing officer</h3>
 
 {{ govukSummaryList({

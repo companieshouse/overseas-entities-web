@@ -32,3 +32,4 @@ export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE = "Corpora
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual managing officer";
+export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE = "Corporate managing officer";

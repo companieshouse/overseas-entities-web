@@ -1,0 +1,88 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set mocStartDate = dateMacros.formatDate(moc.start_date["day"], moc.start_date["month"], moc.start_date["year"]) %}
+
+{% set mocFormattedPrincipalAddressHtml %}
+  {% set address = moc.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set mocFormattedServiceAddressHtml %}
+  {% if moc.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the principal or registered office address
+  {% else %}
+    {% set address = moc.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set mocFormattedPublicRegister %}
+  {% if moc.is_on_register_in_country_formed_in == 1 %}
+    {{ moc.public_register_name }} / {{ moc.registration_number }}
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+<h3 class="govuk-heading-m">Corporate managing officer</h3>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name"
+        },
+        value: {
+          text: moc.name
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          html: mocFormattedPrincipalAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: mocFormattedServiceAddressHtml
+        }
+      },
+      {
+        key: {
+          text: "Legal form"
+        },
+        value: {
+          text: moc.legal_form
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          html: moc.law_governed
+        }
+      },
+      {
+        key: {
+          text: "On a public register in the country it was formed in"
+        },
+        value: {
+          html: mocFormattedPublicRegister
+        }
+      },
+      {
+        key: {
+          text: "Date it became a beneficial owner"
+        },
+        value: {
+          text: mocStartDate
+        }
+      }
+    ]
+}) }}

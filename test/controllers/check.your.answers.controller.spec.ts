@@ -20,6 +20,7 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
@@ -156,6 +157,11 @@ describe("GET tests", () => {
     expect(resp.text).toContain("Utopian");
     expect(resp.text).toContain("Some Occupation");
     expect(resp.text).toContain("Some role and responsibilities");
+
+    // Managing Officer Corporate
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE);
+    expect(resp.text).toContain("Joe Bloggs Ltd");
+    expect(resp.text).toContain("register / 123456789");
   });
 
   test("catch error when getting data", async () => {

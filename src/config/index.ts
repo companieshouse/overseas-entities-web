@@ -23,6 +23,7 @@ export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiestReference";
+export const PAYMENT_REQUIRED = "x-payment-required";
 
 // TEMPLATEs
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";

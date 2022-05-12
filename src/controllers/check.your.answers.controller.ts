@@ -10,6 +10,7 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
+import { startPaymentsSession } from "../service/payment.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,10 +38,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, req.session as Session, transaction.id as string);
     logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntity.id}`);
 
-    await closeTransaction(req, req.session as Session, transaction.id as string, overseaEntity.id);
+    const transactionClosedResponse = await closeTransaction(req, req.session as Session, transaction.id as string, overseaEntity.id);
     logger.infoRequest(req, `Transaction Closed, ID: ${transaction.id}`);
 
-    return res.redirect(config.CONFIRMATION_URL);
+    const redirectPath = await startPaymentsSession(req, req.session as Session, transaction.id as string, overseaEntity.id, transactionClosedResponse);
+
+    return res.redirect(redirectPath);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

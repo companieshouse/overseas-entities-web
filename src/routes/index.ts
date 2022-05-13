@@ -13,7 +13,8 @@ import {
   landing,
   managingOfficerIndividual,
   managingOfficerCorporate,
-  presenter
+  presenter,
+  payment
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -55,6 +56,8 @@ router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);
+
+router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
 router.get(config.CONFIRMATION_URL, authentication, confirmation.get);
 

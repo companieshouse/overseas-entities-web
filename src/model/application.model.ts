@@ -7,7 +7,8 @@ import {
   beneficialOwnerStatementType,
   beneficialOwnerIndividualType,
   managingOfficerCorporateType,
-  managingOfficerType
+  managingOfficerType,
+  paymentType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -21,6 +22,7 @@ export interface ApplicationData {
     beneficial_owners_government_or_public_authority?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managing_officers_individual?: managingOfficerType.ManagingOfficerIndividual[];
     managing_officers_corporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
+    payment?: paymentType.Payment;
 }
 
 export const ApplicationDataArrayType = [
@@ -39,4 +41,5 @@ export type ApplicationDataType =
   | beneficialOwnerGovType.BeneficialOwnerGov
   | managingOfficerCorporateType.ManagingOfficerCorporate
   | managingOfficerType.ManagingOfficerIndividual
+  | paymentType.Payment
   | dataType.Address;

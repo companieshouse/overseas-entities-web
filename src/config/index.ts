@@ -65,6 +65,6 @@ export const PAYMENT = "payment";
 export const TRANSACTION = "transaction";
 export const OVERSEAS_ENTITY = "overseas-entity";
 
-const TRANSACTION_PATH = "/" + TRANSACTION + "/:transactionId";
-const OVERSEAS_ENTITY_PATH = "/" + OVERSEAS_ENTITY + "/:overseaEntityId/";
+const TRANSACTION_PATH = TRANSACTION + "/:transactionId/";
+const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;

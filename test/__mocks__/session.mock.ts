@@ -3,7 +3,7 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { DESCRIPTION, PAYMENT_REQUIRED_HEADER, REFERENCE } from "../../src/config";
+import { DESCRIPTION, PAYMENT_PAID, PAYMENT_REQUIRED_HEADER, REFERENCE, REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
@@ -14,13 +14,35 @@ import {
   entityType,
   managingOfficerCorporateType,
   managingOfficerType,
-  presenterType
+  presenterType,
+  paymentType
 } from "../../src/model";
 import {
   NatureOfControlType,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
+
+export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
+export const TRANSACTION_ID = "12345";
+export const OVERSEAS_ENTITY_ID = "54321";
+export const TRANSACTION = { reference: `${REFERENCE}_${TRANSACTION_ID}`, description: DESCRIPTION };
+export const PAYMENT_URL = "http://payment";
+export const STATE_ID = "ad83863d-7713-4b39-a625-3ec282d6710e";
+export const PAYMENT_HEADER = { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL };
+export const TRANSACTION_CLOSED_RESPONSE = {
+  httpStatusCode: 202,
+  resource: {
+    ...TRANSACTION,
+    status: "closed"
+  },
+};
+export const PAYMENT_LINK_JOURNEY = "PAYMENT_LINK_JOURNEY";
+export const STATE = `&state=${STATE_ID}`;
+export const STATUS_PAID = `&status=${PAYMENT_PAID}`;
+export const PAYMENT_QUERY_STRING = `?ref=${REFERENCE}_${TRANSACTION_ID}${STATE}${STATUS_PAID}`;
+export const PAYMENT_WITH_TRANSACTION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/overseas-entity/${OVERSEAS_ENTITY_ID}/payment`;
+export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 
 export const userMail = "userWithPermission@ch.gov.uk";
 export const ACCESS_TOKEN_MOCK: IAccessToken = { access_token: 'accessToken' };
@@ -232,6 +254,15 @@ export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   email: "user@domain.roe"
 } ;
 
+export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
+  redirectUri: PAYMENT_WITH_TRANSACTION_URL,
+  reference: `${REFERENCE}_${TRANSACTION_ID}`,
+  resource: "any resource",
+  state: "any state",
+  transactionId: TRANSACTION_ID,
+  overseasEntityId: OVERSEAS_ENTITY_ID,
+} ;
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -241,20 +272,4 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
-};
-
-export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
-export const TRANSACTION_ID = "12345";
-export const OVERSEAS_ENTITY_ID = "54321";
-export const TRANSACTION = { reference: REFERENCE, description: DESCRIPTION };
-
-const PAYMENT_URL = "http://payment";
-export const TRANSACTION_CLOSED_RESPONSE = {
-  headers: { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL },
-  httpStatusCode: 202,
-  resource: {
-    reference: `${REFERENCE}_${OVERSEAS_ENTITY_ID}`,
-    description: "Overseas Entities Transaction",
-    status: "closed"
-  },
 };

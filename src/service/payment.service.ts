@@ -20,8 +20,6 @@ import {
   CONFIRMATION_URL
 } from "../config";
 
-const PAYMENT_ENABLED = true;
-
 export const startPaymentsSession = async (
   req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes
 ): Promise<string> => {
@@ -30,7 +28,7 @@ export const startPaymentsSession = async (
 
   // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
   // directing the application to the Payment Platform to begin a payment session
-  if (paymentUrl && PAYMENT_ENABLED) {
+  if (paymentUrl) {
     const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
 
     // Save info into the session extra data field, including the state used as `nonce` against CSRF.
@@ -69,7 +67,7 @@ export const startPaymentsSession = async (
       return paymentResource.links.journey;
     }
   } else {
-    // Only if Payment service is disabled or the `transaction` does not have a fee.
+    // Only if transaction does not have a fee.
     return CONFIRMATION_URL;
   }
 };
@@ -79,7 +77,7 @@ const setPaymentRequest = (transactionId, overseasEntityId): CreatePaymentReques
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
 
   const baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
-  const reference = `${REFERENCE}_${overseasEntityId}`;
+  const reference = `${REFERENCE}_${transactionId}`;
 
   // Once payment has been taken, the platform redirects the user back to the application,
   // using the application supplied `redirectUri`.

@@ -251,7 +251,7 @@ export const TRANSACTION = { reference: REFERENCE, description: DESCRIPTION };
 const PAYMENT_URL = "http://payment";
 export const TRANSACTION_CLOSED_RESPONSE = {
   headers: { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL },
-  httpStatusCode: 200,
+  httpStatusCode: 202,
   resource: {
     reference: `${REFERENCE}_${OVERSEAS_ENTITY_ID}`,
     description: "Overseas Entities Transaction",

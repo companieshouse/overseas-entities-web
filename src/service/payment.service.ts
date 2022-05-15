@@ -20,7 +20,7 @@ import {
   CONFIRMATION_URL
 } from "../config";
 
-const PAYMENT_ENABLED = false;
+const PAYMENT_ENABLED = true;
 
 export const startPaymentsSession = async (
   req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes
@@ -28,14 +28,21 @@ export const startPaymentsSession = async (
 
   const paymentUrl = transactionRes.headers?.[PAYMENT_REQUIRED_HEADER];
 
+  // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
+  // directing the application to the Payment Platform to begin a payment session
   if (paymentUrl && PAYMENT_ENABLED) {
     const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
 
+    // Save info into the session extra data field, including the state used as `nonce` against CSRF.
     setApplicationData(session, { ...createPaymentRequest, transactionId, overseasEntityId }, PaymentKey);
 
+    // Create Payment Api Client by using the `paymentUrl` as baseURL
     const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);
+
+    // Calls the platform to create a payment session
     const paymentResult = await apiClient.payment.createPaymentWithFullUrl(createPaymentRequest);
 
+    // Verify the state of the payment, success or failure (eg. cost not found, connection issues ...)
     if (paymentResult.isFailure()) {
       const errorResponse = paymentResult.value;
 
@@ -57,17 +64,25 @@ export const startPaymentsSession = async (
         status= ${ paymentResource.status },
         links= ${ JSON.stringify(paymentResource.links ) }
       `);
+
+      // To initiate the web journey through which the user will interact to make the payment
       return paymentResource.links.journey;
     }
   } else {
+    // Only if Payment service is disabled or the `transaction` does not have a fee.
     return CONFIRMATION_URL;
   }
 };
 
 const setPaymentRequest = (transactionId, overseasEntityId): CreatePaymentRequest => {
-  const reference = `${REFERENCE}_${overseasEntityId}`;
+
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
+
   const baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
+  const reference = `${REFERENCE}_${overseasEntityId}`;
+
+  // Once payment has been taken, the platform redirects the user back to the application,
+  // using the application supplied `redirectUri`.
   const redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}`;
 
   return {

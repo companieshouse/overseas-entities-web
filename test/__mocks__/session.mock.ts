@@ -3,7 +3,7 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { DESCRIPTION, REFERENCE } from "../../src/config";
+import { DESCRIPTION, PAYMENT_REQUIRED_HEADER, REFERENCE } from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
@@ -247,3 +247,14 @@ export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "12345";
 export const OVERSEAS_ENTITY_ID = "54321";
 export const TRANSACTION = { reference: REFERENCE, description: DESCRIPTION };
+
+const PAYMENT_URL = "http://payment";
+export const TRANSACTION_CLOSED_RESPONSE = {
+  headers: { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL },
+  httpStatusCode: 200,
+  resource: {
+    reference: `${REFERENCE}_${OVERSEAS_ENTITY_ID}`,
+    description: "Overseas Entities Transaction",
+    status: "closed"
+  },
+};

@@ -34,10 +34,11 @@ import {
   TRANSACTION,
   APPLICATION_DATA_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+  TRANSACTION_CLOSED_RESPONSE,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { postTransaction } from "../../src/service/transaction.service";
+import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
@@ -47,12 +48,14 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( { httpStatusCode: 201, resource: TRANSACTION } );
 
 const mockOverseasEntity = createOverseasEntity as jest.Mock;
 mockOverseasEntity.mockReturnValue( { id: OVERSEAS_ENTITY_ID } );
+
+const mockCloseTransaction = closeTransaction as jest.Mock;
+mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 
 describe("GET tests", () => {
 

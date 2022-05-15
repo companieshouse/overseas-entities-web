@@ -7,4 +7,5 @@ export default () => {
   process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
   process.env.API_URL = "test";
   process.env.CHS_API_KEY = "test";
+  process.env.CHS_URL = "test";
 };

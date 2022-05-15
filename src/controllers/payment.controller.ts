@@ -15,26 +15,20 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `Returned state: ${ state }, saved state: ${savedState}`);
 
+    // The made Payment request is different from expected payment response
     if ( !savedState || savedState !== state) {
-      return next(createAndLogErrorRequest(req, `
-        Rejecting redirect, state does not match.
-        Payment Request:  ${ JSON.stringify(appData[PaymentKey]) }
-      `));
+      return next(createAndLogErrorRequest(req, `Rejecting redirect, state does not match. Payment Request:  ${ JSON.stringify(appData[PaymentKey]) } `));
     }
 
     if (status === PAYMENT_PAID) {
-      logger.debugRequest(req, `
-        OE id: ${ overseaEntityId },
-        Payment status: ${status},
-        Redirecting to: ${CONFIRMATION_URL}
-      `);
+      logger.debugRequest(req, `OE id: ${ overseaEntityId },Payment status: ${status},Redirecting to: ${CONFIRMATION_URL}`);
+
+      // Payment Successfull, redirect to confirmation page
       return res.redirect(CONFIRMATION_URL);
     } else {
-      logger.debugRequest(req, `
-        OE id: ${ overseaEntityId },
-        Payment status: ${status},
-        Redirecting to: ${CHECK_YOUR_ANSWERS_URL}
-      `);
+      logger.debugRequest(req, `OE id: ${ overseaEntityId }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
+
+      // Payment issue, redirect to CHECK_YOUR_ANSWERS. Retry again
       return res.redirect(CHECK_YOUR_ANSWERS_URL);
     }
   } catch (e) {

@@ -20,7 +20,7 @@ import {
   CONFIRMATION_URL
 } from "../config";
 
-const PAYMENT_ENABLED = true;
+const PAYMENT_ENABLED = false;
 
 export const startPaymentsSession = async (
   req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes
@@ -53,10 +53,10 @@ export const startPaymentsSession = async (
 
       logger.infoRequest(req, `
         Create payment,
-        status_code=${paymentResult.value.httpStatusCode},
-        status=${paymentResource.status},
-        links=${JSON.stringify(paymentResource.links)}`
-      );
+        status_code= ${ paymentResult.value.httpStatusCode },
+        status= ${ paymentResource.status },
+        links= ${ JSON.stringify(paymentResource.links ) }
+      `);
       return paymentResource.links.journey;
     }
   } else {

@@ -11,7 +11,7 @@ import { Payment, PaymentKey } from "../model/payment.type.model";
 // and this controller is dealing with the completion of the payment journey
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status, state } = req.query; // To be checked!!?
+    const { status, state } = req.query;
 
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] as Payment;

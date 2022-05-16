@@ -24,8 +24,8 @@ import {
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
-export const TRANSACTION_ID = "12345";
-export const OVERSEAS_ENTITY_ID = "54321";
+export const TRANSACTION_ID = "038138-572616-526863";
+export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";
 export const TRANSACTION = { reference: `${REFERENCE}_${TRANSACTION_ID}`, description: DESCRIPTION };
 export const PAYMENT_URL = "http://payment";
 export const STATE_ID = "ad83863d-7713-4b39-a625-3ec282d6710e";
@@ -40,9 +40,12 @@ export const TRANSACTION_CLOSED_RESPONSE = {
 export const PAYMENT_LINK_JOURNEY = "PAYMENT_LINK_JOURNEY";
 export const STATE = `&state=${STATE_ID}`;
 export const STATUS_PAID = `&status=${PAYMENT_PAID}`;
-export const PAYMENT_QUERY_STRING = `?ref=${REFERENCE}_${TRANSACTION_ID}${STATE}${STATUS_PAID}`;
+export const STATUS_DECLINED = `&status=DECLINED`;
+export const REFERENCE_QUERY_STRING = `?ref=${REFERENCE}_${TRANSACTION_ID}`;
+export const PAYMENT_QUERY_STRING = `${REFERENCE_QUERY_STRING}${STATE}${STATUS_PAID}`;
 export const PAYMENT_WITH_TRANSACTION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/overseas-entity/${OVERSEAS_ENTITY_ID}/payment`;
 export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
+export const PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 
 export const userMail = "userWithPermission@ch.gov.uk";
 export const ACCESS_TOKEN_MOCK: IAccessToken = { access_token: 'accessToken' };
@@ -258,7 +261,7 @@ export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
   resource: "any resource",
-  state: "any state",
+  state: STATE_ID,
   transactionId: TRANSACTION_ID,
   overseasEntityId: OVERSEAS_ENTITY_ID,
 } ;
@@ -271,5 +274,6 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [paymentType.PaymentKey]: PAYMENT_OBJECT_MOCK
 };

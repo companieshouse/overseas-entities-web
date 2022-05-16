@@ -13,13 +13,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const { status, state } = req.query;
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const savedPayment = appData[PaymentKey] as Payment;
+    const savedPayment = appData[PaymentKey] || {} as Payment;
 
-    logger.debugRequest(req, `Returned state: ${ state }, saved state: ${savedPayment?.state}`);
+    logger.debugRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}`);
 
     // The application must ensure that the returned `state` matches the nonce
     // sent by the application to the Payment Platform. Protection against CSRF
-    if ( !savedPayment || !savedPayment.state || savedPayment.state !== state) {
+    if ( !savedPayment.state || savedPayment.state !== state) {
       return next(createAndLogErrorRequest(req, `Rejecting redirect, state does not match. Payment Request:  ${ JSON.stringify(savedPayment) } `));
     }
 

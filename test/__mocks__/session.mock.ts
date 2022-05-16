@@ -1,3 +1,4 @@
+import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
@@ -37,6 +38,10 @@ export const TRANSACTION_CLOSED_RESPONSE = {
     status: "closed"
   },
 };
+export const TRANSACTION_WITH_PAYMENT_HEADER = {
+  ...TRANSACTION_CLOSED_RESPONSE,
+  headers: PAYMENT_HEADER
+};
 export const PAYMENT_LINK_JOURNEY = "PAYMENT_LINK_JOURNEY";
 export const STATE = `&state=${STATE_ID}`;
 export const STATUS_PAID = `&status=${PAYMENT_PAID}`;
@@ -46,6 +51,15 @@ export const PAYMENT_QUERY_STRING = `${REFERENCE_QUERY_STRING}${STATE}${STATUS_P
 export const PAYMENT_WITH_TRANSACTION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/overseas-entity/${OVERSEAS_ENTITY_ID}/payment`;
 export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
+export const PAYMENT_JOURNEY_URL = "PAYMENT_JOURNEY_URL";
+export const PAYMENT_MOCK_VALUE = {
+  resource: {
+    links: { journey: PAYMENT_JOURNEY_URL },
+    status: PAYMENT_PAID
+  } as Payment,
+  httpStatusCode: 200
+};
+export const PAYMENT_FAILURE_MOCK_VALUE = { errors: [ { error: ANY_MESSAGE_ERROR }], httpStatusCode: 500 };
 
 export const userMail = "userWithPermission@ch.gov.uk";
 export const ACCESS_TOKEN_MOCK: IAccessToken = { access_token: 'accessToken' };

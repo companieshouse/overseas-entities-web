@@ -46,24 +46,17 @@ export const startPaymentsSession = async (
     if (paymentResult.isFailure()) {
       const errorResponse = paymentResult.value;
 
-      const description = `
-        payment.service failure to create payment, 
-        http response status code = ${ errorResponse?.httpStatusCode || "No Status Code found in response" },
-        http errors response = ${ JSON.stringify(errorResponse?.errors || "No Errors found in response") }
-      `;
+      const msgErrorStatusCode = `http response status code=${ errorResponse?.httpStatusCode || "No Status Code found in response" }`;
+      const msgErrorResponse = `http errors response=${ JSON.stringify(errorResponse?.errors || "No Errors found in response") }`;
+      const msgError = `payment.service failure to create payment, ${msgErrorStatusCode}, ${msgErrorResponse}.`;
 
-      throw createAndLogErrorRequest(req, description);
+      throw createAndLogErrorRequest(req, msgError);
     } else if (!paymentResult.value?.resource) {
       throw createAndLogErrorRequest(req, "No resource in payment response");
     } else {
       const paymentResource = paymentResult.value.resource as Payment;
 
-      logger.infoRequest(req, `
-        Create payment,
-        status_code= ${ paymentResult.value.httpStatusCode },
-        status= ${ paymentResource.status },
-        links= ${ JSON.stringify(paymentResource.links ) }
-      `);
+      logger.infoRequest(req, `Create payment, status_code=${ paymentResult.value.httpStatusCode }, status=${ paymentResource.status }, links= ${ JSON.stringify(paymentResource.links ) } `);
 
       // To initiate the web journey through which the user will interact to make the payment
       return paymentResource.links.journey;

@@ -11,6 +11,9 @@ export const EXPECTED_TEXT = "Page not found - Register an overseas entity and t
 export const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";
 export const MESSAGE_ERROR = "Can't connect";
 export const ANY_MESSAGE_ERROR = "Any error message";
+export const NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR = "No resource in payment response";
+export const PAYMENT_RESPONSE_500_MSG_ERROR = "payment.service failure to create payment, http response status code=500, http errors response=[{\"error\":\"Any error message\"}].";
+export const PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR = "payment.service failure to create payment, http response status code=No Status Code found in response, http errors response=\"No Errors found in response\".";
 export const PRESENTER_PAGE_TITLE = "Who can we contact about this application?";
 export const ENTITY_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/entity";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the individual person";

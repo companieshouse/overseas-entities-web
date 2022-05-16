@@ -54,7 +54,7 @@ export const startPaymentsSession = async (
     } else if (!paymentResult.value?.resource) {
       throw createAndLogErrorRequest(req, "No resource in payment response");
     } else {
-      const paymentResource = paymentResult.value.resource as Payment;
+      const paymentResource: Payment = paymentResult.value.resource;
 
       logger.infoRequest(req, `Create payment, status_code=${ paymentResult.value.httpStatusCode }, status=${ paymentResource.status }, links= ${ JSON.stringify(paymentResource.links ) } `);
 

@@ -19,7 +19,7 @@ import {
   TRANSACTION,
   OVERSEAS_ENTITY,
   CONFIRMATION_URL,
-  FEATURE_FLAG_PAYMENT
+  FEATURE_FLAG_ENABLE_PAYMENT_16052022
 } from "../config";
 
 export const startPaymentsSession = async (
@@ -30,7 +30,7 @@ export const startPaymentsSession = async (
 
   // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
   // directing the application to the Payment Platform to begin a payment session
-  if (isActiveFeature(FEATURE_FLAG_PAYMENT) && paymentUrl) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_PAYMENT_16052022) && paymentUrl) {
     const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
 
     // Save info into the session extra data field, including the state used as `nonce` against CSRF.

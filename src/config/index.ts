@@ -20,7 +20,7 @@ export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLI
 export const API_URL = getEnvironmentValue("API_URL");
 export const CHS_URL = getEnvironmentValue("CHS_URL");
 export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
-export const FEATURE_FLAG_PAYMENT = getEnvironmentValue("FEATURE_FLAG_PAYMENT");
+export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";

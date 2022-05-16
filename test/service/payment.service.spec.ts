@@ -60,7 +60,7 @@ describe('Payment Service test suite', () => {
     expect(response).toEqual(CONFIRMATION_URL);
   });
 
-  test(`startPaymentsSession() should return ${CONFIRMATION_URL} if FEATURE_FLAG_PAYMENT is 'false', '0', 'off' or ""`, async () => {
+  test(`startPaymentsSession() should return ${CONFIRMATION_URL} if FEATURE_FLAG_ENABLE_PAYMENT_16052022 is 'false', '0', 'off' or ""`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER);
 

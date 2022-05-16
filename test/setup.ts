@@ -8,4 +8,5 @@ export default () => {
   process.env.API_URL = "test";
   process.env.CHS_API_KEY = "test";
   process.env.CHS_URL = "test";
+  process.env.FEATURE_FLAG_PAYMENT = "1";
 };

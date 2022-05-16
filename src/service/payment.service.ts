@@ -8,6 +8,7 @@ import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
 import { PaymentKey } from "../model/payment.type.model";
 import { setApplicationData } from "../utils/application.data";
+import { isActiveFeature } from "../utils/feature.flag";
 import {
   PAYMENT_REQUIRED_HEADER,
   REFERENCE,
@@ -17,7 +18,8 @@ import {
   PAYMENT,
   TRANSACTION,
   OVERSEAS_ENTITY,
-  CONFIRMATION_URL
+  CONFIRMATION_URL,
+  FEATURE_FLAG_PAYMENT
 } from "../config";
 
 export const startPaymentsSession = async (
@@ -28,7 +30,7 @@ export const startPaymentsSession = async (
 
   // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
   // directing the application to the Payment Platform to begin a payment session
-  if (paymentUrl) {
+  if (isActiveFeature(FEATURE_FLAG_PAYMENT) && paymentUrl) {
     const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
 
     // Save info into the session extra data field, including the state used as `nonce` against CSRF.
@@ -67,7 +69,7 @@ export const startPaymentsSession = async (
       return paymentResource.links.journey;
     }
   } else {
-    // Only if transaction does not have a fee.
+    // Only if transaction does not have a fee or PAYMENT flagged.
     return CONFIRMATION_URL;
   }
 };

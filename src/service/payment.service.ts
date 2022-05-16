@@ -81,7 +81,7 @@ const setPaymentRequest = (transactionId, overseasEntityId): CreatePaymentReques
 
   // Once payment has been taken, the platform redirects the user back to the application,
   // using the application supplied `redirectUri`.
-  const redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}`;
+  const redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
 
   return {
     resource: paymentResourceUri,

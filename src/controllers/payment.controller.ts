@@ -27,7 +27,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     if (status === PAYMENT_PAID) {
       logger.debugRequest(req, `OE id: ${ savedPayment.overseasEntityId }, Payment status: ${status},Redirecting to: ${CONFIRMATION_URL}`);
 
-      // Payment Successfull, redirect to confirmation page
+      // Payment Successful, redirect to confirmation page
       return res.redirect(CONFIRMATION_URL);
     } else {
       logger.debugRequest(req, `OE id: ${ savedPayment.overseasEntityId }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);

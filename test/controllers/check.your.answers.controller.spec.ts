@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
+jest.mock('../../src/service/payment.service');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
@@ -34,11 +35,14 @@ import {
   TRANSACTION,
   APPLICATION_DATA_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+  TRANSACTION_CLOSED_RESPONSE,
+  PAYMENT_LINK_JOURNEY,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { postTransaction } from "../../src/service/transaction.service";
+import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
+import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
 import { entityType } from "../../src/model";
@@ -47,12 +51,17 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( { httpStatusCode: 201, resource: TRANSACTION } );
 
 const mockOverseasEntity = createOverseasEntity as jest.Mock;
 mockOverseasEntity.mockReturnValue( { id: OVERSEAS_ENTITY_ID } );
+
+const mockCloseTransaction = closeTransaction as jest.Mock;
+mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
+
+const mockPaymentsSession = startPaymentsSession as jest.Mock;
+mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
 
 describe("GET tests", () => {
 
@@ -186,6 +195,14 @@ describe("POST tests", () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
+  });
+
+  test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
+    mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+    const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });
 
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {

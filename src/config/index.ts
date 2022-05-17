@@ -18,11 +18,15 @@ export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const API_URL = getEnvironmentValue("API_URL");
+export const CHS_URL = getEnvironmentValue("CHS_URL");
 export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
+export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiestReference";
+export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
+export const PAYMENT_PAID = "paid";
 
 // TEMPLATEs
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";
@@ -56,4 +60,12 @@ export const MANAGING_OFFICER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + MANAGING_O
 export const MANAGING_OFFICER_CORPORATE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + MANAGING_OFFICER_CORPORATE_PAGE;
 export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PRESENTER_PAGE;
 export const BENEFICIAL_OWNER_INDIVIDUAL_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_INDIVIDUAL_PAGE;
-export const CONFIRMATION_URL  = REGISTER_AN_OVERSEAS_ENTITY_URL + CONFIRMATION_PAGE;
+export const CONFIRMATION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + CONFIRMATION_PAGE;
+
+export const PAYMENT = "payment";
+export const TRANSACTION = "transaction";
+export const OVERSEAS_ENTITY = "overseas-entity";
+
+const TRANSACTION_PATH = TRANSACTION + "/:transactionId/";
+const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
+export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;

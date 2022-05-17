@@ -31,7 +31,8 @@
     "express": "^4.17.3",
     "govuk-frontend": "^4.0.1",
     "ioredis": "^4.28.5",
-    "nunjucks": "^3.2.3"
+    "nunjucks": "^3.2.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",

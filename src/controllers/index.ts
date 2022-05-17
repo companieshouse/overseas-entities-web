@@ -10,3 +10,4 @@ export * as presenter from "./presenter.controller";
 export * as entity from "./entity.controller";
 export * as beneficialOwnerIndividual from "./beneficial.owner.individual.controller";
 export * as confirmation from "./confirmation.controller";
+export * as payment from "./payment.controller";

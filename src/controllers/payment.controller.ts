@@ -20,17 +20,17 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     // The application must ensure that the returned `state` matches the nonce
     // sent by the application to the Payment Platform. Protection against CSRF
     if ( !savedPayment.state || savedPayment.state !== state) {
-      return next(createAndLogErrorRequest(req, `Rejecting redirect, state does not match. Payment Request:  ${ JSON.stringify(savedPayment) } `));
+      return next(createAndLogErrorRequest(req, `Rejecting payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
     }
 
     // Validate the status of the payment
     if (status === PAYMENT_PAID) {
-      logger.debugRequest(req, `OE id: ${ savedPayment.overseasEntityId }, Payment status: ${status},Redirecting to: ${CONFIRMATION_URL}`);
+      logger.debugRequest(req, `Overseas Entity id: ${ savedPayment.overseasEntityId }, Payment status: ${status},Redirecting to: ${CONFIRMATION_URL}`);
 
       // Payment Successful, redirect to confirmation page
       return res.redirect(CONFIRMATION_URL);
     } else {
-      logger.debugRequest(req, `OE id: ${ savedPayment.overseasEntityId }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
+      logger.debugRequest(req, `Overseas Entity id: ${ savedPayment.overseasEntityId }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
 
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
       // Redirect to CHECK_YOUR_ANSWERS. Try again eventually

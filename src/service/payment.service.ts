@@ -67,7 +67,7 @@ export const startPaymentsSession = async (
   }
 };
 
-const setPaymentRequest = (transactionId, overseasEntityId): CreatePaymentRequest => {
+const setPaymentRequest = (transactionId: string, overseasEntityId: string): CreatePaymentRequest => {
 
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
 

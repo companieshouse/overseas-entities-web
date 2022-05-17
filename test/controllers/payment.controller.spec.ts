@@ -17,9 +17,9 @@ import {
   PAYMENT_OBJECT_MOCK,
   PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING
 } from "../__mocks__/session.mock";
-import { paymentType } from "../../src/model";
 import { CHECK_YOUR_ANSWERS_URL, CONFIRMATION_PAGE, CONFIRMATION_URL, PAYMENT_PAID } from "../../src/config";
 import { FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
+import { PaymentKey } from "../../src/model/data.types.model";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -42,7 +42,7 @@ describe("Payment controller", () => {
   });
 
   test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successfull with status ${PAYMENT_PAID}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [paymentType.PaymentKey]: PAYMENT_OBJECT_MOCK } );
+    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
     expect(resp.status).toEqual(302);
@@ -52,7 +52,7 @@ describe("Payment controller", () => {
   });
 
   test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [paymentType.PaymentKey]: PAYMENT_OBJECT_MOCK } );
+    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
     expect(resp.status).toEqual(302);

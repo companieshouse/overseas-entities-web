@@ -11,6 +11,7 @@ import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
+import { OverseaEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,18 +31,21 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const session = req.session as Session;
     logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
-    const transaction: Transaction = await postTransaction(req, req.session as Session);
+    const transaction: Transaction = await postTransaction(req, session);
     logger.infoRequest(req, `Transaction created, ID: ${transaction.id}`);
+    session.setExtraData(Transactionkey, transaction.id);
 
-    const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, req.session as Session, transaction.id as string);
+    const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, session, transaction.id as string);
     logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntity.id}`);
+    session.setExtraData(OverseaEntityKey, overseaEntity.id);
 
-    const transactionClosedResponse = await closeTransaction(req, req.session as Session, transaction.id as string, overseaEntity.id);
+    const transactionClosedResponse = await closeTransaction(req, session, transaction.id as string, overseaEntity.id);
     logger.infoRequest(req, `Transaction Closed, ID: ${transaction.id}`);
 
-    const redirectPath = await startPaymentsSession(req, req.session as Session, transaction.id as string, overseaEntity.id, transactionClosedResponse);
+    const redirectPath = await startPaymentsSession(req, session, transaction.id as string, overseaEntity.id, transactionClosedResponse);
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transaction.id}, OE_ID: ${overseaEntity.id}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);

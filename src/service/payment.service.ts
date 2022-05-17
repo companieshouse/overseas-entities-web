@@ -6,7 +6,6 @@ import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist
 
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
-import { PaymentKey } from "../model/payment.type.model";
 import { setApplicationData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
 import {
@@ -21,6 +20,7 @@ import {
   CONFIRMATION_URL,
   FEATURE_FLAG_ENABLE_PAYMENT_16052022
 } from "../config";
+import { PaymentKey } from "../model/data.types.model";
 
 export const startPaymentsSession = async (
   req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes
@@ -34,7 +34,7 @@ export const startPaymentsSession = async (
     const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
 
     // Save info into the session extra data field, including the state used as `nonce` against CSRF.
-    setApplicationData(session, { ...createPaymentRequest, transactionId, overseasEntityId }, PaymentKey);
+    setApplicationData(session, createPaymentRequest, PaymentKey);
 
     // Create Payment Api Client by using the `paymentUrl` as baseURL
     const apiClient: ApiClient = createOAuthApiClient(session, paymentUrl);

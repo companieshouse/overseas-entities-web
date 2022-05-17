@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Confirmation - Register an overseas entity - GOV.UK
+  Confirmation - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block content %}
@@ -18,11 +18,11 @@
       </div>
 
       <p class="govuk-body">
-        We have sent a confirmation email to <strong>sarahphilips@sugar.com</strong>.
+        We have sent a confirmation email to <strong> {{ userEmail }} </strong>.
       </p>
 
       <h2 class="govuk-heading-m">What happens next</h2>
-      <p class="govuk-body">We will email you within XX working days to let you know if your application to register an overseas entity has been accepted or rejected.</p>
+      <p class="govuk-body">We will email you within {{ workingDays }} working days to let you know if your application to register an overseas entity has been accepted or rejected.</p>
 
       <p class="govuk-body">If the application is accepted, the overseas entity and its beneficial owners will be added to the <a href="#">Register of Overseas Entities.</a></p>
 

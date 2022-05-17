@@ -4,7 +4,9 @@ jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+// jest.mock('@companieshouse/node-session-handler/lib/session/model/Session');
 
+// import { setExtraData } from '@companieshouse/node-session-handler/lib/session/model/Session';
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
@@ -62,6 +64,9 @@ mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
+
+// const mockSetApplicationData = setExtraData as jest.Mock;
+// mockSetApplicationData.mockImplementation(() => setExtraData );
 
 describe("GET tests", () => {
 

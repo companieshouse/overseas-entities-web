@@ -24,7 +24,7 @@ export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
-export const REFERENCE = "OverseasEntitiestReference";
+export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 

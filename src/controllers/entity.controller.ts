@@ -46,6 +46,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, data, EntityKey);
 
+    console.log(JSON.stringify(data, null, 2));
+
     return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {
     logger.errorRequest(req, error);

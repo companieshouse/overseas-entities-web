@@ -32,10 +32,9 @@
           value: name
       }) }}
 
-      <div class="govuk-form-group">
-        <label for="autocomplete-default" class="govuk-label--m">Which country was it formed in?</label>
+      <div class="govuk-form-group" id="incorporation-country" name="incorporation-country" type="text" autocomplete="incorporation-country">
+        <label class="govuk-label--m" for="incorporation-country">Which country was it formed in?</label>
         <p class="govuk-hint">Start typing a country, then choose from the list</p>
-        <div id="country" class="autocomplete-wrapper"></div>
       </div>
 
       {% include "includes/inputs/address/principal-address-input.html" %}

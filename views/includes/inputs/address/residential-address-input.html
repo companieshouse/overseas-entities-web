@@ -61,15 +61,13 @@
     value: usual_residential_address.usual_residential_address_county if usual_residential_address
   }) }}
 
-  {{ govukInput({
-    label: {
-      text: "Country"
-    },
-    classes: "govuk-!-width-two-thirds",
-    id: "usual_residential_address_country",
-    name: "usual_residential_address_country",
-    value: usual_residential_address.usual_residential_address_country if usual_residential_address
-  }) }}
+  {% if usual_residential_address %}
+  {% set residentialAddressCountry = usual_residential_address.country %}
+  {% endset %}
+  <div class="govuk-form-group autocomplete-wrapper" id="usual_residential_address_country" name="usual_residential_address_country" type="text" autocomplete="usual_residential_address_country" value=residentialAddressCountry>
+    <label for="usual_residential_address_country" class="govuk-label">Country</label>
+    <p class="govuk-hint">Start typing a country, then choose from the list</p>
+  </div>
 
   {{ govukInput({
     label: {

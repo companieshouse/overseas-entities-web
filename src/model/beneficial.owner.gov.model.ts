@@ -15,7 +15,8 @@ export const BeneficialOwnerGovKeys: string[] = [
   "law_governed",
   "start_date",
   "beneficial_owner_nature_of_control_types",
-  "non_legal_firm_members_nature_of_control_types"
+  "non_legal_firm_members_nature_of_control_types",
+  "is_on_sanctions_list"
 ];
 
 export interface BeneficialOwnerGov {
@@ -28,4 +29,5 @@ export interface BeneficialOwnerGov {
   start_date?: InputDate
   beneficial_owner_nature_of_control_types?: NatureOfControlType[];
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
+  is_on_sanctions_list?: yesNoResponse;
 }

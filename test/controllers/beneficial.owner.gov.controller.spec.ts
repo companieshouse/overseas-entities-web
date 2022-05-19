@@ -43,6 +43,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("country");
       expect(resp.text).toContain("LegalForm");
       expect(resp.text).toContain("a11");
+      expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
     });
 
     test("Should render the error page", async () => {

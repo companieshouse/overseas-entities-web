@@ -271,14 +271,14 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"
-} ;
+};
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
   resource: "any resource",
   state: STATE_ID
-} ;
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

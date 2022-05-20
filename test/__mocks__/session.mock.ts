@@ -211,6 +211,7 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   start_date: { day: "12", month: "11", year: "1965" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: 1
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
@@ -222,7 +223,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
   law_governed: "",
   start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
   beneficial_owner_nature_of_control_types: "",
-  non_legal_firm_members_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: ""
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -269,7 +270,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"
-} ;
+};
 
 export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
@@ -277,8 +278,8 @@ export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
   resource: "any resource",
   state: STATE_ID,
   transactionId: TRANSACTION_ID,
-  overseasEntityId: OVERSEAS_ENTITY_ID,
-} ;
+  overseasEntityId: OVERSEAS_ENTITY_ID
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

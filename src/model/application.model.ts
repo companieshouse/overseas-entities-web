@@ -23,7 +23,7 @@ export interface ApplicationData {
     managing_officers_individual?: managingOfficerType.ManagingOfficerIndividual[];
     managing_officers_corporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
     payment?: CreatePaymentRequest;
-    oversea_entity_id?: string;
+    overseas_entity_id?: string;
     transaction_id?: string;
 }
 

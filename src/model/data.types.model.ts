@@ -58,5 +58,5 @@ export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
 
 // Payment, OE and Transaction keys
 export const PaymentKey = "payment";
-export const OverseaEntityKey = "oversea_entity_id";
+export const OverseasEntityKey = "overseas_entity_id";
 export const Transactionkey = "transaction_id";

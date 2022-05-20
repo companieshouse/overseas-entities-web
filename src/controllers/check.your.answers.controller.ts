@@ -11,7 +11,6 @@ import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
-import { OverseaEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,11 +35,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const transaction: Transaction = await postTransaction(req, session);
     logger.infoRequest(req, `Transaction created, ID: ${transaction.id}`);
-    session.setExtraData(Transactionkey, transaction.id);
 
     const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, session, transaction.id as string);
     logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntity.id}`);
-    session.setExtraData(OverseaEntityKey, overseaEntity.id);
 
     const transactionClosedResponse = await closeTransaction(req, session, transaction.id as string, overseaEntity.id);
     logger.infoRequest(req, `Transaction Closed, ID: ${transaction.id}`);

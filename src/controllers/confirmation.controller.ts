@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+
 import { logger } from "../utils/logger";
 import { CONFIRMATION_PAGE } from "../config";
 import { getLoggedInUserEmail } from "../utils/session";
@@ -11,11 +12,9 @@ export const get = (req: Request, res: Response) => {
 
   const appData: ApplicationData = getApplicationData(req.session);
 
-  logger.debugRequest(req, `@@@@@@@@ ${JSON.stringify(appData)} @@@@@@@@`);
-
   return res.render(CONFIRMATION_PAGE, {
     referenceNumber: appData[Transactionkey],
     userEmail: getLoggedInUserEmail(req.session),
-    workingDays: "XX"
+    workingDays: "XX" // Not yet defined.
   });
 };

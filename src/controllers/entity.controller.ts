@@ -4,7 +4,8 @@ import {
   getApplicationData,
   setApplicationData,
   prepareData,
-  mapFieldsToDataObject
+  mapFieldsToDataObject,
+  mapDataObjectToFields
 } from "../utils/application.data";
 import { EntityKey, EntityKeys } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
@@ -22,7 +23,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: config.PRESENTER_URL,
-      ...entityData
+      ...entityData,
+      [PrincipalAddressKey]: (entityData)
+        ? mapDataObjectToFields(entityData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
+        : {},
+      [ServiceAddressKey]: (entityData)
+        ? mapDataObjectToFields(entityData[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
+        : {}
     });
   } catch (error) {
     logger.errorRequest(req, error);

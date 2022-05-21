@@ -1,9 +1,10 @@
 {{ govukInput({
-    id: "registration_number",
-    name: "registration_number",
-    value: registration_number,
-    classes: "govuk-!-width-one-half",
-    label: {
-      text: registrationNumberText
-    }
-  }) }}
+  errorMessage: errors.registration_number if errors,
+  id: "registration_number",
+  name: "registration_number",
+  value: registration_number,
+  classes: "govuk-!-width-one-half",
+  label: {
+    text: registrationNumberText
+  }
+}) }}

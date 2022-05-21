@@ -7,6 +7,7 @@
 }) %}
 
   {{ govukInput({
+    errorMessage: errors.service_address_property_name_number if errors,
     label: {
       html: 'Property name or number (optional)'
     },
@@ -15,17 +16,18 @@
     },
     id: "service_address_property_name_number",
     name: "service_address_property_name_number",
-    value: service_address.property_name_number if service_address
+    value: service_address_property_name_number or ( service_address.service_address_property_name_number if service_address )
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.service_address_line_1 if errors,
     label: {
       text: "Address line 1"
     },
     classes: "govuk-!-width-two-thirds",
     id: "service_address_line_1",
     name: "service_address_line_1",
-    value: service_address.line_1 if service_address
+    value: service_address_line_1 or ( service_address.service_address_line_1 if service_address )
   }) }}
 
   {{ govukInput({
@@ -35,17 +37,18 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_line_2",
     name: "service_address_line_2",
-    value: service_address.line_2 if service_address
+    value: service_address_line_2 or ( service_address.service_address_line_2 if service_address )
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.service_address_town if errors,
     label: {
       text: "City or town"
     },
     classes: "govuk-!-width-two-thirds",
     id: "service_address_town",
     name: "service_address_town",
-    value: service_address.town if service_address
+    value: service_address_town or ( service_address.service_address_town if service_address )
   }) }}
 
   {{ govukInput({
@@ -55,17 +58,18 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_county",
     name: "service_address_county",
-    value: service_address.county if service_address
+    value: service_address_county or ( service_address.service_address_county if service_address )
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.service_address_country if errors,
     label: {
       text: "Country"
     },
     classes: "govuk-!-width-two-thirds",
     id: "service_address_country",
     name: "service_address_country",
-    value: service_address.country if service_address
+    value: service_address_country or ( service_address.service_address_country if service_address )
   }) }}
 
   {{ govukInput({
@@ -75,6 +79,6 @@
     classes: "govuk-input--width-10",
     id: "service_address_postcode",
     name: "service_address_postcode",
-    value: service_address.postcode if service_address
+    value: service_address_postcode or ( service_address.service_address_postcode if service_address )
   }) }}
 {% endcall %}

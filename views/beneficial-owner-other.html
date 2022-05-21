@@ -52,34 +52,9 @@
 
         {% endcall %}
 
-        {{ govukRadios({
-          classes: "govuk-radios",
-          idPrefix: "is_on_sanctions_list",
-          name: "is_on_sanctions_list",
-          fieldset: {
-            legend: {
-              text: "Is it on the sanctions list?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018."
-          },
-          items: [
-            {
-              value: 1,
-              text: "Yes",
-              checked: is_on_sanctions_list === 1
-            },
-            {
-              value: 0,
-              text: "No",
-              checked: is_on_sanctions_list === 0
-            }
-          ]
-        }) }}
-
+        {% set sanctionsListText = "Is it on the sanctions list?" %}
+        {% set sanctionsListHintText = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
+        {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}        
 
         {{ govukInsetText({
           html: '

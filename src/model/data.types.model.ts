@@ -44,7 +44,7 @@ export const InputDateKeys: string[] = [
   "year"
 ];
 
-// Boolean fields need to parsed from string to number
+// Boolean fields need to be parsed from string to number
 export const HasSameResidentialAddressKey = "is_service_address_same_as_usual_residential_address";
 export const HasSamePrincipalAddressKey = "is_service_address_same_as_principal_address";
 export const IsOnSanctionsListKey = "is_on_sanctions_list";

@@ -24,7 +24,7 @@ export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
-export const REFERENCE = "OverseasEntitiestReference";
+export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 
@@ -41,6 +41,7 @@ export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
 export const PRESENTER_PAGE = "presenter";
 export const CONFIRMATION_PAGE = "confirmation";
+export const HEALTHCHECK_PAGE = "healthcheck";
 
 export const ERROR_PAGE = "error-page";
 export const NOT_FOUND_PAGE = "page-not-found";
@@ -61,6 +62,7 @@ export const MANAGING_OFFICER_CORPORATE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + 
 export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PRESENTER_PAGE;
 export const BENEFICIAL_OWNER_INDIVIDUAL_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_INDIVIDUAL_PAGE;
 export const CONFIRMATION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + CONFIRMATION_PAGE;
+export const HEALTHCHECK_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + HEALTHCHECK_PAGE;
 
 export const PAYMENT = "payment";
 export const TRANSACTION = "transaction";

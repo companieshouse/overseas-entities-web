@@ -10,6 +10,7 @@ import {
   checkYourAnswers,
   confirmation,
   entity,
+  healthcheck,
   landing,
   managingOfficerIndividual,
   managingOfficerCorporate,
@@ -26,6 +27,8 @@ const router = Router();
 router.use(serviceAvailabilityMiddleware);
 
 router.get(config.LANDING_URL, landing.get);
+
+router.get(config.HEALTHCHECK_URL, healthcheck.get);
 
 router.get(config.PRESENTER_URL, authentication, presenter.get);
 router.post(config.PRESENTER_URL, authentication, presenter.post);

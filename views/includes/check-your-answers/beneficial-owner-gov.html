@@ -26,6 +26,14 @@
   {% include "includes/check-your-answers/nocs/beneficial-owner-member-of-firm-noc.html" %}
 {% endset %}
 
+{% set bogIsOnSanctionsListHtml %}
+  {% if bog.is_on_sanctions_list == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
 <h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>
 
 {{ govukSummaryList({
@@ -84,6 +92,14 @@
         },
         value: {
           html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs
+        }
+      },
+      {
+        key: {
+          text: "Is it on the sanctions list?"
+        },
+        value: {
+          html: bogIsOnSanctionsListHtml
         }
       }
     ]

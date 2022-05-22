@@ -1,22 +1,20 @@
 import { NextFunction, Request, Response } from "express";
 import { validationResult, ValidationError } from "express-validator";
 
-import { ApplicationData } from "../model/application.model";
 import { getApplicationData } from "../utils/application.data";
 import { NAVIGATION } from "../utils/navigation";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   const errorList = validationResult(req);
-  const appData: ApplicationData = getApplicationData(req.session);
 
   if (!errorList.isEmpty()) {
     const errors = formatValidationError(errorList.array());
 
     return res.render(NAVIGATION[req.path].currentPage, {
       backLinkUrl: NAVIGATION[req.path].previusPage,
+      ...getApplicationData(req.session),
+      ...req.body,
       errors,
-      ...appData,
-      ...req.body
     });
   }
 

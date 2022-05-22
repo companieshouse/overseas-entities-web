@@ -18,7 +18,7 @@
     },
     id: "principal_address_property_name_number",
     name: "principal_address_property_name_number",
-    value: principal_address_property_name_number or ( principal_address.principal_address_property_name_number if principal_address )
+    value: principal_address_property_name_number
   }) }}
 
   {{ govukInput({
@@ -29,7 +29,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_line_1",
     name: "principal_address_line_1",
-    value: principal_address_line_1 or ( principal_address.principal_address_line_1 if principal_address )
+    value: principal_address_line_1
   }) }}
 
   {{ govukInput({
@@ -39,7 +39,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_line_2",
     name: "principal_address_line_2",
-    value: principal_address_line_2 or ( principal_address.principal_address_line_2 if principal_address )
+    value: principal_address_line_2
   }) }}
 
   {{ govukInput({
@@ -50,7 +50,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_town",
     name: "principal_address_town",
-    value: principal_address_town or ( principal_address.principal_address_town if principal_address )
+    value: principal_address_town
   }) }}
 
   {{ govukInput({
@@ -60,7 +60,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_county",
     name: "principal_address_county",
-    value: principal_address_county or ( principal_address.principal_address_county if principal_address )
+    value: principal_address_county
   }) }}
 
   {{ govukInput({
@@ -71,7 +71,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_country",
     name: "principal_address_country",
-    value: principal_address_country or ( principal_address.principal_address_country if principal_address )
+    value: principal_address_country
   }) }}
 
   {{ govukInput({
@@ -81,7 +81,7 @@
   classes: "govuk-input--width-10",
   id: "principal_address_postcode",
   name: "principal_address_postcode",
-  value: principal_address_postcode or ( principal_address.principal_address_postcode if principal_address )
+  value: principal_address_postcode
   }) }}
 
 {% endcall %}

@@ -16,7 +16,7 @@
     },
     id: "service_address_property_name_number",
     name: "service_address_property_name_number",
-    value: service_address_property_name_number or ( service_address.service_address_property_name_number if service_address )
+    value: service_address_property_name_number
   }) }}
 
   {{ govukInput({
@@ -27,7 +27,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_line_1",
     name: "service_address_line_1",
-    value: service_address_line_1 or ( service_address.service_address_line_1 if service_address )
+    value: service_address_line_1
   }) }}
 
   {{ govukInput({
@@ -37,7 +37,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_line_2",
     name: "service_address_line_2",
-    value: service_address_line_2 or ( service_address.service_address_line_2 if service_address )
+    value: service_address_line_2
   }) }}
 
   {{ govukInput({
@@ -48,7 +48,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_town",
     name: "service_address_town",
-    value: service_address_town or ( service_address.service_address_town if service_address )
+    value: service_address_town
   }) }}
 
   {{ govukInput({
@@ -58,7 +58,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_county",
     name: "service_address_county",
-    value: service_address_county or ( service_address.service_address_county if service_address )
+    value: service_address_county
   }) }}
 
   {{ govukInput({
@@ -69,7 +69,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "service_address_country",
     name: "service_address_country",
-    value: service_address_country or ( service_address.service_address_country if service_address )
+    value: service_address_country
   }) }}
 
   {{ govukInput({
@@ -79,6 +79,6 @@
     classes: "govuk-input--width-10",
     id: "service_address_postcode",
     name: "service_address_postcode",
-    value: service_address_postcode or ( service_address.service_address_postcode if service_address )
+    value: service_address_postcode
   }) }}
 {% endcall %}

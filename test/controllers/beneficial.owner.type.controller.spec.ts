@@ -19,6 +19,7 @@ import {
   BeneficialOwnerTypeChoice,
   ManagingOfficerTypeChoice,
 } from "../../src/model/beneficial.owner.type.model";
+import { ErrorMessages } from '../../src/validation/error.messages';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -96,11 +97,13 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(config.MANAGING_OFFICER_CORPORATE_URL);
     });
 
-    test("redirects to the current page", async () => {
+    test("renders the current page with error message", async () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });
   });
 });

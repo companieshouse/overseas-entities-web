@@ -13,7 +13,11 @@ import * as config from "../../src/config";
 import { getApplicationData, prepareData } from '../../src/utils/application.data';
 import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
-import { BENEFICIAL_OWNER_GOV_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY } from "../__mocks__/session.mock";
+import {
+  BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
+} from "../__mocks__/session.mock";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -31,8 +35,16 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET tests", () => {
 
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerGovKey]: null } );
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    });
+
     test("renders the beneficial owner gov page", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);

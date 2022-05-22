@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData, ApplicationDataType, beneficialOwnerGovType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { ApplicationData, ApplicationDataType } from "../model";
+import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
+import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,9 +14,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    const boGov = appData[BeneficialOwnerGovKey];
+    const principalAddress = (boGov) ? mapDataObjectToFields(boGov[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = (boGov) ? mapDataObjectToFields(boGov[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+
     return res.render(config.BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.beneficial_owners_government_or_public_authority
+      ...boGov,
+      ...principalAddress,
+      ...serviceAddress
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -27,7 +34,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_GOV_PAGE}`);
 
-    const data: ApplicationDataType = prepareData(req.body, beneficialOwnerGovType.BeneficialOwnerGovKeys);
+    const data: ApplicationDataType = prepareData(req.body, BeneficialOwnerGovKeys);
 
     data[PrincipalAddressKey] = mapFieldsToDataObject(req.body, PrincipalAddressKeys, AddressKeys);
     data[ServiceAddressKey] = mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys);
@@ -41,7 +48,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
     data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
 
-    setApplicationData(req.session, data, beneficialOwnerGovType.BeneficialOwnerGovKey);
+    setApplicationData(req.session, data, BeneficialOwnerGovKey);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

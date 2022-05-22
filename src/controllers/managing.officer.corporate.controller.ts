@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 import {
   AddressKeys,
@@ -19,9 +19,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    const moCorporate = appData[ManagingOfficerCorporateKey];
+    const principalAddress = (moCorporate) ? mapDataObjectToFields(moCorporate[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = (moCorporate) ? mapDataObjectToFields(moCorporate[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managing_officers_corporate
+      ...moCorporate,
+      ...principalAddress,
+      ...serviceAddress
     });
   } catch (error) {
     logger.errorRequest(req, error);

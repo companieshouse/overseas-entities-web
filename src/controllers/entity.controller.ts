@@ -19,17 +19,16 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ENTITY_PAGE`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const entityData = appData[EntityKey] as any;
+
+    const entity = appData[EntityKey];
+    const principalAddress = (entity) ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = (entity) ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: config.PRESENTER_URL,
-      ...entityData,
-      [PrincipalAddressKey]: (entityData)
-        ? mapDataObjectToFields(entityData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
-        : {},
-      [ServiceAddressKey]: (entityData)
-        ? mapDataObjectToFields(entityData[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
-        : {}
+      ...entity,
+      ...principalAddress,
+      ...serviceAddress
     });
   } catch (error) {
     logger.errorRequest(req, error);

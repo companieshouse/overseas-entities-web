@@ -1,3 +1,4 @@
+import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 import {
   entityType,
   presenterType,
@@ -7,8 +8,7 @@ import {
   beneficialOwnerStatementType,
   beneficialOwnerIndividualType,
   managingOfficerCorporateType,
-  managingOfficerType,
-  paymentType
+  managingOfficerType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -22,7 +22,9 @@ export interface ApplicationData {
     beneficial_owners_government_or_public_authority?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managing_officers_individual?: managingOfficerType.ManagingOfficerIndividual[];
     managing_officers_corporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
-    payment?: paymentType.Payment;
+    payment?: CreatePaymentRequest;
+    overseas_entity_id?: string;
+    transaction_id?: string;
 }
 
 export const ApplicationDataArrayType = [
@@ -41,5 +43,5 @@ export type ApplicationDataType =
   | beneficialOwnerGovType.BeneficialOwnerGov
   | managingOfficerCorporateType.ManagingOfficerCorporate
   | managingOfficerType.ManagingOfficerIndividual
-  | paymentType.Payment
+  | CreatePaymentRequest
   | dataType.Address;

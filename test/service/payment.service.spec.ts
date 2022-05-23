@@ -75,7 +75,7 @@ describe('Payment Service test suite', () => {
   });
 
   test(`startPaymentsSession() should throw ${NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR} error msg`, async () => {
-    mockCreatePayment.mockResolvedValueOnce( { ...mockPaymentResult, value: {} } );
+    mockCreatePayment.mockResolvedValueOnce( { ...mockPaymentResult, value: undefined } );
     await expect(
       startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER)
     ).rejects.toThrow(NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR);
@@ -92,6 +92,14 @@ describe('Payment Service test suite', () => {
   test(`startPaymentsSession() should throw ${PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR} error msg`, async () => {
     mockIsFailure.mockReturnValue(true);
     mockCreatePayment.mockResolvedValueOnce( { ...mockPaymentResult, value: { errors: undefined, httpStatusCode: undefined } } );
+    await expect(
+      startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER)
+    ).rejects.toThrow(PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR);
+  });
+
+  test(`startPaymentsSession() should throw ${PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR} error msg - No error response`, async () => {
+    mockIsFailure.mockReturnValue(true);
+    mockCreatePayment.mockResolvedValueOnce( { ...mockPaymentResult, value: undefined } );
     await expect(
       startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER)
     ).rejects.toThrow(PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR);

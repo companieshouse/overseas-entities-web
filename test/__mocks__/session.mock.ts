@@ -1,4 +1,4 @@
-import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
@@ -15,11 +15,13 @@ import {
   entityType,
   managingOfficerCorporateType,
   managingOfficerType,
-  presenterType,
-  paymentType
+  presenterType
 } from "../../src/model";
 import {
   NatureOfControlType,
+  OverseasEntityKey,
+  PaymentKey,
+  Transactionkey,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -272,13 +274,11 @@ export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   email: "user@domain.roe"
 };
 
-export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
+export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
   resource: "any resource",
-  state: STATE_ID,
-  transactionId: TRANSACTION_ID,
-  overseasEntityId: OVERSEAS_ENTITY_ID
+  state: STATE_ID
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
@@ -290,5 +290,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
-  [paymentType.PaymentKey]: PAYMENT_OBJECT_MOCK
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID
 };

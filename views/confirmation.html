@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Confirmation - Register an overseas entity - GOV.UK
+  Confirmation - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block content %}
@@ -12,21 +12,23 @@
       <div class="govuk-panel govuk-panel--confirmation">
         <h1 class="govuk-panel__title">Application submitted</h1>
         <div class="govuk-panel__body">
-          Your application reference number: <br>
-          <strong>{{ referenceNumber }}</strong>
+          Your application reference number: <br><strong>{{ referenceNumber }}</strong>
         </div>
       </div>
 
       <p class="govuk-body">
-        We have sent a confirmation email to <strong>sarahphilips@sugar.com</strong>.
+        We have sent a confirmation email to <strong>{{ userEmail }}</strong> which contains your reference number.
       </p>
 
       <h2 class="govuk-heading-m">What happens next</h2>
-      <p class="govuk-body">We will email you within XX working days to let you know if your application to register an overseas entity has been accepted or rejected.</p>
+
+      <p class="govuk-body">We will send an email to <strong>{{ userEmail }}</strong> within {{ workingDays }} working days to let you know if your application to register an overseas entity has been accepted or rejected.</p>
 
       <p class="govuk-body">If the application is accepted, the overseas entity and its beneficial owners will be added to the <a href="#">Register of Overseas Entities.</a></p>
 
-      <p class="govuk-body">We will also send you its Overseas Entity ID number by email. You will need to provide this ID number to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK.</p>
+      <p class="govuk-body">If it's rejected, we'll explain what to do next in the email.</p>
+
+      <p class="govuk-body">We will also send the Overseas Entity ID number by email. This will need to be provided to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK.</p>
 
       <p class="govuk-body"><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a> (takes 30 seconds)</p>
 

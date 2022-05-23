@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnRegisterInCountryFormedInKey, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
@@ -18,14 +18,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const boOther = appData[BeneficialOwnerOtherKey];
-    const principalAddress = (boOther) ? mapDataObjectToFields(boOther[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (boOther) ? mapDataObjectToFields(boOther[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...boOther,
-      ...principalAddress,
-      ...serviceAddress
+      ...boOther
     });
   } catch (error) {
     logger.errorRequest(req, error);

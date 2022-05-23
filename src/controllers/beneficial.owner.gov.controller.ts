@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
@@ -15,14 +15,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const boGov = appData[BeneficialOwnerGovKey];
-    const principalAddress = (boGov) ? mapDataObjectToFields(boGov[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (boGov) ? mapDataObjectToFields(boGov[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     return res.render(config.BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...boGov,
-      ...principalAddress,
-      ...serviceAddress
+      ...boGov
     });
   } catch (error) {
     logger.errorRequest(req, error);

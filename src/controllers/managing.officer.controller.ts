@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 
 import { AddressKeys, HasFormerNames, HasSameResidentialAddressKey, InputDateKeys } from "../model/data.types.model";
 import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
@@ -17,14 +17,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const moIndividual = appData[ManagingOfficerKey];
-    const residencialAddress = (moIndividual) ? mapDataObjectToFields(moIndividual[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    const serviceAddress = (moIndividual) ? mapDataObjectToFields(moIndividual[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     return res.render(config.MANAGING_OFFICER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...moIndividual,
-      ...residencialAddress,
-      ...serviceAddress
+      ...moIndividual
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { getApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
@@ -33,14 +33,10 @@ export const get = (req: Request, res: Response) => {
   const appData: ApplicationData = getApplicationData(req.session);
 
   const boIndividual = appData[BeneficialOwnerIndividualKey];
-  const residencialAddress = (boIndividual) ? mapDataObjectToFields(boIndividual[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-  const serviceAddress = (boIndividual) ? mapDataObjectToFields(boIndividual[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
   return res.render(config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-    ...boIndividual,
-    ...residencialAddress,
-    ...serviceAddress
+    ...boIndividual
   });
 };
 

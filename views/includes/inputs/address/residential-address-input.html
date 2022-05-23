@@ -9,6 +9,7 @@
 }) %}
 
   {{ govukInput({
+    errorMessage: errors.usual_residential_address_property_name_number if errors,
     label: {
       html: 'Property name or number (optional)'
     },
@@ -21,6 +22,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.usual_residential_address_line_1 if errors,
     label: {
       html: 'Address line 1'
     },
@@ -42,6 +44,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.usual_residential_address_town if errors,
     label: {
       text: "City or town"
     },
@@ -62,6 +65,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.usual_residential_address_country if errors,
     label: {
       text: "Country"
     },
@@ -91,6 +95,7 @@
 {% endset -%}
 
 {{ govukRadios({
+  errorMessage: errors.is_service_address_same_as_usual_residential_address if errors,
   classes: "govuk-radios",
   idPrefix: "is_service_address_same_as_usual_residential_address",
   name: "is_service_address_same_as_usual_residential_address",

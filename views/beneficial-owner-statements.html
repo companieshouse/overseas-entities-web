@@ -13,16 +13,19 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      <h1 class="govuk-heading-xl">Have any beneficial owners been identified?</h1>
+
+      {{ govukDetails({
+        summaryText: "What is a beneficial owner?",
+        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>You must provide details of any beneficial owners that meet one or more of the conditions known as the 'nature of control'.</p>"
+      }) }}
+
+      {% include "includes/list/errors.html" %}
+
       <form method="post">
 
-        <h1 class="govuk-heading-xl">Have any beneficial owners been identified?</h1>
-
-        {{ govukDetails({
-          summaryText: "What is a beneficial owner?",
-          html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>You must provide details of any beneficial owners that meet one or more of the conditions known as the 'nature of control'.</p>"
-        }) }}
-
         {{ govukRadios({
+          errorMessage: errors.beneficial_owners_statement if errors,
           idPrefix: "beneficial_owners_statement",
           name: "beneficial_owners_statement",
           fieldset: {

@@ -6,11 +6,15 @@ import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 
-import { BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY } from "../__mocks__/session.mock";
+import {
+  BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
+} from "../__mocks__/session.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnSanctionsListKey, NatureOfControlType, yesNoResponse } from "../../src/model/data.types.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
@@ -30,8 +34,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET tests", () => {
 
+    test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerOtherKey]: null } );
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    });
+
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_OBJECT_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);

@@ -32,6 +32,7 @@ export const post = (req: Request, res: Response) => {
   return res.redirect(getNextPage(selectedOwnerOfficerType));
 };
 
+// With validation in place we have got just these 5 possible choices
 const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice): string => {
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
@@ -41,8 +42,6 @@ const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice): st
     return config.BENEFICIAL_OWNER_GOV_URL;
   } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
     return config.MANAGING_OFFICER_CORPORATE_URL;
-  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.individual) {
-    return config.MANAGING_OFFICER_URL;
   }
-  return config.BENEFICIAL_OWNER_TYPE_URL;
+  return config.MANAGING_OFFICER_URL;
 };

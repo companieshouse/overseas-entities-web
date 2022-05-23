@@ -16,9 +16,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    const moIndividual = appData[ManagingOfficerKey];
+
     return res.render(config.MANAGING_OFFICER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managing_officers_individual
+      ...moIndividual
     });
   } catch (error) {
     logger.errorRequest(req, error);

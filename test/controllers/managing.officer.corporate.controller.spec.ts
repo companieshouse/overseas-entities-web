@@ -14,7 +14,7 @@ import request from "supertest";
 import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK } from "../__mocks__/session.mock";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";
@@ -34,6 +34,14 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("GET tests", () => {
+
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [ManagingOfficerCorporateKey]: null } );
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+    });
 
     test("renders the managing officer corporate page", async () => {
       mockGetApplicationData.mockReturnValueOnce({ [ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK });

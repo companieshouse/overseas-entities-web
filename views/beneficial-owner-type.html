@@ -13,17 +13,20 @@
   <div class="govuk-grid-row govuk-body">
     <div class="govuk-grid-column-two-thirds">
 
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Which type of beneficial owner or managing officer do you want to add?</h1>
+      <br/>
+
+      {{ govukDetails({
+        summaryText: "What is a managing officer?",
+        html: "<p>To be confirmed</p>"
+      }) }}
+
+      {% include "includes/list/errors.html" %}
+
       <form method="post">
 
-        <h1 class="govuk-heading-xl govuk-!-margin-0">Which type of beneficial owner or managing officer do you want to add?</h1>
-        <br/>
-
-        {{ govukDetails({
-          summaryText: "What is a managing officer?",
-          html: "<p>To be confirmed</p>"
-        }) }}
-
         {{ govukRadios({
+          errorMessage: errors.selectedOwnerOfficerType if errors,
           idPrefix: "beneficial-owner-type",
           name: "selectedOwnerOfficerType",
           fieldset: {

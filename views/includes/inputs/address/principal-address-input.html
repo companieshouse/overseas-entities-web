@@ -63,16 +63,10 @@
     value: principal_address_county
   }) }}
 
-  {{ govukInput({
-    errorMessage: errors.principal_address_country if errors,
-    label: {
-      text: "Country"
-    },
-    classes: "govuk-!-width-two-thirds",
-    id: "principal_address_country",
-    name: "principal_address_country",
-    value: principal_address_country
-  }) }}
+  <div class="govuk-form-group autocomplete-wrapper" id="principal_address_country" name="principal_address_country" type="text" autocomplete="principal_address_country">
+    <label for="principal_address_country" class="govuk-label">Country</label>
+    <p class="govuk-hint">Start typing a country, then choose from the list</p>
+  </div>
 
   {{ govukInput({
   label: {

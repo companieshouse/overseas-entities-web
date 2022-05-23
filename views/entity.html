@@ -35,17 +35,10 @@
           value: name
       }) }}
 
-      {{ govukInput({
-        errorMessage: errors.incorporation_country if errors,
-        label: {
-          text: "Which country was it formed in?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        id: "incorporation_country",
-        name: "incorporation_country",
-        value: incorporation_country
-      }) }}
+      <div class="govuk-form-group" id="incorporation_country" name="incorporation_country" type="text" autocomplete="incorporation_country">
+        <label class="govuk-label--m" for="incorporation_country">Which country was it formed in?</label>
+        <p class="govuk-hint">Start typing a country, then choose from the list</p>
+      </div>
 
       {% include "includes/inputs/address/principal-address-input.html" %}
 

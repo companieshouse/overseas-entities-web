@@ -26,6 +26,7 @@
 
   <link rel="SHORTCUT ICON" href="//{{CDN_HOST}}/images/favicon.ico" />
   <link rel="icon" href="//{{CDN_HOST}}/images/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" type="text/css" media="all" href="//{{CDN_HOST}}/stylesheets/services/overseas-entities/application.css" />
 
   <script src="https://code.jquery.com/jquery-3.4.1.js"
           integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
@@ -81,5 +82,7 @@
 
 {% block bodyEnd %}
   <script src="//{{CDN_HOST}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
+  <script src="//{{CDN_HOST}}/javascripts/services/overseas-entities/accessible-autocomplete.js"></script>
+  <script src="//{{CDN_HOST}}/javascripts/services/overseas-entities/country.js"></script>
   <script>window.GOVUKFrontend.initAll()</script>
 {% endblock %}

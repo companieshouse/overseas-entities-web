@@ -11,7 +11,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
     const errors = formatValidationError(errorList.array());
 
     return res.render(NAVIGATION[req.path].currentPage, {
-      backLinkUrl: NAVIGATION[req.path].previusPage,
+      backLinkUrl: NAVIGATION[req.path].previousPage,
       ...getApplicationData(req.session),
       ...req.body,
       errors,

@@ -9,17 +9,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.INTERRUPT_CARD_PAGE}`);
 
     deleteApplicationData(req.session);
-    return res.render(config.INTERRUPT_CARD_PAGE);
-  } catch (error) {
-    logger.errorRequest(req, error);
-    next(error);
-  }
-};
-
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `POST ${config.INTERRUPT_CARD_PAGE}`);
-    return res.redirect(config.PRESENTER_URL);
+    return res.render(config.INTERRUPT_CARD_PAGE, {
+      backLinkUrl: config.LANDING_URL
+    });
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

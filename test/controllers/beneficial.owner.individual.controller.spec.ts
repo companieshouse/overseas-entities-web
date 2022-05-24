@@ -8,7 +8,7 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
@@ -29,6 +29,15 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET tests", () => {
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerIndividualKey]: null } );
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+    });
+
     test("renders the beneficial owner individual page", async () => {
       mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);

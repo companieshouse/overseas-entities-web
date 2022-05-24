@@ -23,6 +23,9 @@ import { serviceAvailabilityMiddleware } from "../middleware/service.availabilit
 import { authentication } from "../middleware/authentication.middleware";
 import errorHandler from "../controllers/error.controller";
 
+import { checkValidations } from "../middleware/validation.middleware";
+import { validator } from "../validation";
+
 const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
@@ -35,16 +38,16 @@ router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
 router.post(config.INTERRUPT_CARD_URL, interruptCard.post);
 
 router.get(config.PRESENTER_URL, authentication, presenter.get);
-router.post(config.PRESENTER_URL, authentication, presenter.post);
+router.post(config.PRESENTER_URL, authentication, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.ENTITY_URL, authentication, entity.get);
-router.post(config.ENTITY_URL, authentication, entity.post);
+router.post(config.ENTITY_URL, authentication, ...validator.entity, checkValidations, entity.post);
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, beneficialOwnerStatements.get);
-router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, beneficialOwnerStatements.post);
+router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType.get);
-router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
 router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.get);
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.post);

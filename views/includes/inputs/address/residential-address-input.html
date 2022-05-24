@@ -10,14 +10,14 @@
 
   {{ govukInput({
     label: {
-      html: 'Property name or number (optional)'
+      html: 'Property name or number'
     },
     hint: {
       text: propertyNameNumberText
     },
     id: "usual_residential_address_property_name_number",
     name: "usual_residential_address_property_name_number",
-    value: usual_residential_address.usual_residential_address_property_name_number if usual_residential_address
+    value: usual_residential_address_property_name_number
   }) }}
 
   {{ govukInput({
@@ -28,7 +28,7 @@
     id: "usual_residential_address_line_1",
     name: "usual_residential_address_line_1",
     autocomplete: "usual_residential_address_line_1",
-    value: usual_residential_address.usual_residential_address_line_1 if usual_residential_address
+    value: usual_residential_address_line_1
   }) }}
 
   {{ govukInput({
@@ -38,7 +38,7 @@
     id: "usual_residential_address_line_2",
     name: "usual_residential_address_line_2",
     autocomplete: "usual_residential_address_line_2",
-    value: usual_residential_address.usual_residential_address_line_2 if usual_residential_address
+    value: usual_residential_address_line_2
   }) }}
 
   {{ govukInput({
@@ -48,7 +48,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "usual_residential_address_town",
     name: "usual_residential_address_town",
-    value: usual_residential_address.usual_residential_address_town if usual_residential_address
+    value: usual_residential_address_town
   }) }}
 
   {{ govukInput({
@@ -58,7 +58,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "usual_residential_address_county",
     name: "usual_residential_address_county",
-    value: usual_residential_address.usual_residential_address_county if usual_residential_address
+    value: usual_residential_address_county
   }) }}
 
   {{ govukInput({
@@ -68,7 +68,7 @@
     classes: "govuk-!-width-two-thirds",
     id: "usual_residential_address_country",
     name: "usual_residential_address_country",
-    value: usual_residential_address.usual_residential_address_country if usual_residential_address
+    value: usual_residential_address_country
   }) }}
 
   {{ govukInput({
@@ -79,7 +79,7 @@
     id: "usual_residential_address_postcode",
     name: "usual_residential_address_postcode",
     autocomplete: "usual_residential_address_postcode",
-    value: usual_residential_address.usual_residential_address_postcode if usual_residential_address
+    value: usual_residential_address_postcode
   }) }}
 
 {% endcall %}
@@ -105,12 +105,12 @@
     {
       value: 1,
       text: "Yes",
-      checked: is_service_address_same_as_usual_residential_address === 1
+      checked: is_service_address_same_as_usual_residential_address == 1
     },
     {
       value: 0,
       text: "No",
-      checked: is_service_address_same_as_usual_residential_address === 0,
+      checked: is_service_address_same_as_usual_residential_address == 0,
       conditional: {
         html: serviceAddressHtml
       }

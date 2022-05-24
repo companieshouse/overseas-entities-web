@@ -14,8 +14,12 @@
 
       <h1 class="govuk-heading-xl">Who can we contact about this application?</h1>
 
+      {% include "includes/list/errors.html" %}
+
       <form method="post">
+
         {{ govukInput({
+          errorMessage: errors.full_name if errors,
           label: {
             text: "Full name",
             isPageHeading: false
@@ -27,6 +31,7 @@
         }) }}
 
         {{ govukInput({
+          errorMessage: errors.email if errors,
           label: {
             text: "Email address",
             isPageHeading: false

@@ -1,0 +1,27 @@
+{{ govukRadios({
+  classes: "govuk-radios",
+  idPrefix: "is_on_sanctions_list",
+  name: "is_on_sanctions_list",
+  fieldset: {
+    legend: {
+      text: sanctionsListText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: sanctionsListHintText
+  },
+  items: [
+    {
+      value: 1,
+      text: "Yes",
+      checked: is_on_sanctions_list == 1
+    },
+    {
+      value: 0,
+      text: "No",
+      checked: is_on_sanctions_list == 0
+    }
+  ]
+}) }}

@@ -19,9 +19,12 @@
       text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
     }) }}
 
+    {% include "includes/list/errors.html" %}
+
     <form method="post">
 
       {{ govukInput({
+        errorMessage: errors.name if errors,
         label: {
           text: "What is the name of the overseas entity?",
             classes: "govuk-label--m",
@@ -33,6 +36,7 @@
       }) }}
 
       {{ govukInput({
+        errorMessage: errors.incorporation_country if errors,
         label: {
           text: "Which country was it formed in?",
           classes: "govuk-label--m",
@@ -46,6 +50,7 @@
       {% include "includes/inputs/address/principal-address-input.html" %}
 
       {{ govukInput({
+        errorMessage: errors.email if errors,
         label: {
           text: "Which email address at the overseas entity should we send communications to?",
           classes: "govuk-label--m",

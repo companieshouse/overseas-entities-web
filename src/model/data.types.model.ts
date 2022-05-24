@@ -44,7 +44,7 @@ export const InputDateKeys: string[] = [
   "year"
 ];
 
-// Boolean fields need to parsed from string to number
+// Boolean fields need to be parsed from string to number
 export const HasSameResidentialAddressKey = "is_service_address_same_as_usual_residential_address";
 export const HasSamePrincipalAddressKey = "is_service_address_same_as_principal_address";
 export const IsOnSanctionsListKey = "is_on_sanctions_list";
@@ -55,3 +55,8 @@ export const HasFormerNames = "has_former_names";
 export const BeneficialOwnerNoc = "beneficial_owner_nature_of_control_types";
 export const TrusteesNoc = "trustees_nature_of_control_types";
 export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
+
+// Payment, OE and Transaction keys
+export const PaymentKey = "payment";
+export const OverseasEntityKey = "overseas_entity_id";
+export const Transactionkey = "transaction_id";

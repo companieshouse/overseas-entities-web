@@ -17,8 +17,10 @@ import {
 import { APPLICATION_DATA_MOCK, ERROR } from '../__mocks__/session.mock';
 import {
   BeneficialOwnerTypeChoice,
+  BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice,
 } from "../../src/model/beneficial.owner.type.model";
+import { ErrorMessages } from '../../src/validation/error.messages';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -54,7 +56,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`redirects to the ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_URL)
-        .send({ selectedOwnerOfficerType: BeneficialOwnerTypeChoice.individual });
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.individual });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_URL);
@@ -63,7 +65,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_URL)
-        .send({ selectedOwnerOfficerType: BeneficialOwnerTypeChoice.otherLegal });
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_OTHER_URL);
@@ -72,7 +74,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`redirects to the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_URL)
-        .send({ selectedOwnerOfficerType: BeneficialOwnerTypeChoice.government });
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.government });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_GOV_URL);
@@ -81,7 +83,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`redirects to the ${config.MANAGING_OFFICER_PAGE} page`, async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_URL)
-        .send({ selectedOwnerOfficerType: ManagingOfficerTypeChoice.individual });
+        .send({ [BeneficialOwnerTypeKey]: ManagingOfficerTypeChoice.individual });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.MANAGING_OFFICER_URL);
@@ -90,17 +92,19 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`redirects to the ${config.MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_URL)
-        .send({ selectedOwnerOfficerType: ManagingOfficerTypeChoice.corporate });
+        .send({ [BeneficialOwnerTypeKey]: ManagingOfficerTypeChoice.corporate });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.MANAGING_OFFICER_CORPORATE_URL);
     });
 
-    test("redirects to the current page", async () => {
+    test("renders the current page with error message", async () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });
   });
 });

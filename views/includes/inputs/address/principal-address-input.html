@@ -9,25 +9,27 @@
 }) %}
 
   {{ govukInput({
+    errorMessage: errors.principal_address_property_name_number if errors,
     label: {
-      html: 'Property name or number (optional)'
+      html: 'Property name or number'
     },
     hint: {
       text: propertyNameNumberText
     },
     id: "principal_address_property_name_number",
     name: "principal_address_property_name_number",
-    value: principal_address.property_name_number if principal_address
+    value: principal_address_property_name_number
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.principal_address_line_1 if errors,
     label: {
       text: "Address line 1"
     },
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_line_1",
     name: "principal_address_line_1",
-    value: principal_address.line_1 if principal_address
+    value: principal_address_line_1
   }) }}
 
   {{ govukInput({
@@ -37,17 +39,18 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_line_2",
     name: "principal_address_line_2",
-    value: principal_address.line_2 if principal_address
+    value: principal_address_line_2
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.principal_address_town if errors,
     label: {
       text: "City or town"
     },
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_town",
     name: "principal_address_town",
-    value: principal_address.town if principal_address
+    value: principal_address_town
   }) }}
 
   {{ govukInput({
@@ -57,17 +60,18 @@
     classes: "govuk-!-width-two-thirds",
     id: "principal_address_county",
     name: "principal_address_county",
-    value: principal_address.county if principal_address
+    value: principal_address_county
   }) }}
 
   {{ govukInput({
-  label: {
-    text: "Country"
-  },
-  classes: "govuk-!-width-two-thirds",
-  id: "principal_address_country",
-  name: "principal_address_country",
-  value: principal_address.country if principal_address
+    errorMessage: errors.principal_address_country if errors,
+    label: {
+      text: "Country"
+    },
+    classes: "govuk-!-width-two-thirds",
+    id: "principal_address_country",
+    name: "principal_address_country",
+    value: principal_address_country
   }) }}
 
   {{ govukInput({
@@ -77,7 +81,7 @@
   classes: "govuk-input--width-10",
   id: "principal_address_postcode",
   name: "principal_address_postcode",
-  value: principal_address.postcode if principal_address
+  value: principal_address_postcode
   }) }}
 
 {% endcall %}
@@ -89,6 +93,7 @@
 {% endset -%}
 
 {{ govukRadios({
+  errorMessage: errors.is_service_address_same_as_principal_address if errors,
   classes: "govuk-radios",
   idPrefix: "is_service_address_same_as_principal_address",
   name: "is_service_address_same_as_principal_address",
@@ -103,12 +108,12 @@
     {
       value: 1,
       text: "Yes",
-      checked: is_service_address_same_as_principal_address === 1
+      checked: is_service_address_same_as_principal_address == 1
     },
     {
       value: 0,
       text: "No",
-      checked: is_service_address_same_as_principal_address === 0,
+      checked: is_service_address_same_as_principal_address == 0,
       conditional: {
         html: serviceAddressHtml
       }

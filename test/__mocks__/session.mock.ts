@@ -1,4 +1,4 @@
-import { Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
+import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { SessionKey } from "@companieshouse/node-session-handler/lib/session/keys/SessionKey";
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
@@ -15,11 +15,13 @@ import {
   entityType,
   managingOfficerCorporateType,
   managingOfficerType,
-  presenterType,
-  paymentType
+  presenterType
 } from "../../src/model";
 import {
   NatureOfControlType,
+  OverseasEntityKey,
+  PaymentKey,
+  Transactionkey,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -112,6 +114,16 @@ export const SERVICE_ADDRESS_MOCK = {
   service_address_postcode: "BY 2"
 };
 
+export const PRINCIPAL_ADDRESS_MOCK = {
+  principal_address_property_name_number: "1",
+  principal_address_line_1: "addressLine1",
+  principal_address_line_2: "addressLine2",
+  principal_address_town: "town",
+  principal_address_county: "county",
+  principal_address_country: "country",
+  principal_address_postcode: "BY 2"
+};
+
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
@@ -130,6 +142,20 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
   ...ENTITY_OBJECT_MOCK,
   is_service_address_same_as_principal_address: 0,
   service_address: SERVICE_ADDRESS
+};
+
+export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  name: "overseasEntityName",
+  incorporation_country: "incorporationCountry",
+  is_service_address_same_as_principal_address: "0",
+  email: "email",
+  legal_form: "legalForm",
+  law_governed: "governedLaw",
+  public_register_name: "publicRegister",
+  registration_number: "123",
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
@@ -153,6 +179,22 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   is_on_sanctions_list: 0
 };
 
+export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  name: "TestCorporation",
+  is_service_address_same_as_principal_address: "1",
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  public_register_name: "ThisRegister",
+  registration_number: "123456789",
+  is_on_register_in_country_formed_in: "1",
+  start_date: { day: "1", month: "1", year: "2011" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: "0",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
+};
 
 export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
   name: "",
@@ -211,6 +253,20 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   start_date: { day: "12", month: "11", year: "1965" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: 1
+};
+
+export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  name: "my company name",
+  is_service_address_same_as_principal_address: "1",
+  legal_form: "LegalForm",
+  law_governed: "a11",
+  start_date: { day: "12", month: "11", year: "1965" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: "1",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
@@ -222,7 +278,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
   law_governed: "",
   start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
   beneficial_owner_nature_of_control_types: "",
-  non_legal_firm_members_nature_of_control_types: "",
+  non_legal_firm_members_nature_of_control_types: ""
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -269,16 +325,14 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"
-} ;
+};
 
-export const PAYMENT_OBJECT_MOCK: paymentType.Payment = {
+export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
   resource: "any resource",
-  state: STATE_ID,
-  transactionId: TRANSACTION_ID,
-  overseasEntityId: OVERSEAS_ENTITY_ID,
-} ;
+  state: STATE_ID
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -289,5 +343,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
-  [paymentType.PaymentKey]: PAYMENT_OBJECT_MOCK
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID
 };

@@ -19,9 +19,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    const moCorporate = appData[ManagingOfficerCorporateKey];
+
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...appData.managing_officers_corporate
+      ...moCorporate
     });
   } catch (error) {
     logger.errorRequest(req, error);

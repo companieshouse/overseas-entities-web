@@ -2,17 +2,19 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { ENTITY_URL } from "../../src/config";
+import { ENTITY_PAGE, ENTITY_URL, PRESENTER_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { APPLICATION_DATA_MOCK, ENTITY_OBJECT_MOCK, ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK, ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS } from '../__mocks__/session.mock';
 import { BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT, ENTITY_PAGE_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { EntityKey } from '../../src/model/entity.model';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -22,74 +24,123 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 describe("ENTITY controller", () => {
 
-  test("renders the entity page on GET method", async () => {
-    mockGetApplicationData.mockImplementation( () => getApplicationData );
-    const resp = await request(app).get(ENTITY_URL);
-
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test("renders the entity page on GET method with session data populated", async () => {
-    mockGetApplicationData.mockImplementation( () => APPLICATION_DATA_MOCK );
-    const resp = await request(app).get(ENTITY_URL);
+  describe("GET tests", () => {
 
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-    expect(resp.text).toContain(ENTITY_OBJECT_MOCK.legal_form);
+    test(`renders the ${ENTITY_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null } );
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+    });
+
+    test("renders the entity page on GET method with session data populated", async () => {
+      mockGetApplicationData.mockReturnValueOnce( APPLICATION_DATA_MOCK );
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(ENTITY_OBJECT_MOCK.legal_form);
+      expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
+    });
+
+    test("catch error when renders the entity page on GET method", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 
-  test("redirect the beneficial owner type page after a successful post from ENTITY page", async () => {
+  describe("POST tests", () => {
+    test("redirect the beneficial owner type page after a successful post from ENTITY page", async () => {
+      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
-    mockPrepareData.mockImplementation( () => ENTITY_OBJECT_MOCK );
-    mockSetApplicationData.mockImplementation( () => setApplicationData);
-    const resp = await request(app).post(ENTITY_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+    });
 
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+    test("redirect to the next page page after a successful post from ENTITY page with service address data", async () => {
+      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+    });
+
+    test("redirect to the next page page after a successful post from ENTITY page without the selection option", async () => {
+      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" } );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+    });
+
+    test("redirect to the next page page after a successful post from ENTITY page without the register option", async () => {
+      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" } );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+    });
+
+    test("renders the current page with error messages", async () => {
+      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      const resp = await request(app).post(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).toContain(PRESENTER_URL);
+    });
+
+    test("renders the current page with public register error messages", async () => {
+      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send({ is_on_register_in_country_formed_in: "1", public_register_name: "       " });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).toContain(PRESENTER_URL);
+    });
+
+    test("catch error when post data from ENTITY page", async () => {
+      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
-
-  test("redirect to the next page page after a successful post from ENTITY page with service address data", async () => {
-    mockPrepareData.mockImplementation( () => ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
-    mockSetApplicationData.mockImplementation( () => setApplicationData);
-    const resp = await request(app).post(ENTITY_URL);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-  });
-
-  test("redirect to the next page page after a successful post from ENTITY page without the selection option", async () => {
-    mockPrepareData.mockImplementation( () =>  { return { ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" }; } );
-    mockSetApplicationData.mockImplementation( () => setApplicationData);
-    const resp = await request(app).post(ENTITY_URL);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-  });
-
-  test("redirect to the next page page after a successful post from ENTITY page without the register option", async () => {
-    mockPrepareData.mockImplementation( () =>  { return { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" }; } );
-    mockSetApplicationData.mockImplementation( () => setApplicationData);
-    const resp = await request(app).post(ENTITY_URL);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
-  });
-
-  test("catch error when renders the entity page on GET method", async () => {
-    mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    const resp = await request(app).get(ENTITY_URL);
-
-    expect(resp.status).toEqual(500);
-    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-  });
-
-  test("catch error when post data from ENTITY page", async () => {
-    mockSetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    const resp = await request(app).post(ENTITY_URL);
-
-    expect(resp.status).toEqual(500);
-    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-  });
-
 });

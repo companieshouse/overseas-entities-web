@@ -6,22 +6,37 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys } from "../model/beneficial.owner.individual.model";
 import {
-  AddressKeys, BeneficialOwnerNoc, HasSameResidentialAddressKey, InputDateKeys, IsOnSanctionsListKey,
-  NonLegalFirmNoc, TrusteesNoc
+  AddressKeys,
+  BeneficialOwnerNoc,
+  HasSameResidentialAddressKey,
+  InputDateKeys,
+  IsOnSanctionsListKey,
+  NonLegalFirmNoc,
+  TrusteesNoc,
 } from "../model/data.types.model";
 import {
-  ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys
+  ServiceAddressKey,
+  ServiceAddressKeys,
+  UsualResidentialAddressKey,
+  UsualResidentialAddressKeys,
 } from "../model/address.model";
-import { DateOfBirthKey, DateOfBirthKeys, StartDateKey, StartDateKeys } from "../model/date.model";
+import {
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  StartDateKey,
+  StartDateKeys,
+} from "../model/date.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
   const appData: ApplicationData = getApplicationData(req.session);
 
+  const boIndividual = appData[BeneficialOwnerIndividualKey];
+
   return res.render(config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-    ...appData.beneficial_owners_individual
+    ...boIndividual
   });
 };
 

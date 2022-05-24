@@ -127,7 +127,7 @@ export const PRINCIPAL_ADDRESS_MOCK = {
   principal_address_postcode: "BY 2"
 };
 
-export const RESIDENCIAL_ADDRESS_MOCK = {
+export const RESIDENTIAL_ADDRESS_MOCK = {
   usual_residential_address_property_name_number: "residential address 1",
   usual_residential_address_line_1: "residential address addressLine1",
   usual_residential_address_line_2: "residential address addressLine2",
@@ -331,7 +331,7 @@ export const REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS = {
   is_service_address_same_as_usual_residential_address: "0",
   occupation: "some occupation",
   role_and_responsibilities: "some role and responsibilities",
-  ...RESIDENCIAL_ADDRESS_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...date_of_birth
 };

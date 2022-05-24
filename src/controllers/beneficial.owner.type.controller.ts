@@ -6,6 +6,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import {
   BeneficialOwnerTypeChoice,
+  BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice,
 } from "../model/beneficial.owner.type.model";
 
@@ -27,13 +28,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
-  const { selectedOwnerOfficerType } = req.body;
 
-  return res.redirect(getNextPage(selectedOwnerOfficerType));
+  return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
 
 // With validation in place we have got just these 5 possible choices
-const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice): string => {
+const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {

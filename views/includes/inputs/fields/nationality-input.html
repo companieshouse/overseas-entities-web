@@ -1,10 +1,11 @@
 {{ govukInput({
-    label: {
-      text: "What is their nationality?",
-      classes: "govuk-label--m",
-      isPageHeading: false
-    },
-    id: "nationality",
-    name: "nationality",
-    value: nationality
+  errorMessage: errors.nationality if errors,
+  label: {
+    text: "What is their nationality?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  id: "nationality",
+  name: "nationality",
+  value: nationality
 }) }}

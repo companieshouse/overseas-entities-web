@@ -1,13 +1,14 @@
 {{ govukInput({
-    label: {
-      text: "What is their last name?",
-      classes: "govuk-label--m",
-      isPageHeading: false
-    },
-    hint: {
-      text: hintLastNameText
-    },
-    id: "last_name",
-    name: "last_name",
-    value: last_name
+  errorMessage: errors.last_name if errors,
+  label: {
+    text: "What is their last name?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  hint: {
+    text: hintLastNameText
+  },
+  id: "last_name",
+  name: "last_name",
+  value: last_name
 }) }}

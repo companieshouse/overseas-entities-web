@@ -11,6 +11,7 @@ import {
   confirmation,
   entity,
   healthcheck,
+  interruptCard,
   landing,
   managingOfficerIndividual,
   managingOfficerCorporate,
@@ -29,9 +30,11 @@ const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
 
+router.get(config.HEALTHCHECK_URL, healthcheck.get);
+
 router.get(config.LANDING_URL, landing.get);
 
-router.get(config.HEALTHCHECK_URL, healthcheck.get);
+router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
 
 router.get(config.PRESENTER_URL, authentication, presenter.get);
 router.post(config.PRESENTER_URL, authentication, ...validator.presenter, checkValidations, presenter.post);

@@ -1,3 +1,4 @@
+export * as interruptCard from "./interrupt.card.controller";
 export * as beneficialOwnerGov from "./beneficial.owner.gov.controller";
 export * as beneficialOwnerOther from "./beneficial.owner.other.controller";
 export * as beneficialOwnerStatements from "./beneficial.owner.statements.controller";

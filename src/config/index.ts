@@ -29,28 +29,29 @@ export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 
 // TEMPLATEs
+export const INTERRUPT_CARD_PAGE = "interrupt-card";
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE = "beneficial-owner-statements";
 export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_PAGE = "check-your-answers";
+export const CONFIRMATION_PAGE = "confirmation";
 export const ENTITY_PAGE = "entity";
+export const ERROR_PAGE = "error-page";
+export const HEALTHCHECK_PAGE = "healthcheck";
 export const LANDING_PAGE = "landing";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
-export const PRESENTER_PAGE = "presenter";
-export const CONFIRMATION_PAGE = "confirmation";
-export const HEALTHCHECK_PAGE = "healthcheck";
-
-export const ERROR_PAGE = "error-page";
 export const NOT_FOUND_PAGE = "page-not-found";
+export const PRESENTER_PAGE = "presenter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
+export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;
 export const BENEFICIAL_OWNER_STATEMENTS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_STATEMENTS_PAGE;
 export const BENEFICIAL_OWNER_TYPE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_TYPE_PAGE;

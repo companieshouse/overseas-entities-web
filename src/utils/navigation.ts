@@ -2,9 +2,14 @@ import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 
 export const NAVIGATION: Navigation = {
+  [config.INTERRUPT_CARD_URL]: {
+    currentPage: config.INTERRUPT_CARD_PAGE,
+    previousPage: config.LANDING_URL,
+    nextPage: config.PRESENTER_URL
+  },
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
-    previousPage: config.LANDING_URL,
+    previousPage: config.INTERRUPT_CARD_URL,
     nextPage: config.ENTITY_URL
   },
   [config.ENTITY_URL]: {

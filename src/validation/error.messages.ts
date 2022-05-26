@@ -17,7 +17,7 @@ export enum ErrorMessages {
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",
   ADDRESS_LINE1 = "Enter an address",
   CITY_OR_TOWN = "Enter a city or town",
-  COUNTRY = "Enter a country",
+  COUNTRY = "Select a country",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",

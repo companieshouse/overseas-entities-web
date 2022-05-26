@@ -61,10 +61,10 @@
     value: service_address_county
   }) }}
 
-  <div class="govuk-form-group autocomplete-wrapper" id="service_address_country" name="service_address_country" type="text" autocomplete="service_address_country">
-    <label for="service_address_country" class="govuk-label">Country</label>
-    <p class="govuk-hint">Start typing a country, then choose from the list</p>
-  </div>
+  {% set countryField = service_address_country %}
+  {% set countryFieldNameId = "service_address_country" %}
+  {% set countryFieldText = "Country" %}
+  {% include "includes/inputs/country/country-select.html" %}  
 
   {{ govukInput({
     label: {

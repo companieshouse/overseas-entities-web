@@ -35,10 +35,11 @@
           value: name
       }) }}
 
-      <div class="govuk-form-group" id="incorporation_country" name="incorporation_country" type="text" autocomplete="incorporation_country">
-        <label class="govuk-label--m" for="incorporation_country">Which country was it formed in?</label>
-        <p class="govuk-hint">Start typing a country, then choose from the list</p>
-      </div>
+      
+      {% set countryField = incorporation_country %}
+      {% set countryFieldNameId = "incorporation_country" %}
+      {% set countryFieldText = "Which country was it formed in?" %}
+      {% include "includes/inputs/country/country-select.html" %}      
 
       {% include "includes/inputs/address/principal-address-input.html" %}
 

@@ -17,6 +17,7 @@
 {% from "govuk/components/date-input/macro.njk"       import govukDateInput %}
 {% from "govuk/components/input/macro.njk"            import govukInput %}
 {% from "govuk/components/inset-text/macro.njk"       import govukInsetText %}
+{% from "govuk/components/select/macro.njk"           import govukSelect %}
 
 {% block head %}
 
@@ -82,7 +83,5 @@
 
 {% block bodyEnd %}
   <script src="//{{CDN_HOST}}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js"></script>
-  <script src="//{{CDN_HOST}}/javascripts/services/overseas-entities/accessible-autocomplete.js" integrity="sha256-miJE7ORwn5pL1jLRWqpVUSJPVDh5t0h9tH4Um0+qV6Y=" crossorigin="anonymous"></script>
-  <script src="//{{CDN_HOST}}/javascripts/services/overseas-entities/country.js" integrity="sha256-u1PzXSoNJZtFEBl2sFUINhcETEfuq/CvnWj7cpXK8dU=" crossorigin="anonymous"></script>
   <script>window.GOVUKFrontend.initAll()</script>
 {% endblock %}

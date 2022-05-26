@@ -35,17 +35,10 @@
           value: name
       }) }}
 
-      {{ govukInput({
-        errorMessage: errors.incorporation_country if errors,
-        label: {
-          text: "Which country was it formed in?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        id: "incorporation_country",
-        name: "incorporation_country",
-        value: incorporation_country
-      }) }}
+      {% set countryField = incorporation_country %}
+      {% set countryFieldNameId = "incorporation_country" %}
+      {% set countryFieldText = "Which country was it formed in?" %}
+      {% include "includes/inputs/country/country-select.html" %}      
 
       {% include "includes/inputs/address/principal-address-input.html" %}
 

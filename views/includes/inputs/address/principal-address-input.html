@@ -63,16 +63,10 @@
     value: principal_address_county
   }) }}
 
-  {{ govukInput({
-    errorMessage: errors.principal_address_country if errors,
-    label: {
-      text: "Country"
-    },
-    classes: "govuk-!-width-two-thirds",
-    id: "principal_address_country",
-    name: "principal_address_country",
-    value: principal_address_country
-  }) }}
+  {% set countryField = principal_address_country %}
+  {% set countryFieldNameId = "principal_address_country" %}
+  {% set countryFieldText = "Country" %}
+  {% include "includes/inputs/country/country-select.html" %}
 
   {{ govukInput({
   label: {

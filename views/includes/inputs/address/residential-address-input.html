@@ -64,16 +64,10 @@
     value: usual_residential_address_county
   }) }}
 
-  {{ govukInput({
-    errorMessage: errors.usual_residential_address_country if errors,
-    label: {
-      text: "Country"
-    },
-    classes: "govuk-!-width-two-thirds",
-    id: "usual_residential_address_country",
-    name: "usual_residential_address_country",
-    value: usual_residential_address_country
-  }) }}
+  {% set countryField = usual_residential_address_country %}
+  {% set countryFieldNameId = "usual_residential_address_country" %}
+  {% set countryFieldText = "Country" %}
+  {% include "includes/inputs/country/country-select.html" %}
 
   {{ govukInput({
     label: {

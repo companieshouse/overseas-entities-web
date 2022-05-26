@@ -11,14 +11,16 @@ import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
-import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK } from "../__mocks__/session.mock";
 import app from "../../src/app";
+
+import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";
 import { ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
+import { ErrorMessages } from "../../src/validation/error.messages";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -68,9 +70,14 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
 
   describe("POST tests", () => {
+
     test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
-      const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
       const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
 
       expect(resp.status).toEqual(302);
@@ -86,7 +93,9 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () =>  { return { [IsOnRegisterInCountryFormedInKey]: 0, [HasSamePrincipalAddressKey]: 0 }; } );
 
-      const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
@@ -94,11 +103,50 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test("catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.DAY);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with public register error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send({ is_on_register_in_country_formed_in: "1", public_register_name: "       " });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
   });
 });

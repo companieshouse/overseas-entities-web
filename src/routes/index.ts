@@ -11,6 +11,7 @@ import {
   confirmation,
   entity,
   healthcheck,
+  interruptCard,
   landing,
   managingOfficerIndividual,
   managingOfficerCorporate,
@@ -29,9 +30,11 @@ const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
 
+router.get(config.HEALTHCHECK_URL, healthcheck.get);
+
 router.get(config.LANDING_URL, landing.get);
 
-router.get(config.HEALTHCHECK_URL, healthcheck.get);
+router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
 
 router.get(config.PRESENTER_URL, authentication, presenter.get);
 router.post(config.PRESENTER_URL, authentication, ...validator.presenter, checkValidations, presenter.post);
@@ -49,10 +52,10 @@ router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOth
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.post);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.get);
-router.post(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.post);
+router.post(config.MANAGING_OFFICER_URL, authentication, ...validator.managingOfficerIndividual, checkValidations, managingOfficerIndividual.post);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
-router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.post);
+router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);

@@ -10,10 +10,16 @@ import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE, MANAGING_OFFICER_URL } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
-import { MANAGING_OFFICER_OBJECT_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY } from '../__mocks__/session.mock';
+import {
+  MANAGING_OFFICER_OBJECT_MOCK,
+  REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS,
+  REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
+} from "../__mocks__/session.mock";
 import { ANY_MESSAGE_ERROR, MANAGING_OFFICER, MANAGING_OFFICER_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { managingOfficerType } from '../../src/model';
 import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
+import { ErrorMessages } from '../../src/validation/error.messages';
+import { HasFormerNames, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -55,19 +61,23 @@ describe("MANAGING_OFFICER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandandory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
-      const resp = await request(app).post(MANAGING_OFFICER_URL);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandandory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
-      const resp = await request(app).post(MANAGING_OFFICER_URL);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
@@ -81,10 +91,13 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`POST empty object and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY );
 
-      const resp = await request(app).post(MANAGING_OFFICER_URL);
+    test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () =>  { return { [HasSameResidentialAddressKey]: 0, [HasFormerNames]: 0 }; } );
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
@@ -92,10 +105,51 @@ describe("MANAGING_OFFICER controller", () => {
 
     test("catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(MANAGING_OFFICER_URL);
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_URL} with error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).toContain(ErrorMessages.FIRST_NAME);
+      expect(resp.text).toContain(ErrorMessages.LAST_NAME);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.FORMER_NAME);
+      expect(resp.text).toContain(ErrorMessages.DAY);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITY);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.ROLE);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_URL} with former names error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send({ has_former_names: "1", former_names: "       " });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
+      expect(resp.text).toContain(ErrorMessages.FORMER_NAME);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 });

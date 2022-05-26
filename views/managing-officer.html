@@ -15,6 +15,8 @@
       <span class="govuk-caption-xl">Managing officer</span>
       {% include "includes/heading/bo-and-mo-individuals-heading.html" %}
 
+      {% include "includes/list/errors.html" %}
+
       <form class="form" method="post">
 
         {% include "includes/inputs/fields/first-name-input.html" %}
@@ -24,6 +26,7 @@
 
         {% set formerNameHtml %}
           {{ govukInput({
+            errorMessage: errors.former_names if errors,
             id: "former_names",
             name: "former_names",
             value: former_names,
@@ -35,6 +38,7 @@
         {% endset %}
 
         {{ govukRadios({
+          errorMessage: errors.has_former_names if errors,
           classes: "govuk-radios",
           idPrefix: "has_former_names",
           name: "has_former_names",
@@ -83,6 +87,7 @@
         }) }}
 
         {{ govukTextarea({
+          errorMessage: errors.role_and_responsibilities if errors,
           label: {
             text: "Describe their role and responsibilities in relation to the entity",
             classes: "govuk-label--m",

@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Before you start - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <div class="interrupt-card">
+        <h1 class="govuk-heading-l">Before you start</h1>
+        <h2 class="govuk-heading-m">Identity checks</h2>
+        <p class="govuk-body">Before you start the application you will be asked to provide the details of a <a href="#" class="govuk-link">UK agent</a> that has carried out the identity checks on all beneficial owners or managing officers.</p>
+
+        <h2 class="govuk-heading-m">Trusts</h2>
+        <p class="govuk-body">If you need to tell us about <a href="#" class="govuk-link">trusts</a>, we highly recommend that you complete the <a href="//{{CDN_HOST}}/static/services/overseas-entities/OverseasEntityTrustDataCapture.xlsm" class="govuk-link">Trust Excel document (52KB)</a> before you start, as the service will time out if you do not use it for 60 minutes.   </p>
+
+
+        <p class="govuk-body">You'll need to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>open the document in Excel</li>
+          <li>enable macros when prompted</li>
+        </ul>
+        <p class="govuk-body">  Then follow the instructions within the document to enter the information into the service. You'll need to complete a new document for each trust. </p>
+        
+        {{ govukButton({
+          text: "Continue",
+          href: "/register-an-overseas-entity/presenter",
+          attributes: {
+            "id": "continue"
+          }
+        }) }}
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

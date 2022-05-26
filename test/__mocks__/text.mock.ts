@@ -1,5 +1,6 @@
 export const INDEX_PAGE_TITLE = "Register an overseas entity and tell us about its beneficial owners";
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
+export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
 export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government or public authority";
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";

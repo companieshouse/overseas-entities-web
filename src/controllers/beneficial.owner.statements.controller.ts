@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../utils/logger";
+
 import * as config from "../config";
+import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
@@ -13,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: config.ENTITY_URL,
-      beneficial_owners_statement: appData.beneficial_owners_statement
+      [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);

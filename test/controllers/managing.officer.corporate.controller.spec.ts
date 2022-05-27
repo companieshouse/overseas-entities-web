@@ -124,10 +124,10 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
-      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
-      expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(ErrorMessages.DAY);

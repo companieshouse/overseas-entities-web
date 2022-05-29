@@ -13,14 +13,13 @@ import { getApplicationData, setApplicationData } from "../../src/utils/applicat
 import {
   ANY_MESSAGE_ERROR,
   ENTITY_PAGE_REDIRECT,
-  FIFTY_CHARACTERS_LENGTH,
   PRESENTER_PAGE_TITLE,
-  SERVICE_UNAVAILABLE,
-  TEN_CHARACTERS_LENGTH
+  SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
 import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
+import { PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -72,10 +71,7 @@ describe("PRESENTER controller", () => {
     test("renders the current page with MAX error messages", async () => {
       const resp = await request(app)
         .post(PRESENTER_URL)
-        .send({
-          full_name: FIFTY_CHARACTERS_LENGTH.repeat(3) + TEN_CHARACTERS_LENGTH + "1",
-          email: FIFTY_CHARACTERS_LENGTH.repeat(5) + "1"
-        });
+        .send(PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);

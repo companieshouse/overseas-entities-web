@@ -10,11 +10,22 @@ import app from "../../src/app";
 import { ENTITY_PAGE, ENTITY_URL, PRESENTER_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { APPLICATION_DATA_MOCK, ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK, ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS } from '../__mocks__/session.mock';
-import { BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT, ENTITY_PAGE_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  ENTITY_OBJECT_MOCK,
+  ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+} from "../__mocks__/session.mock";
+import {
+  BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
+  ENTITY_PAGE_TITLE,
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+} from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
+import { ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -131,6 +142,40 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(PRESENTER_URL);
+    });
+
+
+    test("renders the current page with MAX error messages", async () => {
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).not.toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).not.toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
     });
 
     test("catch error when post data from ENTITY page", async () => {

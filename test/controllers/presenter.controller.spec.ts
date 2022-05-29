@@ -10,7 +10,14 @@ import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { LANDING_URL, PRESENTER_URL } from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
-import { ANY_MESSAGE_ERROR, ENTITY_PAGE_REDIRECT, PRESENTER_PAGE_TITLE, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import {
+  ANY_MESSAGE_ERROR,
+  ENTITY_PAGE_REDIRECT,
+  FIFTY_CHARACTERS_LENGTH,
+  PRESENTER_PAGE_TITLE,
+  SERVICE_UNAVAILABLE,
+  TEN_CHARACTERS_LENGTH
+} from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
 import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -60,6 +67,22 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(LANDING_URL);
+    });
+
+    test("renders the current page with MAX error messages", async () => {
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send({
+          full_name: FIFTY_CHARACTERS_LENGTH.repeat(3) + TEN_CHARACTERS_LENGTH + "1",
+          email: FIFTY_CHARACTERS_LENGTH.repeat(5) + "1"
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
     });
 
     test("catch error when post data from presenter page", async () => {

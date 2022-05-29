@@ -144,7 +144,6 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(PRESENTER_URL);
     });
 
-
     test("renders the current page with MAX error messages", async () => {
       const resp = await request(app)
         .post(ENTITY_URL)

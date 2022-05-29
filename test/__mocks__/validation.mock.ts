@@ -43,7 +43,8 @@ const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   service_address_postcode: MAX_20 + "1"
 };
 
-const DATE_OF_BIRTH = { 'date_of_birth-day': "1",  "date_of_birth-month": "1", "date_of_birth-year": "2000" };
+const DATE_OF_BIRTH_MOCK = { 'date_of_birth-day': "1",  "date_of_birth-month": "1", "date_of_birth-year": "2000" };
+const START_DATE_MOCK = { 'start_date-day': "1", 'start_date-month': "1", 'start_date-year': "2022" };
 
 export const PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK = {
   full_name: MAX_160 + "1",
@@ -64,7 +65,7 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
 };
 
 export const MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
-  first_name: MAX_50,
+  first_name: MAX_50 + "1",
   last_name: MAX_160 + "1",
   has_former_names: "1",
   former_names: MAX_260 + "1",
@@ -72,7 +73,20 @@ export const MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
   occupation: MAX_100 + "1",
   role_and_responsibilities: MAX_4000 + "1",
   is_service_address_same_as_usual_residential_address: "0",
-  ...DATE_OF_BIRTH,
+  ...DATE_OF_BIRTH_MOCK,
   ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
+};
+
+export const MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK = {
+  name: MAX_160 + "1",
+  legal_form: MAX_4000 + "1",
+  law_governed: MAX_4000 + "1",
+  is_on_register_in_country_formed_in: "1",
+  public_register_name: MAX_4000 + "1",
+  registration_number: MAX_32 + "1",
+  is_service_address_same_as_principal_address: "0",
+  ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...START_DATE_MOCK
 };

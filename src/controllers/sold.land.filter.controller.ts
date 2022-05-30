@@ -21,7 +21,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.body.has_sold_land === '1') {
-
       return res.render(config.CANNOT_USE_PAGE, {
         backLinkUrl: config.SOLD_LAND_FILTER_URL
       });

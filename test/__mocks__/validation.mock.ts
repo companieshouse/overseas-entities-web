@@ -64,6 +64,42 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
 };
 
+export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
+  first_name: MAX_50 + "1",
+  last_name: MAX_160 + "1",
+  nationality: NO_MAX,
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_usual_residential_address: "1",
+  ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...DATE_OF_BIRTH_MOCK,
+  ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK = {
+  name: MAX_160 + "1",
+  legal_form: MAX_4000 + "1",
+  law_governed: MAX_4000 + "1",
+  public_register_name: MAX_4000 + "1",
+  registration_number: MAX_32 + "1",
+  is_on_register_in_country_formed_in: "1",
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_principal_address: "1",
+  ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK = {
+  name: MAX_160 + "1",
+  legal_form: MAX_4000 + "1",
+  law_governed: MAX_4000 + "1",
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_principal_address: "1",
+  ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...START_DATE_MOCK
+};
+
 export const MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
   first_name: MAX_50 + "1",
   last_name: MAX_160 + "1",

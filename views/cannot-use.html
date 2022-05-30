@@ -9,8 +9,8 @@
   You cannot use this service - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
-{% block beforeContent %}
-  <a class="govuk-back-link" href="javascript:window.history.back()">Back</a>
+{% block backLink %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}

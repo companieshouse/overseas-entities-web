@@ -16,7 +16,8 @@ import {
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
-  payment
+  payment,
+  soldLandFilter
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -33,6 +34,9 @@ router.use(serviceAvailabilityMiddleware);
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
 
 router.get(config.LANDING_URL, landing.get);
+
+router.get(config.SOLD_LAND_FILTER_URL, soldLandFilter.get);
+router.post(config.SOLD_LAND_FILTER_URL, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
 

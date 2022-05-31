@@ -73,6 +73,7 @@
         {% include "includes/inputs/address/residential-address-input.html" %}
 
         {{ govukInput({
+          errorMessage: errors.occupation if errors,
           label: {
             text: "What is their occupation? (Optional)",
             classes: "govuk-label--m",

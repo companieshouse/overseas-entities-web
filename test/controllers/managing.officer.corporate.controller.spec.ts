@@ -21,6 +21,7 @@ import { getApplicationData, prepareData, setApplicationData } from "../../src/u
 import { managingOfficerCorporateType } from "../../src/model";
 import { ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 import { ErrorMessages } from "../../src/validation/error.messages";
+import { MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -147,6 +148,40 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with MAX error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).not.toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).not.toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).not.toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
     });
   });
 });

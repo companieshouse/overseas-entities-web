@@ -134,7 +134,7 @@ export const RESIDENTIAL_ADDRESS_MOCK = {
   usual_residential_address_town: "residential address town",
   usual_residential_address_county: "residential address county",
   usual_residential_address_country: "residential address country",
-  usual_residential_address_postcode: "residential address BY 2"
+  usual_residential_address_postcode: "res. add. BY 2"
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {

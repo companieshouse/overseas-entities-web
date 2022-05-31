@@ -31,6 +31,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.service_address_line_2 if errors,
     label: {
       text: "Address line 2 (optional)"
     },
@@ -52,6 +53,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.service_address_county if errors,
     label: {
       text: "County, state, province or region (optional)"
     },
@@ -67,6 +69,7 @@
   {% include "includes/inputs/country/country-select.html" %}
 
   {{ govukInput({
+    errorMessage: errors.service_address_postcode if errors,
     label: {
       text: "Postcode or ZIP code (if applicable)"
     },

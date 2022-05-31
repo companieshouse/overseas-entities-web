@@ -15,8 +15,8 @@
       <form method="post">
         {{ govukRadios({
           classes: "govuk-radios--inline",
-          idPrefix: "secureRegister",
-          name: "secureRegister",
+          idPrefix: "secure_register",
+          name: "secure_register",
           fieldset: {
             legend: {
               text: "Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?",
@@ -26,12 +26,14 @@
           },
           items: [
             {
-              value: "yes",
-              text: "Yes"
+              value: 1,
+              text: "Yes",
+              checked: secure_register == 1
             },
             {
-              value: "no",
-              text: "No"
+              value: 0,
+              text: "No",
+              checked: secure_register == 0
             }
           ]
         }) }}

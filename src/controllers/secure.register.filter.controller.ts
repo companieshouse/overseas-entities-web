@@ -2,11 +2,16 @@ import { Request, Response, NextFunction } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
 
-export const get = (req: Request, res: Response) => {
-  logger.debugRequest(req, `GET ${config.SECURE_REGISTER_FILTER_PAGE}`);
-  return res.render(config.SECURE_REGISTER_FILTER_PAGE, {
-    backLinkUrl: config.LANDING_URL
-  });
+export const get = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `GET ${config.SECURE_REGISTER_FILTER_PAGE}`);
+    return res.render(config.SECURE_REGISTER_FILTER_PAGE, {
+      backLinkUrl: config.LANDING_URL
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

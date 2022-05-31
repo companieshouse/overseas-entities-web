@@ -25,7 +25,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl: config.SOLD_LAND_FILTER_URL
       });
     } else if (hasSoldLand === '0') {
-      return res.redirect(config.INTERRUPT_CARD_PAGE);
+      return res.redirect(config.SECURE_REGISTER_FILTER_URL);
     }
   } catch (error) {
     logger.errorRequest(req, error);

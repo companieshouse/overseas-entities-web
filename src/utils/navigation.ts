@@ -5,11 +5,16 @@ export const NAVIGATION: Navigation = {
   [config.SOLD_LAND_FILTER_URL]: {
     currentPage: config.SOLD_LAND_FILTER_PAGE,
     previousPage: config.LANDING_URL,
+    nextPage: config.SECURE_REGISTER_FILTER_URL
+  },
+  [config.SECURE_REGISTER_FILTER_URL]: {
+    currentPage: config.SECURE_REGISTER_FILTER_PAGE,
+    previousPage: config.SOLD_LAND_FILTER_URL,
     nextPage: config.INTERRUPT_CARD_URL
   },
   [config.INTERRUPT_CARD_URL]: {
     currentPage: config.INTERRUPT_CARD_PAGE,
-    previousPage: config.SOLD_LAND_FILTER_URL,
+    previousPage: config.SECURE_REGISTER_FILTER_URL,
     nextPage: config.PRESENTER_URL
   },
   [config.PRESENTER_URL]: {

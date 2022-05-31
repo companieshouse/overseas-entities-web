@@ -1,18 +1,15 @@
+jest.mock("../../src/utils/logger");
+
 import { ErrorMessages } from "../../src/validation/error.messages";
-
-jest.mock('../../src/middleware/authentication.middleware');
-
 import request from "supertest";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { beforeEach, expect, jest, test } from "@jest/globals";
-import { SECURE_REGISTER_FILTER_PAGE_HEADING } from "../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, SECURE_REGISTER_FILTER_PAGE_HEADING, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { SECURE_REGISTER_FILTER_URL } from "../../src/config";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { NextFunction, Request, Response } from "express";
+import { logger } from "../../src/utils/logger";
 
-const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe( "SECURE REGISTER FILTER controller", () => {
 
@@ -26,6 +23,13 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(config.LANDING_URL);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.SECURE_REGISTER_FILTER_URL);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
@@ -54,5 +58,16 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SECURE_REGISTER_FILTER);
     });
+
+    test("catch error when posting the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(config.SECURE_REGISTER_FILTER_URL)
+        .send({ secure_register: '0' });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
   });
 });

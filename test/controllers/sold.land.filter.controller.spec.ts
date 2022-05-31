@@ -1,5 +1,3 @@
-jest.mock("ioredis");
-jest.mock("../../src/utils/application.data");
 jest.mock("../../src/utils/logger");
 
 import { expect, jest, test } from "@jest/globals";

@@ -46,8 +46,6 @@ export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
 export const NOT_FOUND_PAGE = "page-not-found";
 export const PRESENTER_PAGE = "presenter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
-export const SECURE_REGISTER_FILTER_PAGE = "secure-register-filter";
-export const USE_PAPER_PAGE = "use-paper";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -66,7 +64,6 @@ export const PRESENTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PRESENTER_PAGE;
 export const BENEFICIAL_OWNER_INDIVIDUAL_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_INDIVIDUAL_PAGE;
 export const CONFIRMATION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + CONFIRMATION_PAGE;
 export const HEALTHCHECK_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + HEALTHCHECK_PAGE;
-export const SECURE_REGISTER_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SECURE_REGISTER_FILTER_PAGE;
 
 export const PAYMENT = "payment";
 export const TRANSACTION = "transaction";

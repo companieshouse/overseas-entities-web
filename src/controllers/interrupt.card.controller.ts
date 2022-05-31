@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     deleteApplicationData(req.session);
     return res.render(config.INTERRUPT_CARD_PAGE, {
-      backLinkUrl: config.SECURE_REGISTER_FILTER_URL
+      backLinkUrl: config.LANDING_URL
     });
   } catch (error) {
     logger.errorRequest(req, error);

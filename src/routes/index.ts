@@ -16,8 +16,7 @@ import {
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
-  payment,
-  secureRegisterFilter
+  payment
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -70,9 +69,6 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
 router.get(config.CONFIRMATION_URL, authentication, confirmation.get);
-
-router.get(config.SECURE_REGISTER_FILTER_URL, authentication, secureRegisterFilter.get);
-router.post(config.SECURE_REGISTER_FILTER_URL, authentication, secureRegisterFilter.post);
 
 router.use(errorHandler);
 

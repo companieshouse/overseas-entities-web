@@ -20,6 +20,7 @@ import { managingOfficerType } from '../../src/model';
 import { ManagingOfficerKey } from '../../src/model/managing.officer.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { HasFormerNames, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
+import { MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -149,6 +150,40 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
       expect(resp.text).toContain(ErrorMessages.FORMER_NAME);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_URL} with MAX error messages`, async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(MANAGING_OFFICER);
+      expect(resp.text).toContain(ErrorMessages.MAX_FIRST_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LAST_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_FORMER_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_OCCUPATION_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ROLE_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.FIRST_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.LAST_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.FORMER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.NATIONALITY);
+      expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).not.toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
     });
   });
 });

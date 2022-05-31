@@ -33,6 +33,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.principal_address_line_2 if errors,
     label: {
       text: "Address line 2 (optional)"
     },
@@ -54,6 +55,7 @@
   }) }}
 
   {{ govukInput({
+    errorMessage: errors.principal_address_county if errors,
     label: {
       text: "County, state, province or region (optional)"
     },
@@ -69,13 +71,14 @@
   {% include "includes/inputs/country/country-select.html" %}
 
   {{ govukInput({
-  label: {
-    text: "Postcode or ZIP code (if applicable)"
-  },
-  classes: "govuk-input--width-10",
-  id: "principal_address_postcode",
-  name: "principal_address_postcode",
-  value: principal_address_postcode
+    errorMessage: errors.principal_address_postcode if errors,
+    label: {
+      text: "Postcode or ZIP code (if applicable)"
+    },
+    classes: "govuk-input--width-10",
+    id: "principal_address_postcode",
+    name: "principal_address_postcode",
+    value: principal_address_postcode
   }) }}
 
 {% endcall %}

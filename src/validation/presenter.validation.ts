@@ -3,6 +3,6 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 
 export const presenter = [
-  body("full_name").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FULL_NAME),
-  body("email").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL)
+  body("full_name").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FULL_NAME).isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH),
+  body("email").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL).isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
 ];

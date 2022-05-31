@@ -37,5 +37,24 @@ export enum ErrorMessages {
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the individual person’s correspondence address is the same as their home address",
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
-  SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if the entity has applied to protect personal information"
+  SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if the entity has applied to protect personal information",
+  // MAX Lengths
+  MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
+  MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
+  MAX_FORMER_NAME_LENGTH = "Former names must be 260 characters or less",
+  MAX_NAME_LENGTH = "Name must be 160 characters or less",
+  MAX_FULL_NAME_LENGTH = "Full name must be 160 characters or less",
+  MAX_EMAIL_LENGTH = "Email address must be 250 characters or less",
+  MAX_PROPERTY_NAME_OR_NUMBER_LENGTH = "Property name or number must be 200 characters or less",
+  MAX_ADDRESS_LINE1_LENGTH = "Address line 1 must be 50 characters or less",
+  MAX_ADDRESS_LINE2_LENGTH = "Address line 2 must be 50 characters or less",
+  MAX_CITY_OR_TOWN_LENGTH = "City or town must be 50 characters or less",
+  MAX_COUNTY_LENGTH = "County, state, province or region must be 50 characters or less",
+  MAX_POSTCODE_LENGTH = "Postcode must be 20 characters or less",
+  MAX_LEGAL_FORM_LENGTH = "Legal form must be 4000 characters or less",
+  MAX_LAW_GOVERNED_LENGTH = "Governing law must be 4000 characters or less",
+  MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 4000 characters or less",
+  MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Entity’s registration number must be 32 characters or less",
+  MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
+  MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less"
 }

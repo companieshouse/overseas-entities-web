@@ -19,12 +19,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
-
-    if (req.body.has_sold_land === '1') {
+    const hasSoldLand = req.body.has_sold_land;
+    if (hasSoldLand === '1') {
       return res.render(config.CANNOT_USE_PAGE, {
         backLinkUrl: config.SOLD_LAND_FILTER_URL
       });
-    } else if (req.body.has_sold_land === '0') {
+    } else if (hasSoldLand === '0') {
       return res.redirect(config.INTERRUPT_CARD_PAGE);
     }
   } catch (error) {

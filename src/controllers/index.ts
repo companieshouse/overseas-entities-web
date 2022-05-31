@@ -13,3 +13,4 @@ export * as beneficialOwnerIndividual from "./beneficial.owner.individual.contro
 export * as confirmation from "./confirmation.controller";
 export * as payment from "./payment.controller";
 export * as healthcheck from "./healthcheck.controller";
+export * as secureRegisterFilter from "./secure.register.filter.controller";

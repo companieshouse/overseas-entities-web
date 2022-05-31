@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You cannot use this service - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">You cannot use this service</h1>
+      <p class="govuk-body">One or more of the beneficial owners you’re registering have applied to protect their personal information at Companies House.</p>
+      <p class="govuk-body">To keep their details secure, you must register the overseas entity on paper. </p>
+      <p class="govuk-body">Contact us at <a href="#" class="govuk-link">roe@companieshouse.gov.uk</a> if you need us to send you a paper form. </p>
+    </div>
+  </div>
+
+{% endblock %}

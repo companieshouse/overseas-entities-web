@@ -38,9 +38,7 @@ describe("SOLD LAND FILTER controller", () => {
       const resp = await request(app)
         .post(config.SOLD_LAND_FILTER_URL)
         .send({ has_sold_land: '1' });
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("You cannot use this service");
+      expect(resp.status).toEqual(302);
     });
 
     test(`redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected`, async () => {

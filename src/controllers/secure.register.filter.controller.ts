@@ -19,9 +19,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
     const isSecureRegister = req.body.secure_register;
     if (isSecureRegister === '1') {
-      return res.render(config.USE_PAPER_PAGE, {
-        backLinkUrl: config.SECURE_REGISTER_FILTER_URL
-      });
+      return res.redirect(config.USE_PAPER_URL);
     } else if (isSecureRegister === '0') {
       return res.redirect(config.INTERRUPT_CARD_URL);
     }

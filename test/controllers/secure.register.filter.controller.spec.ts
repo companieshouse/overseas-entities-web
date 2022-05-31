@@ -38,8 +38,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ secure_register: '1' });
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("You cannot use this service");
+      expect(resp.status).toEqual(302);
     });
 
     test("redirect to interrupt card page if user selects no", async () => {

@@ -55,7 +55,7 @@ export const usual_residential_service_address_validations = [
   body("service_address_postcode").custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) )
 ];
 
-// To be removed, checking only MAX for BOs address fields
+// Checking only MAX for BOs address fields
 export const principal_address_max_validations = [
   body("principal_address_property_name_number").isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH),
   body("principal_address_line_1").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH),

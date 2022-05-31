@@ -16,6 +16,8 @@
       <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the government or public authority</h1>
       <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
+      {% include "includes/list/errors.html" %}
+
       <form class="form" method="post">
 
         {% include "includes/inputs/fields/name-input.html" %}

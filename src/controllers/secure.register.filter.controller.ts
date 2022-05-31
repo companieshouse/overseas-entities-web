@@ -17,11 +17,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
   try {
-    if (req.body.secure_register === '1') {
+    const isSecureRegister = req.body.secure_register;
+    if (isSecureRegister === '1') {
       return res.render(config.USE_PAPER_PAGE, {
         backLinkUrl: config.SECURE_REGISTER_FILTER_URL
       });
-    } else if (req.body.secure_register === '0') {
+    } else if (isSecureRegister === '0') {
       return res.redirect(config.INTERRUPT_CARD_URL);
     }
   } catch (error) {

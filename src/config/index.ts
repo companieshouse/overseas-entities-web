@@ -35,6 +35,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE = "beneficial-owner-statements";
 export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
+export const CANNOT_USE_PAGE = "cannot-use";
 export const CHECK_YOUR_ANSWERS_PAGE = "check-your-answers";
 export const CONFIRMATION_PAGE = "confirmation";
 export const ENTITY_PAGE = "entity";
@@ -45,11 +46,10 @@ export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
 export const NOT_FOUND_PAGE = "page-not-found";
 export const PRESENTER_PAGE = "presenter";
-export const SERVICE_OFFLINE_PAGE = "service-offline";
-export const CANNOT_USE_PAGE = "cannot-use";
-export const USE_PAPER_PAGE = "use-paper";
-export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
 export const SECURE_REGISTER_FILTER_PAGE = "secure-register-filter";
+export const SERVICE_OFFLINE_PAGE = "service-offline";
+export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
+export const USE_PAPER_PAGE = "use-paper";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";

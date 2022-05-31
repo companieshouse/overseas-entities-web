@@ -56,20 +56,20 @@ router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, ...validator
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
+router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, ...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.post);
+
 router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.get);
-router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.post);
+router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+
+router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
+router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.get);
 router.post(config.MANAGING_OFFICER_URL, authentication, ...validator.managingOfficerIndividual, checkValidations, managingOfficerIndividual.post);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
-
-router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
-router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.post);
-
-router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
-router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);

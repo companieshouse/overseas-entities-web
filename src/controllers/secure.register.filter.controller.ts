@@ -15,8 +15,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
   try {
+    logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
     const isSecureRegister = req.body.secure_register;
     if (isSecureRegister === '1') {
       return res.render(config.USE_PAPER_PAGE, {

@@ -1,3 +1,5 @@
+jest.mock("ioredis");
+jest.mock("../../src/utils/application.data");
 jest.mock("../../src/utils/logger");
 
 import { expect, jest, test } from "@jest/globals";
@@ -38,16 +40,18 @@ describe("SOLD LAND FILTER controller", () => {
       const resp = await request(app)
         .post(config.SOLD_LAND_FILTER_URL)
         .send({ has_sold_land: '1' });
-      expect(resp.status).toEqual(302);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("You cannot use this service");
     });
 
-    test(`redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected`, async () => {
+    test(`redirects to the ${config.INTERRUPT_CARD_PAGE} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.SOLD_LAND_FILTER_URL)
         .send({ has_sold_land: '0' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.SECURE_REGISTER_FILTER_URL);
+      expect(resp.header.location).toEqual(config.INTERRUPT_CARD_PAGE);
     });
 
     test("renders the current page with error message", async () => {

@@ -8,11 +8,9 @@ import { entity } from "./entity.validation";
 import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
 import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
-import { secureRegisterFilter } from "./secure.register.filter.validation";
 
 export const validator = {
   soldLandFilter,
-  secureRegisterFilter,
   entity,
   presenter,
   beneficialOwnersStatement,

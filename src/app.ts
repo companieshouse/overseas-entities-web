@@ -11,6 +11,7 @@ import {
 import * as config from "./config";
 import { logger } from "./utils/logger";
 import router from "./routes";
+import errorHandler from "./controllers/error.controller";
 
 const app = express();
 
@@ -44,5 +45,6 @@ app.set("view engine", "html");
 // apply our default router to /
 app.use("/", router);
 
+app.use(errorHandler);
 logger.info("Register an overseas entity has started");
 export default app;

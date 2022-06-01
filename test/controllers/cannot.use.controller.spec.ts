@@ -2,6 +2,7 @@ import { expect, test } from "@jest/globals";
 import * as config from "../../src/config";
 import request from "supertest";
 import app from "../../src/app";
+import { CANNOT_USE_SERVICE } from "../__mocks__/text.mock";
 
 describe("CANNOT USE controller", () => {
   describe("GET tests", () => {
@@ -9,7 +10,7 @@ describe("CANNOT USE controller", () => {
       const resp = await request(app)
         .get(config.CANNOT_USE_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("You cannot use this service");
+      expect(resp.text).toContain(CANNOT_USE_SERVICE);
     });
   });
 });

@@ -1,8 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
+
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { getApplicationData, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
@@ -17,6 +19,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const boGov = appData[BeneficialOwnerGovKey];
 
     return res.render(config.BENEFICIAL_OWNER_GOV_PAGE, {
+      id: req.params.id,
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
       ...boGov
     });
@@ -43,8 +46,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
     data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+    data["id"] = uuidv4();
 
     setApplicationData(req.session, data, BeneficialOwnerGovKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.MANAGING_OFFICER_PAGE}`);
+
+    removeFromApplicationData(req.session, BeneficialOwnerGovKey, req.params.id);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

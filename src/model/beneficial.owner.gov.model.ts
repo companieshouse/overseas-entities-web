@@ -20,6 +20,7 @@ export const BeneficialOwnerGovKeys: string[] = [
 ];
 
 export interface BeneficialOwnerGov {
+  id?: string
   name?: string
   principal_address?: Address
   is_service_address_same_as_principal_address?: yesNoResponse

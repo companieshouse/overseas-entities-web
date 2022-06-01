@@ -22,6 +22,7 @@ export const BeneficialOwnerIndividualKeys: string[] = [
 ];
 
 export interface BeneficialOwnerIndividual {
+  id?: string
   first_name?: string;
   last_name?: string;
   date_of_birth?: InputDate;

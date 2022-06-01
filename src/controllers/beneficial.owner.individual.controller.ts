@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
 
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
-import { ApplicationData, ApplicationDataType } from "../model";
+import { getFromApplicationData, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys } from "../model/beneficial.owner.individual.model";
@@ -30,13 +31,12 @@ import {
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
-  const appData: ApplicationData = getApplicationData(req.session);
-
-  const boIndividual = appData[BeneficialOwnerIndividualKey];
+  const { id } = req.params;
 
   return res.render(config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
+    id,
     backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-    ...boIndividual
+    ...getFromApplicationData(req.session, BeneficialOwnerIndividualKey, id)
   });
 };
 
@@ -59,8 +59,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
+    data["id"] = uuidv4();
 
     setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.MANAGING_OFFICER_PAGE}`);
+
+    removeFromApplicationData(req.session, BeneficialOwnerIndividualKey, req.params.id);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

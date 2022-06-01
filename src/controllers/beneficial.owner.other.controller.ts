@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
 
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { ApplicationDataType } from "../model";
+import { getFromApplicationData, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, InputDateKeys, IsOnRegisterInCountryFormedInKey, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
@@ -15,13 +16,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_OTHER_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-
-    const boOther = appData[BeneficialOwnerOtherKey];
+    const { id } = req.params;
 
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
+      id,
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...boOther
+      ...getFromApplicationData(req.session, BeneficialOwnerOtherKey, id)
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -50,8 +50,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
     data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
     data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
+    data["id"] = uuidv4();
 
     setApplicationData(req.session, data, BeneficialOwnerOtherKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.MANAGING_OFFICER_PAGE}`);
+
+    removeFromApplicationData(req.session, BeneficialOwnerOtherKey, req.params.id);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

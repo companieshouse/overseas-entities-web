@@ -47,6 +47,9 @@
 
       {% include "includes/continue-button.html" %}
 
+      {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/remove/" + id %}
+      {% include "includes/remove-button.html" %}
+
     </form>
 
   </div>

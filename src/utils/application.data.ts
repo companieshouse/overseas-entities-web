@@ -27,6 +27,20 @@ export const setApplicationData = (session: Session | undefined, data: any, key:
   return setExtraData(session, appData);
 };
 
+export const removeFromApplicationData = (session: Session | undefined, key: string, index: string): undefined | void => {
+  const appData: ApplicationData = getApplicationData(session);
+  appData[key].splice(index, 1);
+  return session?.setExtraData(APPLICATION_DATA_KEY, appData);
+};
+
+export const getFromApplicationData = (session: Session | undefined, key: string, index: string) => {
+  const appData: ApplicationData = getApplicationData(session);
+
+  return ( index !== undefined && appData && appData[key] && appData[key][index] )
+    ? appData[key][index]
+    : {};
+};
+
 export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {
   return session?.setExtraData(APPLICATION_DATA_KEY, appData);
 };

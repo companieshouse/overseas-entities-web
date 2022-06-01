@@ -15,6 +15,7 @@ export const ManagingOfficerCorporateKeys: string[] = [
 ];
 
 export interface ManagingOfficerCorporate {
+  id?: string
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

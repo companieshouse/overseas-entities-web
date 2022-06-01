@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { ApplicationDataType } from "../model";
+import { getFromApplicationData, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 
 import { AddressKeys, HasFormerNames, HasSameResidentialAddressKey, InputDateKeys } from "../model/data.types.model";
 import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
@@ -14,13 +15,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.MANAGING_OFFICER_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-
-    const moIndividual = appData[ManagingOfficerKey];
+    const { id } = req.params;
 
     return res.render(config.MANAGING_OFFICER_PAGE, {
+      id,
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...moIndividual
+      ...getFromApplicationData(req.session, ManagingOfficerKey, id)
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -40,8 +40,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
     data[HasFormerNames] = (data[HasFormerNames]) ? +data[HasFormerNames] : '';
+    data["id"] = uuidv4();
 
     setApplicationData(req.session, data, ManagingOfficerKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.MANAGING_OFFICER_PAGE}`);
+
+    removeFromApplicationData(req.session, ManagingOfficerKey, req.params.id);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

@@ -1,8 +1,16 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
+
 import * as config from "../config";
 import { logger } from "../utils/logger";
-import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, mapFieldsToDataObject, prepareData, setApplicationData } from "../utils/application.data";
+import { ApplicationDataType } from "../model";
+import {
+  mapFieldsToDataObject,
+  prepareData,
+  setApplicationData,
+  getFromApplicationData,
+  removeFromApplicationData,
+} from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 import {
   AddressKeys,
@@ -17,13 +25,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-
-    const moCorporate = appData[ManagingOfficerCorporateKey];
+    const { id } = req.params;
 
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
+      id,
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
-      ...moCorporate
+      ...getFromApplicationData(req.session, ManagingOfficerCorporateKey, id)
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -46,8 +53,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
 
     data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
+    data["id"] = uuidv4();
 
     setApplicationData(req.session, data, ManagingOfficerCorporateKey);
+
+    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debug(`REMOVE ${config.MANAGING_OFFICER_PAGE}`);
+
+    removeFromApplicationData(req.session, ManagingOfficerCorporateKey, req.params.id);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

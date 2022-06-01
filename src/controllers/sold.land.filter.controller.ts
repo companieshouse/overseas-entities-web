@@ -21,11 +21,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
     const hasSoldLand = req.body.has_sold_land;
     if (hasSoldLand === '1') {
-      return res.render(config.CANNOT_USE_PAGE, {
-        backLinkUrl: config.SOLD_LAND_FILTER_URL
-      });
+      return res.redirect(config.CANNOT_USE_URL);
     } else if (hasSoldLand === '0') {
-      return res.redirect(config.INTERRUPT_CARD_PAGE);
+      return res.redirect(config.SECURE_REGISTER_FILTER_URL);
     }
   } catch (error) {
     logger.errorRequest(req, error);

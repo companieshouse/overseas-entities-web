@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?
+  - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.secure_register if errors,
+          classes: "govuk-radios--inline",
+          idPrefix: "secure_register",
+          name: "secure_register",
+          fieldset: {
+            legend: {
+              text: "Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: secure_register == 1
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: secure_register == 0
+            }
+          ]
+        }) }}
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              What applying to protect means
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Some people are eligible to <a href="https://www.gov.uk/guidance/applying-to-protect-your-personal-information-on-the-companies-house-register" class="govuk-link">apply to protect personal information at Companies House</a> if they meet certain criteria.</p>
+            <p class="govuk-body">You should only select ‘yes’ if any of the beneficial owners you’re registering have:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>provided evidence that they are eligible to have their details protected </li>
+              <li>paid the £100 fee</li>
+            </ul>
+          </div>
+        </details>
+
+        {{ govukInsetText({
+          html: '
+          <h2 class="govuk-heading-m">Information shown on the public register</h2>
+          <p>None of the information provided on this screen will be shown on the public Register of Overseas Entities.</p>
+         '
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

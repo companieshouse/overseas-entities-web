@@ -37,6 +37,7 @@ export enum ErrorMessages {
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the individual person’s correspondence address is the same as their home address",
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
+  SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if the entity has applied to protect personal information",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",

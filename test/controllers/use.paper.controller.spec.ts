@@ -2,7 +2,7 @@ import { expect, test } from "@jest/globals";
 import * as config from "../../src/config";
 import request from "supertest";
 import app from "../../src/app";
-import { CANNOT_USE_SERVICE } from "../__mocks__/text.mock";
+import { CANNOT_USE_SERVICE_HEADING } from "../__mocks__/text.mock";
 
 describe("USE PAPER controller", () => {
   describe("GET tests", () => {
@@ -10,7 +10,7 @@ describe("USE PAPER controller", () => {
       const resp = await request(app)
         .get(config.USE_PAPER_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(CANNOT_USE_SERVICE);
+      expect(resp.text).toContain(CANNOT_USE_SERVICE_HEADING);
     });
   });
 });

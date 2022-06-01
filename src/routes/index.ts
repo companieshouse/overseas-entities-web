@@ -25,7 +25,6 @@ import {
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
 import { authentication } from "../middleware/authentication.middleware";
-import errorHandler from "../controllers/error.controller";
 
 import { checkValidations } from "../middleware/validation.middleware";
 import { validator } from "../validation";
@@ -83,7 +82,5 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
 router.get(config.CONFIRMATION_URL, authentication, confirmation.get);
-
-router.use(errorHandler);
 
 export default router;

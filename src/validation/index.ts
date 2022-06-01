@@ -1,3 +1,6 @@
+import { beneficialOwnerGov } from "./beneficial.owner.gov.validation";
+import { beneficialOwnerIndividual } from "./beneficial.owner.individual.validation";
+import { beneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnersType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
@@ -13,5 +16,8 @@ export const validator = {
   beneficialOwnersStatement,
   beneficialOwnersType,
   managingOfficerIndividual,
-  managingOfficerCorporate
+  managingOfficerCorporate,
+  beneficialOwnerIndividual,
+  beneficialOwnerOther,
+  beneficialOwnerGov
 };

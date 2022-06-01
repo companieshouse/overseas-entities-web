@@ -11,7 +11,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { getApplicationData, prepareData } from '../../src/utils/application.data';
-import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
+import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
   BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
@@ -19,6 +19,8 @@ import {
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
 } from "../__mocks__/session.mock";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { ErrorMessages } from "../../src/validation/error.messages";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -94,5 +96,23 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
     });
 
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with MAX error messages`, async () => {
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
+    });
   });
 });

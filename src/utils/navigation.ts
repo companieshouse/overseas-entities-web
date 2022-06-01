@@ -32,6 +32,21 @@ export const NAVIGATION: Navigation = {
     previousPage: config.BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: config.CHECK_YOUR_ANSWERS_URL
   },
+  [config.BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
+  [config.BENEFICIAL_OWNER_OTHER_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
+  [config.BENEFICIAL_OWNER_GOV_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
   [config.MANAGING_OFFICER_URL]: {
     currentPage: config.MANAGING_OFFICER_PAGE,
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,

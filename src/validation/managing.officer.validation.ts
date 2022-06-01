@@ -2,7 +2,7 @@ import { body } from "express-validator";
 
 import { checkFieldIfRadioButtonSelected, checkMaxFieldIfRadioButtonSelected } from "./custom.validation";
 import { ErrorMessages } from "./error.messages";
-import { usual_residential_service_address_validations, usual_residential_address } from "./fields/address.validation";
+import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { date_of_birth_validations } from "./fields/date.validation";
 
 export const managingOfficerIndividual = [
@@ -17,7 +17,7 @@ export const managingOfficerIndividual = [
 
   body("nationality").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY),
 
-  ...usual_residential_address,
+  ...usual_residential_address_validations,
 
   body("is_service_address_same_as_usual_residential_address").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 

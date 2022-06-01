@@ -7,7 +7,6 @@ import {
   beneficialOwnerOther,
   beneficialOwnerStatements,
   beneficialOwnerType,
-  cannotUse,
   checkYourAnswers,
   confirmation,
   entity,
@@ -18,9 +17,7 @@ import {
   managingOfficerCorporate,
   presenter,
   payment,
-  soldLandFilter,
-  secureRegisterFilter,
-  usePaper
+  soldLandFilter
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -38,17 +35,10 @@ router.get(config.HEALTHCHECK_URL, healthcheck.get);
 
 router.get(config.LANDING_URL, landing.get);
 
-router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
-
 router.get(config.SOLD_LAND_FILTER_URL, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
-router.get(config.CANNOT_USE_URL, cannotUse.get);
-
-router.get(config.SECURE_REGISTER_FILTER_URL, secureRegisterFilter.get);
-router.post(config.SECURE_REGISTER_FILTER_URL, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
-
-router.get(config.USE_PAPER_URL, usePaper.get);
+router.get(config.INTERRUPT_CARD_URL, interruptCard.get);
 
 router.get(config.PRESENTER_URL, authentication, presenter.get);
 router.post(config.PRESENTER_URL, authentication, ...validator.presenter, checkValidations, presenter.post);

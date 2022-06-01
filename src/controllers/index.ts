@@ -1,5 +1,4 @@
 export * as soldLandFilter from "./sold.land.filter.controller";
-export * as secureRegisterFilter from "./secure.register.filter.controller";
 export * as interruptCard from "./interrupt.card.controller";
 export * as beneficialOwnerGov from "./beneficial.owner.gov.controller";
 export * as beneficialOwnerOther from "./beneficial.owner.other.controller";
@@ -15,5 +14,3 @@ export * as beneficialOwnerIndividual from "./beneficial.owner.individual.contro
 export * as confirmation from "./confirmation.controller";
 export * as payment from "./payment.controller";
 export * as healthcheck from "./healthcheck.controller";
-export * as cannotUse from "./cannot.use.controller";
-export * as usePaper from "./use.paper.contoller";

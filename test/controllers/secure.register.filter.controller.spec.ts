@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 
 import { ErrorMessages } from "../../src/validation/error.messages";

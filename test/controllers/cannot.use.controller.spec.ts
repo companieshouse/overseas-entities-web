@@ -1,3 +1,5 @@
+jest.mock("ioredis");
+
 import { expect, test } from "@jest/globals";
 import * as config from "../../src/config";
 import request from "supertest";

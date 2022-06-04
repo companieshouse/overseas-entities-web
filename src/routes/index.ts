@@ -62,29 +62,34 @@ router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, beneficialOwnerIndividual.getByID);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, ...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.post);
-router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/:id", authentication, beneficialOwnerIndividual.get);
-router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/remove/:id", authentication, beneficialOwnerIndividual.remove);
+router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, ...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, beneficialOwnerIndividual.remove);
 
 router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.get);
+router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, beneficialOwnerOther.getByID);
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
-router.get(config.BENEFICIAL_OWNER_OTHER_URL + "/:id", authentication, beneficialOwnerOther.get);
-router.get(config.BENEFICIAL_OWNER_OTHER_URL + "/remove/:id", authentication, beneficialOwnerOther.remove);
+router.post(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, beneficialOwnerOther.remove);
 
 router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
+router.get(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, beneficialOwnerGov.getByID);
 router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
-router.get(config.BENEFICIAL_OWNER_GOV_URL + "/:id", authentication, beneficialOwnerGov.get);
-router.get(config.BENEFICIAL_OWNER_GOV_URL + "/remove/:id", authentication, beneficialOwnerGov.remove);
+router.post(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+router.get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, beneficialOwnerGov.remove);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.get);
+router.get(config.MANAGING_OFFICER_URL + config.ID, authentication, managingOfficerIndividual.getByID);
 router.post(config.MANAGING_OFFICER_URL, authentication, ...validator.managingOfficerIndividual, checkValidations, managingOfficerIndividual.post);
-router.get(config.MANAGING_OFFICER_URL + "/:id", authentication, managingOfficerIndividual.get);
-router.get(config.MANAGING_OFFICER_URL + "/remove/:id", authentication, managingOfficerIndividual.remove);
+router.post(config.MANAGING_OFFICER_URL + config.ID, authentication, ...validator.managingOfficerIndividual, checkValidations, managingOfficerIndividual.update);
+router.get(config.MANAGING_OFFICER_URL + config.REMOVE + config.ID, authentication, managingOfficerIndividual.remove);
 
 router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOfficerCorporate.get);
+router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, managingOfficerCorporate.getByID);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
-router.get(config.MANAGING_OFFICER_CORPORATE_URL + "/:id", authentication, managingOfficerCorporate.get);
-router.get(config.MANAGING_OFFICER_CORPORATE_URL + "/remove/:id", authentication, managingOfficerCorporate.remove);
+router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
+router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, managingOfficerCorporate.remove);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);

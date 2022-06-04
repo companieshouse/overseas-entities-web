@@ -1,4 +1,5 @@
 import { Session } from '@companieshouse/node-session-handler';
+import { BeneficialOwnerNoc, ID, NonLegalFirmNoc, TrusteesNoc } from '../model/data.types.model';
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
@@ -27,18 +28,29 @@ export const setApplicationData = (session: Session | undefined, data: any, key:
   return setExtraData(session, appData);
 };
 
-export const removeFromApplicationData = (session: Session | undefined, key: string, index: string): undefined | void => {
+export const removeFromApplicationData = (session: Session | undefined, key: string, id: string | undefined) => {
   const appData: ApplicationData = getApplicationData(session);
-  appData[key].splice(index, 1);
-  return session?.setExtraData(APPLICATION_DATA_KEY, appData);
+
+  if (id && appData && appData[key]) {
+    const index = appData[key].findIndex( object => object[ID] === id );
+
+    if (index !== -1) {
+      appData[key].splice(index, 1);
+      setExtraData(session, appData);
+    }
+  }
 };
 
-export const getFromApplicationData = (session: Session | undefined, key: string, index: string) => {
+export const getFromApplicationData = (session: Session | undefined, key: string, id: string | undefined) => {
   const appData: ApplicationData = getApplicationData(session);
 
-  return ( index !== undefined && appData && appData[key] && appData[key][index] )
-    ? appData[key][index]
-    : {};
+  if (id && appData && appData[key]) {
+    const index = appData[key].findIndex(object => object[ID] === id );
+
+    return appData[key][index] || {};
+  }
+
+  return {};
 };
 
 export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {
@@ -56,3 +68,16 @@ export const mapFieldsToDataObject = (data: any, htmlFields: string[], dataModel
 export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModelKeys: string[]) => {
   return htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {});
 };
+
+export const mapNOCObjectToFields = (data: any) => {
+  const beneficialOwnerNoc = (data[BeneficialOwnerNoc].length === 1) ? data[BeneficialOwnerNoc][0] : data[BeneficialOwnerNoc];
+  const trusteesNoc = (data[TrusteesNoc].length === 1) ? data[TrusteesNoc][0] : data[TrusteesNoc];
+  const nonLegalFirmNoc = (data[NonLegalFirmNoc].length === 1) ? data[NonLegalFirmNoc][0] : data[NonLegalFirmNoc];
+
+  return {
+    [BeneficialOwnerNoc]: beneficialOwnerNoc,
+    [TrusteesNoc]: trusteesNoc,
+    [NonLegalFirmNoc]: nonLegalFirmNoc
+  };
+};
+

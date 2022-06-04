@@ -26,6 +26,11 @@ import {
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
+const BO_ID = "5ec0bd7f-11c0-43da-975e-2a8ad9ebae0b";
+const MO_ID = "6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b";
+export const BO_ID_URL = "/" + BO_ID;
+export const MO_ID_URL = "/" + MO_ID;
+
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
 export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";

@@ -13,7 +13,7 @@ import request from "supertest";
 
 import app from "../../src/app";
 
-import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
+import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, MO_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
@@ -36,10 +36,19 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   });
 
   describe("GET tests", () => {
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+    });
+  });
+
+  describe("GET from ID tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce( { } );
-      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
@@ -47,7 +56,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test("renders the managing officer corporate page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce( MANAGING_OFFICER_CORPORATE_OBJECT_MOCK );
-      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
@@ -60,7 +69,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test("Should render the error page", async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const response = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+      const response = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_ID_URL);
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);

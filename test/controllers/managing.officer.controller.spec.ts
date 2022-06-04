@@ -12,6 +12,7 @@ import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE, MANAGING_OFFICER_URL 
 import { getFromApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import {
   MANAGING_OFFICER_OBJECT_MOCK,
+  MO_ID_URL,
   REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
 } from "../__mocks__/session.mock";
@@ -31,10 +32,19 @@ const mockPrepareData = prepareData as jest.Mock;
 describe("MANAGING_OFFICER controller", () => {
 
   describe("GET tests", () => {
+    test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
+      const resp = await request(app).get(MANAGING_OFFICER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+    });
+  });
+
+  describe("GET from ID tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce( { } );
-      const resp = await request(app).get(MANAGING_OFFICER_URL);
+      const resp = await request(app).get(MANAGING_OFFICER_URL + MO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
@@ -42,7 +52,7 @@ describe("MANAGING_OFFICER controller", () => {
 
     test("renders the managing officer page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce( MANAGING_OFFICER_OBJECT_MOCK );
-      const resp = await request(app).get(MANAGING_OFFICER_URL);
+      const resp = await request(app).get(MANAGING_OFFICER_URL + MO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
@@ -52,7 +62,7 @@ describe("MANAGING_OFFICER controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(MANAGING_OFFICER_URL);
+      const resp = await request(app).get(MANAGING_OFFICER_URL + MO_ID_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

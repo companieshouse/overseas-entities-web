@@ -11,7 +11,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
 import { getFromApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, ERROR_LIST, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
+import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BO_ID_URL, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { IsOnSanctionsListKey, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
 import { BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
@@ -31,10 +31,19 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET tests", () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+    });
+  });
+
+  describe("GET from ID tests", () => {
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce( {} );
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -42,7 +51,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test("renders the beneficial owner individual page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -53,7 +62,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_ID_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

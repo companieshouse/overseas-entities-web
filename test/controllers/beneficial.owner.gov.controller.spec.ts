@@ -16,6 +16,7 @@ import { logger } from "../../src/utils/logger";
 import {
   BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  BO_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
 } from "../__mocks__/session.mock";
 import { BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
@@ -35,10 +36,19 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   });
 
   describe("GET tests", () => {
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    });
+  });
+
+  describe("GET from ID tests", () => {
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce( { } );
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
@@ -46,7 +56,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
     test("renders the beneficial owner gov page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce( BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS );
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
@@ -61,7 +71,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
     test("Should render the error page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const response = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
+      const response = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_ID_URL);
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);

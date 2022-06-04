@@ -10,7 +10,7 @@ import { NextFunction, Request, Response } from "express";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import * as config from "../../src/config";
-import { getApplicationData, prepareData } from '../../src/utils/application.data';
+import { getFromApplicationData, prepareData } from '../../src/utils/application.data';
 import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -18,7 +18,6 @@ import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
 } from "../__mocks__/session.mock";
-import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 import { BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
 import { ErrorMessages } from "../../src/validation/error.messages";
 
@@ -26,7 +25,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
 describe("BENEFICIAL OWNER GOV controller", () => {
@@ -38,7 +37,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerGovKey]: null } );
+      mockGetFromApplicationData.mockReturnValueOnce( { } );
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
@@ -46,7 +45,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test("renders the beneficial owner gov page", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerGovKey]: BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockGetFromApplicationData.mockReturnValueOnce( BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS );
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);

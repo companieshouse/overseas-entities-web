@@ -10,7 +10,7 @@ import { checkValidations } from '../../src/middleware/validation.middleware';
 import { logger } from "../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 
-const mockValidationResult = validationResult as jest.Mock;
+const mockValidationResult = validationResult as unknown as jest.Mock;
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 
 const req = {} as Request;

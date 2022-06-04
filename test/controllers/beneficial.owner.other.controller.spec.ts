@@ -11,7 +11,7 @@ import {
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
 } from "../__mocks__/session.mock";
-import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
+import { getFromApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
@@ -24,7 +24,7 @@ import { ErrorMessages } from "../../src/validation/error.messages";
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
@@ -37,7 +37,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerOtherKey]: null } );
+      mockGetFromApplicationData.mockReturnValueOnce( { } );
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -45,7 +45,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockGetFromApplicationData.mockReturnValueOnce( BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS );
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -59,7 +59,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(response.status).toEqual(500);

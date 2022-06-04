@@ -17,16 +17,15 @@ import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, REQ_BODY_MANAGING_OFFICER_CORPO
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, MANAGING_OFFICER_CORPORATE_URL } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
-import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
+import { getFromApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { managingOfficerCorporateType } from "../../src/model";
-import { ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
@@ -39,7 +38,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [ManagingOfficerCorporateKey]: null } );
+      mockGetFromApplicationData.mockReturnValueOnce( { } );
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -47,7 +46,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("renders the managing officer corporate page", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [ManagingOfficerCorporateKey]: MANAGING_OFFICER_CORPORATE_OBJECT_MOCK });
+      mockGetFromApplicationData.mockReturnValueOnce( MANAGING_OFFICER_CORPORATE_OBJECT_MOCK );
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -60,7 +59,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const response = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(response.status).toEqual(500);

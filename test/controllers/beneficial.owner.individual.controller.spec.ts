@@ -9,7 +9,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
-import { getApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
+import { getFromApplicationData, prepareData, setApplicationData } from '../../src/utils/application.data';
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, ERROR_LIST, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -20,7 +20,7 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
@@ -33,7 +33,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerIndividualKey]: null } );
+      mockGetFromApplicationData.mockReturnValueOnce( {} );
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
@@ -41,7 +41,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("renders the beneficial owner individual page", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerIndividualKey]: BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK });
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
@@ -52,7 +52,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(500);

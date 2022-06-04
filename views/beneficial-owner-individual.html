@@ -64,7 +64,7 @@
 
         {% include "includes/continue-button.html" %}
 
-        {% set removePathURL = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/remove/" + id %}
+        {% set removePathURL = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
         {% include "includes/remove-button.html" %}
 
       </form>

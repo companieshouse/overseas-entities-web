@@ -110,7 +110,7 @@
 
         {% include "includes/continue-button.html" %}
 
-        {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_URL + "/remove/" + id %}
+        {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_URL + OE_CONFIGS.REMOVE + "/" + id %}
         {% include "includes/remove-button.html" %}
 
       </form>

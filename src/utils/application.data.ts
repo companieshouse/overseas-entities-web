@@ -1,4 +1,5 @@
 import { Session } from '@companieshouse/node-session-handler';
+import { BeneficialOwnerNoc, ID, TrusteesNoc, NonLegalFirmNoc } from '../model/data.types.model';
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
@@ -41,4 +42,41 @@ export const mapFieldsToDataObject = (data: any, htmlFields: string[], dataModel
 
 export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModelKeys: string[]) => {
   return htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {});
+};
+
+export const removeFromApplicationData = (session: Session | undefined, key: string, id: string | undefined) => {
+  const appData: ApplicationData = getApplicationData(session);
+
+  if (id && appData && appData[key]) {
+    const index = appData[key].findIndex( object => object[ID] === id );
+
+    if (index !== -1) {
+      appData[key].splice(index, 1);
+      setExtraData(session, appData);
+    }
+  }
+};
+
+export const getFromApplicationData = (session: Session | undefined, key: string, id: string | undefined) => {
+  const appData: ApplicationData = getApplicationData(session);
+
+  if (id && appData && appData[key]) {
+    const index = appData[key].findIndex(object => object[ID] === id );
+
+    return appData[key][index] || {};
+  }
+
+  return {};
+};
+
+export const mapNOCObjectToFields = (data: any) => {
+  const beneficialOwnerNoc = (data[BeneficialOwnerNoc]?.length === 1) ? data[BeneficialOwnerNoc][0] : data[BeneficialOwnerNoc];
+  const trusteesNoc = (data[TrusteesNoc]?.length === 1) ? data[TrusteesNoc][0] : data[TrusteesNoc];
+  const nonLegalFirmNoc = (data[NonLegalFirmNoc]?.length === 1) ? data[NonLegalFirmNoc][0] : data[NonLegalFirmNoc];
+
+  return {
+    [BeneficialOwnerNoc]: beneficialOwnerNoc,
+    [TrusteesNoc]: trusteesNoc,
+    [NonLegalFirmNoc]: nonLegalFirmNoc
+  };
 };

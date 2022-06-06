@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, mapNOCObjectToFields, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, ID, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
@@ -28,7 +28,6 @@ export const getByID = (req: Request, res: Response, next: NextFunction) => {
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
-    const nocFields = (data) ? mapNOCObjectToFields(data) : {}; // Needed to map array of a single field to a string
 
     return res.render(BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
@@ -36,7 +35,6 @@ export const getByID = (req: Request, res: Response, next: NextFunction) => {
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      ...nocFields,
       [StartDateKey]: startDate
     });
   } catch (error) {

@@ -5,10 +5,13 @@ import {
   prepareData,
   deleteApplicationData,
   mapDataObjectToFields,
-  mapFieldsToDataObject
+  mapFieldsToDataObject,
+  removeFromApplicationData,
+  getFromApplicationData
 } from "../../src/utils/application.data";
 import {
   ADDRESS,
+  BO_GOV_ID,
   SERVICE_ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -18,6 +21,7 @@ import {
 } from "../__mocks__/session.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
 
 describe("Application data utils", () => {
 
@@ -88,6 +92,32 @@ describe("Application data utils", () => {
   test("mapFieldsToDataObject should map address fields coming from the view to address", () => {
     const response = mapFieldsToDataObject(SERVICE_ADDRESS_MOCK, ServiceAddressKeys, dataType.AddressKeys);
     expect(response).toEqual(ADDRESS);
+  });
+
+  test("removeFromApplicationData should remove specified object from data", () => {
+    const session = getSessionRequestWithExtraData();
+    let data = getApplicationData(session);
+    const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
+    expect(boGov).not.toBeUndefined();
+
+    removeFromApplicationData(session, BeneficialOwnerGovKey, BO_GOV_ID);
+
+    data = getApplicationData(session);
+    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
+
+    // restore the boGov object so other tests don't fail as data does not get reset
+    if (boGov) {
+      data[BeneficialOwnerGovKey]?.push(boGov);
+    }
+    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
+  });
+
+  test("getFromApplicationData should return specified object from data", () => {
+    const session = getSessionRequestWithExtraData();
+    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, BO_GOV_ID);
+
+    expect(boGov).not.toBeUndefined();
+    expect(boGov.id).toEqual(BO_GOV_ID);
   });
 
 });

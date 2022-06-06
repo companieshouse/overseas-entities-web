@@ -1,5 +1,5 @@
 import { Session } from '@companieshouse/node-session-handler';
-import { BeneficialOwnerNoc, ID, TrusteesNoc, NonLegalFirmNoc } from '../model/data.types.model';
+import { ID } from '../model/data.types.model';
 import {
   ApplicationData,
   APPLICATION_DATA_KEY,
@@ -57,7 +57,7 @@ export const removeFromApplicationData = (session: Session | undefined, key: str
   }
 };
 
-export const getFromApplicationData = (session: Session | undefined, key: string, id: string | undefined) => {
+export const getFromApplicationData = (session: Session | undefined, key: string, id: string | undefined): any => {
   const appData: ApplicationData = getApplicationData(session);
 
   if (id && appData && appData[key]) {
@@ -67,16 +67,4 @@ export const getFromApplicationData = (session: Session | undefined, key: string
   }
 
   return {};
-};
-
-export const mapNOCObjectToFields = (data: any) => {
-  const beneficialOwnerNoc = (data[BeneficialOwnerNoc]?.length === 1) ? data[BeneficialOwnerNoc][0] : data[BeneficialOwnerNoc];
-  const trusteesNoc = (data[TrusteesNoc]?.length === 1) ? data[TrusteesNoc][0] : data[TrusteesNoc];
-  const nonLegalFirmNoc = (data[NonLegalFirmNoc]?.length === 1) ? data[NonLegalFirmNoc][0] : data[NonLegalFirmNoc];
-
-  return {
-    [BeneficialOwnerNoc]: beneficialOwnerNoc,
-    [TrusteesNoc]: trusteesNoc,
-    [NonLegalFirmNoc]: nonLegalFirmNoc
-  };
 };

@@ -120,4 +120,19 @@ describe("Application data utils", () => {
     expect(boGov.id).toEqual(BO_GOV_ID);
   });
 
+  test("getFromApplicationData should return empty object from data when id not found", () => {
+    const session = getSessionRequestWithExtraData();
+    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, "no id");
+
+    expect(boGov).not.toBeUndefined();
+    expect(boGov).toEqual({});
+  });
+
+  test("getFromApplicationData should return empty object from data when id undefined", () => {
+    const session = getSessionRequestWithExtraData();
+    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, undefined);
+
+    expect(boGov).not.toBeUndefined();
+    expect(boGov).toEqual({});
+  });
 });

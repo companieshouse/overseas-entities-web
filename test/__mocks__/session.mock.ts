@@ -26,11 +26,10 @@ import {
 } from "../../src/model/data.types.model";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
-const BO_ID = "5ec0bd7f-11c0-43da-975e-2a8ad9ebae0b";
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
+export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
 
-export const BO_ID_URL = "/" + BO_ID;
-
+export const COMPANY_NAME = "my company name";
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
@@ -264,7 +263,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   id: BO_GOV_ID,
-  name: "my company name",
+  name: COMPANY_NAME,
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
   service_address: ADDRESS,
@@ -277,7 +276,7 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
 };
 
 export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
-  name: "my company name",
+  name: COMPANY_NAME,
   is_service_address_same_as_principal_address: "1",
   legal_form: "LegalForm",
   law_governed: "a11",

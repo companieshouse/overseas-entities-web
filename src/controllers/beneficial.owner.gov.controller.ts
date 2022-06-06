@@ -49,8 +49,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
-    console.log(JSON.stringify(data, null, 2));
-
     setApplicationData(req.session, data, BeneficialOwnerGovKey);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
@@ -82,7 +80,7 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`REMOVE ${BENEFICIAL_OWNER_GOV_PAGE}`);
+    logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
     removeFromApplicationData(req.session, BeneficialOwnerGovKey, req.params[ID]);
 

@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { describe, expect, test } from '@jest/globals';
 import {
   getApplicationData,
@@ -23,7 +24,13 @@ import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/m
 import { ServiceAddressKeys } from '../../src/model/address.model';
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
 
+let req: Request;
+
 describe("Application data utils", () => {
+
+  beforeEach(() => {
+    req = {} as Request;
+  });
 
   test("getApplicationData should return Extra data store in the session", () => {
     const session = getSessionRequestWithExtraData();
@@ -96,11 +103,12 @@ describe("Application data utils", () => {
 
   test("removeFromApplicationData should remove specified object from data", () => {
     const session = getSessionRequestWithExtraData();
+    req.session = session;
     let data = getApplicationData(session);
     const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
     expect(boGov).not.toBeUndefined();
 
-    removeFromApplicationData(session, BeneficialOwnerGovKey, BO_GOV_ID);
+    removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
     data = getApplicationData(session);
     expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
@@ -114,25 +122,22 @@ describe("Application data utils", () => {
 
   test("getFromApplicationData should return specified object from data", () => {
     const session = getSessionRequestWithExtraData();
-    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, BO_GOV_ID);
+    req.session = session;
+    const boGov: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
 
     expect(boGov).not.toBeUndefined();
     expect(boGov.id).toEqual(BO_GOV_ID);
   });
 
-  test("getFromApplicationData should return empty object from data when id not found", () => {
+  test("getFromApplicationData should throw error when id not found", () => {
     const session = getSessionRequestWithExtraData();
-    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, "no id");
-
-    expect(boGov).not.toBeUndefined();
-    expect(boGov).toEqual({});
+    req.session = session;
+    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
   });
 
-  test("getFromApplicationData should return empty object from data when id undefined", () => {
+  test("getFromApplicationData should throw error when id undefined", () => {
     const session = getSessionRequestWithExtraData();
-    const boGov: BeneficialOwnerGov = getFromApplicationData(session, BeneficialOwnerGovKey, undefined);
-
-    expect(boGov).not.toBeUndefined();
-    expect(boGov).toEqual({});
+    req.session = session;
+    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).toThrow(`${BeneficialOwnerGovKey}`);
   });
 });

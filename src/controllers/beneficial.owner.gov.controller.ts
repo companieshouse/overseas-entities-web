@@ -18,12 +18,12 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const getByID = (req: Request, res: Response, next: NextFunction) => {
+export const getById = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET BY ID ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req.session, BeneficialOwnerGovKey, id);
+    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -61,12 +61,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 export const update = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `UPDATE ${BENEFICIAL_OWNER_GOV_PAGE}`);
+    const id = req.params[ID];
 
     // Remove old Beneficial Owner
-    removeFromApplicationData(req.session, BeneficialOwnerGovKey, req.params[ID]);
+    removeFromApplicationData(req, BeneficialOwnerGovKey, id);
 
     // Set Beneficial Owner data
-    const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
+    const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     // Save new Beneficial Owner
     setApplicationData(req.session, data, BeneficialOwnerGovKey);
@@ -82,7 +83,7 @@ export const remove = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
-    removeFromApplicationData(req.session, BeneficialOwnerGovKey, req.params[ID]);
+    removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

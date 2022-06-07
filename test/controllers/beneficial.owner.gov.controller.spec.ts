@@ -30,7 +30,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
-const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
+const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 
 describe("BENEFICIAL OWNER GOV controller", () => {

@@ -120,6 +120,12 @@ describe("Application data utils", () => {
     expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
   });
 
+  test("removeFromApplicationData should throw error when id not found", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    expect(() => removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
+  });
+
   test("getFromApplicationData should return specified object from data", () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;

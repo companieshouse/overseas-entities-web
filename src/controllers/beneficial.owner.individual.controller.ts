@@ -50,7 +50,6 @@ export const getByID = (req: Request, res: Response, next: NextFunction) => {
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
-    // const nocFields = (data) ? mapNOCObjectToFields(data) : {}; // Needed to map array of a single field to a string
 
     return res.render(BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
@@ -58,7 +57,6 @@ export const getByID = (req: Request, res: Response, next: NextFunction) => {
       ...data,
       ...usualResidentialAddress,
       ...serviceAddress,
-      // ...nocFields,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
     });

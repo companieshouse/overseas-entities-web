@@ -352,7 +352,9 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   public_register_name: "register",
   registration_number: "123456789",
-  start_date: { day: "1", month: "1", year: "2011" }
+  start_date: { day: "1", month: "1", year: "2011" },
+  contact_full_name: "Joe Bloggs",
+  contact_email: "jbloggs@bloggs.co.ru"
 };
 
 export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {

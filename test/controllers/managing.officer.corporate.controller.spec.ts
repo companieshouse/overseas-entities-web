@@ -88,6 +88,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
       expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
       expect(managingOfficerCorporate.registration_number).toEqual("123456789");
+      expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
+      expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
     });
 

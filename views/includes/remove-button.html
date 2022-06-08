@@ -1,0 +1,10 @@
+{% if id %}
+    {{ govukButton({
+        text: "Remove",
+        attributes: {
+            "id": "submit"
+        },
+        href: removePathURL,
+        classes: "govuk-button--warning"
+    }) }}
+{% endif %}

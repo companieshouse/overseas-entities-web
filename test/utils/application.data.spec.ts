@@ -1,3 +1,4 @@
+import { Request } from "express";
 import { describe, expect, test } from '@jest/globals';
 import {
   getApplicationData,
@@ -5,10 +6,13 @@ import {
   prepareData,
   deleteApplicationData,
   mapDataObjectToFields,
-  mapFieldsToDataObject
+  mapFieldsToDataObject,
+  removeFromApplicationData,
+  getFromApplicationData
 } from "../../src/utils/application.data";
 import {
   ADDRESS,
+  BO_GOV_ID,
   SERVICE_ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -18,8 +22,15 @@ import {
 } from "../__mocks__/session.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
+
+let req: Request;
 
 describe("Application data utils", () => {
+
+  beforeEach(() => {
+    req = {} as Request;
+  });
 
   test("getApplicationData should return Extra data store in the session", () => {
     const session = getSessionRequestWithExtraData();
@@ -90,4 +101,49 @@ describe("Application data utils", () => {
     expect(response).toEqual(ADDRESS);
   });
 
+  test("removeFromApplicationData should remove specified object from data", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    let data = getApplicationData(session);
+    const boGov = data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID);
+    expect(boGov).not.toBeUndefined();
+
+    removeFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+
+    data = getApplicationData(session);
+    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).toBeUndefined();
+
+    // restore the boGov object so other tests don't fail as data does not get reset
+    if (boGov) {
+      data[BeneficialOwnerGovKey]?.push(boGov);
+    }
+    expect(data[BeneficialOwnerGovKey]?.find(boGov => boGov.id === BO_GOV_ID)).not.toBeUndefined();
+  });
+
+  test("removeFromApplicationData should throw error when id not found", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    expect(() => removeFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
+  });
+
+  test("getFromApplicationData should return specified object from data", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    const boGov: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, BO_GOV_ID);
+
+    expect(boGov).not.toBeUndefined();
+    expect(boGov.id).toEqual(BO_GOV_ID);
+  });
+
+  test("getFromApplicationData should throw error when id not found", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, "no id")).toThrow(`${BeneficialOwnerGovKey}`);
+  });
+
+  test("getFromApplicationData should throw error when id undefined", () => {
+    const session = getSessionRequestWithExtraData();
+    req.session = session;
+    expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).toThrow(`${BeneficialOwnerGovKey}`);
+  });
 });

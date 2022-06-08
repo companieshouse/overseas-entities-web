@@ -11,7 +11,9 @@ export const ManagingOfficerCorporateKeys: string[] = [
   "is_on_register_in_country_formed_in",
   "public_register_name",
   "registration_number",
-  "start_date"
+  "start_date",
+  "contact_full_name",
+  "contact_email"
 ];
 
 export interface ManagingOfficerCorporate {
@@ -25,4 +27,6 @@ export interface ManagingOfficerCorporate {
   public_register_name?: string;
   registration_number?: string;
   start_date?: InputDate;
+  contact_full_name: string;
+  contact_email: string;
 }

@@ -21,6 +21,11 @@
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Government or public authority</th>
                 <td class="govuk-table__cell">{{ bog.name }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL }}/{{ bog.id }}">
+                        Change or remove
+                    </a>
+                </td>
             </tr>
         {% endfor %}
     </tbody>

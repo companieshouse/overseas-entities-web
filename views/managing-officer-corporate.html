@@ -20,7 +20,7 @@
     {% include "includes/list/errors.html" %}
 
     <form class="form" method="post">
-      
+
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -37,6 +37,28 @@
 
       {% set dateText = "When did it become a managing officer for the overseas entity?" %}
       {% include "includes/inputs/date/start-date-input.html" %}
+
+      <h2 class="govuk-heading-l">Who can we contact about this managing officer?</h2>
+
+      {{ govukInput({
+        label: {
+          text: "What is their full name?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        id: "contact_full_name",
+        name: "contact_full_name"
+      }) }}
+
+      {{ govukInput({
+        label: {
+          text: "What is their email address?",
+          classes: "govuk-label--m",
+          isPageHeading: false
+        },
+        id: "contact_email",
+        name: "contact_email"
+      }) }}
 
       {{ govukInsetText({
         html: '

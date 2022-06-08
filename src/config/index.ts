@@ -1,12 +1,5 @@
-export const getEnvironmentValue = (key: string, defaultValue = ""): string => {
-  const value: string = process.env[key] || defaultValue;
+import { getEnvironmentValue } from "../utils/environment.value";
 
-  if (!value) {
-    throw new Error(`Please set the environment variable "${key}"`);
-  }
-
-  return value;
-};
 
 // APP CONFIGs
 export const APPLICATION_NAME = "overseas-entities-web";
@@ -74,7 +67,12 @@ export const HEALTHCHECK_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + HEALTHCHECK_PAG
 export const SOLD_LAND_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SOLD_LAND_FILTER_PAGE;
 export const SECURE_REGISTER_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SECURE_REGISTER_FILTER_PAGE;
 export const USE_PAPER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
+export const REMOVE = "/remove";
 
+// URL PARAMS
+export const ID = "/:id"; // Same param name as the ID in the data model
+
+// PAYMENT CONFIGs
 export const PAYMENT = "payment";
 export const TRANSACTION = "transaction";
 export const OVERSEAS_ENTITY = "overseas-entity";

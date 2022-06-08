@@ -68,7 +68,10 @@ router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOth
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
 
 router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
+router.get(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, beneficialOwnerGov.getById);
 router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
+router.post(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+router.get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, beneficialOwnerGov.remove);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, managingOfficerIndividual.get);
 router.post(config.MANAGING_OFFICER_URL, authentication, ...validator.managingOfficerIndividual, checkValidations, managingOfficerIndividual.post);

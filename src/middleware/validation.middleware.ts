@@ -21,8 +21,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         [StartDateKey]: prepareData(req.body, StartDateKeys)
       };
 
-      return res.render(NAVIGATION[req.path].currentPage, {
-        backLinkUrl: NAVIGATION[req.path].previousPage,
+      const routePath = req.route.path;
+      return res.render(NAVIGATION[routePath].currentPage, {
+        backLinkUrl: NAVIGATION[routePath].previousPage,
         ...getApplicationData(req.session),
         ...req.body,
         ...dates,

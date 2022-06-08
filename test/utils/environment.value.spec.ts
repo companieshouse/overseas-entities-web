@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { getEnvironmentValue, CDN_HOST } from "../../src/config";
+import { CDN_HOST } from "../../src/config";
+import { getEnvironmentValue } from '../../src/utils/environment.value';
 
 describe('Config test suite', () => {
   test('should check if CDN_HOST env is returned correctly and fetched from user environment', () => {

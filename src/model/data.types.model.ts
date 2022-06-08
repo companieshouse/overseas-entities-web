@@ -44,6 +44,9 @@ export const InputDateKeys: string[] = [
   "year"
 ];
 
+// BOs and MOs ID field name
+export const ID = "id";
+
 // Boolean fields need to be parsed from string to number
 export const HasSameResidentialAddressKey = "is_service_address_same_as_usual_residential_address";
 export const HasSamePrincipalAddressKey = "is_service_address_same_as_principal_address";

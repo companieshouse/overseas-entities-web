@@ -28,6 +28,8 @@ import { ANY_MESSAGE_ERROR } from "./text.mock";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
+export const BO_IND_ID = "7ab403a0-4459-4ac0-b500-6d6f314da5b2";
+export const BO_IND_ID_URL = "/" + BO_IND_ID;
 
 export const COMPANY_NAME = "my company name";
 
@@ -232,6 +234,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },

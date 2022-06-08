@@ -9,6 +9,11 @@
             <tr class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">Individual</th>
                 <td class="govuk-table__cell">{{ boi.first_name }} {{ boi.last_name }}</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL }}/{{ boi.id }}">
+                        Change or remove
+                    </a>
+                </td>
             </tr>
         {% endfor %}
         {% for boo in beneficial_owners_corporate %}

@@ -51,14 +51,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET BY ID tests", () => {
 
-    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce( { } );
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-    });
-
     test("renders the beneficial owner gov page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);

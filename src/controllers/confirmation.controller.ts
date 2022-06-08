@@ -4,9 +4,8 @@ import { logger } from "../utils/logger";
 import { CONFIRMATION_PAGE } from "../config";
 import { getLoggedInUserEmail } from "../utils/session";
 import { getApplicationData } from "../utils/application.data";
-import { ApplicationData } from "../model/application.model";
+import { ApplicationData } from "../model";
 import { Transactionkey } from "../model/data.types.model";
-import * as config from "../config";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${CONFIRMATION_PAGE}`);
@@ -17,6 +16,6 @@ export const get = (req: Request, res: Response) => {
     referenceNumber: appData[Transactionkey],
     userEmail: getLoggedInUserEmail(req.session),
     workingDays: "XX", // Not yet defined.
-    templateName: config.CONFIRMATION_PAGE
+    templateName: CONFIRMATION_PAGE
   });
 };

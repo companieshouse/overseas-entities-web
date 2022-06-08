@@ -15,6 +15,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.PRESENTER_PAGE, {
       backLinkUrl: config.INTERRUPT_CARD_URL,
+      templateName: config.PRESENTER_PAGE,
       ...presenter
     });
   } catch (error) {

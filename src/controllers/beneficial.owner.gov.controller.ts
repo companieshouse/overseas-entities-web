@@ -18,6 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
+      templateName: config.BENEFICIAL_OWNER_GOV_PAGE,
       ...boGov
     });
   } catch (error) {

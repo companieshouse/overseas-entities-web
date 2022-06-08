@@ -23,6 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
+      templateName: config.MANAGING_OFFICER_CORPORATE_PAGE,
       ...moCorporate
     });
   } catch (error) {

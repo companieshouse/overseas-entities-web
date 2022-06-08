@@ -1,0 +1,14 @@
+<script src="//{{CDN_HOST}}/javascripts/app/piwik-enable.js"></script>
+<script type="application/javascript">
+    window.SERVICE_NAME = 'ROE'
+    window.PIWIK_URL = '{{ PIWIK_URL }}'
+    window.PIWIK_SITE_ID = '{{ PIWIK_SITE_ID }}'
+</script>
+<div id="templateName" data-id='{{templateName}}' hidden></div>
+<script src="//{{CDN_HOST}}/javascripts/app/cookie-consent/cookie-consent-1.0.0.js"></script>
+<script src="//{{CDN_HOST}}/javascripts/app/cookie-consent/matomo-only-cookie-consent.js"></script>
+<noscript>
+    <p>
+        <img src="{{PIWIK_URL}}/piwik.php?idsite={{PIWIK_SITE_ID}}" style="border:0;" alt="" />
+    </p>
+</noscript>

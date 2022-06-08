@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 
 export const get = (req: Request, res: Response) => {
   return res.render(config.CANNOT_USE_PAGE, {
-    backLinkUrl: config.SOLD_LAND_FILTER_URL
+    backLinkUrl: config.SOLD_LAND_FILTER_URL,
+    templateName: config.CANNOT_USE_PAGE
   });
 };

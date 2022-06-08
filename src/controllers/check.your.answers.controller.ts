@@ -20,6 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
+      templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       appData
     });
   } catch (error) {

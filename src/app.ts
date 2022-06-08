@@ -30,6 +30,8 @@ const nunjucksEnv = nunjucks.configure([
 });
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
+nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
+nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

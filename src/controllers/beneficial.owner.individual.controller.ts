@@ -41,7 +41,7 @@ export const get = (req: Request, res: Response) => {
 
 export const getByID = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+    logger.debugRequest(req, `GET BY ID ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id);

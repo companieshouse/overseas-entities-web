@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../utils/logger";
-import * as config from "../config";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 
@@ -18,7 +17,7 @@ export const get = (req: Request, res: Response) => {
 
   return res.render(MANAGING_OFFICER_PAGE, {
     backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
-    templateName: config.MANAGING_OFFICER_PAGE
+    templateName: MANAGING_OFFICER_PAGE
   });
 };
 
@@ -35,7 +34,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(MANAGING_OFFICER_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
-      templateName: config.MANAGING_OFFICER_PAGE,
+      templateName: MANAGING_OFFICER_PAGE,
       id,
       ...data,
       ...usualResidentialAddress,

@@ -28,14 +28,10 @@
         </ul>
         <p class="govuk-body">  Then follow the instructions within the document to enter the information into the service. You'll need to complete a new document for each trust. </p>
 
-        {{ govukButton({
-          text: "Continue",
-          href: "/register-an-overseas-entity/presenter",
-          attributes: {
-            "id": "continue",
-            "onclick": "_paq.push(['trackGoal', '3'])"
-          }
-        }) }}
+        <a href="/register-an-overseas-entity/presenter"  id="continue" onclick="_paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+          Continue
+        </a>
+
       </div>
     </div>
   </div>

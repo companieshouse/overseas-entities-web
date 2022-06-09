@@ -33,6 +33,7 @@ nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("OE_CONFIGS", config);
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
+nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

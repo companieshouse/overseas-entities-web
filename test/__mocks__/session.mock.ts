@@ -30,6 +30,8 @@ export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
 export const BO_IND_ID = "7ab403a0-4459-4ac0-b500-6d6f314da5b2";
 export const BO_IND_ID_URL = "/" + BO_IND_ID;
+export const BO_OTHER_ID = "e12267a4-ae92-4cfe-bea5-e3731463b2b1";
+export const BO_OTHER_ID_URL = "/" + BO_OTHER_ID;
 
 export const COMPANY_NAME = "my company name";
 
@@ -183,6 +185,7 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
     .ALL_IDENTIFIED_ALL_DETAILS;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_OTHER_ID,
   name: "TestCorporation",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,

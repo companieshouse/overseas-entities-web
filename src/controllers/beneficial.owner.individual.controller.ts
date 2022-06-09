@@ -40,7 +40,7 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-export const getByID = (req: Request, res: Response, next: NextFunction) => {
+export const getById = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET BY ID ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 

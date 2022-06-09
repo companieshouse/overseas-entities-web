@@ -9,44 +9,51 @@ import { NextFunction, Request, Response } from "express";
 import {
   BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BO_OTHER_ID,
+  BO_OTHER_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
 } from "../__mocks__/session.mock";
-import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
+import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL } from "../../src/config";
+import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL, REMOVE } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnSanctionsListKey, NatureOfControlType, yesNoResponse } from "../../src/model/data.types.model";
-import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
 import { ErrorMessages } from "../../src/validation/error.messages";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+
 
 describe("BENEFICIAL OWNER OTHER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {
 
     test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [BeneficialOwnerOtherKey]: null } );
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
     });
+  });
+
+  describe("GET BY ID tests", () => {
 
     test("renders the page through GET", async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerOtherKey]: BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
-      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
@@ -59,8 +66,8 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test("Should render the error page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const response = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const response = await request(app).get(BENEFICIAL_OWNER_OTHER_URL  + BO_OTHER_ID_URL);
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
@@ -136,6 +143,67 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+    });
+  });
+
+  describe("UPDATE tests", () => {
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test("catch error when updating data", async () => {
+      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`replaces existing object on submit`, async () => {
+      const newBoOtherData: BeneficialOwnerOther = { id: BO_OTHER_ID, name: "new name" };
+      mockPrepareData.mockReturnValueOnce(newBoOtherData);
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
+
+      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(BO_OTHER_ID);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+  });
+
+  describe("REMOVE tests", () => {
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test("catch error when removing data", async () => {
+      mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`removes the object from session`, async () => {
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 });

@@ -62,13 +62,16 @@ router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, beneficialOwnerType
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, beneficialOwnerIndividual.get);
-router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, beneficialOwnerIndividual.getByID);
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, beneficialOwnerIndividual.getById);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, ...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.post);
 router.post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, ...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, beneficialOwnerIndividual.remove);
 
 router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, beneficialOwnerOther.get);
+router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, beneficialOwnerOther.getById);
 router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+router.post(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, beneficialOwnerOther.remove);
 
 router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, beneficialOwnerGov.get);
 router.get(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, beneficialOwnerGov.getById);

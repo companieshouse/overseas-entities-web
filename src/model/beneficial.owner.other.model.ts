@@ -6,6 +6,7 @@ export const BeneficialOwnerOtherKey: string = "beneficial_owners_corporate";
   These fields should match the name field on the HTML file to be able to do the mapping correctly
 */
 export const BeneficialOwnerOtherKeys: string[] = [
+  "id",
   "name",
   "principal_address",
   "is_service_address_same_as_principal_address",
@@ -23,6 +24,7 @@ export const BeneficialOwnerOtherKeys: string[] = [
 ];
 
 export interface BeneficialOwnerOther {
+  id: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

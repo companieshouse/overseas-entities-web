@@ -35,12 +35,18 @@ Has the entity disposed of UK property or land since 28 February 2022?
             {
               value: 1,
               text: "Yes",
-              checked: has_sold_land == 1
+              checked: has_sold_land == 1,
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
             },
             {
               value: 0,
               text: "No",
-              checked: has_sold_land == 0
+              checked: has_sold_land == 0,
+              attributes: {
+                "data-event-id": "no-radio-button"
+              }
             }
           ]
         }) }}

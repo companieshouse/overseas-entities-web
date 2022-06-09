@@ -21,6 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_OTHER_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
+      templateName: config.BENEFICIAL_OWNER_OTHER_PAGE,
       ...boOther
     });
   } catch (error) {

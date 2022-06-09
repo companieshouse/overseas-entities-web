@@ -7,6 +7,7 @@ export const BeneficialOwnerIndividualKey = "beneficial_owners_individual";
   be able to do the mapping correctly
 */
 export const BeneficialOwnerIndividualKeys: string[] = [
+  "id",
   "first_name",
   "last_name",
   "date_of_birth",
@@ -22,6 +23,7 @@ export const BeneficialOwnerIndividualKeys: string[] = [
 ];
 
 export interface BeneficialOwnerIndividual {
+  id: string;
   first_name?: string;
   last_name?: string;
   date_of_birth?: InputDate;

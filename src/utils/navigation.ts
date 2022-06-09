@@ -62,6 +62,11 @@ export const NAVIGATION: Navigation = {
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: config.BENEFICIAL_OWNER_TYPE_URL
   },
+  [config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID]: {
+    currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
   [config.BENEFICIAL_OWNER_GOV_URL + config.ID]: {
     currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,

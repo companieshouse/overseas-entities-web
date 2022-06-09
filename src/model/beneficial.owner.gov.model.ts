@@ -7,6 +7,7 @@ export const BeneficialOwnerGovKey = "beneficial_owners_government_or_public_aut
   be able to do the mapping correctly
 */
 export const BeneficialOwnerGovKeys: string[] = [
+  "id",
   "name",
   "principal_address",
   "is_service_address_same_as_principal_address",

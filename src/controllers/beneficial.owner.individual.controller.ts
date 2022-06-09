@@ -105,7 +105,7 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debug(`REMOVE ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
+    logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
 

@@ -32,6 +32,8 @@ export const BO_IND_ID = "7ab403a0-4459-4ac0-b500-6d6f314da5b2";
 export const BO_IND_ID_URL = "/" + BO_IND_ID;
 export const BO_OTHER_ID = "e12267a4-ae92-4cfe-bea5-e3731463b2b1";
 export const BO_OTHER_ID_URL = "/" + BO_OTHER_ID;
+export const MO_IND_ID = "0dccbd5e-cc09-4f8f-828e-f7cc9fc352ac";
+export const MO_IND_ID_URL = "/" + MO_IND_ID;
 
 export const COMPANY_NAME = "my company name";
 
@@ -307,6 +309,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
   first_name: "Joe",
   last_name: "Bloggs",
   has_former_names: yesNoResponse.Yes,

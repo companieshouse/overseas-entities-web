@@ -14,6 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: config.ENTITY_URL,
+      templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
     });
   } catch (error) {

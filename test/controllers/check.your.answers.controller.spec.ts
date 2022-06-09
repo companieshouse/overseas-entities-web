@@ -83,6 +83,8 @@ describe("GET tests", () => {
     expect(resp.text).toContain("BY 2");
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
     expect(resp.text).toContain("legalForm");
+    expect(resp.text).toContain("Joe Bloggs");
+    expect(resp.text).toContain("jbloggs@bloggs.co.ru");
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {

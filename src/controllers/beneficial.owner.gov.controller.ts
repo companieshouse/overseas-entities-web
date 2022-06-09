@@ -14,7 +14,8 @@ export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
   return res.render(BENEFICIAL_OWNER_GOV_PAGE, {
-    backLinkUrl: BENEFICIAL_OWNER_TYPE_URL
+    backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
+    templateName: BENEFICIAL_OWNER_GOV_PAGE
   });
 };
 
@@ -31,6 +32,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(BENEFICIAL_OWNER_GOV_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
+      templateName: BENEFICIAL_OWNER_GOV_PAGE,
       id,
       ...data,
       ...principalAddress,

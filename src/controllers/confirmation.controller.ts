@@ -15,6 +15,7 @@ export const get = (req: Request, res: Response) => {
   return res.render(CONFIRMATION_PAGE, {
     referenceNumber: appData[Transactionkey],
     userEmail: getLoggedInUserEmail(req.session),
-    workingDays: "XX" // Not yet defined.
+    workingDays: "XX", // Not yet defined.
+    templateName: CONFIRMATION_PAGE
   });
 };

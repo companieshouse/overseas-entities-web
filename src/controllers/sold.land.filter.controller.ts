@@ -9,6 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: config.LANDING_URL,
+      templateName: config.SOLD_LAND_FILTER_PAGE
     });
   } catch (error) {
     logger.errorRequest(req, error);

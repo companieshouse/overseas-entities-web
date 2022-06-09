@@ -6,7 +6,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SECURE_REGISTER_FILTER_PAGE}`);
     return res.render(config.SECURE_REGISTER_FILTER_PAGE, {
-      backLinkUrl: config.SOLD_LAND_FILTER_URL
+      backLinkUrl: config.SOLD_LAND_FILTER_URL,
+      templateName: config.SECURE_REGISTER_FILTER_PAGE
     });
   } catch (error) {
     logger.errorRequest(req, error);

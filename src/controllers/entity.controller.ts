@@ -26,6 +26,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: config.PRESENTER_URL,
+      templateName: config.ENTITY_PAGE,
       ...entity,
       ...principalAddress,
       ...serviceAddress

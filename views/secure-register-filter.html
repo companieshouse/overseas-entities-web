@@ -32,12 +32,18 @@
             {
               value: 1,
               text: "Yes",
-              checked: secure_register == 1
+              checked: secure_register == 1,
+              attributes: {
+                "data-event-id": "yes-radio-button"
+              }
             },
             {
               value: 0,
               text: "No",
-              checked: secure_register == 0
+              checked: secure_register == 0,
+              attributes: {
+                "data-event-id": "no-radio-button"
+              }
             }
           ]
         }) }}

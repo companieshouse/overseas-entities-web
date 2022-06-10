@@ -58,5 +58,5 @@ export enum ErrorMessages {
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less",
   // Invalid characters
-  INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
+  INVALID_CHARACTERS_FULL_NAME = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

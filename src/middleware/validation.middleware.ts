@@ -6,6 +6,7 @@ import { NAVIGATION } from "../utils/navigation";
 import { DateOfBirthKey, StartDateKey, DateOfBirthKeys, StartDateKeys } from "../model/date.model";
 
 import { logger } from '../utils/logger';
+import { ID } from "../model/data.types.model";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -22,8 +23,15 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       };
 
       const routePath = req.route.path;
+
+      // need to pass the id req param back into the page if present in the url in order to show the remove button again
+      // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
+      // that don't use id will just ignore it.
+      const id = req.params[ID];
+
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage,
+        id,
         ...getApplicationData(req.session),
         ...req.body,
         ...dates,

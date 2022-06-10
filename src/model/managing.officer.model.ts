@@ -7,6 +7,7 @@ export const ManagingOfficerKey = "managing_officers_individual";
   be able to do the mapping correctly
 */
 export const ManagingOfficerKeys: string[] = [
+  "id",
   "first_name",
   "last_name",
   "has_former_names",
@@ -21,6 +22,7 @@ export const ManagingOfficerKeys: string[] = [
 ];
 
 export interface ManagingOfficerIndividual {
+  id: string
   first_name?: string
   last_name?: string
   has_former_names?: yesNoResponse

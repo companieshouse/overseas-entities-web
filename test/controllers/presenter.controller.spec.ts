@@ -19,7 +19,10 @@ import {
 import { PresenterKey } from '../../src/model/presenter.model';
 import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
-import { PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
+import {
+  PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK
+} from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -79,6 +82,16 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+    });
+
+    test("renders the current page with INVALID_CHARACTERS error message for full name", async () => {
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_CHARACTERS);
     });
 
     test("catch error when post data from presenter page", async () => {

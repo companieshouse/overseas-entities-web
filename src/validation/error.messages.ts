@@ -56,5 +56,7 @@ export enum ErrorMessages {
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 4000 characters or less",
   MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Entity’s registration number must be 32 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
-  MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less"
+  MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less",
+  // Invalid characters
+  INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

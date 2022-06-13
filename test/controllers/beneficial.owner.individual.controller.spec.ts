@@ -8,13 +8,26 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_INDIVIDUAL_URL, BENEFICIAL_OWNER_TYPE_URL, REMOVE } from "../../src/config";
+import {
+  BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  BENEFICIAL_OWNER_TYPE_URL,
+  REMOVE
+} from "../../src/config";
 import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from '../../src/utils/application.data';
-import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING, ERROR_LIST, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import {
+  ANY_MESSAGE_ERROR,
+  BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
+  ERROR_LIST,
+  SERVICE_UNAVAILABLE
+} from '../__mocks__/text.mock';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BO_IND_ID, BO_IND_ID_URL, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { IsOnSanctionsListKey, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
-import { BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
+import {
+  BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
+} from '../__mocks__/validation.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -131,6 +144,18 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+    });
+
+    test("renders the current page with INVALID_CHARACTERS error message", async () => {
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain( ErrorMessages.FIRST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.LAST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
     });
   });
 

@@ -58,5 +58,15 @@ export enum ErrorMessages {
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less",
   // Invalid characters
-  INVALID_CHARACTERS_FULL_NAME = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
+  INVALID_CHARACTERS = " must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  FULL_NAME_PREFIX = "Full name",
+  FIRST_NAME_PREFIX = "First name",
+  LAST_NAME_PREFIX = "Last name",
+  NATIONALITY_PREFIX = "Nationality",
+  PROPERTY_NAME_OR_NUMBER_PREFIX = "Property name or number",
+  ADDRESS_LINE_1_PREFIX = "Address line 1",
+  ADDRESS_LINE_2_PREFIX = "Address line 2",
+  CITY_OR_TOWN_PREFIX = "City or town",
+  COUNTY_STATE_PROVINCE_REGION_PREFIX = "County, state, province or region",
+  POSTCODE_ZIPCODE_PREFIX = "Postcode or ZIP code"
 }

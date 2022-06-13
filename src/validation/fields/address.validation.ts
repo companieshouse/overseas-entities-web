@@ -112,5 +112,5 @@ export const usual_residential_service_address_max_validations = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.COUNTY_STATE_PROVINCE_REGION_PREFIX + ErrorMessages.INVALID_CHARACTERS, value) ),
   body("service_address_postcode")
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) )
-    .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS, value) ),
+    .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS, value) )
 ];

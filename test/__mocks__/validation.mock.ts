@@ -1,5 +1,6 @@
 const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
+const INVALID_NATIONALITY = "ру́сская";
 
 const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
@@ -106,7 +107,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
   first_name: FIRST_NAME_INVALID_CHARS,
   last_name: NAME_INVALID_CHARS,
-  nationality: "Russian",
+  nationality: INVALID_NATIONALITY,
   is_on_sanctions_list: "0",
   is_service_address_same_as_usual_residential_address: "1",
   ...RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 
 import { ErrorMessages } from "./error.messages";
-import { usual_residential_service_address_max_validations, usual_residential_address_max_validations } from "./fields/address.validation";
+import { usual_residential_service_address_beneficial_owner_validations, usual_residential_address_beneficial_owner_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 export const beneficialOwnerIndividual = [
@@ -9,6 +9,6 @@ export const beneficialOwnerIndividual = [
   body("last_name").isLength({ max: 160 }).withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS),
   body("nationality").matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_PREFIX + ErrorMessages.INVALID_CHARACTERS),
 
-  ...usual_residential_address_max_validations,
-  ...usual_residential_service_address_max_validations
+  ...usual_residential_address_beneficial_owner_validations,
+  ...usual_residential_service_address_beneficial_owner_validations
 ];

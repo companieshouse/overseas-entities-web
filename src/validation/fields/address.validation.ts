@@ -85,7 +85,7 @@ export const principal_service_address_max_validations = [
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) ),
 ];
 
-export const usual_residential_address_max_validations = [
+export const usual_residential_address_beneficial_owner_validations = [
   body("usual_residential_address_property_name_number").isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS),
   body("usual_residential_address_line_1").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_1_PREFIX + ErrorMessages.INVALID_CHARACTERS),
   body("usual_residential_address_line_2").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_2_PREFIX + ErrorMessages.INVALID_CHARACTERS),
@@ -94,7 +94,7 @@ export const usual_residential_address_max_validations = [
   body("usual_residential_address_postcode").isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS)
 ];
 
-export const usual_residential_service_address_max_validations = [
+export const usual_residential_service_address_beneficial_owner_validations = [
   body("service_address_property_name_number")
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH, 200, value) )
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS, value) ),

@@ -26,6 +26,7 @@ import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../s
 import { IsOnSanctionsListKey, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -154,17 +155,17 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain(ErrorMessages.FIRST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.LAST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.NATIONALITY_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LAST_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITY_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
-    /*
+
     test("renders the current page with INVALID_CHARACTERS service address error message", async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -174,14 +175,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ERROR_LIST);
 
-      expect(resp.text).toContain( ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_1_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_2_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.CITY_OR_TOWN_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.COUNTY_STATE_PROVINCE_REGION_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
-    */
   });
 
   describe("UPDATE tests", () => {

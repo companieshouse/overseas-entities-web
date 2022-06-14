@@ -16,8 +16,8 @@ export const checkMaxFieldIfRadioButtonSelected = (selected: boolean, errMsg: st
   return true;
 };
 
-export const checkInvalidCharactersIfRadioButtonSelected = (noSelected: boolean, errMsg: string, value: string) => {
-  if (noSelected && !value.match(VALID_CHARACTERS)) {
+export const checkInvalidCharactersIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string) => {
+  if (selected && !value.match(VALID_CHARACTERS)) {
     throw new Error(errMsg);
   }
   return true;

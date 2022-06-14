@@ -121,7 +121,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK
   last_name: MAX_160,
   nationality: NO_MAX,
   is_on_sanctions_list: "0",
-  is_service_address_same_as_usual_residential_address: "1",
+  is_service_address_same_as_usual_residential_address: "0",
   ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
   ...DATE_OF_BIRTH_MOCK,

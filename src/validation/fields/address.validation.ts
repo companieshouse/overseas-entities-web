@@ -86,12 +86,24 @@ export const principal_service_address_max_validations = [
 ];
 
 export const usual_residential_address_beneficial_owner_validations = [
-  body("usual_residential_address_property_name_number").isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
-  body("usual_residential_address_line_1").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS),
-  body("usual_residential_address_line_2").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS),
-  body("usual_residential_address_town").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS),
-  body("usual_residential_address_county").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_COUNTY_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS),
-  body("usual_residential_address_postcode").isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
+  body("usual_residential_address_property_name_number")
+    .isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
+  body("usual_residential_address_line_1")
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS),
+  body("usual_residential_address_line_2")
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS),
+  body("usual_residential_address_town")
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS),
+  body("usual_residential_address_county")
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_COUNTY_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS),
+  body("usual_residential_address_postcode")
+    .isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
 
 export const usual_residential_service_address_beneficial_owner_validations = [

@@ -5,8 +5,12 @@ import { usual_residential_service_address_beneficial_owner_validations, usual_r
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 export const beneficialOwnerIndividual = [
-  body("first_name").isLength({ max: 50 }).withMessage(ErrorMessages.MAX_FIRST_NAME_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS),
-  body("last_name").isLength({ max: 160 }).withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH).matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
+  body("first_name").isLength({ max: 50 })
+    .withMessage(ErrorMessages.MAX_FIRST_NAME_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS),
+  body("last_name").isLength({ max: 160 })
+    .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
   body("nationality").matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
   ...usual_residential_address_beneficial_owner_validations,

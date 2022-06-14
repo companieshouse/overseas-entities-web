@@ -34,6 +34,8 @@ export const BO_OTHER_ID = "e12267a4-ae92-4cfe-bea5-e3731463b2b1";
 export const BO_OTHER_ID_URL = "/" + BO_OTHER_ID;
 export const MO_IND_ID = "0dccbd5e-cc09-4f8f-828e-f7cc9fc352ac";
 export const MO_IND_ID_URL = "/" + MO_IND_ID;
+export const MO_CORP_ID = "2df18e59-74dd-42d7-9494-8d40b953ddbe";
+export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
 
@@ -352,6 +354,7 @@ export const REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS = {
 };
 
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
   name: "Joe Bloggs Ltd",
   principal_address: ADDRESS,
   service_address: ADDRESS,

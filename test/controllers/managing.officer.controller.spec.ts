@@ -25,7 +25,6 @@ import { HasFormerNames, HasSameResidentialAddressKey } from '../../src/model/da
 import { MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
 import { logger } from "../../src/utils/logger";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
-import { MANAGING_OFFICER_INDIVIDUAL_VALID_FORM_DATA_MOCK } from '../__mocks__/page.form.data.mock';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -206,7 +205,7 @@ describe("MANAGING_OFFICER controller", () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(MANAGING_OFFICER_INDIVIDUAL_VALID_FORM_DATA_MOCK);
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
@@ -216,7 +215,7 @@ describe("MANAGING_OFFICER controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(MANAGING_OFFICER_INDIVIDUAL_VALID_FORM_DATA_MOCK);
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -227,7 +226,7 @@ describe("MANAGING_OFFICER controller", () => {
       mockPrepareData.mockReturnValueOnce(newMoData);
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(MANAGING_OFFICER_INDIVIDUAL_VALID_FORM_DATA_MOCK);
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);

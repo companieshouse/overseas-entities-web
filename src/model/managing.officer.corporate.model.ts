@@ -2,6 +2,7 @@ import { Address, InputDate, yesNoResponse } from "./data.types.model";
 
 export const ManagingOfficerCorporateKey: string = "managing_officers_corporate";
 export const ManagingOfficerCorporateKeys: string[] = [
+  "id",
   "name",
   "principal_address",
   "service_address",
@@ -17,6 +18,7 @@ export const ManagingOfficerCorporateKeys: string[] = [
 ];
 
 export interface ManagingOfficerCorporate {
+  id: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

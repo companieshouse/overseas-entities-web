@@ -1,3 +1,5 @@
+import { ADDRESS } from "./session.mock";
+
 const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
 const INVALID_NATIONALITY = "ру́сская";
@@ -117,12 +119,12 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
-  first_name: MAX_50,
-  last_name: MAX_160,
-  nationality: NO_MAX,
+  first_name: "Joe",
+  last_name: "Bloggs",
+  nationality: "Utopian",
   is_on_sanctions_list: "0",
   is_service_address_same_as_usual_residential_address: "0",
-  ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...ADDRESS,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
   ...DATE_OF_BIRTH_MOCK,
   ...START_DATE_MOCK

@@ -155,15 +155,15 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ERROR_LIST);
-      expect(resp.text).toContain( ErrorMessages.FIRST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.LAST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.NATIONALITY_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_1_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.ADDRESS_LINE_2_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.CITY_OR_TOWN_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.COUNTY_STATE_PROVINCE_REGION_PREFIX + ErrorMessages.INVALID_CHARACTERS);
-      expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.FIRST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LAST_NAME_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITY_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_PREFIX + ErrorMessages.INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_PREFIX + ErrorMessages.INVALID_CHARACTERS);
     });
 
     test("renders the current page with INVALID_CHARACTERS service address error message", async () => {

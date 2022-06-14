@@ -117,8 +117,8 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
-  first_name: MAX_50 + "1",
-  last_name: MAX_160 + "1",
+  first_name: MAX_50,
+  last_name: MAX_160,
   nationality: NO_MAX,
   is_on_sanctions_list: "0",
   is_service_address_same_as_usual_residential_address: "1",

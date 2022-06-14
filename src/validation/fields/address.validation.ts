@@ -85,7 +85,7 @@ export const principal_service_address_max_validations = [
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) ),
 ];
 
-export const usual_residential_address_beneficial_owner_validations = [
+export const usual_residential_address_beneficial_owner_validation = [
   body("usual_residential_address_property_name_number")
     .isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
@@ -106,7 +106,7 @@ export const usual_residential_address_beneficial_owner_validations = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
 
-export const usual_residential_service_address_beneficial_owner_validations = [
+export const usual_residential_service_address_beneficial_owner_validation = [
   body("service_address_property_name_number")
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS, value))
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH, 200, value)),

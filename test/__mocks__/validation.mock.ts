@@ -1,8 +1,9 @@
-import { ADDRESS } from "./session.mock";
+import { ADDRESS, PRINCIPAL_ADDRESS_MOCK } from "./session.mock";
 
 const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
-const INVALID_NATIONALITY = "ру́сская";
+const NATIONALITY_INVALID_CHARS = "ру́сская";
+const INVALID_CHARS = "Дракон";
 
 const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
@@ -26,6 +27,16 @@ const PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   principal_address_county: MAX_50 + "1",
   principal_address_country: NO_MAX,
   principal_address_postcode: MAX_20 + "1"
+};
+
+const PRINCIPAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {
+  principal_address_property_name_number: "١",
+  principal_address_line_1: "Красная",
+  principal_address_line_2: "площадь",
+  principal_address_town: "Москва",
+  principal_address_county: "Москва",
+  principal_address_country: "Москва",
+  principal_address_postcode: "١١١١١١١"
 };
 
 const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
@@ -109,7 +120,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
   first_name: FIRST_NAME_INVALID_CHARS,
   last_name: NAME_INVALID_CHARS,
-  nationality: INVALID_NATIONALITY,
+  nationality: NATIONALITY_INVALID_CHARS,
   is_on_sanctions_list: "0",
   is_service_address_same_as_usual_residential_address: "1",
   ...RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
@@ -141,6 +152,28 @@ export const BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK = {
   is_service_address_same_as_principal_address: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK = {
+  name: NAME_INVALID_CHARS,
+  legal_form: INVALID_CHARS,
+  law_governed: INVALID_CHARS,
+  public_register_name: INVALID_CHARS,
+  registration_number: INVALID_CHARS,
+  is_on_register_in_country_formed_in: "1",
+  is_service_address_same_as_usual_residential_address: "1",
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...ADDRESS
+};
+
+export const BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
+  name: "Joe Bloggs",
+  legal_form: "Dunno",
+  law_governed: "Maybe",
+  is_on_register_in_country_formed_in: "0",
+  is_service_address_same_as_usual_residential_address: "0",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };
 
 export const BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK = {

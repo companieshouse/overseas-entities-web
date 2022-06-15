@@ -7,7 +7,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK} from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { getApplicationData } from "../../src/utils/application.data";
 

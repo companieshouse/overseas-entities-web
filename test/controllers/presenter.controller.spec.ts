@@ -21,7 +21,8 @@ import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
   PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
-  PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK, PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
+  PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
+  PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;

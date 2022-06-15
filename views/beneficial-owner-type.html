@@ -40,7 +40,9 @@
   {% set boTypes = mos %}
 {% else %}
   {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
-  {% set boTypes = (bos.push(mos), bos) %}
+  {% set boTypes = bos %}
+  {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
+  {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
 {% endif %}
 
 {% block content %}
@@ -51,10 +53,12 @@
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ boTypesTitle }}</h1>
       <br/>
 
-      {{ govukDetails({
-        summaryText: "What is a managing officer?",
-        html: "<p>To be confirmed</p>"
-      }) }}
+      {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
+        {{ govukDetails({
+          summaryText: "What is a managing officer?",
+          html: "<p>To be confirmed</p>"
+        }) }}
+      {% endif %}
 
       {% include "includes/list/errors.html" %}
 

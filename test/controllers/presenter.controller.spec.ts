@@ -55,14 +55,14 @@ describe("PRESENTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect the entity page after a successful post from presenter page", async () => {
+    test("redirect to the entity page after a successful post from presenter page", async () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(ENTITY_PAGE_REDIRECT);
     });
 
-    test("redirect the entity page after a successful post from presenter page with special characters", async () => {
+    test("redirect to the entity page after a successful post from presenter page with special characters", async () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);

@@ -82,6 +82,11 @@ export const NAVIGATION: Navigation = {
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: config.BENEFICIAL_OWNER_TYPE_URL
   },
+  [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
+    currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
   [config.TRUST_INFO_URL]: {
     currentPage: config.TRUST_INFO_PAGE,
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,

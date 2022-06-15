@@ -21,7 +21,8 @@ import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
   PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
-  PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK
+  PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
+  PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -54,8 +55,15 @@ describe("PRESENTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect the entity page after a succesful post from presenter page", async () => {
+    test("redirect to the entity page after a successful post from presenter page", async () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(ENTITY_PAGE_REDIRECT);
+    });
+
+    test("redirect to the entity page after a successful post from presenter page with special characters", async () => {
+      const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(ENTITY_PAGE_REDIRECT);
@@ -91,7 +99,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_CHARACTERS_FULL_NAME);
+      expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
     });
 
     test("catch error when post data from presenter page", async () => {

@@ -47,7 +47,8 @@
           isPageHeading: false
         },
         id: "contact_full_name",
-        name: "contact_full_name"
+        name: "contact_full_name",
+        value: contact_full_name
       }) }}
 
       {{ govukInput({
@@ -57,7 +58,8 @@
           isPageHeading: false
         },
         id: "contact_email",
-        name: "contact_email"
+        name: "contact_email",
+        value: contact_email
       }) }}
 
       {{ govukInsetText({
@@ -68,6 +70,9 @@
       }) }}
 
       {% include "includes/continue-button.html" %}
+
+      {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REMOVE + "/" + id %}
+      {% include "includes/remove-button.html" %}
 
     </form>
 

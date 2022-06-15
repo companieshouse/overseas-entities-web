@@ -28,6 +28,16 @@ const PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   principal_address_postcode: MAX_20 + "1"
 };
 
+const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  principal_address_property_name_number: "١",
+  principal_address_line_1: "Красная",
+  principal_address_line_2: "площадь",
+  principal_address_town: "Москва",
+  principal_address_county: "Москва",
+  principal_address_country: NO_MAX,
+  principal_address_postcode: "١١١١١١١"
+};
+
 const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   usual_residential_address_property_name_number: MAX_200 + "1",
   usual_residential_address_line_1: MAX_50 + "1",
@@ -92,6 +102,20 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   registration_number: MAX_32 + "1",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
+};
+
+export const ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  name: NAME_INVALID_CHARS,
+  incorporation_country: NO_MAX,
+  is_service_address_same_as_principal_address: 0,
+  email: NO_MAX,
+  legal_form: "площадь",
+  law_governed: "площадь",
+  public_register_name: "Москва",
+  registration_number: "Москва",
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {

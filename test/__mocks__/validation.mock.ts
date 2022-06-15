@@ -1,5 +1,7 @@
 import { ADDRESS } from "./session.mock";
 
+const NAME_SPECIAL_CHARS = "Kurt Gödel";
+
 const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
 const INVALID_NATIONALITY = "ру́сская";
@@ -78,6 +80,11 @@ export const PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK = {
 
 export const PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   full_name: NAME_INVALID_CHARS,
+  email: "validemailaddress@valid.com"
+};
+
+export const PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK = {
+  full_name: NAME_SPECIAL_CHARS,
   email: "validemailaddress@valid.com"
 };
 

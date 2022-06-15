@@ -1,5 +1,8 @@
+import { ADDRESS } from "./session.mock";
 
-const NAME_INVALID_CHARS = "Путин";
+const FIRST_NAME_INVALID_CHARS = "Влади́мир";
+const NAME_INVALID_CHARS = "Дракон";
+const INVALID_NATIONALITY = "ру́сская";
 
 const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
@@ -45,6 +48,26 @@ const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   service_address_postcode: MAX_20 + "1"
 };
 
+const RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {
+  usual_residential_address_property_name_number: "١",
+  usual_residential_address_line_1: "Красная",
+  usual_residential_address_line_2: "площадь",
+  usual_residential_address_town: "Москва",
+  usual_residential_address_county: "Москва",
+  usual_residential_address_country: NO_MAX,
+  usual_residential_address_postcode: "١١١١١١١"
+};
+
+const SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {
+  service_address_property_name_number: "١",
+  service_address_line_1: "Красная",
+  service_address_line_2: "площадь",
+  service_address_town: "Москва",
+  service_address_county: "Москва",
+  service_address_country: NO_MAX,
+  service_address_postcode: "١١١١١١١"
+};
+
 const DATE_OF_BIRTH_MOCK = { 'date_of_birth-day': "1",  "date_of_birth-month": "1", "date_of_birth-year": "2000" };
 const START_DATE_MOCK = { 'start_date-day': "1", 'start_date-month': "1", 'start_date-year': "2022" };
 
@@ -79,6 +102,30 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
   is_service_address_same_as_usual_residential_address: "1",
   ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...DATE_OF_BIRTH_MOCK,
+  ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
+  first_name: FIRST_NAME_INVALID_CHARS,
+  last_name: NAME_INVALID_CHARS,
+  nationality: INVALID_NATIONALITY,
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_usual_residential_address: "1",
+  ...RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...DATE_OF_BIRTH_MOCK,
+  ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
+  first_name: "Joe",
+  last_name: "Bloggs",
+  nationality: "Utopian",
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_usual_residential_address: "0",
+  ...ADDRESS,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
   ...DATE_OF_BIRTH_MOCK,
   ...START_DATE_MOCK
 };

@@ -58,5 +58,14 @@ export enum ErrorMessages {
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less",
   // Invalid characters
-  INVALID_CHARACTERS_FULL_NAME = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
+  FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  NATIONALITY_INVALID_CHARACTERS = "Nationality must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS = "Property name or number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  ADDRESS_LINE_1_INVALID_CHARACTERS = "Address line 1 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  ADDRESS_LINE_2_INVALID_CHARACTERS = "Address line 2 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  CITY_OR_TOWN_INVALID_CHARACTERS = "City or town must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS = "County, state, province or region must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

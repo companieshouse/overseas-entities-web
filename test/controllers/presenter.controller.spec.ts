@@ -91,7 +91,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_CHARACTERS_FULL_NAME);
+      expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
     });
 
     test("catch error when post data from presenter page", async () => {

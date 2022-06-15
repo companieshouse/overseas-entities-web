@@ -192,7 +192,7 @@ export const BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
   legal_form: "Dunno",
   law_governed: "Maybe",
   is_on_register_in_country_formed_in: "0",
-  is_service_address_same_as_usual_residential_address: "0",
+  is_service_address_same_as_principal_address: "0",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };

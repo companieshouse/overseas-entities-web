@@ -103,27 +103,6 @@ export const service_address_beneficial_owner_validation = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value)),
 ];
 
-
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS, value))
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH, 200, value)),
-// body("service_address_line_1")
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS, value))
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_ADDRESS_LINE1_LENGTH, 50, value)),
-// body("service_address_line_2")
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS, value))
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_ADDRESS_LINE2_LENGTH, 50, value)),
-// body("service_address_town")
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS, value) )
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_CITY_OR_TOWN_LENGTH, 50, value)),
-// body("service_address_county")
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS, value))
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_COUNTY_LENGTH, 50, value)),
-// body("service_address_postcode")
-// .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value))
-// .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value))
-
-
-
 export const usual_residential_address_beneficial_owner_validation = [
   body("usual_residential_address_property_name_number")
     .isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)

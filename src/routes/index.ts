@@ -90,7 +90,7 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL, authentication, managingOffice
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
 
 router.get(config.TRUST_INFO_URL, authentication, trustInformation.get);
-// TODO post
+router.post(config.TRUST_INFO_URL, authentication, trustInformation.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);

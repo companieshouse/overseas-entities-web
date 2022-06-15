@@ -72,5 +72,6 @@ export enum ErrorMessages {
   LEGAL_FORM_INVALID_CHARACTERS = "Legal form must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   LAW_GOVERNED_INVALID_CHARACTERS = "Governing law must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   REGISTER_NAME_INVALID_CHARACTERS = "Name of register must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  REGISTRATION_NUMBER_INVALID_CHARACTERS = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
+  REGISTRATION_NUMBER_INVALID_CHARACTERS = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

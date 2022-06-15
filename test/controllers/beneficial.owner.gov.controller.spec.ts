@@ -20,7 +20,10 @@ import {
   BO_GOV_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
 } from "../__mocks__/session.mock";
-import { BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import {
+  BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK
+} from "../__mocks__/validation.mock";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 
@@ -119,6 +122,25 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID CHARACTERS error messages`, async () => {
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
     });
   });
 

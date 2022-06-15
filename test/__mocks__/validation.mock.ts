@@ -174,6 +174,17 @@ export const BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK = {
   is_on_sanctions_list: "0",
   is_service_address_same_as_principal_address: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...START_DATE_MOCK
+};
+
+export const BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  name: NAME_INVALID_CHARS,
+  legal_form: "площадь",
+  law_governed: "площадь",
+  is_on_sanctions_list: "0",
+  is_service_address_same_as_principal_address: "0",
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...START_DATE_MOCK
 };

@@ -1,5 +1,7 @@
 import { ADDRESS, PRINCIPAL_ADDRESS_MOCK } from "./session.mock";
 
+const NAME_SPECIAL_CHARS = "Kurt Gödel";
+
 const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
 const NATIONALITY_INVALID_CHARS = "ру́сская";
@@ -29,7 +31,7 @@ const PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   principal_address_postcode: MAX_20 + "1"
 };
 
-const PRINCIPAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {
+const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   principal_address_property_name_number: "١",
   principal_address_line_1: "Красная",
   principal_address_line_2: "площадь",
@@ -92,6 +94,11 @@ export const PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   email: "validemailaddress@valid.com"
 };
 
+export const PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK = {
+  full_name: NAME_SPECIAL_CHARS,
+  email: "validemailaddress@valid.com"
+};
+
 export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   name: MAX_160 + "1",
   incorporation_country: NO_MAX,
@@ -103,6 +110,20 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   registration_number: MAX_32 + "1",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
+};
+
+export const ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  name: NAME_INVALID_CHARS,
+  incorporation_country: NO_MAX,
+  is_service_address_same_as_principal_address: 0,
+  email: NO_MAX,
+  legal_form: "площадь",
+  law_governed: "площадь",
+  public_register_name: "Москва",
+  registration_number: "Москва",
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
@@ -162,7 +183,7 @@ export const BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK = {
   registration_number: INVALID_CHARS,
   is_on_register_in_country_formed_in: "1",
   is_service_address_same_as_usual_residential_address: "1",
-  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ...ADDRESS
 };
 

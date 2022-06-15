@@ -25,7 +25,10 @@ import {
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
-import { ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
+import {
+  ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
+} from '../__mocks__/validation.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -175,6 +178,26 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+    });
+
+    test("renders the current page with INVALID CHARACTERS error messages", async () => {
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
     });
 
     test("catch error when post data from ENTITY page", async () => {

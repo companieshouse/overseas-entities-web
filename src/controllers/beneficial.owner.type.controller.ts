@@ -16,9 +16,31 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    let hasTrusts: boolean = false;
+
+    // Check whether any Beneficial Owners are Trustees
+    if (appData !== null) {
+      if (appData.beneficial_owners_individual !== undefined) {
+        appData.beneficial_owners_individual.forEach(element => {
+          if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
+            hasTrusts = true;
+          }
+        });
+      }
+
+      if (appData.beneficial_owners_corporate !== undefined) {
+        appData.beneficial_owners_corporate.forEach(element => {
+          if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
+            hasTrusts = true;
+          }
+        });
+      }
+    }
+
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      hasTrusts: hasTrusts,
       ...appData
     });
   } catch (error) {

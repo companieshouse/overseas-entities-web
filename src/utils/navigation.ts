@@ -81,5 +81,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.MANAGING_OFFICER_PAGE,
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
+  [config.TRUST_INFO_URL]: {
+    currentPage: config.TRUST_INFO_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.CHECK_YOUR_ANSWERS_URL
   }
 };

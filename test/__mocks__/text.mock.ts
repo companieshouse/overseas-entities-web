@@ -23,6 +23,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the indiv
 export const MANAGING_OFFICER = "Managing officer";
 export const MANAGING_OFFICER_PAGE_HEADING = "Tell us about the individual person";
 export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";
+export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UNAUTHORISED = "Unauthorised";

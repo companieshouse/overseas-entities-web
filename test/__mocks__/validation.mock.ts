@@ -241,6 +241,8 @@ export const MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK = {
   public_register_name: MAX_4000 + "1",
   registration_number: MAX_32 + "1",
   is_service_address_same_as_principal_address: "0",
+  contact_full_name: MAX_160 + "1",
+  contact_email: MAX_250 + "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...START_DATE_MOCK
@@ -285,6 +287,8 @@ export const MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK = {
   is_on_register_in_country_formed_in: "1",
   public_register_name: INVALID_CHARS,
   registration_number: INVALID_CHARS,
+  contact_full_name: INVALID_CHARS,
+  contact_email: INVALID_CHARS,
   ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ...SERVICE_ADDRESS_MOCK
 };

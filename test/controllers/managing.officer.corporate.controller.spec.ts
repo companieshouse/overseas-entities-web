@@ -147,6 +147,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.FULL_NAME);
+      expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
     });
 
@@ -181,6 +183,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
@@ -215,6 +219,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_CHARACTERS service address error messages`, async () => {

@@ -90,7 +90,7 @@ describe("MANAGING_OFFICER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandandory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app)
@@ -101,7 +101,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandandory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
+    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app)
@@ -164,6 +164,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.OCCUPATION);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
     });
 

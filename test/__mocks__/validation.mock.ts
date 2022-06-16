@@ -1,4 +1,4 @@
-import { ADDRESS, PRINCIPAL_ADDRESS_MOCK } from "./session.mock";
+import { ADDRESS, MO_IND_ID, PRINCIPAL_ADDRESS_MOCK } from "./session.mock";
 
 const NAME_SPECIAL_CHARS = "Kurt Gödel";
 
@@ -233,4 +233,34 @@ export const MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK = {
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
   ...START_DATE_MOCK
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK = {
+  id: MO_IND_ID,
+  first_name: FIRST_NAME_INVALID_CHARS,
+  last_name: NAME_INVALID_CHARS,
+  has_former_names: "1",
+  former_names: "кузнец",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: NATIONALITY_INVALID_CHARS,
+  is_service_address_same_as_usual_residential_address: "1",
+  occupation: "водопроводчик",
+  role_and_responsibilities: "сантехника",
+  ...RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK,
+  ...ADDRESS
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
+  id: MO_IND_ID,
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: "1",
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Utopian",
+  is_service_address_same_as_usual_residential_address: "0",
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities",
+  ...ADDRESS,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };

@@ -34,8 +34,9 @@ export const managingOfficerIndividual = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
   ...usual_residential_service_address_validations,
-  body("occupation").isLength({ max: 100 })
-    .withMessage(ErrorMessages.MAX_OCCUPATION_LENGTH)
+  body("occupation")
+    .not().isEmpty().withMessage(ErrorMessages.OCCUPATION)
+    .isLength({ max: 100 }).withMessage(ErrorMessages.MAX_OCCUPATION_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.OCCUPATION_INVALID_CHARACTERS),
   body("role_and_responsibilities").isLength({ max: 4000 })
     .withMessage(ErrorMessages.MAX_ROLE_LENGTH)

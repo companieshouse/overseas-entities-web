@@ -390,6 +390,8 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   is_on_register_in_country_formed_in: "1",
   public_register_name: "register",
   registration_number: "123456789",
+  contact_full_name: "contact name",
+  contact_email: "contact email",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...start_date

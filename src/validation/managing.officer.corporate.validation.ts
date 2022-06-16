@@ -32,5 +32,14 @@ export const managingOfficerCorporate = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN),
 
   ...public_register_validations,
-  ...start_date_validations
+  ...start_date_validations,
+
+  body("contact_full_name")
+    .not().isEmpty().withMessage(ErrorMessages.FULL_NAME)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
+
+  body("contact_email")
+    .not().isEmpty().withMessage(ErrorMessages.EMAIL)
+    .isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
 ];

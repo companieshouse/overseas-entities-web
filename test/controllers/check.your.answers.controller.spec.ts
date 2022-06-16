@@ -17,6 +17,7 @@ import {
   CONFIRMATION_URL,
 } from "../../src/config";
 import {
+  BENEFICIAL_OWNER_TYPE_LINK,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
@@ -28,12 +29,14 @@ import {
   FOUND_REDIRECT_TO,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
   SERVICE_UNAVAILABLE,
+  TRUST_INFORMATION_LINK,
 } from "../__mocks__/text.mock";
 import {
   ERROR,
   OVERSEAS_ENTITY_ID,
   TRANSACTION,
   APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_NO_TRUSTS_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
@@ -114,6 +117,26 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data`, async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
+    expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LINK); // continue button
+    expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // back button
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {

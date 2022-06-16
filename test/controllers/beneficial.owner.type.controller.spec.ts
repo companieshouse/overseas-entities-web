@@ -12,9 +12,11 @@ import * as config from "../../src/config";
 import { getApplicationData } from '../../src/utils/application.data';
 import {
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
-  SERVICE_UNAVAILABLE
+  CHECK_YOUR_ANSWERS_LINK,
+  SERVICE_UNAVAILABLE,
+  TRUST_INFORMATION_LINK
 } from '../__mocks__/text.mock';
-import { APPLICATION_DATA_MOCK, ERROR } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUSTS_MOCK, ERROR } from '../__mocks__/session.mock';
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
@@ -34,13 +36,26 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
-    test("renders the beneficial owner type page for beneficial owners", async () => {
+    test("renders the beneficial owner type page for beneficial owners with trusts", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
+      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
+      expect(resp.text).toContain(TRUST_INFORMATION_LINK); // continue button
+    });
+
+    test("renders the beneficial owner type page for beneficial owners without trusts", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
+      expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // continue button
     });
 
     test("catch error when rendering the page", async () => {

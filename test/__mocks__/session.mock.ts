@@ -206,6 +206,24 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   is_on_sanctions_list: 0
 };
 
+export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_OTHER_ID,
+  name: "TestCorporation",
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  public_register_name: "ThisRegister",
+  registration_number: "123456789",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  start_date: { day: "1", month: "1", year: "2011" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trustees_nature_of_control_types: [],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: 0
+};
+
 export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   name: "TestCorporation",
   is_service_address_same_as_principal_address: "1",
@@ -252,6 +270,22 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   start_date: { day: "1", month: "3", year: "1999" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 0
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Russian",
+  usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   is_on_sanctions_list: 0
 };
@@ -413,6 +447,20 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID
+};
+
+export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],

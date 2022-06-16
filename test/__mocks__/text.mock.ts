@@ -42,3 +42,6 @@ export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual ma
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE = "Corporate managing officer";
 export const SECURE_REGISTER_FILTER_PAGE_HEADING = "Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?";
 export const CANNOT_USE_SERVICE_HEADING = "You cannot use this service";
+export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
+export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
+export const TRUST_INFORMATION_LINK = "trust-information";

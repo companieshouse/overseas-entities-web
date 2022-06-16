@@ -41,7 +41,7 @@ describe("TRUST INFORMATION controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.TRUST_INFO_PAGE} page`, async () => {
+    test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
       const resp = await request(app).post(config.TRUST_INFO_URL);
 
       expect(resp.status).toEqual(302); // TODO update this test when POST endpoint implemented

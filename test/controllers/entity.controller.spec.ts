@@ -197,7 +197,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
-      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTRATION_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
     });
 
     test("catch error when post data from ENTITY page", async () => {

@@ -37,7 +37,7 @@ const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   principal_address_line_2: "площадь",
   principal_address_town: "Москва",
   principal_address_county: "Москва",
-  principal_address_country: "Москва",
+  principal_address_country: NO_MAX,
   principal_address_postcode: "١١١١١١١"
 };
 

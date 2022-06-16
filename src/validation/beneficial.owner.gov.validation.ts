@@ -2,16 +2,21 @@ import { body } from "express-validator";
 
 import { ErrorMessages } from "./error.messages";
 import { principal_address_beneficial_owner_validation, service_address_beneficial_owner_validation } from "./fields/address.validation";
-import { public_register_max_validations } from "./fields/public-register.validation";
+import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 export const beneficialOwnerGov = [
-  body("name").isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH),
+  body("name")
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH),
 
   ...principal_address_beneficial_owner_validation,
   ...service_address_beneficial_owner_validation,
 
-  body("legal_form").isLength({ max: 4000 }).withMessage(ErrorMessages.MAX_LEGAL_FORM_LENGTH),
-  body("law_governed").isLength({ max: 4000 }).withMessage(ErrorMessages.MAX_LAW_GOVERNED_LENGTH),
+  body("law_governed")
+    .isLength({ max: 4000 }).withMessage(ErrorMessages.MAX_LAW_GOVERNED_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS),
+  body("legal_form")
+    .isLength({ max: 4000 }).withMessage(ErrorMessages.MAX_LEGAL_FORM_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS),
 
-  ...public_register_max_validations
 ];

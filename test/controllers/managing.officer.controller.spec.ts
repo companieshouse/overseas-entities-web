@@ -9,7 +9,12 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE, MANAGING_OFFICER_URL, REMOVE } from "../../src/config";
+import {
+  BENEFICIAL_OWNER_TYPE_URL,
+  MANAGING_OFFICER_PAGE,
+  MANAGING_OFFICER_URL,
+  REMOVE
+} from "../../src/config";
 import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from '../../src/utils/application.data';
 import {
   MANAGING_OFFICER_OBJECT_MOCK,
@@ -18,11 +23,21 @@ import {
   REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
 } from "../__mocks__/session.mock";
-import { ANY_MESSAGE_ERROR, MANAGING_OFFICER, MANAGING_OFFICER_PAGE_HEADING, SERVICE_UNAVAILABLE } from '../__mocks__/text.mock';
+import {
+  ANY_MESSAGE_ERROR,
+  ERROR_LIST,
+  MANAGING_OFFICER,
+  MANAGING_OFFICER_PAGE_HEADING,
+  SERVICE_UNAVAILABLE
+} from '../__mocks__/text.mock';
 import { managingOfficerType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { HasFormerNames, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
-import { MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK } from '../__mocks__/validation.mock';
+import {
+  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
+  MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
+  MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
+} from '../__mocks__/validation.mock';
 import { logger } from "../../src/utils/logger";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
@@ -197,6 +212,44 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
+    });
+
+    test("renders the current page with INVALID_CHARACTERS error message", async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.LAST_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITY_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.FORMER_NAMES_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.OCCUPATION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS);
+    });
+
+    test("renders the current page with INVALID_CHARACTERS service address error message", async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
   });
 

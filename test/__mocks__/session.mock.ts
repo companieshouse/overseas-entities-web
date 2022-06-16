@@ -185,8 +185,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 };
 
 export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
-  beneficialOwnerStatementType.BeneficialOwnersStatementType
-    .ALL_IDENTIFIED_ALL_DETAILS;
+  beneficialOwnerStatementType.BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,

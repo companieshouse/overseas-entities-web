@@ -12,6 +12,8 @@ import * as config from "../../src/config";
 import { getApplicationData } from '../../src/utils/application.data';
 import {
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
+  BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS,
+  BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { APPLICATION_DATA_MOCK, ERROR } from '../__mocks__/session.mock';
@@ -21,6 +23,7 @@ import {
   ManagingOfficerTypeChoice,
 } from "../../src/model/beneficial.owner.type.model";
 import { ErrorMessages } from '../../src/validation/error.messages';
+import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../src/model/beneficial.owner.statement.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -34,13 +37,29 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
-    test("renders the beneficial owner type page for beneficial owners", async () => {
+    test("renders the beneficial owner type page for beneficial owners with all options", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
+    });
+
+    test("renders the beneficial owner type page for beneficial owners with just the BOs options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+    });
+
+    test("renders the beneficial owner type page for beneficial owners with just the MOs options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
     });
 
     test("catch error when rendering the page", async () => {

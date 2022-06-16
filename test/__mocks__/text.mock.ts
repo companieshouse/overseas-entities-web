@@ -8,6 +8,8 @@ export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other lega
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Which type of beneficial owner or managing officer do you want to add?";
+export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS = "Which type of beneficial owner do you want to add?";
+export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED = "Which type of managing officer do you want to add?";
 export const MANAGING_OFFICER_TYPE_PAGE_HEADING = "Which types of managing officers have been identified?";
 export const EXPECTED_TEXT = "Page not found - Register an overseas entity and tell us about its beneficial owners";
 export const INCORRECT_URL = "/register-an-overseas-entity/company-numberr";
@@ -33,7 +35,7 @@ export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Have any beneficial owners been identified?";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "All beneficial owners have been identified and all required information can be provided";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and all required information can be provided";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE = "Corporate beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";

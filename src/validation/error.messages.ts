@@ -67,5 +67,14 @@ export enum ErrorMessages {
   ADDRESS_LINE_2_INVALID_CHARACTERS = "Address line 2 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CITY_OR_TOWN_INVALID_CHARACTERS = "City or town must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS = "County, state, province or region must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
+  POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PUBLIC_REGISTER_NAME_INVALID_CHARACTERS = "Name of register must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  ENTITY_NAME_INVALID_CHARACTERS = "The name of the overseas entity must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  LEGAL_FORM_INVALID_CHARACTERS = "Legal form must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  LAW_GOVERNED_INVALID_CHARACTERS = "Governing law must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  FORMER_NAMES_INVALID_CHARACTERS = "Former name or names must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  OCCUPATION_INVALID_CHARACTERS = "Occupation must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

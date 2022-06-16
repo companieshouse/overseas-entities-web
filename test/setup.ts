@@ -12,4 +12,5 @@ export default () => {
   process.env.PIWIK_SITE_ID = "test";
   process.env.PIWIK_START_GOAL_ID = "test";
   process.env.FEATURE_FLAG_ENABLE_PAYMENT_16052022 = "1";
+  process.env.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = "1";
 };

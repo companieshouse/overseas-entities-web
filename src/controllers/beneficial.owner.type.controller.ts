@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
+import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import {
@@ -18,22 +19,25 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     let hasTrusts: boolean = false;
 
-    // Check whether any Beneficial Owners are Trustees
-    if (appData !== null) {
-      if (appData.beneficial_owners_individual !== undefined) {
-        appData.beneficial_owners_individual.forEach(element => {
-          if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
-            hasTrusts = true;
-          }
-        });
-      }
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022)) {
 
-      if (appData.beneficial_owners_corporate !== undefined) {
-        appData.beneficial_owners_corporate.forEach(element => {
-          if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
-            hasTrusts = true;
-          }
-        });
+      // Check whether any Beneficial Owners are Trustees
+      if (appData !== null) {
+        if (appData.beneficial_owners_individual !== undefined) {
+          appData.beneficial_owners_individual.forEach(element => {
+            if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
+              hasTrusts = true;
+            }
+          });
+        }
+
+        if (appData.beneficial_owners_corporate !== undefined) {
+          appData.beneficial_owners_corporate.forEach(element => {
+            if (element.trustees_nature_of_control_types !== undefined && element.trustees_nature_of_control_types.length > 0) {
+              hasTrusts = true;
+            }
+          });
+        }
       }
     }
 

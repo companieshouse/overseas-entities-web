@@ -25,8 +25,8 @@ export const managingOfficerIndividual = [
   ...date_of_birth_validations,
 
   body("nationality")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS)
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY),
 
   ...usual_residential_address_validations,
 

@@ -29,32 +29,26 @@
             <div class="govuk-checkboxes" data-module="govuk-checkboxes">
               {% if (beneficial_owners_individual and beneficial_owners_individual.length > 0) %}
                 {% for boi in beneficial_owners_individual %}
-                  <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="{{ boi.id }}" name="boCheckbox" type="checkbox" value="{{ boi.id }}">
-                    <label class="govuk-label govuk-checkboxes__label" for="{{ boi.id }}">
-                      {{ boi.first_name }} {{ boi.last_name }}
-                    </label>
-                  </div>
+                  {% if (boi.trustees_nature_of_control_types and boi.trustees_nature_of_control_types.length > 0) %}
+                    <div class="govuk-checkboxes__item">
+                      <input class="govuk-checkboxes__input" id="{{ boi.id }}" name="boCheckbox" type="checkbox" value="{{ boi.id }}">
+                      <label class="govuk-label govuk-checkboxes__label" for="{{ boi.id }}">
+                        {{ boi.first_name }} {{ boi.last_name }}
+                      </label>
+                    </div>
+                  {% endif %}
                 {% endfor %}
               {% endif %}
               {% if (beneficial_owners_corporate and beneficial_owners_corporate.length > 0) %}
                 {% for boc in beneficial_owners_corporate %}
+                  {% if (boc.trustees_nature_of_control_types and boc.trustees_nature_of_control_types.length > 0) %}
                     <div class="govuk-checkboxes__item">
                       <input class="govuk-checkboxes__input" id="{{ boc.id }}" name="boCheckbox" type="checkbox" value="{{ boc.id }}">
                       <label class="govuk-label govuk-checkboxes__label" for="{{ boc.id }}">
                         {{ boc.name }}
                       </label>
                     </div>
-                {% endfor %}
-              {% endif %}
-              {% if (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0) %}
-                {% for bog in beneficial_owners_government_or_public_authority %}
-                    <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" id="{{ bog.id }}" name="boCheckbox" type="checkbox" value="{{ bog.id }}">
-                      <label class="govuk-label govuk-checkboxes__label" for="{{ bog.id }}">
-                        {{ bog.name }}
-                      </label>
-                    </div>
+                  {% endif %}
                 {% endfor %}
               {% endif %}
             </div>

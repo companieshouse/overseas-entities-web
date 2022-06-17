@@ -40,7 +40,7 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('POST Transaction', () => {
-    test.only('Should successfully post a transaction', async () => {
+    test('Should successfully post a transaction', async () => {
       mockPostTransaction.mockResolvedValueOnce({ httpStatusCode: 200, resource: TRANSACTION });
       const response = await postTransaction(req, session) as any;
 

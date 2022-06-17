@@ -35,6 +35,10 @@ export const NAVIGATION: Navigation = {
   [config.BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    // TODO: Currently, nextPage is a string, but there could
+    // be multiple nextPage values here depending on whether
+    // there is trust information or not. Should look like:
+    // nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
     nextPage: config.CHECK_YOUR_ANSWERS_URL
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
@@ -86,5 +90,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: config.BENEFICIAL_OWNER_TYPE_URL
+  },
+  [config.TRUST_INFO_URL]: {
+    currentPage: config.TRUST_INFO_PAGE,
+    previousPage: config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: config.CHECK_YOUR_ANSWERS_URL
   }
 };

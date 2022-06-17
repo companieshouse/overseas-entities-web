@@ -2,7 +2,9 @@ import { NextFunction, Request, Response } from "express";
 
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
+import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
+import { checkEntityHasTrusts } from "../utils/trusts";
 import * as config from "../config";
 import {
   BeneficialOwnerTypeChoice,
@@ -16,9 +18,18 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    let hasTrusts: boolean = false;
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022)) {
+      hasTrusts = checkEntityHasTrusts(appData);
+    }
+
+    logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} hasTrusts=${hasTrusts}`);
+
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      hasTrusts,
       ...appData
     });
   } catch (error) {

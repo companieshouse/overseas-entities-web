@@ -17,6 +17,7 @@ export const PIWIK_URL = getEnvironmentValue("PIWIK_URL");
 export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
+export const FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_TRUST_INFO_16062022");
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
@@ -45,6 +46,7 @@ export const PRESENTER_PAGE = "presenter";
 export const SECURE_REGISTER_FILTER_PAGE = "secure-register-filter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
 export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
+export const TRUST_INFO_PAGE = "trust-information";
 export const USE_PAPER_PAGE = "use-paper";
 
 // ROUTING PATHs
@@ -67,6 +69,7 @@ export const CONFIRMATION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + CONFIRMATION_P
 export const HEALTHCHECK_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + HEALTHCHECK_PAGE;
 export const SOLD_LAND_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SOLD_LAND_FILTER_PAGE;
 export const SECURE_REGISTER_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SECURE_REGISTER_FILTER_PAGE;
+export const TRUST_INFO_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INFO_PAGE;
 export const USE_PAPER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
 export const REMOVE = "/remove";
 

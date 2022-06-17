@@ -7,7 +7,9 @@ import { createOverseasEntity } from "../service/overseas.entities.service";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 
 import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
+import { checkEntityHasTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
@@ -18,9 +20,23 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
+    let hasTrusts: boolean = false;
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022)) {
+      hasTrusts = checkEntityHasTrusts(appData);
+    }
+
+    logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
+
+    let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
+    if (hasTrusts) {
+      backLinkUrl = config.TRUST_INFO_PAGE;
+    }
+
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
-      backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,
+      backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
+      hasTrusts,
       appData
     });
   } catch (error) {

@@ -96,13 +96,20 @@
           <br>
           {% include "includes/list/beneficial-owner.html" %}
           {% include "includes/list/managing-officer.html" %}
+
+          {% if (hasTrusts) %}
+            {% set nextPage = "trust-information" %}
+          {% else %}
+            {% set nextPage = "check-your-answers" %} 
+          {% endif %}
+
           {{ govukButton({
             text: "No more to add",
             attributes: {
               "id": "submit"
             },
             classes: "govuk-button--secondary govuk-!-margin-top-6",
-            href: "/register-an-overseas-entity/check-your-answers"
+            href: "/register-an-overseas-entity/" + nextPage
           }) }}
         {% endif %}
 

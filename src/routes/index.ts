@@ -20,6 +20,7 @@ import {
   payment,
   soldLandFilter,
   secureRegisterFilter,
+  trustInformation,
   usePaper
 } from "../controllers";
 
@@ -90,6 +91,9 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, ma
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, managingOfficerCorporate.remove);
+
+router.get(config.TRUST_INFO_URL, authentication, trustInformation.get);
+router.post(config.TRUST_INFO_URL, authentication, trustInformation.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, checkYourAnswers.post);

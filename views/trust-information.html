@@ -4,7 +4,7 @@
   Add trust information for the beneficial owners – {{ serviceName }} – GOV.UK
 {% endblock %}
 
-{% block beforeContent %}
+{% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
 
@@ -86,12 +86,18 @@
         }) }}
         {{ govukButton({
           text: "Add another trust",
+          attributes: {
+            "id": "add"
+          }
           href: "/register-an-overseas-entity/trust-information"
         }) }}
 
         <p>
           {{ govukButton({
             text: "No more to add",
+            attributes: {
+              "id": "submit"
+            },
             href: "/register-an-overseas-entity/check-your-answers",
             classes: "govuk-button--secondary"
           }) }}

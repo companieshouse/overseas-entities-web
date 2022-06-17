@@ -41,6 +41,7 @@
       <h2 class="govuk-heading-l">Who can we contact about this managing officer?</h2>
 
       {{ govukInput({
+        errorMessage: errors.contact_full_name if errors,
         label: {
           text: "What is their full name?",
           classes: "govuk-label--m",
@@ -52,6 +53,7 @@
       }) }}
 
       {{ govukInput({
+        errorMessage: errors.contact_email if errors,
         label: {
           text: "What is their email address?",
           classes: "govuk-label--m",

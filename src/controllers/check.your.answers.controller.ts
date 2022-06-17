@@ -32,9 +32,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     }
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
-      backLinkUrl: backLinkUrl,
+      backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
-      hasTrusts: hasTrusts,
+      hasTrusts,
       appData
     });
   } catch (error) {

@@ -6,11 +6,15 @@ import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { DESCRIPTION, REFERENCE } from "../config";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+import { getApplicationData } from "../utils/application.data";
+import { ApplicationData } from "../model";
 
 export const postTransaction = async (req: Request, session: Session): Promise<Transaction> => {
   const apiClient: ApiClient = createOAuthApiClient(session);
 
-  const transaction: Transaction = { reference: REFERENCE, description: DESCRIPTION };
+  const applicationData: ApplicationData = getApplicationData(session);
+
+  const transaction: Transaction = { reference: REFERENCE, companyName: applicationData.entity?.name, description: DESCRIPTION };
   const response = await apiClient.transaction.postTransaction(transaction) as any;
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {

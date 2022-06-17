@@ -8,6 +8,7 @@ import { createApiClient } from "@companieshouse/api-sdk-node";
 import * as TransactionService from "@companieshouse/api-sdk-node/dist/services/transaction/service";
 
 import {
+  APPLICATION_DATA_MOCK,
   ERROR,
   getSessionRequestWithExtraData,
   OVERSEAS_ENTITY_ID,
@@ -18,6 +19,8 @@ import { closeTransaction, postTransaction } from "../../src/service/transaction
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 import { HTTP_STATUS_CODE_500, TRANSACTION_ERROR } from "../__mocks__/text.mock";
 import { Request } from "express";
+import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
+import { DESCRIPTION, REFERENCE } from "../../src/config";
 
 const mockDebugRequestLog = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -37,9 +40,12 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('POST Transaction', () => {
-    test('Should successfully post a transaction', async () => {
+    test.only('Should successfully post a transaction', async () => {
       mockPostTransaction.mockResolvedValueOnce({ httpStatusCode: 200, resource: TRANSACTION });
       const response = await postTransaction(req, session) as any;
+
+      const transaction: Transaction = { reference: REFERENCE, companyName: APPLICATION_DATA_MOCK.entity?.name, description: DESCRIPTION };
+      expect(mockPostTransaction).toBeCalledWith(transaction);
 
       expect(response.reference).toEqual(TRANSACTION.reference);
       expect(response.description).toEqual(TRANSACTION.description);

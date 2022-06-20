@@ -1,14 +1,22 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
+jest.mock('../../src/middleware/authentication.middleware');
 
-import { ErrorMessages } from "../../src/validation/error.messages";
+import { NextFunction, Request, Response } from "express";
+import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
 import app from "../../src/app";
 import * as config from "../../src/config";
-import { beforeEach, expect, jest, test } from "@jest/globals";
+import { ErrorMessages } from "../../src/validation/error.messages";
 import { ANY_MESSAGE_ERROR, SECURE_REGISTER_FILTER_PAGE_HEADING, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { SECURE_REGISTER_FILTER_URL } from "../../src/config";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
+
+const mockAuthenticationMiddleware = authentication as jest.Mock;
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 

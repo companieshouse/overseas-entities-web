@@ -87,12 +87,12 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
     });
 
-    test("renders the current page with INVALID_CHARACTERS error message for full name", async () => {
+    test("renders the current page with INVALID_CHARACTERS error message for full name and email", async () => {
       const resp = await request(app)
         .post(PRESENTER_URL)
         .send(PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
@@ -100,6 +100,7 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test("catch error when post data from presenter page", async () => {

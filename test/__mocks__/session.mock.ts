@@ -174,7 +174,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
-  email: "email",
+  email: "email@test.gov.uk",
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",

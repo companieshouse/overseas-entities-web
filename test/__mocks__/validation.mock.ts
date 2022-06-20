@@ -6,6 +6,7 @@ const FIRST_NAME_INVALID_CHARS = "Влади́мир";
 const NAME_INVALID_CHARS = "Дракон";
 const NATIONALITY_INVALID_CHARS = "ру́сская";
 const INVALID_CHARS = "Дракон";
+const EMAIL_INVALID_FORMAT = "lorem@ipsum";
 
 const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
@@ -86,12 +87,12 @@ const START_DATE_MOCK = { 'start_date-day': "1", 'start_date-month': "1", 'start
 
 export const PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK = {
   full_name: MAX_160 + "1",
-  email: MAX_250 + "1"
+  email: MAX_250 + "@toolong.com"
 };
 
 export const PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   full_name: NAME_INVALID_CHARS,
-  email: "validemailaddress@valid.com"
+  email: EMAIL_INVALID_FORMAT
 };
 
 export const PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK = {

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData } from "../model";
-import { getApplicationData, setExtraData } from "../utils/application.data";
-import { TrustKey } from "../model/trust.model";
+import { ApplicationData, ApplicationDataType } from "../model";
+import { getApplicationData, prepareData, setApplicationData } from "../utils/application.data";
+import { TrustKey, TrustKeys } from "../model/trust.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,12 +27,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const data: ApplicationDataType = setTrustData(req.body);
     console.log("THIS IS THE TRUSTS IN THE REQ BODY", req.body[TrustKey]);
-    appData.trusts?.push(req.body[TrustKey]);
-    setExtraData(req.session, appData);
-    console.log(appData);
-    console.log("THIS IS THE TRUSTS", appData.trusts);
+    setApplicationData(req.session, data, TrustKey);
+    console.log("THIS IS THE SESSION: ", req.session?.data.extra_data.roe);
 
     if (req.body.add) {
       return res.redirect(config.TRUST_INFO_URL);
@@ -44,6 +42,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
+};
 
-  return res.redirect("TODO");
+const setTrustData = (reqBody: any): ApplicationDataType => {
+  const data: ApplicationDataType = prepareData(reqBody, TrustKeys);
+
+  data[TrustKey] = reqBody[TrustKey];
+
+  return data;
 };

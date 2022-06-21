@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = setTrustData(req.body);
     console.log("THIS IS THE TRUSTS IN THE REQ BODY", req.body[TrustKey]);
-    setApplicationData(req.session, data, TrustKey);
+    setApplicationData(req.session, data[TrustKey], TrustKey);
     console.log("THIS IS THE SESSION: ", req.session?.data.extra_data.roe);
 
     if (req.body.add) {

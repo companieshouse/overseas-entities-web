@@ -251,7 +251,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE error messages for valid date`, async () => {
@@ -266,7 +266,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE service address error messages for todays date`, async () => {
@@ -281,7 +281,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
     });
   });
 

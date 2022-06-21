@@ -28,17 +28,18 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    appData[TrustKey]?.push(req.body[TrustKey]);
+    console.log("THIS IS THE TRUSTS IN THE REQ BODY", req.body[TrustKey]);
+    appData.trusts?.push(req.body[TrustKey]);
     setExtraData(req.session, appData);
     console.log(appData);
+    console.log("THIS IS THE TRUSTS", appData.trusts);
 
-    /* if (req.body.hasOwnProperty("add")) {
-      console.log("Add button pressed");
+    if (req.body.add) {
+      return res.redirect(config.TRUST_INFO_URL);
     }
-    if (req.body.hasOwnProperty("submit")) {
-      console.log("Submit button pressed");
-    } */
-    return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
+    if (req.body.submit) {
+      return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

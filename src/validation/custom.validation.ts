@@ -31,7 +31,7 @@ export const checkDate = (errMsg: string, day: string = "", month: string = "", 
   return true;
 };
 
-export const checkDateIsNotFuture = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+export const checkDateIsInPast = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
   const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
   const now = DateTime.now();
   const currentDate = DateTime.utc(now.year, now.month, now.day); // exclude time of day

@@ -8,7 +8,8 @@ import {
   beneficialOwnerStatementType,
   beneficialOwnerIndividualType,
   managingOfficerCorporateType,
-  managingOfficerType
+  managingOfficerType,
+  trustType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -22,6 +23,7 @@ export interface ApplicationData {
     beneficial_owners_government_or_public_authority?: beneficialOwnerGovType.BeneficialOwnerGov[];
     managing_officers_individual?: managingOfficerType.ManagingOfficerIndividual[];
     managing_officers_corporate?: managingOfficerCorporateType.ManagingOfficerCorporate[];
+    trusts?: trustType.Trust[];
     payment?: CreatePaymentRequest;
     overseas_entity_id?: string;
     transaction_id?: string;
@@ -32,7 +34,8 @@ export const ApplicationDataArrayType = [
   "beneficial_owners_corporate",
   "beneficial_owners_government_or_public_authority",
   "managing_officers_individual",
-  "managing_officers_corporate"
+  "managing_officers_corporate",
+  "trusts"
 ];
 
 export type ApplicationDataType =
@@ -43,5 +46,6 @@ export type ApplicationDataType =
   | beneficialOwnerGovType.BeneficialOwnerGov
   | managingOfficerCorporateType.ManagingOfficerCorporate
   | managingOfficerType.ManagingOfficerIndividual
+  | trustType.Trust
   | CreatePaymentRequest
   | dataType.Address;

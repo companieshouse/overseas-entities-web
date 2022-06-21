@@ -17,10 +17,10 @@
 
       <form method="post">
         {{ govukRadios({
-          errorMessage: errors.secure_register if errors,
+          errorMessage: errors.is_secure_register if errors,
           classes: "govuk-radios--inline",
-          idPrefix: "secure_register",
-          name: "secure_register",
+          idPrefix: "is_secure_register",
+          name: "is_secure_register",
           fieldset: {
             legend: {
               text: "Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?",
@@ -32,7 +32,7 @@
             {
               value: 1,
               text: "Yes",
-              checked: secure_register == 1,
+              checked: is_secure_register == 1,
               attributes: {
                 "data-event-id": "yes-secure-register"
               }
@@ -40,7 +40,7 @@
             {
               value: 0,
               text: "No",
-              checked: secure_register == 0,
+              checked: is_secure_register == 0,
               attributes: {
                 "data-event-id": "no-secure-register"
               }

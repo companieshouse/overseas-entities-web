@@ -46,14 +46,14 @@ describe( "SECURE REGISTER FILTER controller", () => {
     test(`renders the ${config.USE_PAPER_PAGE} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
-        .send({ secure_register: '1' });
+        .send({ is_secure_register: '1' });
       expect(resp.status).toEqual(302);
     });
 
     test("redirect to interrupt card page if user selects no", async () => {
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
-        .send({ secure_register: '0' });
+        .send({ is_secure_register: '0' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.INTERRUPT_CARD_URL);
     });
@@ -71,7 +71,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
-        .send({ secure_register: '0' });
+        .send({ is_secure_register: '0' });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
-    const isSecureRegister = req.body.secure_register;
+    const isSecureRegister = req.body.is_secure_register;
     if (isSecureRegister === '1') {
       return res.redirect(config.USE_PAPER_URL);
     } else if (isSecureRegister === '0') {

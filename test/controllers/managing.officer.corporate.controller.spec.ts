@@ -11,7 +11,7 @@ jest.mock("../../src/utils/logger");
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
+import { Settings as luxonSettings } from "luxon";
 import app from "../../src/app";
 
 import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, MO_CORP_ID, MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
@@ -28,6 +28,7 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
+import { DateTime, Duration } from "luxon";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -38,11 +39,14 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 
+const today = "2022-01-02";
+
 describe("MANAGING_OFFICER CORPORATE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
+    luxonSettings.now = () => new Date(today).valueOf();
   });
 
   describe("GET tests", () => {
@@ -77,9 +81,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
     });
-
   });
-
 
   describe("POST tests", () => {
 
@@ -236,6 +238,51 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with FUTURE_DATE error messages`, async () => {
+      const futureDate = DateTime.now().plus(Duration.fromObject({ days: 1 }));
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  futureDate.day.toString();
+      managingOfficer["start_date-month"] = futureDate.month.toString();
+      managingOfficer["start_date-year"] = futureDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.FUTURE_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE error messages for valid date`, async () => {
+      const pastDate = DateTime.now().minus(Duration.fromObject({ days: 1 }));
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  pastDate.day.toString();
+      managingOfficer["start_date-month"] = pastDate.month.toString();
+      managingOfficer["start_date-year"] = pastDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.FUTURE_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE service address error messages for todays date`, async () => {
+      const currentDate = DateTime.now();
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  currentDate.day.toString();
+      managingOfficer["start_date-month"] = currentDate.month.toString();
+      managingOfficer["start_date-year"] = currentDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.FUTURE_DATE);
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -304,5 +351,4 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
-
 });

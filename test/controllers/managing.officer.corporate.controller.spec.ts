@@ -68,7 +68,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain("legalForm");
       expect(resp.text).toContain("LegAuth");
       expect(resp.text).toContain("123456789");
-      expect(resp.text).toContain("roles and responsibilities text");
+      expect(resp.text).toContain("role and responsibilities text");
     });
 
     test("Should render the error page", async () => {
@@ -100,7 +100,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
       expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
       expect(managingOfficerCorporate.registration_number).toEqual("123456789");
-      expect(managingOfficerCorporate.roles_and_responsibilities).toEqual("roles and responsibilities text");
+      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
       expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
@@ -262,7 +262,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
-      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", roles_and_responsibilities: "roles and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
+      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", role_and_responsibilities: "role and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
       mockPrepareData.mockReturnValueOnce(newMoData);
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)

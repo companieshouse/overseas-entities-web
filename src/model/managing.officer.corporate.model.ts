@@ -13,7 +13,7 @@ export const ManagingOfficerCorporateKeys: string[] = [
   "public_register_name",
   "registration_number",
   "start_date",
-  "roles_and_responsibilities",
+  "role_and_responsibilities",
   "contact_full_name",
   "contact_email"
 ];
@@ -30,7 +30,7 @@ export interface ManagingOfficerCorporate {
   public_register_name?: string;
   registration_number?: string;
   start_date?: InputDate;
-  roles_and_responsibilities: string;
+  role_and_responsibilities: string;
   contact_full_name: string;
   contact_email: string;
 }

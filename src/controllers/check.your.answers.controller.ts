@@ -17,6 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
+    console.log(JSON.stringify(appData, null, 2));
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_URL,

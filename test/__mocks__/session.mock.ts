@@ -350,7 +350,7 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   has_former_names: yesNoResponse.Yes,
   former_names: "Some name",
   date_of_birth: { day: "21", month: "3", year: "1947" },
-  nationality: "Utopian",
+  nationality: "Malawian",
   usual_residential_address: ADDRESS,
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,

@@ -1,11 +1,4 @@
-{{ govukInput({
-  errorMessage: errors.nationality if errors,
-  label: {
-    text: "What is their nationality?",
-    classes: "govuk-label--m",
-    isPageHeading: false
-  },
-  id: "nationality",
-  name: "nationality",
-  value: nationality
-}) }}
+{% set nationalityField = nationality %}
+{% set nationalityFieldNameId = "nationality" %}
+{% set nationalityFieldText = "What is their nationality?" %}
+{% include "includes/inputs/nationality/nationality-select.html" %}

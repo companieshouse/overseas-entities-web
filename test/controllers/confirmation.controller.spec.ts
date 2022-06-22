@@ -9,7 +9,7 @@ import { NextFunction, Request, Response } from "express";
 
 import app from "../../src/app";
 import { CONFIRMATION_URL } from "../../src/config";
-import { CONFIRMATION_PAGE_TITLE } from "../__mocks__/text.mock";
+import { CONFIRMATION_PAGE_TITLE, CONFIRMATION_NUMBER_OF_DAYS } from "../__mocks__/text.mock";
 import { deleteApplicationData, getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK, getSessionRequestWithExtraData, TRANSACTION_ID } from "../__mocks__/session.mock";
 import { get } from "../../src/controllers/confirmation.controller";
@@ -36,7 +36,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CONFIRMATION_PAGE_TITLE);
     expect(resp.text).toContain(TRANSACTION_ID);
-    expect(resp.text).toContain("within 2 working days");
+    expect(resp.text).toContain(CONFIRMATION_NUMBER_OF_DAYS);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
 

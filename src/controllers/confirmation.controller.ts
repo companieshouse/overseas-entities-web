@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response) => {
   return res.render(CONFIRMATION_PAGE, {
     referenceNumber,
     userEmail: getLoggedInUserEmail(req.session),
-    workingDays: 2, // Not yet defined.
+    workingDays: 2,
     templateName: CONFIRMATION_PAGE
   });
 };

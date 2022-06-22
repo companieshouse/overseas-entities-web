@@ -47,3 +47,5 @@ export const CANNOT_USE_SERVICE_HEADING = "You cannot use this service";
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
+export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
+export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";

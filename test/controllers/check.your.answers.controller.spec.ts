@@ -196,6 +196,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE);
     expect(resp.text).toContain("Joe Bloggs Ltd");
     expect(resp.text).toContain("register / 123456789");
+    expect(resp.text).toContain("role and responsibilities text");
   });
 
   test("catch error when getting data", async () => {

@@ -398,6 +398,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   public_register_name: "register",
   registration_number: "123456789",
   start_date: { day: "1", month: "1", year: "2011" },
+  role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
 };

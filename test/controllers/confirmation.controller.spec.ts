@@ -36,6 +36,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CONFIRMATION_PAGE_TITLE);
     expect(resp.text).toContain(TRANSACTION_ID);
+    expect(resp.text).toContain("within 2 working days");
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
 

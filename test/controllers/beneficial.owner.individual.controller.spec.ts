@@ -14,14 +14,26 @@ import {
   BENEFICIAL_OWNER_TYPE_URL,
   REMOVE
 } from "../../src/config";
-import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from '../../src/utils/application.data';
+import {
+  getFromApplicationData,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from '../../src/utils/application.data';
 import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
+  BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   ERROR_LIST,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BO_IND_ID, BO_IND_ID_URL, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from '../__mocks__/session.mock';
+import {
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+  BO_IND_ID,
+  BO_IND_ID_URL,
+  REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY
+} from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { IsOnSanctionsListKey, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
 import {
@@ -38,7 +50,6 @@ const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
-
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
@@ -96,6 +107,15 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`redirect to the ${BENEFICIAL_OWNER_TYPE_URL} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
+      mockSetApplicationData.mockImplementation( () => setApplicationData);
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
     });
 
     test(`POST empty object and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {

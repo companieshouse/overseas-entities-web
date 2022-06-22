@@ -1,11 +1,20 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/application.data");
+jest.mock('../../src/middleware/authentication.middleware');
 
-import { INTERRUPT_CARD_PAGE, INTERRUPT_CARD_URL } from "../../src/config";
+import { NextFunction, Request, Response } from "express";
+import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
 import app from "../../src/app";
+import { INTERRUPT_CARD_PAGE, INTERRUPT_CARD_URL } from "../../src/config";
 import { ANY_MESSAGE_ERROR, INTERRUPT_CARD_PAGE_TITLE, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
+
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { deleteApplicationData } from "../../src/utils/application.data";
+
+const mockAuthenticationMiddleware = authentication as jest.Mock;
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 

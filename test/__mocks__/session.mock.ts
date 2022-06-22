@@ -174,7 +174,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
-  email: "email",
+  email: "email@test.gov.uk",
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
@@ -350,7 +350,7 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   has_former_names: yesNoResponse.Yes,
   former_names: "Some name",
   date_of_birth: { day: "21", month: "3", year: "1947" },
-  nationality: "Utopian",
+  nationality: "Malawian",
   usual_residential_address: ADDRESS,
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
@@ -398,6 +398,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   public_register_name: "register",
   registration_number: "123456789",
   start_date: { day: "1", month: "1", year: "2011" },
+  role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
 };

@@ -27,6 +27,8 @@ export interface ApplicationData {
     payment?: CreatePaymentRequest;
     overseas_entity_id?: string;
     transaction_id?: string;
+    has_sold_land?: string;
+    is_secure_register?: string;
 }
 
 export const ApplicationDataArrayType = [

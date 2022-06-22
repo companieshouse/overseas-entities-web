@@ -76,7 +76,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(MANAGING_OFFICER);
-      expect(resp.text).toContain("Utopian");
+      expect(resp.text).toContain("Malawian");
     });
 
     test("catch error when rendering the page", async () => {
@@ -112,7 +112,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(beneficialOwnerIndividual).toEqual(MANAGING_OFFICER_OBJECT_MOCK);
       expect(beneficialOwnerIndividual.first_name).toEqual("Joe");
-      expect(beneficialOwnerIndividual.nationality).toEqual("Utopian");
+      expect(beneficialOwnerIndividual.nationality).toEqual("Malawian");
       expect(beneficialOwnerIndividual.occupation).toEqual("Some Occupation");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);

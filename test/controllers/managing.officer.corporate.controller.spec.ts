@@ -11,7 +11,7 @@ jest.mock("../../src/utils/logger");
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
+import { Settings as luxonSettings } from "luxon";
 import app from "../../src/app";
 
 import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, MO_CORP_ID, MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
@@ -28,6 +28,7 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
+import { DateTime, Duration } from "luxon";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -38,11 +39,14 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 
+const today = "2022-01-02";
+
 describe("MANAGING_OFFICER CORPORATE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
+    luxonSettings.now = () => new Date(today).valueOf();
   });
 
   describe("GET tests", () => {
@@ -68,6 +72,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain("legalForm");
       expect(resp.text).toContain("LegAuth");
       expect(resp.text).toContain("123456789");
+      expect(resp.text).toContain("role and responsibilities text");
     });
 
     test("Should render the error page", async () => {
@@ -77,9 +82,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
     });
-
   });
-
 
   describe("POST tests", () => {
 
@@ -99,6 +102,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
       expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
       expect(managingOfficerCorporate.registration_number).toEqual("123456789");
+      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
       expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
@@ -236,6 +240,51 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with FUTURE_DATE error messages`, async () => {
+      const futureDate = DateTime.now().plus(Duration.fromObject({ days: 1 }));
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  futureDate.day.toString();
+      managingOfficer["start_date-month"] = futureDate.month.toString();
+      managingOfficer["start_date-year"] = futureDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE error messages for valid date`, async () => {
+      const pastDate = DateTime.now().minus(Duration.fromObject({ days: 1 }));
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  pastDate.day.toString();
+      managingOfficer["start_date-month"] = pastDate.month.toString();
+      managingOfficer["start_date-year"] = pastDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE service address error messages for todays date`, async () => {
+      const currentDate = DateTime.now();
+      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
+      managingOfficer["start_date-day"] =  currentDate.day.toString();
+      managingOfficer["start_date-month"] = currentDate.month.toString();
+      managingOfficer["start_date-year"] = currentDate.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -260,7 +309,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
-      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", contact_email: "test@test.com", contact_full_name: "full name" };
+      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", role_and_responsibilities: "role and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
       mockPrepareData.mockReturnValueOnce(newMoData);
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
@@ -304,5 +353,4 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
-
 });

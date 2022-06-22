@@ -1,15 +1,33 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
+jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/utils/application.data');
 
-import { expect, jest, test } from "@jest/globals";
-import * as config from "../../src/config";
+import { NextFunction, Request, Response } from "express";
+import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+
+import * as config from "../../src/config";
 import app from "../../src/app";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, SOLD_LAND_FILTER_PAGE_TITLE } from "../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  RADIO_BUTTON_NO_SELECTED,
+  RADIO_BUTTON_YES_SELECTED,
+  SERVICE_UNAVAILABLE,
+  SOLD_LAND_FILTER_PAGE_TITLE,
+} from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
+
+import { getApplicationData, setExtraData } from "../../src/utils/application.data";
+import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 
+const mockAuthenticationMiddleware = authentication as jest.Mock;
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("SOLD LAND FILTER controller", () => {
 
@@ -19,10 +37,29 @@ describe("SOLD LAND FILTER controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+    });
+
+    test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to no`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ has_sold_land: 0 });
+      const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
+    });
+
+    test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to yes`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ has_sold_land: 1 });
+      const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
     });
 
     test("catch error when rendering the page", async () => {
@@ -40,6 +77,7 @@ describe("SOLD LAND FILTER controller", () => {
         .post(config.SOLD_LAND_FILTER_URL)
         .send({ has_sold_land: '1' });
       expect(resp.status).toEqual(302);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.SECURE_REGISTER_FILTER_PAGE} page when no is selected`, async () => {
@@ -49,6 +87,7 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.SECURE_REGISTER_FILTER_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {

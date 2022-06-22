@@ -9,7 +9,7 @@ import app from "../../src/app";
 import { getSessionRequestWithPermission, userMail } from '../__mocks__/session.mock';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from '../../src/utils/logger';
-import { PRESENTER_URL } from '../../src/config';
+import { SOLD_LAND_FILTER_URL } from '../../src/config';
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
 
 jest.mock('../../src/utils/logger', () => {
@@ -42,8 +42,8 @@ describe('Authentication middleware', () => {
     expect(res.redirect).not.toHaveBeenCalled();
   });
 
-  test("should redirect to signin page with presenter page as return page", () => {
-    const signinRedirectPath = `/signin?return_to=${PRESENTER_URL}`;
+  test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
+    const signinRedirectPath = `/signin?return_to=${SOLD_LAND_FILTER_URL}`;
     req.session = undefined;
 
     authentication(req, res, next);
@@ -73,7 +73,7 @@ describe('Authentication middleware', () => {
   });
 
   test("should redirect to signin page", async () => {
-    const resp = await request(app).get(PRESENTER_URL);
+    const resp = await request(app).get(SOLD_LAND_FILTER_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toContain('/signin');

@@ -273,9 +273,15 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   is_on_sanctions_list: 0
 };
 
-export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
-  is_service_address_same_as_usual_residential_address: 0,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.No,
   service_address: ADDRESS
 };
 

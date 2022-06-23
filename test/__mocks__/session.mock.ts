@@ -456,17 +456,17 @@ export const TRUST_DATA: trustType.Trust = {
   INDIVIDUAL: [],
   HISTORICAL_BO: [],
   CORPORATE: []
-}
+};
 
 export const TRUSTS_SUBMIT = {
   submit: "submit",
   [trustType.TrustKey]: TRUST_DATA
-}
+};
 
 export const TRUSTS_ADD_MORE = {
   add: "add",
   [trustType.TrustKey]: TRUST_DATA
-}
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

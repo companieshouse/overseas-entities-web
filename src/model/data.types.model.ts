@@ -63,3 +63,7 @@ export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
 export const PaymentKey = "payment";
 export const OverseasEntityKey = "overseas_entity_id";
 export const Transactionkey = "transaction_id";
+
+// Is secure and Has sold land Keys
+export const HasSoldLandKey = "has_sold_land";
+export const IsSecureRegisterKey = "is_secure_register";

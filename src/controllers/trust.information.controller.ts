@@ -31,8 +31,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const t: trustType.Trusts = {
       trusts: obj
     };
+
     const data: ApplicationDataType = setTrustData(t);
-    setApplicationData(req.session, data[TrustKey], TrustKey);
+
+    for (let i in data[TrustKey]) {
+      setApplicationData(req.session, data[TrustKey][i], TrustKey);
+    }
 
     if (req.body.add) {
       return res.redirect(config.TRUST_INFO_URL);

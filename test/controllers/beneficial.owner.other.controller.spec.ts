@@ -220,22 +220,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
-      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
-      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
-      expect(data[ServiceAddressKey]).toEqual({});
-    });
-
-    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
-      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
-      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
-      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
-      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
-    });
-
-    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);

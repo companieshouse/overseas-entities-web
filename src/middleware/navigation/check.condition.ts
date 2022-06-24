@@ -21,20 +21,20 @@ export const checkIsSecureRegister = (appData: ApplicationData): boolean => {
   return checkHasSoldLand(appData) || appData[IsSecureRegisterKey] !== "0";
 };
 
-export const checkHasPresenter = (appData: ApplicationData): boolean => {
+export const checkHasNotPresenter = (appData: ApplicationData): boolean => {
   return checkIsSecureRegister(appData) || !appData[PresenterKey];
 };
 
-export const checkHasEntity = (appData: ApplicationData): boolean => {
-  return checkHasPresenter(appData) || !appData[EntityKey];
+export const checkHasNotEntity = (appData: ApplicationData): boolean => {
+  return checkHasNotPresenter(appData) || !appData[EntityKey];
 };
 
-export const checkHasBeneficialOwnersStatement = (appData: ApplicationData): boolean => {
-  return checkHasEntity(appData) || !appData[BeneficialOwnerStatementKey];
+export const checkHasNotBeneficialOwnersStatement = (appData: ApplicationData): boolean => {
+  return checkHasNotEntity(appData) || !appData[BeneficialOwnerStatementKey];
 };
 
-export const checkHasBOsOrMOs = (appData: ApplicationData): boolean => {
-  return checkHasBeneficialOwnersStatement(appData) ||
+export const checkHasNotBOsOrMOs = (appData: ApplicationData): boolean => {
+  return checkHasNotBeneficialOwnersStatement(appData) ||
   (
     !appData[BeneficialOwnerIndividualKey] &&
     !appData[BeneficialOwnerOtherKey] &&

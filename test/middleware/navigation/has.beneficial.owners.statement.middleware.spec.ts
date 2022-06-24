@@ -9,10 +9,10 @@ import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 
-import { checkHasBeneficialOwnersStatement, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
+import { checkHasNotBeneficialOwnersStatement, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 import { hasBeneficialOwnersStatement } from '../../../src/middleware/navigation/has.beneficial.owners.statement.middleware';
 
-const mockCheckHasBeneficialOwnersStatement = checkHasBeneficialOwnersStatement as unknown as jest.Mock;
+const mockCheckHasNotBeneficialOwnersStatement = checkHasNotBeneficialOwnersStatement as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {} as Request;
@@ -26,7 +26,7 @@ describe("has.beneficial.owners.statement navigation middleware tests", () => {
   });
 
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
-    mockCheckHasBeneficialOwnersStatement.mockImplementationOnce( () => { return true; });
+    mockCheckHasNotBeneficialOwnersStatement.mockImplementationOnce( () => { return true; });
     hasBeneficialOwnersStatement(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("has.beneficial.owners.statement navigation middleware tests", () => {
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckHasBeneficialOwnersStatement.mockImplementationOnce( () => { return false; });
+    mockCheckHasNotBeneficialOwnersStatement.mockImplementationOnce( () => { return false; });
     hasBeneficialOwnersStatement(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -49,7 +49,7 @@ describe("has.beneficial.owners.statement navigation middleware tests", () => {
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckHasBeneficialOwnersStatement.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockCheckHasNotBeneficialOwnersStatement.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     hasBeneficialOwnersStatement(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

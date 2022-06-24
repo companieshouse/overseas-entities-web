@@ -3,11 +3,11 @@ import { Request, Response, NextFunction } from 'express';
 import { logger } from '../../utils/logger';
 import { SOLD_LAND_FILTER_URL } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
-import { checkHasBeneficialOwnersStatement, NavigationErrorMessage } from './check.condition';
+import { checkHasNotBeneficialOwnersStatement, NavigationErrorMessage } from './check.condition';
 
 export const hasBeneficialOwnersStatement = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if ( checkHasBeneficialOwnersStatement(getApplicationData(req.session)) ) {
+    if ( checkHasNotBeneficialOwnersStatement(getApplicationData(req.session)) ) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SOLD_LAND_FILTER_URL);
     }

@@ -8,14 +8,18 @@ export const TrustKeys: string[] = [
   "trusts"
 ];
 
+export interface Trusts {
+  trusts: Trust[]
+}
+
 export interface Trust {
   trust_id: string;
   trust_name: string;
   creation_date: string;
   unable_to_obtain_all_trust_info: boolean;
-  INDIVIDUAL: TrustIndividual[];
-  HISTORICAL_BO: TrustHistoricalBeneficialOwner[];
-  CORPORATE: TrustCorporate[];
+  INDIVIDUALS?: TrustIndividual[];
+  HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
+  CORPORATES?: TrustCorporate[];
 }
 
 interface TrustIndividual {

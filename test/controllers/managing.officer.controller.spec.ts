@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -40,6 +41,10 @@ import {
 } from '../__mocks__/validation.mock';
 import { logger } from "../../src/utils/logger";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

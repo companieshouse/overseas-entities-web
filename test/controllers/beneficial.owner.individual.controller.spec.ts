@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -30,6 +31,10 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -38,7 +43,6 @@ const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
-
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 

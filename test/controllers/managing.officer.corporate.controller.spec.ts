@@ -1,18 +1,19 @@
-import {
-  HasSamePrincipalAddressKey,
-  IsOnRegisterInCountryFormedInKey,
-} from "../../src/model/data.types.model";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import { Settings as luxonSettings } from "luxon";
 import app from "../../src/app";
+
+import {
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
+} from "../../src/model/data.types.model";
 
 import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, MO_CORP_ID, MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -29,6 +30,10 @@ import {
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
 import { DateTime, Duration } from "luxon";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

@@ -4,6 +4,7 @@ jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -49,6 +50,10 @@ import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
 import { entityType } from "../../src/model";
+import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+
+const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
+mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;

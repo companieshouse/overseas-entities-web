@@ -39,7 +39,8 @@
       {% include "includes/inputs/date/start-date-input.html" %}
 
       {{ govukTextarea({
-        label: {
+      errorMessage: errors.role_and_responsibilities if errors,
+      label: {
           text: "Describe their role and responsibilities in relation to the entity",
           classes: "govuk-label--m",
           isPageHeading: false

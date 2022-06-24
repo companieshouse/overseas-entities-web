@@ -424,6 +424,7 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {
   public_register_name: "",
   registration_number: "",
   start_date: { 'start_date-day': "", 'start_date-month': "", 'start_date-year': "" },
+  role_and_responsibilities: "",
   usual_residential_address: {},
   service_address: {}
 };
@@ -436,6 +437,7 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   is_on_register_in_country_formed_in: "1",
   public_register_name: "register",
   registration_number: "123456789",
+  role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "contact name",
   contact_email: "contact email",
   ...PRINCIPAL_ADDRESS_MOCK,

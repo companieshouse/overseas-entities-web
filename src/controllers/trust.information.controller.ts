@@ -34,7 +34,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = setTrustData(t);
 
-    for (let i in data[TrustKey]) {
+    for (const i in data[TrustKey]) {
       setApplicationData(req.session, data[TrustKey][i], TrustKey);
     }
 

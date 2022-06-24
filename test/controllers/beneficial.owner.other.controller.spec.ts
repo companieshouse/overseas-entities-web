@@ -13,12 +13,22 @@ import {
   BO_OTHER_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
 } from "../__mocks__/session.mock";
-import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from "../../src/utils/application.data";
+import {
+  getFromApplicationData,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL, REMOVE } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
-import { HasSamePrincipalAddressKey, IsOnSanctionsListKey, NatureOfControlType, yesNoResponse } from "../../src/model/data.types.model";
+import {
+  HasSamePrincipalAddressKey,
+  IsOnSanctionsListKey,
+  NatureOfControlType,
+  yesNoResponse
+} from "../../src/model/data.types.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import {
   BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK,
@@ -188,6 +198,26 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
+    /*
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockSetApplicationData.mockImplementation( () => setApplicationData);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+  */
+
   });
 
   describe("UPDATE tests", () => {

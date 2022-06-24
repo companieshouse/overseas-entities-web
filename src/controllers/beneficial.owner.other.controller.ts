@@ -5,7 +5,15 @@ import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
-  AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, ID, InputDateKeys, IsOnRegisterInCountryFormedInKey, IsOnSanctionsListKey, NonLegalFirmNoc, TrusteesNoc
+  AddressKeys,
+  BeneficialOwnerNoc,
+  HasSamePrincipalAddressKey,
+  ID,
+  InputDateKeys,
+  IsOnRegisterInCountryFormedInKey,
+  IsOnSanctionsListKey,
+  NonLegalFirmNoc, PublicRegisterNameKey, RegistrationNumberKey,
+  TrusteesNoc
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
@@ -100,7 +108,11 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerOtherKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
-  data[ServiceAddressKey] = mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys);
+
+  data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+  data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
+    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   // It needs concatenations because if in the check boxes we select only one option
@@ -109,9 +121,16 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
   data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
 
-  data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
+
+  data[PublicRegisterNameKey] = (data[IsOnRegisterInCountryFormedInKey])
+    ? reqBody["public_register_name"]
+    : "";
+
+  data[RegistrationNumberKey] = (data[IsOnRegisterInCountryFormedInKey])
+    ? reqBody["registration_number"]
+    : "";
 
   data[ID] = id;
 

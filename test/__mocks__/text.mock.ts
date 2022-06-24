@@ -6,6 +6,7 @@ export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
 export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government or public authority";
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
+export const BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-type";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Which type of beneficial owner or managing officer do you want to add?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS = "Which type of beneficial owner do you want to add?";

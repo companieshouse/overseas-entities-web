@@ -124,14 +124,10 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
-  data[PublicRegisterNameKey] = (data[IsOnRegisterInCountryFormedInKey])
-    ? reqBody["public_register_name"]
-    : "";
-
-  data[RegistrationNumberKey] = (data[IsOnRegisterInCountryFormedInKey])
-    ? reqBody["registration_number"]
-    : "";
-
+  if (!data[IsOnRegisterInCountryFormedInKey]) {
+    data[PublicRegisterNameKey] = "";
+    data[RegistrationNumberKey] = "";
+  }
   data[ID] = id;
 
   return data;

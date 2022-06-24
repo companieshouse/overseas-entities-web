@@ -9,12 +9,16 @@ import { NextFunction, Request, Response } from "express";
 import {
   BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BO_OTHER_ID,
   BO_OTHER_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
 } from "../__mocks__/session.mock";
 import {
-  getFromApplicationData,
+  getFromApplicationData, mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData
@@ -24,9 +28,10 @@ import app from "../../src/app";
 import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL, REMOVE } from "../../src/config";
 import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import {
+  AddressKeys,
   HasSamePrincipalAddressKey,
   IsOnSanctionsListKey,
-  NatureOfControlType,
+  NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
@@ -36,6 +41,8 @@ import {
   BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { ErrorMessages } from "../../src/validation/error.messages";
+import { ApplicationDataType } from "../../src/model";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -44,13 +51,17 @@ const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
+const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("BENEFICIAL OWNER OTHER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
+    mockMapFieldsToDataObject.mockReset();
+    mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
   });
 
   describe("GET tests", () => {
@@ -198,9 +209,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
-    /*
+
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -208,7 +219,23 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
@@ -216,8 +243,22 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
-  */
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockSetApplicationData.mockImplementation( () => setApplicationData);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+    });
 
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -250,6 +291,40 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockSetApplicationData.mockImplementation( () => setApplicationData);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockSetApplicationData.mockImplementation( () => setApplicationData);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+    });
+
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
     });
   });
 

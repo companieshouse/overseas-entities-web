@@ -151,7 +151,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain("Enter a description of the corporate managing officer&#39;s role and responsibilities");
+      expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);

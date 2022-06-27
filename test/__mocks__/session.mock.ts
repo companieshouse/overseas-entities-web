@@ -285,6 +285,32 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: be
   service_address: ADDRESS
 };
 
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_on_register_in_country_formed_in: yesNoResponse.No,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   first_name: "Ivan",

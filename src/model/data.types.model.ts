@@ -63,3 +63,7 @@ export const NonLegalFirmNoc = "non_legal_firm_members_nature_of_control_types";
 export const PaymentKey = "payment";
 export const OverseasEntityKey = "overseas_entity_id";
 export const Transactionkey = "transaction_id";
+
+// Register keys
+export const PublicRegisterNameKey = "public_register_name";
+export const RegistrationNumberKey = "registration_number";

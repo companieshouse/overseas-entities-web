@@ -471,6 +471,30 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   ...start_date
 };
 
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+  service_address: ADDRESS
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  has_former_names: yesNoResponse.Yes,
+  former_names: "John Doe"
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  has_former_names: yesNoResponse.No,
+  former_names: "John Doe"
+};
+
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"

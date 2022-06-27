@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-  checkHasNotBOsOrMOs,
-  checkHasNotBeneficialOwnersStatement,
-  checkHasNotEntity,
-  checkHasNotPresenter,
+  checkBOsOrMOsDetailsNotEntered,
+  checkBeneficialOwnersStatementDetailsNotEntered,
+  checkEntityDetailsNotEntered,
+  checkPresenterDetailsNotEntered,
   checkHasSoldLand,
   checkIsSecureRegister
 } from "../../../src/middleware/navigation/check.condition";
@@ -30,53 +30,53 @@ describe("check condition navigation tests", () => {
     expect(data).toEqual(true);
   });
 
-  test("checkHasNotPresenter should return true", () => {
-    const data = checkHasNotPresenter({ ...APPLICATION_DATA_MOCK, [PresenterKey]: undefined });
+  test("checkPresenterDetailsNotEntered should return true", () => {
+    const data = checkPresenterDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [PresenterKey]: undefined });
     expect(data).toEqual(true);
   });
 
-  test("checkHasNotEntity should return true", () => {
-    const data = checkHasNotEntity({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
+  test("checkEntityDetailsNotEntered should return true", () => {
+    const data = checkEntityDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
     expect(data).toEqual(true);
   });
 
-  test("checkHasNotBeneficialOwnersStatement should return true", () => {
-    const data = checkHasNotBeneficialOwnersStatement({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerStatementKey]: undefined });
+  test("checkBeneficialOwnersStatementDetailsNotEntered should return true", () => {
+    const data = checkBeneficialOwnersStatementDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerStatementKey]: undefined });
     expect(data).toEqual(true);
   });
 
-  test("checkHasNotBOsOrMOs should return true, object empty", () => {
-    const data = checkHasNotBOsOrMOs({});
+  test("checkBOsOrMOsDetailsNotEntered should return true, object empty", () => {
+    const data = checkBOsOrMOsDetailsNotEntered({});
     expect(data).toEqual(true);
   });
 
-  test(`checkHasNotBOsOrMOs should return false even with ${BeneficialOwnerIndividualKey} object missing`, () => {
-    const data = checkHasNotBOsOrMOs({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerIndividualKey]: undefined });
+  test(`checkBOsOrMOsDetailsNotEntered should return false even with ${BeneficialOwnerIndividualKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerIndividualKey]: undefined });
     expect(data).toEqual(false);
   });
 
-  test(`checkHasNotBOsOrMOs should return false even with ${BeneficialOwnerOtherKey} object missing`, () => {
-    const data = checkHasNotBOsOrMOs({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerOtherKey]: undefined });
+  test(`checkBOsOrMOsDetailsNotEntered should return false even with ${BeneficialOwnerOtherKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerOtherKey]: undefined });
     expect(data).toEqual(false);
   });
 
-  test(`checkHasNotBOsOrMOs should return false even with ${BeneficialOwnerGovKey} object missing`, () => {
-    const data = checkHasNotBOsOrMOs({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerGovKey]: undefined });
+  test(`checkBOsOrMOsDetailsNotEntered should return false even with ${BeneficialOwnerGovKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerGovKey]: undefined });
     expect(data).toEqual(false);
   });
 
-  test(`checkHasNotBOsOrMOs should return false even with ${ManagingOfficerKey} object missing`, () => {
-    const data = checkHasNotBOsOrMOs({ ...APPLICATION_DATA_MOCK, [ManagingOfficerKey]: undefined });
+  test(`checkBOsOrMOsDetailsNotEntered should return false even with ${ManagingOfficerKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [ManagingOfficerKey]: undefined });
     expect(data).toEqual(false);
   });
 
-  test(`checkHasNotBOsOrMOs should return false even with ${ManagingOfficerCorporateKey} object missing`, () => {
-    const data = checkHasNotBOsOrMOs({ ...APPLICATION_DATA_MOCK, [ManagingOfficerCorporateKey]: undefined });
+  test(`checkBOsOrMOsDetailsNotEntered should return false even with ${ManagingOfficerCorporateKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsNotEntered({ ...APPLICATION_DATA_MOCK, [ManagingOfficerCorporateKey]: undefined });
     expect(data).toEqual(false);
   });
 
-  test("checkHasNotBOsOrMOs should return false, all good", () => {
-    const data = checkHasNotBOsOrMOs(APPLICATION_DATA_MOCK);
+  test("checkBOsOrMOsDetailsNotEntered should return false, all good", () => {
+    const data = checkBOsOrMOsDetailsNotEntered(APPLICATION_DATA_MOCK);
     expect(data).toEqual(false);
   });
 });

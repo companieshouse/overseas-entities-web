@@ -220,23 +220,21 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
-    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to yes`, async () => {
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when is on register set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("Reg");
       expect(data[RegistrationNumberKey]).toEqual("123456");
     });
 
-    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to no`, async () => {
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when is on register set to no`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -287,23 +285,21 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
-    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to yes`, async () => {
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when is on register set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("Reg");
       expect(data[RegistrationNumberKey]).toEqual("123456");
     });
 
-    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to no`, async () => {
+    test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when is on register set to no`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];

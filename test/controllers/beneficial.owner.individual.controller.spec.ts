@@ -121,7 +121,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`redirect to the ${BENEFICIAL_OWNER_TYPE_URL} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(302);
@@ -223,7 +222,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];

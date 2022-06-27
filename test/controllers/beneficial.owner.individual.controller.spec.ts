@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -46,6 +47,10 @@ import {
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -57,7 +62,6 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
-
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 

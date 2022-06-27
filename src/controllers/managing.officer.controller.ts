@@ -4,7 +4,13 @@ import { logger } from "../utils/logger";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 
-import { AddressKeys, HasFormerNames, HasSameResidentialAddressKey, ID, InputDateKeys } from "../model/data.types.model";
+import {
+  AddressKeys, FormerNamesKey,
+  HasFormerNames,
+  HasSameResidentialAddressKey,
+  ID,
+  InputDateKeys
+} from "../model/data.types.model";
 import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
 import { ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
@@ -97,13 +103,17 @@ export const remove = (req: Request, res: Response, next: NextFunction) => {
 
 const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
-
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
-  data[ServiceAddressKey] = mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
 
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
+  data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
+    ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    :  {};
   data[HasFormerNames] = (data[HasFormerNames]) ? +data[HasFormerNames] : '';
+  if (!data[HasFormerNames]) {
+    data[FormerNamesKey] = "";
+  }
 
   data[ID] = id;
 

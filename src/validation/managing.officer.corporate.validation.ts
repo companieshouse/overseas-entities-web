@@ -34,6 +34,8 @@ export const managingOfficerCorporate = [
   ...public_register_validations,
   ...start_date_validations,
 
+  body("role_and_responsibilities").not().isEmpty().withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE),
+
   body("contact_full_name")
     .not().isEmpty().withMessage(ErrorMessages.FULL_NAME)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)

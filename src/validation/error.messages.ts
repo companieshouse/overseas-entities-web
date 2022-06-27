@@ -9,6 +9,7 @@ export enum ErrorMessages {
   LAST_NAME = "Enter the individual person’s last name",
   FORMER_NAME = "Enter the individual person’s former name or names",
   ROLE = "Enter a description of the individual person’s role and responsibilities",
+  ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
   OCCUPATION = "Enter an occupation",
   // Public Register

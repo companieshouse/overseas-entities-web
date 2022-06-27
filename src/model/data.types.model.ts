@@ -67,3 +67,8 @@ export const Transactionkey = "transaction_id";
 // Is secure and Has sold land Keys
 export const HasSoldLandKey = "has_sold_land";
 export const IsSecureRegisterKey = "is_secure_register";
+
+// Register keys
+export const PublicRegisterNameKey = "public_register_name";
+export const RegistrationNumberKey = "registration_number";
+

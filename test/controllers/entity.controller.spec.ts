@@ -21,7 +21,8 @@ import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
   ENTITY_PAGE_TITLE,
   ANY_MESSAGE_ERROR,
-  SERVICE_UNAVAILABLE, INFORMATION_ON_PUBLIC_REGISTER,
+  SERVICE_UNAVAILABLE,
+  INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';

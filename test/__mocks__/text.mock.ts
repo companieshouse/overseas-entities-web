@@ -51,3 +51,4 @@ export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
+export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";

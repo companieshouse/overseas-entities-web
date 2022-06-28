@@ -188,7 +188,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`renders the current page $ç with public register error messages`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with public register error messages`, async () => {
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send({ is_on_register_in_country_formed_in: "1", public_register_name: "       " });
@@ -395,6 +395,46 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
     });
   });
 

@@ -11,16 +11,27 @@ import { NextFunction, Request, Response } from "express";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
 import * as config from "../../src/config";
-import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from '../../src/utils/application.data';
+import {
+  getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from '../../src/utils/application.data';
 import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   BO_GOV_ID,
   BO_GOV_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
 } from "../__mocks__/session.mock";
+import { AddressKeys } from '../../src/model/data.types.model';
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
+import { ApplicationDataType } from '../../src/model';
 import {
   BENEFICIAL_OWNER_GOV_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK
@@ -40,11 +51,17 @@ const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+
+const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("BENEFICIAL OWNER GOV controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockMapFieldsToDataObject.mockReset();
+    mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
   });
 
   describe("GET tests", () => {
@@ -147,6 +164,22 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
     });
+
+    test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -179,6 +212,22 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app).post(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app).post(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
     });
   });
 

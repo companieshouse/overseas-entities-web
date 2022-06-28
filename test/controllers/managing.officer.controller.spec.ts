@@ -7,7 +7,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 import { describe, expect, test, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -16,8 +16,18 @@ import {
   MANAGING_OFFICER_URL,
   REMOVE
 } from "../../src/config";
-import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from '../../src/utils/application.data';
 import {
+  getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from '../../src/utils/application.data';
+import {
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   MANAGING_OFFICER_OBJECT_MOCK,
   MO_IND_ID,
   MO_IND_ID_URL,
@@ -31,16 +41,20 @@ import {
   MANAGING_OFFICER_PAGE_HEADING,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
-import { managingOfficerType } from '../../src/model';
+import { ApplicationDataType, managingOfficerType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
-import { HasFormerNames, HasSameResidentialAddressKey } from '../../src/model/data.types.model';
+import {
+  AddressKeys,
+  HasFormerNames,
+  HasSameResidentialAddressKey
+} from '../../src/model/data.types.model';
 import {
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { logger } from "../../src/utils/logger";
-import { ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
+import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -54,12 +68,17 @@ const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+
+const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("MANAGING_OFFICER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
+    mockMapFieldsToDataObject.mockReset();
+    mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
   });
 
   describe("GET tests", () => {
@@ -124,7 +143,6 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
-
 
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () =>  { return { [HasSameResidentialAddressKey]: 0, [HasFormerNames]: 0 }; } );
@@ -257,6 +275,45 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("John Doe");
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("");
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -295,6 +352,45 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES );
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("John Doe");
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("");
     });
   });
 

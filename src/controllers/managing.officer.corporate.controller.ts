@@ -8,7 +8,7 @@ import {
   HasSamePrincipalAddressKey,
   ID,
   InputDateKeys,
-  IsOnRegisterInCountryFormedInKey
+  IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
@@ -103,12 +103,18 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerCorporateKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
-  data[ServiceAddressKey] = mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys);
-  data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
-  data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
+  data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
+    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    : {};
+  data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
+  data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
+  if (!data[IsOnRegisterInCountryFormedInKey]) {
+    data[PublicRegisterNameKey] = "";
+    data[RegistrationNumberKey] = "";
+  }
   data[ID] = id;
 
   return data;

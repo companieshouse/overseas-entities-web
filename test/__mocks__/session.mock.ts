@@ -344,6 +344,18 @@ export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
   is_on_sanctions_list: ""
 };
 
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerGovType.BeneficialOwnerGov = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerGovType.BeneficialOwnerGov = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS
+};
+
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   id: BO_GOV_ID,
   name: COMPANY_NAME,

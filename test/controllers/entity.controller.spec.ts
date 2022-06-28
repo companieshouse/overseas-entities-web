@@ -22,6 +22,7 @@ import {
   ENTITY_PAGE_TITLE,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
+  INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -55,6 +56,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test("renders the entity page on GET method with session data populated", async () => {

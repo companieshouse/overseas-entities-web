@@ -497,6 +497,44 @@ export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO: manag
   former_names: "John Doe"
 };
 
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS,
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_on_register_in_country_formed_in: yesNoResponse.No,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: "user@domain.roe"

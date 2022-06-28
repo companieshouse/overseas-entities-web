@@ -67,6 +67,3 @@ export const Transactionkey = "transaction_id";
 // Register keys
 export const PublicRegisterNameKey = "public_register_name";
 export const RegistrationNumberKey = "registration_number";
-
-// Former Names key
-export const FormerNamesKey = "former_names";

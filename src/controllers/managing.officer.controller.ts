@@ -5,7 +5,7 @@ import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 
 import {
-  AddressKeys, FormerNamesKey,
+  AddressKeys,
   HasFormerNames,
   HasSameResidentialAddressKey,
   ID,
@@ -13,7 +13,7 @@ import {
 } from "../model/data.types.model";
 import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
-import { ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
+import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE } from "../config";
 

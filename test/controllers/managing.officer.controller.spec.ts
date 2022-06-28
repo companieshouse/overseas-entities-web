@@ -1,5 +1,3 @@
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -8,7 +6,7 @@ jest.mock("../../src/utils/logger");
 import { describe, expect, test, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -45,7 +43,7 @@ import {
 import { ApplicationDataType, managingOfficerType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
-  AddressKeys, FormerNamesKey,
+  AddressKeys,
   HasFormerNames,
   HasSameResidentialAddressKey
 } from '../../src/model/data.types.model';
@@ -55,7 +53,7 @@ import {
   MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { logger } from "../../src/utils/logger";
-import { ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
+import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

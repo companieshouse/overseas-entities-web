@@ -18,6 +18,8 @@ import {
   presenterType
 } from "../../src/model";
 import {
+  HasSoldLandKey,
+  IsSecureRegisterKey,
   NatureOfControlType,
   OverseasEntityKey,
   PaymentKey,
@@ -507,6 +509,9 @@ export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   state: STATE_ID
 };
 
+const hasSoldLandKey = '0';
+const isSecureRegisterKey = '0';
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -518,7 +523,9 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
-  [Transactionkey]: TRANSACTION_ID
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

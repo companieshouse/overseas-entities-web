@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -24,6 +25,10 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
+import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
+
+const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
+mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;

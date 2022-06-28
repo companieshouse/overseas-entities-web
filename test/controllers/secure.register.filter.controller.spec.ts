@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -22,9 +23,13 @@ import { SECURE_REGISTER_FILTER_URL } from "../../src/config";
 import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
+import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockHasSoldLandMiddleware = hasSoldLand as jest.Mock;
+mockHasSoldLandMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

@@ -219,6 +219,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ROLE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);

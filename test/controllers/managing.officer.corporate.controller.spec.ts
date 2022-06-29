@@ -24,7 +24,7 @@ import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   MO_CORP_ID,
-  MO_CORP_ID_URL,
+  MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY
 } from "../__mocks__/session.mock";
@@ -356,6 +356,71 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when date is outside valid numbers`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "31";
+      managingOfficer["start_date-month"] = "06";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is outside valid numbers`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "30";
+      managingOfficer["start_date-month"] = "13";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when day is zero`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "0";
+      managingOfficer["start_date-month"] = "13";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is zero`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "30";
+      managingOfficer["start_date-month"] = "0";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when invalid characters are used`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "a";
+      managingOfficer["start_date-month"] = "b";
+      managingOfficer["start_date-year"] = "c";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
   });
 

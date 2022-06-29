@@ -28,7 +28,8 @@ export enum ErrorMessages {
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",
   DATE_OF_BIRTH = "Enter the individual person’s date of birth",
-  MANAGING_OFFICER_START_DATE = "Enter when did it become a managing officer for the overseas entity",
+  MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
+  INVALID_DATE = "Date they became managing officer must be a real date",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",

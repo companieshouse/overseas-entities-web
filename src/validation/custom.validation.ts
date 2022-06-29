@@ -40,3 +40,11 @@ export const checkDateIsInPast = (errMsg: string, day: string = "", month: strin
   }
   return true;
 };
+
+export const checkDateValueIsValid = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+  const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
+  if (!inputDate.isValid) {
+    throw new Error(errMsg);
+  }
+  return true;
+};

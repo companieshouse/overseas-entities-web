@@ -20,6 +20,11 @@ export const NAVIGATION: Navigation = {
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
     previousPage: config.INTERRUPT_CARD_URL,
+    nextPage: config.WHO_IS_MAKING_FILING_URL
+  },
+  [config.WHO_IS_MAKING_FILING_URL]: {
+    currentPage: config.WHO_IS_MAKING_FILING_PAGE,
+    previousPage: config.PRESENTER_URL,
     nextPage: config.ENTITY_URL
   },
   [config.ENTITY_URL]: {

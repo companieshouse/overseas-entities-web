@@ -409,6 +409,19 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when invalid characters are used`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "a";
+      managingOfficer["start_date-month"] = "b";
+      managingOfficer["start_date-year"] = "c";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
   });
 
   describe("UPDATE tests", () => {

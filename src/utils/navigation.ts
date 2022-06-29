@@ -29,7 +29,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.ENTITY_URL]: {
     currentPage: config.ENTITY_PAGE,
-    previousPage: config.PRESENTER_URL,
+    previousPage: config.WHO_IS_MAKING_FILING_URL,
     nextPage: config.BENEFICIAL_OWNER_STATEMENTS_URL
   },
   [config.BENEFICIAL_OWNER_STATEMENTS_URL]: {

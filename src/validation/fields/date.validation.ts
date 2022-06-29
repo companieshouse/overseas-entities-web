@@ -10,7 +10,7 @@ export const start_date_validations = [
     .custom((value, { req }) =>  checkDateValueIsValid(ErrorMessages.INVALID_DATE, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-day").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DAY),
   body("start_date-month").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.MONTH),
-  body("start_date-year").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.YEAR),
+  body("start_date-year").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.YEAR)
 ];
 
 export const date_of_birth_validations = [

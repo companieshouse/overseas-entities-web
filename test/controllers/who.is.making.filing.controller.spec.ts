@@ -13,7 +13,7 @@ import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   RADIO_BUTTON_AGENT_SELECTED,
-  RADIO_BUTTON_OVERSEAS_SELECTED,
+  RADIO_BUTTON_SOMEONE_ELSE_SELECTED,
   SERVICE_UNAVAILABLE,
   WHO_IS_MAKING_FILING_PAGE_TITLE,
 } from "../__mocks__/text.mock";
@@ -49,7 +49,7 @@ describe("Who is making filing controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
       expect(resp.text).not.toContain(RADIO_BUTTON_AGENT_SELECTED);
-      expect(resp.text).not.toContain(RADIO_BUTTON_OVERSEAS_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
@@ -60,12 +60,12 @@ describe("Who is making filing controller tests", () => {
       expect(resp.text).toContain(RADIO_BUTTON_AGENT_SELECTED);
     });
 
-    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.OVERSEAS}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.OVERSEAS });
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(RADIO_BUTTON_OVERSEAS_SELECTED);
+      expect(resp.text).toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
     });
 
     test("catch error when rendering the page", async () => {
@@ -78,10 +78,10 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect the ${config.ENTITY_PAGE} page when ${WhoIsRegisteringType.OVERSEAS} is selected`, async () => {
+    test(`redirect the ${config.ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
-        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.OVERSEAS });
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

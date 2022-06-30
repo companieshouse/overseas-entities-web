@@ -2,5 +2,5 @@ export const WhoIsRegisteringKey = "who_is_registering";
 
 export enum WhoIsRegisteringType {
     AGENT = "agent",
-    OVERSEAS = "overseas"
+    SOMEONE_ELSE = "someone_else"
 }

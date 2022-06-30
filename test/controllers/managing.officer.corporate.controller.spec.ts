@@ -359,7 +359,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(data[RegistrationNumberKey]).toEqual("");
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when date is outside valid numbers`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when date is outside valid numbers`, async () => {
       const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
       managingOfficer["start_date-day"] =  "31";
       managingOfficer["start_date-month"] = "06";
@@ -369,10 +369,10 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is outside valid numbers`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when month is outside valid numbers`, async () => {
       const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
       managingOfficer["start_date-day"] =  "30";
       managingOfficer["start_date-month"] = "13";
@@ -382,10 +382,10 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when day is zero`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when day is zero`, async () => {
       const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
       managingOfficer["start_date-day"] =  "0";
       managingOfficer["start_date-month"] = "13";
@@ -395,10 +395,10 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is zero`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when month is zero`, async () => {
       const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
       managingOfficer["start_date-day"] =  "30";
       managingOfficer["start_date-month"] = "0";
@@ -408,10 +408,10 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when invalid characters are used`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when invalid characters are used`, async () => {
       const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
       managingOfficer["start_date-day"] =  "a";
       managingOfficer["start_date-month"] = "b";
@@ -421,7 +421,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
   });
 

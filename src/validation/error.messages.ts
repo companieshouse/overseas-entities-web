@@ -29,7 +29,9 @@ export enum ErrorMessages {
   YEAR_OF_BIRTH = "Date of birth must include a year",
   DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
-  INVALID_DATE = "Date they became managing officer must be a real date",
+  INVALID_START_DATE = "Date they became managing officer must be a real date",
+  INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
+  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",
@@ -81,6 +83,5 @@ export enum ErrorMessages {
   OCCUPATION_INVALID_CHARACTERS = "Occupation must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past"
+  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com"
 }

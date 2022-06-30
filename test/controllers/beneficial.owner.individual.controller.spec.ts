@@ -301,7 +301,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
 
-    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of brith day is outside valid numbers`, async () => {
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of birth day is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH;
       beneficialOwnerIndividual["date_of_birth-day"] =  "32";
       beneficialOwnerIndividual["date_of_birth-month"] = "11";
@@ -313,7 +313,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of brith month is outside valid numbers`, async () => {
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of birth month is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH;
       beneficialOwnerIndividual["date_of_birth-day"] =  "30";
       beneficialOwnerIndividual["date_of_birth-month"] = "13";
@@ -325,7 +325,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of brith day is zero`, async () => {
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of birth day is zero`, async () => {
       const beneficialOwnerIndividual = BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH;
       beneficialOwnerIndividual["date_of_birth-day"] =  "0";
       beneficialOwnerIndividual["date_of_birth-month"] = "11";
@@ -337,7 +337,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of brith month is zero`, async () => {
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of birth month is zero`, async () => {
       const beneficialOwnerIndividual = BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH;
       beneficialOwnerIndividual["date_of_birth-day"] =  "30";
       beneficialOwnerIndividual["date_of_birth-month"] = "0";

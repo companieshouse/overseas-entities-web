@@ -31,7 +31,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(req.session, data, PresenterKey);
 
-    return res.redirect(config.ENTITY_URL);
+    return res.redirect(config.WHO_IS_MAKING_FILING_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

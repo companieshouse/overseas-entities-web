@@ -27,6 +27,7 @@ export interface ApplicationData {
     transaction_id?: string;
     has_sold_land?: string;
     is_secure_register?: string;
+    who_is_registering?: string;
 }
 
 export const ApplicationDataArrayType = [

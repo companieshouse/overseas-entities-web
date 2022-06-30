@@ -43,7 +43,6 @@ export const checkDateIsInPast = (errMsg: string, day: string = "", month: strin
 
 export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
-  console.log(">>>>>>>>>>>>>>>>> " + dayStr + " " + monthStr + " " + yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {
     throw new Error(errMsg);
   }

@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_beneficial_owner_validation, usual_residential_address_beneficial_owner_validation } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
-import { start_date_validations } from "./fields/date.validation";
+import { date_of_birth_validations, start_date_validations } from "./fields/date.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name").isLength({ max: 50 })
@@ -16,5 +16,6 @@ export const beneficialOwnerIndividual = [
 
   ...usual_residential_address_beneficial_owner_validation,
   ...usual_residential_service_address_beneficial_owner_validation,
-  ...start_date_validations
+  ...start_date_validations,
+  ...date_of_birth_validations
 ];

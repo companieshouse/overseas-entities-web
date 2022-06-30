@@ -14,7 +14,9 @@ export const start_date_validations = [
 ];
 
 export const date_of_birth_validations = [
-  body("date_of_birth").custom((value, { req }) => checkDate(ErrorMessages.DATE_OF_BIRTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"]) ),
+  body("date_of_birth")
+    .custom((value, { req }) => checkDate(ErrorMessages.DATE_OF_BIRTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"]) )
+    .custom((value, { req }) =>  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-day").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DAY_OF_BIRTH),
   body("date_of_birth-month").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.MONTH_OF_BIRTH),
   body("date_of_birth-year").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.YEAR_OF_BIRTH),

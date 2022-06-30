@@ -275,33 +275,53 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   is_on_sanctions_list: 0
 };
 
-export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_FOR_DATE_VALIDATION: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
-  first_name: "Joe",
-  last_name: "Bloggs",
-  date_of_birth: { day: "6", month: "9", year: "1977" },
-  nationality: "Russian",
-  usual_residential_address: ADDRESS,
-  is_service_address_same_as_usual_residential_address: 1,
-  service_address: ADDRESS,
-  start_date: { day: "1", month: "3", year: "1999" },
-  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
-  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 1,
+  is_service_address_same_as_usual_residential_address: 0,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REPLACE: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  first_name: "new name",
+  ...start_date,
+  ...date_of_birth
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
-  start_date: { day: "6", month: "9", year: "1977" },
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...start_date,
+  ...date_of_birth
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...start_date,
+  ...date_of_birth
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {

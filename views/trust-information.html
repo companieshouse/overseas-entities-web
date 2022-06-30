@@ -15,6 +15,8 @@
 
       <h1 class="govuk-heading-xl">Add trust information for the beneficial owners</h1>
 
+      {% include "includes/list/errors.html" %}
+
       <form class="form" method="post">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="bo-hint">
@@ -58,8 +60,9 @@
         <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>
         <div class="govuk-form-group">
           {{ govukTextarea({
+            errorMessage: errors.trusts if errors,
             name: "trusts",
-            id: "more-detail",
+            id: "trusts",
             label: {
               text: "If you've already completed the trust Excel document, follow the instructions in the document to paste the data into the box:",
               classes: "govuk-body",

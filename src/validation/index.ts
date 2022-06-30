@@ -9,6 +9,7 @@ import { managingOfficerCorporate } from "./managing.officer.corporate.validatio
 import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
+import { trustInformation } from "./trust.information.validation";
 
 export const validator = {
   soldLandFilter,
@@ -21,5 +22,6 @@ export const validator = {
   managingOfficerCorporate,
   beneficialOwnerIndividual,
   beneficialOwnerOther,
-  beneficialOwnerGov
+  beneficialOwnerGov,
+  trustInformation
 };

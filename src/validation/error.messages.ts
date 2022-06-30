@@ -9,6 +9,7 @@ export enum ErrorMessages {
   LAST_NAME = "Enter the individual person’s last name",
   FORMER_NAME = "Enter the individual person’s former name or names",
   ROLE = "Enter a description of the individual person’s role and responsibilities",
+  ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
   OCCUPATION = "Enter an occupation",
   // Public Register
@@ -27,7 +28,8 @@ export enum ErrorMessages {
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",
   DATE_OF_BIRTH = "Enter the individual person’s date of birth",
-  MANAGING_OFFICER_START_DATE = "Enter when did it become a managing officer for the overseas entity",
+  MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
+  INVALID_DATE = "Date they became managing officer must be a real date",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",
@@ -57,7 +59,7 @@ export enum ErrorMessages {
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 4000 characters or less",
   MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Entity’s registration number must be 32 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
-  MAX_ROLE_LENGTH = "Role and responsibilities must be 4000 characters or less",
+  MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

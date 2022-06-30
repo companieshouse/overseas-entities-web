@@ -19,6 +19,8 @@ import {
   trustType
 } from "../../src/model";
 import {
+  HasSoldLandKey,
+  IsSecureRegisterKey,
   NatureOfControlType,
   OverseasEntityKey,
   PaymentKey,
@@ -289,6 +291,32 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: be
   service_address: ADDRESS
 };
 
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
+export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_on_register_in_country_formed_in: yesNoResponse.No,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   first_name: "Ivan",
@@ -319,6 +347,18 @@ export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
   trustees_nature_of_control_types: "",
   non_legal_firm_members_nature_of_control_types: "",
   is_on_sanctions_list: ""
+};
+
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerGovType.BeneficialOwnerGov = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerGovType.BeneficialOwnerGov = {
+  id: BO_IND_ID,
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS
 };
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
@@ -429,6 +469,7 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {
   public_register_name: "",
   registration_number: "",
   start_date: { 'start_date-day': "", 'start_date-month': "", 'start_date-year': "" },
+  role_and_responsibilities: "",
   usual_residential_address: {},
   service_address: {}
 };
@@ -441,11 +482,89 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   is_on_register_in_country_formed_in: "1",
   public_register_name: "register",
   registration_number: "123456789",
+  role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "contact name",
   contact_email: "contact email",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...start_date
+};
+
+export const REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION = {
+  name: "Joe Bloggs Ltd",
+  is_service_address_same_as_principal_address: "0",
+  legal_form: "legalForm",
+  law_governed: "LegAuth",
+  is_on_register_in_country_formed_in: "1",
+  public_register_name: "register",
+  registration_number: "123456789",
+  role_and_responsibilities: "role and responsibilities text",
+  contact_full_name: "contact name",
+  contact_email: "contact email",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  service_address: ADDRESS
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+  service_address: ADDRESS
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  has_former_names: yesNoResponse.Yes,
+  former_names: "John Doe"
+};
+
+export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  has_former_names: yesNoResponse.No,
+  former_names: "John Doe"
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_service_address_same_as_principal_address: yesNoResponse.No,
+  service_address: ADDRESS,
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "Reg",
+  registration_number: "123456"
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  role_and_responsibilities: "",
+  contact_full_name: "",
+  contact_email: "",
+  is_on_register_in_country_formed_in: yesNoResponse.No,
+  public_register_name: "Reg",
+  registration_number: "123456"
 };
 
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
@@ -465,9 +584,9 @@ export const TRUST_DATA: trustType.Trust = {
   trust_name: "",
   creation_date: "",
   unable_to_obtain_all_trust_info: false,
-  INDIVIDUAL: [],
+  INDIVIDUALS: [],
   HISTORICAL_BO: [],
-  CORPORATE: []
+  CORPORATES: []
 };
 
 export const TRUSTS_SUBMIT = {
@@ -480,6 +599,9 @@ export const TRUSTS_ADD_MORE = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
+const hasSoldLandKey = '0';
+const isSecureRegisterKey = '0';
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -491,7 +613,9 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
-  [Transactionkey]: TRANSACTION_ID
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

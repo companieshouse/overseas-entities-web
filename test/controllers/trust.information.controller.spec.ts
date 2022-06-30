@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/application.data");
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -10,6 +11,10 @@ import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from ".
 import { APPLICATION_DATA_MOCK, TRUST_DATA, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+
+const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
+mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

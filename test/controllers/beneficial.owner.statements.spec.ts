@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.entity.middleware');
 
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
 
@@ -22,6 +23,10 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { getApplicationData } from "../../src/utils/application.data";
 import { BeneficialOwnersStatementType } from "../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../src/validation/error.messages";
+import { hasEntity } from "../../src/middleware/navigation/has.entity.middleware";
+
+const mockHasEntityMiddleware = hasEntity as jest.Mock;
+mockHasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

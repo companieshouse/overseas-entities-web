@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -21,6 +22,7 @@ import {
   ENTITY_PAGE_TITLE,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
+  INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -29,6 +31,10 @@ import {
   ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
+import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+
+const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
+mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -50,6 +56,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test("renders the entity page on GET method with session data populated", async () => {

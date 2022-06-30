@@ -475,6 +475,19 @@ export const REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS = {
   ...date_of_birth
 };
 
+export const REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION = {
+  first_name: "some first name",
+  last_name: "some last name",
+  has_former_names: "0",
+  former_names: "",
+  nationality: "some nationality",
+  is_service_address_same_as_usual_residential_address: "0",
+  occupation: "some occupation",
+  role_and_responsibilities: "some role and responsibilities",
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
+};
+
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
   id: MO_CORP_ID,
   name: "Joe Bloggs Ltd",

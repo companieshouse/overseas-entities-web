@@ -261,7 +261,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when start date month is outside valid numbers`, async () => {
@@ -273,7 +273,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when start date day is zero`, async () => {
@@ -285,7 +285,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when start date month is zero`, async () => {
@@ -297,7 +297,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
 

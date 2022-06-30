@@ -29,8 +29,9 @@ export enum ErrorMessages {
   YEAR_OF_BIRTH = "Date of birth must include a year",
   DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
-  INVALID_DATE = "Date must be a real date",
+  INVALID_START_DATE = "Date they became managing officer must be a real date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
+  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",
@@ -58,7 +59,7 @@ export enum ErrorMessages {
   MAX_LEGAL_FORM_LENGTH = "Legal form must be 4000 characters or less",
   MAX_LAW_GOVERNED_LENGTH = "Governing law must be 4000 characters or less",
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 4000 characters or less",
-  MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Entity’s registration number must be 32 characters or less",
+  MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 32 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   // Invalid characters
@@ -74,7 +75,7 @@ export enum ErrorMessages {
   POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PUBLIC_REGISTER_NAME_INVALID_CHARACTERS = "Name of register must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS = "Registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ENTITY_NAME_INVALID_CHARACTERS = "The name of the overseas entity must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   LEGAL_FORM_INVALID_CHARACTERS = "Legal form must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   LAW_GOVERNED_INVALID_CHARACTERS = "Governing law must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
@@ -82,6 +83,5 @@ export enum ErrorMessages {
   OCCUPATION_INVALID_CHARACTERS = "Occupation must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past"
+  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com"
 }

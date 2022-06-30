@@ -346,7 +346,7 @@ describe("MANAGING_OFFICER controller", () => {
   test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when day is zero`, async () => {
     const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
     managingOfficer["date_of_birth-day"] =  "0";
-    managingOfficer["date_of_birth-month"] = "13";
+    managingOfficer["date_of_birth-month"] = "12";
     managingOfficer["date_of_birth-year"] = "2020";
     const resp = await request(app)
       .post(MANAGING_OFFICER_URL)

@@ -32,12 +32,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       trusts: obj
     };
 
-    var trustCount = 0;
-    if (req.session?.data.extra_data.roe.trusts != undefined) {
-      trustCount = (req.session?.data.extra_data.roe.trusts).length;
+    let trustCount = 0;
+    if (req.session?.data.extra_data.roe.trusts !== undefined) {
+      trustCount = (req.session?.data.extra_data.roe.trusts)?.length;
     }
 
-    for (var i in t.trusts) {
+    for (const i in t.trusts) {
       trustCount++;
       t.trusts[i].trust_id = trustCount.toString();
     }

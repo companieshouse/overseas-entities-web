@@ -275,16 +275,53 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   is_on_sanctions_list: 0
 };
 
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  is_on_sanctions_list: 1,
+  is_service_address_same_as_usual_residential_address: 0,
+  ...start_date,
+  ...date_of_birth
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_REPLACE: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  first_name: "new name",
+  ...start_date,
+  ...date_of_birth
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...start_date,
+  ...date_of_birth
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...start_date,
+  ...date_of_birth
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {

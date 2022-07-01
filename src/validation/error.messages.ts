@@ -27,9 +27,9 @@ export enum ErrorMessages {
   DAY_OF_BIRTH = "Date of birth must include a day",
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",
-  DATE_OF_BIRTH = "Enter the individual person’s date of birth",
-  MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
-  INVALID_START_DATE = "Date they became managing officer must be a real date",
+  ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
+  ENTER_START_DATE = "Enter the date",
+  INVALID_START_DATE = "Date entered must be a real date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
   MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past",
   // No radio selected

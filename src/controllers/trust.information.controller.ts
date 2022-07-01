@@ -29,6 +29,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
+    // If only one BO is selected, data is a string.
+    // If multiple selected, data is an array.
     const beneficialOwnerIds: string[] = [];
     if (typeof req.body.beneficialOwners === 'string') {
       beneficialOwnerIds.push(req.body.beneficialOwners);

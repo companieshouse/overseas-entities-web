@@ -39,9 +39,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    const obj: trustType.Trust[] = JSON.parse(req.body.trusts);
-    const t: trustType.Trusts = {
-      trusts: obj
+    const trustData: trustType.Trust[] = JSON.parse(req.body.trusts);
+    const trustsReq: trustType.Trusts = {
+      trusts: trustData
     };
 
     // Generate unique trust_id for each trust
@@ -51,16 +51,16 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     const trustIds: string[] = [];
-    for (const i in t.trusts) {
+    for (const i in trustData) {
       trustCount++;
-      t.trusts[i].trust_id = trustCount.toString();
+      trustData[i].trust_id = trustCount.toString();
       trustIds.push(trustCount.toString());
     }
 
     assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
 
-    const data: ApplicationDataType = setTrustData(t);
+    const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
 
     for (const i in data[TrustKey]) {
       setApplicationData(req.session, data[TrustKey][i], TrustKey);
@@ -76,11 +76,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
-};
-
-const setTrustData = (obj: any): ApplicationDataType => {
-  const data: ApplicationDataType = prepareData(obj, TrustKeys);
-  return data;
 };
 
 const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {

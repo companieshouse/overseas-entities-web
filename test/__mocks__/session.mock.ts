@@ -579,18 +579,24 @@ export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   state: STATE_ID
 };
 
-export const TRUST_DATA: trustType.Trust = {
-  trust_id: "",
-  trust_name: "",
-  creation_date: "",
-  unable_to_obtain_all_trust_info: false,
-  INDIVIDUALS: [],
-  HISTORICAL_BO: [],
-  CORPORATES: []
-};
+export const TRUST_DATA: string = `[{
+  "trust_name": "",
+  "creation_date": "",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
 
 export const TRUSTS_SUBMIT = {
   submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
+  submit: "submit",
+  beneficialOwners: ["123", "456"],
   [trustType.TrustKey]: TRUST_DATA
 };
 

@@ -55,21 +55,21 @@ describe("TRUST INFORMATION controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
     });
-  });
 
-  test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
-    mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
-    const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
+    test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
 
-    expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
-  });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
+    });
 
-  test("catch error when rendering the page", async () => {
-    mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
-    const resp = await request(app).post(config.TRUST_INFO_URL);
+    test("catch error when rendering the page", async () => {
+      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.TRUST_INFO_URL);
 
-    expect(resp.status).toEqual(500);
-    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 });

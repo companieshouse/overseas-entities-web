@@ -1,12 +1,8 @@
 {% set statementText %}
     {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
       All beneficial owners have been identified and all required information can be provided
-    {% elif appData.beneficial_owners_statement == "ALL_IDENTIFIED_SOME_DETAILS" %}
-      All beneficial owners have been identified but only some required information can be provided
     {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
       Some beneficial owners have been identified and all required information can be provided
-    {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_SOME_DETAILS" %}
-      Some beneficial owners have been identified but only some required information can be provided
     {% elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" %}
       No beneficial owners have been identified
     {% endif %}

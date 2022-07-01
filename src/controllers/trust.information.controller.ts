@@ -57,7 +57,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       trustIds.push(trustCount.toString());
     }
 
-    setTrustIDs(req, beneficialOwnerIds, trustIds);
+    assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
 
     const data: ApplicationDataType = setTrustData(t);
@@ -83,8 +83,7 @@ const setTrustData = (obj: any): ApplicationDataType => {
   return data;
 };
 
-// set Trust IDs to each selected Beneficial Owner
-const setTrustIDs = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
+const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
   for (const i in beneficialOwnerIds) {
     const individualBo = getFromApplicationDataIfPresent(req, BeneficialOwnerIndividualKey, beneficialOwnerIds[i]);
     if (individualBo !== undefined) {

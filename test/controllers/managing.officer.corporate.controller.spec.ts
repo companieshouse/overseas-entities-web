@@ -4,11 +4,10 @@ jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-import { Settings as luxonSettings } from "luxon";
+
 import app from "../../src/app";
 
 import {
@@ -16,7 +15,7 @@ import {
   HasSamePrincipalAddressKey,
   IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey,
 } from "../../src/model/data.types.model";
-
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
@@ -24,7 +23,7 @@ import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   MO_CORP_ID,
-  MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION,
+  MO_CORP_ID_URL,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY
 } from "../__mocks__/session.mock";
@@ -51,7 +50,6 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
-import { DateTime, Duration } from "luxon";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
@@ -67,7 +65,6 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
-const today = "2022-01-02";
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("MANAGING_OFFICER CORPORATE controller", () => {
@@ -75,7 +72,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
-    luxonSettings.now = () => new Date(today).valueOf();
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
   });
@@ -179,9 +175,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(ErrorMessages.DAY);
-      expect(resp.text).toContain(ErrorMessages.MONTH);
-      expect(resp.text).toContain(ErrorMessages.YEAR);
       expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
@@ -233,9 +226,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID CHARACTERS error messages`, async () => {
@@ -272,51 +262,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with FUTURE_DATE error messages`, async () => {
-      const futureDate = DateTime.now().plus(Duration.fromObject({ days: 1 }));
-      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
-      managingOfficer["start_date-day"] =  futureDate.day.toString();
-      managingOfficer["start_date-month"] = futureDate.month.toString();
-      managingOfficer["start_date-year"] = futureDate.year.toString();
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE error messages for valid date`, async () => {
-      const pastDate = DateTime.now().minus(Duration.fromObject({ days: 1 }));
-      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
-      managingOfficer["start_date-day"] =  pastDate.day.toString();
-      managingOfficer["start_date-month"] = pastDate.month.toString();
-      managingOfficer["start_date-year"] = pastDate.year.toString();
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).not.toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} without FUTURE_DATE service address error messages for todays date`, async () => {
-      const currentDate = DateTime.now();
-      const managingOfficer = MANAGING_OFFICER_CORPORATE_OBJECT_MOCK;
-      managingOfficer["start_date-day"] =  currentDate.day.toString();
-      managingOfficer["start_date-month"] = currentDate.month.toString();
-      managingOfficer["start_date-year"] = currentDate.year.toString();
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
     });
 
     test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
@@ -357,71 +302,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when date is outside valid numbers`, async () => {
-      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
-      managingOfficer["start_date-day"] =  "31";
-      managingOfficer["start_date-month"] = "06";
-      managingOfficer["start_date-year"] = "2020";
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when month is outside valid numbers`, async () => {
-      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
-      managingOfficer["start_date-day"] =  "30";
-      managingOfficer["start_date-month"] = "13";
-      managingOfficer["start_date-year"] = "2020";
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when day is zero`, async () => {
-      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
-      managingOfficer["start_date-day"] =  "0";
-      managingOfficer["start_date-month"] = "13";
-      managingOfficer["start_date-year"] = "2020";
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when month is zero`, async () => {
-      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
-      managingOfficer["start_date-day"] =  "30";
-      managingOfficer["start_date-month"] = "0";
-      managingOfficer["start_date-year"] = "2020";
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
-    });
-
-    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_START_DATE error when invalid characters are used`, async () => {
-      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
-      managingOfficer["start_date-day"] =  "a";
-      managingOfficer["start_date-month"] = "b";
-      managingOfficer["start_date-year"] = "c";
-      const resp = await request(app)
-        .post(MANAGING_OFFICER_CORPORATE_URL)
-        .send(managingOfficer);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
   });
 

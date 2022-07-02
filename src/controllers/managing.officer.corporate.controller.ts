@@ -122,5 +122,8 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   }
   data[ID] = id;
 
+  // To be removed - Related to ROE-914
+  data["start_date"] = "";
+
   return data;
 };

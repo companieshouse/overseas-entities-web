@@ -1,0 +1,32 @@
+{{ govukDateInput({
+  errorMessage: errors.identity_date if errors,
+  id: "identity_date",
+  namePrefix: "identity_date",
+  fieldset: {
+    legend: {
+      text: "When were the identity checks completed?",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    html: "<p>For example, 21 7 2022</p><p>The checks must have been carried out in the last 3 months.</p>"
+  },
+  items: [
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: "day",
+      value: identity_date["identity_date-day"] if identity_date
+    },
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: "month",
+      value: identity_date["identity_date-month"] if identity_date
+    },
+    {
+      classes: "govuk-input--width-4 govuk-input",
+      name: "year",
+      value: identity_date["identity_date-year"] if identity_date
+    }
+  ]
+}) }}

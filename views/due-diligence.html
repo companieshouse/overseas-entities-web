@@ -1,0 +1,83 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Complete this statement to confirm that identity checks have been completed - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Complete this statement to confirm that identity checks have been completed</h1>
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+
+        {% include "includes/inputs/date/identity-date-input.html" %}
+
+        {% set nameFieldText = "What is the agent's name?" %}
+        {% set nameFieldTextHint = "Enter the company name, or your own name if you are self-employed" %}
+        {% include "includes/inputs/fields/identity-name-input.html" %}
+
+        {% include "includes/inputs/address/identity-address-input.html" %}
+
+        {% set emailFieldText = "What is the email address?" %}
+        {% include "includes/inputs/fields/email-input.html" %}
+
+        {% include "includes/inputs/fields/supervisory-name-input.html" %}
+        {% include "includes/inputs/fields/aml-number-input.html" %}
+
+        {{ govukInput({
+          errorMessage: errors.agent_code if errors,
+          label: {
+            text: "What is the agent assurance code?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "This is provided by Companies House and is used to authenticate the UK-regulated agent"
+          },
+          classes: "govuk-!-width-one-half",
+          id: "agent_code",
+          name: "agent_code",
+          value: agent_code
+        }) }}
+
+        {% include "includes/inputs/fields/partner-name-input.html" %}
+
+        {{ govukCheckboxes({
+          errorMessage: errors.diligence if errors,
+          idPrefix: "diligence",
+          name: "diligence",
+          fieldset: {
+            legend: {
+              text: "Declaration",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "agree",
+              text: "I confirm that verification has been carried out as required by The Register of Overseas Entities (Verification and Provision of Information) Regulations 2022. I confirm that the information provided in this statement is accurate.",
+              checked: diligence === "agree"
+            }
+          ]
+        }) }}
+
+        {% set headerBlock = '<h2 class="govuk-heading-m">Information shown on the public register</h2>' %}
+        {% set paragraphOne = '<p>The email address, agent assurance code and date the identity checks were completed will not be shown.</p>' %}
+        {% set paragraphTwo = '<p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>' %}
+        {% include "includes/inset-text.html" %}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

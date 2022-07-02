@@ -1,0 +1,112 @@
+{% call govukFieldset({
+  legend: {
+    text: "What is the correspondence address?",
+    classes: "govuk-fieldset__legend--m",
+    isPageHeading: false
+  }
+}) %}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_property_name_number if errors,
+    label: {
+      html: 'Property name or number'
+    },
+    hint: {
+      text: "For example, 'Saron House', '116' or 'Unit 37a'"
+    },
+    id: "identity_address_property_name_number",
+    name: "identity_address_property_name_number",
+    value: identity_address_property_name_number
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_line_1 if errors,
+    label: {
+      text: "Address line 1"
+    },
+    classes: "govuk-!-width-two-thirds",
+    id: "identity_address_line_1",
+    name: "identity_address_line_1",
+    value: identity_address_line_1
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_line_2 if errors,
+    label: {
+      text: "Address line 2 (optional)"
+    },
+    classes: "govuk-!-width-two-thirds",
+    id: "identity_address_line_2",
+    name: "identity_address_line_2",
+    value: identity_address_line_2
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_town if errors,
+    label: {
+      text: "City or town"
+    },
+    classes: "govuk-!-width-two-thirds",
+    id: "identity_address_town",
+    name: "identity_address_town",
+    value: identity_address_town
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_county if errors,
+    label: {
+      text: "County"
+    },
+    classes: "govuk-!-width-two-thirds",
+    id: "identity_address_county",
+    name: "identity_address_county",
+    value: identity_address_county
+  }) }}
+
+  {{ govukRadios({
+    errorMessage: errors.identity_address_country if errors,
+    classes: "govuk-radios",
+    idPrefix: "identity_address_country",
+    name: "identity_address_country",
+    fieldset: {
+      legend: {
+        text: "Country",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend"
+      }
+    },
+    items: [
+      {
+        value: "england",
+        text: "England",
+        checked: identity_address_country === "england"
+      },
+      {
+        value: "northern-ireland",
+        text: "Northern Ireland",
+        checked: identity_address_country === "northern-ireland"
+      },
+      {
+        value: "scotland",
+        text: "Scotland",
+        checked: identity_address_country === "scotland"
+      },
+      {
+        value: "wales",
+        text: "Wales",
+        checked: identity_address_country === "wales"
+      }
+    ]
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.identity_address_postcode if errors,
+    label: {
+      text: "Postcode"
+    },
+    classes: "govuk-input--width-10",
+    id: "identity_address_postcode",
+    name: "identity_address_postcode",
+    value: identity_address_postcode
+  }) }}
+{% endcall %}

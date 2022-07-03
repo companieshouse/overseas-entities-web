@@ -4,7 +4,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
-import { WhoIsRegisteringKey } from "../model/who.is.making.filing.model";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,11 +25,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.WHO_IS_MAKING_FILING_PAGE}`);
-    const whoIsRegisteringKey = req.body[WhoIsRegisteringKey];
+    const whoIsRegistering = req.body[WhoIsRegisteringKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegisteringKey });
+    setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegistering });
 
-    return res.redirect(config.ENTITY_URL);
+    if ( whoIsRegistering === WhoIsRegisteringType.AGENT ){
+      return res.redirect(config.DUE_DILIGENCE_URL);
+    } else {
+      return res.redirect(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

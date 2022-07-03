@@ -1,12 +1,12 @@
 /*
-  [UsualResidential, Principal, Service, DueDiligence]AddressKey should match the address name field
+  [UsualResidential, Principal, Service, Identity]AddressKey should match the address name field
   in every data model where address object has been used
 */
 
 export const UsualResidentialAddressKey = "usual_residential_address";
 export const PrincipalAddressKey = "principal_address";
 export const ServiceAddressKey = "service_address";
-export const DueDiligenceAddressKey = "identity_address";
+export const IdentityAddressKey = "identity_address";
 
 /*
   The sub-fields for Address Objects used in the templates
@@ -42,7 +42,7 @@ export const ServiceAddressKeys: string[] = [
   "service_address_postcode"
 ];
 
-export const DueDiligenceAddressKeys: string[] = [
+export const IdentityAddressKeys: string[] = [
   "identity_address_property_name_number",
   "identity_address_line_1",
   "identity_address_line_2",

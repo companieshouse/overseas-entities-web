@@ -7,6 +7,7 @@ import { DateOfBirthKey, StartDateKey, DateOfBirthKeys, StartDateKeys } from "..
 
 import { logger } from '../utils/logger';
 import { ID } from "../model/data.types.model";
+import { ApplicationData } from "../model/application.model";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -28,11 +29,12 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // when changing BO or MO data after failing validation. If not present, undefined will be passed in, which is fine as those pages
       // that don't use id will just ignore it.
       const id = req.params[ID];
+      const appData: ApplicationData = getApplicationData(req.session);
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage,
+        backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         id,
-        ...getApplicationData(req.session),
+        appData,
         ...req.body,
         ...dates,
         errors

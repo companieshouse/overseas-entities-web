@@ -3,7 +3,14 @@ import { validationResult, ValidationError } from "express-validator";
 
 import { getApplicationData, prepareData } from "../utils/application.data";
 import { NAVIGATION } from "../utils/navigation";
-import { DateOfBirthKey, StartDateKey, DateOfBirthKeys, StartDateKeys } from "../model/date.model";
+import {
+  DateOfBirthKey,
+  StartDateKey,
+  DateOfBirthKeys,
+  StartDateKeys,
+  IdentityDateKey,
+  IdentityDateKeys,
+} from "../model/date.model";
 
 import { logger } from '../utils/logger';
 import { ID } from "../model/data.types.model";
@@ -20,7 +27,8 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // govukDateInput adds for day, month and year field
       const dates = {
         [DateOfBirthKey]: prepareData(req.body, DateOfBirthKeys),
-        [StartDateKey]: prepareData(req.body, StartDateKeys)
+        [StartDateKey]: prepareData(req.body, StartDateKeys),
+        [IdentityDateKey]: prepareData(req.body, IdentityDateKeys)
       };
 
       const routePath = req.route.path;

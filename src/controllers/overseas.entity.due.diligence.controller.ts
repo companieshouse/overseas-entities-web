@@ -34,7 +34,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       [IdentityDateKey]: identityDate
     });
   } catch (error) {
-    logger.errorRequest(req, error);
     next(error);
   }
 };
@@ -54,7 +53,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     return res.redirect(config.ENTITY_URL);
   } catch (error) {
-    logger.errorRequest(req, error);
     next(error);
   }
 };

@@ -48,7 +48,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     // Generate unique trust_id for each trust
     let trustCount = 0;
-    if (req.session?.data.extra_data.roe.trusts !== undefined) {
+    const appData: ApplicationData = getApplicationData(req.session);
+    if (appData[TrustKey] !== undefined) {
       trustCount = (req.session?.data.extra_data.roe.trusts)?.length;
     }
 

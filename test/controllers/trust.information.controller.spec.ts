@@ -50,6 +50,7 @@ describe("TRUST INFORMATION controller", () => {
   describe("POST tests", () => {
     test(`redirects to the ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT);
 
       expect(resp.status).toEqual(302);
@@ -58,6 +59,7 @@ describe("TRUST INFORMATION controller", () => {
 
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
 
       expect(resp.status).toEqual(302);

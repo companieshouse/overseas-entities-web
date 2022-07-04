@@ -39,19 +39,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       trusts: trustData
     };
 
-    // Generate unique trust_id for each trust
-    let trustCount = 0;
-    const appData: ApplicationData = getApplicationData(req.session);
-    if (appData[TrustKey] !== undefined) {
-      trustCount = (req.session?.data.extra_data.roe.trusts)?.length;
-    }
 
-    const trustIds: string[] = [];
-    for (const i in trustData) {
-      trustCount++;
-      trustData[i].trust_id = trustCount.toString();
-      trustIds.push(trustCount.toString());
-    }
+    const trustIds = generateTrustIds(req, trustData);
 
     assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
@@ -95,4 +84,22 @@ const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[]
       }
     }
   }
+};
+
+// Generate a unique trust_id for each trust
+const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
+  let trustCount = 0;
+  const appData: ApplicationData = getApplicationData(req.session);
+  const trusts = appData[TrustKey];
+  if (trusts !== undefined) {
+    trustCount = trusts.length;
+  }
+
+  const trustIds: string[] = [];
+  for (const i in trustData) {
+    trustCount++;
+    trustData[i].trust_id = trustCount.toString();
+    trustIds.push(trustCount.toString());
+  }
+  return trustIds;
 };

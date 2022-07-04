@@ -9,11 +9,11 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { LANDING_URL, PRESENTER_URL } from "../../src/config";
+import { LANDING_URL, PRESENTER_URL, WHO_IS_MAKING_FILING_PAGE, WHO_IS_MAKING_FILING_URL } from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,
-  ENTITY_PAGE_REDIRECT,
+  FOUND_REDIRECT_TO,
   PRESENTER_PAGE_TITLE,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
@@ -60,18 +60,18 @@ describe("PRESENTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect to the entity page after a successful post from presenter page", async () => {
+    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page`, async () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(ENTITY_PAGE_REDIRECT);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
     });
 
-    test("redirect to the entity page after a successful post from presenter page with special characters", async () => {
+    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(ENTITY_PAGE_REDIRECT);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
     });
 
     test("renders the current page with error message", async () => {

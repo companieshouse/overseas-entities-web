@@ -48,6 +48,7 @@ export const SERVICE_OFFLINE_PAGE = "service-offline";
 export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
 export const TRUST_INFO_PAGE = "trust-information";
 export const USE_PAPER_PAGE = "use-paper";
+export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -71,6 +72,7 @@ export const SOLD_LAND_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SOLD_LAND_
 export const SECURE_REGISTER_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SECURE_REGISTER_FILTER_PAGE;
 export const TRUST_INFO_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INFO_PAGE;
 export const USE_PAPER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
+export const WHO_IS_MAKING_FILING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + WHO_IS_MAKING_FILING_PAGE;
 export const REMOVE = "/remove";
 
 // URL PARAMS

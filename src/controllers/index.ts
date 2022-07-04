@@ -18,3 +18,4 @@ export * as payment from "./payment.controller";
 export * as healthcheck from "./healthcheck.controller";
 export * as cannotUse from "./cannot.use.controller";
 export * as usePaper from "./use.paper.contoller";
+export * as whoIsMakingFiling from "./who.is.making.filing.controller";

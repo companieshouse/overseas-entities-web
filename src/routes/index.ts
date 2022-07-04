@@ -21,7 +21,8 @@ import {
   soldLandFilter,
   secureRegisterFilter,
   trustInformation,
-  usePaper
+  usePaper,
+  whoIsMakingFiling
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -52,6 +53,9 @@ router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegiste
 
 router.get(config.PRESENTER_URL, authentication, navigation.isSecureRegister, presenter.get);
 router.post(config.PRESENTER_URL, authentication, navigation.isSecureRegister, ...validator.presenter, checkValidations, presenter.post);
+
+router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
+router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
 
 router.get(config.ENTITY_URL, authentication, navigation.hasPresenter, entity.get);
 router.post(config.ENTITY_URL, authentication, navigation.hasPresenter, ...validator.entity, checkValidations, entity.post);

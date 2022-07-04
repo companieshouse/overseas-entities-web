@@ -44,6 +44,8 @@ export enum ErrorMessages {
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
+  SELECT_IF_ON_SANCTIONS_LIST = "Select yes if the individual person is on the sanctions list",
+
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",

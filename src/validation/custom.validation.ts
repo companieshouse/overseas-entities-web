@@ -3,6 +3,14 @@
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 
+
+export const checkFieldIfCheckboxTicked = (selected: boolean, errMsg: string, value: string = "") => {
+  if (!selected && !value ) {
+    throw new Error(errMsg);
+  }
+  return true;
+};
+
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
     throw new Error(errMsg);

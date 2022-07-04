@@ -33,12 +33,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // If multiple selected, data is an array.
     const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
 
-
     const trustData: trustType.Trust[] = JSON.parse(req.body.trusts);
     const trustsReq: trustType.Trusts = {
       trusts: trustData
     };
-
 
     const trustIds = generateTrustIds(req, trustData);
 
@@ -47,8 +45,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
 
-    for (const i in data[TrustKey]) {
-      setApplicationData(req.session, data[TrustKey][i], TrustKey);
+    for (const trust of data[TrustKey]) {
+      setApplicationData(req.session, trust, TrustKey);
     }
 
     if (req.body.add) {
@@ -64,23 +62,23 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
-  for (const i in beneficialOwnerIds) {
-    const individualBo = getFromApplicationDataIfPresent(req, BeneficialOwnerIndividualKey, beneficialOwnerIds[i]);
+  for (const beneficialOwnerId of beneficialOwnerIds) {
+    const individualBo = getFromApplicationDataIfPresent(req, BeneficialOwnerIndividualKey, beneficialOwnerId);
     if (individualBo !== undefined) {
-      for (const j in trustIds) {
+      for (const trustId of trustIds) {
         if (individualBo.trust_ids === undefined) {
           individualBo.trust_ids = [];
         }
-        (individualBo.trust_ids).push(trustIds[j]);
+        (individualBo.trust_ids).push(trustId);
       }
     }
-    const corporateBo = getFromApplicationDataIfPresent(req, BeneficialOwnerOtherKey, beneficialOwnerIds[i]);
+    const corporateBo = getFromApplicationDataIfPresent(req, BeneficialOwnerOtherKey, beneficialOwnerId);
     if (corporateBo !== undefined) {
-      for (const j in trustIds) {
+      for (const trustId of trustIds) {
         if (corporateBo.trust_ids === undefined) {
           corporateBo.trust_ids = [];
         }
-        (corporateBo.trust_ids).push(trustIds[j]);
+        (corporateBo.trust_ids).push(trustId);
       }
     }
   }
@@ -96,9 +94,9 @@ const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
   }
 
   const trustIds: string[] = [];
-  for (const i in trustData) {
+  for (const trust of trustData) {
     trustCount++;
-    trustData[i].trust_id = trustCount.toString();
+    trust.trust_id = trustCount.toString();
     trustIds.push(trustCount.toString());
   }
   return trustIds;

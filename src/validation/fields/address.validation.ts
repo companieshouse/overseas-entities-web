@@ -195,3 +195,30 @@ export const usual_residential_service_address_beneficial_owner_validation = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value))
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value))
 ];
+
+export const identity_address_validations = [
+  body("identity_address_property_name_number")
+    .isLength({ max: 200 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
+  body("identity_address_line_1")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ADDRESS_LINE1)
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS),
+  body("identity_address_line_2")
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS),
+  body("identity_address_town")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.CITY_OR_TOWN)
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS),
+  body("identity_address_county")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTY)
+    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_COUNTY_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS),
+  body("identity_address_country")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.UK_COUNTRY),
+  body("identity_address_postcode")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.POSTCODE)
+    .isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
+];

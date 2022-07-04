@@ -1,0 +1,14 @@
+{{ govukInput({
+    errorMessage: errors.email if errors,
+    label: {
+      text: emailFieldText,
+      classes: "govuk-label--m",
+      isPageHeading: false
+    },
+    hint: {
+      text: "We'll use this if we need more information about the identity checks"
+    },
+    id: "email",
+    name: "email",
+    value: email
+}) }}

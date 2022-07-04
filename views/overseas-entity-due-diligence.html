@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Tell us about the UK-regulated agent that carried out identity checks - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out identity checks</h1>
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+
+        {% include "includes/inputs/date/identity-date-input.html" %}
+
+        {% set nameFieldText = "What is their name?" %}
+        {% set nameFieldTextHint = "Enter the company name, or the name of the person if they are self-employed" %}
+        {% include "includes/inputs/fields/identity-name-input.html" %}
+
+        {% include "includes/inputs/address/identity-address-input.html" %}
+
+        {% set emailFieldText = "What is their email address?" %}
+        {% include "includes/inputs/fields/email-input.html" %}
+
+        {% include "includes/inputs/fields/supervisory-name-input.html" %}
+        {% include "includes/inputs/fields/aml-number-input.html" %}
+        {% include "includes/inputs/fields/partner-name-input.html" %}
+
+        {% set headerBlock = '<h2 class="govuk-heading-m">Information shown on the public register</h2>' %}
+        {% set paragraphOne = '<p>The email address will not be shown.</p>' %}
+        {% set paragraphTwo = '<p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>' %}
+        {% include "includes/inset-text.html" %}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

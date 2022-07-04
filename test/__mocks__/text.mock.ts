@@ -4,6 +4,8 @@ export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of UK proper
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
 export const WHO_IS_MAKING_FILING_PAGE_TITLE = "Who is completing this registration?";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE = "Tell us about the UK-regulated agent that carried out identity checks";
+export const DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that identity checks have been completed";
 export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government or public authority";
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
@@ -55,3 +57,7 @@ export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
 export const RADIO_BUTTON_SOMEONE_ELSE_SELECTED = "value=\"someone_else\" checked";
 export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
+export const DUE_DILIGENCE_NAME_TEXT = "What is the agent’s name?";
+export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address, agent assurance code and date the identity checks were completed will not be shown.";

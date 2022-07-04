@@ -13,6 +13,7 @@ import { AddressKeys, HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInK
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
+import { getEntityBackLink } from "../utils/navigation";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,7 +26,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const serviceAddress = (entity) ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
 
     return res.render(config.ENTITY_PAGE, {
-      backLinkUrl: config.WHO_IS_MAKING_FILING_URL,
+      backLinkUrl: getEntityBackLink(appData),
       templateName: config.ENTITY_PAGE,
       ...entity,
       ...principalAddress,

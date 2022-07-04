@@ -12,6 +12,11 @@ export enum ErrorMessages {
   ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
   OCCUPATION = "Enter an occupation",
+  DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
+  OE_DUE_DILIGENCE_NAME = "Enter the name of the person or company that carried out identity checks",
+  AGENT_CODE = "Enter the agent assurance code",
+  PARTNER_NAME = "Enter the name of the person with overall responsibility for identity checks",
+  SUPERVISORY_NAME = "Enter the name of the supervisory body",
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",
@@ -19,7 +24,10 @@ export enum ErrorMessages {
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",
   ADDRESS_LINE1 = "Enter an address",
   CITY_OR_TOWN = "Enter a city or town",
+  COUNTY = "Enter a county",
   COUNTRY = "Select a country from the list",
+  UK_COUNTRY = "Select a country",
+  POSTCODE = "Enter a postcode",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",
@@ -44,6 +52,7 @@ export enum ErrorMessages {
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
+  CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",

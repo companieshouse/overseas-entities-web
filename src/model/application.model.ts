@@ -8,13 +8,17 @@ import {
   beneficialOwnerStatementType,
   beneficialOwnerIndividualType,
   managingOfficerCorporateType,
-  managingOfficerType
+  managingOfficerType,
+  dueDiligenceType,
+  overseasEntityDueDiligenceType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
 
 export interface ApplicationData {
     presenter?: presenterType.Presenter;
+    due_diligence?: dueDiligenceType.DueDiligence;
+    overseas_entity_due_diligence?: overseasEntityDueDiligenceType.OverseasEntityDueDiligence;
     entity?: entityType.Entity;
     beneficial_owners_statement?: beneficialOwnerStatementType.BeneficialOwnersStatementType;
     beneficial_owners_individual?: beneficialOwnerIndividualType.BeneficialOwnerIndividual[];
@@ -40,6 +44,8 @@ export const ApplicationDataArrayType = [
 
 export type ApplicationDataType =
   | presenterType.Presenter
+  | dueDiligenceType.DueDiligence
+  | overseasEntityDueDiligenceType.OverseasEntityDueDiligence
   | entityType.Entity
   | beneficialOwnerOtherType.BeneficialOwnerOther
   | beneficialOwnerIndividualType.BeneficialOwnerIndividual

@@ -1,4 +1,5 @@
-import { ADDRESS, MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./session.mock";
+import { MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./session.mock";
+import { ADDRESS } from "./fields/address.mock";
 
 const NAME_SPECIAL_CHARS = "Kurt Gödel";
 

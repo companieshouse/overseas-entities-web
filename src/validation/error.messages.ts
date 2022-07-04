@@ -27,9 +27,11 @@ export enum ErrorMessages {
   DAY_OF_BIRTH = "Date of birth must include a day",
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",
-  DATE_OF_BIRTH = "Enter the individual person’s date of birth",
-  MANAGING_OFFICER_START_DATE = "Enter the date it became a managing officer for the overseas entity",
-  INVALID_DATE = "Date they became managing officer must be a real date",
+  ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
+  ENTER_START_DATE = "Enter the date",
+  INVALID_START_DATE = "Date entered must be a real date",
+  INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
+  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",
@@ -41,6 +43,7 @@ export enum ErrorMessages {
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
+  SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
@@ -82,7 +85,6 @@ export enum ErrorMessages {
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  MO_START_DATE_NOT_IN_PAST = "The date it became a managing officer must be in the past",
   // Empty fields
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box."
 }

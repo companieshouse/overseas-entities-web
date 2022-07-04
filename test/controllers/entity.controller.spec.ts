@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { ENTITY_PAGE, ENTITY_URL, PRESENTER_URL } from "../../src/config";
+import { ENTITY_PAGE, ENTITY_URL, WHO_IS_MAKING_FILING_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -57,6 +57,7 @@ describe("ENTITY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL); // Back link
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
@@ -137,7 +138,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(PRESENTER_URL);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 
     test("renders the current page with public register error messages", async () => {
@@ -151,7 +152,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(PRESENTER_URL);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 
     test("renders the current page with MAX error messages", async () => {

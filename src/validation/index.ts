@@ -10,6 +10,7 @@ import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
 import { trustInformation } from "./trust.information.validation";
+import { whoIsMakingFiling } from "./who.is.making.filing.validation";
 
 export const validator = {
   soldLandFilter,
@@ -23,5 +24,6 @@ export const validator = {
   beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerGov,
-  trustInformation
+  trustInformation,
+  whoIsMakingFiling
 };

@@ -4,6 +4,7 @@ import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
+import { IsSecureRegisterKey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.SECURE_REGISTER_FILTER_PAGE, {
       backLinkUrl: config.SOLD_LAND_FILTER_URL,
       templateName: config.SECURE_REGISTER_FILTER_PAGE,
-      is_secure_register: appData.is_secure_register
+      [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -24,9 +25,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SECURE_REGISTER_FILTER_PAGE}`);
-    const isSecureRegister = req.body.is_secure_register;
+    const isSecureRegister = req.body[IsSecureRegisterKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), is_secure_register: isSecureRegister });
+    setExtraData(req.session, { ...getApplicationData(req.session), [IsSecureRegisterKey]: isSecureRegister });
 
     if (isSecureRegister === '1') {
       return res.redirect(config.USE_PAPER_URL);

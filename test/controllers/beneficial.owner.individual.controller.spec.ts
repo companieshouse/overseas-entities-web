@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -46,6 +47,10 @@ import {
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -57,7 +62,6 @@ const mockRemoveFromApplicationData = removeFromApplicationData as unknown as je
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
-
 
 describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
@@ -121,7 +125,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`redirect to the ${BENEFICIAL_OWNER_TYPE_URL} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(302);
@@ -223,7 +226,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      mockSetApplicationData.mockImplementation( () => setApplicationData);
       await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith({}, ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];

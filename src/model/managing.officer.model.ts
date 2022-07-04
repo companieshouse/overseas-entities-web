@@ -35,3 +35,5 @@ export interface ManagingOfficerIndividual {
   occupation?: string
   role_and_responsibilities?: string
 }
+
+export const FormerNamesKey = "former_names";

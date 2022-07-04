@@ -2,7 +2,15 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
-import { AddressKeys, BeneficialOwnerNoc, HasSamePrincipalAddressKey, ID, InputDateKeys, IsOnSanctionsListKey, NonLegalFirmNoc } from "../model/data.types.model";
+import {
+  AddressKeys,
+  BeneficialOwnerNoc,
+  HasSamePrincipalAddressKey,
+  ID,
+  InputDateKeys,
+  IsOnSanctionsListKey,
+  NonLegalFirmNoc
+} from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
@@ -98,7 +106,10 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerGovKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
-  data[ServiceAddressKey] = mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys);
+  data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
+  data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
+    ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    :  {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   // It needs concatenations because if in the check boxes we select only one option

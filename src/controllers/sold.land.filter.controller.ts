@@ -4,6 +4,7 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
+import { HasSoldLandKey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -13,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
       backLinkUrl: config.LANDING_URL,
       templateName: config.SOLD_LAND_FILTER_PAGE,
-      has_sold_land: appData.has_sold_land
+      [HasSoldLandKey]: appData[HasSoldLandKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -24,9 +25,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SOLD_LAND_FILTER_PAGE}`);
-    const hasSoldLand = req.body.has_sold_land;
+    const hasSoldLand = req.body[HasSoldLandKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), has_sold_land: hasSoldLand });
+    setExtraData(req.session, { ...getApplicationData(req.session), [HasSoldLandKey]: hasSoldLand });
 
     if (hasSoldLand === '1') {
       return res.redirect(config.CANNOT_USE_URL);

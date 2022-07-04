@@ -1,25 +1,48 @@
-import {
-  HasSamePrincipalAddressKey,
-  IsOnRegisterInCountryFormedInKey,
-} from "../../src/model/data.types.model";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/logger");
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
+import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import { Settings as luxonSettings } from "luxon";
 import app from "../../src/app";
 
-import { MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, MO_CORP_ID, MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS, REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY } from "../__mocks__/session.mock";
+import {
+  AddressKeys,
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey,
+} from "../../src/model/data.types.model";
+
+import {
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
+  MO_CORP_ID,
+  MO_CORP_ID_URL, REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION,
+  REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY
+} from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, MANAGING_OFFICER_CORPORATE_URL, REMOVE } from "../../src/config";
+import {
+  BENEFICIAL_OWNER_TYPE_URL,
+  MANAGING_OFFICER_CORPORATE_PAGE,
+  MANAGING_OFFICER_CORPORATE_URL,
+  REMOVE } from "../../src/config";
 import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
-import { getFromApplicationData, prepareData, removeFromApplicationData, setApplicationData } from "../../src/utils/application.data";
-import { managingOfficerCorporateType } from "../../src/model";
+import {
+  getFromApplicationData,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from "../../src/utils/application.data";
+import { ApplicationDataType, managingOfficerCorporateType } from "../../src/model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 import { ErrorMessages } from "../../src/validation/error.messages";
 import {
@@ -29,6 +52,10 @@ import {
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
 import { DateTime, Duration } from "luxon";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -38,8 +65,10 @@ const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const today = "2022-01-02";
+const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("MANAGING_OFFICER CORPORATE controller", () => {
 
@@ -47,6 +76,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
     luxonSettings.now = () => new Date(today).valueOf();
+    mockMapFieldsToDataObject.mockReset();
+    mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
   });
 
   describe("GET tests", () => {
@@ -151,6 +182,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
@@ -187,6 +219,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ROLE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);
@@ -285,6 +318,111 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MO_START_DATE_NOT_IN_PAST);
     });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when date is outside valid numbers`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "31";
+      managingOfficer["start_date-month"] = "06";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is outside valid numbers`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "30";
+      managingOfficer["start_date-month"] = "13";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when day is zero`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "0";
+      managingOfficer["start_date-month"] = "13";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when month is zero`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "30";
+      managingOfficer["start_date-month"] = "0";
+      managingOfficer["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_DATE error when invalid characters are used`, async () => {
+      const managingOfficer = REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION;
+      managingOfficer["start_date-day"] =  "a";
+      managingOfficer["start_date-month"] = "b";
+      managingOfficer["start_date-year"] = "c";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -323,6 +461,46 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+    });
+
+    test(`Public register data from the ${MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
     });
   });
 

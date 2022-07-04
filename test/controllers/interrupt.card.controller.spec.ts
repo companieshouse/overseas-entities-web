@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { expect, jest, test, describe } from "@jest/globals";
@@ -10,6 +11,10 @@ import { INTERRUPT_CARD_PAGE, INTERRUPT_CARD_URL } from "../../src/config";
 import { INTERRUPT_CARD_PAGE_TITLE } from "../__mocks__/text.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
+
+const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
+mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

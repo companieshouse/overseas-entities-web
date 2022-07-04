@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
 import request from "supertest";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -13,6 +14,10 @@ import { CONFIRMATION_PAGE_TITLE, CONFIRMATION_NUMBER_OF_DAYS } from "../__mocks
 import { deleteApplicationData, getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK, getSessionRequestWithExtraData, TRANSACTION_ID } from "../__mocks__/session.mock";
 import { get } from "../../src/controllers/confirmation.controller";
+import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+
+const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
+mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

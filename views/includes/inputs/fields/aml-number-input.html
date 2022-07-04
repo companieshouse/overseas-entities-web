@@ -1,0 +1,12 @@
+{{ govukInput({
+  errorMessage: errors.aml_number if errors,
+  label: {
+    text: "What is the Anti-Money Laundering (AML) registration number (if applicable)?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  classes: "govuk-!-width-one-half",
+  id: "aml_number",
+  name: "aml_number",
+  value: aml_number
+}) }}

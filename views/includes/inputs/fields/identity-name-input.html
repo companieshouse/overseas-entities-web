@@ -1,0 +1,14 @@
+{{ govukInput({
+  errorMessage: errors.name if errors,
+  label: {
+    text: nameFieldText,
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  hint: {
+    text: nameFieldTextHint
+  },
+  id: "name",
+  name: "name",
+  value: name
+}) }}

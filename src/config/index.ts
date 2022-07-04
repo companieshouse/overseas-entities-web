@@ -35,6 +35,7 @@ export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
 export const CANNOT_USE_PAGE = "cannot-use";
 export const CHECK_YOUR_ANSWERS_PAGE = "check-your-answers";
 export const CONFIRMATION_PAGE = "confirmation";
+export const DUE_DILIGENCE_PAGE = "due-diligence";
 export const ENTITY_PAGE = "entity";
 export const ERROR_PAGE = "error-page";
 export const HEALTHCHECK_PAGE = "healthcheck";
@@ -42,6 +43,7 @@ export const LANDING_PAGE = "landing";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
 export const NOT_FOUND_PAGE = "page-not-found";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE = "overseas-entity-due-diligence";
 export const PRESENTER_PAGE = "presenter";
 export const SECURE_REGISTER_FILTER_PAGE = "secure-register-filter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
@@ -73,6 +75,8 @@ export const SECURE_REGISTER_FILTER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SECU
 export const TRUST_INFO_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INFO_PAGE;
 export const USE_PAPER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
 export const WHO_IS_MAKING_FILING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + WHO_IS_MAKING_FILING_PAGE;
+export const DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + DUE_DILIGENCE_PAGE;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE;
 export const REMOVE = "/remove";
 
 // URL PARAMS

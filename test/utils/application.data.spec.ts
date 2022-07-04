@@ -1,5 +1,6 @@
 import { Request } from "express";
-import { describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
+
 import {
   getApplicationData,
   setApplicationData,
@@ -11,7 +12,6 @@ import {
   getFromApplicationData
 } from "../../src/utils/application.data";
 import {
-  ADDRESS,
   BO_GOV_ID,
   SERVICE_ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
@@ -20,6 +20,7 @@ import {
   getSessionRequestWithExtraData,
   getSessionRequestWithPermission,
 } from "../__mocks__/session.mock";
+import { ADDRESS } from "../__mocks__/fields/address.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';

@@ -1,0 +1,14 @@
+{{ govukInput({
+  errorMessage: errors.partner_name if errors,
+  label: {
+    text: "What is the name of the person with overall responsibility for identity checks?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  hint: {
+    text: "For example, tell us the name of the Head of Compliance"
+  },
+  id: "partner_name",
+  name: "partner_name",
+  value: partner_name
+}) }}

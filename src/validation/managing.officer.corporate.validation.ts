@@ -2,7 +2,6 @@ import { body } from "express-validator";
 
 import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
-import { start_date_validations } from "./fields/date.validation";
 import { public_register_validations } from "./fields/public-register.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
@@ -32,7 +31,6 @@ export const managingOfficerCorporate = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN),
 
   ...public_register_validations,
-  ...start_date_validations,
 
   body("role_and_responsibilities")
     .not().isEmpty().withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE)

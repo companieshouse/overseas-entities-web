@@ -143,7 +143,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`POST empty object and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY );
 
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)

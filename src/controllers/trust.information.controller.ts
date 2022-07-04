@@ -31,15 +31,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     // If only one BO is selected, data is a string.
     // If multiple selected, data is an array.
-    const beneficialOwnerIds: string[] = [];
-    if (typeof req.body.beneficialOwners === 'string') {
-      beneficialOwnerIds.push(req.body.beneficialOwners);
+    const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
 
-    } else {
-      for (const bo in req.body.beneficialOwners) {
-        beneficialOwnerIds.push(req.body.beneficialOwners[bo]);
-      }
-    }
 
     const trustData: trustType.Trust[] = JSON.parse(req.body.trusts);
     const trustsReq: trustType.Trusts = {

@@ -488,7 +488,6 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   public_register_name: "register",
   registration_number: "123456789",
-  start_date: { day: "1", month: "1", year: "2011" },
   role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
@@ -502,7 +501,6 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {
   is_on_register_in_country_formed_in: "",
   public_register_name: "",
   registration_number: "",
-  start_date: { 'start_date-day': "", 'start_date-month': "", 'start_date-year': "" },
   role_and_responsibilities: "",
   usual_residential_address: {},
   service_address: {}
@@ -522,21 +520,6 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...START_DATE
-};
-
-export const REQ_BODY_MANAGING_OFFICER_CORPORATE_FOR_DATE_VALIDATION = {
-  name: "Joe Bloggs Ltd",
-  is_service_address_same_as_principal_address: "0",
-  legal_form: "legalForm",
-  law_governed: "LegAuth",
-  is_on_register_in_country_formed_in: "1",
-  public_register_name: "register",
-  registration_number: "123456789",
-  role_and_responsibilities: "role and responsibilities text",
-  contact_full_name: "contact name",
-  contact_email: "contact email",
-  ...PRINCIPAL_ADDRESS_MOCK,
-  ...SERVICE_ADDRESS_MOCK
 };
 
 export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {

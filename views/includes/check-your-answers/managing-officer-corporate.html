@@ -1,7 +1,3 @@
-{% import "includes/date-macros.html" as dateMacros %}
-
-{% set mocStartDate = dateMacros.formatDate(moc.start_date["day"], moc.start_date["month"], moc.start_date["year"]) %}
-
 {% set mocFormattedPrincipalAddressHtml %}
   {% set address = moc.principal_address %}
   {% include "includes/display_address.html" %}
@@ -74,14 +70,6 @@
         },
         value: {
           html: mocFormattedPublicRegister
-        }
-      },
-      {
-        key: {
-          text: "Date it became a beneficial owner"
-        },
-        value: {
-          text: mocStartDate
         }
       },
       {

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, trustType } from "../model";
-import { getApplicationData, prepareData, setApplicationData, getFromApplicationDataIfPresent } from "../utils/application.data";
+import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "../utils/application.data";
 import { TrustKey, TrustKeys } from "../model/trust.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -42,7 +42,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
-
     const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
 
     for (const trust of data[TrustKey]) {
@@ -63,7 +62,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
 const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
   for (const beneficialOwnerId of beneficialOwnerIds) {
-    const individualBo = getFromApplicationDataIfPresent(req, BeneficialOwnerIndividualKey, beneficialOwnerId);
+    const individualBo = getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
     if (individualBo !== undefined) {
       for (const trustId of trustIds) {
         if (individualBo.trust_ids === undefined) {
@@ -72,7 +71,7 @@ const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[]
         (individualBo.trust_ids).push(trustId);
       }
     }
-    const corporateBo = getFromApplicationDataIfPresent(req, BeneficialOwnerOtherKey, beneficialOwnerId);
+    const corporateBo = getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
     if (corporateBo !== undefined) {
       for (const trustId of trustIds) {
         if (corporateBo.trust_ids === undefined) {

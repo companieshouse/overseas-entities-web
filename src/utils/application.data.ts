@@ -69,7 +69,7 @@ export const getFromApplicationData = (req: Request, key: string, id: string, er
   return appData[key][index];
 };
 
-const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, errorIfNotFound: boolean = true) => {
+const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, errorIfNotFound: boolean) => {
   if (id && appData && appData[key]) {
     return appData[key].findIndex(object => object[ID] === id);
   }

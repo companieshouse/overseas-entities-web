@@ -8,9 +8,9 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+import { getApplicationData, setApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
@@ -20,6 +20,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
@@ -51,6 +52,9 @@ describe("TRUST INFORMATION controller", () => {
     test(`redirects to the ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValueOnce(bo);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT);
 
       expect(resp.status).toEqual(302);
@@ -60,6 +64,10 @@ describe("TRUST INFORMATION controller", () => {
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
 
       expect(resp.status).toEqual(302);

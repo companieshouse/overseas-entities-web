@@ -27,6 +27,7 @@ import {
   Transactionkey,
   yesNoResponse
 } from "../../src/model/data.types.model";
+import { TrustKey, Trust } from "../../src/model/trust.model";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -631,6 +632,13 @@ export const TRUSTS_ADD_MORE = {
 const hasSoldLandKey = '0';
 const isSecureRegisterKey = '0';
 
+export const TRUST: Trust = {
+  trust_id: "",
+  trust_name: "",
+  creation_date: "",
+  unable_to_obtain_all_trust_info: false
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -644,7 +652,8 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
-  [IsSecureRegisterKey]: isSecureRegisterKey
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST]
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

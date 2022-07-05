@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { ENTITY_PAGE, ENTITY_URL, WHO_IS_MAKING_FILING_URL } from "../../src/config";
+import { DUE_DILIGENCE_URL, ENTITY_PAGE, ENTITY_URL, OVERSEAS_ENTITY_DUE_DILIGENCE_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -32,6 +32,7 @@ import {
   ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -50,14 +51,24 @@ describe("ENTITY controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the ${ENTITY_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null } );
+    test(`renders the ${ENTITY_PAGE} page with ${DUE_DILIGENCE_URL} back link`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT } );
       const resp = await request(app).get(ENTITY_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL); // Back link
+      expect(resp.text).toContain(DUE_DILIGENCE_URL);
+    });
+
+    test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
@@ -138,7 +149,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
     });
 
     test("renders the current page with public register error messages", async () => {
@@ -152,7 +163,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
-      expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
     });
 
     test("renders the current page with MAX error messages", async () => {

@@ -1,0 +1,14 @@
+{{ govukInput({
+  errorMessage: errors.supervisory_name if errors,
+  label: {
+    text: "What is the name of the supervisory body?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  hint: {
+   text: "For example, the Solicitors Regulation Authority"
+  },
+  id: "supervisory_name",
+  name: "supervisory_name",
+  value: supervisory_name
+}) }}

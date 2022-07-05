@@ -19,3 +19,5 @@ export * as healthcheck from "./healthcheck.controller";
 export * as cannotUse from "./cannot.use.controller";
 export * as usePaper from "./use.paper.contoller";
 export * as whoIsMakingFiling from "./who.is.making.filing.controller";
+export * as dueDiligence from "./due.diligence.controller";
+export * as overseasEntityDueDiligence from "./overseas.entity.due.diligence.controller";

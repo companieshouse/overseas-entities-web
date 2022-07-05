@@ -26,6 +26,8 @@ import {
   Transactionkey,
   yesNoResponse
 } from "../../src/model/data.types.model";
+import { ADDRESS } from "./fields/address.mock";
+import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
@@ -98,19 +100,6 @@ export function getSessionRequestWithExtraData(): Session {
   session.setExtraData(APPLICATION_DATA_KEY, APPLICATION_DATA_MOCK);
   return session;
 }
-
-const date_of_birth = { 'date_of_birth-day': "1",  "date_of_birth-month": "1", "date_of_birth-year": "2000" };
-const start_date = { 'start_date-day': "1", 'start_date-month': "1", 'start_date-year': "2022" };
-
-export const ADDRESS = {
-  property_name_number: "1",
-  line_1: "addressLine1",
-  line_2: "addressLine2",
-  town: "town",
-  county: "county",
-  country: "country",
-  postcode: "BY 2"
-};
 
 export const SERVICE_ADDRESS = {
   property_name_number: "service1",
@@ -200,11 +189,11 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   public_register_name: "ThisRegister",
   registration_number: "123456789",
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
-  start_date: { day: "1", month: "1", year: "2011" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 0,
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -233,13 +222,13 @@ export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   public_register_name: "ThisRegister",
   registration_number: "123456789",
   is_on_register_in_country_formed_in: "1",
-  start_date: { day: "1", month: "1", year: "2011" },
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: "0",
   ...PRINCIPAL_ADDRESS_MOCK,
-  ...SERVICE_ADDRESS_MOCK
+  ...SERVICE_ADDRESS_MOCK,
+  ...START_DATE
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
@@ -277,77 +266,99 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_on_sanctions_list: 1,
   is_service_address_same_as_usual_residential_address: 0,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REPLACE: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   first_name: "new name",
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   service_address: ADDRESS,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.No,
   service_address: ADDRESS,
-  ...start_date,
-  ...date_of_birth
+  ...START_DATE,
+  ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_IND_ID,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_IND_ID,
   is_service_address_same_as_principal_address: yesNoResponse.No,
-  service_address: ADDRESS
+  service_address: ADDRESS,
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_IND_ID,
   is_on_register_in_country_formed_in: yesNoResponse.Yes,
   public_register_name: "Reg",
-  registration_number: "123456"
+  registration_number: "123456",
+  ...START_DATE
+};
+
+export const BENEFICIAL_OWNER_OTHER_REPLACE: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_OTHER_ID,
+  name: "new name",
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_IND_ID,
   is_on_register_in_country_formed_in: yesNoResponse.No,
   public_register_name: "Reg",
-  registration_number: "123456"
+  registration_number: "123456",
+  ...START_DATE
+};
+
+export const BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...START_DATE
+};
+
+export const BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_IND_ID,
+  is_on_sanctions_list: 1,
+  is_service_address_same_as_principal_address: 0,
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
@@ -472,7 +483,7 @@ export const REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS = {
   role_and_responsibilities: "some role and responsibilities",
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
-  ...date_of_birth
+  ...DATE_OF_BIRTH
 };
 
 export const REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION = {
@@ -529,7 +540,8 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   contact_full_name: "contact name",
   contact_email: "contact email",
   ...PRINCIPAL_ADDRESS_MOCK,
-  ...SERVICE_ADDRESS_MOCK
+  ...SERVICE_ADDRESS_MOCK,
+  ...START_DATE
 };
 
 export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {

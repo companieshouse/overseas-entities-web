@@ -175,7 +175,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE);
     expect(resp.text).toContain("TestCorporation");
     expect(resp.text).toContain("TheLegalForm");
-    expect(resp.text).toContain("January");
+    // expect(resp.text).toContain("January");
     expect(resp.text).toContain("TheLaw");
     expect(resp.text).toContain("Russian");
     expect(resp.text).toContain("ThisRegister / 123456789");

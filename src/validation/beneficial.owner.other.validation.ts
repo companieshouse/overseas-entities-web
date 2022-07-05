@@ -4,6 +4,7 @@ import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { principal_address_beneficial_owner_validation, service_address_beneficial_owner_validation } from "./fields/address.validation";
 import { public_register_max_validations } from "./fields/public-register.validation";
+import { start_date_validations } from "./fields/date.validation";
 
 export const beneficialOwnerOther = [
   body("name")
@@ -20,5 +21,6 @@ export const beneficialOwnerOther = [
     .isLength({ max: 4000 }).withMessage(ErrorMessages.MAX_LAW_GOVERNED_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS),
 
-  ...public_register_max_validations
+  ...public_register_max_validations,
+  ...start_date_validations
 ];

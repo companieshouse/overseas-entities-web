@@ -20,6 +20,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
   try {
     const errorList = validationResult(req);
 
+    console.log(JSON.stringify(errorList, null, 2));
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
 

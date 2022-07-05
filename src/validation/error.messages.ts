@@ -56,6 +56,7 @@ export enum ErrorMessages {
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
+  SELECT_IF_ON_SANCTIONS_LIST = "Select yes if on the sanctions list",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",

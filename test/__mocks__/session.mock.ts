@@ -317,10 +317,10 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: be
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  is_service_address_same_as_principal_address: yesNoResponse.Yes,
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
   ...RESIDENTIAL_ADDRESS_MOCK,
-  ...START_DATE,
+  ...START_DATE
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {

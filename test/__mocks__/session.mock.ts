@@ -624,6 +624,7 @@ export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
 
 export const TRUSTS_ADD_MORE = {
   add: "add",
+  beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA
 };
 

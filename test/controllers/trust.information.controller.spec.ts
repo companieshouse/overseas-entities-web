@@ -8,7 +8,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, TRUST_DATA, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
@@ -49,7 +49,7 @@ describe("TRUST INFORMATION controller", () => {
 
   describe("POST tests", () => {
     test(`redirects to the ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT);
 
@@ -58,7 +58,7 @@ describe("TRUST INFORMATION controller", () => {
     });
 
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => TRUST_DATA );
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
 

@@ -62,23 +62,30 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
 const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
   for (const beneficialOwnerId of beneficialOwnerIds) {
-    const individualBo = getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
-    if (individualBo !== undefined) {
-      for (const trustId of trustIds) {
-        if (individualBo.trust_ids === undefined) {
-          individualBo.trust_ids = [];
-        }
-        (individualBo.trust_ids).push(trustId);
+    assignTrustIdsToIndividualBeneficialOwners(req, beneficialOwnerId, trustIds);
+    assignTrustIdsToCorporateBeneficialOwners(req, beneficialOwnerId, trustIds);
+  }
+};
+
+const assignTrustIdsToIndividualBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const individualBo = getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
+  if (individualBo !== undefined) {
+    for (const trustId of trustIds) {
+      if (individualBo.trust_ids === undefined) {
+        individualBo.trust_ids = [];
       }
+      (individualBo.trust_ids).push(trustId);
     }
-    const corporateBo = getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
-    if (corporateBo !== undefined) {
-      for (const trustId of trustIds) {
-        if (corporateBo.trust_ids === undefined) {
-          corporateBo.trust_ids = [];
-        }
-        (corporateBo.trust_ids).push(trustId);
+  }
+};
+const assignTrustIdsToCorporateBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const corporateBo = getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
+  if (corporateBo !== undefined) {
+    for (const trustId of trustIds) {
+      if (corporateBo.trust_ids === undefined) {
+        corporateBo.trust_ids = [];
       }
+      (corporateBo.trust_ids).push(trustId);
     }
   }
 };

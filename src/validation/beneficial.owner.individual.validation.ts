@@ -7,7 +7,8 @@ import {
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
-import { checkFieldIfCheckboxTicked, checkFieldIfRadioButtonSelected } from "./custom.validation";
+import { checkFieldIfRadioButtonSelected } from "./custom.validation";
+import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")
@@ -25,17 +26,9 @@ export const beneficialOwnerIndividual = [
   body("is_on_sanctions_list")
     .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.is_on_sanctions_list === '0', ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST, value) ),
 
-  body("beneficial_owner_nature_of_control_types")
-    .custom((value, { req }) => checkFieldIfCheckboxTicked(req.body.beneficial_owner_nature_of_control_types, ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST, value) ),
-
-  body("trustees_nature_of_control_types?")
-    .custom((value, { req }) => checkFieldIfCheckboxTicked(req.body.trustees_nature_of_control_types, ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST, value) ),
-
-  body("non_legal_firm_members_nature_of_control_types")
-    .custom((value, { req }) => checkFieldIfCheckboxTicked(req.body.non_legal_firm_members_nature_of_control_types, ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST, value) ),
-
   ...usual_residential_address_validations,
   ...usual_residential_service_address_validations,
   ...start_date_validations,
-  ...date_of_birth_validations
+  ...date_of_birth_validations,
+  ...nature_of_control_validations
 ];

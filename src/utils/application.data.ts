@@ -58,23 +58,22 @@ export const removeFromApplicationData = (req: Request, key: string, id: string)
   setExtraData(session, appData);
 };
 
-// gets data from ApplicationData. throwable boolean indicates whether an error should be thrown if no data found.
-export const getFromApplicationData = (req: Request, key: string, id: string, throwable: boolean = true): any => {
+// gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
+export const getFromApplicationData = (req: Request, key: string, id: string, errorIfNotFound: boolean = true): any => {
   const appData: ApplicationData = getApplicationData(req.session);
 
-  const index = getIndexInApplicationData(req, appData, key, id, throwable);
-  if (index === -1 && throwable) {
+  const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
+  if (index === -1 && errorIfNotFound) {
     throw createAndLogErrorRequest(req, `application.data getFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
   return appData[key][index];
 };
 
-
-const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, throwable: boolean = true) => {
+const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, errorIfNotFound: boolean = true) => {
   if (id && appData && appData[key]) {
     return appData[key].findIndex(object => object[ID] === id);
   }
-  if (throwable) {
+  if (errorIfNotFound) {
     throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
 };

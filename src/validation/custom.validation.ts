@@ -50,3 +50,16 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   return true;
 };
 
+export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) => {
+  console.log(JSON.stringify(fields, null, 2));
+  console.log(errMsg);
+
+  for (const field of fields) {
+    if (field) {
+      console.log("FIELD = " + field);
+      return true;
+    }
+  }
+  console.log(" *** HERE");
+  throw new Error(errMsg);
+};

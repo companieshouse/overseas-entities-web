@@ -266,6 +266,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
@@ -291,33 +292,35 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS:
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REPLACE: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   first_name: "new name",
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  service_address: ADDRESS,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...SERVICE_ADDRESS_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-  service_address: ADDRESS,
+  ...SERVICE_ADDRESS_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_IND_ID,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
-  service_address: ADDRESS,
-  ...START_DATE
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  ...START_DATE,
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {

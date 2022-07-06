@@ -36,6 +36,9 @@
 
         {% call govukFieldset({
           legend: {
+            errorMessage: errors.beneficial_owner_nature_of_control_types if errors,
+            idPrefix: "nature_of_control",
+            name: "nature_of_control",
             text: "What is their nature of control?",
             classes: "govuk-fieldset__legend--m",
             isPageHeading: false
@@ -66,7 +69,7 @@
 
         {% set removePathURL = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
         {% include "includes/remove-button.html" %}
-        
+
       </form>
     </div>
   </div>

@@ -322,39 +322,53 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: be
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
-  ...RESIDENTIAL_ADDRESS_MOCK,
-  ...START_DATE
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.No
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_IND_ID,
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   is_service_address_same_as_principal_address: yesNoResponse.No,
-  service_address: ADDRESS,
-  ...START_DATE
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.No
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_IND_ID,
-  is_on_register_in_country_formed_in: yesNoResponse.Yes,
-  public_register_name: "Reg",
-  registration_number: "123456",
-  ...START_DATE
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes
 };
 
 export const BENEFICIAL_OWNER_OTHER_REPLACE: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_OTHER_ID,
-  name: "new name",
-  ...START_DATE
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_IND_ID,
-  is_on_register_in_country_formed_in: yesNoResponse.No,
-  public_register_name: "Reg",
-  registration_number: "123456",
-  ...START_DATE
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.No
 };
 
 export const BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {

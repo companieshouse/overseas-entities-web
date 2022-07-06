@@ -3,16 +3,6 @@
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 
-
-export const checkFieldIfCheckboxTicked = (selectedArray, errMsg: string, value: string = "") => {
-  for (const selected of selectedArray) {
-    if (selected && value) {
-      return true;
-    }
-  }
-  throw new Error(errMsg);
-};
-
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
     throw new Error(errMsg);
@@ -58,5 +48,14 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   }
 
   return true;
+};
+
+export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) => {
+  for (const field of fields) {
+    if (field) {
+      return true;
+    }
+  }
+  throw new Error(errMsg);
 };
 

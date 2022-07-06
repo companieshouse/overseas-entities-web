@@ -97,5 +97,7 @@ export enum ErrorMessages {
   OCCUPATION_INVALID_CHARACTERS = "Occupation must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com"
+  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
+  // Nature of controls
+  BENEFICIAL_OWNER_OTHER_SELECT_NOC = "Select the other legal entity’s nature of control"
 }

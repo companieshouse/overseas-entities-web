@@ -38,8 +38,10 @@ export const beneficialOwnerOther = [
   ...start_date_validations,
 
   body("beneficial_owner_nature_of_control_types").custom((value, { req }) =>
-    checkAtLeastOneFieldHasValue("Select the other legal entity’s nature of control", req.body.beneficial_owner_nature_of_control_types, req.body.trustees_nature_of_control_types, req.body.non_legal_firm_members_nature_of_control_types)
-  ),
+    checkAtLeastOneFieldHasValue(ErrorMessages.BENEFICIAL_OWNER_OTHER_SELECT_NOC,
+                                 req.body.beneficial_owner_nature_of_control_types,
+                                 req.body.trustees_nature_of_control_types,
+                                 req.body.non_legal_firm_members_nature_of_control_types)),
 
   body("is_on_sanctions_list").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST)
 ];

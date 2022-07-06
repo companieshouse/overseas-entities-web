@@ -9,5 +9,6 @@ export * as beneficialOwnerIndividualType from "./beneficial.owner.individual.mo
 export * as beneficialOwnerGovType from "./beneficial.owner.gov.model";
 export * as managingOfficerCorporateType from "./managing.officer.corporate.model";
 export * as beneficialOwnerType from "./beneficial.owner.type.model";
+export * as trustType from "./trust.model";
 export * as dueDiligenceType from "./due.diligence.model";
 export * as overseasEntityDueDiligenceType from "./overseas.entity.due.diligence.model";

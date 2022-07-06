@@ -38,7 +38,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET BY ID ${MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, ManagingOfficerCorporateKey, id);
+    const data = getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};

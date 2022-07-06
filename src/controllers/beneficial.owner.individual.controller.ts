@@ -45,7 +45,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET BY ID ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id);
+    const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
 
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};

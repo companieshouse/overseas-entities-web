@@ -31,7 +31,7 @@
                 {% for boi in beneficial_owners_individual %}
                   {% if (boi.trustees_nature_of_control_types and boi.trustees_nature_of_control_types.length > 0) %}
                     <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" id="{{ boi.id }}" name="boCheckbox" type="checkbox" value="{{ boi.id }}">
+                      <input class="govuk-checkboxes__input" id="{{ boi.id }}" name="beneficialOwners" type="checkbox" value="{{ boi.id }}">
                       <label class="govuk-label govuk-checkboxes__label" for="{{ boi.id }}">
                         {{ boi.first_name }} {{ boi.last_name }}
                       </label>
@@ -43,7 +43,7 @@
                 {% for boc in beneficial_owners_corporate %}
                   {% if (boc.trustees_nature_of_control_types and boc.trustees_nature_of_control_types.length > 0) %}
                     <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" id="{{ boc.id }}" name="boCheckbox" type="checkbox" value="{{ boc.id }}">
+                      <input class="govuk-checkboxes__input" id="{{ boc.id }}" name="beneficialOwners" type="checkbox" value="{{ boc.id }}">
                       <label class="govuk-label govuk-checkboxes__label" for="{{ boc.id }}">
                         {{ boc.name }}
                       </label>
@@ -58,8 +58,8 @@
         <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>
         <div class="govuk-form-group">
           {{ govukTextarea({
-            name: "more-detail",
-            id: "more-detail",
+            name: "trusts",
+            id: "trusts",
             label: {
               text: "If you've already completed the trust Excel document, follow the instructions in the document to paste the data into the box:",
               classes: "govuk-body",
@@ -87,18 +87,20 @@
         {{ govukButton({
           text: "Add another trust",
           attributes: {
-            "id": "add"
-          },
-          href: "/register-an-overseas-entity/trust-information"
+            "id": "add",
+            "name": "add",
+            "value": "add"
+          }
         }) }}
 
         <p>
           {{ govukButton({
             text: "No more to add",
             attributes: {
-              "id": "submit"
+              "id": "submit",
+              "name": "submit",
+              "value": "submit"
             },
-            href: "/register-an-overseas-entity/check-your-answers",
             classes: "govuk-button--secondary"
           }) }}
         </p>

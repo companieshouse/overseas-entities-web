@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 
 
 export const checkFieldIfCheckboxTicked = (selected: boolean, errMsg: string, value: string = "") => {
-  if (!selected && !value ) {
+  if ( !selected && !value ) {
     throw new Error(errMsg);
   }
   return true;

@@ -261,7 +261,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 1
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
@@ -309,7 +309,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: b
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+  is_service_address_same_as_usual_residential_address: 0,
   ...SERVICE_ADDRESS_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,

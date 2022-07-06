@@ -7,7 +7,6 @@ import {
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
-import { checkFieldIfRadioButtonSelected } from "./custom.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 
 export const beneficialOwnerIndividual = [
@@ -24,7 +23,9 @@ export const beneficialOwnerIndividual = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
   body("is_on_sanctions_list")
-    .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.is_on_sanctions_list === '0', ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST, value) ),
+    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST),
+  body("is_service_address_same_as_usual_residential_address")
+    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
   ...usual_residential_address_validations,
   ...usual_residential_service_address_validations,

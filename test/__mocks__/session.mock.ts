@@ -15,7 +15,8 @@ import {
   entityType,
   managingOfficerCorporateType,
   managingOfficerType,
-  presenterType
+  presenterType,
+  trustType
 } from "../../src/model";
 import {
   HasSoldLandKey,
@@ -26,6 +27,7 @@ import {
   Transactionkey,
   yesNoResponse
 } from "../../src/model/data.types.model";
+import { TrustKey, Trust } from "../../src/model/trust.model";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
@@ -193,7 +195,8 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
-  ...START_DATE
+  ...START_DATE,
+  trust_ids: []
 };
 
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -211,7 +214,8 @@ export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherT
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   trustees_nature_of_control_types: [],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 0,
+  trust_ids: []
 };
 
 export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
@@ -261,7 +265,8 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 0,
+  trust_ids: []
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
@@ -374,7 +379,8 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerI
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 0
+  is_on_sanctions_list: 0,
+  trust_ids: []
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
@@ -618,8 +624,42 @@ export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   state: STATE_ID
 };
 
+export const TRUST_DATA: string = `[{
+  "trust_name": "",
+  "creation_date": "",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUSTS_SUBMIT = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
+  submit: "submit",
+  beneficialOwners: ["123", "456"],
+  [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_ADD_MORE = {
+  add: "add",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
 const hasSoldLandKey = '0';
 const isSecureRegisterKey = '0';
+
+export const TRUST: Trust = {
+  trust_id: "",
+  trust_name: "",
+  creation_date: "",
+  unable_to_obtain_all_trust_info: false
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -634,7 +674,8 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
-  [IsSecureRegisterKey]: isSecureRegisterKey
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST]
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

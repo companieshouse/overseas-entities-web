@@ -2,8 +2,11 @@ import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
-import { ApplicationData } from "../model";
-import { getApplicationData } from "../utils/application.data";
+import { ApplicationData, ApplicationDataType, trustType } from "../model";
+import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "../utils/application.data";
+import { TrustKey, TrustKeys } from "../model/trust.model";
+import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -22,8 +25,85 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response) => {
-  logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
+export const post = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
-  return res.redirect("TODO");
+    // If only one BO is selected, data is a string.
+    // If multiple selected, data is an array.
+    const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
+
+    const trustData: trustType.Trust[] = JSON.parse(req.body.trusts);
+    const trustsReq: trustType.Trusts = {
+      trusts: trustData
+    };
+
+    const trustIds = generateTrustIds(req, trustData);
+
+    assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
+
+    const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
+
+    for (const trust of data[TrustKey]) {
+      setApplicationData(req.session, trust, TrustKey);
+    }
+
+    if (req.body.add) {
+      return res.redirect(config.TRUST_INFO_URL);
+    }
+    if (req.body.submit) {
+      return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
+    }
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
+};
+
+const assignTrustIdsToBeneficialOwners = (req: any, beneficialOwnerIds: string[], trustIds: string[]) => {
+  for (const beneficialOwnerId of beneficialOwnerIds) {
+    assignTrustIdsToIndividualBeneficialOwners(req, beneficialOwnerId, trustIds);
+    assignTrustIdsToCorporateBeneficialOwners(req, beneficialOwnerId, trustIds);
+  }
+};
+
+const assignTrustIdsToIndividualBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const individualBo = getFromApplicationData(req, BeneficialOwnerIndividualKey, beneficialOwnerId, false);
+  if (individualBo !== undefined) {
+    for (const trustId of trustIds) {
+      if (individualBo.trust_ids === undefined) {
+        individualBo.trust_ids = [];
+      }
+      (individualBo.trust_ids).push(trustId);
+    }
+  }
+};
+const assignTrustIdsToCorporateBeneficialOwners = (req: any, beneficialOwnerId: string, trustIds: string[]) => {
+  const corporateBo = getFromApplicationData(req, BeneficialOwnerOtherKey, beneficialOwnerId, false);
+  if (corporateBo !== undefined) {
+    for (const trustId of trustIds) {
+      if (corporateBo.trust_ids === undefined) {
+        corporateBo.trust_ids = [];
+      }
+      (corporateBo.trust_ids).push(trustId);
+    }
+  }
+};
+
+// Generate a unique trust_id for each trust
+const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
+  let trustCount = 0;
+  const appData: ApplicationData = getApplicationData(req.session);
+  const trusts = appData[TrustKey];
+  if (trusts !== undefined) {
+    trustCount = trusts.length;
+  }
+
+  const trustIds: string[] = [];
+  for (const trust of trustData) {
+    trustCount++;
+    trust.trust_id = trustCount.toString();
+    trustIds.push(trustCount.toString());
+  }
+  return trustIds;
 };

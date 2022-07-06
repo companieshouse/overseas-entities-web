@@ -32,7 +32,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET BY ID ${MANAGING_OFFICER_PAGE}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, ManagingOfficerKey, id);
+    const data = getFromApplicationData(req, ManagingOfficerKey, id, true);
 
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};

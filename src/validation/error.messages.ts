@@ -54,7 +54,7 @@ export enum ErrorMessages {
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   SELECT_IF_ON_SANCTIONS_LIST = "Select yes if on the sanctions list",
-  SELECT_NATURE_OF_CONTROL = "Select the individual person’s nature of control",
+  SELECT_NATURE_OF_CONTROL = "Select the nature of control",
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

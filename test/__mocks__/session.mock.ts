@@ -265,12 +265,13 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 0,
+  is_on_sanctions_list: 1,
   trust_ids: []
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
@@ -296,32 +297,34 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS:
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REPLACE: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   first_name: "new name",
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  service_address: ADDRESS,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  ...SERVICE_ADDRESS_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-  service_address: ADDRESS,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  is_service_address_same_as_usual_residential_address: 0,
+  ...SERVICE_ADDRESS_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
 };
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
-  id: BO_IND_ID,
+  ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
-  service_address: ADDRESS,
+  ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE
 };
 

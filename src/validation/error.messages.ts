@@ -53,7 +53,7 @@ export enum ErrorMessages {
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
-  SELECT_IF_ON_SANCTIONS_LIST = "Select yes if the individual person is on the sanctions list",
+  SELECT_IF_ON_SANCTIONS_LIST = "Select yes if on the sanctions list",
   SELECT_NATURE_OF_CONTROL = "Select the individual person’s nature of control",
 
 // MAX Lengths

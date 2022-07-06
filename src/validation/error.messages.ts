@@ -50,14 +50,16 @@ export enum ErrorMessages {
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the correspondence address the same as the principal or registered office address",
   SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the corporate managing officer’s correspondence address is the same as the principal or registered office address",
   SELECT_IF_BENEFICIAL_OWNER_OTHER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the other legal entity’s correspondence address is the same as its principal or registered office address",
-  SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the individual person’s correspondence address is the same as their home address",
+  SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the correspondence address is the same as their home address",
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   SELECT_IF_ON_SANCTIONS_LIST = "Select yes if on the sanctions list",
-  // MAX Lengths
+  SELECT_NATURE_OF_CONTROL = "Select the nature of control",
+
+// MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
   MAX_FORMER_NAME_LENGTH = "Former names must be 260 characters or less",
@@ -97,7 +99,5 @@ export enum ErrorMessages {
   OCCUPATION_INVALID_CHARACTERS = "Occupation must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  // Nature of controls
-  BENEFICIAL_OWNER_OTHER_SELECT_NOC = "Select the other legal entity’s nature of control"
+  EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com"
 }

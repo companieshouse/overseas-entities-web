@@ -58,4 +58,3 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   }
   throw new Error(errMsg);
 };
-

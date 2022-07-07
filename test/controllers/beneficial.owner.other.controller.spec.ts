@@ -16,6 +16,7 @@ import {
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY,
   BENEFICIAL_OWNER_OTHER_REPLACE,
+  BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS,
   BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_OTHER_ID,
   BO_OTHER_ID_URL,
@@ -74,7 +75,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -84,7 +85,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET BY ID tests", () => {
 
-    test("renders the page through GET", async () => {
+    test("Renders the page through GET", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
@@ -109,13 +110,11 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
   describe("POST tests", () => {
 
-    test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+    test(`Sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
-      mockPrepareData.mockImplementationOnce( () => {
-        return beneficialOwnerOtherMock;
-      });
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
-        .send(beneficialOwnerOtherMock);
+        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
@@ -133,18 +132,18 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () =>  { return BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY; });
+    test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY });
 
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY);
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY );
+      mockPrepareData.mockReturnValueOnce({ ...REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY });
 
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY);
@@ -153,16 +152,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("catch error when posting data", async () => {
+    test("Catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
-        .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK);
+        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with MAX error messages`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with MAX error messages`, async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -183,7 +182,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
     });
 
-    test("renders the current page with INVALID_CHARACTERS error message", async () => {
+    test("Renders the current page with INVALID_CHARACTERS error message", async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK);
@@ -206,7 +205,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
-    test("renders the current page with INVALID_CHARACTERS service address error message", async () => {
+    test("Renders the current page with INVALID_CHARACTERS service address error message", async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK);
@@ -224,16 +223,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
-      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      expect(mockMapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
@@ -242,16 +241,16 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
-      expect(data[PublicRegisterNameKey]).toEqual("Reg");
-      expect(data[RegistrationNumberKey]).toEqual("123456");
+      expect(data[PublicRegisterNameKey]).toEqual("ThisRegister");
+      expect(data[RegistrationNumberKey]).toEqual("123456789");
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -259,7 +258,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(data[RegistrationNumberKey]).toEqual("");
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is outside valid numbers`, async () => {
+    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is outside valid numbers`, async () => {
       const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
       beneficialOwnerOther["start_date-day"] =  "32";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -271,7 +270,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is outside valid numbers`, async () => {
+    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is outside valid numbers`, async () => {
       const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
       beneficialOwnerOther["start_date-day"] =  "30";
       beneficialOwnerOther["start_date-month"] = "13";
@@ -283,7 +282,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is zero`, async () => {
+    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is zero`, async () => {
       const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
       beneficialOwnerOther["start_date-day"] =  "0";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -295,7 +294,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is zero`, async () => {
+    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is zero`, async () => {
       const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
       beneficialOwnerOther["start_date-day"] =  "30";
       beneficialOwnerOther["start_date-month"] = "0";
@@ -306,11 +305,41 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
     });
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.BENEFICIAL_OWNER_OTHER_NAME);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
+    });
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with service address validation errors`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
+        .send(BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+    });
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+    test(`Redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
@@ -318,7 +347,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("catch error when updating data", async () => {
+    test("Catch error when updating data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
@@ -327,8 +356,8 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`replaces existing object on submit`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_REPLACE);
+    test(`Replaces existing object on submit`, async () => {
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_REPLACE });
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_REPLACE);
@@ -344,36 +373,36 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
-      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      expect(mockMapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when same address is set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES });
       await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
-      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      expect(mockMapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when is on register set to yes`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
-      expect(data[PublicRegisterNameKey]).toEqual("Reg");
-      expect(data[RegistrationNumberKey]).toEqual("123456");
+      expect(data[PublicRegisterNameKey]).toEqual("ThisRegister");
+      expect(data[RegistrationNumberKey]).toEqual("123456789");
     });
 
     test(`Public register data from the ${BENEFICIAL_OWNER_OTHER_PAGE} is empty when is on register set to no`, async () => {
-      mockPrepareData.mockImplementation( () => BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -383,15 +412,15 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+    test(`Redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test("catch error when removing data", async () => {
+    test("Catch error when removing data", async () => {
       mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
 
@@ -399,7 +428,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`removes the object from session`, async () => {
+    test(`Removes the object from session`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);

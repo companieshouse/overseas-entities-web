@@ -31,6 +31,7 @@ export const MANAGING_OFFICER_PAGE_HEADING = "Tell us about the individual perso
 export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
+export const IDENTITY_CHECKS = "Identity checks";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const CONFIRMATION_NUMBER_OF_DAYS = "within 2 working days";
 export const UNAUTHORISED = "Unauthorised";

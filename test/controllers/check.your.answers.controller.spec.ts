@@ -28,6 +28,7 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
   FOUND_REDIRECT_TO,
+  IDENTITY_CHECKS,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
   SERVICE_UNAVAILABLE,
   TRUST_INFORMATION_LINK,
@@ -93,6 +94,19 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
     expect(resp.text).toContain("Joe Bloggs");
     expect(resp.text).toContain("jbloggs@bloggs.co.ru");
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks`, async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(IDENTITY_CHECKS);
+    expect(resp.text).toContain("ABC Checking Ltd");
+    expect(resp.text).toContain("lorem@ipsum.com");
+    expect(resp.text).toContain("Super supervisors");
+    expect(resp.text).toContain("antimon123");
+    expect(resp.text).toContain("assure123");
+    expect(resp.text).toContain("Joe Checker");
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {

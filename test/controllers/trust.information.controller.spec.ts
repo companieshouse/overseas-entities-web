@@ -10,7 +10,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
-import { getApplicationData, setApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
+import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
@@ -21,7 +21,6 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
-const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
 describe("TRUST INFORMATION controller", () => {
@@ -72,14 +71,6 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
-    });
-
-    test("catch error when rendering the page", async () => {
-      mockSetApplicationData.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.TRUST_INFO_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

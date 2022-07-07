@@ -4,8 +4,8 @@ import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
-import { checkAtLeastOneFieldHasValue } from "./custom.validation";
 import { start_date_validations } from "./fields/date.validation";
+import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 
 export const beneficialOwnerOther = [
   body("name")
@@ -37,11 +37,7 @@ export const beneficialOwnerOther = [
 
   ...start_date_validations,
 
-  body("beneficial_owner_nature_of_control_types").custom((value, { req }) =>
-    checkAtLeastOneFieldHasValue(ErrorMessages.SELECT_NATURE_OF_CONTROL,
-                                 req.body.beneficial_owner_nature_of_control_types,
-                                 req.body.trustees_nature_of_control_types,
-                                 req.body.non_legal_firm_members_nature_of_control_types)),
+  ...nature_of_control_validations,
 
   body("is_on_sanctions_list").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST)
 ];

@@ -18,7 +18,7 @@ export enum ErrorMessages {
   PARTNER_NAME = "Enter the name of the person with overall responsibility for identity checks",
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
   BENEFICIAL_OWNER_OTHER_NAME="Enter the other legal entity’s name",
-  BO_GOV_NAME = "Enter the other legal entity’s name",
+  BO_GOV_NAME = "Enter the name of the government or public authority",
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",

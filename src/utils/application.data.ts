@@ -63,10 +63,16 @@ export const getFromApplicationData = (req: Request, key: string, id: string, er
   const appData: ApplicationData = getApplicationData(req.session);
 
   const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
-  if (index === -1 && errorIfNotFound) {
-    throw createAndLogErrorRequest(req, `application.data getFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
+  if (index === -1) {
+    if (errorIfNotFound) {
+      throw createAndLogErrorRequest(req, `application.data getFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
+    } else {
+      return undefined;
+    }
   }
-  return appData[key][index];
+  if (appData[key] !== undefined) {
+    return appData[key][index];
+  }
 };
 
 const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, errorIfNotFound: boolean) => {

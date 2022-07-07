@@ -49,7 +49,6 @@ export enum ErrorMessages {
   SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN = "Select yes if the other legal entity is already on a public register in the country it was formed in",
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the correspondence address the same as the principal or registered office address",
   SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the corporate managing officer’s correspondence address is the same as the principal or registered office address",
-  SELECT_IF_BENEFICIAL_OWNER_OTHER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the other legal entity’s correspondence address is the same as its principal or registered office address",
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the correspondence address is the same as their home address",
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",

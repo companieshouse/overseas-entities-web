@@ -16,6 +16,7 @@ import {
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BENEFICIAL_OWNER_OTHER_RADIO_BUTTONS_ONLY,
   BENEFICIAL_OWNER_OTHER_REPLACE,
+  BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS,
   BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_OTHER_ID,
   BO_OTHER_ID_URL,
@@ -303,6 +304,36 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+    });
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.BENEFICIAL_OWNER_OTHER_NAME);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
+      expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN);
+      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
+    });
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with service address validation errors`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
+        .send(BENEFICIAL_OWNER_OTHER_REQ_BODY_MOCK_WITH_MISSING_SERVICE_ADDRESS);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
     });
   });
 

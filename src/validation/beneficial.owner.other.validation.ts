@@ -16,7 +16,7 @@ export const beneficialOwnerOther = [
   ...principal_address_validations,
 
   body("is_service_address_same_as_principal_address")
-    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),
+    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),
 
   ...principal_service_address_validations,
 

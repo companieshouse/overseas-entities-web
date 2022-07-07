@@ -434,7 +434,7 @@ export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   is_service_address_same_as_principal_address: "1",
   legal_form: "LegalForm",
   law_governed: "a11",
-  start_date: { day: "12", month: "11", year: "1965" },
+  ...START_DATE,
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: "1",
@@ -452,6 +452,19 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
   start_date: { "start_date-day": "", "start_date-month": "", "start_date-year": "" },
   beneficial_owner_nature_of_control_types: "",
   non_legal_firm_members_nature_of_control_types: ""
+};
+
+export const REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION: beneficialOwnerGovType.BeneficialOwnerGov = {
+  id: BO_GOV_ID,
+  name: COMPANY_NAME,
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "LegalForm",
+  law_governed: "a11",
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: 1
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {

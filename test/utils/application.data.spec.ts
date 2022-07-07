@@ -148,17 +148,17 @@ describe("Application data utils", () => {
     expect(() => getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string)).toThrow(`${BeneficialOwnerGovKey}`);
   });
 
-  test("getFromApplicationData should return undefined if error boolean false", () => {
+  test("getFromApplicationData should return undefined if error boolean false and id not found", () => {
     const session = getSessionRequestWithExtraData();
     req.session = session;
     const bo: BeneficialOwnerGov =  getFromApplicationData(req, BeneficialOwnerGovKey, "no id", false);
     expect(bo).toBeUndefined;
-  })
+  });
 
-  test("getFromApplicationData should return undefined if error boolean false", () => {
+  test("getFromApplicationData should return undefined if error boolean false and id undefined", () => {
     const session = getSessionRequestWithPermission();
     req.session = session;
     const bo: BeneficialOwnerGov =  getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
     expect(bo).toBeUndefined;
-  })
+  });
 });

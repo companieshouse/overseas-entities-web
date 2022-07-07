@@ -1,18 +1,26 @@
 import { NextFunction, Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
+
 import { logger } from "../utils/logger";
 import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import {
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+} from "../utils/application.data";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 import {
   AddressKeys,
   HasSamePrincipalAddressKey,
   ID,
-  InputDateKeys,
-  IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey
+  IsOnRegisterInCountryFormedInKey,
+  PublicRegisterNameKey,
+  RegistrationNumberKey
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
-import { StartDateKey, StartDateKeys } from "../model/date.model";
-import { v4 as uuidv4 } from 'uuid';
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE } from "../config";
 
 
@@ -30,11 +38,10 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET BY ID ${MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, ManagingOfficerCorporateKey, id);
+    const data = getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     return res.render(MANAGING_OFFICER_CORPORATE_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
@@ -42,8 +49,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
       id,
       ...data,
       ...principalAddress,
-      ...serviceAddress,
-      [StartDateKey]: startDate
+      ...serviceAddress
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -108,7 +114,6 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     : {};
-  data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
   if (!data[IsOnRegisterInCountryFormedInKey]) {

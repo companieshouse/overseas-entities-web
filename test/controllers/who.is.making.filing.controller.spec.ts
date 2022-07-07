@@ -78,22 +78,23 @@ describe("Who is making filing controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect the ${config.ENTITY_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+    test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${config.ENTITY_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.ENTITY_URL);
+      expect(resp.header.location).toEqual(config.DUE_DILIGENCE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

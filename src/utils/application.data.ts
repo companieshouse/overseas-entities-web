@@ -50,7 +50,7 @@ export const removeFromApplicationData = (req: Request, key: string, id: string)
   const session = req.session;
   const appData: ApplicationData = getApplicationData(session);
 
-  const index = getIndexInApplicationData(req, appData, key, id);
+  const index = getIndexInApplicationData(req, appData, key, id, true);
   if (index === -1) {
     throw createAndLogErrorRequest(req, `application.data removeFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
@@ -58,32 +58,22 @@ export const removeFromApplicationData = (req: Request, key: string, id: string)
   setExtraData(session, appData);
 };
 
-export const getFromApplicationData = (req: Request, key: string, id: string): any => {
+// gets data from ApplicationData. errorIfNotFound boolean indicates whether an error should be thrown if no data found.
+export const getFromApplicationData = (req: Request, key: string, id: string, errorIfNotFound: boolean = true): any => {
   const appData: ApplicationData = getApplicationData(req.session);
 
-  const index = getIndexInApplicationData(req, appData, key, id);
-  if (index === -1) {
+  const index = getIndexInApplicationData(req, appData, key, id, errorIfNotFound);
+  if (index === -1 && errorIfNotFound) {
     throw createAndLogErrorRequest(req, `application.data getFromApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
   return appData[key][index];
 };
 
-export const getFromApplicationDataIfPresent = (req: Request, key: string, id: string): any => {
-  const appData: ApplicationData = getApplicationData(req.session);
-
-  const index = getIndexInApplicationDataIfPresent(req, appData, key, id);
-  return appData[key][index];
-};
-
-const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string) => {
+const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: string, id: string, errorIfNotFound: boolean) => {
   if (id && appData && appData[key]) {
     return appData[key].findIndex(object => object[ID] === id);
   }
-  throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
-};
-
-const getIndexInApplicationDataIfPresent = (req: Request, appData: ApplicationData, key: string, id: string) => {
-  if (id && appData && appData[key]) {
-    return appData[key].findIndex(object => object[ID] === id);
+  if (errorIfNotFound) {
+    throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
 };

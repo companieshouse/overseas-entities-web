@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block pageTitle %}
-  Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?
+  Do any beneficial owners or managing officers have their personal information protected at Companies House?
   - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
@@ -23,10 +23,13 @@
           name: "is_secure_register",
           fieldset: {
             legend: {
-              text: "Have any of the entity’s beneficial owners ever applied to protect personal information at Companies House?",
+              text: "Do any beneficial owners or managing officers have their personal information protected at Companies House?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
             }
+          },
+          hint: {
+            text: "This includes if they are waiting for the results of an application to protect their personal information."
           },
           items: [
             {
@@ -50,16 +53,16 @@
         <details class="govuk-details" data-module="govuk-details">
           <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-              What applying to protect means
+              What having personal information protected means
             </span>
           </summary>
           <div class="govuk-details__text">
-            <p class="govuk-body">Some people are eligible to <a href="https://www.gov.uk/guidance/applying-to-protect-your-personal-information-on-the-companies-house-register" class="govuk-link">apply to protect personal information at Companies House</a> if they meet certain criteria.</p>
-            <p class="govuk-body">You should only select ‘yes’ if any of the beneficial owners you’re registering have:</p>
+            <p class="govuk-body">Some people can <a href="https://www.gov.uk/guidance/applying-to-protect-your-personal-information-on-the-companies-house-register" class="govuk-link">apply to protect personal information from being shown on the Companies House public register</a> if they meet certain criteria. This process includes:</p>
             <ul class="govuk-list govuk-list--bullet">
-              <li>provided evidence that they are eligible to have their details protected </li>
-              <li>paid the £100 fee</li>
+              <li>providing evidence that they are eligible to have their details protected </li>
+              <li>paying a £100 fee</li>
             </ul>
+            <p class="govuk-body">You should only select ‘yes’ if any of the beneficial owners or managing officers have already done this.</p>
           </div>
         </details>
 

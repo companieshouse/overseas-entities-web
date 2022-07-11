@@ -20,7 +20,7 @@
         We have sent a confirmation email to <strong>{{ userEmail }}</strong> which contains your reference number.
       </p>
 
-      {% if who_is_registering == "someone_else" %}
+      {% if not isAgentRegistering %}
         <h2 class="govuk-heading-m">What you need to do now</h2>
         <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed identity checks. </p>
 
@@ -33,7 +33,7 @@
       <p class="govuk-body">We'll email you to let you know if your application to register an overseas entity has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
 
       <h3 class="govuk-heading-s">What happens if the application is accepted</h3>
-      <p class="govuk-body">We'll email the Overseas Entity ID to <strong>{{ userEmail }}</strong>. We'll send the notice of registration to <strong>{{ entity.email }}</strong>, which will also include the Overseas Entity ID. This will need to be provided to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK. </p>
+      <p class="govuk-body">We'll email the Overseas Entity ID to <strong>{{ userEmail }}</strong>. We'll send the notice of registration to <strong>{{ entityEmail }}</strong>, which will also include the Overseas Entity ID. This will need to be provided to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK. </p>
 
       <p class="govuk-body">The overseas entity and its beneficial owners will be added to the Register of Overseas Entities.</p>
 

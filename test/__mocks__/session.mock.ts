@@ -17,7 +17,8 @@ import {
   managingOfficerType,
   presenterType,
   trustType,
-  dueDiligenceType
+  dueDiligenceType,
+  overseasEntityDueDiligenceType
 } from "../../src/model";
 import {
   HasSoldLandKey,
@@ -29,10 +30,11 @@ import {
   yesNoResponse
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust } from "../../src/model/trust.model";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "./overseas.entity.due.diligence.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
-import { DueDiligence } from "../../src/model/due.diligence.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -667,15 +669,6 @@ export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   email: "user@domain.roe"
 };
 
-export const IDENTITY_CHECK_MOCK: DueDiligence = {
-  name: "ABC Checking Ltd",
-  email: "lorem@ipsum.com",
-  supervisory_name: "Super supervisors",
-  aml_number: "antimon123",
-  agent_code: "assure123",
-  partner_name: "Joe Checker"
-};
-
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
@@ -723,7 +716,8 @@ export const TRUST: Trust = {
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [dueDiligenceType.DueDiligenceKey]: IDENTITY_CHECK_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],

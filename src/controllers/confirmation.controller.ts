@@ -16,6 +16,7 @@ export const get = (req: Request, res: Response) => {
   deleteApplicationData(req.session);
 
   return res.render(CONFIRMATION_PAGE, {
+    ...appData,
     referenceNumber,
     userEmail: getLoggedInUserEmail(req.session),
     workingDays: 2,

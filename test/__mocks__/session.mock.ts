@@ -151,7 +151,7 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: 1,
   service_address: {},
-  email: "email",
+  email: "entity.email@test.com",
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",

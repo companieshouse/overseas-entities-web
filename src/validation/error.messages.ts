@@ -29,6 +29,7 @@ export enum ErrorMessages {
   COUNTRY = "Select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
+  TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box.",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",
@@ -98,6 +99,4 @@ export enum ErrorMessages {
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  // Empty fields
-  TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box."
 }

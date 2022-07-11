@@ -50,10 +50,11 @@ import { createOverseasEntity } from "../../src/service/overseas.entities.servic
 import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
-import { entityType } from "../../src/model";
+import { dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -113,7 +114,12 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - OE (Someone else) selected`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [dueDiligenceType.DueDiligenceKey]: {},
+      [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+      [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
+    });
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);

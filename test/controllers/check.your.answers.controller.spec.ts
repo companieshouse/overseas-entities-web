@@ -50,8 +50,11 @@ import { createOverseasEntity } from "../../src/service/overseas.entities.servic
 import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
-import { entityType } from "../../src/model";
+import { dueDiligenceType, entityType, overseasEntityDueDiligenceType } from "../../src/model";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -96,17 +99,36 @@ describe("GET tests", () => {
     expect(resp.text).toContain("jbloggs@bloggs.co.ru");
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(IDENTITY_CHECKS);
-    expect(resp.text).toContain("ABC Checking Ltd");
-    expect(resp.text).toContain("lorem@ipsum.com");
-    expect(resp.text).toContain("Super supervisors");
-    expect(resp.text).toContain("antimon123");
-    expect(resp.text).toContain("assure123");
-    expect(resp.text).toContain("Joe Checker");
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
+    expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - OE (Someone else) selected`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [dueDiligenceType.DueDiligenceKey]: {},
+      [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+      [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(IDENTITY_CHECKS);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.name);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.email);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.partner_name);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page (entity service address not same as principal address)`, async () => {

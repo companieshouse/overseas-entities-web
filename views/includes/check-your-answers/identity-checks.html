@@ -1,11 +1,26 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% if ( appData.due_diligence and appData.due_diligence | length ) %}
+  {% set dueDiligence = appData.due_diligence %}
+  {% set agentCode = {
+    key: {
+      text: "Agent assurance code"
+    },
+    value: {
+      text: appData.due_diligence.agent_code
+    }
+  } %}
+{% else %}
+  {% set dueDiligence = appData.overseas_entity_due_diligence %}
+  {% set agentCode = "" %}
+{% endif %}
+
 {% set formattedIdentityAddressHtml %}
-  {% set address = appData.due_diligence.identity_address %}
+  {% set address = dueDiligence.identity_address %}
   {% include "includes/display_address.html" %}
 {% endset %}
 
-{% set checkDate = dateMacros.formatDate(appData.due_diligence.identity_date["day"], appData.due_diligence.identity_date["month"], appData.due_diligence.identity_date["year"]) %}
+{% set checkDate = dateMacros.formatDate(dueDiligence.identity_date["day"], dueDiligence.identity_date["month"], dueDiligence.identity_date["year"]) %}
 
 <h3 class="govuk-heading-l">Identity checks</h3>
 
@@ -32,7 +47,7 @@
             text: "Name of agent"
           },
           value: {
-            text: appData.due_diligence.name
+            text: dueDiligence.name
         }
       },
       {
@@ -48,7 +63,7 @@
           text: "Email address"
         },
         value: {
-          text: appData.due_diligence.email
+          text: dueDiligence.email
         }
       },
       {
@@ -56,7 +71,7 @@
           text: "Name of supervisory body"
         },
         value: {
-          text: appData.due_diligence.supervisory_name
+          text: dueDiligence.supervisory_name
         }
       },
       {
@@ -64,23 +79,16 @@
           text: "Anti Money Laundering(AML) registration number"
         },
         value: {
-          text: appData.due_diligence.aml_number
+          text: dueDiligence.aml_number
         }
       },
-      {
-        key: {
-          text: "Agent assurance code"
-        },
-        value: {
-          text: appData.due_diligence.agent_code
-        }
-      },
+      agentCode,
       {
         key: {
           text: "Person responsible for overseeing identity checks"
         },
         value: {
-          text: appData.due_diligence.partner_name
+          text: dueDiligence.partner_name
         }
       }
     ]

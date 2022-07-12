@@ -189,6 +189,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
       expect(resp.text).toContain(ErrorMessages.OCCUPATION);
+      expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
     });
 

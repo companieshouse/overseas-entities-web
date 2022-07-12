@@ -86,3 +86,10 @@ interface TrustCorporate {
   identification_place_registered: string;
   identification_registration_number: string;
 }
+
+export interface BeneficialOwnerItem {
+  id: string
+  name: string
+  value: string
+  text: string
+}

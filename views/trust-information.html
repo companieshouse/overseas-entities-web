@@ -15,6 +15,8 @@
 
       <h1 class="govuk-heading-xl">Add trust information for the beneficial owners</h1>
 
+      {% include "includes/list/errors.html" %}
+
       <form class="form" method="post">
         <div class="govuk-form-group">
           <fieldset class="govuk-fieldset" aria-describedby="bo-hint">
@@ -58,6 +60,7 @@
         <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>
         <div class="govuk-form-group">
           {{ govukTextarea({
+            errorMessage: errors.trusts if errors,
             name: "trusts",
             id: "trusts",
             label: {
@@ -74,7 +77,7 @@
             </span>
           </summary>
           <div class="govuk-details__text" id="more-detail" value="data.['more-detail']">
-            <p class="govuk-body">Enter the trust information into the <a href="//{{CDN_HOST}}/static/services/overseas-entities/OverseasEntityTrustDataCapture.xlsm" class="govuk-link">Trust Excel document (52KB)</a>. Be aware that this service will time out if you do not use it for 60 minutes. Your answers will not be saved.</p>
+            <p class="govuk-body">Enter the trust information into the <a href="//{{CDN_HOST}}/static/services/overseas-entities/Companies%20House%20Trust%20Excel%20Document.xlsm" class="govuk-link">Trust Excel document (58KB)</a>. Be aware that this service will time out if you do not use it for 60 minutes. Your answers will not be saved.</p>
           </div>
         </details>
 

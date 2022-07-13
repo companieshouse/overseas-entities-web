@@ -702,6 +702,11 @@ export const TRUSTS_ADD_MORE = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
+export const TRUSTS_EMPTY_TRUST_DATA = {
+  add: "add",
+  beneficialOwners: "123",
+};
+
 const hasSoldLandKey = '0';
 const isSecureRegisterKey = '0';
 

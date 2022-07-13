@@ -9,6 +9,7 @@ import { managingOfficerCorporate } from "./managing.officer.corporate.validatio
 import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
+import { trustInformation } from "./trust.information.validation";
 import { whoIsMakingFiling } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
@@ -27,5 +28,6 @@ export const validator = {
   beneficialOwnerGov,
   whoIsMakingFiling,
   dueDiligence,
-  overseasEntityDueDiligence
+  overseasEntityDueDiligence,
+  trustInformation
 };

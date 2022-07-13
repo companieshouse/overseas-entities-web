@@ -213,7 +213,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
     });
 
-    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID_START_DATE error when date is outside valid numbers`, async () => {
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID_DATE error when date is outside valid numbers`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "31";
       beneficialOwnerGov["start_date-month"] = "06";
@@ -226,7 +226,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when month is outside valid numbers`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is outside valid numbers`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "30";
       beneficialOwnerGov["start_date-month"] = "13";
@@ -239,7 +239,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when day is zero`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when day is zero`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "0";
       beneficialOwnerGov["start_date-month"] = "12";
@@ -252,7 +252,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when month is zero`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is zero`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "30";
       beneficialOwnerGov["start_date-month"] = "0";
@@ -265,7 +265,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when invalid characters are used`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when invalid characters are used`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "a";
       beneficialOwnerGov["start_date-month"] = "b";
@@ -278,7 +278,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with START_DATE_NOT_IN_PAST error when start date is not in the past`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with DATE_NOT_IN_PAST error when start date is not in the past`, async () => {
       const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
       beneficialOwnerGov["start_date-day"] =  "10";
       beneficialOwnerGov["start_date-month"] = "10";

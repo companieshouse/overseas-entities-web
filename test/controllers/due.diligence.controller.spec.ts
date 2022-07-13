@@ -23,7 +23,7 @@ import {
   FOUND_REDIRECT_TO,
   DUE_DILIGENCE_PAGE_TITLE,
   DUE_DILIGENCE_NAME_TEXT,
-  DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER
+  DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";

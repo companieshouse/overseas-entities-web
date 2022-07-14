@@ -41,9 +41,11 @@ export enum ErrorMessages {
   YEAR_OF_BIRTH = "Date of birth must include a year",
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   ENTER_START_DATE = "Enter the date",
-  INVALID_START_DATE = "Date entered must be a real date",
+  ENTER_IDENTITY_DATE = "Enter an identity date",
+  INVALID_DATE = "Date entered must be a real date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
-  START_DATE_NOT_IN_PAST = "The date must be in the past",
+  DATE_NOT_IN_PAST = "The date must be in the past",
+  DATE_OVER_3_MONTHS = "The date the identity checks were completed must be in the past 3 months",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",

@@ -50,6 +50,16 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   return true;
 };
 
+export const checkDateIsThreeMonthsInPast = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+  const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
+  const now = DateTime.now();
+  const currentDate = DateTime.utc(now.year, now.month, now.day);
+  if (inputDate < currentDate.minus( { months: 3 })) {
+    throw new Error(errMsg);
+  }
+  return true;
+};
+
 export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) => {
   for (const field of fields) {
     if (field) {

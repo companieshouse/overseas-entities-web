@@ -223,7 +223,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when month is outside valid numbers`, async () => {
@@ -236,7 +236,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when day is zero`, async () => {
@@ -249,7 +249,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when month is zero`, async () => {
@@ -262,7 +262,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_START_DATE error when invalid characters are used`, async () => {
@@ -275,7 +275,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with START_DATE_NOT_IN_PAST error when start date is not in the past`, async () => {
@@ -288,7 +288,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.START_DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
     });
   });
 

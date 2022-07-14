@@ -247,6 +247,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with INVALID_CHARACTERS service address error messages`, async () => {

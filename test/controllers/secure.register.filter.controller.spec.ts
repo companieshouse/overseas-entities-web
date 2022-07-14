@@ -49,7 +49,6 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(config.LANDING_URL);
-      expect(resp.text).toContain(`£${config.PAYMENT_FEE}`);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
     });

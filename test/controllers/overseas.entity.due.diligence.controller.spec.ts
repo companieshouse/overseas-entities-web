@@ -36,7 +36,10 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
 } from "../__mocks__/overseas.entity.due.diligence.mock";
 import { DateTime } from "luxon";
-import { DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE } from "../__mocks__/due.diligence.mock";
+import {
+  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE
+} from "../__mocks__/due.diligence.mock";
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -92,7 +95,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
   describe("POST tests", () => {
 
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const twoMonthOldDate = getTwoMonthOldDate();
       dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
@@ -100,7 +103,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
-        .send(OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK);
+        .send(dueDiligenceMock);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
@@ -128,16 +131,22 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on POST method`, async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const twoMonthOldDate = getTwoMonthOldDate();
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
-        .send(OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK);
+        .send(dueDiligenceData);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with INVALID_DATE error when identity date day is outside valid numbers`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceMock["identity_date-day"] =  "32";
       dueDiligenceMock["identity_date-month"] = "11";
       dueDiligenceMock["identity_date-year"] = "2020";
@@ -150,7 +159,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with INVALID_DATE error when identity date month is outside valid numbers`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceMock["identity_date-day"] =  "11";
       dueDiligenceMock["identity_date-month"] = "32";
       dueDiligenceMock["identity_date-year"] = "2020";
@@ -164,7 +173,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date day is zero`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceMock["identity_date-day"] =  "0";
       dueDiligenceMock["identity_date-month"] = "11";
       dueDiligenceMock["identity_date-year"] = "2020";
@@ -176,7 +185,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date month is zero`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceMock["identity_date-day"] =  "30";
       dueDiligenceMock["identity_date-month"] = "0";
       dueDiligenceMock["identity_date-year"] = "2020";
@@ -188,7 +197,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with DATE_OVER_3_MONTHS_BEFORE error when identity date is before 3 months ago`, async () => {
-      const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const moreThanThreeMonthsAgo = DateTime.now().minus({ months: 3, days: 1 });
       dueDiligenceMock["identity_date-day"] =  moreThanThreeMonthsAgo.day.toString();
       dueDiligenceMock["identity_date-month"] = moreThanThreeMonthsAgo.month.toString();

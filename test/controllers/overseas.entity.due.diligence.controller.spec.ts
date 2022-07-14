@@ -1,5 +1,3 @@
-import { DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');

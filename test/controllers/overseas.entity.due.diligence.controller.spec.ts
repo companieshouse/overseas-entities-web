@@ -1,3 +1,5 @@
+import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -90,10 +92,10 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page`, async () => {
       const dueDiligenceMock = OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
-      const oneMonthAgo = DateTime.now().minus({ months: 1 });
-      dueDiligenceMock["identity_date-day"] =  oneMonthAgo.day.toString();
-      dueDiligenceMock["identity_date-month"] = oneMonthAgo.month.toString();
-      dueDiligenceMock["identity_date-year"] = oneMonthAgo.year.toString();
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
       mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)

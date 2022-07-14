@@ -31,7 +31,7 @@ export const identity_date_validations = [
   body("identity_date")
     .custom((value, { req }) => checkDate(ErrorMessages.ENTER_IDENTITY_DATE, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"]))
     .custom((value, { req }) =>  checkDateValueIsValid(ErrorMessages.INVALID_DATE, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"]))
-    .custom((value, { req }) => checkDateIsThreeMonthsInPast(ErrorMessages.DATE_OVER_3_MONTHS, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
+    .custom((value, { req }) => checkDateIsThreeMonthsInPast(ErrorMessages.DATE_OVER_3_MONTHS_BEFORE, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-day").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DAY),
   body("identity_date-month").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.MONTH),
   body("identity_date-year").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.YEAR),

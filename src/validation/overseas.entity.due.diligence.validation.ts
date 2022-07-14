@@ -3,8 +3,12 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { identity_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { identity_date_validations } from "./fields/date.validation";
 
 export const overseasEntityDueDiligence = [
+
+  ...identity_date_validations,
+
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.OE_DUE_DILIGENCE_NAME)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)

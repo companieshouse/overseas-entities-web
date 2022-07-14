@@ -4,7 +4,7 @@ import {
   IDENTITY_ADDRESS_REQ_BODY_EMPTY_MOCK,
   IDENTITY_ADDRESS_REQ_BODY_MOCK,
 } from "./fields/address.mock";
-import { DATE, EMPTY_DATE } from "./fields/date.mock";
+import { DATE, EMPTY_DATE, IDENTITY_DATE_REQ_BODY_MOCK } from "./fields/date.mock";
 
 export const DUE_DILIGENCE_OBJECT_MOCK: DueDiligence = {
   identity_date: DATE,
@@ -21,6 +21,7 @@ export const DUE_DILIGENCE_OBJECT_MOCK: DueDiligence = {
 export const DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK = {
   ...DUE_DILIGENCE_OBJECT_MOCK,
   ...IDENTITY_ADDRESS_REQ_BODY_MOCK,
+  ...IDENTITY_DATE_REQ_BODY_MOCK,
 };
 
 const DUE_DILIGENCE_EMPTY_OBJECT_MOCK: DueDiligence = {

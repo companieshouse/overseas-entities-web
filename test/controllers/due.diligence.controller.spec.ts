@@ -3,6 +3,7 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 
+import { DateTime } from "luxon";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -90,10 +91,15 @@ describe("DUE_DILIGENCE controller", () => {
   describe("POST tests", () => {
 
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${DUE_DILIGENCE_PAGE} page`, async () => {
-      mockPrepareData.mockReturnValueOnce( DUE_DILIGENCE_OBJECT_MOCK );
+      const dueDiligenceMock = DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const oneMonthAgo = DateTime.now().minus({ months: 1 });
+      dueDiligenceMock["identity_date-day"] =  oneMonthAgo.day.toString();
+      dueDiligenceMock["identity_date-month"] = oneMonthAgo.month.toString();
+      dueDiligenceMock["identity_date-year"] = oneMonthAgo.year.toString();
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
       const resp = await request(app)
         .post(DUE_DILIGENCE_URL)
-        .send(DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK);
+        .send(dueDiligenceMock);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
@@ -129,6 +135,47 @@ describe("DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the current page ${DUE_DILIGENCE_PAGE} with INVALID_DATE error when identity date day is outside valid numbers`, async () => {
+      const dueDiligenceMock = DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      dueDiligenceMock["identity_date-day"] =  "32";
+      dueDiligenceMock["identity_date-month"] = "11";
+      dueDiligenceMock["identity_date-year"] = "2020";
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_IDENTITY_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${DUE_DILIGENCE_PAGE} with INVALID_DATE error when identity date month is outside valid numbers`, async () => {
+      const dueDiligenceMock = DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      dueDiligenceMock["identity_date-day"] =  "11";
+      dueDiligenceMock["identity_date-month"] = "32";
+      dueDiligenceMock["identity_date-year"] = "2020";
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_IDENTITY_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the current page ${DUE_DILIGENCE_PAGE} with DATE_OVER_3_MONTHS_BEFORE error when identity date is before 3 months ago`, async () => {
+      const dueDiligenceMock = DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK;
+      const moreThanThreeMonthsAgo = DateTime.now().minus({ months: 3, days: 1 });
+      dueDiligenceMock["identity_date-day"] =  moreThanThreeMonthsAgo.day.toString();
+      dueDiligenceMock["identity_date-month"] = moreThanThreeMonthsAgo.month.toString();
+      dueDiligenceMock["identity_date-year"] = moreThanThreeMonthsAgo.year.toString();
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_IDENTITY_DATE);
+      expect(resp.text).toContain(ErrorMessages.DATE_OVER_3_MONTHS_BEFORE);
     });
   });
 });

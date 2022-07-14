@@ -42,8 +42,6 @@ export enum ErrorMessages {
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   ENTER_DATE = "Enter the date",
   INVALID_DATE = "Date entered must be a real date",
-  ENTER_START_DATE = "Enter the date",
-  ENTER_IDENTITY_DATE = "Enter an identity date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
   DATE_NOT_IN_PAST = "The date must be in the past",
   IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS = "The date the identity checks were completed must be in the past 3 months",

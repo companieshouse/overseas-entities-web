@@ -9,7 +9,6 @@ export const dueDiligence = [
 
   ...identity_check_date_validations,
 
-
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DUE_DILIGENCE_NAME)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)

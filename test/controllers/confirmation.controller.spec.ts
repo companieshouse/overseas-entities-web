@@ -10,7 +10,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { NextFunction, Request, Response } from "express";
 
 import app from "../../src/app";
-import { CONFIRMATION_URL } from "../../src/config";
+import { CONFIRMATION_URL, PAYMENT_FEE } from "../../src/config";
 import { CONFIRMATION_PAGE_TITLE, CONFIRMATION_NUMBER_OF_DAYS, CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW } from "../__mocks__/text.mock";
 import { deleteApplicationData, getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK, ENTITY_OBJECT_MOCK, getSessionRequestWithExtraData, TRANSACTION_ID, userMail } from "../__mocks__/session.mock";
@@ -53,6 +53,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(CONFIRMATION_NUMBER_OF_DAYS);
     expect(resp.text).toContain(CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW);
     expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
+    expect(resp.text).toContain(`£${PAYMENT_FEE}`);
     expect(resp.text).toContain(userMail);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });

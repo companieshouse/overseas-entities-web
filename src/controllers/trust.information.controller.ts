@@ -4,17 +4,17 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData, ApplicationDataType, trustType } from "../model";
 import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "../utils/application.data";
-import { TrustKey, TrustKeys, BeneficialOwnerItem } from "../model/trust.model";
+import { TrustKey, TrustKeys } from "../model/trust.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+import { getBeneficialOwnerList } from "../utils/trusts";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.TRUST_INFO_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    console.log("IN GETTTTTTT");
-    console.log(getBeneficialOwnerList(appData));
+
     return res.render(config.TRUST_INFO_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: config.TRUST_INFO_PAGE,
@@ -114,24 +114,4 @@ const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
     trustIds.push(trustCount.toString());
   }
   return trustIds;
-};
-
-const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
-  const bo_list: BeneficialOwnerItem[]  = [];
-
-  if (appData.beneficial_owners_individual) {
-    appData.beneficial_owners_individual.forEach( (boi) => {
-      const text: string = boi.first_name + " " + boi.last_name;
-      const b: BeneficialOwnerItem = { id: boi.id, name: "beneficialOwners", value: boi.id, text: text };
-      bo_list.push(b);
-    });
-  }
-  if (appData.beneficial_owners_corporate) {
-    appData.beneficial_owners_corporate.forEach( (boc) => {
-      const b: BeneficialOwnerItem = { id: boc.id, name: "beneficialOwners", value: boc.id, text: boc.name || "" };
-      bo_list.push(b);
-    });
-  }
-
-  return bo_list;
 };

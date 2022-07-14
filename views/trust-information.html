@@ -16,37 +16,26 @@
       <h1 class="govuk-heading-xl">Add trust information for the beneficial owners</h1>
 
       {% include "includes/list/errors.html" %}
-
       <form class="form" method="post">
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="bo-hint">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-              <h1 class="govuk-fieldset__heading">
-                Who is involved in this trust?
-              </h1>
-            </legend>
-            <div id="bo-hint" class="govuk-hint">
-              Select all that apply.
-            </div>
             {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
             {{ govukCheckboxes({
-              idPrefix: "nationality",
-              name: "nationality",
+              idPrefix: "beneficialOwners",
+              name: "beneficialOwners",
               fieldset: {
                 legend: {
-                  text: "What is your nationality?",
+                  text: "Who is involved in this trust?",
                   isPageHeading: true,
                   classes: "govuk-fieldset__legend--l"
                 }
               },
               hint: {
-                text: "If you have dual nationality, select all options that are relevant to you."
+                text: "Select all that apply."
               },
-              errorMessage: errors.trusts if errors,
+              errorMessage: errors.beneficialOwners if errors,
               items: beneficialOwners
             }) }}
-          </fieldset>
         </div>
 
         <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>

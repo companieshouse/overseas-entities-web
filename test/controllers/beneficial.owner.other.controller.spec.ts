@@ -267,7 +267,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is outside valid numbers`, async () => {
@@ -279,7 +279,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is zero`, async () => {
@@ -291,7 +291,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is zero`, async () => {
@@ -303,7 +303,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
         .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors`, async () => {
@@ -320,7 +320,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN);
-      expect(resp.text).toContain(ErrorMessages.INVALID_START_DATE);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
     });

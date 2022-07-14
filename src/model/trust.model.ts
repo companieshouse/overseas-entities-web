@@ -15,8 +15,10 @@ export interface Trusts {
 export interface Trust {
   trust_id: string;
   trust_name: string;
-  creation_date: string;
-  unable_to_obtain_all_trust_info: boolean;
+  creation_date_day: string;
+  creation_date_month: string;
+  creation_date_year: string;
+  unable_to_obtain_all_trust_info: string;
   INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
@@ -27,7 +29,9 @@ interface TrustIndividual {
   forename: string;
   other_forenames: string;
   surname: string;
-  date_of_birth: string;
+  date_of_birth_day: string;
+  date_of_birth_month: string;
+  date_of_birth_year: string;
   nationality: string;
   sa_address_line1: string;
   sa_address_line2: string;
@@ -47,21 +51,29 @@ interface TrustIndividual {
   ura_address_postal_code: string;
   ura_address_premises: string;
   ura_address_region: string;
-  date_became_interested_person: string;
+  date_became_interested_person_day: string;
+  date_became_interested_person_month: string;
+  date_became_interested_person_year: string;
 }
 
 interface TrustHistoricalBeneficialOwner {
   forename: string;
   other_forenames: string;
   surname: string;
-  ceased_date: string;
-  notified_date: string;
+  ceased_date_day: string;
+  ceased_date_month: string;
+  ceased_date_year: string;
+  notified_date_day: string;
+  notified_date_month: string;
+  notified_date_year: string;
 }
 
 interface TrustCorporate {
   type: string;
   name: string;
-  date_became_interested_person: string;
+  date_became_interested_person_day: string;
+  date_became_interested_person_month: string;
+  date_became_interested_person_year: string;
   ro_address_line1: string;
   ro_address_line2: string;
   ro_address_care_of: string;

@@ -713,8 +713,10 @@ const isSecureRegisterKey = '0';
 export const TRUST: Trust = {
   trust_id: "",
   trust_name: "",
-  creation_date: "",
-  unable_to_obtain_all_trust_info: false
+  creation_date_day: "",
+  creation_date_month: "",
+  creation_date_year: "",
+  unable_to_obtain_all_trust_info: "No"
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

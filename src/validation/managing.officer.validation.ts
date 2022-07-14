@@ -38,8 +38,9 @@ export const managingOfficerIndividual = [
     .not().isEmpty().withMessage(ErrorMessages.OCCUPATION)
     .isLength({ max: 100 }).withMessage(ErrorMessages.MAX_OCCUPATION_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.OCCUPATION_INVALID_CHARACTERS),
+
   body("role_and_responsibilities")
-    .not().isEmpty().withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL)
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL)
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_ROLE_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS)
 ];

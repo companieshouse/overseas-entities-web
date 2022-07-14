@@ -41,6 +41,16 @@ export const checkDateIsInPast = (errMsg: string, day: string = "", month: strin
   return true;
 };
 
+export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+  const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
+  const now = DateTime.now();
+  const threeMonthOldDate =  DateTime.utc(now.year, now.month, now.day).minus({ months: 3 });
+  if (inputDate <= threeMonthOldDate) {
+    throw new Error(errMsg);
+  }
+  return true;
+};
+
 export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {

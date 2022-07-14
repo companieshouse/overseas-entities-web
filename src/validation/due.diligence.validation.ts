@@ -3,8 +3,12 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { identity_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { identity_check_date_validations } from "./fields/date.validation";
 
 export const dueDiligence = [
+
+  ...identity_check_date_validations,
+
 
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DUE_DILIGENCE_NAME)

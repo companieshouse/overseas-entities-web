@@ -33,7 +33,7 @@ export const managingOfficerCorporate = [
   ...public_register_validations,
 
   body("role_and_responsibilities")
-    .not().isEmpty().withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE)
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE)
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_ROLE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
 

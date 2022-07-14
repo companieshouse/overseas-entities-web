@@ -1,6 +1,10 @@
 import { body } from "express-validator";
-
-import { checkDate, checkDateIsWithinLast3Months, checkDateIsInPast, checkDateValueIsValid } from "../custom.validation";
+import {
+  checkDate,
+  checkDateIsInPast,
+  checkDateValueIsValid,
+  checkDateIsWithinLast3Months
+} from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 
 export const start_date_validations = [

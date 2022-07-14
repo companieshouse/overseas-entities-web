@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -195,9 +197,11 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with DATE_NOT_IN_PAST error when identity date month is in the future`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "30";
-      dueDiligenceData["identity_date-month"] = "11";
-      dueDiligenceData["identity_date-year"] = "2050";
+      const inTheFuture = DateTime.now().plus({ years: 28 });
+      dueDiligenceData["identity_date-day"] =  inTheFuture.day.toString();
+      dueDiligenceData["identity_date-month"] = inTheFuture.month.toString();
+      dueDiligenceData["identity_date-year"] = inTheFuture.year.toString();
+
       const resp = await request(app).post(DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);

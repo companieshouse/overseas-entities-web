@@ -278,6 +278,19 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
+    test("renders the current page with no INVALID_CHARACTERS error message for text box containing carriage return", async () => {
+      const carriageReturnMock = { ...MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK };
+      carriageReturnMock["role_and_responsibilities"] = "abc \r\n def";
+
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(carriageReturnMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS);
+    });
+
     test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)

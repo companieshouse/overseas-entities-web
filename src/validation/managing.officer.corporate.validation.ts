@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
-import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
 
 export const managingOfficerCorporate = [
   body("name").not()
@@ -35,7 +35,7 @@ export const managingOfficerCorporate = [
   body("role_and_responsibilities")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE)
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_ROLE_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
+    .matches(VALID_CHARACTERS_FOR_TEXT_BOX).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
 
   body("contact_full_name")
     .not().isEmpty().withMessage(ErrorMessages.FULL_NAME)

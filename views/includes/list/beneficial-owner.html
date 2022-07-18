@@ -10,7 +10,7 @@
                 <th scope="row" class="govuk-table__header">Individual</th>
                 <td class="govuk-table__cell">{{ boi.first_name }} {{ boi.last_name }}</td>
                 <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL }}/{{ boi.id }}">
+                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL }}/{{ boi.id }}" data-event-id="change-or-remove-link">
                         Change or remove
                     </a>
                 </td>
@@ -21,7 +21,7 @@
                 <th scope="row" class="govuk-table__header">Corporate</th>
                 <td class="govuk-table__cell">{{ boo.name }}</td>
                 <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL }}/{{ boo.id }}">
+                    <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL }}/{{ boo.id }}" data-event-id="change-or-remove-link">
                         Change or remove
                     </a>
                 </td>

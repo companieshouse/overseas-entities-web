@@ -17,6 +17,9 @@
 
       {{ govukDetails({
         summaryText: "What is a beneficial owner?",
+        attributes: {
+          "data-event-id": "what-is-a-beneficial-owner-details"
+        },
         html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>You must provide details of any beneficial owners that meet one or more of the conditions known as the 'nature of control'.</p>"
       }) }}
 
@@ -39,17 +42,26 @@
             {
               value: "ALL_IDENTIFIED_ALL_DETAILS",
               text: "All beneficial owners have been identified and all required information can be provided",
-              checked: beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS"
+              checked: beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS",
+              attributes: {
+                "data-event-id": "all-identified-all-details-radio-option"
+              }
             },
             {
               value: "SOME_IDENTIFIED_ALL_DETAILS",
               text: "Some beneficial owners have been identified and all required information can be provided",
-              checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS"
+              checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS",
+              attributes: {
+                "data-event-id": "some-identified-all-details-radio-option"
+              }
             },
             {
               value: "NONE_IDENTIFIED",
               text: "No beneficial owners have been identified",
-              checked: beneficial_owners_statement == "NONE_IDENTIFIED"
+              checked: beneficial_owners_statement == "NONE_IDENTIFIED",
+              attributes: {
+                "data-event-id": "none-identified-radio-option"
+              }
             }
           ]
         }) }}

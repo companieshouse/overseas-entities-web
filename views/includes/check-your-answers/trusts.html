@@ -1,0 +1,34 @@
+<h3 class="govuk-heading-m">Trust {{ trust_count }}</h3>
+
+{% set trustBeneficialOwnersHtml %}
+  {% include "includes/check-your-answers/trust-beneficial-owners.html" %}
+{% endset %}
+
+{{ govukSummaryList({
+  rows: [
+    {
+      key: {
+        text: "Name"
+      },
+      value: {
+        text: trust.trust_name
+      }
+    },
+    {
+      key: {
+        text: "Trust data"
+      },
+      value: {
+        text: "Added"
+      }
+    },
+    {
+      key: {
+        text: "Involved with trust"
+      },
+      value: {
+        html: trustBeneficialOwnersHtml
+      }
+    }
+  ]
+}) }}

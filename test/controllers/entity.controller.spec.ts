@@ -24,7 +24,7 @@ import {
   SERVICE_UNAVAILABLE,
   INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
-import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey } from '../../src/model/data.types.model';
+import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
 import {
@@ -129,6 +129,10 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+
+      const data = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual('');
+      expect(data[RegistrationNumberKey]).toEqual('');
     });
 
     test("renders the current page with error messages", async () => {

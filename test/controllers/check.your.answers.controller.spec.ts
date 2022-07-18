@@ -18,6 +18,7 @@ import {
   CONFIRMATION_URL,
 } from "../../src/config";
 import {
+  AGENT_REGISTERING,
   BENEFICIAL_OWNER_TYPE_LINK,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
@@ -30,7 +31,7 @@ import {
   FOUND_REDIRECT_TO,
   IDENTITY_CHECKS,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
-  SERVICE_UNAVAILABLE,
+  SERVICE_UNAVAILABLE, SOMEONE_ELSE_REGISTERING,
   TRUST_INFORMATION_LINK,
 } from "../__mocks__/text.mock";
 import {
@@ -258,7 +259,7 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
-    expect(resp.text).toContain("The UK agent");
+    expect(resp.text).toContain(AGENT_REGISTERING);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by someone else`, async () => {
@@ -269,7 +270,7 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
-    expect(resp.text).toContain("Someone from the overseas entity");
+    expect(resp.text).toContain(SOMEONE_ELSE_REGISTERING);
   });
 });
 

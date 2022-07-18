@@ -72,13 +72,11 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
 };
 
 export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if ( dayStr === "" && monthStr === "" && yearStr === "" ) {
-    return true;
+  if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+    checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+    checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
   }
-
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-  checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
 
   return true;
 };

@@ -1,0 +1,16 @@
+<ul class="govuk-list govuk-list--bullet">
+  {% for boi in appData.beneficial_owners_individual %}
+    {% for trust_id in boi.trust_ids %}
+      {% if trust_id === trust.trust_id %}
+        <li>{{ boi.first_name }} {{ boi.last_name }}</li>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+  {% for boc in appData.beneficial_owners_corporate %}
+    {% for trust_id in boc.trust_ids %}
+      {% if trust_id === trust.trust_id %}
+        <li>{{ boc.name }}</li>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+</ul>

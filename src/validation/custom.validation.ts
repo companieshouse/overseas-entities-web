@@ -41,6 +41,16 @@ export const checkDateIsInPast = (errMsg: string, day: string = "", month: strin
   return true;
 };
 
+export const checkDateIsInPastOrToday = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+  const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
+  const now = DateTime.now();
+  const currentDate = DateTime.utc(now.year, now.month, now.day); // exclude time of day
+  if (inputDate  > currentDate) {
+    throw new Error(errMsg);
+  }
+  return true;
+};
+
 export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
   const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
   const now = DateTime.now();

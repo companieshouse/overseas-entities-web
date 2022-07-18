@@ -18,6 +18,12 @@ export const IDENTITY_DATE_REQ_BODY_MOCK = {
   "identity_date-year": "2022",
 };
 
+export const EMPTY_IDENTITY_DATE_REQ_BODY_MOCK = {
+  "identity_date-day": "",
+  "identity_date-month": "",
+  "identity_date-year": "",
+};
+
 export const DATE = { day: "1", month: "1", year: "2000" };
 export const EMPTY_DATE = { day: "", month: "", year: "" };
 

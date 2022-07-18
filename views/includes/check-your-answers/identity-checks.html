@@ -22,6 +22,14 @@
 
 {% set checkDate = dateMacros.formatDate(dueDiligence.identity_date["day"], dueDiligence.identity_date["month"], dueDiligence.identity_date["year"]) %}
 
+{% set whoIsCompletingTheRegistration %}
+  {% if appData.who_is_registering == "agent" %}
+    The UK agent
+  {% else %}
+    Someone from the overseas entity
+  {% endif %}
+{% endset %}
+
 <h3 class="govuk-heading-l">Identity checks</h3>
 
 {{ govukSummaryList({
@@ -31,7 +39,7 @@
         text: "Who is completing this registration"
       },
         value: {
-          text: appData.entity.name
+          text: whoIsCompletingTheRegistration
         }
       },
       {

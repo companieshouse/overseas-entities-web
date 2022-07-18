@@ -249,6 +249,28 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by uk agent`, async () => {
+    const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
+    applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
+    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain("The UK agent");
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with identity check by someone else`, async () => {
+    const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
+    applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
+    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain("Someone from the overseas entity");
+  });
 });
 
 describe("POST tests", () => {

@@ -33,6 +33,7 @@ import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.d
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
 } from "../__mocks__/overseas.entity.due.diligence.mock";
 import { DateTime } from "luxon";
@@ -127,6 +128,26 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SUPERVISORY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+    });
+
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with MAX error messages`, async () => {
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH_DUE_DILIGENCE);
+      expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH_DUE_DILIGENCE);
+      expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on POST method`, async () => {

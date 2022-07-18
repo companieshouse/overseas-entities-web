@@ -1,5 +1,3 @@
-import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -27,6 +25,7 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT,
   FOUND_REDIRECT_TO,
 } from "../__mocks__/text.mock";
+import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
@@ -230,7 +229,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with DATE_NOT_IN_PAST error when identity date is in the future`, async () => {
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with DATE_NOT_IN_PAST_OR_TODAY error when identity date is in the future`, async () => {
       const dueDiligenceMock = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       const inTheFuture = DateTime.now().plus({ years: 20 });
       dueDiligenceMock["identity_date-day"] =  inTheFuture.day.toString();
@@ -244,7 +243,22 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with no date errors when identity date is today`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      const today = DateTime.now();
+      dueDiligenceData["identity_date-day"] =  today.day.toString();
+      dueDiligenceData["identity_date-month"] = today.month.toString();
+      dueDiligenceData["identity_date-year"] = today.year.toString();
+
+      const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
   });

@@ -35,7 +35,7 @@
           value: name
       }) }}
 
-      {% set countryField = incorporation_country %}
+      {% set countryField = incorporation_country if incorporation_country else '' %}
       {% set countryFieldNameId = "incorporation_country" %}
       {% set countryFieldText = "Which country was it formed in?" %}
       {% include "includes/inputs/country/country-select.html" %}

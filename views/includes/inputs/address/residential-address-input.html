@@ -64,7 +64,7 @@
     value: usual_residential_address_county
   }) }}
 
-  {% set countryField = usual_residential_address_country %}
+  {% set countryField = usual_residential_address_country if usual_residential_address_country else '' %}
   {% set countryFieldNameId = "usual_residential_address_country" %}
   {% set countryFieldText = "Country" %}
   {% include "includes/inputs/country/country-select.html" %}

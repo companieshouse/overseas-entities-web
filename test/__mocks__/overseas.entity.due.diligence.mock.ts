@@ -1,7 +1,8 @@
 import { OverseasEntityDueDiligence } from "../../src/model/overseas.entity.due.diligence.model";
 import {
   ADDRESS,
-  IDENTITY_ADDRESS_REQ_BODY_EMPTY_MOCK, IDENTITY_ADDRESS_REQ_BODY_MAX_LENGTH_MOCK,
+  IDENTITY_ADDRESS_REQ_BODY_EMPTY_MOCK,
+  IDENTITY_ADDRESS_REQ_BODY_MAX_LENGTH_MOCK,
   IDENTITY_ADDRESS_REQ_BODY_MOCK,
 } from "./fields/address.mock";
 import { DATE, EMPTY_DATE, IDENTITY_DATE_REQ_BODY_MOCK } from "./fields/date.mock";

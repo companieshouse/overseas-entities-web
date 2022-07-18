@@ -53,8 +53,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
     // Wipe 'register in country formed in' data if IsOnRegisterInCountryFormedInKey is no or not selected
-    data[PublicRegisterNameKey] = (data[IsOnRegisterInCountryFormedInKey]) ? data[PublicRegisterNameKey] : '';
-    data[RegistrationNumberKey] = (data[IsOnRegisterInCountryFormedInKey]) ? data[RegistrationNumberKey] : '';
+    if (!data[IsOnRegisterInCountryFormedInKey]) {
+      data[PublicRegisterNameKey] = '';
+      data[RegistrationNumberKey] = '';
+    }
 
     setApplicationData(req.session, data, EntityKey);
 

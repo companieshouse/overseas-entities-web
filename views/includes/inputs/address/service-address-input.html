@@ -63,7 +63,7 @@
     value: service_address_county
   }) }}
 
-  {% set countryField = service_address_country if service_address_country %}
+  {% set countryField = service_address_country if service_address_country else '' %}
   {% set countryFieldNameId = "service_address_country" %}
   {% set countryFieldText = "Country" %}
   {% include "includes/inputs/country/country-select.html" %}

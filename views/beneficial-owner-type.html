@@ -56,6 +56,9 @@
       {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
         {{ govukDetails({
           summaryText: "What is a managing officer?",
+          attributes: {
+            "data-event-id": "what-is-a-managing-officer-details"
+          },
           html: "<p>To be confirmed</p>"
         }) }}
       {% endif %}
@@ -100,7 +103,7 @@
           {% if (hasTrusts) %}
             {% set nextPage = "trust-information" %}
           {% else %}
-            {% set nextPage = "check-your-answers" %} 
+            {% set nextPage = "check-your-answers" %}
           {% endif %}
 
           {{ govukButton({

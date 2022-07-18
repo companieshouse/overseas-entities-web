@@ -7,10 +7,10 @@ import {
 } from "./fields/address.mock";
 import { DATE, EMPTY_DATE } from "./fields/date.mock";
 
-const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
+const SIX_CHARACTERS_LENGTH = "LKJHG.";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
 
-const MAX_256 = FIFTY_CHARACTERS_LENGTH.repeat(5) + TEN_CHARACTERS_LENGTH;
+const MAX_256 = FIFTY_CHARACTERS_LENGTH.repeat(5) + SIX_CHARACTERS_LENGTH;
 
 export const DUE_DILIGENCE_OBJECT_MOCK: DueDiligence = {
   identity_date: DATE,
@@ -43,13 +43,13 @@ const DUE_DILIGENCE_EMPTY_OBJECT_MOCK: DueDiligence = {
 
 const DUE_DILIGENCE_MAX_LENGTH_OBJECT_MOCK: DueDiligence = {
   identity_date: DATE,
-  name: MAX_256,
+  name: MAX_256 + "1",
   identity_address: {},
-  email: MAX_256,
-  supervisory_name: MAX_256,
-  aml_number: MAX_256,
-  agent_code: MAX_256,
-  partner_name: MAX_256,
+  email: MAX_256 + "1",
+  supervisory_name: MAX_256 + "1",
+  aml_number: MAX_256 + "1",
+  agent_code: MAX_256 + "1",
+  partner_name: MAX_256 + "1",
   diligence: "agree"
 };
 

@@ -7,10 +7,10 @@ import {
 } from "./fields/address.mock";
 import { DATE, EMPTY_DATE, IDENTITY_DATE_REQ_BODY_MOCK } from "./fields/date.mock";
 
-const TEN_CHARACTERS_LENGTH = "LKJHG.asdf";
+const SIX_CHARACTERS_LENGTH = "LKJHG.";
 const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
 
-const MAX_256 = FIFTY_CHARACTERS_LENGTH.repeat(5) + TEN_CHARACTERS_LENGTH;
+const MAX_256 = FIFTY_CHARACTERS_LENGTH.repeat(5) + SIX_CHARACTERS_LENGTH;
 
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK: OverseasEntityDueDiligence = {
   identity_date: DATE,
@@ -40,12 +40,12 @@ const OVERSEAS_ENTITY_DUE_DILIGENCE_EMPTY_OBJECT_MOCK: OverseasEntityDueDiligenc
 
 const OVERSEAS_ENTITY_DUE_DILIGENCE_MAX_LENGTH_FIELDS_MOCK: OverseasEntityDueDiligence = {
   identity_date: DATE,
-  name: MAX_256,
+  name: MAX_256 + "1",
   identity_address: {},
-  email: MAX_256,
-  supervisory_name: MAX_256,
-  aml_number: MAX_256,
-  partner_name: MAX_256
+  email: MAX_256 + "1",
+  supervisory_name: MAX_256 + "1",
+  aml_number: MAX_256 + "1",
+  partner_name: MAX_256 + "1"
 };
 
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK = {

@@ -1,8 +1,4 @@
-const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
-
-const NO_MAX = "ANY";
-const MAX_50 = FIFTY_CHARACTERS_LENGTH;
-const MAX_200 = FIFTY_CHARACTERS_LENGTH.repeat(4);
+import { MAX_200, MAX_50, NO_MAX } from "../max.length.mock";
 
 export const ADDRESS = {
   property_name_number: "1",

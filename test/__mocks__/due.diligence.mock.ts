@@ -5,12 +5,8 @@ import {
   IDENTITY_ADDRESS_REQ_BODY_MAX_LENGTH_MOCK,
   IDENTITY_ADDRESS_REQ_BODY_MOCK,
 } from "./fields/address.mock";
+import { MAX_256 } from "./max.length.mock";
 import { DATE, EMPTY_DATE } from "./fields/date.mock";
-
-const SIX_CHARACTERS_LENGTH = "LKJHG.";
-const FIFTY_CHARACTERS_LENGTH = "ABCDEabcde0123456789QWERTYUIOPqwertyuiopZXCVBzxcvb";
-
-const MAX_256 = FIFTY_CHARACTERS_LENGTH.repeat(5) + SIX_CHARACTERS_LENGTH;
 
 export const DUE_DILIGENCE_OBJECT_MOCK: DueDiligence = {
   identity_date: DATE,

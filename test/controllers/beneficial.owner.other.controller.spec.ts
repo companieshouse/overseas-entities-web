@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -30,8 +32,18 @@ import {
 } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
-import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_OTHER_URL, BENEFICIAL_OWNER_TYPE_URL, REMOVE } from "../../src/config";
-import { BENEFICIAL_OWNER_OTHER_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE  } from "../__mocks__/text.mock";
+import {
+  BENEFICIAL_OWNER_OTHER_PAGE,
+  BENEFICIAL_OWNER_OTHER_URL,
+  BENEFICIAL_OWNER_TYPE_URL,
+  REMOVE
+} from "../../src/config";
+import {
+  BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
+  ERROR_LIST,
+  MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE
+} from "../__mocks__/text.mock";
 import {
   AddressKeys,
   IsOnSanctionsListKey,
@@ -259,7 +271,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is outside valid numbers`, async () => {
-      const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] =  "32";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "2020";
@@ -271,7 +283,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is outside valid numbers`, async () => {
-      const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] =  "30";
       beneficialOwnerOther["start_date-month"] = "13";
       beneficialOwnerOther["start_date-year"] = "2020";
@@ -283,7 +295,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date day is zero`, async () => {
-      const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] =  "0";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "2020";
@@ -295,7 +307,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with INVALID_DATE error when start date month is zero`, async () => {
-      const beneficialOwnerOther = BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE;
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] =  "30";
       beneficialOwnerOther["start_date-month"] = "0";
       beneficialOwnerOther["start_date-year"] = "2020";
@@ -304,6 +316,19 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
+      const beneficialOwnerOther =  { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      const inTheFuture = DateTime.now().plus({ days: 1 });
+      beneficialOwnerOther["start_date-day"] =  inTheFuture.day.toString();
+      beneficialOwnerOther["start_date-month"] =  inTheFuture.month.toString();
+      beneficialOwnerOther["start_date-year"] =  inTheFuture.year.toString();
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
+        .send(beneficialOwnerOther);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with validation errors`, async () => {

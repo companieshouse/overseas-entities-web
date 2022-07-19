@@ -31,7 +31,10 @@ export enum ErrorMessages {
   COUNTRY = "Select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
+  // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
+  TRUST_NAME = "Enter the trust name",
+  TRUST_CREATION_DATE = "Enter the trust creation date",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",

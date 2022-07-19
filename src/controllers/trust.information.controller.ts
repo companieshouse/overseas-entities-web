@@ -7,6 +7,7 @@ import { getApplicationData, prepareData, setApplicationData, getFromApplication
 import { TrustKey, TrustKeys } from "../model/trust.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+import { checkMandatoryTrustFields, TrustValidationError } from "../validation/trust.information.validation";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,6 +38,18 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const trustsReq: trustType.Trusts = {
       trusts: trustData
     };
+
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    const trustErrors = checkMandatoryTrustFields(trustData);
+    if ( trustErrors.length > 0 ) {
+      return res.render(config.TRUST_INFO_PAGE, {
+        backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
+        templateName: config.TRUST_INFO_PAGE,
+        errors: formatTrustValidationErrors(trustErrors),
+        ...appData
+      });
+    }
 
     const trustIds = generateTrustIds(req, trustData);
 
@@ -107,3 +120,12 @@ const generateTrustIds = (req: any, trustData: trustType.Trust[]): string[] => {
   }
   return trustIds;
 };
+
+function formatTrustValidationErrors(errorList: TrustValidationError[]) {
+  const errors = { errorList: [] } as any;
+  errorList.forEach( e => {
+    errors.errorList.push({ href: `#${e.param}`, text: e.msg });
+    errors[e.param] = { text: e.msg };
+  });
+  return errors;
+}

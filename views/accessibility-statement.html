@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 
 {% block pageTitle %}
@@ -11,9 +10,22 @@
         <div class="govuk-grid-column-two-thirds">
 
             <h1 class="govuk-heading-l">
-                Accessibility statement for the Register an overseas entity and tell us about its beneficial owners service
+                Accessibility statement for the 'Register an overseas entity and tell us about its beneficial owners' service
             </h1>
 
+            <ul class="govuk-list govuk-list--bullet">
+                <li><a href="#about-service">About this service</a></li>
+                <li><a href="#how-accessible">How accessible this service is</a></li>
+                <li><a href="#reporting">Reporting accessibility problems with this service</a></li>
+                <li><a href="#enforcement">Enforcement procedure</a></li>
+                <li><a href="#technical-information">Technical information about this service’s accessibility</a></li>
+                <li><a href="#tested">How we tested this service</a></li>
+                <li><a href="#were-doing">What we’re doing to improve accessibility</a></li>
+            </ul>
+
+            <h2 class="govuk-heading-m" id="about-service">About this service</h2>
+
+            <p>This accessibility statement applies to the 'Register an overseas entity and tell us about its beneficial owners' service.</p>
             <p>This service is run by <a class="govuk-link" href="https://www.gov.uk/government/organisations/companies-house">Companies House</a>. We want as many people as possible to be able to use this service. For example, that means you should be able to:</p>
 
             <ul class="govuk-list govuk-list--bullet">
@@ -27,49 +39,26 @@
             <br>
 
             <p>We’ve also made the website text simple to understand.</p>
-            <p>
-                <a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet has advice on making your device easier to use if you have a disability.</a>
-            </p>
 
-            <h2 class="govuk-heading-m">
+            {{ govukInsetText({
+                html: '<a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet has advice on making your device easier to use if you have a disability.</a>'
+            }) }}
+
+            <h2 class="govuk-heading-m" id="how-accessible">
                 How accessible this service is
             </h2>
 
-            <p><strong class="govuk-tag govuk-tag--red">To be added</strong></p>
+            <p> <strong class="govuk-tag govuk-tag--red">To be added</strong></p>
 
-            <h2 class="govuk-heading-m" id="contact-us">
-                What to do if you can’t access parts of this service
-            </h2>
-
-            <p>To get information on this service in a different format like accessible PDF, large print, easy read, audio recording or braille, contact us by:</p>
-
-            <ul class="govuk-list govuk-list--bullet">
-                <li>email at <a class="govuk-link" href="mailto:enquiries@companieshouse.gov.uk">enquiries@companieshouse.gov.uk</a></li>
-                <li>telephone: <a href="tel:+443031234500">+44 (0)303 1234 500</a> <br>(Monday to Friday 8.30am to 6pm, <a class="govuk-link" href="https://www.gov.uk/call-charges">national call rate</a>)</li>
-                <li>minicom: <a href="tel:+442920381245">02920 381245</a></li>
-                <li>writing to us at:</li>
-            </ul>
-
-            <br>
-
-            <p>Companies House<br>Crown Way<br>Cardiff<br>CF14 3UZ</p>
-
-            <p>DX 33050</p>
-
-            <p>We’ll discuss what assistance we can provide to help you meet your responsibilities. With your permission, we’ll place a note on our internal system.</p>
-
-            <p>For example, if you have impaired vision and would prefer us to contact you by phone, we can call to remind you when your confirmation statement or accounts are due.</p>
-
-            <h2 class="govuk-heading-m">
+            <h2 class="govuk-heading-m" id="reporting">
                 Reporting accessibility problems with this service
             </h2>
 
-            <p>We are continuing to improve the accessibility of this service.
-                <a class="govuk-link" href="#contact-us">Contact us</a>
-                if you have accessibility requirements that are not listed on this page.
+            <p>We’re always looking to improve the accessibility of this service. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, you can find contact details on our
+                <a class="govuk-link" href="https://www.gov.uk/guidance/accessibility-support-for-companies-house-users">accessibility support for Companies House users</a> page.
             </p>
 
-            <h2 class="govuk-heading-m">
+            <h2 class="govuk-heading-m" id="enforcement">
                 Enforcement procedure
             </h2>
 
@@ -78,7 +67,7 @@
                 <a class="govuk-link" href="https://www.equalityadvisoryservice.com/">contact the Equality Advisory and Support Service (EASS)</a>.
             </p>
 
-            <h2 class="govuk-heading-m">
+            <h2 class="govuk-heading-m" id="technical-information">
                 Technical information about this service’s accessibility
             </h2>
 
@@ -86,17 +75,15 @@
 
             <p> <strong class="govuk-tag govuk-tag--red">To be added</strong></p>
 
-            <h2 class="govuk-heading-m">
+            <h2 class="govuk-heading-m" id="tested">
                 How we tested this service
             </h2>
 
             <p>We regularly carry out internal tests for compliance with the Web Content Accessibility Guidelines V2.1 level A and level AA using a variety of manual and automated testing tools.</p>
 
-            <p>This service was last audited on <strong class="govuk-tag govuk-tag--red">To be added</strong>. The audit was carried out by internal teams.</p>
+            <p>This service was audited on 6 July 2022. The audit was carried out by <a href="https://digitalaccessibilitycentre.org/">the Digital Accessibility Centre</a>. The complete end to end user journey was audited.</p>
 
-            <p>We tested the entire end-to-end journey.</p>
-
-            <h2 class="govuk-heading-m">
+            <h2 class="govuk-heading-m" id="were-doing">
                 What we’re doing to improve accessibility
             </h2>
 
@@ -106,20 +93,17 @@
                 <li>work with real users who have accessibility issues to make sure that our services meet their needs</li>
                 <li>carry out internal tests for compliance with Web Content Accessibility Guidelines V2.1 level A and level AA</li>
                 <li>work with external agencies in major UK cities to perform usability research with users</li>
-                <li>recruit customers through
+                <li>recruit users through
                     <a class="govuk-link" href="https://www.gov.uk/government/news/help-improve-companies-house">our user panel</a>
-                    to take part in sessions at our usability lab in Cardiff</li>
+                    and agencies to take part in usability sessions</li>
                 <li>build and test our services to meet
                     <a class="govuk-link" href="https://www.gov.uk/service-manual/helping-people-to-use-your-service/making-your-service-accessible-an-introduction#meeting-government-accessibility-requirements">government accessibility requirements</a>
-                </li>
-                <li>are developing
-                    <a class="govuk-link" href="https://gds.blog.gov.uk/2018/06/20/creating-the-uk-governments-accessibility-empathy-lab/">an assistive technology lab</a>
-                    in our Cardiff office to improve the testing of our services and raise awareness of accessibility
                 </li>
             </ul>
 
             <p><a class="govuk-link" href="https://companieshouse.blog.gov.uk/category/user-research/">Read our blogs about usability</a>
-                    to find out more about our user research work.</p>
+                to find out more about our user research work.</p>
+
             <p>This statement was prepared on <strong class="govuk-tag govuk-tag--red">To be added</strong>. It was last updated on <strong class="govuk-tag govuk-tag--red">To be added</strong>.</p>
 
         </div>

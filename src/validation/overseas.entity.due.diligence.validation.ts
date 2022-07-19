@@ -7,7 +7,8 @@ import { checkOptionalDate } from "./custom.validation";
 
 export const overseasEntityDueDiligence = [
 
-  body("identity_date").custom((value, { req }) => checkOptionalDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
+  body("identity_date")
+    .custom((value, { req }) => checkOptionalDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.OE_DUE_DILIGENCE_NAME)

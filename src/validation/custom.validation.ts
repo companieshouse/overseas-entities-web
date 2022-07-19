@@ -2,6 +2,7 @@
 
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
+import { ErrorMessages } from "./error.messages";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -65,6 +66,16 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {
     throw new Error(errMsg);
+  }
+
+  return true;
+};
+
+export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+    checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+    checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
   }
 
   return true;

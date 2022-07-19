@@ -293,6 +293,20 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
+
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} without DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const today = DateTime.now();
+      beneficialOwnerGov["start_date-day"] =  today.day.toString();
+      beneficialOwnerGov["start_date-month"] = today.month.toString();
+      beneficialOwnerGov["start_date-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
   });
 
   describe("UPDATE tests", () => {

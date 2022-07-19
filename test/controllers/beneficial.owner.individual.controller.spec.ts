@@ -55,6 +55,7 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import * as config from "../../src/config";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -330,6 +331,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} without DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      const today = DateTime.now();
+      beneficialOwnerOther["start_date-day"] =  today.day.toString();
+      beneficialOwnerOther["start_date-month"] = today.month.toString();
+      beneficialOwnerOther["start_date-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerOther);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with INVALID_DATE error when date of birth day is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] =  "32";
@@ -387,6 +402,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+    });
+
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      const today = DateTime.now();
+      beneficialOwnerOther["date_of_birth-day"] =  today.day.toString();
+      beneficialOwnerOther["date_of_birth-month"] = today.month.toString();
+      beneficialOwnerOther["date_of_birth-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);

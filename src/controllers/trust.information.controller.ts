@@ -7,6 +7,7 @@ import { getApplicationData, prepareData, setApplicationData, getFromApplication
 import { TrustKey, TrustKeys } from "../model/trust.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
+import { getBeneficialOwnerList } from "../utils/trusts";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,6 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.TRUST_INFO_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: config.TRUST_INFO_PAGE,
+      beneficialOwners: getBeneficialOwnerList(appData),
       ...appData
     });
   } catch (error) {

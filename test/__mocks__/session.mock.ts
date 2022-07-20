@@ -676,8 +676,28 @@ export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
 };
 
 export const TRUST_DATA: string = `[{
-  "trust_name": "",
-  "creation_date": "",
+  "trust_name": "name of trust",
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUST_DATA_NO_NAME: string = `[{
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUST_DATA_NO_CREATION_DATE: string = `[{
+  "trust_name": "name of trust",
   "unable_to_obtain_all_trust_info": false,
   "INDIVIDUALS": [],
   "HISTORICAL_BO": [],
@@ -696,6 +716,18 @@ export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
+export const TRUSTS_SUBMIT_NO_NAME = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_NO_NAME
+};
+
+export const TRUSTS_SUBMIT_NO_CREATION_DATE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_NO_CREATION_DATE
+};
+
 export const TRUSTS_ADD_MORE = {
   add: "add",
   beneficialOwners: "123",
@@ -712,7 +744,25 @@ const isSecureRegisterKey = '0';
 
 export const TRUST: Trust = {
   trust_id: "",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_NO_NAME: Trust = {
+  trust_id: "",
   trust_name: "",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_NO_DATE: Trust = {
+  trust_id: "",
+  trust_name: "name of trust",
   creation_date_day: "",
   creation_date_month: "",
   creation_date_year: "",
@@ -750,4 +800,34 @@ export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID
+};
+
+export const APPLICATION_DATA_NO_TRUST_NAME_MOCK: ApplicationData = {
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [TrustKey]: [TRUST_NO_NAME]
+};
+
+export const APPLICATION_DATA_NO_TRUST_DATE_MOCK: ApplicationData = {
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [TrustKey]: [TRUST_NO_DATE]
 };

@@ -8,7 +8,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_ADD_MORE, TRUSTS_EMPTY_TRUST_DATA } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUST_NAME_MOCK, APPLICATION_DATA_NO_TRUST_DATE_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_SUBMIT_NO_NAME, TRUSTS_SUBMIT_NO_CREATION_DATE, TRUSTS_ADD_MORE, TRUSTS_EMPTY_TRUST_DATA } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
@@ -51,7 +51,7 @@ describe("TRUST INFORMATION controller", () => {
   describe("POST tests", () => {
     test(`redirects to the ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
@@ -63,7 +63,7 @@ describe("TRUST INFORMATION controller", () => {
 
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       mockGetFromApplicationData.mockReturnValueOnce(undefined);
       const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
       bo.trust_ids = undefined;
@@ -72,6 +72,32 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
+    });
+
+    test(`mandatory field missing: trust name`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_NO_NAME );
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_NAME_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_NO_NAME);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.TRUST_NAME);
+    });
+
+    test(`mandatory field missing: trust creation date`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_NO_CREATION_DATE );
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_DATE_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_NO_CREATION_DATE);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.TRUST_CREATION_DATE);
     });
 
     test("catch error when rendering the page", async () => {

@@ -24,7 +24,8 @@ import {
   usePaper,
   whoIsMakingFiling,
   dueDiligence,
-  overseasEntityDueDiligence
+  overseasEntityDueDiligence,
+  accessibilityStatement
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -38,6 +39,7 @@ const router = Router();
 router.use(serviceAvailabilityMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
+router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 
 router.get(config.LANDING_URL, landing.get);
 

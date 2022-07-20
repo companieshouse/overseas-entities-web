@@ -69,7 +69,7 @@ export function checkTrustValidations(req: Request, res: Response, next: NextFun
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),
-        trusts_input: req.body.trusts.toString(),
+        trusts_input: req.body.trusts?.toString(),
         errors
       });
     }

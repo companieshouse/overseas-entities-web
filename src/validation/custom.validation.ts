@@ -107,6 +107,6 @@ export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trusts_json: s
     if (trust.trust_name === undefined || trust.trust_name === "") {
       throw new Error(nameErrMsg);
     }
-  };
+  }
   return true;
 };

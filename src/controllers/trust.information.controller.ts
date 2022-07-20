@@ -39,10 +39,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       trusts: trustData
     };
 
-    const appData: ApplicationData = getApplicationData(req.session);
 
     const trustErrors = checkMandatoryTrustFields(trustData);
     if ( trustErrors.length > 0 ) {
+      const appData: ApplicationData = getApplicationData(req.session);
+
       return res.render(config.TRUST_INFO_PAGE, {
         backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
         templateName: config.TRUST_INFO_PAGE,

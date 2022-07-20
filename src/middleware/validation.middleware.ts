@@ -15,6 +15,7 @@ import {
 import { logger } from '../utils/logger';
 import { ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
+import { getBeneficialOwnerList } from "../utils/trusts";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -56,7 +57,28 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
   }
 }
 
+export function checkTrustValidations(req: Request, res: Response, next: NextFunction) {
+  try {
+    const errorList = validationResult(req);
+    if (!errorList.isEmpty()) {
+      const errors = formatValidationError(errorList.array());
+      const routePath = req.route.path;
+      const appData: ApplicationData = getApplicationData(req.session);
 
+      return res.render(NAVIGATION[routePath].currentPage, {
+        backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        ...req.body,
+        beneficialOwners: getBeneficialOwnerList(appData),
+        errors
+      });
+    }
+
+    return next();
+  } catch (err) {
+    logger.errorRequest(req, err);
+    next(err);
+  }
+}
 function formatValidationError(errorList: ValidationError[]) {
   const errors = { errorList: [] } as any;
   errorList.forEach( e => {

@@ -595,7 +595,7 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   registration_number: "123456789",
   role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "contact name",
-  contact_email: "contact email",
+  contact_email: "jbloggs@bloggs.co.ru",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...START_DATE

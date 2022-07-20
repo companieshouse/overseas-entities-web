@@ -808,31 +808,11 @@ export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
 };
 
 export const APPLICATION_DATA_NO_TRUST_NAME_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
-  [PaymentKey]: PAYMENT_OBJECT_MOCK,
-  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
-  [Transactionkey]: TRANSACTION_ID,
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_NO_NAME]
 };
 
 export const APPLICATION_DATA_NO_TRUST_DATE_MOCK: ApplicationData = {
-  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
-  [PaymentKey]: PAYMENT_OBJECT_MOCK,
-  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
-  [Transactionkey]: TRANSACTION_ID,
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_NO_DATE]
 };

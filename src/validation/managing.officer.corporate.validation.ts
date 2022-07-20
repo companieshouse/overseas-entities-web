@@ -45,4 +45,5 @@ export const managingOfficerCorporate = [
   body("contact_email")
     .not().isEmpty().withMessage(ErrorMessages.EMAIL)
     .isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
+    .isEmail().withMessage(ErrorMessages.EMAIL_INVALID_FORMAT)
 ];

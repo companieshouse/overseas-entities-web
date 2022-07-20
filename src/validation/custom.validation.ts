@@ -3,6 +3,7 @@
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
+import { trustType } from "../model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -88,4 +89,25 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
     }
   }
   throw new Error(errMsg);
+};
+
+export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trusts_json: string) => {
+  const trusts: trustType.Trust[] = JSON.parse(trusts_json);
+  trusts.forEach(trust => {
+    if (
+      trust.creation_date_day === undefined ||
+      trust.creation_date_day === "" ||
+      trust.creation_date_month === undefined ||
+      trust.creation_date_month === "" ||
+      trust.creation_date_year === undefined ||
+      trust.creation_date_year === ""
+    ) {
+      console.log(dateErrMsg);
+      throw new Error(dateErrMsg);
+    }
+    if (trust.trust_name === undefined || trust.trust_name === "") {
+      throw new Error(nameErrMsg);
+    }
+  });
+  return true;
 };

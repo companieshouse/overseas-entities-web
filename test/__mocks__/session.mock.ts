@@ -704,6 +704,17 @@ export const TRUST_DATA_NO_CREATION_DATE: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUST_DATA_PARTIAL_CREATION_DATE: string = `[{
+  "trust_name": "name of trust",
+  "creation_date_day": "31",
+  "creation_date_month": "",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
 export const TRUSTS_SUBMIT = {
   submit: "submit",
   beneficialOwners: "123",
@@ -726,6 +737,12 @@ export const TRUSTS_SUBMIT_NO_CREATION_DATE = {
   submit: "submit",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_NO_CREATION_DATE
+};
+
+export const TRUSTS_SUBMIT_PARTIAL_CREATION_DATE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_PARTIAL_CREATION_DATE
 };
 
 export const TRUSTS_ADD_MORE = {
@@ -774,6 +791,15 @@ export const TRUST_NO_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
+export const TRUST_PARTIAL_DATE: Trust = {
+  trust_id: "",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -815,4 +841,9 @@ export const APPLICATION_DATA_NO_TRUST_NAME_MOCK: ApplicationData = {
 export const APPLICATION_DATA_NO_TRUST_DATE_MOCK: ApplicationData = {
   ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_NO_DATE]
+};
+
+export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_PARTIAL_DATE]
 };

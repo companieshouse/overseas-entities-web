@@ -102,7 +102,6 @@ export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trusts_json: s
       trust.creation_date_year === undefined ||
       trust.creation_date_year === ""
     ) {
-      console.log(dateErrMsg);
       throw new Error(dateErrMsg);
     }
     if (trust.trust_name === undefined || trust.trust_name === "") {

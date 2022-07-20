@@ -32,7 +32,7 @@ export enum ErrorMessages {
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
-  BO_CHECKBOX = "At least one listed beneficial owner must be selected",
+  TRUST_BO_CHECKBOX = "At least one listed beneficial owner must be selected",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",

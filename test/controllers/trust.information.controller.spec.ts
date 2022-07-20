@@ -8,7 +8,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_ADD_MORE } from '../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_ADD_MORE, TRUSTS_EMPTY_TRUST_DATA, TRUSTS_EMPTY_CHECKBOX } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
@@ -85,17 +85,31 @@ describe("TRUST INFORMATION controller", () => {
     });
 
     test("renders the current page with TRUST_DATA_EMPTY error messages", async () => {
-      // const resp = await request(app)
-      //   .post(config.TRUST_INFO_URL)
-      //   .send(TRUSTS_EMPTY_TRUST_DATA);
-
-      // mockPrepareData.mockReturnValueOnce( TRUST_DATA );
-      // const resp = await request(app).post(config.TRUST_INFO_URL);
-      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_MORE);
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_EMPTY_TRUST_DATA);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.TRUST_DATA_EMPTY);
+    });
+
+    test("renders the current page with TRUSTS_EMPTY_CHECKBOX error messages", async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT );
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_EMPTY_CHECKBOX);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.TRUST_BO_CHECKBOX);
     });
   });
 });

@@ -707,6 +707,11 @@ export const TRUSTS_EMPTY_TRUST_DATA = {
   beneficialOwners: "123",
 };
 
+export const TRUSTS_EMPTY_CHECKBOX = {
+  add: "add",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
 const hasSoldLandKey = '0';
 const isSecureRegisterKey = '0';
 

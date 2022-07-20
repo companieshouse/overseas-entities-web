@@ -47,6 +47,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
         backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
         templateName: config.TRUST_INFO_PAGE,
         errors: formatTrustValidationErrors(trustErrors),
+        trusts: req.body.trusts.toString(),
         ...appData
       });
     }

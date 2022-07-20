@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
@@ -214,7 +216,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID_DATE error when date is outside valid numbers`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "31";
       beneficialOwnerGov["start_date-month"] = "06";
       beneficialOwnerGov["start_date-year"] = "2020";
@@ -227,7 +229,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is outside valid numbers`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "30";
       beneficialOwnerGov["start_date-month"] = "13";
       beneficialOwnerGov["start_date-year"] = "2020";
@@ -240,7 +242,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when day is zero`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "0";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "2020";
@@ -253,7 +255,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is zero`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "30";
       beneficialOwnerGov["start_date-month"] = "0";
       beneficialOwnerGov["start_date-year"] = "2020";
@@ -266,7 +268,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when invalid characters are used`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "a";
       beneficialOwnerGov["start_date-month"] = "b";
       beneficialOwnerGov["start_date-year"] = "c";
@@ -278,17 +280,32 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with DATE_NOT_IN_PAST error when start date is not in the past`, async () => {
-      const beneficialOwnerGov = REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION;
-      beneficialOwnerGov["start_date-day"] =  "10";
-      beneficialOwnerGov["start_date-month"] = "10";
-      beneficialOwnerGov["start_date-year"] = "2050";
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is not in the past`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const inTheFuture = DateTime.now().plus({ days: 1 });
+      beneficialOwnerGov["start_date-day"] =  inTheFuture.day.toString();
+      beneficialOwnerGov["start_date-month"] = inTheFuture.month.toString();
+      beneficialOwnerGov["start_date-year"] = inTheFuture.year.toString();
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} without DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const today = DateTime.now();
+      beneficialOwnerGov["start_date-day"] =  today.day.toString();
+      beneficialOwnerGov["start_date-month"] = today.month.toString();
+      beneficialOwnerGov["start_date-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
   });
 

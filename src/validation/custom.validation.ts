@@ -93,7 +93,7 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
 
 export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trusts_json: string) => {
   const trusts: trustType.Trust[] = JSON.parse(trusts_json);
-  trusts.forEach(trust => {
+  for (const trust of trusts) {
     if (
       trust.creation_date_day === undefined ||
       trust.creation_date_day === "" ||
@@ -107,6 +107,6 @@ export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trusts_json: s
     if (trust.trust_name === undefined || trust.trust_name === "") {
       throw new Error(nameErrMsg);
     }
-  });
+  };
   return true;
 };

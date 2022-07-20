@@ -407,7 +407,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with DATE_NOT_IN_PAST error when start date is today`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const today = DateTime.now();
       beneficialOwnerOther["date_of_birth-day"] =  today.day.toString();

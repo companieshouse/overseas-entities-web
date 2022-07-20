@@ -1,3 +1,5 @@
+import { DateTime } from "luxon";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -329,71 +331,99 @@ describe("MANAGING_OFFICER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
     });
-  });
 
-  test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when date is outside valid numbers`, async () => {
-    const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
-    managingOfficer["date_of_birth-day"] =  "31";
-    managingOfficer["date_of_birth-month"] = "06";
-    managingOfficer["date_of_birth-year"] = "2020";
-    const resp = await request(app)
-      .post(MANAGING_OFFICER_URL)
-      .send(managingOfficer);
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-    expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-  });
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when date is outside valid numbers`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "31";
+      managingOfficer["date_of_birth-month"] = "06";
+      managingOfficer["date_of_birth-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    });
 
-  test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is outside valid numbers`, async () => {
-    const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
-    managingOfficer["date_of_birth-day"] =  "30";
-    managingOfficer["date_of_birth-month"] = "13";
-    managingOfficer["date_of_birth-year"] = "2020";
-    const resp = await request(app)
-      .post(MANAGING_OFFICER_URL)
-      .send(managingOfficer);
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-    expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-  });
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is outside valid numbers`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "30";
+      managingOfficer["date_of_birth-month"] = "13";
+      managingOfficer["date_of_birth-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    });
 
-  test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when day is zero`, async () => {
-    const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
-    managingOfficer["date_of_birth-day"] =  "0";
-    managingOfficer["date_of_birth-month"] = "12";
-    managingOfficer["date_of_birth-year"] = "2020";
-    const resp = await request(app)
-      .post(MANAGING_OFFICER_URL)
-      .send(managingOfficer);
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-    expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-  });
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when day is zero`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "0";
+      managingOfficer["date_of_birth-month"] = "12";
+      managingOfficer["date_of_birth-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    });
 
-  test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is zero`, async () => {
-    const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
-    managingOfficer["date_of_birth-day"] =  "30";
-    managingOfficer["date_of_birth-month"] = "0";
-    managingOfficer["date_of_birth-year"] = "2020";
-    const resp = await request(app)
-      .post(MANAGING_OFFICER_URL)
-      .send(managingOfficer);
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-    expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-  });
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is zero`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "30";
+      managingOfficer["date_of_birth-month"] = "0";
+      managingOfficer["date_of_birth-year"] = "2020";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    });
 
-  test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when invalid characters are used`, async () => {
-    const managingOfficer = REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION;
-    managingOfficer["date_of_birth-day"] =  "a";
-    managingOfficer["date_of_birth-month"] = "b";
-    managingOfficer["date_of_birth-year"] = "c";
-    const resp = await request(app)
-      .post(MANAGING_OFFICER_URL)
-      .send(managingOfficer);
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-    expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when invalid characters are used`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "a";
+      managingOfficer["date_of_birth-month"] = "b";
+      managingOfficer["date_of_birth-year"] = "c";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with DATE_NOT_IN_PAST error when start date is in the future`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      const today = DateTime.now().plus({ days: 1 });
+      managingOfficer["date_of_birth-day"] =  today.day.toString();
+      managingOfficer["date_of_birth-month"] = today.month.toString();
+      managingOfficer["date_of_birth-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with DATE_NOT_IN_PAST error when start date is today`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      const today = DateTime.now();
+      managingOfficer["date_of_birth-day"] =  today.day.toString();
+      managingOfficer["date_of_birth-month"] = today.month.toString();
+      managingOfficer["date_of_birth-year"] = today.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+    });
   });
 
   describe("UPDATE tests", () => {

@@ -19,42 +19,22 @@
 
       <form class="form" method="post">
         <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset" aria-describedby="bo-hint">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-              <h1 class="govuk-fieldset__heading">
-                Who is involved in this trust?
-              </h1>
-            </legend>
-            <div id="bo-hint" class="govuk-hint">
-              Select all that apply.
-            </div>
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-              {% if (beneficial_owners_individual and beneficial_owners_individual.length > 0) %}
-                {% for boi in beneficial_owners_individual %}
-                  {% if (boi.trustees_nature_of_control_types and boi.trustees_nature_of_control_types.length > 0) %}
-                    <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" id="{{ boi.id }}" name="beneficialOwners" type="checkbox" value="{{ boi.id }}">
-                      <label class="govuk-label govuk-checkboxes__label" for="{{ boi.id }}">
-                        {{ boi.first_name }} {{ boi.last_name }}
-                      </label>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-              {% if (beneficial_owners_corporate and beneficial_owners_corporate.length > 0) %}
-                {% for boc in beneficial_owners_corporate %}
-                  {% if (boc.trustees_nature_of_control_types and boc.trustees_nature_of_control_types.length > 0) %}
-                    <div class="govuk-checkboxes__item">
-                      <input class="govuk-checkboxes__input" id="{{ boc.id }}" name="beneficialOwners" type="checkbox" value="{{ boc.id }}">
-                      <label class="govuk-label govuk-checkboxes__label" for="{{ boc.id }}">
-                        {{ boc.name }}
-                      </label>
-                    </div>
-                  {% endif %}
-                {% endfor %}
-              {% endif %}
-            </div>
-          </fieldset>
+            {{ govukCheckboxes({
+              idPrefix: "beneficialOwner",
+              name: "beneficialOwner",
+              fieldset: {
+                legend: {
+                  text: "Who is involved in this trust?",
+                  isPageHeading: true,
+                  classes: "govuk-fieldset__legend--l"
+                }
+              },
+              hint: {
+                text: "Select all that apply."
+              },
+              errorMessage: errors.beneficialOwners if errors,
+              items: beneficialOwners
+            }) }}
         </div>
 
         <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>

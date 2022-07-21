@@ -38,7 +38,7 @@ export const managingOfficerCorporate = [
     .matches(VALID_CHARACTERS_FOR_TEXT_BOX).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
 
   body("contact_full_name")
-    .not().isEmpty().withMessage(ErrorMessages.FULL_NAME)
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FULL_NAME)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
 

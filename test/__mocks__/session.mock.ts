@@ -580,7 +580,8 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {
   is_on_register_in_country_formed_in: "",
   public_register_name: "",
   registration_number: "",
-  role_and_responsibilities: "",
+  role_and_responsibilities: " ",
+  contact_full_name: " ",
   usual_residential_address: {},
   service_address: {}
 };

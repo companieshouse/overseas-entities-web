@@ -21,3 +21,4 @@ export * as usePaper from "./use.paper.contoller";
 export * as whoIsMakingFiling from "./who.is.making.filing.controller";
 export * as dueDiligence from "./due.diligence.controller";
 export * as overseasEntityDueDiligence from "./overseas.entity.due.diligence.controller";
+export * as accessibilityStatement from "./accessibility.statement.controller";

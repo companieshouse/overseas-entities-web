@@ -8,6 +8,7 @@ export const PORT = getEnvironmentValue("PORT", "3000");
 export const CDN_HOST = getEnvironmentValue("CDN_HOST");
 export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
+export const DEFAULT_SESSION_EXPIRATION = getEnvironmentValue("DEFAULT_SESSION_EXPIRATION", "3600");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const API_URL = getEnvironmentValue("API_URL");
@@ -27,7 +28,7 @@ export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 
 // TEMPLATEs
-export const INTERRUPT_CARD_PAGE = "interrupt-card";
+export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
 export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
@@ -40,6 +41,7 @@ export const DUE_DILIGENCE_PAGE = "due-diligence";
 export const ENTITY_PAGE = "entity";
 export const ERROR_PAGE = "error-page";
 export const HEALTHCHECK_PAGE = "healthcheck";
+export const INTERRUPT_CARD_PAGE = "interrupt-card";
 export const LANDING_PAGE = "landing";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
@@ -78,6 +80,7 @@ export const USE_PAPER_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
 export const WHO_IS_MAKING_FILING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + WHO_IS_MAKING_FILING_PAGE;
 export const DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + DUE_DILIGENCE_PAGE;
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE;
+export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
 export const REMOVE = "/remove";
 
 // URL PARAMS

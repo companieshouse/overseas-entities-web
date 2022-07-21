@@ -2,7 +2,7 @@
 
 {% call govukFieldset({
   legend: {
-    text: "What is its principal or registered office address?",
+    text: "What is the principal or registered office address?",
     classes: "govuk-fieldset__legend--m",
     isPageHeading: false
   }
@@ -85,7 +85,7 @@
 
 {% set serviceAddressHtml %}
   <br>
-  {% set serviceAddressText = "What is its correspondence address?" %}
+  {% set serviceAddressText = "What is the correspondence address?" %}
   {% include "includes/inputs/address/service-address-input.html" %}
 {% endset -%}
 
@@ -96,7 +96,7 @@
   name: "is_service_address_same_as_principal_address",
   fieldset: {
     legend: {
-      text: "Is its correspondence address the same as the principal or registered office address?",
+      text: "Is the correspondence address the same as the principal or registered office address?",
       isPageHeading: false,
       classes: "govuk-fieldset__legend--m"
     }

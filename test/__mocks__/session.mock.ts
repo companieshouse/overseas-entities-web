@@ -757,6 +757,12 @@ export const TRUSTS_EMPTY_TRUST_DATA = {
   beneficialOwners: "123",
 };
 
+export const TRUSTS_SUBMIT_INVALID_JSON = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: "invalid_json"
+};
+
 export const TRUSTS_EMPTY_CHECKBOX = {
   add: "add",
   [trustType.TrustKey]: TRUST_DATA

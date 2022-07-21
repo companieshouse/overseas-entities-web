@@ -36,6 +36,7 @@ export enum ErrorMessages {
   TRUST_NAME = "Enter the trust name",
   TRUST_CREATION_DATE = "Enter the trust creation date",
   TRUST_BO_CHECKBOX = "At least one listed beneficial owner must be selected",
+  TRUST_INVALID_JSON = "Something went wrong. Copy the trust information again and paste it into the box to try again.",
   // Date
   DAY = "Date must include a day ",
   MONTH = "Date must include a month",

@@ -676,8 +676,39 @@ export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
 };
 
 export const TRUST_DATA: string = `[{
-  "trust_name": "",
-  "creation_date": "",
+  "trust_name": "name of trust",
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUST_DATA_NO_NAME: string = `[{
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUST_DATA_NO_CREATION_DATE: string = `[{
+  "trust_name": "name of trust",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
+export const TRUST_DATA_PARTIAL_CREATION_DATE: string = `[{
+  "trust_name": "name of trust",
+  "creation_date_day": "31",
+  "creation_date_month": "",
+  "creation_date_year": "1999",
   "unable_to_obtain_all_trust_info": false,
   "INDIVIDUALS": [],
   "HISTORICAL_BO": [],
@@ -694,6 +725,24 @@ export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
   submit: "submit",
   beneficialOwners: ["123", "456"],
   [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_SUBMIT_NO_NAME = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_NO_NAME
+};
+
+export const TRUSTS_SUBMIT_NO_CREATION_DATE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_NO_CREATION_DATE
+};
+
+export const TRUSTS_SUBMIT_PARTIAL_CREATION_DATE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_PARTIAL_CREATION_DATE
 };
 
 export const TRUSTS_ADD_MORE = {
@@ -717,10 +766,37 @@ const isSecureRegisterKey = '0';
 
 export const TRUST: Trust = {
   trust_id: "",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_NO_NAME: Trust = {
+  trust_id: "",
   trust_name: "",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_NO_DATE: Trust = {
+  trust_id: "",
+  trust_name: "name of trust",
   creation_date_day: "",
   creation_date_month: "",
   creation_date_year: "",
+  unable_to_obtain_all_trust_info: "No"
+};
+
+export const TRUST_PARTIAL_DATE: Trust = {
+  trust_id: "",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "",
+  creation_date_year: "1999",
   unable_to_obtain_all_trust_info: "No"
 };
 
@@ -755,4 +831,19 @@ export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID
+};
+
+export const APPLICATION_DATA_NO_TRUST_NAME_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_NO_NAME]
+};
+
+export const APPLICATION_DATA_NO_TRUST_DATE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_NO_DATE]
+};
+
+export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_PARTIAL_DATE]
 };

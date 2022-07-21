@@ -13,14 +13,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <h1 class="govuk-heading-xl">Have any beneficial owners been identified?</h1>
+      <h1 class="govuk-heading-xl">Have any registrable beneficial owners been identified?</h1>
 
       {{ govukDetails({
-        summaryText: "What is a beneficial owner?",
+        summaryText: "What is a registrable beneficial owner?",
         attributes: {
           "data-event-id": "what-is-a-beneficial-owner-details"
         },
-        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>You must provide details of any beneficial owners that meet one or more of the conditions known as the 'nature of control'.</p>"
+        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the <a target='_blank' href='https://ewf.companieshouse.gov.uk/help/en/stdwf/natureOfControlHelp.html' rel='noopener noreferrer' data-event-id='natures-of-control-link'>natures of control (opens in a new tab)</a>.</p>"
       }) }}
 
       {% include "includes/list/errors.html" %}

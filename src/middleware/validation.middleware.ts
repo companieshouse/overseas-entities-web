@@ -42,6 +42,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        templateName: NAVIGATION[routePath].currentPage,
         id,
         appData,
         ...req.body,
@@ -67,6 +68,7 @@ export function checkTrustValidations(req: Request, res: Response, next: NextFun
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        templateName: NAVIGATION[routePath].currentPage,
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),
         trusts_input: req.body.trusts?.toString(),

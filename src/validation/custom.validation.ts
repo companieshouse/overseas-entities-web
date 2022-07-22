@@ -91,22 +91,33 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trustsJson: string) => {
-  const trusts: trustType.Trust[] = JSON.parse(trustsJson);
-  for (const trust of trusts) {
-    if (
-      trust.creation_date_day === undefined ||
-      trust.creation_date_day === "" ||
-      trust.creation_date_month === undefined ||
-      trust.creation_date_month === "" ||
-      trust.creation_date_year === undefined ||
-      trust.creation_date_year === ""
-    ) {
-      throw new Error(dateErrMsg);
+export const checkTrustData = (nameErrMsg, dateErrMsg, jsonErrMsg, trustsJson: string) => {
+  if (trustsJson !== undefined && trustsJson !== "") {
+    let trusts: trustType.Trust[];
+    try {
+      trusts = JSON.parse(trustsJson);
+    } catch {
+      // Invalid JSON could not be parsed
+      throw new Error(jsonErrMsg);
     }
-    if (trust.trust_name === undefined || trust.trust_name === "") {
-      throw new Error(nameErrMsg);
+
+    // Check mandatory fields within the JSON
+    for (const trust of trusts) {
+      if (
+        trust.creation_date_day === undefined ||
+        trust.creation_date_day === "" ||
+        trust.creation_date_month === undefined ||
+        trust.creation_date_month === "" ||
+        trust.creation_date_year === undefined ||
+        trust.creation_date_year === ""
+      ) {
+        throw new Error(dateErrMsg);
+      }
+      if (trust.trust_name === undefined || trust.trust_name === "") {
+        throw new Error(nameErrMsg);
+      }
     }
+
   }
   return true;
 };

@@ -38,7 +38,7 @@
 
             <br>
 
-            <p class="govuk-body">We’ve also made the website text simple to understand.</p>
+            <p class="govuk-body">We’ve also made the text simple to understand.</p>
 
             {{ govukInsetText({
                 html: '<a class="govuk-link" href="https://mcmw.abilitynet.org.uk/">AbilityNet has advice on making your device easier to use if you have a disability.</a>'
@@ -48,7 +48,12 @@
                 How accessible this service is
             </h2>
 
-            <p class="govuk-body"> <strong class="govuk-tag govuk-tag--red">To be added</strong></p>
+            <p class="govuk-body"> We know some parts of this service are not fully accessible:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>screen reader users may find it difficult to identify the purpose of some radio buttons</li>
+                <li>there is no timeout warning or option to extend the session if users leave the service inactive for 60 minutes</li>
+                <li>some headings and buttons are not descriptive and screen reader users may find it difficult to understand their purpose</li>
+            </ul>
 
             <h2 class="govuk-heading-m" id="reporting">
                 Reporting accessibility problems with this service
@@ -73,7 +78,15 @@
 
             <p class="govuk-body">Companies House is committed to making its website accessible in accordance with the Public Sector Bodies (Websites and Mobile Applications) (No. 2) Accessibility Regulations 2018.</p>
 
-            <p class="govuk-body"> <strong class="govuk-tag govuk-tag--red">To be added</strong></p>
+            <p class="govuk-body">This website is partially compliant with the <a href="https://www.w3.org/TR/WCAG21/">Web Content Accessibility Guidelines version 2.1</a> AA standard, due to the non-compliances listed below.</p>
+            <h2 class="govuk-heading-m" id="non-accessible-content">
+                Non-accessible content
+            </h2>
+            <p class="govuk-body">The content listed below is non-accessible for the following reasons.</p>
+            <h2 class="govuk-heading-s" id="non-compliance">Non-compliance with the accessibility regulations</h2>
+            <p class="govuk-body">Some radio buttons on the page have been grouped together using a fieldset but there is no legend which acts as the group label. This could make it difficult for screen reader users to identify the purpose of the radio buttons in their journey. This fails WCAG 2.1 success criterion 1.3.1 (Info and Relationships). We plan to fix this issue as soon as possible.</p>
+            <p class="govuk-body">When users leave the service inactive for 60 minutes, they are directed back to the first page. There is no time out warning or option to extend the session. This fails WCAG 2.1 success criterion 2.2.1 (Timing Adjustable). We plan to fix this issue as soon as possible.</p>
+            <p class="govuk-body">Some headings and buttons are not descriptive and screen reader users may find it difficult to understand their purpose. This fails WCAG 2.1 success criterion 2.4.6 (Headings and Labels). We plan to fix this issue as soon as possible.</p>
 
             <h2 class="govuk-heading-m" id="tested">
                 How we tested this service
@@ -104,8 +117,7 @@
             <p class="govuk-body"><a class="govuk-link" href="https://companieshouse.blog.gov.uk/category/user-research/">Read our blogs about usability</a>
                 to find out more about our user research work.</p>
 
-            <p class="govuk-body">This statement was prepared on <strong class="govuk-tag govuk-tag--red">To be added</strong>. It was last updated on <strong class="govuk-tag govuk-tag--red">To be added</strong>.</p>
-
+            <p class="govuk-body">This statement was prepared on 22 July 2022. It was last updated on 22 July 2022.</p>
         </div>
     </div>
 

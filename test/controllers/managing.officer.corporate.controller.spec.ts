@@ -25,7 +25,8 @@ import {
   MO_CORP_ID,
   MO_CORP_ID_URL,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
-  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY
+  REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
+  RR_CARRIAGE_RETURN
 } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -268,7 +269,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with no INVALID CHARACTERS error messages when carriage return used in text box`, async () => {
       const carriageReturnMock = { ...MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK };
-      carriageReturnMock["role_and_responsibilities"] = "abc \r\n def";
+      carriageReturnMock["role_and_responsibilities"] = RR_CARRIAGE_RETURN;
       const resp = await request(app)
         .post(MANAGING_OFFICER_CORPORATE_URL)
         .send(carriageReturnMock);

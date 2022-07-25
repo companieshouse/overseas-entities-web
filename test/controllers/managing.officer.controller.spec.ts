@@ -36,6 +36,7 @@ import {
   REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION,
   REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
+  RR_CARRIAGE_RETURN,
 } from "../__mocks__/session.mock";
 import {
   ANY_MESSAGE_ERROR,
@@ -282,7 +283,7 @@ describe("MANAGING_OFFICER controller", () => {
 
     test("renders the current page with no INVALID_CHARACTERS error message for text box containing carriage return", async () => {
       const carriageReturnMock = { ...MANAGING_OFFICER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK };
-      carriageReturnMock["role_and_responsibilities"] = "abc \r\n def";
+      carriageReturnMock["role_and_responsibilities"] = RR_CARRIAGE_RETURN;
 
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL)

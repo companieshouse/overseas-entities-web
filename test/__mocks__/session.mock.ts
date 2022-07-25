@@ -525,7 +525,7 @@ export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
   usual_residential_address: {},
   service_address: {},
   is_service_address_same_as_usual_residential_address: "",
-  occupation: "",
+  occupation: " ",
   role_and_responsibilities: ""
 };
 

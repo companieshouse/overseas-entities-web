@@ -35,7 +35,7 @@ export const managingOfficerIndividual = [
 
   ...usual_residential_service_address_validations,
   body("occupation")
-    .not().isEmpty().withMessage(ErrorMessages.OCCUPATION)
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.OCCUPATION)
     .isLength({ max: 100 }).withMessage(ErrorMessages.MAX_OCCUPATION_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.OCCUPATION_INVALID_CHARACTERS),
 

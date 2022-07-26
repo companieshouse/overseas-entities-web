@@ -18,9 +18,12 @@ import {
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 
-import { getApplicationData, setExtraData } from "../../src/utils/application.data";
+import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
+import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
+
+const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -44,6 +47,7 @@ describe("SOLD LAND FILTER controller", () => {
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to no`, async () => {
@@ -52,6 +56,7 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to yes`, async () => {
@@ -60,6 +65,19 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(mockDeleteApplicationData).toBeCalledTimes(0);
+    });
+
+    test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page, and calling the deleteApplicationData
+     if the following query param is present ${LANDING_PAGE_QUERY_PARAM}=0`, async () => {
+      const resp = await request(app)
+        .get(`${config.SOLD_LAND_FILTER_URL}?${LANDING_PAGE_QUERY_PARAM}=0`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(mockDeleteApplicationData).toBeCalledTimes(1);
     });
 
     test("catch error when rendering the page", async () => {

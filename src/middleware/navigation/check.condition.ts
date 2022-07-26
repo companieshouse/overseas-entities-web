@@ -13,34 +13,38 @@ import { ManagingOfficerKey } from '../../model/managing.officer.model';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
 
-export const checkHasSoldLand = (appData: ApplicationData): boolean => {
-  return !appData || appData[HasSoldLandKey] !== "0";
+const checkHasAppData = (appData: ApplicationData): boolean => {
+  return appData && Object.keys(appData).length !== 0;
 };
 
-export const checkIsSecureRegister = (appData: ApplicationData): boolean => {
-  return checkHasSoldLand(appData) || appData[IsSecureRegisterKey] !== "0";
+export const checkHasSoldLandDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasAppData(appData) && appData[HasSoldLandKey] === "0";
 };
 
-export const checkPresenterDetailsNotEntered = (appData: ApplicationData): boolean => {
-  return checkIsSecureRegister(appData) || !appData[PresenterKey];
+export const checkIsSecureRegisterDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasSoldLandDetailsEntered(appData) && appData[IsSecureRegisterKey] === "0";
 };
 
-export const checkEntityDetailsNotEntered = (appData: ApplicationData): boolean => {
-  return checkPresenterDetailsNotEntered(appData) || !appData[EntityKey];
+export const checkPresenterDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkIsSecureRegisterDetailsEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
 };
 
-export const checkBeneficialOwnersStatementDetailsNotEntered = (appData: ApplicationData): boolean => {
-  return checkEntityDetailsNotEntered(appData) || !appData[BeneficialOwnerStatementKey];
+export const checkEntityDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkPresenterDetailsEntered(appData) && Object.keys(appData[EntityKey] || {}).length !== 0;
 };
 
-export const checkBOsOrMOsDetailsNotEntered = (appData: ApplicationData): boolean => {
-  return checkBeneficialOwnersStatementDetailsNotEntered(appData) ||
+export const checkBeneficialOwnersStatementDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkEntityDetailsEntered(appData) && Object.keys(appData[BeneficialOwnerStatementKey] || {}).length !== 0;
+};
+
+export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkBeneficialOwnersStatementDetailsEntered(appData) &&
   (
-    !appData[BeneficialOwnerIndividualKey] &&
-    !appData[BeneficialOwnerOtherKey] &&
-    !appData[BeneficialOwnerGovKey] &&
-    !appData[ManagingOfficerKey] &&
-    !appData[ManagingOfficerCorporateKey]
+    Object.keys(appData[BeneficialOwnerIndividualKey] || {}).length !== 0 ||
+    Object.keys(appData[BeneficialOwnerOtherKey] || {}).length !== 0 ||
+    Object.keys(appData[BeneficialOwnerGovKey] || {}).length !== 0 ||
+    Object.keys(appData[ManagingOfficerKey] || {}).length !== 0 ||
+    Object.keys(appData[ManagingOfficerCorporateKey] || {}).length !== 0
   );
 };
 

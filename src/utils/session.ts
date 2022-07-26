@@ -18,7 +18,7 @@ export const checkUserSignedIn = (session): boolean => {
   return signInInfo?.[SignInInfoKeys.SignedIn] === 1;
 };
 
-export function getAccessToken(session): string {
+export const getAccessToken = (session): string => {
   const signInInfo = getSignInInfo(session);
   return signInInfo?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken] as string;
-}
+};

@@ -9,10 +9,10 @@ import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 
-import { checkHasSoldLand, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
+import { checkHasSoldLandDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 import { hasSoldLand } from '../../../src/middleware/navigation/has.sold.land.middleware';
 
-const mockCheckHasSoldLand = checkHasSoldLand as unknown as jest.Mock;
+const mockCheckHasSoldLandDetailsEntered = checkHasSoldLandDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {} as Request;
@@ -26,7 +26,7 @@ describe("has.sold.land navigation middleware tests", () => {
   });
 
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
-    mockCheckHasSoldLand.mockImplementationOnce( () => { return true; });
+    mockCheckHasSoldLandDetailsEntered.mockImplementationOnce( () => { return false; });
     hasSoldLand(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("has.sold.land navigation middleware tests", () => {
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckHasSoldLand.mockImplementationOnce( () => { return false; });
+    mockCheckHasSoldLandDetailsEntered.mockImplementationOnce( () => { return true; });
     hasSoldLand(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -49,7 +49,7 @@ describe("has.sold.land navigation middleware tests", () => {
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckHasSoldLand.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockCheckHasSoldLandDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     hasSoldLand(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

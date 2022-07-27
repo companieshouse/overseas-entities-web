@@ -6,8 +6,8 @@ import * as config from "../config";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const landingUrl = config.LANDING_PAGE_URL;
-    logger.debugRequest(req, `GET LANDING_PAGE ${landingUrl}`);
-
+    logger.debugRequest(req, `GET LANDING_PAGE`);
+    logger.debugRequest(req, `Redirecting to ${landingUrl}`);
     return res.redirect(landingUrl);
   } catch (error) {
     logger.errorRequest(req, error);

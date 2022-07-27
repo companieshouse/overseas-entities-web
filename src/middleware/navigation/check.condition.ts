@@ -40,11 +40,11 @@ export const checkBeneficialOwnersStatementDetailsEntered = (appData: Applicatio
 export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return checkBeneficialOwnersStatementDetailsEntered(appData) &&
   (
-    Object.keys(appData[BeneficialOwnerIndividualKey] || {}).length !== 0 ||
-    Object.keys(appData[BeneficialOwnerOtherKey] || {}).length !== 0 ||
-    Object.keys(appData[BeneficialOwnerGovKey] || {}).length !== 0 ||
-    Object.keys(appData[ManagingOfficerKey] || {}).length !== 0 ||
-    Object.keys(appData[ManagingOfficerCorporateKey] || {}).length !== 0
+    Object.keys(appData[BeneficialOwnerIndividualKey] || []).length !== 0 ||
+    Object.keys(appData[BeneficialOwnerOtherKey] || []).length !== 0 ||
+    Object.keys(appData[BeneficialOwnerGovKey] || []).length !== 0 ||
+    Object.keys(appData[ManagingOfficerKey] || []).length !== 0 ||
+    Object.keys(appData[ManagingOfficerCorporateKey] || []).length !== 0
   );
 };
 

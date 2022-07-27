@@ -9,7 +9,12 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { LANDING_URL, PRESENTER_URL, WHO_IS_MAKING_FILING_PAGE, WHO_IS_MAKING_FILING_URL } from "../../src/config";
+import {
+  PRESENTER_URL,
+  ROOT_URL,
+  WHO_IS_MAKING_FILING_PAGE,
+  WHO_IS_MAKING_FILING_URL
+} from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,
@@ -81,7 +86,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
-      expect(resp.text).toContain(LANDING_URL);
+      expect(resp.text).toContain(ROOT_URL);
     });
 
     test("renders the current page with MAX error messages", async () => {

@@ -20,6 +20,7 @@ export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 export const FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_TRUST_INFO_16062022");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
+export const LANDING_URL = getEnvironmentValue("LANDING_URL");
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";
@@ -56,9 +57,9 @@ export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 
 // ROUTING PATHs
-export const LANDING_URL = "/register-an-overseas-entity";
+export const ROOT_URL = "/register-an-overseas-entity";
 
-export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
+export const REGISTER_AN_OVERSEAS_ENTITY_URL = ROOT_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;
 export const BENEFICIAL_OWNER_STATEMENTS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_STATEMENTS_PAGE;

@@ -1,4 +1,3 @@
-export const INDEX_PAGE_TITLE = "Register an overseas entity and tell us about its beneficial owners";
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of UK property or land since 28 February 2022?";
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";

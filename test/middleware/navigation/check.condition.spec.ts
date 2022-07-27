@@ -5,17 +5,22 @@ import {
   checkEntityDetailsEntered,
   checkPresenterDetailsEntered,
   checkHasSoldLandDetailsEntered,
-  checkIsSecureRegisterDetailsEntered
+  checkIsSecureRegisterDetailsEntered,
+  checkDueDiligenceDetailsEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
+import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { EntityKey } from '../../../src/model/entity.model';
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
+import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { PresenterKey } from '../../../src/model/presenter.model';
+import { DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/due.diligence.mock';
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
 
 describe("check condition navigation tests", () => {
@@ -33,6 +38,42 @@ describe("check condition navigation tests", () => {
   test("checkPresenterDetailsEntered should return false", () => {
     const data = checkPresenterDetailsEntered({ ...APPLICATION_DATA_MOCK, [PresenterKey]: undefined });
     expect(data).toEqual(false);
+  });
+
+  test("checkDueDiligenceDetailsEntered should return false if due diligence object undefined", () => {
+    const data = checkDueDiligenceDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: undefined,
+      [DueDiligenceKey]: undefined
+    });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDueDiligenceDetailsEntered should return false if due diligence object empty", () => {
+    const data = checkDueDiligenceDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: {},
+      [DueDiligenceKey]: {}
+    });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDueDiligenceDetailsEntered should return true if DueDiligence object is not blank", () => {
+    const data = checkDueDiligenceDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: {},
+      [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK
+    });
+    expect(data).toEqual(true);
+  });
+
+  test("checkDueDiligenceDetailsEntered should return true if OE DueDiligence object is not blank", () => {
+    const data = checkDueDiligenceDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+      [DueDiligenceKey]: undefined
+    });
+    expect(data).toEqual(true);
   });
 
   test("checkEntityDetailsEntered should return false", () => {

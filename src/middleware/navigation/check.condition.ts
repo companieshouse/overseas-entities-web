@@ -10,6 +10,8 @@ import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.indiv
 import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../../model/managing.officer.model';
+import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
+import { DueDiligenceKey } from '../../model/due.diligence.model';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
 
@@ -29,8 +31,15 @@ export const checkPresenterDetailsEntered = (appData: ApplicationData): boolean 
   return checkIsSecureRegisterDetailsEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
 };
 
+export const checkDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkPresenterDetailsEntered(appData) && (
+    Object.keys(appData[OverseasEntityDueDiligenceKey] || {}).length !== 0 ||
+    Object.keys(appData[DueDiligenceKey] || {}).length !== 0
+  );
+};
+
 export const checkEntityDetailsEntered = (appData: ApplicationData): boolean => {
-  return checkPresenterDetailsEntered(appData) && Object.keys(appData[EntityKey] || {}).length !== 0;
+  return checkDueDiligenceDetailsEntered(appData) && Object.keys(appData[EntityKey] || {}).length !== 0;
 };
 
 export const checkBeneficialOwnersStatementDetailsEntered = (appData: ApplicationData): boolean => {

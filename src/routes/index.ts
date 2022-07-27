@@ -67,8 +67,8 @@ router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, .
 router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
 router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
 
-router.get(config.ENTITY_URL, authentication, navigation.hasPresenter, entity.get);
-router.post(config.ENTITY_URL, authentication, navigation.hasPresenter, ...validator.entity, checkValidations, entity.post);
+router.get(config.ENTITY_URL, authentication, navigation.hasDueDiligence, entity.get);
+router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
 router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);

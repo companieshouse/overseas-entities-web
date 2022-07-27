@@ -17,9 +17,9 @@ describe("NAVIGATION utils", () => {
     expect(entityBackLink).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
   });
 
-  test(`NAVIGATION returns ${config.LANDING_URL} when calling previousPage on ${config.SOLD_LAND_FILTER_URL} object`, () => {
+  test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.SOLD_LAND_FILTER_URL} object`, () => {
     const navigation = NAVIGATION[config.SOLD_LAND_FILTER_URL].previousPage();
-    expect(navigation).toEqual(config.LANDING_URL);
+    expect(navigation).toEqual(config.LANDING_PAGE_URL);
   });
 
   test(`NAVIGATION returns ${config.SOLD_LAND_FILTER_URL} when calling previousPage on ${config.SECURE_REGISTER_FILTER_URL} object`, () => {

@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
-      backLinkUrl: config.LANDING_URL,
+      backLinkUrl: config.LANDING_PAGE_URL,
       templateName: config.SOLD_LAND_FILTER_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });

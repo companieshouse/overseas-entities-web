@@ -1,4 +1,4 @@
-import { LANDING_URL } from "../../src/config";
+import { LANDING_PAGE_URL } from "../../src/config";
 
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
@@ -47,7 +47,7 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
-      expect(resp.text).toContain(LANDING_URL);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
@@ -78,7 +78,7 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
-      expect(resp.text).toContain(LANDING_URL);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(mockDeleteApplicationData).toBeCalledTimes(1);

@@ -5,7 +5,7 @@ import * as config from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const landingUrl = config.LANDING_URL;
+    const landingUrl = config.LANDING_PAGE_URL;
     logger.debugRequest(req, `GET LANDING_PAGE ${landingUrl}`);
 
     return res.redirect(landingUrl);

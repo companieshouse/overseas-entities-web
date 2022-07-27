@@ -27,7 +27,7 @@ describe("ERROR controller", () => {
 
   test("Should render the error page", async () => {
     mockGet.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
-    const response = await request(app).get(config.ROOT_URL);
+    const response = await request(app).get(config.LANDING_URL);
 
     expect(response.status).toEqual(500);
     expect(response.text).toContain(SERVICE_UNAVAILABLE);

@@ -50,6 +50,9 @@
             {
               value: "SOME_IDENTIFIED_ALL_DETAILS",
               text: "Some beneficial owners have been identified and all required information can be provided",
+              hint: {
+                text: "You will also need to provide information about at least one managing officer"
+              },
               checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS",
               attributes: {
                 "data-event-id": "some-identified-all-details-radio-option"
@@ -58,6 +61,9 @@
             {
               value: "NONE_IDENTIFIED",
               text: "No beneficial owners have been identified",
+              hint: {
+                text:"You will need to provide information about at least one managing officer"
+              },
               checked: beneficial_owners_statement == "NONE_IDENTIFIED",
               attributes: {
                 "data-event-id": "none-identified-radio-option"

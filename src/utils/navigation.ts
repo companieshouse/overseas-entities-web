@@ -12,7 +12,7 @@ export const getEntityBackLink = (data: ApplicationData): string => {
 export const NAVIGATION: Navigation = {
   [config.SOLD_LAND_FILTER_URL]: {
     currentPage: config.SOLD_LAND_FILTER_PAGE,
-    previousPage: () => config.LANDING_URL,
+    previousPage: () => config.LANDING_PAGE_URL,
     nextPage: [config.SECURE_REGISTER_FILTER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {

@@ -20,6 +20,7 @@ export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 export const FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_TRUST_INFO_16062022");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
+export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const DESCRIPTION = "Overseas Entities Transaction";

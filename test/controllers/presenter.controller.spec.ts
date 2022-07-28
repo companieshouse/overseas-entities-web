@@ -9,7 +9,12 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { LANDING_URL, PRESENTER_URL, WHO_IS_MAKING_FILING_PAGE, WHO_IS_MAKING_FILING_URL } from "../../src/config";
+import {
+  PRESENTER_URL,
+  LANDING_URL,
+  WHO_IS_MAKING_FILING_PAGE,
+  WHO_IS_MAKING_FILING_URL
+} from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,

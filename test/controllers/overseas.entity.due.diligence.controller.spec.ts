@@ -21,9 +21,9 @@ import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
   OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT,
   FOUND_REDIRECT_TO,
+  OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -65,7 +65,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 

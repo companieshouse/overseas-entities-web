@@ -11,13 +11,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.query[LANDING_PAGE_QUERY_PARAM] === '0') {
+      console.log(">>>>>>>>>>>>>>> DELETING");
       deleteApplicationData(req.session);
     }
 
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.SOLD_LAND_FILTER_PAGE, {
-      backLinkUrl: config.LANDING_PAGE_URL,
+      backLinkUrl: config.BACK_LINK_LANDING_PAGE_URL,
       templateName: config.SOLD_LAND_FILTER_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });

@@ -14,6 +14,7 @@ import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   BENEFICIAL_OWNER_TYPE_URL,
+  LANDING_PAGE_URL,
   MANAGING_OFFICER_PAGE,
   MANAGING_OFFICER_URL,
   REMOVE
@@ -91,6 +92,7 @@ describe("MANAGING_OFFICER controller", () => {
       const resp = await request(app).get(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
     });
   });

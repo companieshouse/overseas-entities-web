@@ -73,6 +73,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
     });
   });

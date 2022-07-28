@@ -7,7 +7,7 @@ import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../src/app";
-import { INTERRUPT_CARD_PAGE, INTERRUPT_CARD_URL } from "../../src/config";
+import { INTERRUPT_CARD_PAGE, INTERRUPT_CARD_URL, LANDING_PAGE_URL } from "../../src/config";
 import { INTERRUPT_CARD_PAGE_TITLE } from "../__mocks__/text.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -26,6 +26,7 @@ describe("INTERRUPT CARD controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
     });
   });
 });

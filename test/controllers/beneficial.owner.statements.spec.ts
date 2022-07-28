@@ -47,6 +47,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
     });
 

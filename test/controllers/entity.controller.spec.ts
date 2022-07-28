@@ -8,7 +8,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { DUE_DILIGENCE_URL, ENTITY_PAGE, ENTITY_URL, OVERSEAS_ENTITY_DUE_DILIGENCE_URL } from "../../src/config";
+import { DUE_DILIGENCE_URL, ENTITY_PAGE, ENTITY_URL, LANDING_PAGE_URL, OVERSEAS_ENTITY_DUE_DILIGENCE_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -58,6 +58,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(DUE_DILIGENCE_URL);

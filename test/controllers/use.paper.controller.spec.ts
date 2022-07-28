@@ -25,6 +25,7 @@ describe("USE PAPER controller", () => {
       const resp = await request(app).get(config.USE_PAPER_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(CANNOT_USE_SERVICE_HEADING);
     });
   });

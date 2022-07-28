@@ -11,6 +11,7 @@ import app from "../../src/app";
 import {
   ENTITY_PAGE,
   ENTITY_URL,
+  LANDING_PAGE_URL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
   OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
   WHO_IS_MAKING_FILING_URL,
@@ -63,6 +64,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       const resp = await request(app).get(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);

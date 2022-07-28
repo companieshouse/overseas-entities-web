@@ -2,7 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 
 import { NextFunction, Request, Response } from "express";
-import { expect, test, describe } from "@jest/globals";
+import { expect, test, describe, jest } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../src/app";
@@ -20,6 +20,7 @@ describe("CANNOT USE controller", () => {
       const resp = await request(app).get(config.CANNOT_USE_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(CANNOT_USE_SERVICE_HEADING);
     });
   });

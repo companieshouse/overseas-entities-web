@@ -9,10 +9,10 @@ import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 
-import { checkBOsOrMOsDetailsNotEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
+import { checkBOsOrMOsDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 import { hasBOsOrMOs } from '../../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
 
-const mockCheckBOsOrMOsDetailsNotEntered = checkBOsOrMOsDetailsNotEntered as unknown as jest.Mock;
+const mockCheckBOsOrMOsDetailsEntered = checkBOsOrMOsDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {} as Request;
@@ -26,7 +26,7 @@ describe("has.beneficial.owners.or.managing.officers navigation middleware tests
   });
 
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
-    mockCheckBOsOrMOsDetailsNotEntered.mockImplementationOnce( () => { return true; });
+    mockCheckBOsOrMOsDetailsEntered.mockImplementationOnce( () => { return false; });
     hasBOsOrMOs(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("has.beneficial.owners.or.managing.officers navigation middleware tests
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckBOsOrMOsDetailsNotEntered.mockImplementationOnce( () => { return false; });
+    mockCheckBOsOrMOsDetailsEntered.mockImplementationOnce( () => { return true; });
     hasBOsOrMOs(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -49,7 +49,7 @@ describe("has.beneficial.owners.or.managing.officers navigation middleware tests
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckBOsOrMOsDetailsNotEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockCheckBOsOrMOsDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     hasBOsOrMOs(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

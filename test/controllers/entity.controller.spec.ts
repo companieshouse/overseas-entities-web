@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/middleware/navigation/has.presenter.middleware');
+jest.mock('../../src/middleware/navigation/has.due.diligence.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -32,11 +32,11 @@ import {
   ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
+import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
-mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasDueDiligenceMiddleware = hasDueDiligence as jest.Mock;
+mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;

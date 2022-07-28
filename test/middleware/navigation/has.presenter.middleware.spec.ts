@@ -9,10 +9,10 @@ import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 
-import { checkPresenterDetailsNotEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
+import { checkPresenterDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 import { hasPresenter } from '../../../src/middleware/navigation/has.presenter.middleware';
 
-const mockCheckPresenterDetailsNotEntered = checkPresenterDetailsNotEntered as unknown as jest.Mock;
+const mockCheckPresenterDetailsEntered = checkPresenterDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {} as Request;
@@ -26,7 +26,7 @@ describe("has.presenter navigation middleware tests", () => {
   });
 
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
-    mockCheckPresenterDetailsNotEntered.mockImplementationOnce( () => { return true; });
+    mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { return false; });
     hasPresenter(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("has.presenter navigation middleware tests", () => {
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckPresenterDetailsNotEntered.mockImplementationOnce( () => { return false; });
+    mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { return true; });
     hasPresenter(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -49,7 +49,7 @@ describe("has.presenter navigation middleware tests", () => {
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckPresenterDetailsNotEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockCheckPresenterDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     hasPresenter(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

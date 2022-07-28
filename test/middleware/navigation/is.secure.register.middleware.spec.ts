@@ -9,10 +9,10 @@ import { SOLD_LAND_FILTER_URL } from '../../../src/config';
 import { logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
 
-import { checkIsSecureRegister, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
+import { checkIsSecureRegisterDetailsEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
 import { isSecureRegister } from '../../../src/middleware/navigation/is.secure.register.middleware';
 
-const mockCheckIsSecureRegister = checkIsSecureRegister as unknown as jest.Mock;
+const mockCheckIsSecureRegisterDetailsEntered = checkIsSecureRegisterDetailsEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {} as Request;
@@ -26,7 +26,7 @@ describe("is.secure.register navigation middleware tests", () => {
   });
 
   test(`should redirect to ${SOLD_LAND_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
-    mockCheckIsSecureRegister.mockImplementationOnce( () => { return true; });
+    mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { return false; });
     isSecureRegister(req, res, next);
 
     expect(next).not.toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("is.secure.register navigation middleware tests", () => {
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckIsSecureRegister.mockImplementationOnce( () => { return false; });
+    mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { return true; });
     isSecureRegister(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
@@ -49,7 +49,7 @@ describe("is.secure.register navigation middleware tests", () => {
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckIsSecureRegister.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockCheckIsSecureRegisterDetailsEntered.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
     isSecureRegister(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);

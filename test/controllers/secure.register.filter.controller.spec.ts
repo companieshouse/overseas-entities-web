@@ -18,7 +18,7 @@ import {
   SECURE_REGISTER_FILTER_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
 } from "../__mocks__/text.mock";
-import { SECURE_REGISTER_FILTER_URL } from "../../src/config";
+import { BACK_LINK_LANDING_PAGE_URL, SECURE_REGISTER_FILTER_URL } from "../../src/config";
 
 import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -48,7 +48,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
-      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(BACK_LINK_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
     });

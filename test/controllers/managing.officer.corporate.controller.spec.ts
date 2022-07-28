@@ -31,6 +31,7 @@ import {
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   BENEFICIAL_OWNER_TYPE_URL,
+  LANDING_PAGE_URL,
   MANAGING_OFFICER_CORPORATE_PAGE,
   MANAGING_OFFICER_CORPORATE_URL,
   REMOVE } from "../../src/config";
@@ -84,6 +85,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
     });
   });
 

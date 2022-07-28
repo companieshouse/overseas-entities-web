@@ -86,6 +86,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
     });
   });

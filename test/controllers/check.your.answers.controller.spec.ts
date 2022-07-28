@@ -16,6 +16,7 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
+  LANDING_PAGE_URL,
 } from "../../src/config";
 import {
   AGENT_REGISTERING,
@@ -87,6 +88,7 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain("fullName");
     expect(resp.text).toContain("user@domain.roe");

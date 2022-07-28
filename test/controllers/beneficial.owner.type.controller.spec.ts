@@ -50,6 +50,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
       expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
       expect(resp.text).toContain(TRUST_INFORMATION_LINK); // continue button

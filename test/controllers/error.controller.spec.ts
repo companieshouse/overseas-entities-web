@@ -23,6 +23,7 @@ describe("ERROR controller", () => {
     const response = await request(app).get(INCORRECT_URL);
     expect(response.text).toContain(EXPECTED_TEXT);
     expect(response.status).toEqual(404);
+    expect(response.text).toContain(config.LANDING_PAGE_URL);
   });
 
   test("Should render the error page", async () => {

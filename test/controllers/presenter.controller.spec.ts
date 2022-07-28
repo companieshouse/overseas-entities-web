@@ -13,7 +13,8 @@ import {
   PRESENTER_URL,
   LANDING_URL,
   WHO_IS_MAKING_FILING_PAGE,
-  WHO_IS_MAKING_FILING_URL
+  WHO_IS_MAKING_FILING_URL,
+  LANDING_PAGE_URL
 } from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import {
@@ -52,6 +53,7 @@ describe("PRESENTER controller", () => {
       const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
     });
 

@@ -15,6 +15,7 @@ import {
   DUE_DILIGENCE_URL,
   ENTITY_PAGE,
   ENTITY_URL,
+  LANDING_PAGE_URL,
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
@@ -62,6 +63,7 @@ describe("DUE_DILIGENCE controller", () => {
       const resp = await request(app).get(DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);

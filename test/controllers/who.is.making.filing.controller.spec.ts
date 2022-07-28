@@ -47,6 +47,7 @@ describe("Who is making filing controller tests", () => {
       const resp = await request(app).get(config.WHO_IS_MAKING_FILING_URL);
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
       expect(resp.text).not.toContain(RADIO_BUTTON_AGENT_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);

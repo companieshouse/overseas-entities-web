@@ -33,12 +33,15 @@
 %}
 
 {% if beneficial_owners_statement === "ALL_IDENTIFIED_ALL_DETAILS" %}
+  {% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
   {% set boTypes = bos %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
+  {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
   {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
   {% set boTypes = mos %}
 {% else %}
+  {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
   {% set boTypes = bos %}
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
@@ -73,8 +76,9 @@
           name: "beneficial_owner_type",
           fieldset: {
             legend: {
+              text: boTypesLegendText,
               isPageHeading: false,
-              classes: "govuk-fieldset__legend--l"
+              classes: "govuk-fieldset__legend--m"
             }
           },
           hint: {

@@ -13,7 +13,6 @@ import { checkEntityHasTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
-import { CHANGE_LINKS } from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -39,7 +38,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       hasTrusts,
       appData,
-      changeLinks: CHANGE_LINKS
+      changeLinks: config.CHANGE_LINKS
     });
   } catch (error) {
     logger.errorRequest(req, error);

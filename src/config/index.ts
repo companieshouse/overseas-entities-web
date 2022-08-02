@@ -95,3 +95,7 @@ export const OVERSEAS_ENTITY = "overseas-entity";
 const TRANSACTION_PATH = TRANSACTION + "/:transactionId/";
 const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
+
+// Change links
+export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
+export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + "#email";

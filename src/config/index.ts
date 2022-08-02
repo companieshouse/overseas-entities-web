@@ -99,7 +99,3 @@ export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TR
 // Change links
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + "#email";
-export const CHANGE_LINKS = {
-  presenterFullName: PRESENTER_CHANGE_FULL_NAME,
-  presenterEmail: PRESENTER_CHANGE_EMAIL
-};

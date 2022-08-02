@@ -23,6 +23,7 @@ import {
 import {
   AGENT_REGISTERING,
   BENEFICIAL_OWNER_TYPE_LINK,
+  CHANGE_LINK,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
@@ -111,7 +112,7 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("change");
+    expect(resp.text).toContain(CHANGE_LINK);
     expect(resp.text).toContain(PRESENTER_CHANGE_FULL_NAME);
     expect(resp.text).toContain(PRESENTER_CHANGE_EMAIL);
   });

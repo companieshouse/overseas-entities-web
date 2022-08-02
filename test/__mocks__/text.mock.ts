@@ -69,3 +69,4 @@ export const DUE_DILIGENCE_NAME_TEXT = "What is the agent’s name?";
 export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address, agent assurance code and date the identity checks were completed will not be shown.";
 export const AGENT_REGISTERING = "The UK agent";
 export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
+export const CHANGE_LINK = "change";

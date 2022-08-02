@@ -37,8 +37,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       hasTrusts,
-      appData,
-      changeLinks: config.CHANGE_LINKS
+      appData
     });
   } catch (error) {
     logger.errorRequest(req, error);

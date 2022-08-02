@@ -16,7 +16,7 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
-  LANDING_PAGE_URL,
+  LANDING_PAGE_URL, PRESENTER_CHANGE_EMAIL, PRESENTER_CHANGE_FULL_NAME,
 } from "../../src/config";
 import {
   AGENT_REGISTERING,
@@ -100,6 +100,18 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
     expect(resp.text).toContain("Joe Bloggs");
     expect(resp.text).toContain("jbloggs@bloggs.co.ru");
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain("change");
+    expect(resp.text).toContain(PRESENTER_CHANGE_FULL_NAME);
+    expect(resp.text).toContain(PRESENTER_CHANGE_EMAIL);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {

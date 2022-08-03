@@ -99,14 +99,27 @@ export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TR
 // Change links
 const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
 const CHANGE_SERVICE_ADDRESS = "#service_address_property_name_number";
+const EMAIL = "#email";
+const LEGAL_FORM = "#legal_form";
+const LAW_GOVERNED = "#law_governed";
 
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
-export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + "#email";
+export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + EMAIL;
 export const ENTITY_CHANGE_NAME = ENTITY_URL + "#name";
 export const ENTITY_CHANGE_COUNTRY = ENTITY_URL + "#incorporation_country";
 export const ENTITY_CHANGE_PRINCIPAL_ADDRESS = ENTITY_URL + CHANGE_PRINCIPAL_ADDRESS;
 export const ENTITY_CHANGE_CORRESPONDENCE_ADDRESS = ENTITY_URL + CHANGE_SERVICE_ADDRESS;
-export const ENTITY_CHANGE_EMAIL = ENTITY_URL + "#email";
-export const ENTITY_CHANGE_LEGAL_FORM = ENTITY_URL + "#legal_form";
-export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + "#law_governed";
+export const ENTITY_CHANGE_EMAIL = ENTITY_URL + EMAIL;
+export const ENTITY_CHANGE_LEGAL_FORM = ENTITY_URL + LEGAL_FORM;
+export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + LAW_GOVERNED;
 export const ENTITY_CHANGE_PUBLIC_REGISTER = ENTITY_URL + "#is_on_register_in_country_formed_in";
+
+export const DUE_DILIGENCE_CHANGE_WHO = WHO_IS_MAKING_FILING_URL;
+export const DUE_DILIGENCE_CHANGE_IDENTITY_DATE = DUE_DILIGENCE_URL + "#identity_date-day";
+export const DUE_DILIGENCE_CHANGE_NAME = DUE_DILIGENCE_URL + "#name";
+export const DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS = DUE_DILIGENCE_URL + "#identity_address_property_name_number";
+export const DUE_DILIGENCE_CHANGE_EMAIL = DUE_DILIGENCE_URL + EMAIL;
+export const DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = DUE_DILIGENCE_URL + "#supervisory_name";
+export const DUE_DILIGENCE_CHANGE_AML_NUMBER = DUE_DILIGENCE_URL + "#aml_number";
+export const DUE_DILIGENCE_CHANGE_AGENT_CODE = DUE_DILIGENCE_URL + "#agent_code";
+export const DUE_DILIGENCE_CHANGE_PARTNER_NAME = DUE_DILIGENCE_URL + "#partner_name";

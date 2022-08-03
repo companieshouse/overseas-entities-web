@@ -8,6 +8,12 @@
     },
     value: {
       text: appData.due_diligence.agent_code
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE,
+        "Agent’s authentication code"
+      ) ]
     }
   } %}
 {% else %}
@@ -37,9 +43,15 @@
       {
         key: {
         text: "Who is completing this registration"
-      },
+        },
         value: {
           text: whoIsCompletingTheRegistration
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_WHO,
+            "Who is completing this registration"
+          ) ]
         }
       },
       {
@@ -48,6 +60,12 @@
         },
         value: {
            html: checkDate
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+            "Date the identity checks were completed"
+          ) ]
         }
       },
       {
@@ -56,6 +74,12 @@
           },
           value: {
             text: dueDiligence.name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME,
+            "Name of agent"
+          ) ]
         }
       },
       {
@@ -64,6 +88,12 @@
         },
         value: {
           html: formattedIdentityAddressHtml
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+            "Address of agent"
+          ) ]
         }
       },
       {
@@ -72,6 +102,12 @@
         },
         value: {
           text: dueDiligence.email
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_EMAIL,
+            "Email address of agent"
+          ) ]
         }
       },
       {
@@ -80,6 +116,12 @@
         },
         value: {
           text: dueDiligence.supervisory_name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+            "Name of the supervisory body"
+          ) ]
         }
       },
       {
@@ -88,6 +130,12 @@
         },
         value: {
           text: dueDiligence.aml_number
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER,
+            "Anti Money Laundering (AML) registration number of the agent"
+          ) ]
         }
       },
       agentCode,
@@ -97,6 +145,12 @@
         },
         value: {
           text: dueDiligence.partner_name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+            "Name of partner"
+          ) ]
         }
       }
     ]

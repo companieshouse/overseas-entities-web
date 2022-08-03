@@ -16,6 +16,15 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
+  DUE_DILIGENCE_CHANGE_AGENT_CODE,
+  DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  DUE_DILIGENCE_CHANGE_EMAIL,
+  DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  DUE_DILIGENCE_CHANGE_NAME,
+  DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+  DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  DUE_DILIGENCE_CHANGE_WHO,
   ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
   ENTITY_CHANGE_COUNTRY,
   ENTITY_CHANGE_EMAIL,
@@ -131,6 +140,15 @@ describe("GET tests", () => {
     expect(resp.text).toContain(ENTITY_CHANGE_LEGAL_FORM);
     expect(resp.text).toContain(ENTITY_CHANGE_GOVERNING_LAW);
     expect(resp.text).toContain(ENTITY_CHANGE_PUBLIC_REGISTER);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_WHO);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_NAME);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_EMAIL);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AML_NUMBER);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AGENT_CODE);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_PARTNER_NAME);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {

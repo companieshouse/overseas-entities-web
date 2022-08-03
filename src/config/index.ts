@@ -1,6 +1,5 @@
 import { getEnvironmentValue } from "../utils/environment.value";
 
-
 // APP CONFIGs
 export const APPLICATION_NAME = "overseas-entities-web";
 export const NODE_ENV = process.env["NODE_ENV"];
@@ -19,6 +18,7 @@ export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 export const FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_TRUST_INFO_16062022");
+export const FEATURE_FLAG_ENABLE_CHANGE_LINKS_02082022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_CHANGE_LINKS_02082022", "true");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 

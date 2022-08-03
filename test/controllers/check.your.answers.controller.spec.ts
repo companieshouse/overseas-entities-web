@@ -16,6 +16,10 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
+  ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+  ENTITY_CHANGE_COUNTRY, ENTITY_CHANGE_EMAIL, ENTITY_CHANGE_GOVERNING_LAW, ENTITY_CHANGE_LEGAL_FORM,
+  ENTITY_CHANGE_NAME,
+  ENTITY_CHANGE_PRINCIPAL_ADDRESS, ENTITY_CHANGE_PUBLIC_REGISTER,
   LANDING_PAGE_URL,
   PRESENTER_CHANGE_EMAIL,
   PRESENTER_CHANGE_FULL_NAME,
@@ -115,6 +119,14 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHANGE_LINK);
     expect(resp.text).toContain(PRESENTER_CHANGE_FULL_NAME);
     expect(resp.text).toContain(PRESENTER_CHANGE_EMAIL);
+    expect(resp.text).toContain(ENTITY_CHANGE_NAME);
+    expect(resp.text).toContain(ENTITY_CHANGE_COUNTRY);
+    expect(resp.text).toContain(ENTITY_CHANGE_PRINCIPAL_ADDRESS);
+    expect(resp.text).toContain(ENTITY_CHANGE_CORRESPONDENCE_ADDRESS);
+    expect(resp.text).toContain(ENTITY_CHANGE_EMAIL);
+    expect(resp.text).toContain(ENTITY_CHANGE_LEGAL_FORM);
+    expect(resp.text).toContain(ENTITY_CHANGE_GOVERNING_LAW);
+    expect(resp.text).toContain(ENTITY_CHANGE_PUBLIC_REGISTER);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {

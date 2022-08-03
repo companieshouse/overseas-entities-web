@@ -99,3 +99,11 @@ export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TR
 // Change links
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + "#email";
+export const ENTITY_CHANGE_NAME = ENTITY_URL + "#name";
+export const ENTITY_CHANGE_COUNTRY = ENTITY_URL + "#incorporation_country";
+export const ENTITY_CHANGE_PRINCIPAL_ADDRESS = ENTITY_URL + "#principal_address";
+export const ENTITY_CHANGE_CORRESPONDENCE_ADDRESS = ENTITY_URL + "#service_address";
+export const ENTITY_CHANGE_EMAIL = ENTITY_URL + "#email";
+export const ENTITY_CHANGE_LEGAL_FORM = ENTITY_URL + "#legal_form";
+export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + "#law_governed";
+export const ENTITY_CHANGE_PUBLIC_REGISTER = ENTITY_URL + "#public_register_name";

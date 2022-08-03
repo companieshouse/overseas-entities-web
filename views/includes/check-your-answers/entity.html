@@ -30,6 +30,15 @@
         },
         value: {
           text: appData.entity.name
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_NAME,
+              text: "Change",
+              visuallyHiddenText: "Name of the overseas entity"
+            }
+          ]
         }
       },
       {
@@ -38,6 +47,15 @@
         },
         value: {
           text: appData.entity.incorporation_country
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_COUNTRY,
+              text: "Change",
+              visuallyHiddenText: "Country it was formed in"
+            }
+          ]
         }
       },
       {
@@ -46,6 +64,15 @@
         },
         value: {
           html: formattedPrincipalAddressHtml
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+              text: "Change",
+              visuallyHiddenText: "Principal or registered office address"
+            }
+          ]
         }
       },
       {
@@ -54,6 +81,15 @@
         },
         value: {
           html: formattedServiceAddressHtml
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+              text: "Change",
+              visuallyHiddenText: "Correspondence address"
+            }
+          ]
         }
       },
       {
@@ -62,6 +98,15 @@
         },
         value: {
           text: appData.entity.email
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_EMAIL,
+              text: "Change",
+              visuallyHiddenText: "Email address at the overseas entity should we send communications to"
+            }
+          ]
         }
       },
       {
@@ -70,6 +115,15 @@
         },
         value: {
           text: appData.entity.legal_form
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_LEGAL_FORM,
+              text: "Change",
+              visuallyHiddenText: "Legal form"
+            }
+          ]
         }
       },
       {
@@ -78,6 +132,15 @@
         },
         value: {
           text: appData.entity.law_governed
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_GOVERNING_LAW,
+              text: "Change",
+              visuallyHiddenText: "Governing law"
+            }
+          ]
         }
       },
       {
@@ -86,6 +149,15 @@
         },
         value: {
           text: formattedPublicRegister
+        },
+        actions: {
+          items: [
+            {
+              href: OE_CONFIGS.ENTITY_CHANGE_PUBLIC_REGISTER,
+              text: "Change",
+              visuallyHiddenText: "Already on a public register in the country it was formed in"
+            }
+          ]
         }
       }
     ]

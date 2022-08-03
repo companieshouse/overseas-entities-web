@@ -32,13 +32,10 @@
           text: appData.entity.name
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_NAME,
-              text: "Change",
-              visuallyHiddenText: "Name of the overseas entity"
-            }
-          ]
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_NAME,
+            "Name of the overseas entity"
+          ) ]
         }
       },
       {
@@ -49,13 +46,10 @@
           text: appData.entity.incorporation_country
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_COUNTRY,
-              text: "Change",
-              visuallyHiddenText: "Country it was formed in"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_COUNTRY,
+            "Country it was formed in"
+          ) ]
         }
       },
       {
@@ -66,13 +60,10 @@
           html: formattedPrincipalAddressHtml
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_PRINCIPAL_ADDRESS,
-              text: "Change",
-              visuallyHiddenText: "Principal or registered office address"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+            "Principal or registered office address"
+          ) ]
         }
       },
       {
@@ -83,13 +74,10 @@
           html: formattedServiceAddressHtml
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
-              text: "Change",
-              visuallyHiddenText: "Correspondence address"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+            "Correspondence address"
+          ) ]
         }
       },
       {
@@ -100,13 +88,10 @@
           text: appData.entity.email
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_EMAIL,
-              text: "Change",
-              visuallyHiddenText: "Email address at the overseas entity should we send communications to"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_EMAIL,
+            "Email address at the overseas entity should we send communications to"
+          ) ]
         }
       },
       {
@@ -117,13 +102,10 @@
           text: appData.entity.legal_form
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_LEGAL_FORM,
-              text: "Change",
-              visuallyHiddenText: "Legal form"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_LEGAL_FORM,
+            "Legal form"
+          ) ]
         }
       },
       {
@@ -134,13 +116,10 @@
           text: appData.entity.law_governed
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_GOVERNING_LAW,
-              text: "Change",
-              visuallyHiddenText: "Governing law"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_GOVERNING_LAW,
+            "Governing law"
+          ) ]
         }
       },
       {
@@ -151,13 +130,10 @@
           text: formattedPublicRegister
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.ENTITY_CHANGE_PUBLIC_REGISTER,
-              text: "Change",
-              visuallyHiddenText: "Already on a public register in the country it was formed in"
-            }
-          ]
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_PUBLIC_REGISTER,
+            "Already on a public register in the country it was formed in"
+          )]
         }
       }
     ]

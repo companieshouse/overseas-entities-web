@@ -11,13 +11,10 @@
           text: appData.presenter.full_name
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME,
-              text: "Change",
-              visuallyHiddenText: "Full name - who can we contact about this application"
-            }
-          ]
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME,
+            "Full name - who can we contact about this application"
+          ) ]
         }
       },
       {
@@ -28,13 +25,10 @@
           text: appData.presenter.email
         },
         actions: {
-          items: [
-            {
-              href: OE_CONFIGS.PRESENTER_CHANGE_EMAIL,
-              text: "Change",
-              visuallyHiddenText: "Email address - who can we contact about this application"
-            }
-          ]
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.PRESENTER_CHANGE_EMAIL,
+            "Email address - who can we contact about this application"
+          ) ]
         }
       }
     ]

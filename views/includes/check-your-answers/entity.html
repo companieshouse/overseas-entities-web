@@ -30,6 +30,12 @@
         },
         value: {
           text: appData.entity.name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_NAME,
+            "Name of the overseas entity"
+          ) ]
         }
       },
       {
@@ -38,6 +44,12 @@
         },
         value: {
           text: appData.entity.incorporation_country
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_COUNTRY,
+            "Country it was formed in"
+          ) ]
         }
       },
       {
@@ -46,6 +58,12 @@
         },
         value: {
           html: formattedPrincipalAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+            "Principal or registered office address"
+          ) ]
         }
       },
       {
@@ -54,6 +72,12 @@
         },
         value: {
           html: formattedServiceAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+            "Correspondence address"
+          ) ]
         }
       },
       {
@@ -62,6 +86,12 @@
         },
         value: {
           text: appData.entity.email
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_EMAIL,
+            "Email address at the overseas entity should we send communications to"
+          ) ]
         }
       },
       {
@@ -70,6 +100,12 @@
         },
         value: {
           text: appData.entity.legal_form
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_LEGAL_FORM,
+            "Legal form"
+          ) ]
         }
       },
       {
@@ -78,6 +114,12 @@
         },
         value: {
           text: appData.entity.law_governed
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_GOVERNING_LAW,
+            "Governing law"
+          ) ]
         }
       },
       {
@@ -86,6 +128,12 @@
         },
         value: {
           text: formattedPublicRegister
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.ENTITY_CHANGE_PUBLIC_REGISTER,
+            "Already on a public register in the country it was formed in"
+          )]
         }
       }
     ]

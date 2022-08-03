@@ -97,5 +97,16 @@ const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
 
 // Change links
+const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
+const CHANGE_SERVICE_ADDRESS = "#service_address_property_name_number";
+
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + "#email";
+export const ENTITY_CHANGE_NAME = ENTITY_URL + "#name";
+export const ENTITY_CHANGE_COUNTRY = ENTITY_URL + "#incorporation_country";
+export const ENTITY_CHANGE_PRINCIPAL_ADDRESS = ENTITY_URL + CHANGE_PRINCIPAL_ADDRESS;
+export const ENTITY_CHANGE_CORRESPONDENCE_ADDRESS = ENTITY_URL + CHANGE_SERVICE_ADDRESS;
+export const ENTITY_CHANGE_EMAIL = ENTITY_URL + "#email";
+export const ENTITY_CHANGE_LEGAL_FORM = ENTITY_URL + "#legal_form";
+export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + "#law_governed";
+export const ENTITY_CHANGE_PUBLIC_REGISTER = ENTITY_URL + "#is_on_register_in_country_formed_in";

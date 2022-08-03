@@ -21,7 +21,7 @@ export const get = (req: Request, res: Response) => {
     referenceNumber,
     entityEmail: appData.entity?.email,
     userEmail: getLoggedInUserEmail(req.session),
-    workingDays: 14,
+    verificationCheckDays: 14,
     templateName: CONFIRMATION_PAGE
   });
 };

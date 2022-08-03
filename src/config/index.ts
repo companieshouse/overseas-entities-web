@@ -1,6 +1,5 @@
 import { getEnvironmentValue } from "../utils/environment.value";
 
-
 // APP CONFIGs
 export const APPLICATION_NAME = "overseas-entities-web";
 export const NODE_ENV = process.env["NODE_ENV"];

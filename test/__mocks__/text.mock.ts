@@ -70,3 +70,4 @@ export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address, 
 export const AGENT_REGISTERING = "The UK agent";
 export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
 export const CHANGE_LINK = "Change";
+export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about this application";

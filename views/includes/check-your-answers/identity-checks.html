@@ -36,6 +36,63 @@
   {% endif %}
 {% endset %}
 
+{% set dateChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE }}
+  {% endif %}
+{% endset %}
+
+{% set nameChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME }}
+  {% endif %}
+{% endset %}
+
+{% set addressChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS }}
+  {% endif %}
+{% endset %}
+
+{% set emailChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_EMAIL }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL }}
+  {% endif %}
+{% endset %}
+
+{% set supervisoryChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME }}
+  {% endif %}
+{% endset %}
+
+{% set amlChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER }}
+  {% endif %}
+{% endset %}
+
+{% set partnerChangeLink %}
+  {% if appData.who_is_registering == "agent" %}
+    {{ OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME }}
+  {% else %}
+    {{ OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME }}
+  {% endif %}
+{% endset %}
+
+
 <h3 class="govuk-heading-l">Identity checks</h3>
 
 {{ govukSummaryList({
@@ -63,7 +120,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+            dateChangeLink,
             "Date the identity checks were completed"
           ) ]
         }
@@ -77,7 +134,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME,
+            nameChangeLink,
             "Name of agent"
           ) ]
         }
@@ -91,7 +148,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+            addressChangeLink,
             "Address of agent"
           ) ]
         }
@@ -105,7 +162,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_EMAIL,
+            emailChangeLink,
             "Email address of agent"
           ) ]
         }
@@ -119,7 +176,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+            supervisoryChangeLink,
             "Name of the supervisory body"
           ) ]
         }
@@ -133,7 +190,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER,
+            amlChangeLink,
             "Anti Money Laundering (AML) registration number of the agent"
           ) ]
         }
@@ -148,7 +205,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+            partnerChangeLink,
             "Name of partner"
           ) ]
         }

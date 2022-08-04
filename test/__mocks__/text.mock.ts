@@ -1,5 +1,5 @@
-import {MANAGING_OFFICER_CORPORATE_URL, MANAGING_OFFICER_URL} from "../../src/config";
-import {MO_CORP_ID_URL, MO_IND_ID, MO_IND_ID_URL} from "./session.mock";
+import { MANAGING_OFFICER_CORPORATE_URL, MANAGING_OFFICER_URL } from "../../src/config";
+import { MO_CORP_ID_URL, MO_IND_ID_URL } from "./session.mock";
 
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of UK property or land since 28 February 2022?";

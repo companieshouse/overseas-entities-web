@@ -30,6 +30,12 @@
         },
         value: {
           text: moc.name
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.NAME,
+            "Name"
+          ) ]
         }
       },
       {
@@ -38,6 +44,12 @@
         },
         value: {
           html: mocFormattedPrincipalAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
+            "Principal or registered office address"
+          ) ]
         }
       },
       {
@@ -46,6 +58,12 @@
         },
         value: {
           html: mocFormattedServiceAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
+            "Correspondence address"
+          ) ]
         }
       },
       {
@@ -54,6 +72,12 @@
         },
         value: {
           text: moc.legal_form
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.LEGAL_FORM,
+            "Legal form"
+          ) ]
         }
       },
       {
@@ -62,6 +86,12 @@
         },
         value: {
           html: moc.law_governed
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.LAW_GOVERNED,
+            "Governing law"
+          ) ]
         }
       },
       {
@@ -70,6 +100,12 @@
         },
         value: {
           html: mocFormattedPublicRegister
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
+            "On a public register in the country it was formed in"
+          ) ]
         }
       },
       {
@@ -78,6 +114,12 @@
         },
         value: {
           text: moc.role_and_responsibilities
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+            "Role and responsibilities"
+          ) ]
         }
       },
       {
@@ -86,6 +128,12 @@
         },
         value: {
           html: moc.contact_full_name
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CONTACT_FULL_NAME,
+            "Contact full name"
+          ) ]
         }
       },
       {
@@ -94,6 +142,12 @@
         },
         value: {
           html: moc.contact_email
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CONTACT_EMAIL,
+            "Contact email"
+          ) ]
         }
       }
     ]

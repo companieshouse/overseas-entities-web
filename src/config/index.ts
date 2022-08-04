@@ -97,15 +97,27 @@ const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
 
 // Change links
-const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
-const CHANGE_SERVICE_ADDRESS = "#service_address_property_name_number";
+export const NAME = "#name";
+export const FIRST_NAME = "#first_name";
+export const LAST_NAME = "#last_name";
+export const FORMER_NAMES = "#former_names";
+export const DATE_OF_BIRTH = "#date_of_birth";
+export const NATIONALITY = "#nationality";
+export const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
+export const CHANGE_RESIDENTIAL_ADDRESS = "#usual_residential_address_property_name_number";
+export const CHANGE_SERVICE_ADDRESS = "#service_address_property_name_number";
+export const OCCUPATION = "#occupation";
+export const ROLE_AND_RESPONSIBILITIES = "#role_and_responsibilities";
 const EMAIL = "#email";
-const LEGAL_FORM = "#legal_form";
-const LAW_GOVERNED = "#law_governed";
+export const LEGAL_FORM = "#legal_form";
+export const LAW_GOVERNED = "#law_governed";
+export const IS_ON_REGISTER_IN_COUNTRY_FORMED_IN = "#is_on_register_in_country_formed_in";
+export const CONTACT_FULL_NAME = "#contact_full_name";
+export const CONTACT_EMAIL = "#contact_email";
 
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + EMAIL;
-export const ENTITY_CHANGE_NAME = ENTITY_URL + "#name";
+export const ENTITY_CHANGE_NAME = ENTITY_URL + NAME;
 export const ENTITY_CHANGE_COUNTRY = ENTITY_URL + "#incorporation_country";
 export const ENTITY_CHANGE_PRINCIPAL_ADDRESS = ENTITY_URL + CHANGE_PRINCIPAL_ADDRESS;
 export const ENTITY_CHANGE_CORRESPONDENCE_ADDRESS = ENTITY_URL + CHANGE_SERVICE_ADDRESS;

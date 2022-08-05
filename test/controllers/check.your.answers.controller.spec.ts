@@ -205,6 +205,28 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
   });
 
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
+    const applicationData = { APPLICATION_DATA_MOCK };
+    applicationData[WhoIsRegisteringKey] =  WhoIsRegisteringType.SOMEONE_ELSE;
+    mockGetApplicationData.mockReturnValueOnce(applicationData);
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain(CHANGE_LINK);
+
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PUBLIC_REGISTER);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_WHO);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+  });
+
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);

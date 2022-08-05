@@ -79,7 +79,7 @@ export enum ErrorMessages {
   MAX_PARTNER_NAME_LENGTH = "Name of person with overall responsibility must be 256 characters or less",
   MAX_EMAIL_LENGTH = "Email address must be 250 characters or less",
   MAX_EMAIL_LENGTH_DUE_DILIGENCE = "Email address must be 256 characters or less",
-  MAX_PROPERTY_NAME_OR_NUMBER_LENGTH = "Property name or number must be 200 characters or less",
+  MAX_PROPERTY_NAME_OR_NUMBER_LENGTH = "Property name or number must be 50 characters or less",
   MAX_ADDRESS_LINE1_LENGTH = "Address line 1 must be 50 characters or less",
   MAX_ADDRESS_LINE2_LENGTH = "Address line 2 must be 50 characters or less",
   MAX_CITY_OR_TOWN_LENGTH = "City or town must be 50 characters or less",

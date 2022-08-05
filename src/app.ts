@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from 'cookie-parser';
 import Redis from 'ioredis';
+import helmet from "helmet";
 import * as nunjucks from "nunjucks";
 import * as path from "path";
 import {
@@ -15,6 +16,38 @@ import errorHandler from "./controllers/error.controller";
 import { createChangeLinkConfig } from "./utils/change.link";
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'none'"],
+      fontSrc: ["'self'", 'data:', config.CDN_HOST],
+      imgSrc: ["'self'", 'data:', config.CDN_HOST],
+      styleSrc: ["'self'", "'unsafe-inline'", config.CDN_HOST],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        'code.jquery.com/jquery-3.6.0.js',
+        config.CDN_HOST
+      ],
+      objectSrc: ["'none'"]
+    }
+  }
+}));
+
+const cookieConfig = {
+  cookieName: '__SID',
+  cookieSecret: config.COOKIE_SECRET,
+  cookieDomain: config.COOKIE_DOMAIN,
+  cookieTimeToLiveInSeconds: parseInt(config.DEFAULT_SESSION_EXPIRATION, 10)
+};
+const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
+app.use(SessionMiddleware(cookieConfig, sessionStore));
 
 // set some app variables from the environment
 app.set("port", config.PORT);
@@ -36,19 +69,6 @@ nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-const cookieConfig = {
-  cookieName: '__SID',
-  cookieSecret: config.COOKIE_SECRET,
-  cookieDomain: config.COOKIE_DOMAIN,
-  cookieTimeToLiveInSeconds: parseInt(config.DEFAULT_SESSION_EXPIRATION, 10)
-};
-const sessionStore = new SessionStore(new Redis(`redis://${config.CACHE_SERVER}`));
-app.use(SessionMiddleware(cookieConfig, sessionStore));
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "html");

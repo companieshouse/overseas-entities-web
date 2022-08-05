@@ -1,4 +1,4 @@
-import { MAX_200, MAX_50, NO_MAX } from "../max.length.mock";
+import { MAX_50, NO_MAX } from "../max.length.mock";
 
 export const ADDRESS = {
   property_name_number: "1",
@@ -31,7 +31,7 @@ export const IDENTITY_ADDRESS_REQ_BODY_EMPTY_MOCK = {
 };
 
 export const IDENTITY_ADDRESS_REQ_BODY_MAX_LENGTH_MOCK = {
-  identity_address_property_name_number: MAX_200 + "1",
+  identity_address_property_name_number: MAX_50 + "1",
   identity_address_line_1: MAX_50 + "1",
   identity_address_line_2: MAX_50 + "1",
   identity_address_town: MAX_50 + "1",

@@ -34,6 +34,13 @@ import {
   ENTITY_CHANGE_PRINCIPAL_ADDRESS,
   ENTITY_CHANGE_PUBLIC_REGISTER,
   LANDING_PAGE_URL,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
   PRESENTER_CHANGE_EMAIL,
   PRESENTER_CHANGE_FULL_NAME,
 } from "../../src/config";
@@ -149,6 +156,28 @@ describe("GET tests", () => {
     expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AML_NUMBER);
     expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AGENT_CODE);
     expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
+    const applicationData = { APPLICATION_DATA_MOCK };
+    applicationData[WhoIsRegisteringKey] =  WhoIsRegisteringType.SOMEONE_ELSE;
+    mockGetApplicationData.mockReturnValueOnce(applicationData);
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain(CHANGE_LINK);
+
+    expect(resp.text).toContain(ENTITY_CHANGE_PUBLIC_REGISTER);
+    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_WHO);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {

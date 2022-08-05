@@ -3,10 +3,13 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set mocChangeServiceAddressHtml = "" %}
 {% set mocFormattedServiceAddressHtml %}
   {% if moc.is_service_address_same_as_principal_address == 1 %}
+    {% set mocChangeServiceAddressHtml = "#is_service_address_same_as_principal_address" %}
     The correspondence address is the same as the principal or registered office address
   {% else %}
+    {% set mocChangeServiceAddressHtml = "#service_address_property_name_number" %}
     {% set address = moc.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -34,7 +37,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.NAME,
-            "Name"
+            "Corporate managing officer " + moc.name + " - name"
           ) ]
         }
       },
@@ -48,7 +51,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
-            "Principal or registered office address"
+            "Corporate managing officer " + moc.name + " - principal or registered office address"
           ) ]
         }
       },
@@ -62,7 +65,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
-            "Correspondence address"
+            "Corporate managing officer " + moc.name + " - correspondence address"
           ) ]
         }
       },
@@ -76,7 +79,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.LEGAL_FORM,
-            "Legal form"
+            "Corporate managing officer " + moc.name + " - legal form"
           ) ]
         }
       },
@@ -90,7 +93,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.LAW_GOVERNED,
-            "Governing law"
+            "Corporate managing officer " + moc.name + " - governing law"
           ) ]
         }
       },
@@ -104,7 +107,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
-            "On a public register in the country it was formed in"
+            "Corporate managing officer " + moc.name + " - on a public register in the country it was formed in"
           ) ]
         }
       },
@@ -118,7 +121,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
-            "Role and responsibilities"
+            "Corporate managing officer " + moc.name + " - role and responsibilities"
           ) ]
         }
       },
@@ -132,7 +135,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CONTACT_FULL_NAME,
-            "Contact full name"
+            "Corporate managing officer " + moc.name + " - contact full name"
           ) ]
         }
       },
@@ -146,7 +149,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CONTACT_EMAIL,
-            "Contact email"
+            "Corporate managing officer " + moc.name + " - contact email"
           ) ]
         }
       }

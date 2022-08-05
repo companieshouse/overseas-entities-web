@@ -7,10 +7,13 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set moiChangeServiceAddressHtml = "" %}
 {% set moiFormattedServiceAddressHtml %}
   {% if moi.is_service_address_same_as_usual_residential_address == 1 %}
+    {% set moiChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
     The correspondence address is the same as the home address
   {% else %}
+    {% set moiChangeServiceAddressHtml = "#service_address_property_name_number" %}
     {% set address = moi.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -30,7 +33,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
-            "First name"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - first name"
           ) ]
         }
       },
@@ -44,7 +47,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.LAST_NAME,
-            "Last name"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - last name"
           ) ]
         }
       },
@@ -58,7 +61,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.FORMER_NAMES,
-            "Former names"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names"
           ) ]
         }
       },
@@ -72,7 +75,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
-            "Date of birth"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - date of birth"
           ) ]
         }
       },
@@ -86,7 +89,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.NATIONALITY,
-            "Nationality"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - nationality"
           ) ]
         }
       },
@@ -100,7 +103,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
-            "Home address"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - home address"
           ) ]
         }
       },
@@ -113,8 +116,8 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
-            "Correspondence address"
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeServiceAddressHtml,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - correspondence address"
           ) ]
         }
       },
@@ -128,7 +131,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.OCCUPATION,
-            "Occupation"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - occupation"
           ) ]
         }
       },
@@ -142,7 +145,7 @@
         actions: {
           items: [CREATE_CHANGE_LINK(
             OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
-            "Role and responsibilities"
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - role and responsibilities"
           ) ]
         }
       }

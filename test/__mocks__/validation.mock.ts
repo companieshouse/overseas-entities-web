@@ -11,7 +11,7 @@ const INVALID_CHARS = "Дракон";
 const EMAIL_INVALID_FORMAT = "lorem@ipsum";
 
 const PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
-  principal_address_property_name_number: maxLengthMocks.MAX_200 + "1",
+  principal_address_property_name_number: maxLengthMocks.MAX_50 + "1",
   principal_address_line_1: maxLengthMocks.MAX_50 + "1",
   principal_address_line_2: maxLengthMocks.MAX_50 + "1",
   principal_address_town: maxLengthMocks.MAX_50 + "1",
@@ -31,7 +31,7 @@ const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
 };
 
 const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
-  usual_residential_address_property_name_number: maxLengthMocks.MAX_200 + "1",
+  usual_residential_address_property_name_number: maxLengthMocks.MAX_50 + "1",
   usual_residential_address_line_1: maxLengthMocks.MAX_50 + "1",
   usual_residential_address_line_2: maxLengthMocks.MAX_50 + "1",
   usual_residential_address_town: maxLengthMocks.MAX_50 + "1",
@@ -41,7 +41,7 @@ const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
 };
 
 const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
-  service_address_property_name_number: maxLengthMocks.MAX_200 + "1",
+  service_address_property_name_number: maxLengthMocks.MAX_50 + "1",
   service_address_line_1: maxLengthMocks.MAX_50 + "1",
   service_address_line_2: maxLengthMocks.MAX_50 + "1",
   service_address_town: maxLengthMocks.MAX_50 + "1",

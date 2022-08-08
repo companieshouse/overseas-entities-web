@@ -13,7 +13,7 @@ import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
-import { TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG } from "../__mocks__/validation.mock";
+import { TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES, TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG } from "../__mocks__/validation.mock";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -186,6 +186,18 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH);
+    });
+
+    test(`does not display error message when address premises fields are not submitted`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES );
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValueOnce(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
     });
   });
 });

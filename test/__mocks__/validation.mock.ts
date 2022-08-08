@@ -423,3 +423,59 @@ export const TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG = {
     ]
   }]`
 };
+
+export const TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "my trust",
+    "creation_date_day": "21",
+    "creation_date_month": "03",
+    "creation_date_year": "2007",
+    "unable_to_obtain_all_trust_info": "Yes",
+    "INDIVIDUALS": [
+      {
+        "type": "Beneficiary",
+        "forename": "bob",
+        "surname": "smith",
+        "dob_day": "19",
+        "dob_month": "03",
+        "dob_year": "1976",
+        "nationality": "welsh",
+        "ura_address_line_1": "ss",
+        "ura_address_locality": "dd",
+        "ura_address_region": "dd",
+        "ura_address_country": "wales",
+        "ura_address_postal_code": "cf240tl",
+        "sa_address_line_1": "ss",
+        "sa_address_locality": "dd",
+        "sa_address_region": "dd",
+        "sa_address_country": "wales",
+        "sa_address_postal_code": "cf240tl",
+        "date_became_interested_person_day": "11",
+        "date_became_interested_person_month": "11",
+        "date_became_interested_person_year": "1987"
+      }
+    ],
+    "CORPORATES": [
+      {
+        "type":"Settlor",
+        "name":"entname",
+        "ro_address_line_1":"line1",
+        "ro_address_locality":"cardiff",
+        "ro_address_country":"wales",
+        "ro_address_postal_code":"cf1 1aa",
+        "sa_address_line_1":"line1",
+        "sa_address_locality":"cardiff",
+        "sa_address_country":"wales",
+        "sa_address_postal_code":"cf1 1aa",
+        "identification_country_registration":"wales",
+        "identification_legal_authority":"mylaw",
+        "identification_legal_form":"legalform",
+        "date_became_interested_person_day":"04",
+        "date_became_interested_person_month":"04",
+        "date_became_interested_person_year":"2004"
+      }
+    ]
+  }]`
+};

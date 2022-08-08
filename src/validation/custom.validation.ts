@@ -91,7 +91,7 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-export const checkMandatoryTrustFields = (trustsJson: string) => {
+export const checkTrustFields = (trustsJson: string) => {
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
   const addressMaxLength = 50;
 
@@ -127,10 +127,10 @@ const checkTrustName = (trust: trustType.Trust) => {
 const checkIndividualsAddress = (trust: trustType.Trust, addressMaxLength: number) => {
   if (trust.INDIVIDUALS) {
     for (const individual of trust.INDIVIDUALS) {
-      if (individual.ura_address_premises?.length > addressMaxLength) {
+      if (individual.ura_address_premises && individual.ura_address_premises.length > addressMaxLength) {
         throw new Error(ErrorMessages.TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH);
       }
-      if (individual.sa_address_premises?.length > addressMaxLength) {
+      if (individual.sa_address_premises && individual.sa_address_premises.length > addressMaxLength) {
         throw new Error(ErrorMessages.TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH);
       }
     }
@@ -140,10 +140,10 @@ const checkIndividualsAddress = (trust: trustType.Trust, addressMaxLength: numbe
 const checkCorporatesAddress = (trust: trustType.Trust, addressMaxLength: number) => {
   if (trust.CORPORATES) {
     for (const corporate of trust.CORPORATES) {
-      if (corporate.ro_address_premises?.length > addressMaxLength) {
+      if (corporate.ro_address_premises && corporate.ro_address_premises.length > addressMaxLength) {
         throw new Error(ErrorMessages.TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH);
       }
-      if (corporate.sa_address_premises?.length > addressMaxLength) {
+      if (corporate.sa_address_premises && corporate.sa_address_premises.length > addressMaxLength) {
         throw new Error(ErrorMessages.TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH);
       }
     }

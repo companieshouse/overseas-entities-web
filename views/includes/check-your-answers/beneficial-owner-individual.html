@@ -9,10 +9,13 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set boiChangeServiceAddressHtml = "" %}
 {% set boiFormattedServiceAddressHtml %}
   {% if boi.is_service_address_same_as_usual_residential_address == 1 %}
     The correspondence address is the same as the home address
+    {% set boiChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
   {% else %}
+    {% set boiChangeServiceAddressHtml = "#service_address_property_name_number" %}
     {% set address = boi.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -52,6 +55,12 @@
       },
       value: {
         text: boi.first_name
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
+          "Individual beneficial owner " + boi.first_name + " - first name"
+        ) ]
       }
     },
     {
@@ -60,6 +69,12 @@
       },
       value: {
         text: boi.last_name
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.LAST_NAME,
+          "Individual beneficial owner " + boi.first_name + " - last name"
+        ) ]
       }
     },
     {
@@ -68,6 +83,12 @@
       },
       value: {
         text: boiDateOfBirth
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
+          "Individual beneficial owner " + boi.first_name + " - date of birth"
+        ) ]
       }
     },
     {
@@ -76,6 +97,12 @@
       },
       value: {
         text: boi.nationality
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NATIONALITY,
+          "Individual beneficial owner " + boi.first_name + " - nationality"
+        ) ]
       }
     },
     {
@@ -84,6 +111,12 @@
       },
       value: {
         html: boiFormattedResidentialAddressHtml
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+          "Individual beneficial owner " + boi.first_name + " - home address"
+        ) ]
       }
     },
     {
@@ -92,6 +125,12 @@
       },
       value: {
         html: boiFormattedServiceAddressHtml
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + boiChangeServiceAddressHtml,
+          "Individual beneficial owner " + boi.first_name + " - correspondence address"
+        ) ]
       }
     },
     {
@@ -100,6 +139,12 @@
       },
       value: {
         text: boiStartDate
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.START_DATE,
+          "Individual beneficial owner " + boi.first_name + " - date they became a beneficial owner"
+        ) ]
       }
     },
     {
@@ -108,6 +153,12 @@
       },
       value: {
         html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
+          "Individual beneficial owner " + boi.first_name + " - nature of control"
+        ) ]
       }
     },
     {
@@ -116,6 +167,12 @@
       },
       value: {
         html: boiIsOnSanctionsListHtml
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+          "Individual beneficial owner " + boi.first_name + " - are they on the sanctions list?"
+        ) ]
       }
     }
   ]

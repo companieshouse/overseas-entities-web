@@ -7,10 +7,13 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set bogChangeServiceAddressHtml = "" %}
 {% set bogFormattedServiceAddressHtml %}
   {% if bog.is_service_address_same_as_principal_address == 1 %}
+    {% set bogChangeServiceAddressHtml = "#is_service_address_same_as_principal_address" %}
     The correspondence address is the same as the principal or registered office address
   {% else %}
+    {% set bogChangeServiceAddressHtml = "#service_address_property_name_number" %}
     {% set address = bog.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -44,6 +47,12 @@
         },
         value: {
           text: bog.name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.NAME,
+            "Government or public authority beneficial owner " + bog.name + " - name"
+          ) ]
         }
       },
       {
@@ -52,6 +61,12 @@
         },
         value: {
           html: bogFormattedPrincipalAddressHtml
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
+            "Government or public authority beneficial owner " + bog.name + " - principal or registered office address"
+          ) ]
         }
       },
       {
@@ -60,6 +75,12 @@
         },
         value: {
           html: bogFormattedServiceAddressHtml
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + bogChangeServiceAddressHtml,
+            "Government or public authority beneficial owner " + bog.name + " - correspondence address"
+          ) ]
         }
       },
       {
@@ -68,6 +89,12 @@
         },
         value: {
           text: bog.legal_form
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.LEGAL_FORM,
+            "Government or public authority beneficial owner " + bog.name + " - legal form"
+          ) ]
         }
       },
       {
@@ -76,6 +103,12 @@
         },
         value: {
           html: bog.law_governed
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.LAW_GOVERNED,
+            "Government or public authority beneficial owner " + bog.name + " - governing law"
+          ) ]
         }
       },
       {
@@ -84,6 +117,12 @@
         },
         value: {
           text: bogStartDate
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.START_DATE,
+            "Government or public authority beneficial owner " + bog.name + " - date it became a beneficial owner"
+          ) ]
         }
       },
       {
@@ -92,6 +131,12 @@
         },
         value: {
           html: bogBeneficialOwnerIndividualNOCs + bogBeneficialOwnerNonLegalFirmNOCs
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.NOC_TYPES,
+            "Government or public authority beneficial owner " + bog.name + " - nature of control"
+          ) ]
         }
       },
       {
@@ -100,6 +145,12 @@
         },
         value: {
           html: bogIsOnSanctionsListHtml
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+            "Government or public authority beneficial owner " + bog.name + " - is it on the sanctions list?"
+          ) ]
         }
       }
     ]

@@ -98,12 +98,10 @@ export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TR
 
 // Change links
 export const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
-export const IS_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "#is_service_address_same_as_principal_address";
 export const CHANGE_SERVICE_ADDRESS = "#service_address_property_name_number";
 export const CHANGE_RESIDENTIAL_ADDRESS = "#usual_residential_address_property_name_number";
-export const IS_SERVICE_ADDRESS_SAME_AS_RESIDENTIAL_ADDRESS = "#is_service_address_same_as_usual_residential_address";
+export const IDENTITY_ADDRESS = "#identity_address_property_name_number";
 export const NAME = "#name";
-export const FORMER_NAMES = "#former_names";
 export const EMAIL = "#email";
 export const LEGAL_FORM = "#legal_form";
 export const LAW_GOVERNED = "#law_governed";
@@ -112,13 +110,12 @@ export const LAST_NAME = "#last_name";
 export const NATIONALITY = "#nationality";
 export const DATE_OF_BIRTH = "#date_of_birth-day";
 export const START_DATE = "#start_date-day";
+export const IDENTITY_DATE = "#identity_date-day";
 export const IS_ON_SANCTIONS_LIST = "#is_on_sanctions_list";
 export const NOC_TYPES = "#beneficial_owner_nature_of_control_types";
-export const OCCUPATION = "#occupation";
-export const ROLE_AND_RESPONSIBILITIES = "#role_and_responsibilities";
-export const IS_ON_REGISTER_IN_COUNTRY_FORMED_IN = "#is_on_register_in_country_formed_in";
-export const CONTACT_FULL_NAME = "#contact_full_name";
-export const CONTACT_EMAIL = "#contact_email";
+export const SUPERVISORY_NAME = "#supervisory_name";
+export const AML_NUMBER = "#aml_number";
+export const PARTNER_NAME = "#partner_name";
 
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + EMAIL;
@@ -132,11 +129,19 @@ export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + LAW_GOVERNED;
 export const ENTITY_CHANGE_PUBLIC_REGISTER = ENTITY_URL + "#is_on_register_in_country_formed_in";
 
 export const DUE_DILIGENCE_CHANGE_WHO = WHO_IS_MAKING_FILING_URL;
-export const DUE_DILIGENCE_CHANGE_IDENTITY_DATE = DUE_DILIGENCE_URL + "#identity_date-day";
+export const DUE_DILIGENCE_CHANGE_IDENTITY_DATE = DUE_DILIGENCE_URL + IDENTITY_DATE;
 export const DUE_DILIGENCE_CHANGE_NAME = DUE_DILIGENCE_URL + NAME;
-export const DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS = DUE_DILIGENCE_URL + "#identity_address_property_name_number";
+export const DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS = DUE_DILIGENCE_URL + IDENTITY_ADDRESS;
 export const DUE_DILIGENCE_CHANGE_EMAIL = DUE_DILIGENCE_URL + EMAIL;
-export const DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = DUE_DILIGENCE_URL + "#supervisory_name";
-export const DUE_DILIGENCE_CHANGE_AML_NUMBER = DUE_DILIGENCE_URL + "#aml_number";
+export const DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = DUE_DILIGENCE_URL + SUPERVISORY_NAME;
+export const DUE_DILIGENCE_CHANGE_AML_NUMBER = DUE_DILIGENCE_URL + AML_NUMBER;
 export const DUE_DILIGENCE_CHANGE_AGENT_CODE = DUE_DILIGENCE_URL + "#agent_code";
-export const DUE_DILIGENCE_CHANGE_PARTNER_NAME = DUE_DILIGENCE_URL + "#partner_name";
+export const DUE_DILIGENCE_CHANGE_PARTNER_NAME = DUE_DILIGENCE_URL + PARTNER_NAME;
+
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + IDENTITY_DATE;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + NAME;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + IDENTITY_ADDRESS;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + EMAIL;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + SUPERVISORY_NAME;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + AML_NUMBER;
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + PARTNER_NAME;

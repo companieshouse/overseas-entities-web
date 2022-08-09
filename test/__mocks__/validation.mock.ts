@@ -1,6 +1,7 @@
 import { MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./session.mock";
 import { ADDRESS } from "./fields/address.mock";
 import * as maxLengthMocks from "./max.length.mock";
+import { trustType } from "../../src/model";
 
 const NAME_SPECIAL_CHARS = "Kurt Gödel";
 
@@ -295,4 +296,186 @@ export const MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK 
   registration_number: "abc123",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
+};
+
+export const TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "name of trust",
+    "creation_date_day": "31",
+    "creation_date_month": "12",
+    "creation_date_year": "1999",
+    "unable_to_obtain_all_trust_info": false,
+    "INDIVIDUALS": [],
+    "HISTORICAL_BO": [],
+    "CORPORATES": [
+      {
+        "type":"Settlor",
+        "name":"entname",
+        "sa_address_premises":"${maxLengthMocks.MAX_50}1",
+        "sa_address_line_1":"line1",
+        "sa_address_locality":"cardiff",
+        "sa_address_country":"wales",
+        "sa_address_postal_code":"cf1 1aa",
+        "identification_country_registration":"wales",
+        "identification_legal_authority":"mylaw",
+        "identification_legal_form":"legalform",
+        "date_became_interested_person_day":"04",
+        "date_became_interested_person_month":"04",
+        "date_became_interested_person_year":"2004"
+      }
+    ]
+  }]`
+};
+
+export const TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "name of trust",
+    "creation_date_day": "31",
+    "creation_date_month": "12",
+    "creation_date_year": "1999",
+    "unable_to_obtain_all_trust_info": false,
+    "INDIVIDUALS": [],
+    "HISTORICAL_BO": [],
+    "CORPORATES": [
+      {
+        "type":"Settlor",
+        "name":"entname",
+        "ro_address_premises":"${maxLengthMocks.MAX_50}1",
+        "ro_address_line_1":"line1",
+        "ro_address_locality":"cardiff",
+        "ro_address_country":"wales",
+        "ro_address_postal_code":"cf1 1aa",
+        "identification_country_registration":"wales",
+        "identification_legal_authority":"mylaw",
+        "identification_legal_form":"legalform",
+        "date_became_interested_person_day":"04",
+        "date_became_interested_person_month":"04",
+        "date_became_interested_person_year":"2004"
+      }
+    ]
+  }]`
+};
+
+export const TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "my trust",
+    "creation_date_day": "21",
+    "creation_date_month": "03",
+    "creation_date_year": "2007",
+    "unable_to_obtain_all_trust_info": "Yes",
+    "INDIVIDUALS": [
+      {
+        "type": "Beneficiary",
+        "forename": "bob",
+        "surname": "smith",
+        "dob_day": "19",
+        "dob_month": "03",
+        "dob_year": "1976",
+        "nationality": "welsh",
+        "ura_address_premises": "${maxLengthMocks.MAX_50}1",
+        "ura_address_line_1": "ss",
+        "ura_address_locality": "dd",
+        "ura_address_region": "dd",
+        "ura_address_country": "wales",
+        "ura_address_postal_code": "cf240tl",
+        "date_became_interested_person_day": "11",
+        "date_became_interested_person_month": "11",
+        "date_became_interested_person_year": "1987"
+      }
+    ]
+  }]`
+};
+
+export const TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "my trust",
+    "creation_date_day": "21",
+    "creation_date_month": "03",
+    "creation_date_year": "2007",
+    "unable_to_obtain_all_trust_info": "Yes",
+    "INDIVIDUALS": [
+      {
+        "type": "Beneficiary",
+        "forename": "bob",
+        "surname": "smith",
+        "dob_day": "19",
+        "dob_month": "03",
+        "dob_year": "1976",
+        "nationality": "welsh",
+        "sa_address_premises": "${maxLengthMocks.MAX_50}1",
+        "sa_address_line_1": "ss",
+        "sa_address_locality": "dd",
+        "sa_address_region": "dd",
+        "sa_address_country": "wales",
+        "sa_address_postal_code": "cf240tl",
+        "date_became_interested_person_day": "11",
+        "date_became_interested_person_month": "11",
+        "date_became_interested_person_year": "1987"
+      }
+    ]
+  }]`
+};
+
+export const TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: `[{
+    "trust_name": "my trust",
+    "creation_date_day": "21",
+    "creation_date_month": "03",
+    "creation_date_year": "2007",
+    "unable_to_obtain_all_trust_info": "Yes",
+    "INDIVIDUALS": [
+      {
+        "type": "Beneficiary",
+        "forename": "bob",
+        "surname": "smith",
+        "dob_day": "19",
+        "dob_month": "03",
+        "dob_year": "1976",
+        "nationality": "welsh",
+        "ura_address_line_1": "ss",
+        "ura_address_locality": "dd",
+        "ura_address_region": "dd",
+        "ura_address_country": "wales",
+        "ura_address_postal_code": "cf240tl",
+        "sa_address_line_1": "ss",
+        "sa_address_locality": "dd",
+        "sa_address_region": "dd",
+        "sa_address_country": "wales",
+        "sa_address_postal_code": "cf240tl",
+        "date_became_interested_person_day": "11",
+        "date_became_interested_person_month": "11",
+        "date_became_interested_person_year": "1987"
+      }
+    ],
+    "CORPORATES": [
+      {
+        "type":"Settlor",
+        "name":"entname",
+        "ro_address_line_1":"line1",
+        "ro_address_locality":"cardiff",
+        "ro_address_country":"wales",
+        "ro_address_postal_code":"cf1 1aa",
+        "sa_address_line_1":"line1",
+        "sa_address_locality":"cardiff",
+        "sa_address_country":"wales",
+        "sa_address_postal_code":"cf1 1aa",
+        "identification_country_registration":"wales",
+        "identification_legal_authority":"mylaw",
+        "identification_legal_form":"legalform",
+        "date_became_interested_person_day":"04",
+        "date_became_interested_person_month":"04",
+        "date_became_interested_person_year":"2004"
+      }
+    ]
+  }]`
 };

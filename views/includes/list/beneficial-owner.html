@@ -1,7 +1,3 @@
-{% if (beneficial_owners_individual and beneficial_owners_individual.length > 0)
-    or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
-    or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
-%}
 <table class="govuk-table">
     <caption class="govuk-table__caption govuk-table__caption--m">Beneficial owners</caption>
     <tbody class="govuk-table__body">
@@ -40,4 +36,3 @@
         {% endfor %}
     </tbody>
 </table>
-{% endif %}

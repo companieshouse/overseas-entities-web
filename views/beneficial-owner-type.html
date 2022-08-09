@@ -36,16 +36,19 @@
   {% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
   {% set boTypes = bos %}
+  {% set whatToAdd = "another beneficial owner" %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
   {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
   {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
   {% set boTypes = mos %}
+  {% set whatToAdd = "another managing officer" %}
 {% else %}
   {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
   {% set boTypes = bos %}
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
   {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
+  {% set whatToAdd = "another beneficial owner or managing officer" %}
 {% endif %}
 
 {% block content %}
@@ -87,37 +90,24 @@
           items: boTypes
         }) }}
 
-        {{ govukButton({
-          text: "Add",
-          attributes: {
-            "id": "add"
-          }
-        }) }}
+        <button class="govuk-button" data-module="govuk-button" id="add">Add <span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
 
         {% if (beneficial_owners_individual and beneficial_owners_individual.length > 0)
           or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
           or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
-          or (managing_officers_individual and managing_officers_individual.length > 0)
-          or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
-          <h2 class="govuk-heading-l govuk-!-margin-0">What you have added so far:</h2>
-          <br>
-          {% include "includes/list/beneficial-owner.html" %}
-          {% include "includes/list/managing-officer.html" %}
+          %}
+            {% if (managing_officers_individual and managing_officers_individual.length > 0)
+              or (managing_officers_corporate and managing_officers_corporate.length > 0)  %}
+                {% include "includes/beneficial-owner-type/some-beneficial-owners.html" %}
+            {% else %}
+                {% include "includes/beneficial-owner-type/all-beneficial-owners.html" %}
+            {% endif %}
 
-          {% if (hasTrusts) %}
-            {% set nextPage = "trust-information" %}
-          {% else %}
-            {% set nextPage = "check-your-answers" %}
-          {% endif %}
+        {% elif (managing_officers_individual and managing_officers_individual.length > 0)
+          or (managing_officers_corporate and managing_officers_corporate.length > 0)
+          %}
+            {% include "includes/beneficial-owner-type/no-beneficial-owners.html" %}
 
-          {{ govukButton({
-            text: "No more to add",
-            attributes: {
-              "id": "submit"
-            },
-            classes: "govuk-button--secondary govuk-!-margin-top-6",
-            href: "/register-an-overseas-entity/" + nextPage
-          }) }}
         {% endif %}
 
       </form>

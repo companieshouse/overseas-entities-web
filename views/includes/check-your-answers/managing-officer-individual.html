@@ -7,6 +7,13 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set moiChangeFormerNamesHtml = "" %}
+{% if moi.has_former_names == 1 %}
+  {% set moiChangeFormerNamesHtml = "#former_names" %}
+{% else %}
+  {% set moiChangeFormerNamesHtml = "#has_former_names" %}
+{% endif %}
+
 {% set moiChangeServiceAddressHtml = "" %}
 {% set moiFormattedServiceAddressHtml %}
   {% if moi.is_service_address_same_as_usual_residential_address == 1 %}
@@ -60,7 +67,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.FORMER_NAMES,
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeFormerNamesHtml,
             "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names"
           ) ]
         }

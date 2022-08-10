@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Beneficial owner delete warning - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <h1 class="govuk-heading-xl">
+        Are you sure you want to change this information?
+      </h1>
+
+      {{ govukWarningText({
+        text: "This may cause other information you’ve entered to be deleted.",
+        iconFallbackText: "Warning"
+      }) }}
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+
+        {{ govukRadios({
+          errorMessage: errors.delete_beneficial_owners if errors,
+          idPrefix: "delete_beneficial_owners",
+          name: "delete_beneficial_owners",
+          fieldset: {
+            legend: {
+              text: "Are you sure you want to change this information?",
+              isPageHeading: false,
+              classes: "govuk-visually-hidden"
+            }
+          },
+          items: [
+            {
+              value: "1",
+              text: "Yes, I want to change this information",
+              checked: delete_beneficial_owners === "1",
+              attributes: {
+                "data-event-id": "yes-delete-beneficial-owners"
+              }
+            },
+            {
+              value: "0",
+              text: "No, I want to go back to the previous screen",
+              checked: delete_beneficial_owners === "0",
+              attributes: {
+                "data-event-id": "no-delete-beneficial-owners"
+              }
+            }
+          ]
+        }) }}
+
+        <!-- Hidden input, needed to submit the beneficial_owner_statement -->
+        {{ govukInput({
+          value: beneficial_owners_statement,
+          name: "beneficial_owner_statement",
+          classes: "govuk-visually-hidden"
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}

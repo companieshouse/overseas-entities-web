@@ -21,7 +21,8 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
-  LANDING_PAGE_URL, MANAGING_OFFICER_CORPORATE_URL,
+  LANDING_PAGE_URL,
+  MANAGING_OFFICER_CORPORATE_URL,
   MANAGING_OFFICER_URL,
 } from "../../src/config";
 
@@ -42,7 +43,8 @@ import {
   FOUND_REDIRECT_TO,
   IDENTITY_CHECKS,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
-  SERVICE_UNAVAILABLE, SOMEONE_ELSE_REGISTERING,
+  SERVICE_UNAVAILABLE,
+  SOMEONE_ELSE_REGISTERING,
   TRUST_INFORMATION_LINK,
 } from "../__mocks__/text.mock";
 import {
@@ -57,7 +59,8 @@ import {
   BO_IND_ID_URL,
   BO_OTHER_ID_URL,
   BO_GOV_ID_URL,
-  MO_IND_ID_URL, MO_CORP_ID_URL,
+  MO_IND_ID_URL,
+  MO_CORP_ID_URL,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -74,7 +77,6 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.i
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
-import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -235,7 +237,7 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.NAME}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CHANGE_PRINCIPAL_ADDRESS}`);
-    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CHANGE_SERVICE_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.IS_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.LEGAL_FORM}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.LAW_GOVERNED}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.PUBLIC_REGISTER_NAME}`);

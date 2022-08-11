@@ -36,17 +36,27 @@
   {% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
   {% set boTypes = bos %}
+  {% set whatToAdd = "another beneficial owner" %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
   {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
   {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
   {% set boTypes = mos %}
+  {% set whatToAdd = "another managing officer" %}
 {% else %}
   {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
   {% set boTypes = bos %}
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
   {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
+  {% set whatToAdd = "another beneficial owner or managing officer" %}
 {% endif %}
+
+{% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+  or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+  or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0) %}
+
+{% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
+  or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
 
 {% block content %}
 
@@ -87,19 +97,18 @@
           items: boTypes
         }) }}
 
-        {{ govukButton({
-          text: "Add",
-          attributes: {
-            "id": "add"
-          }
-        }) }}
+        <button class="govuk-button" data-module="govuk-button" id="add">Add <span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
 
-        {% if (beneficial_owners_individual and beneficial_owners_individual.length > 0)
-          or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
-          or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
-          or (managing_officers_individual and managing_officers_individual.length > 0)
-          or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
-          <h2 class="govuk-heading-l govuk-!-margin-0">What you have added so far:</h2>
+        {% if (hasBeneficialOwners and hasManagingOfficers) %}
+          {% set hiddenTextValue = "beneficial owners or managing officers" %}
+        {% elif (hasBeneficialOwners) %}
+          {% set hiddenTextValue = "beneficial owners" %}
+        {% elif (hasManagingOfficers) %}
+          {% set hiddenTextValue = "managing officers" %}
+        {% endif %}
+
+        {% if (hasBeneficialOwners or hasManagingOfficers) %}
+          <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>
           <br>
           {% include "includes/list/beneficial-owner.html" %}
           {% include "includes/list/managing-officer.html" %}
@@ -110,14 +119,8 @@
             {% set nextPage = "check-your-answers" %}
           {% endif %}
 
-          {{ govukButton({
-            text: "No more to add",
-            attributes: {
-              "id": "submit"
-            },
-            classes: "govuk-button--secondary govuk-!-margin-top-6",
-            href: "/register-an-overseas-entity/" + nextPage
-          }) }}
+          <a href= "/register-an-overseas-entity/{{ nextPage }}" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top- 6" data-module="govuk-button" id="submit">No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add</a>
+
         {% endif %}
 
       </form>

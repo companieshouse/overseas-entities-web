@@ -21,6 +21,11 @@ import {
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT,
+  BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED,
+  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED,
+  BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED,
+  BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED,
+  BENEFICIAL_OWNER_TYPE_ADD_BUTTON_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO,
@@ -119,6 +124,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED);
     });
 
     test("renders the beneficial owner type page for beneficial owners with just the MOs options", async () => {
@@ -128,6 +134,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_NONE_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED);
+    });
+
+    test("renders the beneficial owner type page for beneficial owners with both options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_SOME_IDENTIFIED);
     });
 
     test("catch error when rendering the page", async () => {

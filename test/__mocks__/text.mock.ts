@@ -1,6 +1,3 @@
-import { MANAGING_OFFICER_CORPORATE_URL, MANAGING_OFFICER_URL } from "../../src/config";
-import { MO_CORP_ID_URL, MO_IND_ID_URL } from "./session.mock";
-
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of UK property or land since 28 February 2022?";
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
@@ -74,5 +71,3 @@ export const AGENT_REGISTERING = "The UK agent";
 export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
 export const CHANGE_LINK = "Change";
 export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about this application";
-export const INDIVIDUAL_MANAGING_OFFICER_CHANGE_URL = MANAGING_OFFICER_URL + MO_IND_ID_URL;
-export const CORPORATE_MANAGING_OFFICER_CHANGE_URL = MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL;

@@ -7,10 +7,20 @@
   {% include "includes/display_address.html" %}
 {% endset %}
 
+{% set moiChangeFormerNamesHtml = "" %}
+{% if moi.has_former_names == 1 %}
+  {% set moiChangeFormerNamesHtml = "#former_names" %}
+{% else %}
+  {% set moiChangeFormerNamesHtml = "#has_former_names" %}
+{% endif %}
+
+{% set moiChangeServiceAddressHtml = "" %}
 {% set moiFormattedServiceAddressHtml %}
   {% if moi.is_service_address_same_as_usual_residential_address == 1 %}
+    {% set moiChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
     The correspondence address is the same as the home address
   {% else %}
+    {% set moiChangeServiceAddressHtml = "#service_address_property_name_number" %}
     {% set address = moi.service_address %}
     {% include "includes/display_address.html" %}
   {% endif %}
@@ -26,6 +36,12 @@
         },
         value: {
           text: moi.first_name
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - first name"
+          ) ]
         }
       },
       {
@@ -34,6 +50,12 @@
         },
         value: {
           text: moi.last_name
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.LAST_NAME,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - last name"
+          ) ]
         }
       },
       {
@@ -42,6 +64,12 @@
         },
         value: {
           text: moi.former_names if moi.has_former_names == 1
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeFormerNamesHtml,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names"
+          ) ]
         }
       },
       {
@@ -50,6 +78,12 @@
         },
         value: {
           text: moiDateOfBirth
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - date of birth"
+          ) ]
         }
       },
       {
@@ -58,6 +92,12 @@
         },
         value: {
           text: moi.nationality
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.NATIONALITY,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - nationality"
+          ) ]
         }
       },
       {
@@ -66,6 +106,12 @@
         },
         value: {
           html: moiFormattedResidentialAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - home address"
+          ) ]
         }
       },
       {
@@ -74,6 +120,12 @@
         },
         value: {
           html: moiFormattedServiceAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeServiceAddressHtml,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - correspondence address"
+          ) ]
         }
       },
       {
@@ -82,6 +134,12 @@
         },
         value: {
           html: moi.occupation
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.OCCUPATION,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - occupation"
+          ) ]
         }
       },
       {
@@ -90,8 +148,13 @@
         },
         value: {
           html: moi.role_and_responsibilities
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+            "Individual managing officer " + moi.first_name + " " + moi.last_name + " - role and responsibilities"
+          ) ]
         }
       }
     ]
 }) }}
-  

@@ -44,7 +44,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,
         id,
-        appData,
+        ...appData,
         ...req.body,
         ...dates,
         errors

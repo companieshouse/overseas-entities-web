@@ -1,29 +1,29 @@
-{% if (managing_officers_individual and managing_officers_individual.length > 0) or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
-<table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--m">Managing officers</caption>
-    <tbody class="govuk-table__body">
-        {% for mo in managing_officers_individual %}
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Individual</th>
-                <td class="govuk-table__cell">{{ mo.first_name }} {{ mo.last_name }}</td>
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_URL }}/{{ mo.id }}">
-                        Change or remove
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        {% for moc in managing_officers_corporate %}
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">Corporate</th>
-                <td class="govuk-table__cell">{{ moc.name }}</td>
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL }}/{{ moc.id }}">
-                        Change or remove
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+{% if (hasManagingOfficers) %}
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">Managing officers</caption>
+        <tbody class="govuk-table__body">
+            {% for mo in managing_officers_individual %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Individual</th>
+                    <td class="govuk-table__cell">{{ mo.first_name }} {{ mo.last_name }}</td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_URL }}/{{ mo.id }}">
+                            Change or remove
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for moc in managing_officers_corporate %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">Corporate</th>
+                    <td class="govuk-table__cell">{{ moc.name }}</td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL }}/{{ moc.id }}">
+                            Change or remove
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endif %}

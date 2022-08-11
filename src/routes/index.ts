@@ -6,6 +6,7 @@ import {
   beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerStatements,
+  beneficialOwnerDeleteWarning,
   beneficialOwnerType,
   cannotUse,
   checkYourAnswers,
@@ -72,6 +73,9 @@ router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...va
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
 router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
+
+router.get(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasEntity, beneficialOwnerDeleteWarning.get);
+router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnerDeleteWarning, checkValidations, beneficialOwnerDeleteWarning.post);
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);

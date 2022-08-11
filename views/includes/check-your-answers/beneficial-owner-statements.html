@@ -18,6 +18,12 @@
         },
         value: {
           text: statementText
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.BENEFICIAL_OWNER_STATEMENTS_URL,
+            statementText
+          ) ]
         }
       }
     ]

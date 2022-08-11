@@ -25,7 +25,12 @@ import {
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED,
-  BENEFICIAL_OWNER_TYPE_ADD_BUTTON_SOME_IDENTIFIED
+  BENEFICIAL_OWNER_TYPE_ADD_BUTTON_SOME_IDENTIFIED,
+  BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO,
+  BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO,
+  BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO,
+  BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
+  BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO
 } from '../__mocks__/text.mock';
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUSTS_MOCK, ERROR } from '../__mocks__/session.mock';
 import {
@@ -74,6 +79,42 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
       expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // continue button
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
+    });
+
+    test("renders the beneficial owner type page for beneficial owners", async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS
+      });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+    });
+
+    test("renders the beneficial owner type page for managing officers", async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED
+      });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
     });
 
     test("renders the beneficial owner type page for beneficial owners with just the BOs options", async () => {

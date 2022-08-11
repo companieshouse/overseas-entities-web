@@ -91,22 +91,61 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-export const checkMandatoryTrustFields = (nameErrMsg, dateErrMsg, trustsJson: string) => {
+export const checkTrustFields = (trustsJson: string) => {
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
+  const addressMaxLength = 50;
+
   for (const trust of trusts) {
-    if (
-      trust.creation_date_day === undefined ||
-      trust.creation_date_day === "" ||
-      trust.creation_date_month === undefined ||
-      trust.creation_date_month === "" ||
-      trust.creation_date_year === undefined ||
-      trust.creation_date_year === ""
-    ) {
-      throw new Error(dateErrMsg);
-    }
-    if (trust.trust_name === undefined || trust.trust_name === "") {
-      throw new Error(nameErrMsg);
-    }
+    checkTrustCreationDate(trust);
+
+    checkTrustName(trust);
+
+    checkIndividualsAddress(trust, addressMaxLength);
+
+    checkCorporatesAddress(trust, addressMaxLength);
   }
   return true;
+};
+
+const checkTrustCreationDate = (trust: trustType.Trust) => {
+  if (trust.creation_date_day === undefined ||
+    trust.creation_date_day === "" ||
+    trust.creation_date_month === undefined ||
+    trust.creation_date_month === "" ||
+    trust.creation_date_year === undefined ||
+    trust.creation_date_year === "") {
+    throw new Error(ErrorMessages.TRUST_CREATION_DATE);
+  }
+};
+
+const checkTrustName = (trust: trustType.Trust) => {
+  if (trust.trust_name === undefined || trust.trust_name === "") {
+    throw new Error(ErrorMessages.TRUST_NAME);
+  }
+};
+
+const checkIndividualsAddress = (trust: trustType.Trust, addressMaxLength: number) => {
+  if (trust.INDIVIDUALS) {
+    for (const individual of trust.INDIVIDUALS) {
+      if (individual.ura_address_premises && individual.ura_address_premises.length > addressMaxLength) {
+        throw new Error(ErrorMessages.TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH);
+      }
+      if (individual.sa_address_premises && individual.sa_address_premises.length > addressMaxLength) {
+        throw new Error(ErrorMessages.TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH);
+      }
+    }
+  }
+};
+
+const checkCorporatesAddress = (trust: trustType.Trust, addressMaxLength: number) => {
+  if (trust.CORPORATES) {
+    for (const corporate of trust.CORPORATES) {
+      if (corporate.ro_address_premises && corporate.ro_address_premises.length > addressMaxLength) {
+        throw new Error(ErrorMessages.TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH);
+      }
+      if (corporate.sa_address_premises && corporate.sa_address_premises.length > addressMaxLength) {
+        throw new Error(ErrorMessages.TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH);
+      }
+    }
+  }
 };

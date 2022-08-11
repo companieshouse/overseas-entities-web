@@ -11,39 +11,21 @@ import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../src/app";
+
 import {
+  BENEFICIAL_OWNER_GOV_URL,
+  BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  BENEFICIAL_OWNER_OTHER_URL,
+  BENEFICIAL_OWNER_STATEMENTS_URL,
   CHECK_YOUR_ANSWERS_PAGE,
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
-  DUE_DILIGENCE_CHANGE_AGENT_CODE,
-  DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  DUE_DILIGENCE_CHANGE_EMAIL,
-  DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  DUE_DILIGENCE_CHANGE_NAME,
-  DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-  DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  DUE_DILIGENCE_CHANGE_WHO,
-  ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
-  ENTITY_CHANGE_COUNTRY,
-  ENTITY_CHANGE_EMAIL,
-  ENTITY_CHANGE_GOVERNING_LAW,
-  ENTITY_CHANGE_LEGAL_FORM,
-  ENTITY_CHANGE_NAME,
-  ENTITY_CHANGE_PRINCIPAL_ADDRESS,
-  ENTITY_CHANGE_PUBLIC_REGISTER,
   LANDING_PAGE_URL,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
-  OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
-  PRESENTER_CHANGE_EMAIL,
-  PRESENTER_CHANGE_FULL_NAME,
 } from "../../src/config";
+
+import * as CHANGE_LINKS from "../../src/config";
+
 import {
   AGENT_REGISTERING,
   BENEFICIAL_OWNER_TYPE_LINK,
@@ -71,6 +53,9 @@ import {
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
+  BO_IND_ID_URL,
+  BO_OTHER_ID_URL,
+  BO_GOV_ID_URL,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -84,6 +69,9 @@ import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owne
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../__mocks__/overseas.entity.due.diligence.mock";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
+import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -137,25 +125,84 @@ describe("GET tests", () => {
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(CHANGE_LINK);
-    expect(resp.text).toContain(PRESENTER_CHANGE_FULL_NAME);
-    expect(resp.text).toContain(PRESENTER_CHANGE_EMAIL);
-    expect(resp.text).toContain(ENTITY_CHANGE_NAME);
-    expect(resp.text).toContain(ENTITY_CHANGE_COUNTRY);
-    expect(resp.text).toContain(ENTITY_CHANGE_PRINCIPAL_ADDRESS);
-    expect(resp.text).toContain(ENTITY_CHANGE_CORRESPONDENCE_ADDRESS);
-    expect(resp.text).toContain(ENTITY_CHANGE_EMAIL);
-    expect(resp.text).toContain(ENTITY_CHANGE_LEGAL_FORM);
-    expect(resp.text).toContain(ENTITY_CHANGE_GOVERNING_LAW);
-    expect(resp.text).toContain(ENTITY_CHANGE_PUBLIC_REGISTER);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_WHO);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_NAME);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_EMAIL);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AML_NUMBER);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_AGENT_CODE);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_FULL_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_EMAIL);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_COUNTRY);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PRINCIPAL_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_EMAIL);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_LEGAL_FORM);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_GOVERNING_LAW);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PUBLIC_REGISTER);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_WHO);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_EMAIL);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_AML_NUMBER);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_AGENT_CODE);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+    expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_URL); // Change link for Statements
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerGovKey]: [],
+      [BeneficialOwnerOtherKey]: []
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.LAST_NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.DATE_OF_BIRTH}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.CHANGE_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.START_DATE}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Others`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: [],
+      [BeneficialOwnerGovKey]: []
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.CHANGE_PRINCIPAL_ADDRESS}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.LEGAL_FORM}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.LAW_GOVERNED}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.START_DATE}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Gov`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: [],
+      [BeneficialOwnerOtherKey]: []
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.CHANGE_PRINCIPAL_ADDRESS}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.LEGAL_FORM}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.LAW_GOVERNED}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.START_DATE}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
@@ -169,15 +216,15 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(CHANGE_LINK);
 
-    expect(resp.text).toContain(ENTITY_CHANGE_PUBLIC_REGISTER);
-    expect(resp.text).toContain(DUE_DILIGENCE_CHANGE_WHO);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER);
-    expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PUBLIC_REGISTER);
+    expect(resp.text).toContain(CHANGE_LINKS.DUE_DILIGENCE_CHANGE_WHO);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+    expect(resp.text).toContain(CHANGE_LINKS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including identity checks - Agent (The UK-regulated agent) selected`, async () => {

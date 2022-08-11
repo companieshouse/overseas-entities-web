@@ -40,7 +40,7 @@ interface TrustIndividual {
   sa_address_locality: string;
   sa_address_po_box: string;
   sa_address_postal_code: string;
-  sa_address_premises: string;
+  sa_address_premises?: string;
   sa_address_region: string;
   ura_address_line1: string;
   ura_address_line2: string;
@@ -49,7 +49,7 @@ interface TrustIndividual {
   ura_address_locality: string;
   ura_address_po_box: string;
   ura_address_postal_code: string;
-  ura_address_premises: string;
+  ura_address_premises?: string;
   ura_address_region: string;
   date_became_interested_person_day: string;
   date_became_interested_person_month: string;
@@ -81,7 +81,7 @@ interface TrustCorporate {
   ro_address_locality: string;
   ro_address_po_box: string;
   ro_address_postal_code: string;
-  ro_address_premises: string;
+  ro_address_premises?: string;
   ro_address_region: string;
   sa_address_line1: string;
   sa_address_line2: string;
@@ -90,7 +90,7 @@ interface TrustCorporate {
   sa_address_locality: string;
   sa_address_po_box: string;
   sa_address_postal_code: string;
-  sa_address_premises: string;
+  sa_address_premises?: string;
   sa_address_region: string;
   identification_country_registration: string;
   identification_legal_authority: string;

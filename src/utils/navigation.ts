@@ -55,6 +55,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.ENTITY_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.BENEFICIAL_OWNER_DELETE_WARNING_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL, config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,

@@ -37,11 +37,13 @@
   {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
   {% set boTypes = bos %}
   {% set whatToAdd = "another beneficial owner" %}
+  {% set hiddenTextValue = "beneficial owners" %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
   {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
   {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
   {% set boTypes = mos %}
   {% set whatToAdd = "another managing officer" %}
+  {% set hiddenTextValue = "managing officers" %}
 {% else %}
   {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
   {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
@@ -49,6 +51,7 @@
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
   {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
   {% set whatToAdd = "another beneficial owner or managing officer" %}
+  {% set hiddenTextValue = "beneficial owners or managing officers" %}
 {% endif %}
 
 {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
@@ -98,14 +101,6 @@
         }) }}
 
         <button class="govuk-button" data-module="govuk-button" id="add">Add <span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
-
-        {% if (hasBeneficialOwners and hasManagingOfficers) %}
-          {% set hiddenTextValue = "beneficial owners or managing officers" %}
-        {% elif (hasBeneficialOwners) %}
-          {% set hiddenTextValue = "beneficial owners" %}
-        {% elif (hasManagingOfficers) %}
-          {% set hiddenTextValue = "managing officers" %}
-        {% endif %}
 
         {% if (hasBeneficialOwners or hasManagingOfficers) %}
           <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>

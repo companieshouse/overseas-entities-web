@@ -15,10 +15,13 @@
   {% endif %}
 {% endset %}
 
+{% set mocChangePublicregisterNameHtml = "" %}
 {% set mocFormattedPublicRegister %}
   {% if moc.is_on_register_in_country_formed_in == 1 %}
+    {% set mocChangePublicregisterNameHtml = "#public_register_name" %}
     {{ moc.public_register_name }} / {{ moc.registration_number }}
   {% else %}
+    {% set mocChangePublicregisterNameHtml = "#is_on_register_in_country_formed_in" %}
     No
   {% endif %}
 {% endset %}
@@ -64,7 +67,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + mocChangeServiceAddressHtml,
             "Corporate managing officer " + moc.name + " - correspondence address"
           ) ]
         }
@@ -106,7 +109,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
+            OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id + mocChangePublicregisterNameHtml,
             "Corporate managing officer " + moc.name + " - on a public register in the country it was formed in"
           ) ]
         }

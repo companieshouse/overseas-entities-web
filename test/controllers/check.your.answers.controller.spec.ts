@@ -21,7 +21,8 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
-  LANDING_PAGE_URL,
+  LANDING_PAGE_URL, MANAGING_OFFICER_CORPORATE_URL,
+  MANAGING_OFFICER_URL,
 } from "../../src/config";
 
 import * as CHANGE_LINKS from "../../src/config";
@@ -56,6 +57,7 @@ import {
   BO_IND_ID_URL,
   BO_OTHER_ID_URL,
   BO_GOV_ID_URL,
+  MO_IND_ID_URL, MO_CORP_ID_URL,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -72,6 +74,7 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.i
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -203,6 +206,42 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.START_DATE}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.LAST_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.FORMER_NAMES}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.CHANGE_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.DATE_OF_BIRTH}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.OCCUPATION}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.ROLE_AND_RESPONSIBILITIES}`);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Corporate`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CHANGE_PRINCIPAL_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CHANGE_SERVICE_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.LEGAL_FORM}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.LAW_GOVERNED}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.PUBLIC_REGISTER_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.ROLE_AND_RESPONSIBILITIES}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CONTACT_FULL_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_CORPORATE_URL}${MO_CORP_ID_URL}${CHANGE_LINKS.CONTACT_EMAIL}`);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {

@@ -38,6 +38,7 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   FOUND_REDIRECT_TO,
   IDENTITY_CHECKS,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
@@ -72,6 +73,7 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.i
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { TrustKey } from "../../src/model/trust.model";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -296,6 +298,7 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {
@@ -306,6 +309,20 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LINK); // continue button
     expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // back button
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with empty trust data`, async () => {
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+      [TrustKey]: []
+    });
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LINK);
+    expect(resp.text).not.toContain(TRUST_INFORMATION_LINK);
+    expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE}`, async () => {

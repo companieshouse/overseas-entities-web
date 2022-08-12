@@ -20,6 +20,7 @@ import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporateKey } from "../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../model/managing.officer.model";
+import { TrustKey } from "../model/trust.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -50,6 +51,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
       if ( boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED && checkBOsDetailsEntered(appData) ) {
         appData[BeneficialOwnerIndividualKey] = [];
+        appData[TrustKey] = [];
         appData[BeneficialOwnerOtherKey] = [];
         appData[BeneficialOwnerGovKey] = [];
       } else if ( boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS && checkMOsDetailsEntered(appData) ) {

@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/middleware/navigation/has.entity.middleware');
+jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
 
@@ -11,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import * as config from "../../src/config";
 
-import { hasEntity } from "../../src/middleware/navigation/has.entity.middleware";
+import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   getApplicationData,
@@ -35,9 +35,10 @@ import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.co
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { TrustKey } from "../../src/model/trust.model";
 
-const mockHasEntityMiddleware = hasEntity as jest.Mock;
-mockHasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
+mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -118,7 +119,8 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       const appData = {
         [BeneficialOwnerIndividualKey]: APPLICATION_DATA_MOCK.beneficial_owners_individual,
         [BeneficialOwnerOtherKey]: APPLICATION_DATA_MOCK.beneficial_owners_corporate,
-        [BeneficialOwnerGovKey]: APPLICATION_DATA_MOCK.beneficial_owners_government_or_public_authority
+        [BeneficialOwnerGovKey]: APPLICATION_DATA_MOCK.beneficial_owners_government_or_public_authority,
+        [TrustKey]: APPLICATION_DATA_MOCK.trusts,
       };
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
@@ -135,6 +137,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
         [BeneficialOwnerIndividualKey]: [],
         [BeneficialOwnerOtherKey]: [],
         [BeneficialOwnerGovKey]: [],
+        [TrustKey]: [],
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED
       });
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

@@ -53,18 +53,11 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
 };
 
 export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
-  return (
-    (appData[BeneficialOwnerIndividualKey] && appData[BeneficialOwnerIndividualKey]?.length) ||
-    (appData[BeneficialOwnerOtherKey] && appData[BeneficialOwnerOtherKey]?.length) ||
-    (appData[BeneficialOwnerGovKey] && appData[BeneficialOwnerGovKey]?.length)
-  );
+  return Boolean( appData[BeneficialOwnerIndividualKey]?.length || appData[BeneficialOwnerOtherKey]?.length || appData[BeneficialOwnerGovKey]?.length );
 };
 
 export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
-  return (
-    (appData[ManagingOfficerKey] && appData[ManagingOfficerKey]?.length) ||
-    (appData[ManagingOfficerCorporateKey] && appData[ManagingOfficerCorporateKey]?.length)
-  );
+  return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
 };
 
 export const removeFromApplicationData = (req: Request, key: string, id: string) => {

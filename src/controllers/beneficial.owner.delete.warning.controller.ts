@@ -26,7 +26,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}`);
 
     const beneficialOwnerStatement = req.query[BeneficialOwnerStatementKey] as string;
-    if (!BeneficialOwnersStatementTypes.includes(beneficialOwnerStatement)) {
+    if (!beneficialOwnerStatement || !BeneficialOwnersStatementTypes.includes(beneficialOwnerStatement)) {
       throw createAndLogErrorRequest(req, "Beneficial Owner Statement type not included or incorrect");
     }
 

@@ -57,6 +57,11 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.ENTITY_URL);
   });
 
+  test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_STATEMENTS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_DELETE_WARNING_URL} object`, () => {
+    const navigation = NAVIGATION[config.BENEFICIAL_OWNER_DELETE_WARNING_URL].previousPage();
+    expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+  });
+
   test(`NAVIGATION returns ${config.BENEFICIAL_OWNER_STATEMENTS_URL} when calling previousPage on ${config.BENEFICIAL_OWNER_TYPE_URL} object`, () => {
     const navigation = NAVIGATION[config.BENEFICIAL_OWNER_TYPE_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_URL);

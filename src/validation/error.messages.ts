@@ -72,6 +72,7 @@ export enum ErrorMessages {
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   SELECT_IF_ON_SANCTIONS_LIST = "Select yes if it is on the sanctions list",
   SELECT_NATURE_OF_CONTROL = "Select the nature of control",
+  SELECT_IF_YOU_WANT_TO_CHANGE_INFORMATION = "Select yes if you want to change this information",
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

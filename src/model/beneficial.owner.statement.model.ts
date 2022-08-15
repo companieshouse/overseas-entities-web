@@ -5,3 +5,9 @@ export enum BeneficialOwnersStatementType {
     SOME_IDENTIFIED_ALL_DETAILS = "SOME_IDENTIFIED_ALL_DETAILS",
     NONE_IDENTIFIED = "NONE_IDENTIFIED"
 }
+
+export const BeneficialOwnersStatementTypes = [
+  "ALL_IDENTIFIED_ALL_DETAILS",
+  "SOME_IDENTIFIED_ALL_DETAILS",
+  "NONE_IDENTIFIED"
+];

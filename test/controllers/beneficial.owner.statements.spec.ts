@@ -11,8 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
+  APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
   ERROR
 } from "../__mocks__/session.mock";
 import {
@@ -20,8 +19,15 @@ import {
   SERVICE_UNAVAILABLE,
 } from "../__mocks__/text.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { getApplicationData } from "../../src/utils/application.data";
-import { BeneficialOwnersStatementType } from "../../src/model/beneficial.owner.statement.model";
+import {
+  checkBOsDetailsEntered,
+  checkMOsDetailsEntered,
+  getApplicationData,
+} from "../../src/utils/application.data";
+import {
+  BeneficialOwnersStatementType,
+  BeneficialOwnerStatementKey,
+} from "../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { hasEntity } from "../../src/middleware/navigation/has.entity.middleware";
 
@@ -32,6 +38,10 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCheckBOsDetailsEntered = checkBOsDetailsEntered as jest.Mock;
+const mockCheckMOsDetailsEntered = checkMOsDetailsEntered as jest.Mock;
+
+const redirectUrl = `${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=`;
 
 describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
@@ -88,6 +98,40 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
+              page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
+      });
+      mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
+
+      const boStatement = BeneficialOwnersStatementType.NONE_IDENTIFIED;
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
+        .send({ [BeneficialOwnerStatementKey]: boStatement });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+    });
+
+    test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
+              page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
+      });
+      mockCheckMOsDetailsEntered.mockReturnValueOnce(true);
+
+      const boStatement = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
+        .send({ [BeneficialOwnerStatementKey]: boStatement });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
     });
   });
 });

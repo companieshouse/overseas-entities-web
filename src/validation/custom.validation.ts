@@ -107,6 +107,23 @@ export const checkTrustFields = (trustsJson: string) => {
   return true;
 };
 
+export const checkBeneficialOwnerType = (session, value) => {
+  const data = session.data;
+  if (data && data.extra_data && data.extra_data.roe && !value) {
+    const boStatement: string = data.extra_data.roe.beneficial_owners_statement;
+    let errMsg;
+    if (boStatement === "ALL_IDENTIFIED_ALL_DETAILS") {
+      errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD;
+    } else if (boStatement === "NONE_IDENTIFIED") {
+      errMsg = ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD;
+    } else {
+      errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD;
+    }
+    throw new Error(errMsg);
+  }
+  return true;
+};
+
 const checkTrustCreationDate = (trust: trustType.Trust) => {
   if (trust.creation_date_day === undefined ||
     trust.creation_date_day === "" ||

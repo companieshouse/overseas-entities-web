@@ -75,7 +75,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
-        .send({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
@@ -94,7 +94,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
-        .send({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

@@ -118,6 +118,13 @@
 
         {% endif %}
 
+        <!-- Hidden input, needed to submit the beneficial owners statement -->
+        {{ govukInput({
+          value: beneficial_owners_statement,
+          name: "beneficial_owners_statement",
+          classes: "govuk-visually-hidden"
+        }) }}
+
       </form>
 
     </div>

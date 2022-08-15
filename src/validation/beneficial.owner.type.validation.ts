@@ -3,6 +3,6 @@ import { checkBeneficialOwnerType } from "./custom.validation";
 
 export const beneficialOwnersType = [
   body("beneficial_owner_type")
-    .custom((value, { req }) =>  checkBeneficialOwnerType(req.session, value))
+    .custom((value, { req }) =>  checkBeneficialOwnerType(req.body, value))
 ];
 

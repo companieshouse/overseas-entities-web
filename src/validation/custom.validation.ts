@@ -4,7 +4,6 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { trustType } from "../model";
-import { getApplicationData } from "../utils/application.data";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
@@ -109,10 +108,9 @@ export const checkTrustFields = (trustsJson: string) => {
   return true;
 };
 
-export const checkBeneficialOwnerType = (session, value) => {
-  const data = getApplicationData(session);
+export const checkBeneficialOwnerType = (reqBody, value) => {
   if (!value) {
-    const boStatement = data.beneficial_owners_statement;
+    const boStatement = reqBody.beneficial_owners_statement;
     let errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD;
     if (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS) {
       errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD;

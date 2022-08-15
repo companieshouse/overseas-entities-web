@@ -214,7 +214,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });
@@ -224,7 +224,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });
@@ -234,7 +234,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });

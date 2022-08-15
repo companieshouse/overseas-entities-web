@@ -1,4 +1,7 @@
 import { Session } from '@companieshouse/node-session-handler';
+import { Request } from "express";
+
+import { createAndLogErrorRequest } from './logger';
 import { ID } from '../model/data.types.model';
 import {
   ApplicationData,
@@ -6,8 +9,11 @@ import {
   ApplicationDataType,
   ApplicationDataArrayType
 } from "../model";
-import { createAndLogErrorRequest } from './logger';
-import { Request } from "express";
+import { BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
+import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
+import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
+import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
+import { ManagingOfficerKey } from '../model/managing.officer.model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -44,6 +50,14 @@ export const mapFieldsToDataObject = (data: any, htmlFields: string[], dataModel
 
 export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModelKeys: string[]) => {
   return htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {});
+};
+
+export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
+  return Boolean( appData[BeneficialOwnerIndividualKey]?.length || appData[BeneficialOwnerOtherKey]?.length || appData[BeneficialOwnerGovKey]?.length );
+};
+
+export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
+  return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
 };
 
 export const removeFromApplicationData = (req: Request, key: string, id: string) => {

@@ -9,7 +9,9 @@ import {
   mapDataObjectToFields,
   mapFieldsToDataObject,
   removeFromApplicationData,
-  getFromApplicationData
+  getFromApplicationData,
+  checkBOsDetailsEntered,
+  checkMOsDetailsEntered
 } from "../../src/utils/application.data";
 import {
   BO_GOV_ID,
@@ -24,6 +26,10 @@ import { ADDRESS } from "../__mocks__/fields/address.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
+import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 
 let req: Request;
 
@@ -95,6 +101,61 @@ describe("Application data utils", () => {
   test("mapDataObjectToFields should map address to address fields present on the view", () => {
     const response = mapDataObjectToFields(ADDRESS, ServiceAddressKeys, dataType.AddressKeys);
     expect(response).toEqual(SERVICE_ADDRESS_MOCK);
+  });
+
+  test('checkBOsDetailsEntered should be truthy if at least one BOs is present', () => {
+    const response = checkBOsDetailsEntered(APPLICATION_DATA_MOCK);
+    expect(response).toEqual(true);
+  });
+
+  test('checkBOsDetailsEntered should be truthy if BOC is present', () => {
+    const response = checkBOsDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: undefined,
+      [BeneficialOwnerGovKey]: undefined
+    });
+    expect(response).toEqual(true);
+  });
+
+  test('checkBOsDetailsEntered should be truthy if BOG is present', () => {
+    const response = checkBOsDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: undefined,
+      [BeneficialOwnerOtherKey]: undefined
+    });
+    expect(response).toEqual(true);
+  });
+
+  test('checkMOsDetailsEntered should be truthy if at least one MOs is present', () => {
+    const response = checkMOsDetailsEntered(APPLICATION_DATA_MOCK);
+    expect(response).toEqual(true);
+  });
+
+  test('checkMOsDetailsEntered should be truthy if MOC is present', () => {
+    const response = checkMOsDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [ManagingOfficerKey]: undefined
+    });
+    expect(response).toEqual(true);
+  });
+
+  test('checkBOsDetailsEntered should be falsy if no BOs are present', () => {
+    const response = checkBOsDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: undefined,
+      [BeneficialOwnerOtherKey]: undefined,
+      [BeneficialOwnerGovKey]: undefined
+    });
+    expect(response).toEqual(false);
+  });
+
+  test('checkMOsDetailsEntered should be falsy if no MOs are present', () => {
+    const response = checkMOsDetailsEntered({
+      ...APPLICATION_DATA_MOCK,
+      [ManagingOfficerKey]: undefined,
+      [ManagingOfficerCorporateKey]: undefined
+    });
+    expect(response).toEqual(false);
   });
 
   test("mapFieldsToDataObject should map address fields coming from the view to address", () => {

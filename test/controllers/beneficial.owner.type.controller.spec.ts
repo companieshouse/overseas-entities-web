@@ -32,7 +32,14 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO
 } from '../__mocks__/text.mock';
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUSTS_MOCK, ERROR } from '../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_NO_TRUSTS_MOCK,
+  BENEFICIAL_OWNER_STATEMENT_OBJECT_BO_MOCK,
+  BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
+  BENEFICIAL_OWNER_STATEMENT_OBJECT_MO_MOCK,
+  ERROR
+} from '../__mocks__/session.mock';
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
@@ -202,7 +209,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(config.MANAGING_OFFICER_CORPORATE_URL);
     });
 
-    test("renders the current page with error message", async () => {
+    test("renders the current page with beneficial owner error message", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_BO_MOCK });
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+    });
+
+    test("renders the current page with managing officer error message", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_MO_MOCK });
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+    });
+
+    test("renders the current page with beneficial owner or managing officer error message", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);

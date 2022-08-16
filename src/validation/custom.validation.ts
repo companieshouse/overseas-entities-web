@@ -4,6 +4,7 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { trustType } from "../model";
+import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -103,6 +104,19 @@ export const checkTrustFields = (trustsJson: string) => {
     checkIndividualsAddress(trust, addressMaxLength);
 
     checkCorporatesAddress(trust, addressMaxLength);
+  }
+  return true;
+};
+
+export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, value) => {
+  if (!value) {
+    let errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD;
+    if (beneficialOwnersStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS) {
+      errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD;
+    } else if (beneficialOwnersStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED) {
+      errMsg = ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD;
+    }
+    throw new Error(errMsg);
   }
   return true;
 };

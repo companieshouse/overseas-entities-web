@@ -11,8 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import {
-  APPLICATION_DATA_MOCK,
-  BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   ERROR
 } from "../__mocks__/session.mock";
 import {

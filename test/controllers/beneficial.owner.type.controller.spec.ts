@@ -35,7 +35,6 @@ import {
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_NO_TRUSTS_MOCK,
-  BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   ERROR
 } from '../__mocks__/session.mock';
 import {
@@ -228,12 +227,13 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has been selected `, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ beneficial_owners_statement: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
-      const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS });
 
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
-      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
     });
   });
 });

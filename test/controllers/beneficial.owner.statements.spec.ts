@@ -11,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import {
-  APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
+  APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   ERROR
 } from "../__mocks__/session.mock";
 import {
@@ -75,7 +75,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
-        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
@@ -94,7 +94,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
-        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK });
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

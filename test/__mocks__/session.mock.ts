@@ -181,11 +181,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   ...SERVICE_ADDRESS_MOCK
 };
 
-export const BENEFICIAL_OWNER_STATEMENT_OBJECT_BO_MOCK =
-  beneficialOwnerStatementType.BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
-export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MO_MOCK =
-  beneficialOwnerStatementType.BeneficialOwnersStatementType.NONE_IDENTIFIED;
-export const BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK =
+export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
   beneficialOwnerStatementType.BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS;
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -810,7 +806,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
@@ -828,7 +824,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_BOTH_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],

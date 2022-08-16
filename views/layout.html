@@ -96,12 +96,13 @@
   {% include "includes/piwik-scripts.html" %}
 
   <script src="//{{CDN_HOST}}/javascripts/app/overseas-entities/timeout-dialog.js"></script>
-  <!-- Add integrity and crossorigin for te above -->
+  <!-- Add integrity and crossorigin for the above and nonce for the below script-->
   <script>
     $(document).ready(function(){
+      // avoid triggering it for pages like (sign-out, service unavailable ...)
       $.timeoutDialog({
-        timeout: 120, // based on cookieTimeToLiveInSeconds
-        countdown: 60
+        timeout: 90,
+        countdown: 30
       });
     });
   </script>

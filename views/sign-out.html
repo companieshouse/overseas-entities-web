@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+    For your security, we signed you out - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">For your security, we signed you out</h1>
+        <p class="govuk-body">We did not save your answers.</p>
+        
+        <form method="post">
+            {{ govukButton({
+                text: "Sign in"
+            }) }}
+        </form>
+    </div>
+</div>
+{% endblock %}

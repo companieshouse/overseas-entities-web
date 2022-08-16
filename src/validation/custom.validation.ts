@@ -108,13 +108,12 @@ export const checkTrustFields = (trustsJson: string) => {
   return true;
 };
 
-export const checkBeneficialOwnerType = (reqBody, value) => {
+export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, value) => {
   if (!value) {
-    const boStatement = reqBody.beneficial_owners_statement;
     let errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD;
-    if (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS) {
+    if (beneficialOwnersStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS) {
       errMsg = ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD;
-    } else if (boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED) {
+    } else if (beneficialOwnersStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED) {
       errMsg = ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD;
     }
     throw new Error(errMsg);

@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% set title = "Have any registrable beneficial owners been identified?" %}
+
 {% block pageTitle %}
   Beneficial owner statements - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
@@ -16,6 +18,7 @@
       {% include "includes/list/errors.html" %}
 
       <h1 class="govuk-heading-xl">Have any registrable beneficial owners been identified?</h1>
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
 
       {{ govukDetails({
         summaryText: "What is a registrable beneficial owner?",

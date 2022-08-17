@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 
-{% set title = "Has the entity disposed of UK property or land since 28 February 2022?" %}
-
 {% block pageTitle %}
-  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
+Has the entity disposed of UK property or land since 28 February 2022?
+ - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -27,7 +26,7 @@
           name: "has_sold_land",
           fieldset: {
             legend: {
-              text: title,
+              text: "Has the entity disposed of UK property or land since 28 February 2022?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
             }

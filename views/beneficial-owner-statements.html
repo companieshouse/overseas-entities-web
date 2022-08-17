@@ -13,6 +13,8 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "includes/list/errors.html" %}
+
       <h1 class="govuk-heading-xl">Have any registrable beneficial owners been identified?</h1>
 
       {{ govukDetails({
@@ -22,8 +24,6 @@
         },
         html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the natures of control.</p>"
       }) }}
-
-      {% include "includes/list/errors.html" %}
 
       <form method="post">
 

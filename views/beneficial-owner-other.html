@@ -12,13 +12,14 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
       <span class="govuk-caption-xl">Beneficial owner</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the other legal entity</h1>
       <br>
       <p class="govuk-body">You can add more later.</p>
       <br>
-
-      {% include "includes/list/errors.html" %}
 
       <form class="form" method="post">
 
@@ -60,7 +61,7 @@
 
         {% set sanctionsListText = "Is it on the sanctions list?" %}
         {% set sanctionsListHintText = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
-        {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}        
+        {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
         {{ govukInsetText({
           html: '

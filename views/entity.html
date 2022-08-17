@@ -12,6 +12,8 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
+    {% include "includes/list/errors.html" %}
+
     <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
 
     {{ govukDetails({
@@ -21,8 +23,6 @@
       },
       text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
     }) }}
-
-    {% include "includes/list/errors.html" %}
 
     <form method="post">
 

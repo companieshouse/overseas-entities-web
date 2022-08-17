@@ -95,17 +95,5 @@
   <script>window.GOVUKFrontend.initAll()</script>
   {% include "includes/piwik-scripts.html" %}
 
-  <script src="//{{CDN_HOST}}/javascripts/app/overseas-entities/timeout-dialog.js"></script>
-  <!-- Add integrity and crossorigin for the above and nonce for the below script-->
-  <script>
-    $(document).ready(function(){
-      // avoid triggering it for pages like (sign-out, service unavailable ...)
-      $.timeoutDialog({
-        timeout: 90,
-        countdown: 30
-      });
-    });
-  </script>
-
-  <link rel="stylesheet" type="text/css" media="all" href="//{{CDN_HOST}}/stylesheets/services/overseas-entities/timeout-dialog.css"  />
+  {% include "includes/timeout-dialog.html" %}
 {% endblock %}

@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Tell us about the corporate managing officer" %}
+
 {% block pageTitle %}
-  Corporate managing officer - {{ SERVICE_NAME }} - GOV.UK
+  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -14,9 +16,9 @@
   <div class="govuk-grid-column-two-thirds">
 
     <span class="govuk-caption-xl">Managing officer</span>
-    <h1 class="govuk-heading-xl govuk-!-margin-0">Tell us about the corporate managing officer</h1>
+    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
-    
+
     {% include "includes/list/errors.html" %}
 
     <form class="form" method="post">

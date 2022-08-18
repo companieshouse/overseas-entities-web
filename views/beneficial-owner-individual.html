@@ -1,9 +1,7 @@
 {% extends "layout.html" %}
 
-{% set title = "Tell us about the individual person" %}
-
 {% block pageTitle %}
-  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
+  Tell us about the individual person - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}
@@ -14,11 +12,10 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+      {% include "includes/list/errors.html" %}
 
       <span class="govuk-caption-xl">Beneficial owner</span>
       {% include "includes/heading/bo-and-mo-individuals-heading.html" %}
-
-      {% include "includes/list/errors.html" %}
 
       <form method="post">
 

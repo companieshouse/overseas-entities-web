@@ -14,11 +14,12 @@
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
       <span class="govuk-caption-xl">Beneficial owner</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
       <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
-
-      {% include "includes/list/errors.html" %}
 
       <form class="form" method="post">
 

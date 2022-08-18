@@ -8,6 +8,10 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
+{% set noMoreToAddHtml %}
+  No more <span class="govuk-visually-hidden"> trust information</span> to add
+{% endset %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -79,7 +83,7 @@
 
         <p>
           {{ govukButton({
-            text: "No more to add",
+            html: noMoreToAddHtml,
             attributes: {
               "id": "submit",
               "name": "submit",

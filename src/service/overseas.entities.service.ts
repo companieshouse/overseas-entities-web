@@ -12,7 +12,7 @@ export const createOverseasEntity = async (req: Request, session: Session, trans
     getApplicationData(session)
   ) as any;
 
-  if (response.httpStatusCode && [201, 400].indexOf(response.httpStatusCode) === -1) {
+  if (response.httpStatusCode !== 201) {
     const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }

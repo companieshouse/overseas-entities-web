@@ -17,7 +17,7 @@ import {
   OVERSEAS_ENTITY_ID,
   TRANSACTION_ID,
 } from "../__mocks__/session.mock";
-import { CREATE_OE__MSG_ERROR, UNAUTHORISED } from "../__mocks__/text.mock";
+import { BAD_REQUEST, CREATE_OE__MSG_ERROR, UNAUTHORISED } from "../__mocks__/text.mock";
 import { Request } from "express";
 
 const mockDebugRequestLog = logger.debugRequest as jest.Mock;
@@ -49,6 +49,16 @@ describe('Overseas Entity Service test suite', () => {
 
     await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID) ).rejects.toThrow(ERROR);
     expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `${CREATE_OE__MSG_ERROR} ${TRANSACTION_ID} - ${JSON.stringify(mockData)}`);
+    expect(mockDebugRequestLog).not.toHaveBeenCalled();
+  });
+
+  test('createOverseasEntity should responde with 400 (Bad Request) error message', async () => {
+    const mockData = { httpStatusCode: 400, errors: [BAD_REQUEST] };
+    const errorMsg = `${CREATE_OE__MSG_ERROR} ${TRANSACTION_ID} - ${JSON.stringify(mockData)}`;
+    mockPostOverseasEntity.mockResolvedValueOnce(mockData);
+
+    await expect( createOverseasEntity(req, undefined as any, TRANSACTION_ID) ).rejects.toThrow(ERROR);
+    expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);
     expect(mockDebugRequestLog).not.toHaveBeenCalled();
   });
 

@@ -3,6 +3,9 @@
 {% set title = "Tell us about the government or public authority" %}
 
 {% block pageTitle %}
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+    Error:
+  {% endif %}
   {{ title }} - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 

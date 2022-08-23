@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 
+{% set title = "Tell us about the UK-regulated agent that carried out identity checks" %}
+
 {% block pageTitle %}
-  Tell us about the UK-regulated agent that carried out identity checks - {{ SERVICE_NAME }} - GOV.UK
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+    Error:
+  {% endif %}
+  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}

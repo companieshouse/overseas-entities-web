@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 
+{% set title = "Add trust information for the beneficial owners" %}
+
 {% block pageTitle %}
-  Add trust information for the beneficial owners – {{ serviceName }} – GOV.UK
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+    Error:
+  {% endif %}
+  {{ title }} – {{ serviceName }} – GOV.UK
 {% endblock %}
 
 {% block backLink %}

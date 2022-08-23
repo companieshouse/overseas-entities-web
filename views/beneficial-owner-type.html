@@ -54,6 +54,9 @@ or (beneficial_owners_government_or_public_authority and beneficial_owners_gover
 or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
 
 {% block pageTitle %}
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+    Error:
+  {% endif %}
   {{ boTypesTitle }} - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 

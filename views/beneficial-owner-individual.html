@@ -1,7 +1,12 @@
 {% extends "layout.html" %}
 
+{% set title = "Tell us about the individual person" %}
+
 {% block pageTitle %}
-  Tell us about the individual person - {{ SERVICE_NAME }} - GOV.UK
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+    Error:
+  {% endif %}
+  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
 {% block backLink %}

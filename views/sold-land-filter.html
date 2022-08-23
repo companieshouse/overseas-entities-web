@@ -3,10 +3,7 @@
 {% set title = "Has the entity disposed of UK property or land since 28 February 2022?" %}
 
 {% block pageTitle %}
-  {% if errors and errors.errorList and errors.errorList.length > 0 %}
-    Error:
-  {% endif %}
-  {{ title }} - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

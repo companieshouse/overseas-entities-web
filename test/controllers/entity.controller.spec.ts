@@ -24,6 +24,7 @@ import {
   SERVICE_UNAVAILABLE,
   ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
+  PAGE_TITLE_ERROR,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -62,6 +63,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(DUE_DILIGENCE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
@@ -158,6 +160,12 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(ENTITY_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("renders the current page with public register error messages", async () => {

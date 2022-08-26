@@ -13,6 +13,7 @@ import * as config from "../../src/config";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import {
   ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
   SECURE_REGISTER_FILTER_PAGE_HEADING,
@@ -52,6 +53,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to no`, async () => {
@@ -103,6 +105,12 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SECURE_REGISTER_FILTER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SECURE_REGISTER_FILTER);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.SECURE_REGISTER_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when posting the page", async () => {

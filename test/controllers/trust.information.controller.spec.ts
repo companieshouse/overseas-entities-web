@@ -7,7 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUST_NAME_MOCK, APPLICATION_DATA_NO_TRUST_DATE_MOCK, APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_SUBMIT_NO_NAME, TRUSTS_SUBMIT_NO_CREATION_DATE, TRUSTS_SUBMIT_PARTIAL_CREATION_DATE, TRUSTS_ADD_MORE, TRUSTS_EMPTY_TRUST_DATA, TRUSTS_EMPTY_CHECKBOX } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -38,6 +38,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when rendering the page", async () => {
@@ -112,6 +113,15 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_CREATION_DATE);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK);
+      const resp = await request(app)
+        .post(config.TRUST_INFO_URL)
+        .send({ TrustKey: "Trust info" });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when rendering the page", async () => {

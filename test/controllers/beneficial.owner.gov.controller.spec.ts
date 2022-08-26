@@ -20,7 +20,13 @@ import {
   removeFromApplicationData,
   setApplicationData
 } from '../../src/utils/application.data';
-import { BENEFICIAL_OWNER_GOV_PAGE_HEADING, ERROR_LIST, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
+import {
+  BENEFICIAL_OWNER_GOV_PAGE_HEADING,
+  ERROR_LIST,
+  MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE
+} from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
@@ -74,6 +80,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
     });
   });
@@ -133,6 +140,12 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.header.location).not.toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with MAX error messages`, async () => {

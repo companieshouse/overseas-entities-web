@@ -30,7 +30,8 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
-  BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO
+  BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
+  PAGE_TITLE_ERROR
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
@@ -70,6 +71,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
       expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(TRUST_INFORMATION_LINK); // continue button
     });
 
@@ -82,6 +84,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
       expect(resp.text).toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
       expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // continue button
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
     });
 
@@ -234,6 +237,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
   });
 });

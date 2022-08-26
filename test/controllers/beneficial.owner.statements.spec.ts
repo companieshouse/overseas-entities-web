@@ -16,6 +16,7 @@ import {
 } from "../__mocks__/session.mock";
 import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
+  PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
 } from "../__mocks__/text.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -58,6 +59,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
     });
 
@@ -98,6 +100,12 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}

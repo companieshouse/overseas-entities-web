@@ -34,8 +34,14 @@ import {
   LANDING_PAGE_URL,
   MANAGING_OFFICER_CORPORATE_PAGE,
   MANAGING_OFFICER_CORPORATE_URL,
-  REMOVE } from "../../src/config";
-import { MANAGING_OFFICER_CORPORATE_PAGE_TITLE, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
+  REMOVE
+} from "../../src/config";
+import {
+  MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
+  MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE
+} from "../__mocks__/text.mock";
 import {
   getFromApplicationData,
   mapFieldsToDataObject,
@@ -86,6 +92,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 
@@ -182,6 +189,12 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(MANAGING_OFFICER_CORPORATE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_CORPORATE_URL} with public register error messages`, async () => {

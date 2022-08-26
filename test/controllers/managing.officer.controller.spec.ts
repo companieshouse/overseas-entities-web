@@ -95,7 +95,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR)
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 

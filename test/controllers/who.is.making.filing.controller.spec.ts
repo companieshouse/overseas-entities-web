@@ -12,6 +12,7 @@ import * as config from "../../src/config";
 import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
   RADIO_BUTTON_AGENT_SELECTED,
   RADIO_BUTTON_SOMEONE_ELSE_SELECTED,
   SERVICE_UNAVAILABLE,
@@ -51,6 +52,7 @@ describe("Who is making filing controller tests", () => {
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
       expect(resp.text).not.toContain(RADIO_BUTTON_AGENT_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
@@ -106,6 +108,12 @@ describe("Who is making filing controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_FILING);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.WHO_IS_MAKING_FILING_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when posting the page", async () => {

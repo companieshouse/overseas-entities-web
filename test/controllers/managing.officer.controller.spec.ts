@@ -44,6 +44,7 @@ import {
   ERROR_LIST,
   MANAGING_OFFICER,
   MANAGING_OFFICER_PAGE_HEADING,
+  PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../src/model';
@@ -94,6 +95,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR)
     });
   });
 
@@ -196,6 +198,12 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.OCCUPATION);
       expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(MANAGING_OFFICER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_URL} with former names error messages`, async () => {

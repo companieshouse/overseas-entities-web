@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+
 {% block pageTitle %}
-  Tell us about the individual person - {{ SERVICE_NAME }} - GOV.UK
+  {% set title = "Tell us about the individual person" %}
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

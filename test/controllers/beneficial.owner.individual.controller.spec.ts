@@ -29,6 +29,7 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
   BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   ERROR_LIST,
+  PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import {
@@ -88,6 +89,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 
@@ -169,6 +171,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
       expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`adds data to the session and redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {

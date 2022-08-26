@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Do any beneficial owners or managing officers have their personal information protected at Companies House?" %}
+
 {% block pageTitle %}
-  Do any beneficial owners or managing officers have their personal information protected at Companies House?
-  - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

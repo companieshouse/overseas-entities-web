@@ -14,12 +14,13 @@ import {
   LANDING_URL,
   WHO_IS_MAKING_FILING_PAGE,
   WHO_IS_MAKING_FILING_URL,
-  LANDING_PAGE_URL
+  LANDING_PAGE_URL,
 } from "../../src/config";
 import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
+  PAGE_TITLE_ERROR,
   PRESENTER_PAGE_TITLE,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
@@ -55,6 +56,7 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when renders the presenter page", async () => {
@@ -89,6 +91,12 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(LANDING_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(PRESENTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("renders the current page with MAX error messages", async () => {

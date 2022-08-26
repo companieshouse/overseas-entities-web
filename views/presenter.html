@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Who can we contact about this application?" %}
+
 {% block pageTitle %}
-  Who can we contact about this application? - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

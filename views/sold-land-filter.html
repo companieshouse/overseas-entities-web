@@ -1,8 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Has the entity disposed of UK property or land since 28 February 2022?" %}
+
 {% block pageTitle %}
-Has the entity disposed of UK property or land since 28 February 2022?
- - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Are you sure you want to change this information?" %}
+
 {% block pageTitle %}
-  Are you sure you want to change this information? - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

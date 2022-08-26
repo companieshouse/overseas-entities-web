@@ -42,6 +42,7 @@ import {
   BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
   ERROR_LIST,
   MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE
 } from "../__mocks__/text.mock";
 import {
@@ -93,6 +94,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
     });
   });
@@ -164,6 +166,12 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("Catch error when posting data", async () => {

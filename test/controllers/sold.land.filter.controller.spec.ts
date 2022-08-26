@@ -11,6 +11,7 @@ import * as config from "../../src/config";
 import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
   SERVICE_UNAVAILABLE,
@@ -48,6 +49,7 @@ describe("SOLD LAND FILTER controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
 
@@ -117,6 +119,12 @@ describe("SOLD LAND FILTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ENTITY_HAS_SOLD_LAND);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.SOLD_LAND_FILTER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test("catch error when posting the page", async () => {

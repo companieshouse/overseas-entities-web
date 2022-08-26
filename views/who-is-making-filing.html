@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Who is making the filing?" %}
+
 {% block pageTitle %}
-    Who is making the filing? - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

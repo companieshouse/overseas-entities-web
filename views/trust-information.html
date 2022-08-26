@@ -1,7 +1,9 @@
 {% extends "layout.html" %}
 
+{% set title = "Add trust information for the beneficial owners" %}
+
 {% block pageTitle %}
-  Add trust information for the beneficial owners – {{ serviceName }} – GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}

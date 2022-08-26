@@ -84,3 +84,5 @@ export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
 export const CHANGE_LINK = "Change";
 export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about this application";
 export const DATA_EVENT_ID = "data-event-id";
+export const PAGE_TITLE_ERROR = "Error:";
+

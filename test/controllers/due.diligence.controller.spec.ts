@@ -27,6 +27,7 @@ import {
   DUE_DILIGENCE_PAGE_TITLE,
   DUE_DILIGENCE_NAME_TEXT,
   DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
+  PAGE_TITLE_ERROR,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
@@ -68,6 +69,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
@@ -136,6 +138,12 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(ErrorMessages.CHECK_DILIGENCE);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(DUE_DILIGENCE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with MAX error messages`, async () => {

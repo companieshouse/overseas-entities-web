@@ -182,7 +182,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      const resp = await request(app).post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL)
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);

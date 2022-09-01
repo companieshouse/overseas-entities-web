@@ -25,6 +25,7 @@ import {
   ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
+  INCORPORATION_COUNTRY_OPTION_SELECTED,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -85,6 +86,21 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.legal_form);
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
+    });
+
+    test("renders the entity page on GET method with Taiwan as country field", async () => {
+      mockGetApplicationData.mockReturnValueOnce( {
+        ...APPLICATION_DATA_MOCK,
+        [EntityKey]: {
+          ...APPLICATION_DATA_MOCK[EntityKey],
+          incorporation_country: "Taiwan, Province of China"
+        }
+      });
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
     });
 
     test("catch error when renders the entity page on GET method", async () => {

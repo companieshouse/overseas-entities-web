@@ -16,7 +16,6 @@ export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
 export const PIWIK_URL = getEnvironmentValue("PIWIK_URL");
 export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
-export const FEATURE_FLAG_ENABLE_PAYMENT_16052022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_PAYMENT_16052022");
 export const FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_TRUST_INFO_16062022");
 export const FEATURE_FLAG_ENABLE_CHANGE_LINKS_02082022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_CHANGE_LINKS_02082022", "true");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");

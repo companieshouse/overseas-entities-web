@@ -36,7 +36,7 @@ export const startPaymentsSession = async (
   const paymentUrl = transactionRes.headers?.[PAYMENT_REQUIRED_HEADER];
 
   if (!paymentUrl) {
-    // Only if transaction does not have a fee or PAYMENT flagged.
+    // Only if transaction does not have a fee.
     return CONFIRMATION_URL;
   }
 

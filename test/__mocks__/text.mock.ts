@@ -74,6 +74,7 @@ export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
 export const RADIO_BUTTON_SOMEONE_ELSE_SELECTED = "value=\"someone_else\" checked";
 export const INCORPORATION_COUNTRY_OPTION_SELECTED = "value=\"Taiwan, Province of China\" selected";
+export const UNITED_KINGDOM_COUNTRY_OPTION_SELECTED = "value=\"United Kingdom\" selected";
 export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";
 export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information provided in this section will be shown on the public Register of Overseas Entities.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";

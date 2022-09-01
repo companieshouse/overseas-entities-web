@@ -26,6 +26,7 @@ import {
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   INCORPORATION_COUNTRY_OPTION_SELECTED,
+  UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -93,7 +94,8 @@ describe("ENTITY controller", () => {
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
-          incorporation_country: "Taiwan, Province of China"
+          incorporation_country: "Taiwan, Province of China",
+          principal_address_country: "United Kingdom"
         }
       });
       const resp = await request(app).get(ENTITY_URL);
@@ -101,6 +103,22 @@ describe("ENTITY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
+      expect(resp.text).toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
+    });
+
+    test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
+      mockGetApplicationData.mockReturnValueOnce( {
+        ...APPLICATION_DATA_MOCK,
+        [EntityKey]: {
+          ...APPLICATION_DATA_MOCK[EntityKey],
+          incorporation_country: "United Kingdom"
+        }
+      });
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
     });
 
     test("catch error when renders the entity page on GET method", async () => {

@@ -259,6 +259,10 @@
   { value: 'Zimbabwe', text: 'Zimbabwe', selected: countryField === 'Zimbabwe' }
 ] %}
 
+{% if countryFieldNameId == "incorporation_country" %}
+    {% set COUNTRY = COUNTRY.filter( COUNTRY_FILTER ) %}
+{% endif %}
+
 {{ govukSelect({
     errorMessage: errors[countryFieldNameId] if errors,
     id: countryFieldNameId,

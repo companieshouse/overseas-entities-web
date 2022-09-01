@@ -1,7 +1,6 @@
 /* eslint-disable no-useless-escape */
 jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/payment");
-jest.mock("../../src/utils/feature.flag" );
 
 import { Request } from "express";
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
@@ -20,7 +19,6 @@ import {
   TRANSACTION_ID,
   TRANSACTION_WITH_PAYMENT_HEADER,
 } from "../__mocks__/session.mock";
-import { isActiveFeature } from "../../src/utils/feature.flag";
 import { ApiResponse, ApiResult } from "@companieshouse/api-sdk-node/dist/services/resource";
 import {
   NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR,
@@ -41,9 +39,6 @@ const mockPaymentResult: ApiResult<ApiResponse<Payment>> = {
 
 const mockCreateApiClient = createApiClient as jest.Mock;
 mockCreateApiClient.mockReturnValue({ payment: PaymentService.prototype });
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockImplementation( () => true );
 
 const session = getSessionRequestWithExtraData();
 const req: Request = {} as Request;

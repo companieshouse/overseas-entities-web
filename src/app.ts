@@ -13,6 +13,7 @@ import { logger } from "./utils/logger";
 import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { createChangeLinkConfig } from "./utils/change.link";
+import { countryFilter } from "./utils/country.filter";
 
 const app = express();
 
@@ -32,6 +33,7 @@ const nunjucksEnv = nunjucks.configure([
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("OE_CONFIGS", config);
+nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
 nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);

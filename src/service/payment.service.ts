@@ -7,7 +7,6 @@ import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { createOAuthApiClient } from "./api.service";
 import { getApplicationData, setApplicationData, setExtraData } from "../utils/application.data";
-import { isActiveFeature } from "../utils/feature.flag";
 import {
   PAYMENT_REQUIRED_HEADER,
   REFERENCE,
@@ -17,8 +16,7 @@ import {
   PAYMENT,
   TRANSACTION,
   OVERSEAS_ENTITY,
-  CONFIRMATION_URL,
-  FEATURE_FLAG_ENABLE_PAYMENT_16052022
+  CONFIRMATION_URL
 } from "../config";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
 
@@ -37,8 +35,8 @@ export const startPaymentsSession = async (
 
   const paymentUrl = transactionRes.headers?.[PAYMENT_REQUIRED_HEADER];
 
-  if (!isActiveFeature(FEATURE_FLAG_ENABLE_PAYMENT_16052022) || !paymentUrl) {
-    // Only if transaction does not have a fee or PAYMENT flagged.
+  if (!paymentUrl) {
+    // Only if transaction does not have a fee.
     return CONFIRMATION_URL;
   }
 

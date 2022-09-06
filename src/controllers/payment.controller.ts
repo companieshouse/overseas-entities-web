@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
-    logger.debugRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}`);
+    logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
 
     // The application must ensure that the returned `state` matches the nonce
     // sent by the application to the Payment Platform. Protection against CSRF

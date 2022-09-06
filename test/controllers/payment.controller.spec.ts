@@ -22,6 +22,7 @@ import { FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mock
 import { PaymentKey } from "../../src/model/data.types.model";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -37,7 +38,8 @@ describe("Payment controller", () => {
     mockGetApplicationData.mockReturnValueOnce( {} );
     await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
   });
 
@@ -47,7 +49,8 @@ describe("Payment controller", () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(2);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
@@ -57,7 +60,8 @@ describe("Payment controller", () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(2);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 

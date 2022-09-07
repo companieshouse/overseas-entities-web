@@ -232,10 +232,10 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NAME_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_PUBLIC_REGISTER_NUMBER_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);

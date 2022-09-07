@@ -154,10 +154,10 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK
 
 export const BENEFICIAL_OWNER_OTHER_WITH_MAX_LENGTH_FIELDS_MOCK = {
   name: maxLengthMocks.MAX_160 + "1",
-  legal_form: maxLengthMocks.MAX_4000 + "1",
-  law_governed: maxLengthMocks.MAX_4000 + "1",
-  public_register_name: maxLengthMocks.MAX_4000 + "1",
-  registration_number: maxLengthMocks.MAX_32 + "1",
+  legal_form: maxLengthMocks.MAX_160 + "1",
+  law_governed: maxLengthMocks.MAX_160 + "1",
+  public_register_name: maxLengthMocks.MAX_160 + "1",
+  registration_number: maxLengthMocks.MAX_160 + "1",
   is_on_register_in_country_formed_in: "1",
   is_on_sanctions_list: "0",
   is_service_address_same_as_principal_address: "1",
@@ -189,8 +189,8 @@ export const BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK = {
 
 export const BENEFICIAL_OWNER_GOV_WITH_MAX_LENGTH_FIELDS_MOCK = {
   name: maxLengthMocks.MAX_160 + "1",
-  legal_form: maxLengthMocks.MAX_4000 + "1",
-  law_governed: maxLengthMocks.MAX_4000 + "1",
+  legal_form: maxLengthMocks.MAX_160 + "1",
+  law_governed: maxLengthMocks.MAX_160 + "1",
   is_on_sanctions_list: "0",
   is_service_address_same_as_principal_address: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
@@ -225,11 +225,11 @@ export const MANAGING_OFFICER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
 
 export const MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK = {
   name: maxLengthMocks.MAX_160 + "1",
-  legal_form: maxLengthMocks.MAX_4000 + "1",
-  law_governed: maxLengthMocks.MAX_4000 + "1",
+  legal_form: maxLengthMocks.MAX_160 + "1",
+  law_governed: maxLengthMocks.MAX_160 + "1",
   is_on_register_in_country_formed_in: "1",
-  public_register_name: maxLengthMocks.MAX_4000 + "1",
-  registration_number: maxLengthMocks.MAX_32 + "1",
+  public_register_name: maxLengthMocks.MAX_160 + "1",
+  registration_number: maxLengthMocks.MAX_160 + "1",
   is_service_address_same_as_principal_address: "0",
   role_and_responsibilities: maxLengthMocks.MAX_260,
   contact_full_name: maxLengthMocks.MAX_160 + "1",

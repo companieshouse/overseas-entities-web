@@ -34,6 +34,7 @@ import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkValidations, checkTrustValidations } from "../middleware/validation.middleware";
 import { validator } from "../validation";
+import { createTransaction } from "../middleware/create.transaction.middleware";
 
 const router = Router();
 
@@ -45,7 +46,7 @@ router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
-router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
+router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, createTransaction, soldLandFilter.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 

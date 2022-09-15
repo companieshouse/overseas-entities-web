@@ -94,7 +94,7 @@ describe("ENTITY controller", () => {
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
           ...APPLICATION_DATA_MOCK[EntityKey],
-          incorporation_country: "Taiwan, Province of China",
+          incorporation_country: "Taiwan",
           principal_address_country: "United Kingdom"
         }
       });

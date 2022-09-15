@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/middleware/create.transaction.middleware');
 jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
@@ -23,11 +24,15 @@ import { deleteApplicationData, getApplicationData, setExtraData } from "../../s
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
+import { createTransaction } from "../../src/middleware/create.transaction.middleware";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCreateTransactionMiddleware = createTransaction as jest.Mock;
+mockCreateTransactionMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

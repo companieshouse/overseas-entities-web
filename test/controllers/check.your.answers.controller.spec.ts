@@ -461,32 +461,32 @@ describe("GET tests", () => {
 
 describe("POST tests", () => {
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+  // beforeEach(() => {
+  //   jest.clearAllMocks();
+  // });
 
-  test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
+  // test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+  //   const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
-  });
+  //   expect(resp.status).toEqual(302);
+  //   expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
+  // });
 
-  test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
-    mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-    const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
+  // test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
+  //   mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+  //   const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
-  });
+  //   expect(resp.status).toEqual(302);
+  //   expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
+  // });
 
-  test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockOverseasEntity.mockImplementation(() => {
-      throw ERROR;
-    });
-    const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
+  // test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+  //   mockOverseasEntity.mockImplementation(() => {
+  //     throw ERROR;
+  //   });
+  //   const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(500);
-    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-  });
+  //   expect(resp.status).toEqual(500);
+  //   expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+  // });
 });

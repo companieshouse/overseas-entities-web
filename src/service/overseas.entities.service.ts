@@ -7,17 +7,49 @@ import { getApplicationData } from "../utils/application.data";
 
 export const createOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<OverseasEntityCreated> => {
   const client = createOAuthApiClient(session);
-  const response = await client.overseasEntity.postOverseasEntity(
+  const createResponse = await client.overseasEntity.postOverseasEntity(
     transactionId,
     getApplicationData(session)
   ) as any;
 
-  if (response.httpStatusCode !== 201) {
-    const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
+  if (createResponse.httpStatusCode !== 201) {
+    const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(createResponse)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `created Overseas Entity, ${JSON.stringify(response)}`);
+  logger.debugRequest(req, `created Overseas Entity, ${JSON.stringify(createResponse)}`);
 
-  return response.resource as OverseasEntityCreated;
+  return createResponse.resource as OverseasEntityCreated;
+};
+
+export const updateOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<OverseasEntityCreated> => {
+  const client = createOAuthApiClient(session);
+  const updateResponse = await client.overseasEntity.proofOfConceptPutOverseasEntity(
+    transactionId,
+    getApplicationData(session)
+  ) as any;
+
+  if (updateResponse.httpStatusCode !== 201) {
+    const errorMsg = `Something went wrong updating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(updateResponse)}`;
+    throw createAndLogErrorRequest(req, errorMsg);
+  }
+
+  logger.debugRequest(req, `updated Overseas Entity, ${JSON.stringify(updateResponse)}`);
+
+  return updateResponse.resource as OverseasEntityCreated;
+};
+
+export const completeOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<void> => {
+  const client = createOAuthApiClient(session);
+
+  const patchResponse =  await client.overseasEntity.proofOfConceptPatchOverseasEntity(
+    transactionId
+  ) as any;
+
+  if (patchResponse.httpStatusCode !== 202) {
+    const errorMsg = `Something went wrong patching Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(patchResponse)}`;
+    throw createAndLogErrorRequest(req, errorMsg);
+  }
+
+  logger.debugRequest(req, `completed Overseas Entity, ${JSON.stringify(patchResponse)}`);
 };

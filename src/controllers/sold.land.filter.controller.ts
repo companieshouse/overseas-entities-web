@@ -8,13 +8,15 @@ import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "../model/data.types.mo
 import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityCreated } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { Session } from "@companieshouse/node-session-handler";
-import { getTransactionId, setSubmissionId } from "../utils/session";
+import { getTransactionId, setSubmissionId, setTransactionId } from "../utils/session";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
     if (req.query[LANDING_PAGE_QUERY_PARAM] === '0') {
+      setTransactionId(req.session, '');
+      setSubmissionId(req.session, '');
       deleteApplicationData(req.session);
     }
 

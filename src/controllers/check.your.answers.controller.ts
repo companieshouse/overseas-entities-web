@@ -2,7 +2,7 @@ import { OverseasEntityCreated } from "@companieshouse/api-sdk-node/dist/service
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 
-import { createOverseasEntity } from "../service/overseas.entities.service";
+import { updateOverseasEntity, completeOverseasEntity } from "../service/overseas.entities.service";
 import { closeTransaction } from "../service/transaction.service";
 
 import * as config from "../config";
@@ -56,8 +56,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     //  get transaction id out of session
     const transactionId: string = getTransactionId(session);
 
-    const overseaEntity: OverseasEntityCreated = await createOverseasEntity(req, session, transactionId as string);
-    logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntity.id}`);
+    const overseaEntity: OverseasEntityCreated = await updateOverseasEntity(req, session, transactionId as string);
+    logger.infoRequest(req, `Overseas Entity Updated, ID: ${overseaEntity.id}`);
+
+    await completeOverseasEntity(req, session, transactionId as string);
+    logger.infoRequest(req, `Overseas Entity Completed, ID: ${overseaEntity.id}`);
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionId as string, overseaEntity.id);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionId}`);

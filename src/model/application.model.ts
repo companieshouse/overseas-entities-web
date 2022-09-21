@@ -16,6 +16,8 @@ import {
 
 export const APPLICATION_DATA_KEY = 'roe';
 export const TRANSACTION_ID_KEY = 'roe_transaction_id';
+export const SUBMISSION_ID_KEY = 'roe_submission_id';
+
 
 export interface ApplicationData {
     presenter?: presenterType.Presenter;

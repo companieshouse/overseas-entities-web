@@ -3,7 +3,7 @@ import { SignInInfoKeys } from '@companieshouse/node-session-handler/lib/session
 import { UserProfileKeys } from '@companieshouse/node-session-handler//lib/session/keys/UserProfileKeys';
 import { ISignInInfo } from '@companieshouse/node-session-handler/lib/session/model/SessionInterfaces';
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
-import { TRANSACTION_ID_KEY } from '../model/application.model';
+import { TRANSACTION_ID_KEY, SUBMISSION_ID_KEY } from '../model/application.model';
 
 const getSignInInfo = (session): ISignInInfo => {
   return session?.data?.[SessionKey.SignInInfo];
@@ -30,4 +30,12 @@ export const setTransactionId = (session, transactionId: string): void => {
 
 export const getTransactionId = (session): string => {
   return session?.getExtraData(TRANSACTION_ID_KEY) as string;
+};
+
+export const setSubmissionId = (session, submissionId: string): void => {
+  return session?.setExtraData(SUBMISSION_ID_KEY, submissionId);
+};
+
+export const getSubmissionId = (session): string => {
+  return session?.getExtraData(SUBMISSION_ID_KEY) as string;
 };

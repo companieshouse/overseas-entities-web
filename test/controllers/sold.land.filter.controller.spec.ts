@@ -3,6 +3,7 @@ jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/create.transaction.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/service/overseas.entities.service');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -25,6 +26,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
 import { createTransaction } from "../../src/middleware/create.transaction.middleware";
+import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -37,6 +39,10 @@ mockCreateTransactionMiddleware.mockImplementation((req: Request, res: Response,
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+
+const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
+mockCreateOverseasEntity.mockResolvedValue({ id: "1234" });
+
 
 describe("SOLD LAND FILTER controller", () => {
 

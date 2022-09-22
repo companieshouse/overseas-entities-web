@@ -18,7 +18,18 @@ export const checkUserSignedIn = (session): boolean => {
   return signInInfo?.[SignInInfoKeys.SignedIn] === 1;
 };
 
+export const getRefreshToken = (session): string => {
+  const signInInfo = getSignInInfo(session);
+  return signInInfo?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.RefreshToken] as string;
+};
+
 export const getAccessToken = (session): string => {
   const signInInfo = getSignInInfo(session);
   return signInInfo?.[SignInInfoKeys.AccessToken]?.[AccessTokenKeys.AccessToken] as string;
+};
+
+export const setAccessToken = (session, accessToken) => {
+  const signInInfo = getSignInInfo(session) as ISignInInfo;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  signInInfo![SignInInfoKeys.AccessToken]![AccessTokenKeys.AccessToken] = accessToken;
 };

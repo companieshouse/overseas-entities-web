@@ -13,6 +13,7 @@ import { checkEntityHasTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
+import { refreshToken } from "../service/refresh.token.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -49,6 +50,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const session = req.session as Session;
     logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
+
+    const accessToken = await refreshToken(req, session);
+    logger.infoRequest(req, `New access token: ${accessToken}`);
 
     const transaction: Transaction = await postTransaction(req, session);
     logger.infoRequest(req, `Transaction created, ID: ${transaction.id}`);

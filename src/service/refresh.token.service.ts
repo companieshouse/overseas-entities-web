@@ -1,0 +1,31 @@
+import { Session } from '@companieshouse/node-session-handler';
+import { RefreshTokenData } from '@companieshouse/api-sdk-node/dist/services/refresh-token';
+import { Resource } from '@companieshouse/api-sdk-node';
+import ApiClient from '@companieshouse/api-sdk-node/dist/client';
+
+import { OAUTH2_CLIENT_ID, OAUTH2_CLIENT_SECRET, REFRESH_TOKEN_GRANT_TYPE } from '../config';
+import { createAndLogErrorRequest, logger } from '../utils/logger';
+import { getAccessToken, getRefreshToken, setAccessToken } from '../utils/session';
+import { createOAuthApiClient } from './api.service';
+
+export const refreshToken = async (req, session: Session): Promise<string> => {
+  const apiClient: ApiClient = createOAuthApiClient(session);
+
+  logger.infoRequest(req, `Making a POST request for refreshing access token ${getAccessToken(session)}`);
+
+  const refreshTokenData: Resource<RefreshTokenData> = await apiClient.refreshToken.refresh(
+    getRefreshToken(session),
+    REFRESH_TOKEN_GRANT_TYPE,
+    OAUTH2_CLIENT_ID,
+    OAUTH2_CLIENT_SECRET
+  );
+  const accessToken = refreshTokenData?.resource?.access_token;
+
+  if (!accessToken) {
+    throw createAndLogErrorRequest(req, `Error on refresh token ${refreshTokenData}`);
+  }
+
+  setAccessToken(session, accessToken);
+
+  return accessToken;
+};

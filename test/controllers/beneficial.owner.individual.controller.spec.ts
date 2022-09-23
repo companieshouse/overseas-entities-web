@@ -4,6 +4,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
+jest.mock("../../src/service/overseas.entities.service");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -57,6 +58,7 @@ import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.m
 import { ApplicationDataType } from '../../src/model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import * as config from "../../src/config";
+import { updateSubmissionData } from "../../src/service/overseas.entities.service";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -69,6 +71,9 @@ const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+
+const mockUpdateSubmissionData = updateSubmissionData as jest.Mock;
+mockUpdateSubmissionData.mockResolvedValue("test");
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 

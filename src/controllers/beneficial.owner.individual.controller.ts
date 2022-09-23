@@ -28,6 +28,7 @@ import {
 } from "../model/date.model";
 import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
 import { v4 as uuidv4 } from "uuid";
+import { updateSubmissionData } from "../service/overseas.entities.service";
 
 
 
@@ -68,13 +69,17 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+
+    // POC
+    await updateSubmissionData(req);
+    // end of POC
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

@@ -4,6 +4,7 @@ import { Request } from "express";
 import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
+import { getTransactionId } from "../utils/session";
 
 export const createOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<OverseasEntityCreated> => {
   const client = createOAuthApiClient(session);
@@ -52,4 +53,18 @@ export const completeOverseasEntity = async (req: Request, session: Session, tra
   }
 
   logger.debugRequest(req, `completed Overseas Entity, ${JSON.stringify(patchResponse)}`);
+};
+
+/**
+ * Added for POC save and resume
+ * @param req
+ */
+export const updateSubmissionData = async (req: Request) => {
+  const session = req.session as Session;
+
+  //  get transaction id out of session
+  const transactionId: string = getTransactionId(session);
+
+  const overseaEntity: OverseasEntityCreated = await updateOverseasEntity(req, session, transactionId as string);
+  logger.infoRequest(req, `Overseas Entity Updated, ID: ${overseaEntity.id}`);
 };

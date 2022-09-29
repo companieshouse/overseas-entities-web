@@ -51,8 +51,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
-    const accessToken = await refreshToken(req, session);
-    logger.infoRequest(req, `New access token: ${accessToken}`);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022)) {
+      const accessToken = await refreshToken(req, session);
+      logger.infoRequest(req, `New access token: ${accessToken}`);
+    }
 
     const transaction: Transaction = await postTransaction(req, session);
     logger.infoRequest(req, `Transaction created, ID: ${transaction.id}`);

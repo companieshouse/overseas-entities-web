@@ -1,8 +1,20 @@
 import { describe, expect, test } from '@jest/globals';
 import { Session } from '@companieshouse/node-session-handler';
 
-import { ACCESS_TOKEN_MOCK, getSessionRequestWithPermission, userMail } from '../__mocks__/session.mock';
-import { checkUserSignedIn, getAccessToken, getLoggedInUserEmail } from "../../src/utils/session";
+import {
+  ACCESS_TOKEN_MOCK,
+  getSessionRequestWithPermission,
+  mockNewAccessToken,
+  REFRESH_TOKEN_MOCK,
+  userMail
+} from '../__mocks__/session.mock';
+import {
+  checkUserSignedIn,
+  getAccessToken,
+  getLoggedInUserEmail,
+  getRefreshToken,
+  setAccessToken
+} from "../../src/utils/session";
 
 describe('Utils Session', () => {
   const testSessionWithPermission: Session = getSessionRequestWithPermission();
@@ -29,5 +41,19 @@ describe('Utils Session', () => {
 
   test('Test function getAccessToken() return blank values if session is null', () => {
     expect(getAccessToken(null)).toBeFalsy;
+  });
+
+  test('Test function getRefreshToken() return Refresh Token from session', () => {
+    expect(getRefreshToken(testSessionWithPermission)).toEqual(REFRESH_TOKEN_MOCK.refresh_token);
+  });
+
+  test('Test function getRefreshToken() return blank values if session is null', () => {
+    expect(getRefreshToken(null)).toBeFalsy;
+  });
+
+  test('Test function setAccessToken() set new Access Token', () => {
+    const mockSessioObject = { ...testSessionWithPermission };
+    setAccessToken(mockSessioObject, mockNewAccessToken);
+    expect(getAccessToken(mockSessioObject)).toEqual(mockNewAccessToken);
   });
 });

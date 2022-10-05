@@ -120,6 +120,7 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
 
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
+  data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
     ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     :  {};
@@ -132,7 +133,6 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[TrusteesNoc] = (data[TrusteesNoc]) ? [].concat(data[TrusteesNoc]) : [];
   data[NonLegalFirmNoc] = (data[NonLegalFirmNoc]) ? [].concat(data[NonLegalFirmNoc]) : [];
 
-  data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
   data[ID] = id;

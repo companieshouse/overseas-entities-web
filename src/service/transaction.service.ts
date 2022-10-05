@@ -1,11 +1,13 @@
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Session } from "@companieshouse/node-session-handler";
+import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
+
 import { Request } from "express";
+
 import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { DESCRIPTION, REFERENCE } from "../config";
-import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 

@@ -1,5 +1,5 @@
-import { Session } from '@companieshouse/node-session-handler';
 import ApiClient from '@companieshouse/api-sdk-node/dist/client';
+import { Session } from '@companieshouse/node-session-handler';
 
 import { OAUTH2_CLIENT_ID, OAUTH2_CLIENT_SECRET, REFRESH_TOKEN_GRANT_TYPE } from '../config';
 import { createAndLogErrorRequest, logger } from '../utils/logger';

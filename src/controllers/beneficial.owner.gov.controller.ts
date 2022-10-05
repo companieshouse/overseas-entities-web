@@ -106,7 +106,6 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerGovKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
-  data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
     ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     :  {};

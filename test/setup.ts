@@ -14,4 +14,7 @@ export default () => {
   process.env.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022 = "1";
   process.env.PAYMENT_FEE = "100";
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
+  process.env.OAUTH2_CLIENT_ID = "clientId";
+  process.env.OAUTH2_CLIENT_SECRET = "123";
+  process.env.FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022 = "1";
 };

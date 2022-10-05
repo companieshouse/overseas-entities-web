@@ -2,9 +2,10 @@ jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
+jest.mock('../../src/service/refresh.token.service');
 jest.mock('../../src/middleware/authentication.middleware');
-jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
+jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";

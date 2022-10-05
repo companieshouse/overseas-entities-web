@@ -294,6 +294,19 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
     });
 
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with YEAR_LENGTH error when year length is not 4 digits`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] =  "10";
+      beneficialOwnerGov["start_date-month"] = "12";
+      beneficialOwnerGov["start_date-year"] = "20";
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+    });
+
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is not in the past`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       const inTheFuture = DateTime.now().plus({ days: 1 });

@@ -395,6 +395,19 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
     });
 
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with YEAR_OF_BIRTH_LENGTH error when year is not 4 digits`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] =  "30";
+      managingOfficer["date_of_birth-month"] = "10";
+      managingOfficer["date_of_birth-year"] = "20";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+    });
+
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when invalid characters are used`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
       managingOfficer["date_of_birth-day"] =  "a";

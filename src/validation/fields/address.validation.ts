@@ -127,7 +127,6 @@ export const identity_address_validations = [
     .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS),
   body("identity_address_county")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTY)
     .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_COUNTY_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS),
   body("identity_address_country")

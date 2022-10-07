@@ -129,7 +129,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
-      expect(resp.text).toContain(ErrorMessages.COUNTY);
+      expect(resp.text).not.toContain(ErrorMessages.COUNTY);
       expect(resp.text).toContain(ErrorMessages.UK_COUNTRY);
       expect(resp.text).toContain(ErrorMessages.POSTCODE);
       expect(resp.text).toContain(ErrorMessages.EMAIL);

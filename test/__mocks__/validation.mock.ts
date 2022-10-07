@@ -75,8 +75,8 @@ const DATE_OF_BIRTH_MOCK = { 'date_of_birth-day': "1",  "date_of_birth-month": "
 const START_DATE_MOCK = { 'start_date-day': "1", 'start_date-month': "1", 'start_date-year': "2022" };
 
 export const PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK = {
-  full_name: maxLengthMocks.MAX_160 + "1",
-  email: maxLengthMocks.MAX_250 + "@toolong.com"
+  full_name: maxLengthMocks.MAX_256 + "1",
+  email: maxLengthMocks.MAX_256 + "@toolong.com"
 };
 
 export const PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {

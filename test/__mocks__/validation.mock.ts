@@ -93,7 +93,7 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   name: maxLengthMocks.MAX_160 + "1",
   incorporation_country: maxLengthMocks.NO_MAX,
   is_service_address_same_as_principal_address: 1,
-  email: maxLengthMocks.MAX_250 + "@toolong.com",
+  email: maxLengthMocks.MAX_256 + "@toolong.com",
   legal_form: maxLengthMocks.MAX_160 + "1",
   law_governed: maxLengthMocks.MAX_160 + "1",
   public_register_name: maxLengthMocks.MAX_160 + "1",

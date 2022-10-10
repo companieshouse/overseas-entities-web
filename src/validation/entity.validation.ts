@@ -18,7 +18,7 @@ export const entity = [
   ...principal_service_address_validations,
   body('email')
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL)
-    .isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
+    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
     .isEmail().withMessage(ErrorMessages.EMAIL_INVALID_FORMAT),
 
   body("legal_form")

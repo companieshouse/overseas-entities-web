@@ -50,7 +50,9 @@
   }) }}
   {% block backLink %}
   {% endblock %}
-  {% block signOut %}{% endblock %}
+  {% block signOutBanner %}
+    {% include "includes/sign-out-user-banner.html" %}
+  {% endblock %}
 {% endblock %}
 
 {% block header %}

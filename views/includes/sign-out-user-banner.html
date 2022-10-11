@@ -1,21 +1,9 @@
 {% if userEmail %}
-  <div class="govuk-section-break--visible">
-    <div class="sign-out-user-banner">
-      <span id="signed_in_user_email" class="sign-out-user-banner__email">
-        {{ userEmail }}
-      </span>
-      <a id="sign_out" class="sign-out-user-banner__sign-out-link" href="/register/sign-out" rel="noreferrer">
-        Sign out
-      </a>
-    </div>
-  </div>
-  <!-- <ul id="navigation" class="mobile-hidden">
-    <li class="user" id="signed-in-user">
-      {{ data['email'] }}
-    </li>
+  <ul id="navigation">
+    <li class="content-email">{{ userEmail }}</li>
     <li>
-      <a href="/register/sign-out" id="user-signout">Sign out</a>
+      <a href="/register/sign-out" data-event-id="signout">Sign out</a>
     </li>
   </ul>
-  <hr class="govuk-section-break govuk-section-break--visible">   -->
+  <hr class="govuk-section-break govuk-section-break--visible"> 
 {% endif %}

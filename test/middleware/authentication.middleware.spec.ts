@@ -19,12 +19,13 @@ jest.mock('../../src/utils/logger', () => {
 });
 
 const req = {} as Request;
-const res = { redirect: jest.fn() as any } as Response;
+const res = { locals: {}, redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
 describe('Authentication middleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    res.locals = {};
   });
 
   test("should call next() and log user signin", () => {
@@ -40,6 +41,7 @@ describe('Authentication middleware', () => {
     expect(logger.errorRequest).not.toHaveBeenCalled();
 
     expect(res.redirect).not.toHaveBeenCalled();
+    expect(res.locals).toEqual({ userEmail: userMail });
   });
 
   test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
@@ -52,6 +54,7 @@ describe('Authentication middleware', () => {
 
     expect(res.redirect).toHaveBeenCalledTimes(1);
     expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
+    expect(res.locals).toEqual({});
 
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
@@ -70,6 +73,8 @@ describe('Authentication middleware', () => {
 
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
+
+    expect(res.locals).toEqual({});
   });
 
   test("should redirect to signin page", async () => {
@@ -77,5 +82,7 @@ describe('Authentication middleware', () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toContain('/signin');
+
+    expect(res.locals).toEqual({});
   });
 });

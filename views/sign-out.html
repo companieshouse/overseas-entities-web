@@ -7,7 +7,7 @@
 {% block backLink %}
   {{ govukBackLink({
     text: "Back",
-    href: "javascript:history.back()"
+    href: previousPage
   }) }}
 {% endblock %}
 
@@ -43,7 +43,7 @@
       }) }}
 
       {{ govukInput({
-        value: {{ "javascript:history.back()" }},
+        value: previousPage,
         name: "previous_page",
         classes: "govuk-visually-hidden"
       }) }}

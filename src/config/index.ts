@@ -23,6 +23,7 @@ export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
+export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
@@ -89,6 +90,7 @@ export const DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + DUE_DILIGENCE
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE;
 export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
 export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
+export const ACCOUNTS_SIGNOUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 
 // URL PARAMS

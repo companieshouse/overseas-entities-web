@@ -7,7 +7,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
-    return res.render(config.SOLD_LAND_FILTER_PAGE);
+    return res.render(config.SIGN_OUT_PAGE);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -18,8 +18,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
 
+    logger.debugRequest(req, `${JSON.stringify(req.body)}`);
     if (req.body["sign_out"] === 'yes') {
-      return res.redirect('/signout');
+      return res.redirect(config.ACCOUNTS_SIGNOUT_URL);
     }
 
     return res.redirect(req.body["previous_page"]);

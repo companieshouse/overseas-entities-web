@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import { logger } from "../utils/logger";
+import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -19,12 +19,17 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
+    const previousPage = req.body["previous_page"];
+
+    if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+      throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
+    }
 
     if (req.body["sign_out"] === 'yes') {
       return res.redirect(config.ACCOUNTS_SIGNOUT_URL);
     }
 
-    return res.redirect(req.body["previous_page"]);
+    return res.redirect(previousPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

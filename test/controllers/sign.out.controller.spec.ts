@@ -8,14 +8,18 @@ import * as config from "../../src/config";
 import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
+  PAGE_NOT_FOUND_TEXT,
   SERVICE_UNAVAILABLE,
   SIGN_OUT_HINT_TEXT,
   SIGN_OUT_PAGE_TITLE
 } from "../__mocks__/text.mock";
 
-import { logger } from "../../src/utils/logger";
+import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
+
+const previous_page = `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`;
 
 describe("Sign Out controller", () => {
 
@@ -57,21 +61,34 @@ describe("Sign Out controller", () => {
     test(`redirects to ${config.ACCOUNTS_SIGNOUT_URL}, the CH search page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'yes' });
+        .send({ sign_out: 'yes', previous_page });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.ACCOUNTS_SIGNOUT_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
     test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previus page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'no', previous_page: config.SOLD_LAND_FILTER_PAGE });
+        .send({ sign_out: 'no', previous_page });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.SOLD_LAND_FILTER_PAGE);
+      expect(resp.header.location).toEqual(previous_page);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
+    test(`should rejecting redirect, throw an error and render not found page`, async () => {
+      const mockPreviousPage = "wrong/path";
+      const resp = await request(app)
+        .post(config.SIGN_OUT_URL)
+        .send({ sign_out: 'yes', previous_page: mockPreviousPage });
+
+      expect(resp.status).toEqual(404);
+      expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when posting the page", async () => {

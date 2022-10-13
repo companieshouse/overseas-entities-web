@@ -126,7 +126,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DUE_DILIGENCE_NAME);
-      expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).not.toContain(ErrorMessages.COUNTY);

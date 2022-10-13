@@ -113,6 +113,7 @@ export const usual_residential_service_address_validations = [
 
 export const identity_address_validations = [
   body("identity_address_property_name_number")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER)
     .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
   body("identity_address_line_1")

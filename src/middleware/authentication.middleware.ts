@@ -16,6 +16,8 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     }
     const userEmail = getLoggedInUserEmail(req.session);
     logger.infoRequest(req, `User (${ userEmail }) is signed in`);
+    // Using the https://expressjs.com/en/5x/api.html#res.locals to make sure that the email
+    // is available within a single request-response cycle and visible in the template.
     res.locals.userEmail = userEmail;
     next();
 

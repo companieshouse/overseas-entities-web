@@ -26,7 +26,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (req.body["sign_out"] === 'yes') {
-      return res.redirect(config.ACCOUNTS_SIGNOUT_URL);
+      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
     }
 
     return res.redirect(previousPage);

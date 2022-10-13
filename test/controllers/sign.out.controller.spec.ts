@@ -58,13 +58,13 @@ describe("Sign Out controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${config.ACCOUNTS_SIGNOUT_URL}, the CH search page when yes is selected`, async () => {
+    test(`redirects to ${config.ACCOUNTS_SIGN_OUT_URL}, the CH search page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
         .send({ sign_out: 'yes', previous_page });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.ACCOUNTS_SIGNOUT_URL);
+      expect(resp.header.location).toEqual(config.ACCOUNTS_SIGN_OUT_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });

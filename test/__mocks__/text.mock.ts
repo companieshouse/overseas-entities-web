@@ -42,6 +42,8 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the indiv
 export const MANAGING_OFFICER = "Managing officer";
 export const MANAGING_OFFICER_PAGE_HEADING = "Tell us about the individual person";
 export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporate managing officer";
+export const SIGN_OUT_PAGE_TITLE = "Are you sure you want to sign out?";
+export const SIGN_OUT_HINT_TEXT = "Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const IDENTITY_CHECKS = "Identity checks";
@@ -88,4 +90,4 @@ export const CHANGE_LINK = "Change";
 export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about this application";
 export const DATA_EVENT_ID = "data-event-id";
 export const PAGE_TITLE_ERROR = "Error:";
-
+export const PAGE_NOT_FOUND_TEXT = "Page not found";

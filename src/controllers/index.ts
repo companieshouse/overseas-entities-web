@@ -23,3 +23,4 @@ export * as dueDiligence from "./due.diligence.controller";
 export * as overseasEntityDueDiligence from "./overseas.entity.due.diligence.controller";
 export * as accessibilityStatement from "./accessibility.statement.controller";
 export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning.controller";
+export * as signOut from "./sign.out.controller";

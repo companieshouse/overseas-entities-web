@@ -23,6 +23,7 @@ export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
+export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
@@ -59,6 +60,7 @@ export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
 export const TRUST_INFO_PAGE = "trust-information";
 export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
+export const SIGN_OUT_PAGE = "sign-out";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -87,6 +89,8 @@ export const WHO_IS_MAKING_FILING_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + WHO_IS
 export const DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + DUE_DILIGENCE_PAGE;
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE;
 export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
+export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
+export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 
 // URL PARAMS

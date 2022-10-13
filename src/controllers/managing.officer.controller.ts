@@ -40,7 +40,7 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(MANAGING_OFFICER_PAGE, {
       backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
-      templateName: MANAGING_OFFICER_PAGE,
+      templateName: `${MANAGING_OFFICER_PAGE}/${id}`,
       id,
       ...data,
       ...usualResidentialAddress,

@@ -17,4 +17,5 @@ export default () => {
   process.env.OAUTH2_CLIENT_ID = "clientId";
   process.env.OAUTH2_CLIENT_SECRET = "123";
   process.env.FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022 = "1";
+  process.env.ACCOUNT_URL = "account.ch";
 };

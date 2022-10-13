@@ -14,8 +14,11 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
       return res.redirect(`/signin?return_to=${SOLD_LAND_FILTER_URL}`);
     }
-
-    logger.infoRequest(req, `User (${getLoggedInUserEmail(req.session)}) is signed in`);
+    const userEmail = getLoggedInUserEmail(req.session);
+    logger.infoRequest(req, `User (${ userEmail }) is signed in`);
+    // Using the https://expressjs.com/en/5x/api.html#res.locals to make sure that the email
+    // is available within a single request-response cycle and visible in the template.
+    res.locals.userEmail = userEmail;
     next();
 
   } catch (err) {

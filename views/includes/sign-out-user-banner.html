@@ -1,0 +1,9 @@
+{% if userEmail %}
+  <ul id="navigation">
+    <li class="content-email">{{ userEmail }}</li>
+    <li>
+      <a href="{{ OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL }}sign-out?page={{ templateName }}" data-event-id="signout">Sign out</a>
+    </li>
+  </ul>
+  <hr class="govuk-section-break govuk-section-break--visible"> 
+{% endif %}

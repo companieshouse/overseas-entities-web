@@ -1,10 +1,14 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 
-import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
-import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
+import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
+import { isActiveFeature } from "../utils/feature.flag";
+import { logger } from "../utils/logger";
+import { postTransaction } from "../service/transaction.service";
+import { createOverseasEntity } from "service/overseas.entities.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,12 +28,24 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST PRESENTER_PAGE`);
 
     const data = prepareData(req.body, PresenterKeys);
-    setApplicationData(req.session, data, PresenterKey);
+    const session = req.session as Session;
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      const appData: ApplicationData = getApplicationData(session);
+      if (!appData.transaction_id || !appData.overseas_entity_id) {
+        appData.transaction_id = await postTransaction(req, session);
+        appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id);
+      } else {
+        // await updateOverseasEntity(req, session, appData.transaction_id);
+      }
+    }
+
+    setApplicationData(session, data, PresenterKey);
 
     return res.redirect(config.WHO_IS_MAKING_FILING_URL);
   } catch (error) {

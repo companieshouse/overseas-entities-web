@@ -8,7 +8,7 @@ import { getApplicationData, setApplicationData, prepareData } from "../utils/ap
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity } from "service/overseas.entities.service";
+import { createOverseasEntity } from "../service/overseas.entities.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

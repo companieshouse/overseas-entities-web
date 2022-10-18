@@ -39,7 +39,7 @@ describe('Overseas Entity Service test suite', () => {
     mockPostOverseasEntity.mockResolvedValueOnce( { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } });
     const response = await createOverseasEntity(req, getSessionRequestWithExtraData(), TRANSACTION_ID);
 
-    expect(response.id).toEqual(OVERSEAS_ENTITY_ID);
+    expect(response).toEqual(OVERSEAS_ENTITY_ID);
     expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK);
   });
 

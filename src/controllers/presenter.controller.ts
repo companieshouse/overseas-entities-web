@@ -32,20 +32,19 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST PRESENTER_PAGE`);
 
-    const data = prepareData(req.body, PresenterKeys);
     const session = req.session as Session;
+    const data = prepareData(req.body, PresenterKeys);
+    setApplicationData(session, data, PresenterKey);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       const appData: ApplicationData = getApplicationData(session);
-      if (!appData.transaction_id || !appData.overseas_entity_id) {
+      if (!appData.transaction_id) {
         appData.transaction_id = await postTransaction(req, session);
         appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id);
       } else {
         // await updateOverseasEntity(req, session, appData.transaction_id);
       }
     }
-
-    setApplicationData(session, data, PresenterKey);
 
     return res.redirect(config.WHO_IS_MAKING_FILING_URL);
   } catch (error) {

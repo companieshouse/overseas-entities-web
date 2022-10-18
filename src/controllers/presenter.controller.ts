@@ -8,7 +8,7 @@ import { getApplicationData, setApplicationData, prepareData } from "../utils/ap
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity } from "../service/overseas.entities.service";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -42,7 +42,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         appData.transaction_id = await postTransaction(req, session);
         appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id);
       } else {
-        // await updateOverseasEntity(req, session, appData.transaction_id);
+        await updateOverseasEntity(req, session, appData.transaction_id);
       }
     }
 

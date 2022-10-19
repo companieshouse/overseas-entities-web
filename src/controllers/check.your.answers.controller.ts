@@ -60,12 +60,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const transactionID = (!isSaveAndResumeActive)
       ? await postTransaction(req, session)
       : appData.transaction_id as string;
-    logger.infoRequest(req, `Transaction created, ID: ${transactionID}`);
 
     const overseaEntityID = (!isSaveAndResumeActive)
       ? await createOverseasEntity(req, session, transactionID)
       : appData.overseas_entity_id as string;
-    logger.infoRequest(req, `Overseas Entity Created, ID: ${overseaEntityID}`);
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseaEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

@@ -8,7 +8,7 @@ import { getApplicationData, setApplicationData, prepareData } from "../utils/ap
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
+import { createOverseasEntity } from "../service/overseas.entities.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -41,9 +41,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       if (!appData.transaction_id) {
         appData.transaction_id = await postTransaction(req, session);
         appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id);
+
+        // missing post call
       } else {
-        await updateOverseasEntity(req, session, appData.transaction_id);
+        // missing putt call
       }
+      logger.debugRequest(req, `UPDATING ${JSON.stringify(appData)}`);
     }
 
     return res.redirect(config.WHO_IS_MAKING_FILING_URL);

@@ -16,22 +16,7 @@ export const createOverseasEntity = async (req: Request, session: Session, trans
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `created Overseas Entity, ${JSON.stringify(response)}`);
+  logger.debugRequest(req, `Created Overseas Entity, ${JSON.stringify(response)}`);
 
   return response.resource.id;
-};
-
-export const updateOverseasEntity = async (req: Request, session: Session, transactionId: string) => {
-  const client = createOAuthApiClient(session);
-  const response = await client.overseasEntity.putOverseasEntity(
-    transactionId,
-    getApplicationData(session)
-  ) as any;
-
-  if (response.httpStatusCode !== 200) {
-    const errorMsg = `Something went wrong with updating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
-    throw createAndLogErrorRequest(req, errorMsg);
-  }
-
-  logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
 };

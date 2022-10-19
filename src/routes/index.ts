@@ -38,7 +38,7 @@ import { validator } from "../validation";
 
 const router = Router();
 
-// It will removed on ROE-1452. Disabled to avoid issues described in the story
+// It will be removed on ROE-1452. Disabled to avoid issues described in the story
 // router.use(serviceAvailabilityMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);

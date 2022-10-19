@@ -52,7 +52,11 @@ export const COMPANY_NAME = "my company name";
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
 export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";
-export const TRANSACTION = { reference: `${REFERENCE}_${TRANSACTION_ID}`, description: DESCRIPTION };
+export const TRANSACTION = {
+  id: TRANSACTION_ID,
+  reference: `${REFERENCE}_${TRANSACTION_ID}`,
+  description: DESCRIPTION
+};
 export const PAYMENT_URL = "http://payment";
 export const STATE_ID = "ad83863d-7713-4b39-a625-3ec282d6710e";
 export const PAYMENT_HEADER = { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL };

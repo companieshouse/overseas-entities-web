@@ -41,7 +41,7 @@ describe('Transaction Service test suite', () => {
 
   describe('POST Transaction', () => {
     test('Should successfully post a transaction', async () => {
-      mockPostTransaction.mockResolvedValueOnce({ httpStatusCode: 200, resource: { id: TRANSACTION_ID, ...TRANSACTION } });
+      mockPostTransaction.mockResolvedValueOnce({ httpStatusCode: 200, resource: TRANSACTION });
       const response = await postTransaction(req, session) as any;
 
       const transaction: Transaction = { reference: REFERENCE, companyName: APPLICATION_DATA_MOCK.entity?.name, description: DESCRIPTION };

@@ -6,6 +6,8 @@ import { getApplicationData } from "../utils/application.data";
 
 export const createOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<string> => {
   const client = createOAuthApiClient(session);
+
+  // TODO: In the SDK the post will call the new start endpoint
   const response = await client.overseasEntity.postOverseasEntity(
     transactionId,
     getApplicationData(session)

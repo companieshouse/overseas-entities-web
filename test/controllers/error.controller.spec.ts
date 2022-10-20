@@ -32,6 +32,7 @@ describe("ERROR controller", () => {
 
     expect(response.status).toEqual(500);
     expect(response.text).toContain(SERVICE_UNAVAILABLE);
+    expect(response.text).toContain(config.ERROR_PAGE);
     expect(mockLoggerErrorRequest.mock.calls[0][1]).toContain(MESSAGE_ERROR);
   });
 

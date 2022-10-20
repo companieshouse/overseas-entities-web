@@ -4,13 +4,18 @@ import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 
-export const createOverseasEntity = async (req: Request, session: Session, transactionId: string): Promise<string> => {
+export const createOverseasEntity = async (
+  req: Request,
+  session: Session,
+  transactionId: string,
+  // isSaveAndResume: boolean = false
+): Promise<string> => {
   const client = createOAuthApiClient(session);
 
-  // TODO: In the SDK the post will call the new start endpoint
   const response = await client.overseasEntity.postOverseasEntity(
     transactionId,
-    getApplicationData(session)
+    getApplicationData(session),
+    // isSaveAndResume
   ) as any;
 
   if (response.httpStatusCode !== 201) {

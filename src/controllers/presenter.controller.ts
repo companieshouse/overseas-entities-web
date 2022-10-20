@@ -40,7 +40,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const appData: ApplicationData = getApplicationData(session);
       if (!appData.transaction_id) {
         appData.transaction_id = await postTransaction(req, session);
-        appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id);
+        appData.overseas_entity_id = await createOverseasEntity(req, session, appData.transaction_id); // , true);
       } else {
         // missing put call
       }

@@ -40,8 +40,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       const appData: ApplicationData = getApplicationData(session);
       if (!appData[Transactionkey]) {
-        appData[Transactionkey] = await postTransaction(req, session);
-        appData[OverseasEntityKey] = await createOverseasEntity(req, session, appData[Transactionkey], true);
+        const transactionID = await postTransaction(req, session);
+        appData[Transactionkey] = transactionID;
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
       } else {
         // TODO: Missing put call, it will be done on ROE-1441
       }

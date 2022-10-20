@@ -8,14 +8,14 @@ export const createOverseasEntity = async (
   req: Request,
   session: Session,
   transactionId: string,
-  // isSaveAndResumeFeatureActive: boolean = false
+  isSaveAndResumeFeatureActive: boolean = false
 ): Promise<string> => {
   const client = createOAuthApiClient(session);
 
   const response = await client.overseasEntity.postOverseasEntity(
     transactionId,
     getApplicationData(session),
-    // isSaveAndResumeFeatureActive
+    isSaveAndResumeFeatureActive
   ) as any;
 
   if (response.httpStatusCode !== 201) {

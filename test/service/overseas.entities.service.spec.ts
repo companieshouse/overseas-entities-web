@@ -40,7 +40,7 @@ describe('Overseas Entity Service test suite', () => {
     const response = await createOverseasEntity(req, getSessionRequestWithExtraData(), TRANSACTION_ID);
 
     expect(response).toEqual(OVERSEAS_ENTITY_ID);
-    expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK);
+    expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
   });
 
   test('createOverseasEntity should responde with UNAUTHORISED error message', async () => {

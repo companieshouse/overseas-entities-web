@@ -56,12 +56,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       logger.infoRequest(req, `New access token: ${accessToken}`);
     }
 
-    const isSaveAndResumeActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022);
-    const transactionID = (!isSaveAndResumeActive)
+    const isSaveAndResumeFeatureActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022);
+    const transactionID = (!isSaveAndResumeFeatureActive)
       ? await postTransaction(req, session)
       : appData.transaction_id as string;
 
-    const overseaEntityID = (!isSaveAndResumeActive)
+    const overseaEntityID = (!isSaveAndResumeFeatureActive)
       ? await createOverseasEntity(req, session, transactionID)
       : appData.overseas_entity_id as string;
 

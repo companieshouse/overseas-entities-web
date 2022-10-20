@@ -489,7 +489,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For the fresh token
+    mockIsActiveFeature.mockReturnValueOnce( false ); // For Refresh token
     mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
@@ -500,7 +500,7 @@ describe("POST tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For the fresh token
+    mockIsActiveFeature.mockReturnValueOnce( false ); // For Refresh token
     mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);

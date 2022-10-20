@@ -12,6 +12,7 @@ import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
 import { refreshToken } from "../service/refresh.token.service";
+import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -57,19 +58,22 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const isSaveAndResumeFeatureActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022);
-    const transactionID = (!isSaveAndResumeFeatureActive)
-      ? await postTransaction(req, session)
-      : appData.transaction_id as string;
+    const transactionID = (isSaveAndResumeFeatureActive)
+      ? appData[Transactionkey] as string
+      : await postTransaction(req, session);
 
-    const overseaEntityID = (!isSaveAndResumeFeatureActive)
-      ? await createOverseasEntity(req, session, transactionID)
-      : appData.overseas_entity_id as string;
+    const overseasEntityID = (isSaveAndResumeFeatureActive)
+      ? appData[OverseasEntityKey] as string
+      : await createOverseasEntity(req, session, transactionID);
 
-    const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseaEntityID);
+    // TODO: Missing last put call to submit OE, it will be done on ROE-1441.
+    // Note: this will be removed in the future when all PUT calls have been set correctly on the others pages.
+
+    const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
 
-    const redirectPath = await startPaymentsSession(req, session, transactionID, overseaEntityID, transactionClosedResponse);
-    logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseaEntityID}. Redirect to: ${redirectPath}`);
+    const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse);
+    logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);
   } catch (error) {

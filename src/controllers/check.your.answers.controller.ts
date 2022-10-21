@@ -57,16 +57,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       logger.infoRequest(req, `New access token: ${accessToken}`);
     }
 
-    const isSaveAndResumeFeatureActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022);
-    const transactionID = (isSaveAndResumeFeatureActive)
-      ? appData[Transactionkey] as string
-      : await postTransaction(req, session);
-
-    const overseasEntityID = (isSaveAndResumeFeatureActive)
-      ? appData[OverseasEntityKey] as string
-      : await createOverseasEntity(req, session, transactionID);
-
-    await updateOverseasEntity(req, session);
+    let transactionID, overseasEntityID;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      transactionID = appData[Transactionkey] as string;
+      overseasEntityID = appData[OverseasEntityKey] as string;
+      await updateOverseasEntity(req, session);
+    } else {
+      transactionID = await postTransaction(req, session);
+      overseasEntityID = await createOverseasEntity(req, session, transactionID);
+    }
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

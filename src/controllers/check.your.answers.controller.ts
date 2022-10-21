@@ -1,7 +1,7 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 
-import { createOverseasEntity } from "../service/overseas.entities.service";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 
 import * as config from "../config";
@@ -66,8 +66,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       ? appData[OverseasEntityKey] as string
       : await createOverseasEntity(req, session, transactionID);
 
-    // TODO: Missing last put call to submit OE, it will be done on ROE-1441.
-    // Note: this will be removed in the future when all PUT calls have been set correctly on the others pages.
+    await updateOverseasEntity(req, session);
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

@@ -91,3 +91,4 @@ export const CHANGE_LINK_NAME_PRESENTER = "Full name - who can we contact about 
 export const DATA_EVENT_ID = "data-event-id";
 export const PAGE_TITLE_ERROR = "Error:";
 export const PAGE_NOT_FOUND_TEXT = "Page not found";
+export const UPDATE_OE__MSG_ERROR = "Something went wrong with updating Overseas Entity";

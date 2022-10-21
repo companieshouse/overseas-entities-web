@@ -30,7 +30,7 @@ import {
   signOut
 } from "../controllers";
 
-// import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkValidations, checkTrustValidations } from "../middleware/validation.middleware";
@@ -38,8 +38,7 @@ import { validator } from "../validation";
 
 const router = Router();
 
-// It will be removed on ROE-1452. Disabled to avoid issues described in the story
-// router.use(serviceAvailabilityMiddleware);
+router.use(serviceAvailabilityMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);

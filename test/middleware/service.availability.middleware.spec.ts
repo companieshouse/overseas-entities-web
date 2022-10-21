@@ -14,6 +14,13 @@ describe("service availability middleware tests", () => {
     jest.clearAllMocks();
   });
 
+  test("should return service offline page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const response = await request(app).get("/register-an-overseas-entity");
+
+    expect(response.text).toContain("Service offline - Register an overseas entity");
+  });
+
   test("should not return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     const response = await request(app).get("/register-an-overseas-entity");

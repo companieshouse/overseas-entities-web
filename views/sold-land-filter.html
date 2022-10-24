@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Has the entity disposed of UK property or land since 28 February 2022?" %}
+{% set title = "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -27,10 +27,13 @@
           name: "has_sold_land",
           fieldset: {
             legend: {
-              text: "Has the entity disposed of UK property or land since 28 February 2022?",
+              text: "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?",
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
             }
+          },
+          hint: {
+            text: "Select yes if the entity has disposed of some or all its land or property."
           },
           items: [
             {

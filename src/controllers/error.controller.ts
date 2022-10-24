@@ -13,7 +13,9 @@ const pageNotFound = (req: Request, res: Response) => {
  */
 const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   logger.errorRequest(req, `An error has occurred. Re-routing to the error screen - ${err.stack}`);
-  res.status(500).render(config.ERROR_PAGE);
+  res.status(500).render(config.ERROR_PAGE, {
+    templateName: config.ERROR_PAGE
+  });
 };
 
 export default [pageNotFound, errorHandler];

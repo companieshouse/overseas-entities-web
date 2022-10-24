@@ -21,11 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    let hasTrusts: boolean = false;
-
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUST_INFO_16062022)) {
-      hasTrusts = checkEntityHasTrusts(appData);
-    }
+    const hasTrusts: boolean = checkEntityHasTrusts(appData);
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
 

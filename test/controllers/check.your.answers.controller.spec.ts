@@ -84,7 +84,7 @@ import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue( true );
+mockIsActiveFeature.mockReturnValue( false );
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

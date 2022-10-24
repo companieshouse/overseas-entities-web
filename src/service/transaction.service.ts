@@ -11,7 +11,7 @@ import { DESCRIPTION, REFERENCE } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 
-export const postTransaction = async (req: Request, session: Session): Promise<Transaction> => {
+export const postTransaction = async (req: Request, session: Session): Promise<string> => {
   const apiClient: ApiClient = createOAuthApiClient(session);
 
   const applicationData: ApplicationData = getApplicationData(session);
@@ -27,7 +27,7 @@ export const postTransaction = async (req: Request, session: Session): Promise<T
 
   logger.debugRequest(req, `Received transaction ${JSON.stringify(response)}`);
 
-  return response.resource;
+  return response.resource.id;
 };
 
 export const closeTransaction = async (

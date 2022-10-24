@@ -2,6 +2,8 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
+jest.mock('../../src/service/transaction.service');
+jest.mock('../../src/service/overseas.entities.service');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -25,7 +27,12 @@ import {
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
-import { PRESENTER_OBJECT_MOCK } from '../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  OVERSEAS_ENTITY_ID,
+  PRESENTER_OBJECT_MOCK,
+  TRANSACTION_ID
+} from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
   PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
@@ -33,11 +40,22 @@ import {
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
+import { postTransaction } from "../../src/service/transaction.service";
+import { createOverseasEntity } from "../../src/service/overseas.entities.service";
+import { OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
+
+const mockTransactionService = postTransaction as jest.Mock;
+mockTransactionService.mockReturnValue( TRANSACTION_ID );
+
+const mockOverseasEntity = createOverseasEntity as jest.Mock;
+mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
 const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
 mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -80,6 +98,19 @@ describe("PRESENTER controller", () => {
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+    });
+
+    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful creation of transaction and overseas entity`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+      expect(mockTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
     });
 

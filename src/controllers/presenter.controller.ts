@@ -8,7 +8,7 @@ import { getApplicationData, setApplicationData, prepareData } from "../utils/ap
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity } from "../service/overseas.entities.service";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -44,7 +44,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         appData[Transactionkey] = transactionID;
         appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
       } else {
-        // TODO: Missing put call, it will be done on ROE-1441
+        await updateOverseasEntity(req, session);
       }
     }
 

@@ -1,7 +1,7 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
 
-import { createOverseasEntity } from "../service/overseas.entities.service";
+import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 
 import * as config from "../config";
@@ -53,17 +53,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       logger.infoRequest(req, `New access token: ${accessToken}`);
     }
 
-    const isSaveAndResumeFeatureActive = isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022);
-    const transactionID = (isSaveAndResumeFeatureActive)
-      ? appData[Transactionkey] as string
-      : await postTransaction(req, session);
-
-    const overseasEntityID = (isSaveAndResumeFeatureActive)
-      ? appData[OverseasEntityKey] as string
-      : await createOverseasEntity(req, session, transactionID);
-
-    // TODO: Missing last put call to submit OE, it will be done on ROE-1441.
-    // Note: this will be removed in the future when all PUT calls have been set correctly on the others pages.
+    let transactionID, overseasEntityID;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      transactionID = appData[Transactionkey] as string;
+      overseasEntityID = appData[OverseasEntityKey] as string;
+      await updateOverseasEntity(req, session);
+    } else {
+      transactionID = await postTransaction(req, session);
+      overseasEntityID = await createOverseasEntity(req, session, transactionID);
+    }
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

@@ -4,6 +4,12 @@
   Confirmation - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
+{% block beforeContent %}
+  {% include "includes/phase_banner.html" %}
+  {% include "includes/no-back-link.html" %}
+  {% include "includes/sign-out-user-banner.html" %}
+{% endblock %}
+
 {% block content %}
 
   <div class="govuk-grid-row">

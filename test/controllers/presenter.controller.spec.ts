@@ -24,6 +24,7 @@ import {
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   PRESENTER_PAGE_TITLE,
+  SAVE_AND_CONTINUE_TEXT_BUTTON,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
@@ -74,6 +75,7 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_TEXT_BUTTON);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

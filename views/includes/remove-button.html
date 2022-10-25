@@ -1,11 +1,6 @@
 {% if id %}
-    {% set removeText = '<p>Remove <span class="govuk-visually-hidden">nameToBeRemoved</span></p>' %}
-    {{ govukButton({
-        html: removeText,
-        attributes: {
-            "id": "remove"
-        },
-        href: removePathURL,
-        classes: "govuk-button--warning"
-    }) }}
+  <a href="{{removePathURL}}" role="button" draggable="false" class="govuk-button govuk-button--warning" data-module="govuk-button" id="remove">
+      <span class="govuk-visually-hidden">Remove {{ nameToBeRemoved }}</span>
+      Remove
+  </a>
 {% endif %}

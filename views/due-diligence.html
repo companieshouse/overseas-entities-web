@@ -16,14 +16,15 @@
 
       {% include "includes/list/errors.html" %}
 
-      <h1 class="govuk-heading-xl">Complete this statement to confirm that identity checks have been completed</h1>
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Complete this statement to confirm that identity checks have been completed</h1>
+      <p class="govuk-caption-l govuk-!-margin-bottom-8">The agent’s details must match the information used to request the agent assurance code.</p>
 
       <form method="post">
 
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is the agent’s name?" %}
-        {% set nameFieldTextHint = "Enter the company name, or your own name if you are self-employed" %}
+        {% set nameFieldTextHint = "Enter the company name, or your own name if you are self-employed. It will need to match the name on the agent assurance code request exactly." %}
         {% include "includes/inputs/fields/identity-name-input.html" %}
 
         {% include "includes/inputs/address/identity-address-input.html" %}

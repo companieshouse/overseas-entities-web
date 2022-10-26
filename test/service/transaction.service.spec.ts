@@ -47,8 +47,7 @@ describe('Transaction Service test suite', () => {
       const transaction: Transaction = { reference: REFERENCE, companyName: APPLICATION_DATA_MOCK.entity?.name, description: DESCRIPTION };
       expect(mockPostTransaction).toBeCalledWith(transaction);
 
-      expect(response.reference).toEqual(TRANSACTION.reference);
-      expect(response.description).toEqual(TRANSACTION.description);
+      expect(response).toEqual(TRANSACTION_ID);
       expect(mockDebugRequestLog).toBeCalledTimes(1);
     });
 

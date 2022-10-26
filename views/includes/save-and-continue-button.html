@@ -1,0 +1,12 @@
+{% set textContinueButton = "Continue" %}
+
+{% if OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 == "true" %}
+  {% set textContinueButton = "Save and continue" %}
+{% endif %}
+
+{{ govukButton({
+  text: textContinueButton,
+  attributes: {
+    "id": "submit"
+  }
+}) }}

@@ -24,7 +24,7 @@ import {
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   PRESENTER_PAGE_TITLE,
-  SAVE_AND_CONTINUE_TEXT_BUTTON,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
@@ -68,14 +68,14 @@ describe("PRESENTER controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the presenter page with ${SAVE_AND_CONTINUE_TEXT_BUTTON} button`, async () => {
+    test(`renders the presenter page with ${SAVE_AND_CONTINUE_BUTTON_TEXT} button`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
       const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_TEXT_BUTTON);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

@@ -68,7 +68,7 @@ describe("PRESENTER controller", () => {
   });
 
   describe("GET tests", () => {
-    test("renders the presenter page", async () => {
+    test(`renders the presenter page with ${SAVE_AND_CONTINUE_TEXT_BUTTON} button`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
       const resp = await request(app).get(PRESENTER_URL);
 

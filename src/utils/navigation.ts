@@ -119,5 +119,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.TRUST_INFO_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL]
+  },
+  [config.SIGN_OUT_URL]: {
+    currentPage: config.SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
   }
 };

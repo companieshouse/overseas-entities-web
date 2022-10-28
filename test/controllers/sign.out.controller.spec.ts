@@ -1,3 +1,5 @@
+import { ErrorMessages } from "../../src/validation/error.messages";
+
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 
@@ -69,10 +71,10 @@ describe("Sign Out controller", () => {
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
-    test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previus page when no is selected`, async () => {
+    test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previous page when no is selected`, async () => {
       const resp = await request(app)
-        .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'no', previous_page });
+        .post(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`)
+        .send({ sign_out: 'no' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(previous_page);
@@ -91,12 +93,12 @@ describe("Sign Out controller", () => {
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
 
-    test("catch error when posting the page", async () => {
+    test("catch error when posting the page with no selection", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.SIGN_OUT_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);
     });
   });
 });

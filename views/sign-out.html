@@ -14,9 +14,13 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+
+    {% include "includes/list/errors.html" %}
+
     <form method="post">
 
       {{ govukRadios({
+        errorMessage: errors.sign_out if errors,
         classes: "govuk-radios--inline",
         idPrefix: "sign_out",
         name: "sign_out",

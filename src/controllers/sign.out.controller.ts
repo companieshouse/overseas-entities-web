@@ -6,7 +6,6 @@ import * as config from "../config";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
-
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`
     });
@@ -19,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
-    const previousPage = req.body["previous_page"];
+    const previousPage = req.body["previousPage"];
 
     if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);

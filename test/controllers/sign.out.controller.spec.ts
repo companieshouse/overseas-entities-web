@@ -1,3 +1,5 @@
+import { ErrorMessages } from "../../src/validation/error.messages";
+
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 
@@ -19,7 +21,7 @@ import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 
-const previous_page = `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`;
+const previousPage = `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`;
 
 describe("Sign Out controller", () => {
 
@@ -61,7 +63,7 @@ describe("Sign Out controller", () => {
     test(`redirects to ${config.ACCOUNTS_SIGN_OUT_URL}, the CH search page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'yes', previous_page });
+        .send({ sign_out: 'yes', previousPage });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.ACCOUNTS_SIGN_OUT_URL);
@@ -69,13 +71,13 @@ describe("Sign Out controller", () => {
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
-    test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previus page when no is selected`, async () => {
+    test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previous page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'no', previous_page });
+        .send({ sign_out: 'no', previousPage });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(previous_page);
+      expect(resp.header.location).toEqual(previousPage);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
@@ -84,19 +86,19 @@ describe("Sign Out controller", () => {
       const mockPreviousPage = "wrong/path";
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'yes', previous_page: mockPreviousPage });
+        .send({ sign_out: 'yes', previousPage: mockPreviousPage });
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
 
-    test("catch error when posting the page", async () => {
+    test("catch error when posting the page with no selection", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.SIGN_OUT_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);
     });
   });
 });

@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -19,6 +20,7 @@ import {
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   ANY_MESSAGE_ERROR,
@@ -46,6 +48,7 @@ mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -115,6 +118,7 @@ describe("DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {
@@ -138,12 +142,14 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(ErrorMessages.CHECK_DILIGENCE);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(DUE_DILIGENCE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with MAX error messages`, async () => {
@@ -165,6 +171,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date day is outside valid numbers`, async () => {
@@ -177,6 +184,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
@@ -283,6 +291,7 @@ describe("DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 });

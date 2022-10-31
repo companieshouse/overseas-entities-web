@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 
 import * as config from "../config";
 import { ApplicationData } from "../model";
@@ -15,6 +16,7 @@ import { OverseasEntityDueDiligenceKey } from "../model/overseas.entity.due.dili
 import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { IdentityAddressKey, IdentityAddressKeys } from "../model/address.model";
 import { AddressKeys, InputDateKeys } from "../model/data.types.model";
+import { saveAndContinue } from "../utils/save.and.continue";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,18 +40,21 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.DUE_DILIGENCE_PAGE}`);
 
+    const session = req.session as Session;
     const data = prepareData(req.body, DueDiligenceKeys);
     data[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
     data[IdentityDateKey] = mapFieldsToDataObject(req.body, IdentityDateKeys, InputDateKeys);
 
-    setApplicationData(req.session, data, DueDiligenceKey);
+    setApplicationData(session, data, DueDiligenceKey);
 
     // Empty OverseasEntityDueDiligence object
-    setApplicationData(req.session, {}, OverseasEntityDueDiligenceKey);
+    setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(config.ENTITY_URL);
   } catch (error) {

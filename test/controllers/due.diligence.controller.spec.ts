@@ -30,6 +30,7 @@ import {
   DUE_DILIGENCE_NAME_TEXT,
   DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
@@ -72,6 +73,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -88,6 +90,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
       expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.diligence);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 

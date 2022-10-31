@@ -22,15 +22,15 @@ describe('saveAndContinue test suite', () => {
     jest.clearAllMocks();
   });
 
-  test('should call updateOverseasEntity if feature flag is true', () => {
+  test('should call updateOverseasEntity if feature flag is true', async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
-    saveAndContinue(req, req.session as Session);
+    await saveAndContinue(req, req.session as Session);
     expect(mockUpdateOverseasEntity).toBeCalledWith(req, req.session);
   });
 
-  test('should not call updateOverseasEntity if feature flag is false', () => {
+  test('should not call updateOverseasEntity if feature flag is false', async () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
-    saveAndContinue(req, req.session as Session);
+    await saveAndContinue(req, req.session as Session);
     expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
   });
 

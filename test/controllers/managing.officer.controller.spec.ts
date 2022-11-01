@@ -45,7 +45,8 @@ import {
   ERROR_LIST,
   MANAGING_OFFICER,
   MANAGING_OFFICER_PAGE_HEADING,
-  PAGE_TITLE_ERROR, SAVE_AND_CONTINUE_BUTTON_TEXT,
+  PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../src/model';

@@ -1,5 +1,3 @@
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -9,6 +7,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import request from "supertest";
 
 import app from "../../src/app";

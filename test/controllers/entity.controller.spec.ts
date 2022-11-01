@@ -1,8 +1,10 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.due.diligence.middleware');
 
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -27,6 +29,7 @@ import {
   PAGE_TITLE_ERROR,
   INCORPORATION_COUNTRY_OPTION_SELECTED,
   UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -43,6 +46,7 @@ mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, n
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -66,6 +70,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(DUE_DILIGENCE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
@@ -77,6 +82,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
@@ -87,6 +93,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.legal_form);
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
@@ -104,6 +111,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
       expect(resp.text).toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
@@ -119,6 +127,7 @@ describe("ENTITY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("catch error when renders the entity page on GET method", async () => {
@@ -139,6 +148,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page with service address data", async () => {
@@ -149,6 +159,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the selection option", async () => {
@@ -159,6 +170,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to the next page page after a successful post from ENTITY page without the register option", async () => {
@@ -173,6 +185,7 @@ describe("ENTITY controller", () => {
       const data = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual('');
       expect(data[RegistrationNumberKey]).toEqual('');
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error messages", async () => {
@@ -194,12 +207,14 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(ENTITY_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with public register error messages", async () => {
@@ -214,6 +229,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with MAX error messages", async () => {
@@ -247,6 +263,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
@@ -268,6 +285,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when post data from ENTITY page", async () => {
@@ -278,6 +296,7 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 });

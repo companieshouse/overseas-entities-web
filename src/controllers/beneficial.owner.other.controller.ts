@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-
 import { logger } from "../utils/logger";
+import { Session } from "@companieshouse/node-session-handler";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
@@ -55,14 +56,16 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async(req: Request, res: Response, next: NextFunction) => {
 
   try {
     logger.debugRequest(req, `POST ${BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
-    setApplicationData(req.session, data, BeneficialOwnerOtherKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -71,7 +74,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `UPDATE ${BENEFICIAL_OWNER_OTHER_PAGE}`);
 
@@ -82,7 +85,9 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
 
     // Save new Beneficial Owner
-    setApplicationData(req.session, data, BeneficialOwnerOtherKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, BeneficialOwnerOtherKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -91,11 +96,13 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_OTHER_PAGE}`);
 
     removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
+    const session = req.session as Session;
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

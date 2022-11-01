@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-
 import { logger } from "../utils/logger";
+import { Session } from "@companieshouse/node-session-handler";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
@@ -19,8 +20,6 @@ import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAd
 import { StartDateKey, StartDateKeys } from "../model/date.model";
 import { v4 as uuidv4 } from 'uuid';
 import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
-import { saveAndContinue } from "../utils/save.and.continue";
-import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${BENEFICIAL_OWNER_OTHER_PAGE}`);

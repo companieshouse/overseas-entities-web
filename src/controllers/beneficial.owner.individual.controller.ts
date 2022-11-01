@@ -1,9 +1,21 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import {
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from "../utils/application.data";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
-import { BeneficialOwnerIndividualKey, BeneficialOwnerIndividualKeys } from "../model/beneficial.owner.individual.model";
+import {
+  BeneficialOwnerIndividualKey,
+  BeneficialOwnerIndividualKeys
+} from "../model/beneficial.owner.individual.model";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
@@ -68,13 +80,16 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
+    const session = req.session as Session;
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
-    setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+    setApplicationData(session, data, BeneficialOwnerIndividualKey);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -83,7 +98,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `UPDATE ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
@@ -92,9 +107,12 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
 
     // Set Beneficial Owner data
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, req.params[ID]);
+    const session = req.session as Session;
 
     // Save new Beneficial Owner
-    setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+    setApplicationData(session, data, BeneficialOwnerIndividualKey);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -103,11 +121,13 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE}`);
 
     removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
+
+    await saveAndContinue(req, req.session as Session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

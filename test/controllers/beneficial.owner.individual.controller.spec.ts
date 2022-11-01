@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -24,13 +25,15 @@ import {
   removeFromApplicationData,
   setApplicationData
 } from '../../src/utils/application.data';
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
   BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   ERROR_LIST,
   PAGE_TITLE_ERROR,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from '../__mocks__/text.mock';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -66,6 +69,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
@@ -89,6 +93,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
@@ -101,6 +106,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain("Ivan");
       expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");
@@ -126,6 +132,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
@@ -136,6 +143,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`redirect to the ${BENEFICIAL_OWNER_TYPE_URL} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
@@ -146,6 +154,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
@@ -170,6 +179,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
       expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
 
@@ -464,6 +474,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
@@ -474,6 +485,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`replaces existing object on submit`, async () => {
@@ -521,6 +533,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when removing data", async () => {
@@ -529,6 +542,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`removes the object from session`, async () => {

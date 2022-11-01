@@ -87,7 +87,7 @@ export const update = async(req: Request, res: Response, next: NextFunction) => 
 
     // Save new Managing Officer
     const session = req.session as Session;
-    setApplicationData(req.session, data, ManagingOfficerCorporateKey);
+    setApplicationData(session, data, ManagingOfficerCorporateKey);
     await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);

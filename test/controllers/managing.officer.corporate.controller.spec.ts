@@ -7,7 +7,6 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
 import request from "supertest";
 
 import app from "../../src/app";
@@ -52,6 +51,7 @@ import {
   removeFromApplicationData,
   setApplicationData
 } from "../../src/utils/application.data";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { ApplicationDataType, managingOfficerCorporateType } from "../../src/model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../src/model/managing.officer.corporate.model';
 import { ErrorMessages } from "../../src/validation/error.messages";

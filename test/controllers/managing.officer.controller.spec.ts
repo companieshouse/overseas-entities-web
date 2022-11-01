@@ -3,6 +3,7 @@ import { DateTime } from "luxon";
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
@@ -45,6 +46,7 @@ import {
   MANAGING_OFFICER,
   MANAGING_OFFICER_PAGE_HEADING,
   PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../src/model';
@@ -62,6 +64,7 @@ import {
 import { logger } from "../../src/utils/logger";
 import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey } from '../../src/model/managing.officer.model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -71,6 +74,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
@@ -96,6 +100,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -109,6 +114,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(MANAGING_OFFICER);
       expect(resp.text).toContain("Malawian");
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("catch error when rendering the page", async () => {
@@ -131,6 +137,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`sets session data and renders the ${BENEFICIAL_OWNER_TYPE_URL} page after all mandatory fields for ${MANAGING_OFFICER_URL} have been populated`, async () => {
@@ -148,8 +155,8 @@ describe("MANAGING_OFFICER controller", () => {
       expect(beneficialOwnerIndividual.occupation).toEqual("Some Occupation");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);
-
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and redirect to ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
@@ -161,6 +168,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when posting data", async () => {
@@ -172,6 +180,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_URL} with error messages`, async () => {
@@ -198,12 +207,14 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.OCCUPATION);
       expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_INDIVIDUAL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(MANAGING_OFFICER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_URL} with former names error messages`, async () => {
@@ -217,6 +228,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
       expect(resp.text).toContain(ErrorMessages.FORMER_NAME);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_URL} with MAX error messages`, async () => {
@@ -251,6 +263,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID_CHARACTERS error message", async () => {
@@ -273,6 +286,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.OCCUPATION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID_CHARACTERS service address error message", async () => {
@@ -289,6 +303,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with no INVALID_CHARACTERS error message for text box containing carriage return", async () => {
@@ -302,6 +317,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
@@ -312,6 +328,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
@@ -323,6 +340,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
@@ -332,6 +350,7 @@ describe("MANAGING_OFFICER controller", () => {
         .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("John Doe");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
@@ -341,6 +360,7 @@ describe("MANAGING_OFFICER controller", () => {
         .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when date is outside valid numbers`, async () => {
@@ -354,6 +374,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is outside valid numbers`, async () => {
@@ -367,6 +388,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when day is zero`, async () => {
@@ -380,6 +402,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when month is zero`, async () => {
@@ -393,6 +416,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with YEAR_LENGTH error when year is not 4 digits`, async () => {
@@ -406,6 +430,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with INVALID_DATE_OF_BIRTH error when invalid characters are used`, async () => {
@@ -419,6 +444,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with DATE_NOT_IN_PAST error when start date is in the future`, async () => {
@@ -433,6 +459,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with DATE_NOT_IN_PAST error when start date is today`, async () => {
@@ -447,6 +474,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 
@@ -459,6 +487,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
@@ -469,6 +498,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`replaces existing object on submit`, async () => {
@@ -486,6 +516,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
@@ -496,6 +527,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
@@ -507,6 +539,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
@@ -516,6 +549,7 @@ describe("MANAGING_OFFICER controller", () => {
         .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("John Doe");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
@@ -525,6 +559,7 @@ describe("MANAGING_OFFICER controller", () => {
         .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -535,6 +570,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when removing data", async () => {
@@ -543,6 +579,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`removes the object from session`, async () => {
@@ -553,6 +590,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

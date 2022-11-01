@@ -29,7 +29,8 @@ import {
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   INCORPORATION_COUNTRY_OPTION_SELECTED,
-  UNITED_KINGDOM_COUNTRY_OPTION_SELECTED, SAVE_AND_CONTINUE_BUTTON_TEXT,
+  UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../__mocks__/text.mock";
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';

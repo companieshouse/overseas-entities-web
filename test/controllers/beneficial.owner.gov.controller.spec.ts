@@ -4,6 +4,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
@@ -25,6 +26,7 @@ import {
   ERROR_LIST,
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
@@ -48,6 +50,7 @@ import {
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -58,6 +61,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
@@ -82,6 +86,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -100,6 +105,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("LegalForm");
       expect(resp.text).toContain("a11");
       expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("Should render the error page", async () => {
@@ -121,6 +127,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when posting data", async () => {
@@ -131,6 +138,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and do not redirect to ${config.BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
@@ -140,12 +148,14 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.header.location).not.toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_GOV_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with MAX error messages`, async () => {
@@ -165,6 +175,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LEGAL_FORM_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LAW_GOVERNED_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID CHARACTERS error messages`, async () => {
@@ -184,6 +195,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
@@ -196,6 +208,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
@@ -208,6 +221,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with error messages`, async () => {
@@ -227,6 +241,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with INVALID_DATE error when date is outside valid numbers`, async () => {
@@ -240,6 +255,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is outside valid numbers`, async () => {
@@ -253,6 +269,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when day is zero`, async () => {
@@ -266,6 +283,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when month is zero`, async () => {
@@ -279,6 +297,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with INVALID_DATE error when invalid characters are used`, async () => {
@@ -292,6 +311,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with YEAR_LENGTH error when year length is not 4 digits`, async () => {
@@ -305,6 +325,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with DATE_NOT_IN_PAST_OR_TODAY error when start date is not in the past`, async () => {
@@ -319,6 +340,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} without DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
@@ -333,6 +355,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
   });
 
@@ -346,6 +369,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
@@ -357,6 +381,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`replaces existing object on submit`, async () => {
@@ -375,6 +400,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is present when same address is set to no`, async () => {
@@ -387,6 +413,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${config.BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
@@ -399,6 +426,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -410,6 +438,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when removing data", async () => {
@@ -418,6 +447,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`removes the object from session`, async () => {
@@ -428,6 +458,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

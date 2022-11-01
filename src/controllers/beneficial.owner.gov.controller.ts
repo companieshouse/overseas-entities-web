@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import {
@@ -16,7 +18,6 @@ import { StartDateKey, StartDateKeys } from "../model/date.model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 import { BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
 import { v4 as uuidv4 } from "uuid";
-
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${BENEFICIAL_OWNER_GOV_PAGE}`);
@@ -53,13 +54,15 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
-    setApplicationData(req.session, data, BeneficialOwnerGovKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -68,7 +71,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `UPDATE ${BENEFICIAL_OWNER_GOV_PAGE}`);
     const id = req.params[ID];
@@ -80,7 +83,9 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, id);
 
     // Save new Beneficial Owner
-    setApplicationData(req.session, data, BeneficialOwnerGovKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, BeneficialOwnerGovKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -89,11 +94,13 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
+export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_GOV_PAGE}`);
 
     removeFromApplicationData(req, BeneficialOwnerGovKey, req.params[ID]);
+    const session = req.session as Session;
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

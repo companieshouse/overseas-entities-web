@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from "../utils/logger";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import {
   getFromApplicationData,
@@ -22,7 +24,6 @@ import {
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE } from "../config";
-
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${MANAGING_OFFICER_CORPORATE_PAGE}`);
@@ -57,13 +58,15 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
 
-    setApplicationData(req.session, data, ManagingOfficerCorporateKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, ManagingOfficerCorporateKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -72,7 +75,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const update = (req: Request, res: Response, next: NextFunction) => {
+export const update = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `UPDATE ${MANAGING_OFFICER_CORPORATE_PAGE}`);
 
@@ -83,7 +86,9 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
     const data: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
 
     // Save new Managing Officer
-    setApplicationData(req.session, data, ManagingOfficerCorporateKey);
+    const session = req.session as Session;
+    setApplicationData(session, data, ManagingOfficerCorporateKey);
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
@@ -92,11 +97,13 @@ export const update = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const remove = (req: Request, res: Response, next: NextFunction) => {
+export const remove = async(req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `REMOVE ${MANAGING_OFFICER_CORPORATE_PAGE}`);
 
     removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID]);
+    const session = req.session as Session;
+    await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

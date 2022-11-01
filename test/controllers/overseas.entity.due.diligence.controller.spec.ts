@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.presenter.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -17,6 +18,7 @@ import {
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   ANY_MESSAGE_ERROR,
@@ -26,6 +28,7 @@ import {
   FOUND_REDIRECT_TO,
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
+  SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../__mocks__/text.mock";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -48,6 +51,7 @@ mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -70,6 +74,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -84,6 +89,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.aml_number);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
     });
 
@@ -111,6 +117,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`redirect to ${ENTITY_PAGE}, no validation error for empty date`, async () => {
@@ -126,6 +133,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with error messages`, async () => {
@@ -147,12 +155,14 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with MAX error messages`, async () => {
@@ -173,6 +183,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`catch error when renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page on POST method`, async () => {

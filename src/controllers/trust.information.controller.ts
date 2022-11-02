@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
@@ -8,6 +9,7 @@ import { TrustKey, TrustKeys } from "../model/trust.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
+import { saveAndContinue } from "../utils/save.and.continue";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,7 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
@@ -45,10 +47,13 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
 
     const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
+    const session = req.session as Session;
 
     for (const trust of data[TrustKey]) {
-      setApplicationData(req.session, trust, TrustKey);
+      setApplicationData(session, trust, TrustKey);
     }
+
+    await saveAndContinue(req, session);
 
     if (req.body.add) {
       return res.redirect(config.TRUST_INFO_URL);

@@ -1,19 +1,44 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/application.data");
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_NO_TRUST_NAME_MOCK, APPLICATION_DATA_NO_TRUST_DATE_MOCK, APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, ERROR, TRUSTS_SUBMIT, TRUSTS_SUBMIT_NO_NAME, TRUSTS_SUBMIT_NO_CREATION_DATE, TRUSTS_SUBMIT_PARTIAL_CREATION_DATE, TRUSTS_ADD_MORE, TRUSTS_EMPTY_TRUST_DATA, TRUSTS_EMPTY_CHECKBOX } from '../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_NO_TRUST_NAME_MOCK,
+  APPLICATION_DATA_NO_TRUST_DATE_MOCK,
+  APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  ERROR,
+  TRUSTS_SUBMIT,
+  TRUSTS_SUBMIT_NO_NAME,
+  TRUSTS_SUBMIT_NO_CREATION_DATE,
+  TRUSTS_SUBMIT_PARTIAL_CREATION_DATE,
+  TRUSTS_ADD_MORE,
+  TRUSTS_EMPTY_TRUST_DATA,
+  TRUSTS_EMPTY_CHECKBOX
+} from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
-import { TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES, TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG, TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG } from "../__mocks__/validation.mock";
+import {
+  TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG,
+  TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG,
+  TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES,
+  TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG,
+  TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG
+} from "../__mocks__/validation.mock";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -24,6 +49,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("TRUST INFORMATION controller", () => {
 
@@ -61,6 +87,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.TRUST_INFO_PAGE} page`, async () => {
@@ -74,6 +101,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`mandatory field missing: trust name`, async () => {
@@ -87,6 +115,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_NAME);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`mandatory field missing: trust creation date`, async () => {
@@ -100,6 +129,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_CREATION_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`mandatory field missing: partial trust creation date`, async () => {
@@ -113,6 +143,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_CREATION_DATE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
@@ -122,6 +153,7 @@ describe("TRUST INFORMATION controller", () => {
         .send({ TrustKey: "Trust info" });
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when rendering the page", async () => {
@@ -146,6 +178,7 @@ describe("TRUST INFORMATION controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.TRUST_DATA_EMPTY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with TRUSTS_EMPTY_CHECKBOX error messages", async () => {
@@ -160,6 +193,7 @@ describe("TRUST INFORMATION controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.TRUST_BO_CHECKBOX);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders error message when corporate RO address premises field too long`, async () => {
@@ -169,6 +203,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders error message when corporate SA address premises field too long`, async () => {
@@ -178,6 +213,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders error message when individual URA address premises field too long`, async () => {
@@ -187,6 +223,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders error message when individual SA address premises field too long`, async () => {
@@ -196,6 +233,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`does not display error message when address premises fields are not submitted`, async () => {
@@ -208,6 +246,7 @@ describe("TRUST INFORMATION controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

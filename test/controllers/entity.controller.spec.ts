@@ -4,7 +4,6 @@ jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.due.diligence.middleware');
 
-import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -12,6 +11,7 @@ import request from "supertest";
 import app from "../../src/app";
 import { DUE_DILIGENCE_URL, ENTITY_PAGE, ENTITY_URL, LANDING_PAGE_URL, OVERSEAS_ENTITY_DUE_DILIGENCE_URL } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   APPLICATION_DATA_MOCK,

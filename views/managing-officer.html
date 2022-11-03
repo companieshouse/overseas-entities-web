@@ -69,7 +69,19 @@
 
         {% include "includes/inputs/date/date-of-birth-input.html" %}
 
-        {% include "includes/inputs/fields/nationality-input.html" %}
+        {% set nationalityField = nationality %}
+        {% set nationalityFieldNameId = "nationality" %}
+        {% set nationalityFieldText = "What is their nationality?" %}
+        {% set nationalityClassLabel = "govuk-label--m" %}
+        {% set nationalityHintText = ""  %}
+        {% include "includes/inputs/nationality/nationality-select.html" %}
+
+        {% set nationalityField = second_nationality %}
+        {% set nationalityFieldNameId = "second_nationality" %}
+        {% set nationalityFieldText = "Second nationality (optional)" %}
+        {% set nationalityClassLabel = "" %}
+        {% set nationalityHintText = "Dual citizenship (also known as dual nationality) is allowed in some countries. This means they can be a citizen of their own country and another country." %}
+        {% include "includes/inputs/nationality/nationality-select.html" %}
 
         {% include "includes/inputs/address/residential-address-input.html" %}
 

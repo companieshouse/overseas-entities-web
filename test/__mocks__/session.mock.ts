@@ -272,6 +272,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
   nationality: "Russian",
+  second_nationality: "",
   usual_residential_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,

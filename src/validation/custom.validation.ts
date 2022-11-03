@@ -85,6 +85,13 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
+export const checkSecondNationality = (nationality, secondNationality) => {
+  if ( nationality && nationality === secondNationality ) {
+    throw new Error(ErrorMessages.SECOND_NATIONALITY);
+  }
+  return true;
+};
+
 export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) => {
   for (const field of fields) {
     if (field) {

@@ -93,7 +93,7 @@ export enum ErrorMessages {
   MAX_ADDRESS_LINE2_LENGTH = "Address line 2 must be 50 characters or less",
   MAX_CITY_OR_TOWN_LENGTH = "City or town must be 50 characters or less",
   MAX_COUNTY_LENGTH = "County, state, province or region must be 50 characters or less",
-  MAX_POSTCODE_LENGTH = "Postcode must be 20 characters or less",
+  MAX_POSTCODE_LENGTH = "Postcode must be 15 characters or less",
   MAX_ENTITY_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 160 characters or less",
   MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 32 characters or less",
   MAX_ENTITY_LEGAL_FORM_LENGTH = "Legal form must be 160 characters or less",

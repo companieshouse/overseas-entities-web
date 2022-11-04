@@ -34,6 +34,8 @@ import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  SECOND_NATIONALITY,
+  SECOND_NATIONALITY_HINT,
 } from '../__mocks__/text.mock';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -94,6 +96,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
@@ -110,6 +114,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain("Ivan");
       expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
 
     test("catch error when rendering the page", async () => {
@@ -463,6 +469,19 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
     });
+
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with second nationality error when same as nationality`, async () => {
+      const beneficialOwnerIndividual = {
+        ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        nationality: "British",
+        second_nationality: "British"
+      };
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -523,6 +542,19 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
+    });
+
+    test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} + ${BO_IND_ID_URL} with second nationality error when same as nationality`, async () => {
+      const beneficialOwnerIndividual = {
+        ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        nationality: "British",
+        second_nationality: "British"
+      };
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
     });
   });
 

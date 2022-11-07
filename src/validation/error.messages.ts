@@ -12,7 +12,7 @@ export enum ErrorMessages {
   ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   ROLE_AND_RESPONSIBILITIES_INDIVIDUAL = "Enter a description of the individual managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
-  SECOND_NATIONALITY = "Second nationality should not be the same as the nationality given",
+  SECOND_NATIONALITY_IS_SAME = "Second nationality should not be the same as the nationality given",
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
   OE_DUE_DILIGENCE_NAME = "Enter the name of the person or company that carried out identity checks",

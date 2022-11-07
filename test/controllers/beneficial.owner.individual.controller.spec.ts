@@ -480,7 +480,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 
@@ -554,7 +554,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 

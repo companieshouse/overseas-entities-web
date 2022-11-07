@@ -493,7 +493,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 
@@ -591,7 +591,7 @@ describe("MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 

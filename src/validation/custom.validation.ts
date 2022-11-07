@@ -85,9 +85,9 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-export const checkSecondNationality = (nationality, secondNationality) => {
+export const checkSecondNationality = (nationality: string, secondNationality: string) => {
   if ( nationality && nationality === secondNationality ) {
-    throw new Error(ErrorMessages.SECOND_NATIONALITY);
+    throw new Error(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
   }
   return true;
 };

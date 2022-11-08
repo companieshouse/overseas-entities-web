@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",
     "eslint": "^8.11.0",
-    "husky": "^7.0.0",
+    "husky": "^8.0.2",
     "jest": "^27.5.1",
     "sonarqube-scanner": "^2.8.1",
     "supertest": "^6.2.2",

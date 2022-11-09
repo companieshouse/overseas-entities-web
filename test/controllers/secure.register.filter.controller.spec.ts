@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 
 import { NextFunction, Request, Response } from "express";
@@ -21,10 +22,16 @@ import {
 } from "../__mocks__/text.mock";
 import { SECURE_REGISTER_FILTER_URL, SOLD_LAND_FILTER_URL } from "../../src/config";
 
+import { postTransaction } from "../../src/service/transaction.service";
 import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
+import { TRANSACTION_ID } from "../__mocks__/session.mock";
+import { Transactionkey } from "../../src/model/data.types.model";
+
+const mockTransactionService = postTransaction as jest.Mock;
+mockTransactionService.mockReturnValue( TRANSACTION_ID );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -86,15 +93,20 @@ describe( "SECURE REGISTER FILTER controller", () => {
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: '1' });
       expect(resp.status).toEqual(302);
+      expect(mockTransactionService).not.toHaveBeenCalled();
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("redirect to interrupt card page if user selects no", async () => {
+      const mockData = { is_secure_register: 0, [Transactionkey]: "" };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
       const resp = await request(app)
         .post(config.SECURE_REGISTER_FILTER_URL)
         .send({ is_secure_register: '0' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.INTERRUPT_CARD_URL);
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -111,6 +123,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
       const resp = await request(app).post(config.SECURE_REGISTER_FILTER_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockTransactionService).not.toHaveBeenCalled();
     });
 
     test("catch error when posting the page", async () => {
@@ -121,6 +134,7 @@ describe( "SECURE REGISTER FILTER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockTransactionService).not.toHaveBeenCalled();
     });
 
   });

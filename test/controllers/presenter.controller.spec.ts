@@ -2,7 +2,6 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
-jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -31,8 +30,7 @@ import { PresenterKey } from '../../src/model/presenter.model';
 import {
   APPLICATION_DATA_MOCK,
   OVERSEAS_ENTITY_ID,
-  PRESENTER_OBJECT_MOCK,
-  TRANSACTION_ID
+  PRESENTER_OBJECT_MOCK
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
@@ -41,12 +39,8 @@ import {
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
-import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
-import { OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
-
-const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+import { OverseasEntityKey } from '../../src/model/data.types.model';
 
 const mockOverseasEntity = createOverseasEntity as jest.Mock;
 mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
@@ -104,14 +98,12 @@ describe("PRESENTER controller", () => {
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful creation of transaction and overseas entity`, async () => {
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      const mockData = { ...APPLICATION_DATA_MOCK, [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
       expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
-      expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
     });

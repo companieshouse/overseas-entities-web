@@ -7,7 +7,6 @@ import { PresenterKey, PresenterKeys } from "../model/presenter.model";
 import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
-import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
@@ -39,10 +38,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       const appData: ApplicationData = getApplicationData(session);
-      if (!appData[Transactionkey]) {
-        const transactionID = await postTransaction(req, session);
-        appData[Transactionkey] = transactionID;
-        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+      if (!appData[OverseasEntityKey]) {
+        appData[OverseasEntityKey] = await createOverseasEntity(req, session, appData[Transactionkey] as string, true);
       } else {
         await updateOverseasEntity(req, session);
       }

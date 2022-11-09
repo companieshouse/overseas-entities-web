@@ -4,7 +4,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
+import { getApplicationData, setApplicationData, prepareData, setExtraData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
@@ -40,6 +40,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const appData: ApplicationData = getApplicationData(session);
       if (!appData[OverseasEntityKey]) {
         appData[OverseasEntityKey] = await createOverseasEntity(req, session, appData[Transactionkey] as string, true);
+        setExtraData(session, appData);
       } else {
         await updateOverseasEntity(req, session);
       }

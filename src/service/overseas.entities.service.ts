@@ -4,6 +4,7 @@ import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
+// import { unauthorisedResponseHandler } from "./call.service";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -13,6 +14,11 @@ export const createOverseasEntity = async (
 ): Promise<string> => {
   const client = createOAuthApiClient(session);
 
+  // const response = await unauthorisedResponseHandler(
+  //   client.overseasEntity.postOverseasEntity,
+  //   {},
+  //   req, session
+  // );
   const response = await client.overseasEntity.postOverseasEntity(
     transactionId,
     getApplicationData(session),
@@ -36,6 +42,11 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
   const transactionID = appData[Transactionkey] as string;
   const overseasEntityID = appData[OverseasEntityKey] as string;
 
+  // const response = await unauthorisedResponseHandler(
+  //   client.overseasEntity.putOverseasEntity,
+  //   {},
+  //   req, session
+  // );
   const response = await client.overseasEntity.putOverseasEntity(
     transactionID,
     overseasEntityID,

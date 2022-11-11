@@ -1,38 +1,33 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 
-import { ApplicationData } from "../model/application.model";
-import { createAndLogErrorRequest } from "../utils/logger";
+import { logger } from "../utils/logger";
 import { refreshToken } from "./refresh.token.service";
 
-// type PostOverseasEntity = {
-//     ( transactionId: string,  appData: ApplicationData, isSaveAndResumeFeatureActive: boolean ): any;
-// };
+/**
+ * Unauthorised response handler for the Update and Create OE calls.
+ * Retry the call after refreshing the token in the event of 401 unauthorised response.
+ *
+ * @param fn Callback function (postOverseasEntity or putOverseasEntity)
+ * @param req Request object
+ * @param session Session object
+ * @param otherParams Parameters passed to the callback:
+ *        For the postOverseasEntity call we have (transactionID, appData, isSaveAndResumeFeatureActive)
+ *        For the putOverseasEntity call we have (transactionID, overseasEntityID, appData)
+ *
+ * @returns Promise< Resource<OverseasEntityCreated> | Resource<HttpStatusCode> | ApiErrorResponse >
+ */
+export const unauthorisedResponseHandler = async ( fn: Function, req: Request, session: Session, ...otherParams: any[] ) => {
 
-// type PutOverseasEntity = {
-//     ( transactionId: string, overseasEntityID: string, appData: ApplicationData): any;
-// };
+  let response = await fn(...otherParams);
 
-type PostOverseasEntityParams = [ transactionId: string,  appData: ApplicationData, isSaveAndResumeFeatureActive: boolean ];
-type PostOverseasEntity = {
-    ( ...arg: PostOverseasEntityParams ): any;
-};
+  if (response && response.httpStatusCode === 401){
+    const errorMsg = "Retrying call after unauthorised response";
+    logger.debugRequest(req, `${errorMsg} - ${JSON.stringify(response)}`);
 
-type PutOverseasEntityParams = [ transactionId: string, overseasEntityID: string, appData: ApplicationData ];
-type PutOverseasEntity = {
-    ( ...args: PutOverseasEntityParams ): any;
-};
-export const unauthorisedResponseHandler = async (
-  fn: PostOverseasEntity | PutOverseasEntity, params: PostOverseasEntityParams | PutOverseasEntityParams, req: Request, session: Session) => {
-  try {
-    return await fn(...params);
-  } catch (error) {
-    if (error && error.status === 401){
-      await refreshToken(req, session);
-      return await fn(...params);
-    } else {
-      const errorMsg = `Error on retrying call after unauthorised response - ${JSON.stringify(error)}`;
-      throw createAndLogErrorRequest(req, errorMsg);
-    }
+    await refreshToken(req, session);
+    response = await fn(...otherParams);
   }
+
+  return response;
 };

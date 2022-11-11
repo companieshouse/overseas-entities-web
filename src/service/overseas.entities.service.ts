@@ -1,6 +1,5 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
-import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
@@ -12,10 +11,8 @@ export const createOverseasEntity = async (
   transactionId: string,
   isSaveAndResumeFeatureActive: boolean = false
 ): Promise<string> => {
-  const client = createOAuthApiClient(session);
-
   const response = await unauthorisedResponseHandler(
-    client.overseasEntity.postOverseasEntity,
+    "postOverseasEntity",
     req, session,
     transactionId,
     getApplicationData(session),
@@ -33,14 +30,13 @@ export const createOverseasEntity = async (
 };
 
 export const updateOverseasEntity = async (req: Request, session: Session) => {
-  const client = createOAuthApiClient(session);
   const appData = getApplicationData(session);
 
   const transactionID = appData[Transactionkey] as string;
   const overseasEntityID = appData[OverseasEntityKey] as string;
 
   const response = await unauthorisedResponseHandler(
-    client.overseasEntity.putOverseasEntity,
+    "putOverseasEntity",
     req, session,
     transactionID,
     overseasEntityID,

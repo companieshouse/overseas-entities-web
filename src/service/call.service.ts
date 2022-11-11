@@ -2,13 +2,14 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 
 import { logger } from "../utils/logger";
+import { createOAuthApiClient } from "./api.service";
 import { refreshToken } from "./refresh.token.service";
 
 /**
  * Unauthorised response handler for the Update and Create OE calls.
  * Retry the call after refreshing the token in the event of 401 unauthorised response.
  *
- * @param fn Callback function (postOverseasEntity or putOverseasEntity)
+ * @param fnName Function Name (postOverseasEntity or putOverseasEntity)
  * @param req Request object
  * @param session Session object
  * @param otherParams Parameters passed to the callback:
@@ -17,17 +18,22 @@ import { refreshToken } from "./refresh.token.service";
  *
  * @returns Promise< Resource<OverseasEntityCreated> | Resource<HttpStatusCode> | ApiErrorResponse >
  */
-export const unauthorisedResponseHandler = async ( fn: Function, req: Request, session: Session, ...otherParams: any[] ) => {
+export const unauthorisedResponseHandler = async ( fnName: any, req: Request, session: Session, ...otherParams: any[] ) => {
+  const client = createOAuthApiClient(session);
 
-  let response = await fn(...otherParams);
+  let response = await client.overseasEntity[fnName](...otherParams);
 
   if (response && response.httpStatusCode === 401){
-    const errorMsg = "Retrying call after unauthorised response";
-    logger.debugRequest(req, `${errorMsg} - ${JSON.stringify(response)}`);
+
+    const responseMsg = "Catched response. Retrying call after unauthorised response";
+    logger.debugRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
 
     await refreshToken(req, session);
-    response = await fn(...otherParams);
+    response = await client.overseasEntity[fnName](...otherParams);
+
   }
 
   return response;
+
+
 };

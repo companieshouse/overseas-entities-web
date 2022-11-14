@@ -1,6 +1,6 @@
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/utils/application.data");
-jest.mock("../../src/service/call.service");
+jest.mock("../../src/service/unauthorised.handler.service");
 
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { Request } from "express";
@@ -9,7 +9,7 @@ import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 import { getApplicationData } from "../../src/utils/application.data";
 
 import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
-import { unauthorisedResponseHandler } from "../../src/service/call.service";
+import { unauthorisedResponseHandler } from "../../src/service/unauthorised.handler.service";
 import {
   APPLICATION_DATA_MOCK,
   ERROR,

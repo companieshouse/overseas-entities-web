@@ -19,7 +19,7 @@ import { refreshToken } from "./refresh.token.service";
  * @returns Promise< Resource<OverseasEntityCreated> | Resource<HttpStatusCode> | ApiErrorResponse >
  */
 export const unauthorisedResponseHandler = async ( fnName: string, req: Request, session: Session, ...otherParams: any[] ) => {
-  const client = createOAuthApiClient(session);
+  let client = createOAuthApiClient(session);
 
   let response = await client.overseasEntity[fnName](...otherParams);
 
@@ -31,6 +31,7 @@ export const unauthorisedResponseHandler = async ( fnName: string, req: Request,
     const accessToken = await refreshToken(req, session);
     logger.infoRequest(req, `New access token: ${accessToken}`);
 
+    client = createOAuthApiClient(session);
     response = await client.overseasEntity[fnName](...otherParams);
 
   }

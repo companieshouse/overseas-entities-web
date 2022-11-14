@@ -25,7 +25,7 @@ export const unauthorisedResponseHandler = async ( fnName: string, req: Request,
 
   if (response && response.httpStatusCode === 401){
 
-    const responseMsg = "Catched response. Retrying call after unauthorised response";
+    const responseMsg = `Retrying ${fnName} call after unauthorised response`;
     logger.debugRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
 
     const accessToken = await refreshToken(req, session);

@@ -12,7 +12,7 @@ import { createApiClient } from "@companieshouse/api-sdk-node";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 
 import { logger } from "../../src/utils/logger";
-import { unauthorisedResponseHandler } from "../../src/service/unauthorised.handler.service";
+import { makeOverseasEntitiesApiCallWithRetry } from "../../src/service/retry.handler.service";
 import { refreshToken } from "../../src/service/refresh.token.service";
 import {
   APPLICATION_DATA_MOCK,
@@ -53,12 +53,12 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
       mockPostOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      await unauthorisedResponseHandler(fnNamePostOE, req, session, ...otherParamsPostOE);
+      await makeOverseasEntitiesApiCallWithRetry(fnNamePostOE, req, session, ...otherParamsPostOE);
 
       expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
       expect(mockPostOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).not.toHaveBeenCalled();
     });
 
@@ -66,7 +66,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 401 };
       mockPostOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      await unauthorisedResponseHandler(fnNamePostOE, req, session, ...otherParamsPostOE);
+      await makeOverseasEntitiesApiCallWithRetry(fnNamePostOE, req, session, ...otherParamsPostOE);
 
       expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
       expect(mockPostOverseasEntity).toHaveBeenCalledTimes(2);
@@ -75,7 +75,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
 
       const responseMsg = `Retrying ${fnNamePostOE} call after unauthorised response`;
       expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(2);
 
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
@@ -85,14 +85,14 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 500 };
       mockPostOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      const response = await unauthorisedResponseHandler(fnNamePostOE, req, session, ...otherParamsPostOE);
+      const response = await makeOverseasEntitiesApiCallWithRetry(fnNamePostOE, req, session, ...otherParamsPostOE);
 
       expect(mockPostOverseasEntity).toBeCalledWith(TRANSACTION_ID, APPLICATION_DATA_MOCK, false);
       expect(response).toEqual(mockResponse);
 
       expect(mockPostOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).not.toHaveBeenCalled();
     });
 
@@ -105,12 +105,12 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 200 };
       mockPutOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      await unauthorisedResponseHandler(fnNamePutOE, req, session, ...otherParamsPutOE);
+      await makeOverseasEntitiesApiCallWithRetry(fnNamePutOE, req, session, ...otherParamsPutOE);
 
       expect(mockPutOverseasEntity).toBeCalledWith(TRANSACTION_ID, OVERSEAS_ENTITY_ID, APPLICATION_DATA_MOCK);
       expect(mockPutOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).not.toHaveBeenCalled();
     });
 
@@ -118,7 +118,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 401 };
       mockPutOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      await unauthorisedResponseHandler(fnNamePutOE, req, session, ...otherParamsPutOE);
+      await makeOverseasEntitiesApiCallWithRetry(fnNamePutOE, req, session, ...otherParamsPutOE);
 
       expect(mockPutOverseasEntity).toBeCalledWith(TRANSACTION_ID, OVERSEAS_ENTITY_ID, APPLICATION_DATA_MOCK);
       expect(mockPutOverseasEntity).toHaveBeenCalledTimes(2);
@@ -127,7 +127,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
 
       const responseMsg = `Retrying ${fnNamePutOE} call after unauthorised response`;
       expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(2);
 
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
@@ -137,14 +137,14 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 500 };
       mockPutOverseasEntity.mockResolvedValueOnce( mockResponse);
 
-      const response = await unauthorisedResponseHandler(fnNamePutOE, req, session, ...otherParamsPutOE);
+      const response = await makeOverseasEntitiesApiCallWithRetry(fnNamePutOE, req, session, ...otherParamsPutOE);
 
       expect(mockPutOverseasEntity).toBeCalledWith(TRANSACTION_ID, OVERSEAS_ENTITY_ID, APPLICATION_DATA_MOCK);
       expect(response).toEqual(mockResponse);
 
       expect(mockPutOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).not.toHaveBeenCalled();
     });
 

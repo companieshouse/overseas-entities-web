@@ -15,7 +15,6 @@ export default () => {
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.OAUTH2_CLIENT_ID = "clientId";
   process.env.OAUTH2_CLIENT_SECRET = "123";
-  process.env.FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022 = "1";
   process.env.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = "true";
   process.env.ACCOUNT_URL = "account.ch";
 };

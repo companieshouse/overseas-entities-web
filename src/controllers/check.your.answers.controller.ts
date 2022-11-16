@@ -11,7 +11,6 @@ import { checkEntityHasTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
-import { refreshToken } from "../service/refresh.token.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -47,11 +46,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022)) {
-      const accessToken = await refreshToken(req, session);
-      logger.infoRequest(req, `New access token: ${accessToken}`);
-    }
 
     let transactionID, overseasEntityID;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {

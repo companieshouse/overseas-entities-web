@@ -2,7 +2,6 @@ jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
-jest.mock('../../src/service/refresh.token.service');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 jest.mock('../../src/utils/application.data');
@@ -489,7 +488,6 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For Refresh token
     mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
@@ -500,7 +498,6 @@ describe("POST tests", () => {
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For Refresh token
     mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);

@@ -39,7 +39,7 @@ export const makeApiCallWithRetry = async (
   if (response && response.httpStatusCode === 401) {
 
     const responseMsg = `Retrying ${fnName} call on ${serviceName} service after unauthorised response`;
-    logger.debugRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
+    logger.infoRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
 
     const accessToken = await refreshToken(req, session);
     logger.infoRequest(req, `New access token: ${accessToken}`);
@@ -48,6 +48,8 @@ export const makeApiCallWithRetry = async (
     response = await client[serviceName][fnName](...otherParams);
 
   }
+
+  logger.debugRequest(req, 'Call successful.');
 
   return response;
 

@@ -40,8 +40,8 @@ mockRefreshToken.mockReturnValue( mockNewAccessToken );
 
 const mockCreateApiClient = createApiClient as jest.Mock;
 mockCreateApiClient.mockReturnValue({
+  transaction: TransactionService.default.prototype,
   overseasEntity: OverseasEntityService.prototype,
-  transaction: TransactionService.default.prototype
 } as ApiClient);
 
 const session = getSessionRequestWithExtraData();
@@ -50,6 +50,10 @@ const req: Request = {} as Request;
 const serviceNameOE = "overseasEntity";
 const fnNamePutOE = "putOverseasEntity";
 const fnNamePostOE = "postOverseasEntity";
+
+const serviceNameTransaction = "transaction";
+const fnNamePostTransaction = "postTransaction";
+const fnNamePutTransaction = "putTransaction";
 
 describe(`OE Unauthorised Response Handler test suite`, () => {
 
@@ -60,7 +64,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
   describe(`${serviceNameOE}.${fnNamePostOE} calls`, () => {
     const otherParamsPostOE = [TRANSACTION_ID, APPLICATION_DATA_MOCK, false];
 
-    test(`${fnNamePostOE} should responde with created OE resource`, async () => {
+    test(`${fnNamePostOE} should respond with created OE resource`, async () => {
       const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
       mockPostOverseasEntity.mockResolvedValueOnce( mockResponse);
 
@@ -70,11 +74,14 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockPostOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePostOE} should retry after unauthorised response`, async () => {
       const mockResponse = { httpStatusCode: 401 };
+      const responseMsg = `Retrying ${fnNamePostOE} call on ${serviceNameOE} service after unauthorised response`;
       mockPostOverseasEntity.mockResolvedValueOnce( mockResponse);
 
       await makeApiCallWithRetry(serviceNameOE, fnNamePostOE, req, session, ...otherParamsPostOE);
@@ -84,13 +91,13 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
 
-      const responseMsg = `Retrying ${fnNamePostOE} call on ${serviceNameOE} service after unauthorised response`;
-      expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
-
-      expect(mockInfoRequestLog).toHaveBeenCalledTimes(2);
+      expect(mockInfoRequestLog).toHaveBeenCalledTimes(3);
       expect(mockInfoRequestLog).toBeCalledWith(req, `Making a ${fnNamePostOE} call on ${serviceNameOE} service with token accessToken`);
+      expect(mockInfoRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePostOE} should return immediately the error if not 401`, async () => {
@@ -105,7 +112,9 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockPostOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
   });
@@ -113,7 +122,7 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
   describe(`${serviceNameOE}.${fnNamePutOE} calls`, () => {
     const otherParamsPutOE = [TRANSACTION_ID, OVERSEAS_ENTITY_ID, APPLICATION_DATA_MOCK];
 
-    test(`${fnNamePutOE} should responde with created httpStatusCode`, async () => {
+    test(`${fnNamePutOE} should respond with created httpStatusCode`, async () => {
       const mockResponse = { httpStatusCode: 200 };
       mockPutOverseasEntity.mockResolvedValueOnce( mockResponse);
 
@@ -123,11 +132,14 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockPutOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePutOE} should retry after unauthorised response`, async () => {
       const mockResponse = { httpStatusCode: 401 };
+      const responseMsg = `Retrying ${fnNamePutOE} call on ${serviceNameOE} service after unauthorised response`;
       mockPutOverseasEntity.mockResolvedValueOnce( mockResponse);
 
       await makeApiCallWithRetry(serviceNameOE, fnNamePutOE, req, session, ...otherParamsPutOE);
@@ -137,13 +149,13 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
 
-      const responseMsg = `Retrying ${fnNamePutOE} call on ${serviceNameOE} service after unauthorised response`;
-      expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
-
-      expect(mockInfoRequestLog).toHaveBeenCalledTimes(2);
+      expect(mockInfoRequestLog).toHaveBeenCalledTimes(3);
       expect(mockInfoRequestLog).toBeCalledWith(req, `Making a ${fnNamePutOE} call on ${serviceNameOE} service with token accessToken`);
+      expect(mockInfoRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePutOE} should return immediately the error if not 401`, async () => {
@@ -157,17 +169,17 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
 
       expect(mockPutOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
+
+      expect(mockInfoRequestLog).toBeCalledWith(req, `Making a ${fnNamePutOE} call on ${serviceNameOE} service with token accessToken`);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
   });
 
 });
-
-const serviceNameTransaction = "transaction";
-const fnNamePostTransaction = "postTransaction";
-const fnNamePutTransaction = "putTransaction";
 
 describe(`Transaction Unauthorised Response Handler test suite`, () => {
 
@@ -177,8 +189,8 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
 
   describe(`${serviceNameTransaction}.${fnNamePostTransaction} calls`, () => {
 
-    test(`${fnNamePostTransaction} should responde with created OE resource`, async () => {
-      const mockResponse = { httpStatusCode: 201, resource: { id: OVERSEAS_ENTITY_ID } };
+    test(`${fnNamePostTransaction} should respond with created Transaction resource`, async () => {
+      const mockResponse = { httpStatusCode: 200, resource: { id: TRANSACTION_ID } };
       mockPostTransaction.mockResolvedValueOnce( mockResponse);
 
       await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION);
@@ -187,11 +199,14 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockPostTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePostTransaction} should retry after unauthorised response`, async () => {
       const mockResponse = { httpStatusCode: 401 };
+      const responseMsg = `Retrying ${fnNamePostTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
       mockPostTransaction.mockResolvedValueOnce( mockResponse);
 
       await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION);
@@ -201,13 +216,13 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
 
-      const responseMsg = `Retrying ${fnNamePostTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
-      expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
-
-      expect(mockInfoRequestLog).toHaveBeenCalledTimes(2);
+      expect(mockInfoRequestLog).toHaveBeenCalledTimes(3);
       expect(mockInfoRequestLog).toBeCalledWith(req, `Making a ${fnNamePostTransaction} call on ${serviceNameTransaction} service with token accessToken`);
+      expect(mockInfoRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePostTransaction} should return immediately the error if not 401`, async () => {
@@ -222,14 +237,16 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockPostTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
   });
 
   describe(`${serviceNameTransaction}.${fnNamePutTransaction} calls`, () => {
 
-    test(`${fnNamePutTransaction} should responde with created httpStatusCode`, async () => {
+    test(`${fnNamePutTransaction} should respond with httpStatusCode 200`, async () => {
       const mockResponse = { httpStatusCode: 200 };
       mockPutTransaction.mockResolvedValueOnce( mockResponse);
 
@@ -239,11 +256,14 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockPutTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePutTransaction} should retry after unauthorised response`, async () => {
       const mockResponse = { httpStatusCode: 401 };
+      const responseMsg = `Retrying ${fnNamePutTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
       mockPutTransaction.mockResolvedValueOnce( mockResponse);
 
       await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_RESPONSE);
@@ -253,13 +273,13 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
 
-      const responseMsg = `Retrying ${fnNamePutTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
-      expect(mockDebugRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
-      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
-
-      expect(mockInfoRequestLog).toHaveBeenCalledTimes(2);
+      expect(mockInfoRequestLog).toHaveBeenCalledTimes(3);
       expect(mockInfoRequestLog).toBeCalledWith(req, `Making a ${fnNamePutTransaction} call on ${serviceNameTransaction} service with token accessToken`);
+      expect(mockInfoRequestLog).toBeCalledWith(req, `${responseMsg} - ${JSON.stringify(mockResponse)}`);
       expect(mockInfoRequestLog).toBeCalledWith(req, `New access token: ${mockNewAccessToken}`);
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
     test(`${fnNamePutTransaction} should return immediately the error if not 401`, async () => {
@@ -274,7 +294,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       expect(mockPutTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
-      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+
+      expect(mockDebugRequestLog).toBeCalledWith(req, `Call successful.`);
+      expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
   });

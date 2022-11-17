@@ -4,7 +4,6 @@ export default () => {
   process.env.COOKIE_SECRET = "123456789123456789123456789";
   process.env.COOKIE_DOMAIN = "test";
   process.env.CACHE_SERVER = "test";
-  process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
   process.env.API_URL = "test";
   process.env.CHS_API_KEY = "test";
   process.env.CHS_URL = "test";
@@ -15,6 +14,9 @@ export default () => {
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.OAUTH2_CLIENT_ID = "clientId";
   process.env.OAUTH2_CLIENT_SECRET = "123";
-  process.env.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = "true";
   process.env.ACCOUNT_URL = "account.ch";
+  //  feature flags
+  process.env.SHOW_SERVICE_OFFLINE_PAGE = "false";
+  process.env.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = "true";
+  process.env.FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022 = "true";
 };

@@ -9,14 +9,12 @@ export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
 export const DEFAULT_SESSION_EXPIRATION = getEnvironmentValue("DEFAULT_SESSION_EXPIRATION", "3600");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
-export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const API_URL = getEnvironmentValue("API_URL");
 export const CHS_URL = getEnvironmentValue("CHS_URL");
 export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
 export const PIWIK_URL = getEnvironmentValue("PIWIK_URL");
 export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
-export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
@@ -29,6 +27,11 @@ export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
+
+//  FEATURE FLAGS
+export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
+export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
+export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = <any>getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');
 
 // TEMPLATEs
 export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";

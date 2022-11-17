@@ -1,9 +1,9 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
-import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
+import { makeOverseasEntitiesApiCallWithRetry } from "./retry.handler.service";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -11,13 +11,14 @@ export const createOverseasEntity = async (
   transactionId: string,
   isSaveAndResumeFeatureActive: boolean = false
 ): Promise<string> => {
-  const client = createOAuthApiClient(session);
-
-  const response = await client.overseasEntity.postOverseasEntity(
+  const response = await makeOverseasEntitiesApiCallWithRetry(
+    "postOverseasEntity",
+    req,
+    session,
     transactionId,
     getApplicationData(session),
     isSaveAndResumeFeatureActive
-  ) as any;
+  );
 
   if (response.httpStatusCode !== 201) {
     const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
@@ -30,17 +31,19 @@ export const createOverseasEntity = async (
 };
 
 export const updateOverseasEntity = async (req: Request, session: Session) => {
-  const client = createOAuthApiClient(session);
   const appData = getApplicationData(session);
 
   const transactionID = appData[Transactionkey] as string;
   const overseasEntityID = appData[OverseasEntityKey] as string;
 
-  const response = await client.overseasEntity.putOverseasEntity(
+  const response = await makeOverseasEntitiesApiCallWithRetry(
+    "putOverseasEntity",
+    req,
+    session,
     transactionID,
     overseasEntityID,
     appData
-  ) as any;
+  );
 
   if (response.httpStatusCode !== 200) {
     const errorContext = `Transaction Id: ${transactionID}, Overseas Entity Id: ${overseasEntityID}`;

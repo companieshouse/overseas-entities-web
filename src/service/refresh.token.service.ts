@@ -1,12 +1,13 @@
 import ApiClient from '@companieshouse/api-sdk-node/dist/client';
 import { Session } from '@companieshouse/node-session-handler';
+import { Request } from "express";
 
 import { OAUTH2_CLIENT_ID, OAUTH2_CLIENT_SECRET, REFRESH_TOKEN_GRANT_TYPE } from '../config';
 import { createAndLogErrorRequest, logger } from '../utils/logger';
 import { getAccessToken, getRefreshToken, setAccessToken } from '../utils/session';
 import { createOAuthApiClient } from './api.service';
 
-export const refreshToken = async (req, session: Session): Promise<string> => {
+export const refreshToken = async (req: Request, session: Session): Promise<string> => {
   const apiClient: ApiClient = createOAuthApiClient(session);
 
   logger.infoRequest(req, `Making a POST request for refreshing access token ${getAccessToken(session)}`);

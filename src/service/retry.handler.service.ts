@@ -2,41 +2,53 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 
 import { logger } from "../utils/logger";
+import { getAccessToken } from "../utils/session";
 import { createOAuthApiClient } from "./api.service";
 import { refreshToken } from "./refresh.token.service";
 
 /**
- * Unauthorised response handler for the Update and Create OE calls.
+ * Unauthorised response handler for the Update and Create of Overseas Entitys and Transactions.
  * Retry the call after refreshing the token in the event of 401 unauthorised response.
  *
- * @param fnName Function Name (postOverseasEntity or putOverseasEntity)
+ * @param serviceName Client Service Name (overseasEntity or transaction)
+ * @param fnName Function Name
  * @param req Request object
  * @param session Session object
  * @param otherParams Parameters passed to the callback:
  *        For the postOverseasEntity call we have (transactionID, appData, isSaveAndResumeFeatureActive)
  *        For the putOverseasEntity call we have (transactionID, overseasEntityID, appData)
+ *        For the postTransaction call we have (transaction as Transaction)
+ *        For the putTransaction call we have (transaction as Transaction)
  *
- * @returns Promise< Resource<OverseasEntityCreated> | Resource<HttpStatusCode> | ApiErrorResponse >
+ * @returns Promise< ApiResponse<Transaction> | Resource<OverseasEntityCreated> | Resource<HttpStatusCode> | ApiErrorResponse >
  */
-export const makeOverseasEntitiesApiCallWithRetry = async ( fnName: string, req: Request, session: Session, ...otherParams: any[] ) => {
+export const makeApiCallWithRetry = async (
+  serviceName: string,
+  fnName: string,
+  req: Request,
+  session: Session,
+  ...otherParams: any[]
+) => {
+
+  logger.infoRequest(req, `Making a ${fnName} call on ${serviceName} service with token ${getAccessToken(session)}`);
+
   let client = createOAuthApiClient(session);
 
-  let response = await client.overseasEntity[fnName](...otherParams);
+  let response = await client[serviceName][fnName](...otherParams);
 
   if (response && response.httpStatusCode === 401) {
 
-    const responseMsg = `Retrying ${fnName} call after unauthorised response`;
+    const responseMsg = `Retrying ${fnName} call on ${serviceName} service after unauthorised response`;
     logger.debugRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
 
     const accessToken = await refreshToken(req, session);
     logger.infoRequest(req, `New access token: ${accessToken}`);
 
     client = createOAuthApiClient(session);
-    response = await client.overseasEntity[fnName](...otherParams);
+    response = await client[serviceName][fnName](...otherParams);
 
   }
 
-  logger.debugRequest(req, `OE call successful.`);
   return response;
 
 };

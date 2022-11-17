@@ -3,7 +3,7 @@ import { Request } from "express";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
-import { makeOverseasEntitiesApiCallWithRetry } from "./retry.handler.service";
+import { makeApiCallWithRetry } from "./retry.handler.service";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -11,7 +11,8 @@ export const createOverseasEntity = async (
   transactionId: string,
   isSaveAndResumeFeatureActive: boolean = false
 ): Promise<string> => {
-  const response = await makeOverseasEntitiesApiCallWithRetry(
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
     "postOverseasEntity",
     req,
     session,
@@ -36,7 +37,8 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
   const transactionID = appData[Transactionkey] as string;
   const overseasEntityID = appData[OverseasEntityKey] as string;
 
-  const response = await makeOverseasEntitiesApiCallWithRetry(
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
     "putOverseasEntity",
     req,
     session,

@@ -1,0 +1,97 @@
+{% extends "layout.html" %}
+
+{% set title = "Add trust information for the beneficial owners" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <form class="form" method="post">
+        {% set fieldParam = {
+          name: 'name',
+          label: 'What is the name of the trust?',
+          hint: 'If the trust does not have a name, give a description that it can be identified by.',
+          value: pageData.name,
+          error: errors.name
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'createdDate',
+          label: 'When was the trust created?',
+          error: errors.createdDate,
+          value: {
+            'Day': pageData.createdDateDay,
+            'Month': pageData.createdDateMonth,
+            'Year': pageData.createdDateYear
+          }
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {% set fieldParam = {
+          name: 'hasAllInfo',
+          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
+          error: errors.hasAllInfo,
+          items: [
+            {
+              value: 1,
+              text: 'Yes',
+              checked: pageData.hasAllInfo == 1
+            },
+            {
+              value: 0,
+              text: 'No',
+              checked: pageData.hasAllInfo == 0
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {% set boItems = [] %}
+        {% for bo in pageData.beneficialOwners %}
+          {% set boItems = (
+            boItems.push({
+              name: "beneficialOwners[" + bo.id + "]",
+              value: bo.id,
+              text: [bo.forename, bo.other_forenames, bo.surname] | join(' ')
+            }),
+            boItems
+            ) %}
+        {% endfor %}
+
+        {% if boItems | length %}
+          {% set fieldParam = {
+            name: 'beneficialOwner',
+            label: 'Which of the overseas entity’s beneficial owners are trustees of this trust?',
+            hint: 'Select all that apply. You can add more later.',
+            error: errors.beneficialOwner,
+            items: boItems
+          } %}
+          {% include "includes/inputs/checkbox-input.html" %}
+        {% endif %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">Information shown on the public register</h2>
+            <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

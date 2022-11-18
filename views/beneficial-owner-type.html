@@ -112,12 +112,18 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
           {% include "includes/list/managing-officer.html" %}
 
           {% if (hasTrusts) %}
-            {% set nextPage = "trust-information" %}
+            {% set nextPage = pageParams.urlToTrust %}
           {% else %}
-            {% set nextPage = "check-your-answers" %}
+            {% set nextPage = pageParams.urlToCheckYourAnswers %}
           {% endif %}
 
-          <a href= "/register-an-overseas-entity/{{ nextPage }}" role="button" draggable="false" class="govuk-button govuk-button--secondary govuk-!-margin-top- 6" data-module="govuk-button" id="submit">No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add</a>
+          <a href= "{{ nextPage }}"
+             role="button"
+             draggable="false"
+             class="govuk-button govuk-button--secondary govuk-!-margin-top- 6"
+             data-module="govuk-button"
+             id="submit"
+          >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add</a>
 
         {% endif %}
 

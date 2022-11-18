@@ -1,23 +1,28 @@
 import { Transaction } from "@companieshouse/api-sdk-node/dist/services/transaction/types";
-import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
 import { Request } from "express";
 
-import { createOAuthApiClient } from "./api.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { DESCRIPTION, REFERENCE } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
+import { makeApiCallWithRetry } from "./retry.handler.service";
 
 export const postTransaction = async (req: Request, session: Session): Promise<string> => {
-  const apiClient: ApiClient = createOAuthApiClient(session);
-
   const applicationData: ApplicationData = getApplicationData(session);
+  const companyName = applicationData.entity?.name;
 
-  const transaction: Transaction = { reference: REFERENCE, companyName: applicationData.entity?.name, description: DESCRIPTION };
-  const response = await apiClient.transaction.postTransaction(transaction) as any;
+  const transaction: Transaction = { reference: REFERENCE, companyName, description: DESCRIPTION };
+
+  const response = await makeApiCallWithRetry(
+    "transaction",
+    "postTransaction",
+    req,
+    session,
+    transaction
+  );
 
   if (!response.httpStatusCode || response.httpStatusCode >= 400) {
     throw createAndLogErrorRequest(req, `Http status code ${response.httpStatusCode}`);
@@ -36,7 +41,6 @@ export const closeTransaction = async (
   transactionId: string,
   overseasEntityId: string
 ): Promise<ApiResponse<Transaction>> => {
-  const apiClient: ApiClient = createOAuthApiClient(session);
 
   const transaction: Transaction = {
     reference: `${REFERENCE}_${overseasEntityId}`,
@@ -44,7 +48,14 @@ export const closeTransaction = async (
     id: transactionId,
     status: "closed"
   };
-  const response = await apiClient.transaction.putTransaction(transaction) as any;
+
+  const response = await makeApiCallWithRetry(
+    "transaction",
+    "putTransaction",
+    req,
+    session,
+    transaction
+  );
 
   if (!response) {
     throw createAndLogErrorRequest(req, `PUT - Transaction API request returned no response`);

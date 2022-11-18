@@ -85,10 +85,15 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-export const checkSecondNationality = (nationality: string, secondNationality: string) => {
+export const checkSecondNationality = (nationality: string = "", secondNationality: string = "") => {
+  const separator = ",";
+
   if ( nationality && nationality === secondNationality ) {
     throw new Error(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+  } else if ( nationality && secondNationality && `${nationality}${separator}${secondNationality}`.length > 50) {
+    throw new Error(ErrorMessages.NATIONALITIES_TOO_LONG);
   }
+
   return true;
 };
 

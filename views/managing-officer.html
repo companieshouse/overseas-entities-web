@@ -72,6 +72,7 @@
         {% include "includes/inputs/nationality/nationality.html" %}
         {% include "includes/inputs/nationality/second-nationality.html" %}
 
+        {% set hintResidentialAddress = "The managing officer's home address would be shown on the public register as the correspondence address." %}
         {% include "includes/inputs/address/residential-address-input.html" %}
 
         {{ govukInput({
@@ -105,7 +106,7 @@
         {{ govukInsetText({
           html: "
                     <h2 class='govuk-heading-m'>Information shown on the public register</h2>
-                    <p>The managing officer's home address will not be shown. Only the month and year of their date of birth will be shown.</p>
+                    <p>The managing officer's home address will not be shown unless it is the same as their correspondence address. Only the month and year of their date of birth will be shown.</p>
                     <p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
                 "
         }) }}

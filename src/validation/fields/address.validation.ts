@@ -30,7 +30,7 @@ export const principal_address_validations = [
   body("principal_address_country")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTRY),
   body("principal_address_postcode")
-    .isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
+    .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
 
@@ -56,7 +56,7 @@ export const principal_service_address_validations = [
   body("service_address_country")
     .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.COUNTRY, value) ),
   body("service_address_postcode")
-    .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) )
+    .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 15, value) )
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value) ),
 ];
 
@@ -83,7 +83,7 @@ export const usual_residential_address_validations = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTRY),
   body("usual_residential_address_postcode")
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
-    .isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
+    .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
 ];
 
 export const usual_residential_service_address_validations = [
@@ -107,7 +107,7 @@ export const usual_residential_service_address_validations = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS, value)),
   body("service_address_country").custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.COUNTRY, value) ),
   body("service_address_postcode")
-    .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 20, value) )
+    .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.MAX_POSTCODE_LENGTH, 15, value) )
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value)),
 ];
 
@@ -134,6 +134,6 @@ export const identity_address_validations = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.UK_COUNTRY),
   body("identity_address_postcode")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.POSTCODE)
-    .isLength({ max: 20 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
+    .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];

@@ -18,7 +18,7 @@ const PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   principal_address_town: maxLengthMocks.MAX_50 + "1",
   principal_address_county: maxLengthMocks.MAX_50 + "1",
   principal_address_country: maxLengthMocks.NO_MAX,
-  principal_address_postcode: maxLengthMocks.MAX_20 + "1"
+  principal_address_postcode: maxLengthMocks.MAX_15 + "1"
 };
 
 const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
@@ -48,7 +48,7 @@ const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   service_address_town: maxLengthMocks.MAX_50 + "1",
   service_address_county: maxLengthMocks.MAX_50 + "1",
   service_address_country: maxLengthMocks.NO_MAX,
-  service_address_postcode: maxLengthMocks.MAX_20 + "1"
+  service_address_postcode: maxLengthMocks.MAX_15 + "1"
 };
 
 const RESIDENTIAL_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {

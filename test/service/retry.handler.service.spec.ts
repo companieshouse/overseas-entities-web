@@ -18,12 +18,18 @@ import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import { refreshToken } from "../../src/service/refresh.token.service";
 import {
   APPLICATION_DATA_MOCK,
+  fnNamePostOE,
+  fnNamePostTransaction,
+  fnNamePutOE,
+  fnNamePutTransaction,
   getSessionRequestWithExtraData,
   mockNewAccessToken,
   OVERSEAS_ENTITY_ID,
-  TRANSACTION,
-  TRANSACTION_CLOSED_RESPONSE,
-  TRANSACTION_ID
+  serviceNameOE,
+  serviceNameTransaction,
+  TRANSACTION_CLOSED_PARAMS,
+  TRANSACTION_ID,
+  TRANSACTION_POST_PARAMS
 } from "../__mocks__/session.mock";
 
 const mockPostOverseasEntity = OverseasEntityService.prototype.postOverseasEntity as jest.Mock;
@@ -46,14 +52,6 @@ mockCreateApiClient.mockReturnValue({
 
 const session = getSessionRequestWithExtraData();
 const req: Request = {} as Request;
-
-const serviceNameOE = "overseasEntity";
-const fnNamePutOE = "putOverseasEntity";
-const fnNamePostOE = "postOverseasEntity";
-
-const serviceNameTransaction = "transaction";
-const fnNamePostTransaction = "postTransaction";
-const fnNamePutTransaction = "putTransaction";
 
 describe(`OE Unauthorised Response Handler test suite`, () => {
 
@@ -193,9 +191,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 200, resource: { id: TRANSACTION_ID } };
       mockPostTransaction.mockResolvedValueOnce( mockResponse);
 
-      await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION);
+      await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION_POST_PARAMS);
 
-      expect(mockPostTransaction).toBeCalledWith(TRANSACTION);
+      expect(mockPostTransaction).toBeCalledWith(TRANSACTION_POST_PARAMS);
       expect(mockPostTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
@@ -209,9 +207,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const responseMsg = `Retrying ${fnNamePostTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
       mockPostTransaction.mockResolvedValueOnce( mockResponse);
 
-      await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION);
+      await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION_POST_PARAMS);
 
-      expect(mockPostTransaction).toBeCalledWith(TRANSACTION);
+      expect(mockPostTransaction).toBeCalledWith(TRANSACTION_POST_PARAMS);
       expect(mockPostTransaction).toHaveBeenCalledTimes(2);
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
@@ -229,9 +227,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 500 };
       mockPostTransaction.mockResolvedValueOnce( mockResponse);
 
-      const response = await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION);
+      const response = await makeApiCallWithRetry(serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION_POST_PARAMS);
 
-      expect(mockPostTransaction).toBeCalledWith(TRANSACTION);
+      expect(mockPostTransaction).toBeCalledWith(TRANSACTION_POST_PARAMS);
       expect(response).toEqual(mockResponse);
 
       expect(mockPostTransaction).toHaveBeenCalledTimes(1);
@@ -250,9 +248,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 200 };
       mockPutTransaction.mockResolvedValueOnce( mockResponse);
 
-      await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_RESPONSE);
+      await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_PARAMS);
 
-      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_RESPONSE);
+      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_PARAMS);
       expect(mockPutTransaction).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(1);
       expect(mockInfoRequestLog).toHaveBeenCalledTimes(1);
@@ -266,9 +264,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const responseMsg = `Retrying ${fnNamePutTransaction} call on ${serviceNameTransaction} service after unauthorised response`;
       mockPutTransaction.mockResolvedValueOnce( mockResponse);
 
-      await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_RESPONSE);
+      await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_PARAMS);
 
-      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_RESPONSE);
+      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_PARAMS);
       expect(mockPutTransaction).toHaveBeenCalledTimes(2);
       expect(mockRefreshToken).toHaveBeenCalledTimes(1);
       expect(mockCreateApiClient).toHaveBeenCalledTimes(2);
@@ -286,9 +284,9 @@ describe(`Transaction Unauthorised Response Handler test suite`, () => {
       const mockResponse = { httpStatusCode: 500 };
       mockPutTransaction.mockResolvedValueOnce( mockResponse);
 
-      const response = await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_RESPONSE);
+      const response = await makeApiCallWithRetry(serviceNameTransaction, fnNamePutTransaction, req, session, TRANSACTION_CLOSED_PARAMS);
 
-      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_RESPONSE);
+      expect(mockPutTransaction).toBeCalledWith(TRANSACTION_CLOSED_PARAMS);
       expect(response).toEqual(mockResponse);
 
       expect(mockPutTransaction).toHaveBeenCalledTimes(1);

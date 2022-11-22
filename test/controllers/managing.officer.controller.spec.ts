@@ -486,14 +486,29 @@ describe("MANAGING_OFFICER controller", () => {
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with second nationality error when same as nationality`, async () => {
       const managingOfficer = {
         ...MANAGING_OFFICER_OBJECT_MOCK,
-        nationality: "British",
-        second_nationality: "British"
+        nationality: "Citizen of the Dominican Republic",
+        second_nationality: "Citizen of the Dominican Republic"
       };
       const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+      expect(resp.text).not.toContain(ErrorMessages.NATIONALITIES_TOO_LONG);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with second nationality error when too long`, async () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK,
+        nationality: "Citizen of the Dominican Republic",
+        second_nationality: "Citizen of Antigua and Barbuda"
+      };
+      const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITIES_TOO_LONG);
+      expect(resp.text).not.toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 

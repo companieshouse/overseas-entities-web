@@ -93,3 +93,4 @@ export const PAGE_TITLE_ERROR = "Error:";
 export const PAGE_NOT_FOUND_TEXT = "Page not found";
 export const UPDATE_OE_MSG_ERROR = "Something went wrong with updating Overseas Entity";
 export const SAVE_AND_CONTINUE_BUTTON_TEXT = "Save and continue";
+export const PRINT_BUTTON_TEXT = "Print this page";

@@ -24,8 +24,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const entity = appData[EntityKey];
-    const principalAddress = (entity) ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (entity) ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const principalAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
+      : {};
+    const serviceAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
+      : {};
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: getEntityBackLink(appData),

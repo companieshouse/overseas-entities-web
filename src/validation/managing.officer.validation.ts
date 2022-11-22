@@ -8,6 +8,7 @@ import {
 import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { date_of_birth_validations } from "./fields/date.validation";
+import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
 
 export const managingOfficerIndividual = [
@@ -28,6 +29,7 @@ export const managingOfficerIndividual = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
+  ...second_nationality_validations,
   ...usual_residential_address_validations,
 
   body("is_service_address_same_as_usual_residential_address")

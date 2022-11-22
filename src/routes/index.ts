@@ -27,7 +27,8 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
-  signOut
+  signOut,
+  saveAndResume
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -47,6 +48,8 @@ router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+
+router.get(config.SAVE_AND_RESUME_URL, authentication, saveAndResume.get);
 
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);

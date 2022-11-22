@@ -81,5 +81,5 @@ export const resumeOverseasEntity = async (
 
   logger.debugRequest(req, `Overseas Entity Resumed - ${infoMsg}`);
 
-  return response;
+  return response.resource;
 };

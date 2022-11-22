@@ -7,7 +7,7 @@ jest.mock('../../src/utils/save.and.continue');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
@@ -47,6 +47,8 @@ import {
   MANAGING_OFFICER_PAGE_HEADING,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  SECOND_NATIONALITY,
+  SECOND_NATIONALITY_HINT,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../src/model';
@@ -101,6 +103,8 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
   });
 
@@ -115,6 +119,8 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER);
       expect(resp.text).toContain("Malawian");
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
 
     test("catch error when rendering the page", async () => {
@@ -476,6 +482,34 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with second nationality error when same as nationality`, async () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK,
+        nationality: "Citizen of the Dominican Republic",
+        second_nationality: "Citizen of the Dominican Republic"
+      };
+      const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+      expect(resp.text).not.toContain(ErrorMessages.NATIONALITIES_TOO_LONG);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with second nationality error when too long`, async () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK,
+        nationality: "Citizen of the Dominican Republic",
+        second_nationality: "Citizen of Antigua and Barbuda"
+      };
+      const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.NATIONALITIES_TOO_LONG);
+      expect(resp.text).not.toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+    });
   });
 
   describe("UPDATE tests", () => {
@@ -560,6 +594,19 @@ describe("MANAGING_OFFICER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} + ${MO_IND_ID_URL} with second nationality error when same as nationality`, async () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK,
+        nationality: "British",
+        second_nationality: "British"
+      };
+      const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
 

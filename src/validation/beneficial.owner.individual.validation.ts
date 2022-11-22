@@ -8,6 +8,7 @@ import {
   usual_residential_service_address_validations
 } from "./fields/address.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
+import { second_nationality_validations } from "./fields/second-nationality.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")
@@ -22,6 +23,9 @@ export const beneficialOwnerIndividual = [
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
+
+  ...second_nationality_validations,
+
   body("is_on_sanctions_list")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST),
   body("is_service_address_same_as_usual_residential_address")

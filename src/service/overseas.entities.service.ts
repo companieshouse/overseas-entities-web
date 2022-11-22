@@ -1,9 +1,11 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
+
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
+import { ApplicationData } from "../model/application.model";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -54,4 +56,30 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
   }
 
   logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
+};
+
+export const resumeOverseasEntity = async (
+  req: Request,
+  transactionId: string,
+  overseasEntityId: string
+): Promise<ApplicationData> => {
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
+    "getOverseasEntity",
+    req,
+    req.session as Session,
+    transactionId,
+    overseasEntityId
+  );
+
+  const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
+
+  if (response.httpStatusCode !== 200) {
+    const errorMsg = `Something went wrong resuming Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
+    throw createAndLogErrorRequest(req, errorMsg);
+  }
+
+  logger.debugRequest(req, `Overseas Entity Resumed - ${infoMsg}`);
+
+  return response;
 };

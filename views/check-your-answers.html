@@ -67,14 +67,7 @@
             }
           }) }}
 
-          {{ govukButton({
-            text: "Print this page",
-            classes: "govuk-button--secondary",
-            href: "javascript: window.print()",
-            attributes: {
-              "id": "print-button"
-            }
-          }) }}
+          {% include "includes/print-button.html" %}
         </div>
       </form>
     </div>

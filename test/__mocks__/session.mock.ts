@@ -60,12 +60,20 @@ export const TRANSACTION = {
 export const PAYMENT_URL = "http://payment";
 export const STATE_ID = "ad83863d-7713-4b39-a625-3ec282d6710e";
 export const PAYMENT_HEADER = { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL };
+export const TRANSACTION_POST_PARAMS = {
+  reference: REFERENCE,
+  companyName: "overseasEntityName",
+  description: DESCRIPTION
+};
+export const TRANSACTION_CLOSED_PARAMS = {
+  id: TRANSACTION_ID,
+  reference: `${REFERENCE}_${OVERSEAS_ENTITY_ID}`,
+  description: DESCRIPTION,
+  status: "closed"
+};
 export const TRANSACTION_CLOSED_RESPONSE = {
-  httpStatusCode: 202,
-  resource: {
-    ...TRANSACTION,
-    status: "closed"
-  },
+  httpStatusCode: 200,
+  resource: TRANSACTION_CLOSED_PARAMS
 };
 export const TRANSACTION_WITH_PAYMENT_HEADER = {
   ...TRANSACTION_CLOSED_RESPONSE,
@@ -860,3 +868,11 @@ export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
   ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_PARTIAL_DATE]
 };
+
+export const serviceNameOE = "overseasEntity";
+export const fnNamePutOE = "putOverseasEntity";
+export const fnNamePostOE = "postOverseasEntity";
+
+export const serviceNameTransaction = "transaction";
+export const fnNamePostTransaction = "postTransaction";
+export const fnNamePutTransaction = "putTransaction";

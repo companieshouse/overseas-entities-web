@@ -59,7 +59,6 @@
 
       <br>
       <form method="post">
-
         <div class="govuk-button-group">
           {{ govukButton({
             text: "Continue to payment",
@@ -69,9 +68,12 @@
           }) }}
 
           {{ govukButton({
-          text: "Print this page",
-          classes: "govuk-button--secondary",
-          href: "javascript: window.print()"
+            text: "Print this page",
+            classes: "govuk-button--secondary",
+            href: "javascript: window.print()",
+            attributes: {
+              "id": "print-button"
+            }
           }) }}
         </div>
       </form>

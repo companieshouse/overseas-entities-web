@@ -44,6 +44,7 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   FOUND_REDIRECT_TO,
   IDENTITY_CHECKS,
+  PRINT_BUTTON_TEXT,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
   SERVICE_UNAVAILABLE,
   SOMEONE_ELSE_REGISTERING,
@@ -127,6 +128,16 @@ describe("GET tests", () => {
     expect(resp.text).toContain("legalForm");
     expect(resp.text).toContain("Joe Bloggs");
     expect(resp.text).toContain("jbloggs@bloggs.co.ru");
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(LANDING_PAGE_URL);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain(PRINT_BUTTON_TEXT);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links`, async () => {

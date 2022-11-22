@@ -1,0 +1,16 @@
+<noscript>
+  <style type="text/css">
+    a[id="print-button"] {
+      display:none;
+    }
+  </style>
+</noscript>
+
+{{ govukButton({
+  text: "Print this page",
+  classes: "govuk-button--secondary",
+  href: "javascript: window.print()",
+  attributes: {
+      "id": "print-button"
+  }
+}) }}

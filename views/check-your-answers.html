@@ -59,12 +59,16 @@
 
       <br>
       <form method="post">
-        {{ govukButton({
-          text: "Continue to payment",
-          attributes: {
-            "id": "submit"
-          }
-        }) }}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue to payment",
+            attributes: {
+              "id": "submit"
+            }
+          }) }}
+
+          {% include "includes/print-button.html" %}
+        </div>
       </form>
     </div>
   </div>

@@ -188,6 +188,45 @@ describe("ENTITY controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test("Test email is valid with long address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with long name and address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with very long name and address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
     test("renders the current page with error messages", async () => {
       mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
       const resp = await request(app).post(ENTITY_URL);

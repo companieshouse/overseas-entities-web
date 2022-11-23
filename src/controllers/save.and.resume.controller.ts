@@ -21,7 +21,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      const appData: ApplicationData = await resumeOverseasEntity(req, transactionId as string, overseaEntityId as string);
+      const appData: ApplicationData = await resumeOverseasEntity(req, transactionId, overseaEntityId);
 
       if (!appData || !Object.keys(appData).length) {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);

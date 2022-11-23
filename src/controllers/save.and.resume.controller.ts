@@ -8,8 +8,8 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { resumeOverseasEntity } from "../service/overseas.entities.service";
 import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
-import { OverseasEntityDueDiligenceKey } from "../model/overseas.entity.due.diligence.model";
-import { DueDiligenceKey } from "../model/due.diligence.model";
+import { OverseasEntityDueDiligence, OverseasEntityDueDiligenceKey } from "../model/overseas.entity.due.diligence.model";
+import { DueDiligence, DueDiligenceKey } from "../model/due.diligence.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,14 +27,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
       }
 
+      // Add default values needed for the web journey that are not part of OE API data model
       appData[HasSoldLandKey] = '0';
       appData[IsSecureRegisterKey] = '0';
       appData[Transactionkey] = transactionId;
       appData[OverseasEntityKey] = overseaEntityId;
 
-      if (Object.keys(appData[OverseasEntityDueDiligenceKey] || {} ).length) {
+      if (Object.keys(appData[OverseasEntityDueDiligenceKey] as OverseasEntityDueDiligence).length) {
         appData[WhoIsRegisteringKey] =  WhoIsRegisteringType.SOMEONE_ELSE;
-      } else if (Object.keys(appData[DueDiligenceKey] || {} ).length){
+      } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length){
         appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
       }
 

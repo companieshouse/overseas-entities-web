@@ -16,7 +16,7 @@ import {
   DUE_DILIGENCE_URL,
   ENTITY_PAGE,
   ENTITY_URL,
-  LANDING_PAGE_URL, PRESENTER_URL,
+  LANDING_PAGE_URL,
   WHO_IS_MAKING_FILING_URL,
 } from "../../src/config";
 import { getApplicationData, setApplicationData, prepareData } from "../../src/utils/application.data";

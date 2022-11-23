@@ -121,7 +121,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test("Test email is valid with long address", async () => {
-      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+      const dueDiligenceMock = {
+        ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       const twoMonthOldDate = getTwoMonthOldDate();
       dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();

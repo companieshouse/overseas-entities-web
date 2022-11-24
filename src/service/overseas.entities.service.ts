@@ -58,7 +58,7 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
   logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
 };
 
-export const resumeOverseasEntity = async (
+export const getOverseasEntity = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string
@@ -75,11 +75,11 @@ export const resumeOverseasEntity = async (
   const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
 
   if (response.httpStatusCode !== 200) {
-    const errorMsg = `Something went wrong resuming Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
+    const errorMsg = `Something went wrong getting Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `Overseas Entity Resumed - ${infoMsg}`);
+  logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
 
   return response.resource;
 };

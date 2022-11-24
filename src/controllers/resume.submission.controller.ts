@@ -7,7 +7,7 @@ import { ApplicationData } from "../model";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { setExtraData } from "../utils/application.data";
 import { isActiveFeature } from "../utils/feature.flag";
-import { resumeOverseasEntity } from "../service/overseas.entities.service";
+import { getOverseasEntity } from "../service/overseas.entities.service";
 import { HasSoldLandKey, ID, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { OverseasEntityDueDiligence, OverseasEntityDueDiligenceKey } from "../model/overseas.entity.due.diligence.model";
@@ -21,7 +21,7 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET Save And Resume`);
+    logger.debugRequest(req, `GET a saved OE submission`);
 
     const { transactionId, overseaEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseaEntityId}`;
@@ -29,7 +29,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      const appData: ApplicationData = await resumeOverseasEntity(req, transactionId, overseaEntityId);
+      const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
       if (!appData || !Object.keys(appData).length) {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
@@ -58,15 +58,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 const setWebApplicationData = (session: Session, appData: ApplicationData, transactionId: string, overseaEntityId: string) => {
 
   appData[BeneficialOwnerIndividualKey] = (appData[BeneficialOwnerIndividualKey] as BeneficialOwnerIndividual[])
-    .map( e => { return { ...e, [ID]: uuidv4() }; } );
+    .map( boi => { return { ...boi, [ID]: uuidv4() }; } );
   appData[BeneficialOwnerOtherKey] = (appData[BeneficialOwnerOtherKey] as BeneficialOwnerOther[] )
-    .map( e => { return { ...e, [ID]: uuidv4() }; } );
+    .map( boo => { return { ...boo, [ID]: uuidv4() }; } );
   appData[BeneficialOwnerGovKey] = (appData[BeneficialOwnerGovKey] as BeneficialOwnerGov[])
-    .map( e => { return { ...e, [ID]: uuidv4() }; } );
+    .map( bog => { return { ...bog, [ID]: uuidv4() }; } );
   appData[ManagingOfficerKey] = (appData[ManagingOfficerKey] as ManagingOfficerIndividual[])
-    .map( e => { return { ...e, [ID]: uuidv4() }; } );
+    .map( moi => { return { ...moi, [ID]: uuidv4() }; } );
   appData[ManagingOfficerCorporateKey] = (appData[ManagingOfficerCorporateKey] as ManagingOfficerCorporate[])
-    .map( e => { return { ...e, [ID]: uuidv4() }; } );
+    .map( moc => { return { ...moc, [ID]: uuidv4() }; } );
 
   appData[HasSoldLandKey] = '0';
   appData[IsSecureRegisterKey] = '0';

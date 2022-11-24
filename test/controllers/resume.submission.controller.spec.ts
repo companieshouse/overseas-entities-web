@@ -27,7 +27,7 @@ import { APPLICATION_DATA_MOCK, OVERSEAS_ENTITY_ID, TRANSACTION_ID } from '../__
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { setExtraData } from "../../src/utils/application.data";
-import { resumeOverseasEntity } from "../../src/service/overseas.entities.service";
+import { getOverseasEntity } from "../../src/service/overseas.entities.service";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
@@ -43,26 +43,26 @@ mockCreateAndLogErrorRequest.mockReturnValue("Error on resuming OE");
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );
 
-const mockResumeOverseasEntity = resumeOverseasEntity as jest.Mock;
-mockResumeOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
+const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
+mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const MOCK_SAVE_AND_RESUME_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
+const MOCK_RESUME_SUBMISSION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
 
-describe("Save and Resume controller", () => {
+describe("Resume submission controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   test(`Redirect to ${SOLD_LAND_FILTER_PAGE} page`, async () => {
-    const resp = await request(app).get(MOCK_SAVE_AND_RESUME_URL);
+    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
-    expect(mockResumeOverseasEntity).not.toHaveBeenCalled();
+    expect(mockGetOverseasEntity).not.toHaveBeenCalled();
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockSetExtraData).not.toHaveBeenCalled();
   });
@@ -79,8 +79,8 @@ describe("Save and Resume controller", () => {
     };
     mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
-    mockResumeOverseasEntity.mockReturnValueOnce( mockAppData );
-    const resp = await request(app).get(MOCK_SAVE_AND_RESUME_URL);
+    mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
@@ -89,7 +89,7 @@ describe("Save and Resume controller", () => {
     expect(mockAppData[Transactionkey]).toEqual(`${TRANSACTION_ID}`);
     expect(mockAppData[HasSoldLandKey]).toEqual('0');
     expect(mockAppData[IsSecureRegisterKey]).toEqual('0');
-    expect(mockResumeOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
   });
@@ -107,8 +107,8 @@ describe("Save and Resume controller", () => {
     };
     mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
-    mockResumeOverseasEntity.mockReturnValueOnce( mockAppData );
-    const resp = await request(app).get(MOCK_SAVE_AND_RESUME_URL);
+    mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
+    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
@@ -117,7 +117,7 @@ describe("Save and Resume controller", () => {
     expect(mockAppData[Transactionkey]).toEqual(`${TRANSACTION_ID}`);
     expect(mockAppData[HasSoldLandKey]).toEqual('0');
     expect(mockAppData[IsSecureRegisterKey]).toEqual('0');
-    expect(mockResumeOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
   });
@@ -125,14 +125,14 @@ describe("Save and Resume controller", () => {
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {
     mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
-    mockResumeOverseasEntity.mockImplementationOnce( null as any );
+    mockGetOverseasEntity.mockImplementationOnce( null as any );
 
     const errorMsg = `Error on resuming OE - Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
-    const resp = await request(app).get(MOCK_SAVE_AND_RESUME_URL);
+    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    expect(mockResumeOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalledWith( expect.anything(), errorMsg);
 
@@ -141,7 +141,7 @@ describe("Save and Resume controller", () => {
 
   test("Catch error when resuming Overseas Entity", async () => {
     mockInfoRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    const resp = await request(app).get(MOCK_SAVE_AND_RESUME_URL);
+    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);

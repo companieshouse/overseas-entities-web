@@ -10,7 +10,7 @@ import { getApplicationData } from "../../src/utils/application.data";
 
 import {
   createOverseasEntity,
-  resumeOverseasEntity,
+  getOverseasEntity,
   updateOverseasEntity
 } from "../../src/service/overseas.entities.service";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
@@ -104,34 +104,34 @@ describe(`Update Overseas Entity Service test suite`, () => {
 
 });
 
-describe(`Resume Overseas Entity Service test suite`, () => {
+describe(`Get Overseas Entity Service test suite`, () => {
 
-  const RESUME_OE_MSG_ERROR = "Something went wrong resuming Overseas Entity";
+  const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";
   const INFO_MSG = `Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
 
   beforeEach (() => {
     jest.clearAllMocks();
   });
 
-  test(`resumeOverseasEntity should responde with successful status code`, async () => {
+  test(`getOverseasEntity should responde with successful status code`, async () => {
     const mockResponse = { httpStatusCode: 200, resource: APPLICATION_DATA_MOCK };
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
-    const response = await resumeOverseasEntity(req, TRANSACTION_ID, OVERSEAS_ENTITY_ID);
+    const response = await getOverseasEntity(req, TRANSACTION_ID, OVERSEAS_ENTITY_ID);
 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, fnNameGetOE, req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID);
-    expect(mockDebugRequestLog).toHaveBeenCalledWith(req, `Overseas Entity Resumed - ${INFO_MSG}`);
+    expect(mockDebugRequestLog).toHaveBeenCalledWith(req, `Overseas Entity Retrieved - ${INFO_MSG}`);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(APPLICATION_DATA_MOCK);
   });
 
-  test(`resumeOverseasEntity should responde with 400 (Bad Request) error message`, async () => {
+  test(`getOverseasEntity should responde with 400 (Bad Request) error message`, async () => {
     const mockResponse = { httpStatusCode: 400, errors: [BAD_REQUEST] };
-    const errorMsg = `${RESUME_OE_MSG_ERROR} - ${INFO_MSG} - ${JSON.stringify(mockResponse)}`;
+    const errorMsg = `${GET_OE_MSG_ERROR} - ${INFO_MSG} - ${JSON.stringify(mockResponse)}`;
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    await expect( resumeOverseasEntity(req, TRANSACTION_ID, OVERSEAS_ENTITY_ID) ).rejects.toThrow(ERROR);
+    await expect( getOverseasEntity(req, TRANSACTION_ID, OVERSEAS_ENTITY_ID) ).rejects.toThrow(ERROR);
 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameOE, fnNameGetOE, req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID);
     expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);

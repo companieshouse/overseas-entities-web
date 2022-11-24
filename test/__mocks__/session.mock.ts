@@ -872,6 +872,7 @@ export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
 export const serviceNameOE = "overseasEntity";
 export const fnNamePutOE = "putOverseasEntity";
 export const fnNamePostOE = "postOverseasEntity";
+export const fnNameGetOE = "getOverseasEntity";
 
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";

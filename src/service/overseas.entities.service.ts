@@ -55,3 +55,25 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
 
   logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
 };
+
+export const getOverseasEntity = async (req: Request, session: Session) => {
+  const appData = getApplicationData(session);
+
+  const transactionID = appData[Transactionkey] as string;
+  const overseasEntityID = appData[OverseasEntityKey] as string;
+
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
+    "getOverseasEntity",
+    req,
+    session,
+    transactionID,
+    overseasEntityID,
+    appData
+  );
+  if (response.httpStatusCode !== 200) {
+    const errorContext = `Transaction Id: ${transactionID}, Overseas Entity Id: ${overseasEntityID}`;
+    const errorMsg = `Something went wrong with updating Overseas Entity, ${errorContext}, Response: ${JSON.stringify(response)}`;
+    throw createAndLogErrorRequest(req, errorMsg);
+  }
+};

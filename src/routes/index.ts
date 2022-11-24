@@ -27,7 +27,8 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
-  signOut
+  signOut,
+  company
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -113,6 +114,9 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, na
 router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
 router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
+
+//  FETCH AND UPDATE COMPANY PROFILE
+router.get(config.UPDATE_COMPANY_PROFILE, authentication, company.get);
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);

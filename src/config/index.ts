@@ -28,6 +28,9 @@ export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
 
+//  UPDATE-COMPANY-PROFILE
+export const UPDATE_COMPANY_PROFILE = getEnvironmentValue(`UPDATE_COMPANY_PROFILES_URL`);
+
 //  FEATURE FLAGS
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
@@ -62,9 +65,11 @@ export const TRUST_INFO_PAGE = "trust-information";
 export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 export const SIGN_OUT_PAGE = "sign-out";
+export const UPDATE_COMPANY_PROFILE_PAGE = "update_overseas_entity";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
+export const UPDATE_COMPANY_PROFILES_URL = "/update-an-overseas-entity/update-data";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;

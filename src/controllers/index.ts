@@ -27,3 +27,4 @@ export * as accessibilityStatement from "./accessibility.statement.controller";
 export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning.controller";
 export * as signOut from "./sign.out.controller";
 export * as resumeSubmission from "./resume.submission.controller";
+export * as company from "./company.profile.controller";

@@ -123,7 +123,7 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 //  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.UPDATE_COMPANY_PROFILES_URL, authentication, company.get);
+router.get(config.UPDATE_COMPANY_PROFILES_URL + config.ID, authentication, company.get);
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);

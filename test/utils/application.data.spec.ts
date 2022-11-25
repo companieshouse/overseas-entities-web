@@ -103,6 +103,11 @@ describe("Application data utils", () => {
     expect(response).toEqual(SERVICE_ADDRESS_MOCK);
   });
 
+  test("mapDataObjectToFields should return empty object when data is blank", () => {
+    const response = mapDataObjectToFields(null, ServiceAddressKeys, dataType.AddressKeys);
+    expect(response).toEqual({});
+  });
+
   test('checkBOsDetailsEntered should be truthy if at least one BOs is present', () => {
     const response = checkBOsDetailsEntered(APPLICATION_DATA_MOCK);
     expect(response).toEqual(true);
@@ -161,6 +166,11 @@ describe("Application data utils", () => {
   test("mapFieldsToDataObject should map address fields coming from the view to address", () => {
     const response = mapFieldsToDataObject(SERVICE_ADDRESS_MOCK, ServiceAddressKeys, dataType.AddressKeys);
     expect(response).toEqual(ADDRESS);
+  });
+
+  test("mapFieldsToDataObject should return empty object when data is blank", () => {
+    const response = mapFieldsToDataObject(null, ServiceAddressKeys, dataType.AddressKeys);
+    expect(response).toEqual({});
   });
 
   test("removeFromApplicationData should remove specified object from data", () => {

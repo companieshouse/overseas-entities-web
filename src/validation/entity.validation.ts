@@ -3,7 +3,8 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { entity_public_register_validations } from "./fields/public-register.validation";
-import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
+import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { email_validations } from "./fields/email.validation";
 
 export const entity = [
   body("name")
@@ -16,10 +17,7 @@ export const entity = [
   body("is_service_address_same_as_principal_address").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),
 
   ...principal_service_address_validations,
-  body('email')
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL)
-    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
-    .matches(VALID_EMAIL_FORMAT).withMessage(ErrorMessages.EMAIL_INVALID_FORMAT),
+  ...email_validations,
 
   body("legal_form")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM)

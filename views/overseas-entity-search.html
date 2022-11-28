@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% set title = "What is the OE number?" %}
+
+{% block pageTitle %}
+{% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        {% include "includes/list/errors.html" %}
+        <h1 class="govuk-heading-xl">What is the OE number?</h1>
+
+        <form method="post">
+
+            {{ govukInput({
+            errorMessage: errors.oe_number if errors,
+            id: "oe_number",
+            name: "oe_number",
+            value: oe_number
+            }) }}
+
+            {% include "includes/continue-button.html" %}
+
+        </form>
+    </div>
+</div>
+{% endblock %}

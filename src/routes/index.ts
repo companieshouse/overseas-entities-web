@@ -15,6 +15,8 @@ import {
   healthcheck,
   interruptCard,
   landing,
+  updateLanding,
+  overseasEntitySearch,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -45,6 +47,7 @@ router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 
 router.get(config.LANDING_URL, landing.get);
+router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
@@ -54,6 +57,7 @@ router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
+router.get(config.OVERSEAS_ENTITY_SEARCH_URL, authentication, overseasEntitySearch.get);
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);

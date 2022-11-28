@@ -17,6 +17,7 @@ export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
+export const UPDATE_LANDING_PAGE_URL = getEnvironmentValue("UPDATE_LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
 export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");
@@ -50,6 +51,8 @@ export const ERROR_PAGE = "error-page";
 export const HEALTHCHECK_PAGE = "healthcheck";
 export const INTERRUPT_CARD_PAGE = "interrupt-card";
 export const LANDING_PAGE = "landing";
+export const UPDATE_LANDING_PAGE = "update-landing";
+export const OVERSEAS_ENTITY_SEARCH_PAGE = "overseas-entity-search";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
 export const NOT_FOUND_PAGE = "page-not-found";
@@ -65,9 +68,12 @@ export const SIGN_OUT_PAGE = "sign-out";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
+export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
+export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
+export const OVERSEAS_ENTITY_SEARCH_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_SEARCH_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;
 export const BENEFICIAL_OWNER_STATEMENTS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_STATEMENTS_PAGE;
 export const BENEFICIAL_OWNER_TYPE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_TYPE_PAGE;

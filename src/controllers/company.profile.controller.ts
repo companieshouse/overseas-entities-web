@@ -10,19 +10,27 @@ import { createOAuthApiClient } from "../service/api.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    logger.debugRequest(req, `GET Update Page`);
     const id: string = req.params[ID];
     const responses = createOAuthApiClient(req.session).companyProfile.getCompanyProfile(id);
     const companyData = (await responses).resource;
-    // console.log(`ID PARSED IS ${id}`)
-    logger.debugRequest(req, `GET Update Page`);
-    // console.log(`Response from the API CALL ${(await responses).resource?.companyName}`);
 
+    const isOverseasEntity = companyData?.type === "registered-overseas-entity";
+    
+    console.log(`Company profile type ${companyData?.type}`)
+
+    console.log(`is overseas entity ${isOverseasEntity}`)
+  
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    console.log(`App data is ${appData.overseasEntityData}`);
+    appData.companyProfile = companyData;
+
     const backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
     const updateUrl: string = config.UPDATE_COMPANY_PROFILES_URL;
 
+    if(!isOverseasEntity){
+      throw new Error("Not an overseas entity");
+    }
     return res.render(config.UPDATE_COMPANY_PROFILE_PAGE, {
       backLinkUrl,
       updateUrl,

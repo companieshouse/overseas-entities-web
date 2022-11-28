@@ -16,6 +16,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   APPLICATION_DATA_MOCK,
   ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   ENTITY_OBJECT_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
 } from "../__mocks__/session.mock";
@@ -185,6 +186,17 @@ describe("ENTITY controller", () => {
       const data = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual('');
       expect(data[RegistrationNumberKey]).toEqual('');
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 

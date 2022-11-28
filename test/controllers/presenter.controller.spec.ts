@@ -32,6 +32,7 @@ import {
   APPLICATION_DATA_MOCK,
   OVERSEAS_ENTITY_ID,
   PRESENTER_OBJECT_MOCK,
+  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   TRANSACTION_ID
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -154,6 +155,15 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
     });
 
     test("catch error when post data from presenter page", async () => {

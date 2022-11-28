@@ -42,7 +42,7 @@ export const managingOfficerCorporate = [
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
 
-  body("contact_email")
+  body("contact_email").trim()
     .not().isEmpty().withMessage(ErrorMessages.EMAIL)
     .isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
     .isEmail().withMessage(ErrorMessages.EMAIL_INVALID_FORMAT)

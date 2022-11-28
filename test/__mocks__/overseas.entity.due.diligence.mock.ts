@@ -24,6 +24,18 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK = {
   ...IDENTITY_DATE_REQ_BODY_MOCK
 };
 
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
+  identity_date: DATE,
+  name: "Some name",
+  identity_address: ADDRESS,
+  email: " email@email.ch ",
+  supervisory_name: "Some supervisory name",
+  aml_number: "Any AML number 123",
+  partner_name: "Some partner name",
+  ...IDENTITY_ADDRESS_REQ_BODY_MOCK,
+  ...IDENTITY_DATE_REQ_BODY_MOCK
+};
+
 const OVERSEAS_ENTITY_DUE_DILIGENCE_EMPTY_OBJECT_MOCK: OverseasEntityDueDiligence = {
   identity_date: EMPTY_DATE,
   name: "",

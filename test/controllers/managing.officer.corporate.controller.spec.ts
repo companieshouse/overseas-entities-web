@@ -19,6 +19,7 @@ import {
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
@@ -352,6 +353,15 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 

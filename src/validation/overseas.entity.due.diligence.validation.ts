@@ -17,9 +17,9 @@ export const overseasEntityDueDiligence = [
 
   ...identity_address_validations,
 
-  body("email")
+  body("email").trim()
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL)
-    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH_DUE_DILIGENCE)
+    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
     .isEmail().withMessage(ErrorMessages.EMAIL_INVALID_FORMAT),
 
   body("aml_number")

@@ -16,7 +16,7 @@ export const entity = [
   body("is_service_address_same_as_principal_address").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),
 
   ...principal_service_address_validations,
-  body('email')
+  body("email").trim()
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.EMAIL)
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
     .isEmail().withMessage(ErrorMessages.EMAIL_INVALID_FORMAT),

@@ -48,6 +48,7 @@ export const MO_CORP_ID = "2df18e59-74dd-42d7-9494-8d40b953ddbe";
 export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
+export const COMPANY_NUMBER = "NI038379"
 
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";

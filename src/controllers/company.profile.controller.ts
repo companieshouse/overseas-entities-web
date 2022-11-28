@@ -14,13 +14,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const id: string = req.params[ID];
     const responses = createOAuthApiClient(req.session).companyProfile.getCompanyProfile(id);
     const companyData = (await responses).resource;
-
     const isOverseasEntity = companyData?.type === "registered-overseas-entity";
-    
-    console.log(`Company profile type ${companyData?.type}`)
-
-    console.log(`is overseas entity ${isOverseasEntity}`)
-  
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     appData.companyProfile = companyData;
@@ -28,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
     const updateUrl: string = config.UPDATE_COMPANY_PROFILES_URL;
 
-    if(!isOverseasEntity){
+    if (!isOverseasEntity) {
       throw new Error("Not an overseas entity");
     }
     return res.render(config.UPDATE_COMPANY_PROFILE_PAGE, {

@@ -111,3 +111,6 @@ export const CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS = CHANGE_LINK_INDIVIDUAL_
 export const CHANGE_LINK_INDIVIDUAL_BO_START_DATE = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date they became a beneficial owner";
 export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nature of control";
 export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - are they on the sanctions list?";
+
+// Update journey
+export const OVERSEAS_ENTITY_SEARCH_PAGE_TITLE = "What is the OE number?";

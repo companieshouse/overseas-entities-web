@@ -164,7 +164,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test("Test email is valid with long address", async () => {
+    test("Test email is valid with long email address", async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
@@ -179,7 +179,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with long name and address", async () => {
+    test("Test email is valid with long email name and address", async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
@@ -193,7 +193,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with very long name and address", async () => {
+    test("Test email is valid with very long email name and address", async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,

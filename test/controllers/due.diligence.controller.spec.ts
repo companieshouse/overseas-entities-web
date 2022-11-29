@@ -203,7 +203,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
     });
 
-    test("Test email is valid with long address", async () => {
+    test("Test email is valid with long email address", async () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -221,7 +221,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with long name and address", async () => {
+    test("Test email is valid with long email name and address", async () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -239,7 +239,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with very long name and address", async () => {
+    test("Test email is valid with very long email name and address", async () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
       const dueDiligenceData = {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,

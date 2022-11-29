@@ -188,7 +188,7 @@ describe("ENTITY controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test("Test email is valid with long address", async () => {
+    test("Test email is valid with long email address", async () => {
       const entity = {
         ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -201,7 +201,7 @@ describe("ENTITY controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with long name and address", async () => {
+    test("Test email is valid with long email name and address", async () => {
       const entity = {
         ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -214,7 +214,7 @@ describe("ENTITY controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test("Test email is valid with very long name and address", async () => {
+    test("Test email is valid with very long email name and address", async () => {
       const entity = {
         ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };

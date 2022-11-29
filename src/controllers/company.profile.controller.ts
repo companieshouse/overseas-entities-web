@@ -10,25 +10,32 @@ import { createOAuthApiClient } from "../service/api.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET Update Page`);
+    logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+    const session = req.session as Session;
+
     const id: string = req.params[ID];
+
+    // TO BE USED TO RETRIEVE COMPANY NUMBER SEARCHED FROM PREVIOUS PAGE
+    // ROUTE URL TO BE UPDATED
+    // const id: string = session.data.signin_info?.company_number
+
     const responses = createOAuthApiClient(req.session).companyProfile.getCompanyProfile(id);
     const companyData = (await responses).resource;
     const isOverseasEntity = companyData?.type === "registered-overseas-entity";
-    const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     appData.companyProfile = companyData;
 
     const backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
-    const updateUrl: string = config.UPDATE_COMPANY_PROFILES_URL;
+    const updateUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
 
     if (!isOverseasEntity) {
-      throw new Error("Not an overseas entity");
+      // throw new Error("Not an overseas entity");
+      next(res.render(backLinkUrl));
     }
-    return res.render(config.UPDATE_COMPANY_PROFILE_PAGE, {
+    return res.render(config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE, {
       backLinkUrl,
       updateUrl,
-      templateName: config.UPDATE_COMPANY_PROFILE_PAGE,
+      templateName: config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE,
       appData,
       companyData
     });

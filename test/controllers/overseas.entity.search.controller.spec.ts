@@ -13,7 +13,7 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  OVERSEAS_ENTITY_SEARCH_PAGE_TITLE
+  OVERSEAS_ENTITY_QUERY_PAGE_TITLE
 } from "../__mocks__/text.mock";
 
 import { deleteApplicationData, getApplicationData } from "../../src/utils/application.data";
@@ -28,19 +28,19 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
-describe("OVERSEAS ENTITY SEARCH controller", () => {
+describe("OVERSEAS ENTITY QUERY controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.OVERSEAS_ENTITY_SEARCH_PAGE} page`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ });
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_SEARCH_URL);
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_SEARCH_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
@@ -48,7 +48,7 @@ describe("OVERSEAS ENTITY SEARCH controller", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_SEARCH_URL);
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

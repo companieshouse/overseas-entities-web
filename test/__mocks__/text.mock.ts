@@ -113,4 +113,4 @@ export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO + "Ivan D
 export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - are they on the sanctions list?";
 
 // Update journey
-export const OVERSEAS_ENTITY_SEARCH_PAGE_TITLE = "What is the OE number?";
+export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";

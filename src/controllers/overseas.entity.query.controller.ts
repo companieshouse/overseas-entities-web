@@ -8,7 +8,7 @@ import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "../model/data.types.mo
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_SEARCH_PAGE}`);
+    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
 
     if (req.query[LANDING_PAGE_QUERY_PARAM] === '0') {
       deleteApplicationData(req.session);
@@ -16,9 +16,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    return res.render(config.OVERSEAS_ENTITY_SEARCH_PAGE, {
+    return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
-      templateName: config.OVERSEAS_ENTITY_SEARCH_PAGE,
+      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       [HasSoldLandKey]: appData?.[HasSoldLandKey]
     });
   } catch (error) {

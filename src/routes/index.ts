@@ -16,7 +16,7 @@ import {
   interruptCard,
   landing,
   updateLanding,
-  overseasEntitySearch,
+  overseasEntityQuery,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -57,7 +57,7 @@ router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
-router.get(config.OVERSEAS_ENTITY_SEARCH_URL, authentication, overseasEntitySearch.get);
+router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);

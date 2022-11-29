@@ -32,6 +32,8 @@ export const PAYMENT_PAID = "paid";
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
 export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = <any>getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');
+export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'false');
+export const FEATURE_FLAG_ENABLE_ROE_REMOVE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022', 'false');
 
 // TEMPLATEs
 export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";

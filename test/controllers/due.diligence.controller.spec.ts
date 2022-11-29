@@ -45,6 +45,7 @@ import {
 } from "../__mocks__/due.diligence.mock";
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -206,6 +207,60 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
     });
 
+    test("Test email is valid with long email address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
     test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date month is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
@@ -280,6 +335,16 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with invalid character errors`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK };
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on POST method`, async () => {

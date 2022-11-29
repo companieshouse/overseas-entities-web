@@ -140,7 +140,7 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
     });
@@ -162,6 +162,39 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("Test email is valid with long email address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
     });
   });
 });

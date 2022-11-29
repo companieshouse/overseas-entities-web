@@ -3,7 +3,8 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
-import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
+import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
+import { contact_email_validations } from "./fields/email.validation";
 
 export const managingOfficerCorporate = [
   body("name").not()
@@ -42,8 +43,5 @@ export const managingOfficerCorporate = [
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
 
-  body("contact_email")
-    .not().isEmpty().withMessage(ErrorMessages.EMAIL)
-    .isLength({ max: 250 }).withMessage(ErrorMessages.MAX_EMAIL_LENGTH)
-    .matches(VALID_EMAIL_FORMAT).withMessage(ErrorMessages.EMAIL_INVALID_FORMAT),
+  ...contact_email_validations
 ];

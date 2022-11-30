@@ -11,17 +11,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
-    const id: string = req.params[ID];
+    const appData: ApplicationData = getApplicationData(session);
 
-    // TO BE USED TO RETRIEVE COMPANY NUMBER SEARCHED FROM PREVIOUS PAGE
-    // ROUTE URL TO BE UPDATED
-    // const id: string = session.data.signin_info?.company_number
+    const id: string = appData?.oe_number || "";
 
     const responses = createOAuthApiClient(req.session).companyProfile.getCompanyProfile(id);
     const companyDataResponse = (await responses).resource;
     const companyData = mapOverseasEntityToDTO(companyDataResponse);
 
-    const appData: ApplicationData = getApplicationData(session);
     appData.companyProfile = companyData;
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
@@ -39,4 +36,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+
+// export const post = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+
+//   } catch (error) {
+//     logger.errorRequest(req, error);
+//     next(error);
+//   }
+// }
 

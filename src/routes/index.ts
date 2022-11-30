@@ -59,6 +59,8 @@ router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
+
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
@@ -123,7 +125,7 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 //  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL + config.ID, authentication, confirmOverseasCompanyDetails.get);
+router.get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.get);
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);

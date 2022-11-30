@@ -35,7 +35,7 @@
           text: "Overseas entity address"
         },
         {
-          text: companyData.street + "\t" + companyData.country + "\t" + companyData.postCode 
+          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode
         }
       ],
       [

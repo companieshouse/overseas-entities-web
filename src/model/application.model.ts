@@ -36,6 +36,7 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     companyProfile?: ICompanyDetails;
+    oe_number?: string;
 }
 
 export const ApplicationDataArrayType = [

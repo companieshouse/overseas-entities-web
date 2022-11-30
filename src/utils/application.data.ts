@@ -1,5 +1,5 @@
 import { Session } from '@companieshouse/node-session-handler';
-import { Request, Response } from "express";
+import { Request } from "express";
 
 import { createAndLogErrorRequest } from './logger';
 import { ID } from '../model/data.types.model';
@@ -110,5 +110,5 @@ export const mapOverseasEntityToDTO = (data: any): ICompanyDetails => {
     street: data?.registeredOfficeAddress.addressLineOne,
     country: data?.registeredOfficeAddress.addressLineTwo,
     postCode: data?.registeredOfficeAddress.postalCode,
-  }
-}
+  };
+};

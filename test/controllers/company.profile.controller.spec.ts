@@ -31,7 +31,6 @@ describe("Confirm company data", () => {
     });
 
     test(`renders the ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE} page`, async () => {
-      
       mockGetApplicationData.mockReturnValueOnce({ });
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL + "/NI038379");
       expect(resp.status).toEqual(200);

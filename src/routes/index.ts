@@ -58,6 +58,8 @@ router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
+
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);

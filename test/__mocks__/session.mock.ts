@@ -175,6 +175,7 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
+  public_register_jurisdiction: "jurisdiction",
   registration_number: "123",
   is_on_register_in_country_formed_in: 1
 };
@@ -192,6 +193,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   email: "email@test.gov.uk",
   legal_form: "legalForm",
   law_governed: "governedLaw",
+  public_register_jurisdiction: "jurisdiction",
   public_register_name: "publicRegister",
   registration_number: "123",
   is_on_register_in_country_formed_in: "1",

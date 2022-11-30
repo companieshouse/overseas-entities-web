@@ -114,3 +114,4 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
+export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the correct company";

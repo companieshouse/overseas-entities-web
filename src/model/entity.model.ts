@@ -17,6 +17,7 @@ export const EntityKeys: string[] = [
   "legal_form",
   "law_governed",
   "public_register_name",
+  "public_register_jurisdiction",
   "registration_number",
   "is_on_register_in_country_formed_in"
 ];
@@ -31,6 +32,7 @@ export interface Entity {
     legal_form?: string;
     law_governed?: string;
     public_register_name?: string;
+    public_register_jurisdiction?: string;
     registration_number?: string;
     is_on_register_in_country_formed_in?: yesNoResponse;
 }

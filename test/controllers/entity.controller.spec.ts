@@ -30,8 +30,17 @@ import {
   INCORPORATION_COUNTRY_OPTION_SELECTED,
   UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  PUBLIC_REGISTER_NAME_LABEL,
+  PUBLIC_REGISTER_JURISDICTION_LABEL,
+  REGISTRATION_NUMBER_LABEL,
 } from "../__mocks__/text.mock";
-import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
+import {
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
+  PublicRegisterJurisdictionKey,
+  PublicRegisterNameKey,
+  RegistrationNumberKey
+} from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
 import {
@@ -130,6 +139,24 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
+    test("renders the entity page on GET method with the three public register fields", async () => {
+      mockGetApplicationData.mockReturnValueOnce( {
+        ...APPLICATION_DATA_MOCK,
+        [EntityKey]: {
+          ...APPLICATION_DATA_MOCK[EntityKey],
+          incorporation_country: "United Kingdom"
+        }
+      });
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(PUBLIC_REGISTER_NAME_LABEL);
+      expect(resp.text).toContain(PUBLIC_REGISTER_JURISDICTION_LABEL);
+      expect(resp.text).toContain(REGISTRATION_NUMBER_LABEL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
     test("catch error when renders the entity page on GET method", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(ENTITY_URL);
@@ -184,6 +211,7 @@ describe("ENTITY controller", () => {
 
       const data = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual('');
+      expect(data[PublicRegisterJurisdictionKey]).toEqual('');
       expect(data[RegistrationNumberKey]).toEqual('');
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });

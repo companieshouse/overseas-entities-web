@@ -5,10 +5,23 @@
     name: "public_register_name",
     value: public_register_name,
     hint: {
-      text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
+      text: "Include the full name. For example, Jersey Financial Services Commission."
     },
     label: {
       text: "Name of register"
+    }
+  }) }}
+
+  {{ govukInput({
+    errorMessage: errors.public_register_name if errors,
+    id: "public_register_jurisdiction",
+    name: "public_register_jurisdiction",
+    value: public_register_jurisdiction,
+    hint: {
+      text: "For example, Jersey."
+    },
+    label: {
+      text: "Jurisdiction"
     }
   }) }}
 

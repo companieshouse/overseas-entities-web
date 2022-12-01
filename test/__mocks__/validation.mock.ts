@@ -99,8 +99,8 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   email: maxLengthMocks.MAX_256 + "@toolong.com",
   legal_form: maxLengthMocks.MAX_160 + "1",
   law_governed: maxLengthMocks.MAX_160 + "1",
-  public_register_name: maxLengthMocks.MAX_160 + "1",
-  public_register_jurisdiction: maxLengthMocks.MAX_160 + "1",
+  public_register_name: maxLengthMocks.MAX_80,
+  public_register_jurisdiction: maxLengthMocks.MAX_80,
   registration_number: maxLengthMocks.MAX_32 + "1",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK

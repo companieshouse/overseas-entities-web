@@ -1,3 +1,5 @@
+import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -278,6 +280,30 @@ describe("ENTITY controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
+    test("renders the current page with error messages when public register name and jurisdiction is just over maxlength", async () => {
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+    });
+
+    test("redirect to the next page when public register name and jurisdiction is just on maxlength", async () => {
+      const publicRegisterName79 = MAX_50 + MAX_20 + "abcdefghi";
+      const publicRegisterJurisdiction80 = MAX_80;
+      const entity = { ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, [PublicRegisterNameKey]: publicRegisterName79, [PublicRegisterJurisdictionKey]: publicRegisterJurisdiction80 };
+      mockPrepareData.mockReturnValueOnce(entity);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+    });
+
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(ENTITY_URL);
       expect(resp.status).toEqual(200);
@@ -319,7 +345,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);

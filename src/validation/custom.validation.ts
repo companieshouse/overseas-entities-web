@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
+import { CONCAT_VALUE_SEPARATOR } from "../config";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -86,11 +87,10 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkSecondNationality = (nationality: string = "", secondNationality: string = "") => {
-  const separator = ",";
 
   if ( nationality && nationality === secondNationality ) {
     throw new Error(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
-  } else if ( nationality && secondNationality && `${nationality}${separator}${secondNationality}`.length > 50) {
+  } else if ( nationality && secondNationality && `${nationality}${CONCAT_VALUE_SEPARATOR}${secondNationality}`.length > 50) {
     throw new Error(ErrorMessages.NATIONALITIES_TOO_LONG);
   }
 
@@ -98,8 +98,8 @@ export const checkSecondNationality = (nationality: string = "", secondNationali
 };
 
 export const checkPublicRegisterJurisdiction = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
-  const separator = ",";
-  if (public_register_name && public_register_jurisdiction && `${public_register_name}${separator}${public_register_jurisdiction}`.length > 160) {
+
+  if (public_register_name && public_register_jurisdiction && `${public_register_name}${CONCAT_VALUE_SEPARATOR}${public_register_jurisdiction}`.length > 160) {
     throw new Error(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
   }
   return true;

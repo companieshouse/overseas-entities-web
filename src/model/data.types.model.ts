@@ -75,4 +75,4 @@ export const PublicRegisterNameKey = "public_register_name";
 export const RegistrationNumberKey = "registration_number";
 
 // Update Journey
-export const OeNumber = "oe_number";
+export const OeNumberKey = "oe_number";

@@ -1,24 +1,24 @@
 jest.mock("ioredis");
-jest.mock("../../src/utils/logger");
-jest.mock('../../src/middleware/authentication.middleware');
-jest.mock('../../src/utils/application.data');
+jest.mock("../../../src/utils/logger");
+jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
-import * as config from "../../src/config";
-import app from "../../src/app";
+import * as config from "../../../src/config";
+import app from "../../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_QUERY_PAGE_TITLE
-} from "../__mocks__/text.mock";
+} from "../../__mocks__/text.mock";
 
-import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
-import { authentication } from "../../src/middleware/authentication.middleware";
-import { logger } from "../../src/utils/logger";
+import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { authentication } from "../../../src/middleware/authentication.middleware";
+import { logger } from "../../../src/utils/logger";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -63,16 +63,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .send({ oe_number: '12345678' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-    });
-
-    test(`re-renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page, and setExtraData not called, when invalid oeNumber submitted`, async () => {
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '1234' });
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
     });
   });
 });

@@ -14,6 +14,7 @@ export enum ErrorMessages {
   NATIONALITY = "Enter the individual person’s nationality",
   SECOND_NATIONALITY_IS_SAME = "Second nationality must be different to their first nationality",
   NATIONALITIES_TOO_LONG = "The nationalities you have chosen are longer than 50 characters in total, please choose fewer nationalities",
+  PUBLIC_REGISTER_NAME_JURISDICTION_TOO_LONG = "Name of register and jurisdiction must be 160 characters or less in total",
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
   OE_DUE_DILIGENCE_NAME = "Enter the name of the person or company that carried out identity checks",
@@ -25,6 +26,8 @@ export enum ErrorMessages {
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",
+  PUBLIC_REGISTER_JURISDICTION = "Enter the jurisdiction",
+
   // Address
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",
   ADDRESS_LINE1 = "Enter an address",
@@ -103,6 +106,7 @@ export enum ErrorMessages {
   MAX_LEGAL_FORM_LENGTH = "Legal form must be 160 characters or less",
   MAX_LAW_GOVERNED_LENGTH = "Governing law must be 160 characters or less",
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 160 characters or less",
+  MAX_PUBLIC_REGISTER_JURISDICTION_LENGTH = "Name of register must be 160 characters or less",
   MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 160 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
@@ -122,6 +126,7 @@ export enum ErrorMessages {
   POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PUBLIC_REGISTER_NAME_INVALID_CHARACTERS = "Name of register must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS = "Jurisdiction must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS = "Registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ENTITY_NAME_INVALID_CHARACTERS = "The name of the overseas entity must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   LEGAL_FORM_INVALID_CHARACTERS = "Legal form must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

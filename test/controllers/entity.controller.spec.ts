@@ -272,6 +272,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
@@ -294,6 +295,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
@@ -329,6 +331,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).not.toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
@@ -351,6 +354,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });

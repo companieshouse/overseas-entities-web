@@ -97,6 +97,14 @@ export const checkSecondNationality = (nationality: string = "", secondNationali
   return true;
 };
 
+export const checkPublicRegisterJurisdiction = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
+  const separator = ",";
+  if (public_register_name && public_register_jurisdiction && `${public_register_name}${separator}${public_register_jurisdiction}`.length > 160) {
+    throw new Error(ErrorMessages.PUBLIC_REGISTER_NAME_JURISDICTION_TOO_LONG);
+  }
+  return true;
+};
+
 export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) => {
   for (const field of fields) {
     if (field) {

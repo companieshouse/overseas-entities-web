@@ -16,7 +16,7 @@ import {
   OVERSEAS_ENTITY_QUERY_PAGE_TITLE
 } from "../__mocks__/text.mock";
 
-import { deleteApplicationData, getApplicationData } from "../../src/utils/application.data";
+import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 
@@ -27,6 +27,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("OVERSEAS ENTITY QUERY controller", () => {
 
@@ -46,7 +47,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
 
-    test("catch error when rendering the page", async () => {
+    test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
@@ -56,6 +57,22 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
   });
 
   describe("POST tests", () => {
-    // TO DO
+    test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: '12345678' });
+      expect(resp.status).toEqual(302);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`re-renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page, and setExtraData not called, when invalid oeNumber submitted`, async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: '1234' });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
+    });
   });
 });

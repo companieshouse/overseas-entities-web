@@ -19,7 +19,6 @@ import {
   presenterType,
   trustType,
   dueDiligenceType,
-  companyProfileType
 } from "../../src/model";
 import { ICompanyDetails } from "../../src/model/company.profile.model";
 import {
@@ -828,15 +827,15 @@ export const TRUST_PARTIAL_DATE: Trust = {
 
 export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
   companyName: "Polish brewery",
-    dateOfCreation: "1872-06-26",
-    companyAddress: {},
-    companyType: "registered-overseas-entity",
-    jurisdiction: "europe-north",
-    companyNumber: "0E746324",
-    street: "1 CH house, NORWAY",
-    country: "NORWAY",
-    postCode: "NR19 5DP"
-}
+  dateOfCreation: "1872-06-26",
+  companyAddress: {},
+  companyType: "registered-overseas-entity",
+  jurisdiction: "europe-north",
+  companyNumber: "0E746324",
+  street: "1 CH house, NORWAY",
+  country: "NORWAY",
+  postCode: "NR19 5DP"
+};
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -896,4 +895,11 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
+
+
+// update overseas entity mocks
+export const companyServiceNameOE = "companyProfile";
+export const fnGetCompanyNameGetOE = "getCompanyProfile";
+
+
 

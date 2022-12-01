@@ -33,8 +33,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const oeNumber = req.body[OeNumber];
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumber]: oeNumber });
 
-    console.log(`OE NUMBER IS ${getApplicationData}`);
-
     if ( oeNumber.length === 8 ) {
       return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
     } else {

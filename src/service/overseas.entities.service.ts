@@ -79,7 +79,7 @@ export const getCompanyRequest = async (
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
 
   return response.resource;
-}
+};
 
 
 export const getOverseasEntity = async (

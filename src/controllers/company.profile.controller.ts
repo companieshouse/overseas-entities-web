@@ -12,15 +12,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
-    const companyDataResponse = await getCompanyRequest(req, id)
+    const companyDataResponse = await getCompanyRequest(req, id);
     const companyData = mapOverseasEntityToDTO(companyDataResponse);
     appData.company_profile_details = companyData;
-    
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
     const updateUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
 
-    if(!companyDataResponse){
+    if (!companyDataResponse){
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
 
@@ -37,7 +36,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.UPDATE_OVERSEAS_ENTRY_DETAILS_URL);
@@ -45,5 +44,5 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
-}
+};
 

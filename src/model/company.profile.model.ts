@@ -1,10 +1,7 @@
 import { Address } from "model/data.types.model";
-
-export const companyProfileKey = "overseas_company_profile";
 export interface ICompanyDetails {
     companyName?: string;
     dateOfCreation?: string;
-    companyAddress?: Address
     companyType?: string;
     jurisdiction?: string;
     companyNumber?: string;
@@ -12,6 +9,7 @@ export interface ICompanyDetails {
     country?: string;
     postCode?: string;
     street?: string;
+    companyAddress?: Address;
 }
 
 

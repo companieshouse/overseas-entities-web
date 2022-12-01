@@ -18,12 +18,16 @@ import {
   managingOfficerType,
   presenterType,
   trustType,
-  dueDiligenceType
+  dueDiligenceType,
+  companyProfileType
 } from "../../src/model";
+import { ICompanyDetails } from "../../src/model/company.profile.model";
 import {
+  companyProfileKey,
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,
+  OeNumber,
   OverseasEntityKey,
   PaymentKey,
   Transactionkey,
@@ -822,6 +826,18 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
+export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
+  companyName: "Polish brewery",
+    dateOfCreation: "1872-06-26",
+    companyAddress: {},
+    companyType: "registered-overseas-entity",
+    jurisdiction: "europe-north",
+    companyNumber: "0E746324",
+    street: "1 CH house, NORWAY",
+    country: "NORWAY",
+    postCode: "NR19 5DP"
+}
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -838,7 +854,9 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
-  [TrustKey]: [TRUST]
+  [TrustKey]: [TRUST],
+  [OeNumber]: COMPANY_NUMBER,
+  [companyProfileKey]: OVER_SEAS_ENTITY_MOCK_DATA,
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
@@ -878,3 +896,4 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
+

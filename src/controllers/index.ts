@@ -28,3 +28,4 @@ export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning
 export * as signOut from "./sign.out.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 export * as confirmOverseasCompanyDetails from "./company.profile.controller";
+export * as updateOverseasEntityDetails from "./update.oversea.entity.details.controller";

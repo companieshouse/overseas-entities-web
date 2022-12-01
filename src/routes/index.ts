@@ -31,7 +31,8 @@ import {
   accessibilityStatement,
   signOut,
   resumeSubmission,
-  confirmOverseasCompanyDetails
+  confirmOverseasCompanyDetails,
+  updateOverseasEntityDetails,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -126,6 +127,10 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, au
 
 //  FETCH AND UPDATE COMPANY PROFILE
 router.get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.get);
+router.post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.post);
+
+router.get(config.UPDATE_AN_OVERSEAS_ENTITY_URL, authentication, updateOverseasEntityDetails.get);
+
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);

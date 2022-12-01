@@ -24,35 +24,64 @@
     rows: [
       [
         {
-          text: "Company Name"
+          text: "Company Name",
+          attributes: {
+            "id": "oe_company_name"
+          }
         },
         {
-          text: companyData.companyName
+          text: companyData.companyName,
+          attributes: {
+            "id": "oe_company_name_value"
+          }
         }
       ],
       [
         {
-          text: "Overseas entity address"
+          text: "Overseas entity address",
+          attributes: {
+            "id": "oe_address"
+          }
         },
         {
-          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode
+          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode,
+          attributes: {
+            "id": "oe_address_value"
+          }
         }
       ],
       [
         {
-          text: "Registered On"
+          text: "Registered On",
+          attributes: {
+            "id": "oe_registered_date"
+          }
         },
         {
-          text: companyData.dateOfCreation
+          text: companyData.dateOfCreation,
+          attributes: {
+            "id": "oe_registered_date_value"
+          }
         }
       ]
     ]
     }) 
   }}
+
+  <br>
+  <form method="post">
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Confirm and continue",
+        attributes: {
+          "id": "submit"
+        }
+      }) }}
+    </div>
+    <br>
+      <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Change company</a>  
+  </form>
   </div>
 </div>
-{% include "includes/save-and-continue-button.html" %}
-<br>
-<a href="#" class="govuk-link govuk-link--no-visited-state">Change company</a>
 
 {% endblock %}

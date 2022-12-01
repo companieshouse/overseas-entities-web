@@ -31,10 +31,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const oeNumber = req.body[OeNumber];
-    
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumber]: oeNumber });
 
-    console.log(`OE NUMBER IS ${getApplicationData}`)
+    console.log(`OE NUMBER IS ${getApplicationData}`);
 
     if ( oeNumber.length === 8 ) {
       return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);

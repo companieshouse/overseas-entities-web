@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../utils/logger";
 import * as config from "../config";
-// import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { OeNumber } from "../model/data.types.model";
 

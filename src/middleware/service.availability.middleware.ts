@@ -4,7 +4,7 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
 
-import { FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022, FEATURE_FLAG_ENABLE_ROE_UPDATE, SERVICE_OFFLINE_PAGE, SHOW_SERVICE_OFFLINE_PAGE, UPDATE_LANDING_URL } from "../config";
+import { FEATURE_FLAG_ENABLE_ROE_UPDATE, SERVICE_OFFLINE_PAGE, SHOW_SERVICE_OFFLINE_PAGE, UPDATE_LANDING_URL } from "../config";
 import { logger } from "../utils/logger";
 
 export const serviceAvailabilityMiddleware = (req: Request, res: Response, next: NextFunction) => {

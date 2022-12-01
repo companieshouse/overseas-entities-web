@@ -21,6 +21,7 @@
 
       <form method="post">
 
+        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request." %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is the agent’s name?" %}
@@ -51,6 +52,7 @@
           value: agent_code
         }) }}
 
+        {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request." %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 
         {{ govukCheckboxes({

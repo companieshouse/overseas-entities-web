@@ -72,5 +72,6 @@ export const IsSecureRegisterKey = "is_secure_register";
 
 // Register keys
 export const PublicRegisterNameKey = "public_register_name";
+export const PublicRegisterJurisdictionKey = "public_register_jurisdiction";
 export const RegistrationNumberKey = "registration_number";
 

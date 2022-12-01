@@ -9,7 +9,14 @@ import {
 } from "../utils/application.data";
 import { EntityKey, EntityKeys } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { AddressKeys, HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from "../model/data.types.model";
+import {
+  AddressKeys,
+  HasSamePrincipalAddressKey,
+  IsOnRegisterInCountryFormedInKey,
+  PublicRegisterJurisdictionKey,
+  PublicRegisterNameKey,
+  RegistrationNumberKey
+} from "../model/data.types.model";
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
@@ -24,8 +31,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const entity = appData[EntityKey];
-    const principalAddress = (entity) ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (entity) ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const principalAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
+      : {};
+    const serviceAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
+      : {};
 
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: getEntityBackLink(appData),
@@ -57,6 +68,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     // Wipe 'register in country formed in' data if IsOnRegisterInCountryFormedInKey is no or not selected
     if (!data[IsOnRegisterInCountryFormedInKey]) {
       data[PublicRegisterNameKey] = '';
+      data[PublicRegisterJurisdictionKey] = '';
       data[RegistrationNumberKey] = '';
     }
 

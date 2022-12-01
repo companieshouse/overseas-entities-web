@@ -49,6 +49,10 @@ export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
 
+export const PUBLIC_REGISTER_NAME = "publicRegister";
+export const PUBLIC_REGISTER_JURISDICTION = "jurisdiction";
+export const REGISTRATION_NUMBER = "123";
+
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
 export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";
@@ -174,8 +178,9 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   email: "entity.email@test.com",
   legal_form: "legalForm",
   law_governed: "governedLaw",
-  public_register_name: "publicRegister",
-  registration_number: "123",
+  public_register_name: PUBLIC_REGISTER_NAME,
+  public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
+  registration_number: REGISTRATION_NUMBER,
   is_on_register_in_country_formed_in: 1
 };
 
@@ -192,8 +197,9 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   email: "email@test.gov.uk",
   legal_form: "legalForm",
   law_governed: "governedLaw",
-  public_register_name: "publicRegister",
-  registration_number: "123",
+  public_register_name: PUBLIC_REGISTER_NAME,
+  public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
+  registration_number: REGISTRATION_NUMBER,
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK
@@ -872,6 +878,7 @@ export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
 export const serviceNameOE = "overseasEntity";
 export const fnNamePutOE = "putOverseasEntity";
 export const fnNamePostOE = "postOverseasEntity";
+export const fnNameGetOE = "getOverseasEntity";
 
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";

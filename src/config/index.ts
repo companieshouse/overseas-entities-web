@@ -109,6 +109,10 @@ const TRANSACTION_PATH = TRANSACTION + "/:transactionId/";
 const OVERSEAS_ENTITY_PATH = OVERSEAS_ENTITY + "/:overseaEntityId/";
 export const PAYMENT_WITH_TRANSACTION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + PAYMENT;
 
+// Resume submission
+export const RESUME = "resume";
+export const RESUME_SUBMISSION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + RESUME;
+
 // Change links
 export const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";
 export const IS_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "#is_service_address_same_as_principal_address";

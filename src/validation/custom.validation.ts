@@ -100,7 +100,7 @@ export const checkSecondNationality = (nationality: string = "", secondNationali
 export const checkPublicRegisterJurisdiction = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
   const separator = ",";
   if (public_register_name && public_register_jurisdiction && `${public_register_name}${separator}${public_register_jurisdiction}`.length > 160) {
-    throw new Error(ErrorMessages.PUBLIC_REGISTER_NAME_JURISDICTION_TOO_LONG);
+    throw new Error(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
   }
   return true;
 };

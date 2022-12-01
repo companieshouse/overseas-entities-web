@@ -3,7 +3,8 @@ import { body } from "express-validator";
 import {
   checkFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
-  checkMaxFieldIfRadioButtonSelected, checkPublicRegisterJurisdiction
+  checkMaxFieldIfRadioButtonSelected,
+  checkPublicRegisterJurisdiction
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 

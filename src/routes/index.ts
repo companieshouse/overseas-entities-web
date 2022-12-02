@@ -1,7 +1,6 @@
 import { Router } from "express";
 
 import * as config from "../config";
-import { FEATURE_FLAG_ENABLE_TRUSTS_WEB } from "../config";
 import {
   beneficialOwnerGov,
   beneficialOwnerIndividual,
@@ -127,7 +126,7 @@ router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...va
 router
   .route(config.TRUST_DETAILS_URL + config.ID + '?')
   .all(
-    isFeatureEnabled(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
   )
   .get(trustDetails.get)

@@ -5,7 +5,6 @@ import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
 import { checkEntityHasTrusts } from "../utils/trusts";
 import * as config from "../config";
-import { FEATURE_FLAG_ENABLE_TRUSTS_WEB } from "../config";
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
@@ -29,7 +28,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       hasTrusts,
       ...appData,
       pageParams: {
-        urlToTrust: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+        urlToTrust: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
           ? config.TRUST_DETAILS_URL
           : config.TRUST_INFO_URL,
         urlToCheckYourAnswers: config.CHECK_YOUR_ANSWERS_URL,

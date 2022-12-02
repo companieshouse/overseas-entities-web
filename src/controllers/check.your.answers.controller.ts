@@ -32,7 +32,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       hasTrusts,
-      appData
+      appData,
+      pageParams: {
+        isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+      },
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -214,6 +214,7 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_
   legal_form: "legalForm",
   law_governed: "governedLaw",
   public_register_name: "publicRegister",
+  public_register_jurisdiction: "jurisdiction",
   registration_number: "123",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_MOCK,

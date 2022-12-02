@@ -29,7 +29,7 @@ export const DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AN
   identity_date: DATE,
   name: "Any name",
   identity_address: ADDRESS,
-  email: " email@email.ch ",
+  email: " user@domain.roe ",
   supervisory_name: "Any supervisory name",
   aml_number: "Any AML number",
   agent_code: "Any agent code",

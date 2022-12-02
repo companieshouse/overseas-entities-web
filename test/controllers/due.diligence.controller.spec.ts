@@ -31,7 +31,10 @@ import {
   DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
+  DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
 } from "../__mocks__/text.mock";
+import { ApplicationDataType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
 import {
@@ -42,8 +45,10 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE,
 } from "../__mocks__/due.diligence.mock";
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
+import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -72,8 +77,10 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(DUE_DILIGENCE_NAME_TEXT);
+      expect(resp.text).toContain(DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -142,6 +149,10 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {
@@ -222,6 +233,60 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
     });
 
+    test("Test email is valid with long email address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+      const dueDiligenceData = {
+        ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
     test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date month is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
@@ -296,6 +361,16 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with invalid character errors`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK };
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on POST method`, async () => {

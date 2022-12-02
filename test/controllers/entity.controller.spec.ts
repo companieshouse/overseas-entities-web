@@ -14,6 +14,7 @@ import { getApplicationData, setApplicationData, prepareData } from "../../src/u
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
+  EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
   ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
   ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
@@ -32,6 +33,7 @@ import {
   UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
 } from "../__mocks__/text.mock";
+import { ApplicationDataType } from '../../src/model';
 import { HasSamePrincipalAddressKey, IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey } from '../../src/model/data.types.model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
@@ -198,6 +200,49 @@ describe("ENTITY controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
+    test("Test email is valid with long email address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      const entity = {
+        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(ENTITY_URL)
+        .send(entity);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test("renders the current page with error messages", async () => {
@@ -259,7 +304,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_LENGTH);

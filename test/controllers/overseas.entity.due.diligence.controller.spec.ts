@@ -1,3 +1,5 @@
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
+
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -29,7 +31,11 @@ import {
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
 } from "../__mocks__/text.mock";
+import { ApplicationDataType } from '../../src/model';
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
@@ -73,8 +79,10 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -135,6 +143,64 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
+    test("Test email is valid with long email address", async () => {
+      const dueDiligenceMock = {
+        ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      const dueDiligenceMock = {
+        ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
+
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      const dueDiligenceMock = {
+        ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
+      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
+
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test(`redirect to ${ENTITY_PAGE}, no validation error for empty date`, async () => {
@@ -331,6 +397,15 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with invalid character errors`, async () => {
+      const overseasEntityDueDiligenceData = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK };
+      const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(overseasEntityDueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
   });

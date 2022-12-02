@@ -25,6 +25,8 @@ export enum ErrorMessages {
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",
+  PUBLIC_REGISTER_JURISDICTION = "Enter the jurisdiction",
+
   // Address
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",
   ADDRESS_LINE1 = "Enter an address",
@@ -95,7 +97,7 @@ export enum ErrorMessages {
   MAX_CITY_OR_TOWN_LENGTH = "City or town must be 50 characters or less",
   MAX_COUNTY_LENGTH = "County, state, province or region must be 50 characters or less",
   MAX_POSTCODE_LENGTH = "Postcode must be 15 characters or less",
-  MAX_ENTITY_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 160 characters or less",
+  MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH = "Name of register and jurisdiction must be 159 characters or less in total",
   MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 32 characters or less",
   MAX_ENTITY_LEGAL_FORM_LENGTH = "Legal form must be 160 characters or less",
   MAX_ENTITY_LAW_GOVERNED_LENGTH = "Governing law must be 160 characters or less",
@@ -121,6 +123,7 @@ export enum ErrorMessages {
   POSTCODE_ZIPCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PUBLIC_REGISTER_NAME_INVALID_CHARACTERS = "Name of register must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS = "Jurisdiction must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS = "Registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ENTITY_NAME_INVALID_CHARACTERS = "The name of the overseas entity must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   LEGAL_FORM_INVALID_CHARACTERS = "Legal form must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

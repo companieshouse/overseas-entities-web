@@ -27,6 +27,7 @@ import { getApplicationData, setExtraData } from "../../src/utils/application.da
 import { mapDetailToPage } from '../../src/utils/trust/mapper.to.page';
 import { mapDetailToSession } from '../../src/utils/trust/mapper.to.session';
 import { Trust } from '../../src/model/trust.model';
+import * as config from "../../src/config";
 
 describe('Trust Details controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -184,7 +185,7 @@ describe('Trust Details controller', () => {
         .send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(pageUrl);
+      expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_URL);
     });
   });
 });

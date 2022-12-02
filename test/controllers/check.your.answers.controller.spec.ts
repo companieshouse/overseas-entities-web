@@ -71,7 +71,7 @@ import {
   BO_GOV_ID_URL,
   MO_IND_ID_URL,
   MO_CORP_ID_URL,
-  TRANSACTION_ID,
+  TRANSACTION_ID, PUBLIC_REGISTER_NAME, PUBLIC_REGISTER_JURISDICTION, REGISTRATION_NUMBER,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -488,6 +488,17 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(SOMEONE_ELSE_REGISTERING);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with all three public register fields`, async () => {
+    const applicationDataWithSomeoneElse = { ...APPLICATION_DATA_MOCK };
+    applicationDataWithSomeoneElse[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
+    mockGetApplicationData.mockReturnValueOnce(applicationDataWithSomeoneElse);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(PUBLIC_REGISTER_NAME + " / " + PUBLIC_REGISTER_JURISDICTION + " / " + REGISTRATION_NUMBER);
     expect(resp.text).toContain(SOMEONE_ELSE_REGISTERING);
   });
 });

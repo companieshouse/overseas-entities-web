@@ -14,7 +14,7 @@
 
 {% set formattedPublicRegister %}
   {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
-    {{ appData.entity.public_register_name }} / {{ appData.entity.registration_number }}
+    {{ appData.entity.public_register_name }} / {{ appData.entity.public_register_jurisdiction }} / {{ appData.entity.registration_number }}
   {% else %}
     No
   {% endif %}

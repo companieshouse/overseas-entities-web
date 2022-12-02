@@ -34,15 +34,18 @@ import {
   DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
   DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
 } from "../__mocks__/text.mock";
+import { ApplicationDataType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
 import {
   DUE_DILIGENCE_OBJECT_MOCK,
+  DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE,
 } from "../__mocks__/due.diligence.mock";
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
@@ -116,7 +119,7 @@ describe("DUE_DILIGENCE controller", () => {
       const twoMonthOldDate = getTwoMonthOldDate();
 
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
-      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
 
@@ -127,6 +130,29 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK } );
+
+      const twoMonthOldDate = getTwoMonthOldDate();
+
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES };
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
+
+      const resp = await request(app)
+        .post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
     });
 
     test(`renders the ${DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {
@@ -174,7 +200,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH_DUE_DILIGENCE);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH);

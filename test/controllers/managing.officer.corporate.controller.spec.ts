@@ -19,6 +19,7 @@ import {
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
@@ -62,6 +63,7 @@ import {
 } from "../__mocks__/validation.mock";
 import { logger } from "../../src/utils/logger";
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -395,6 +397,20 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_CORPORATE_URL)
+        .send(MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["contact_email"]).toEqual(EMAIL_ADDRESS);
     });
   });
 

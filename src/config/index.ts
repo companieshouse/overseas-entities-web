@@ -145,6 +145,7 @@ export const PUBLIC_REGISTER_NAME = "#public_register_name";
 export const ROLE_AND_RESPONSIBILITIES = "#role_and_responsibilities";
 export const CONTACT_FULL_NAME = "#contact_full_name";
 export const CONTACT_EMAIL = "#contact_email";
+export const CREATED_DATE = "#createdDate-createdDateDay";
 
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + EMAIL;

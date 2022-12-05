@@ -10,10 +10,17 @@
   rows: [
     {
       key: {
-        text: "Trust"
+        text: "Trust name"
       },
       value: {
-        text: trust.trust_name if trust
+        text: trust.trust_name
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.NAME,
+          "Trust " + trust.trust_name + " -  name",
+          "change-trust-name-button"
+        ) ]
       }
     },
     {
@@ -22,6 +29,13 @@
       },
       value: {
         text: trustCreationDate
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.CREATED_DATE,
+          "Trust " + trust.trust_name + " -  created date",
+          "change-trust-created-date-button"
+        ) ]
       }
     },
     {

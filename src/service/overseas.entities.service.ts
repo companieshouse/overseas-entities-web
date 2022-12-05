@@ -70,6 +70,11 @@ export const getCompanyRequest = async (
     oeNumber,
   );
   const infoMsg = `OE NUMBER ID: ${oeNumber}`;
+  if (response.httpStatusCode !== 200) {
+    const errorMsg = `Something went wrong getting Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
+    throw createAndLogErrorRequest(req, errorMsg);
+    
+  }
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
   return response.resource;
 };

@@ -13,7 +13,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
     const companyDataResponse = await getCompanyRequest(req, id);
-    
     if (!companyDataResponse){
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
@@ -39,7 +38,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-       logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.UPDATE_OVERSEAS_ENTRY_DETAILS_URL);
   } catch (error) {
     logger.errorRequest(req, error);

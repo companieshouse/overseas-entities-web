@@ -37,6 +37,8 @@ import {
   PUBLIC_REGISTER_NAME_LABEL,
   PUBLIC_REGISTER_JURISDICTION_LABEL,
   REGISTRATION_NUMBER_LABEL,
+  JURISDICTION_FIELD_LABEL,
+  ENTITY_PUBLIC_REGISTER_HINT_TEXT,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import {
@@ -96,6 +98,17 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityKey]: null, [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE } );
+      const resp = await request(app).get(ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(JURISDICTION_FIELD_LABEL);
+      expect(resp.text).toContain(ENTITY_PUBLIC_REGISTER_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 

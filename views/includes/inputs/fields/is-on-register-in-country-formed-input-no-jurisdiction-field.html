@@ -1,0 +1,46 @@
+{% set entityPublicRegisterHtml %}
+  {{ govukInput({
+    errorMessage: errors.public_register_name if errors,
+    id: "public_register_name",
+    name: "public_register_name",
+    value: public_register_name,
+    hint: {
+      text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
+    },
+    label: {
+      text: "Name of register"
+    }
+  }) }}
+
+ {% include "includes/inputs/fields/registration-number-input.html" %}
+{% endset -%}
+
+
+{{ govukRadios({
+  errorMessage: errors.is_on_register_in_country_formed_in if errors,
+  classes: "govuk-radios",
+  idPrefix: "is_on_register_in_country_formed_in",
+  name: "is_on_register_in_country_formed_in",
+  fieldset: {
+    legend: {
+      text: registerInCountryFormedText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  items: [
+  {
+      value: 1,
+      text: "Yes",
+      conditional: {
+        html: entityPublicRegisterHtml
+      },
+      checked: is_on_register_in_country_formed_in == 1
+    },
+    {
+      value: 0,
+      text: "No",
+      checked: is_on_register_in_country_formed_in == 0
+    }
+  ]
+}) }}

@@ -35,7 +35,7 @@
 
       {% set registerInCountryFormedText = "Is the corporate managing officer already on a public register in the country it was formed?" %}
       {% set registrationNumberText = "Corporate managing officer's registration number" %}
-      {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
+      {% include "includes/inputs/fields/is-on-register-in-country-formed-input-no-jurisdiction-field.html" %}
 
       {{ govukTextarea({
       errorMessage: errors.role_and_responsibilities if errors,

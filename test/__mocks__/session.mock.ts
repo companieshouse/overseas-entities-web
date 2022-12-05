@@ -49,6 +49,11 @@ export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
 
+export const EMAIL_ADDRESS = "user@domain.roe";
+export const PUBLIC_REGISTER_NAME = "publicRegister";
+export const PUBLIC_REGISTER_JURISDICTION = "jurisdiction";
+export const REGISTRATION_NUMBER = "123";
+
 export const ERROR: Error = new Error(ANY_MESSAGE_ERROR);
 export const TRANSACTION_ID = "038138-572616-526863";
 export const OVERSEAS_ENTITY_ID = "6281fe0790bdb128549bf09f";
@@ -174,8 +179,9 @@ export const ENTITY_OBJECT_MOCK: entityType.Entity = {
   email: "entity.email@test.com",
   legal_form: "legalForm",
   law_governed: "governedLaw",
-  public_register_name: "publicRegister",
-  registration_number: "123",
+  public_register_name: PUBLIC_REGISTER_NAME,
+  public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
+  registration_number: REGISTRATION_NUMBER,
   is_on_register_in_country_formed_in: 1
 };
 
@@ -192,7 +198,23 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   email: "email@test.gov.uk",
   legal_form: "legalForm",
   law_governed: "governedLaw",
+  public_register_name: PUBLIC_REGISTER_NAME,
+  public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
+  registration_number: REGISTRATION_NUMBER,
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
+};
+
+export const ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
+  name: "overseasEntityName",
+  incorporation_country: "incorporationCountry",
+  is_service_address_same_as_principal_address: "0",
+  email: " " + EMAIL_ADDRESS + " ",
+  legal_form: "legalForm",
+  law_governed: "governedLaw",
   public_register_name: "publicRegister",
+  public_register_jurisdiction: "jurisdiction",
   registration_number: "123",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_MOCK,
@@ -622,6 +644,22 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   ...START_DATE
 };
 
+export const MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
+  name: "Joe Bloggs Ltd",
+  is_service_address_same_as_principal_address: "0",
+  legal_form: "legalForm",
+  law_governed: "LegAuth",
+  is_on_register_in_country_formed_in: "1",
+  public_register_name: "register",
+  registration_number: "123456789",
+  role_and_responsibilities: "role and responsibilities text",
+  contact_full_name: "contact name",
+  contact_email: " " + EMAIL_ADDRESS + " ",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK,
+  ...START_DATE
+};
+
 export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
@@ -686,7 +724,12 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO
 
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
-  email: "user@domain.roe"
+  email: EMAIL_ADDRESS
+};
+
+export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES: presenterType.Presenter = {
+  full_name: "fullName",
+  email: " " + EMAIL_ADDRESS + " "
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {

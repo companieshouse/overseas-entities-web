@@ -2,6 +2,9 @@ import { MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./sessi
 import { ADDRESS } from "./fields/address.mock";
 import * as maxLengthMocks from "./max.length.mock";
 import { trustType } from "../../src/model";
+import { DueDiligence } from "../../src/model/due.diligence.model";
+import { DATE } from "./fields/date.mock";
+import { OverseasEntityDueDiligence } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 const NAME_SPECIAL_CHARS = "Kurt Gödel";
 
@@ -96,7 +99,8 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   email: maxLengthMocks.MAX_256 + "@toolong.com",
   legal_form: maxLengthMocks.MAX_160 + "1",
   law_governed: maxLengthMocks.MAX_160 + "1",
-  public_register_name: maxLengthMocks.MAX_160 + "1",
+  public_register_name: maxLengthMocks.MAX_80,
+  public_register_jurisdiction: maxLengthMocks.MAX_80,
   registration_number: maxLengthMocks.MAX_32 + "1",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
@@ -106,15 +110,38 @@ export const ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   name: NAME_INVALID_CHARS,
   incorporation_country: maxLengthMocks.NO_MAX,
   is_service_address_same_as_principal_address: 0,
-  email: maxLengthMocks.NO_MAX,
+  email: EMAIL_INVALID_FORMAT,
   legal_form: "площадь",
   law_governed: "площадь",
   public_register_name: "Москва",
+  public_register_jurisdiction: "Москва",
   registration_number: "Москва",
   is_on_register_in_country_formed_in: "1",
   ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };
+
+export const DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK: DueDiligence = {
+  identity_date: DATE,
+  name: NAME_INVALID_CHARS,
+  identity_address: ADDRESS,
+  email: EMAIL_INVALID_FORMAT,
+  supervisory_name: "площадь",
+  aml_number: "Any AML number",
+  agent_code: "Any agent code",
+  partner_name: "площадь",
+  diligence: "agree"
+};
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK: OverseasEntityDueDiligence = {
+  identity_date: DATE,
+  name: NAME_INVALID_CHARS,
+  identity_address: ADDRESS,
+  email: EMAIL_INVALID_FORMAT,
+  supervisory_name: "площадь",
+  aml_number: "Any AML number",
+  partner_name: "площадь"
+};
+
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
   first_name: maxLengthMocks.MAX_50 + "1",

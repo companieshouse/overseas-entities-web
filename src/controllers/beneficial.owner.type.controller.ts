@@ -10,6 +10,7 @@ import {
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice,
 } from "../model/beneficial.owner.type.model";
+import { isActiveFeature } from '../utils/feature.flag';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,7 +26,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
       hasTrusts,
-      ...appData
+      ...appData,
+      pageParams: {
+        urlToTrust: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+          ? config.TRUST_DETAILS_URL
+          : config.TRUST_INFO_URL,
+        urlToCheckYourAnswers: config.CHECK_YOUR_ANSWERS_URL,
+      },
     });
   } catch (error) {
     logger.errorRequest(req, error);

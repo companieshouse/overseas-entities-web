@@ -110,10 +110,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
-      expect(resp.text).not.toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
       expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });

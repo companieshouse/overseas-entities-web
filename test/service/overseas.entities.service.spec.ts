@@ -118,7 +118,7 @@ describe(`Get overseas entity profile details`, () => {
 
   test(`getCompanyRequest should respond with successful status code`, async () => {
     const mockResponse = { httpStatusCode: 200, resource: APPLICATION_DATA_MOCK };
-    mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);    
+    mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
     const response = await getCompanyRequest(req, COMPANY_NUMBER);
     expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
@@ -137,7 +137,7 @@ describe(`Get overseas entity profile details`, () => {
     expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);
     expect(mockDebugRequestLog).not.toHaveBeenCalled();
   });
-})
+});
 describe(`Get Overseas Entity Service test suite`, () => {
   const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";
   const INFO_MSG = `Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;

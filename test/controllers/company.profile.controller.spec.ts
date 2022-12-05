@@ -42,11 +42,6 @@ describe("Confirm company data", () => {
       expect(resp.text).toContain(CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE);
     });
 
-    test("Return error 500 if companyData mapper returns undefined", async () => {
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
-      expect(resp.statusCode).toEqual(500);
-    });
-
     test("confirm and continue button is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );

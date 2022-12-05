@@ -13,15 +13,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
     const companyDataResponse = await getCompanyRequest(req, id);
+    
+    if (!companyDataResponse){
+      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
+    }
+
     const companyData = mapOverseasEntityToDTO(companyDataResponse);
     appData.company_profile_details = companyData;
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
     const updateUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
-
-    if (!companyDataResponse){
-      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
-    }
 
     return res.render(config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE, {
       backLinkUrl,
@@ -30,15 +31,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       appData,
       companyData
     });
-  }  catch (error) {
-    logger.errorRequest(req, error);
-    next(error);
+  }  catch (errors) {
+    logger.errorRequest(req, errors);
+    next(errors);
   }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+       logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.UPDATE_OVERSEAS_ENTRY_DETAILS_URL);
   } catch (error) {
     logger.errorRequest(req, error);

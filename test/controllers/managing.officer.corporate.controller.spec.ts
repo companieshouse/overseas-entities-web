@@ -39,9 +39,11 @@ import {
   REMOVE
 } from "../../src/config";
 import {
+  JURISDICTION_FIELD_LABEL,
   MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
+  PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
 } from "../__mocks__/text.mock";
@@ -99,6 +101,18 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {
+      const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
+      expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
   });

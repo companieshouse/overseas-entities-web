@@ -1,9 +1,3 @@
-{% if title == "Tell us about the overseas entity" %}
-   {% set hintText = "Include the full name. For example, Jersey Financial Services Commission." %}
-{% else %}
-   {% set hintText = "Include its jurisdiction. For example, Hong Kong or State of Delaware." %}
-{% endif %}
-
 {% set entityPublicRegisterHtml %}
   {{ govukInput({
     errorMessage: errors.public_register_name if errors,
@@ -11,14 +5,14 @@
     name: "public_register_name",
     value: public_register_name,
     hint: {
-      text: hintText
+      text: registerHintText
     },
     label: {
       text: "Name of register"
     }
   }) }}
 
-  {% if title == "Tell us about the overseas entity" %}
+  {% if includeJurisdiction %}
      {% include "includes/inputs/fields/public-register-jurisdiction-input.html" %}
   {% endif %}
 

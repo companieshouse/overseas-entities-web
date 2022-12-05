@@ -1,0 +1,34 @@
+{{ govukDateInput({
+  errorMessage: fieldParam.error,
+  id: fieldParam.id if fieldParam.id else fieldParam.name,
+  fieldset: {
+    legend: {
+      text: fieldParam.label,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: "For example, 27 3 2007"
+  },
+  items: [
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: fieldParam.name + "Day",
+      label: "Day",
+      value: fieldParam.value["Day"] if fieldParam.value
+    },
+    {
+      classes: "govuk-input--width-2 govuk-input",
+      name: fieldParam.name + "Month",
+      label: "Month",
+      value: fieldParam.value["Month"] if fieldParam.value
+    },
+    {
+      classes: "govuk-input--width-4 govuk-input",
+      name: fieldParam.name + "Year",
+      label: "Year",
+      value: fieldParam.value["Year"] if fieldParam.value
+    }
+  ]
+}) }}

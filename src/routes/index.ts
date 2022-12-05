@@ -30,13 +30,15 @@ import {
   overseasEntityDueDiligence,
   accessibilityStatement,
   signOut,
+  trustDetails,
   resumeSubmission
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
-import { checkValidations, checkTrustValidations } from "../middleware/validation.middleware";
+import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
+import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
 
 const router = Router();
@@ -126,6 +128,15 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, au
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
+
+router
+  .route(config.TRUST_DETAILS_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustDetails.get)
+  .post(trustDetails.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

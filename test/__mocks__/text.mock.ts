@@ -100,6 +100,9 @@ export const SAVE_AND_CONTINUE_BUTTON_TEXT = "Save and continue";
 export const SECOND_NATIONALITY = "Second nationality (optional)";
 export const SECOND_NATIONALITY_HINT = "Dual citizenship (also known as dual nationality) is allowed in some countries.";
 export const PRINT_BUTTON_TEXT = "Print this page";
+export const PUBLIC_REGISTER_NAME_LABEL = "Name of register";
+export const PUBLIC_REGISTER_JURISDICTION_LABEL = "Jurisdiction";
+export const REGISTRATION_NUMBER_LABEL = "Entity’s registration number";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

@@ -124,19 +124,6 @@ describe(`Get overseas entity profile details`, () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(APPLICATION_DATA_MOCK);
   });
-
-  test(`getCompanyRequest should respond with 400 (Bad Request) error message`, async () => {
-    const mockResponse = { httpStatusCode: 400, errors: [BAD_REQUEST] };
-    const errorMsg = `${GET_OE_MSG_ERROR} - ${INFO_MSG} - ${JSON.stringify(mockResponse)}`;
-
-    mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
-
-    await expect( getCompanyRequest(req, COMPANY_NUMBER) ).rejects.toThrow(ERROR);
-
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
-    expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, errorMsg);
-    expect(mockDebugRequestLog).not.toHaveBeenCalled();
-  });
 });
 describe(`Get Overseas Entity Service test suite`, () => {
   const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";

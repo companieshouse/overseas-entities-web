@@ -15,22 +15,22 @@ The compiled/transpiled project is copied into the dist folder used later to boo
 
 Directory Path | Description
 --- | ---
-./.github | Github folder, includes `PULL_REQUEST_TEMPLATE.md` on how to make a pull request to the project and `dependabot.yml` configuration options for dependency updates.
-./.husky | Add pre check script, includes `pre-commit` and `pre-push` checks
-./src | Contains all typescripts code
-./src/app.ts | Application entry point
-./src/bin/www.ts | Server configuration
-./src/config/index.ts | Contains all the application's configurations
-./src/controller | Business logic and handlers
-./src/middleware | Middleware functions (Authentication, validation ...)
-./src/model | OE Session and View Data Model
-./src/routes | Paths and routes controller (Only GET and POST enabled)
-./src/service | Interface to the API through SDK
-./src/utils | Facade for CH services (logging and session) and other application utils (navigation, application data ...)
-./src/validation | Sets of express validator middlewares for each page
-./test | Jest Test files
-./view | Contains all the html nunjucks structure files
-./docs | Contains documentation files
+`./.github` | Github folder, includes `PULL_REQUEST_TEMPLATE.md` on how to make a pull request to the project and `dependabot.yml` configuration options for dependency updates.
+`./.husky` | Add pre check script, includes `pre-commit` and `pre-push` checks
+`./src` | Contains all typescripts code
+`./src/app.ts` | Application entry point
+`./src/bin/www.ts` | Server configuration
+`./src/config/index.ts` | Contains all the application's configurations
+`./src/controller` | Business logic and handlers
+`./src/middleware` | Middleware functions (Authentication, validation ...)
+`./src/model` | OE Session and View Data Model
+`./src/routes` | Paths and routes controller (Only GET and POST enabled)
+`./src/service` | Interface to the API through SDK
+`./src/utils` | Facade for CH services (logging and session) and other application utils (navigation, application data ...)
+`./src/validation` | Sets of express validator middlewares for each page
+`./test` | Jest Test files
+`./view` | Contains all the html nunjucks structure files
+`./docs` | Contains documentation files
 Others files | Other files related to modules dependency, CI/CD, *git, dockerization, lint, test/typescript configs …
 
 ## MVC

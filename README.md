@@ -23,7 +23,7 @@ Web front-end for the **Register an overseas entity and tell us about its benefi
 
 ## Project Structure
 
-Link ![Project Structure](./docs/Project%20Structure.md)
+Link [Project Structure](./docs/Project%20Structure.md)
 
 ## Running locally on Docker env
 

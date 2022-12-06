@@ -1,12 +1,14 @@
 # overseas-entities-web
 
-Web front-end for the **Register an overseas entity and tell us about its beneficial owners** service.
+Web front-end for the **Register an overseas entity and tell us about its beneficial owners** service. Live link [here](https://www.gov.uk/guidance/register-an-overseas-entity)
+</br>
 
 ## Overseas entities architecture
 
 ![Overseas entities architecture](./docs/Overseas%20entities%20architecture.png)
+</br>
 
-## Technologies
+## Frontend Technologies and Utils
 
 - [NodeJS](https://nodejs.org/)
 - [ExpressJS](https://expressjs.com/)
@@ -56,7 +58,7 @@ The only local development mode available, that includes account, redis and othe
 
 Method | Path | Description
 --- | --- | ---
-GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point of many other pages to register and OE. URLs path [here](./src/routes/index.ts).
+GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point of many other pages to register an OE. URLs path [here](./src/routes/index.ts).
 GET | `/update-an-overseas-entity` | Returns the landing page for updating an overseas entity. URLs path [here](./src/routes/index.ts).
 GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP code `200` and a `OK` message body
 
@@ -95,7 +97,7 @@ VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `ht
 3. Make sure test coverage is well above `80%`
 4. Do not disable husky pre checks
 5. Use one of the main CH slack channel if you get stuck
-6. Use MVC as described [here](./docs/Add%20new%20page.md), with validation, authentication and navigation checks when adding new pages
+6. Use MVC pattern when adding a new page/endpoint, including validation, authentication and navigation checks all together, otherwise featureflag it. Example can be found [here](https://github.com/companieshouse/overseas-entities-web/pull/226)
 
 `Happy coding`
 

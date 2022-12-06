@@ -107,8 +107,8 @@ export const mapOverseasEntityToDTO = (data: any): ICompanyDetails => {
     companyAddress: data?.registered_office_address,
     dateOfCreation: data?.dateOfCreation,
     jurisdiction: data?.jurisdiction,
-    street: data?.registeredOfficeAddress.addressLineOne,
-    country: data?.registeredOfficeAddress.addressLineTwo,
-    postCode: data?.registeredOfficeAddress.postalCode,
+    street: data?.registeredOfficeAddress?.addressLineOne,
+    country: data?.registeredOfficeAddress?.addressLineTwo,
+    postCode: data?.registeredOfficeAddress?.postalCode,
   };
 };

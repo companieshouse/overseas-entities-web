@@ -73,18 +73,5 @@ describe("Confirm company data", () => {
       expect(resp.statusCode).toEqual(200);
       expect(mockGetOeCompanyDetails).toHaveBeenCalled();
     });
-
-    test(`error log on get controller if error occurs`, async () => {
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
-      expect(resp.statusCode).toEqual(200);
-      expect(resp.error).toThrowError;
-    });
-
-    test(`error log on post controller if error occurs`, async () => {
-      const resp = await request(app).post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
-      expect(resp.statusCode).toEqual(302);
-      // update once update page is ready
-      expect(resp.error).toThrowError;
-    });
   });
 });

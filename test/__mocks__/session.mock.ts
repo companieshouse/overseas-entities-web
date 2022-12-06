@@ -877,7 +877,7 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
   companyNumber: "0E746324",
   street: "1 CH house, NORWAY",
   country: "NORWAY",
-  postCode: "NR19 5DP"
+  postCode: "NR19 5DP",
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

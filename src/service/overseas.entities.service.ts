@@ -73,12 +73,10 @@ export const getCompanyRequest = async (
   if (response.httpStatusCode !== 200) {
     const errorMsg = `Something went wrong getting Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
-    
   }
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
   return response.resource;
 };
-
 
 export const getOverseasEntity = async (
   req: Request,

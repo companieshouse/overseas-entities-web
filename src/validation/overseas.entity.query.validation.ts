@@ -1,5 +1,4 @@
 import { body } from "express-validator";
-
 import { ErrorMessages } from "./error.messages";
 
 export const overseasEntityQuery = [

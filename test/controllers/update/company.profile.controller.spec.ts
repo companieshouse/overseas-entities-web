@@ -1,17 +1,17 @@
 jest.mock("ioredis");
-jest.mock('../../src/middleware/authentication.middleware');
-jest.mock('../../src/utils/application.data');
-jest.mock('../../src/service/overseas.entities.service');
+jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import request from "supertest";
-import * as config from "../../src/config";
-import app from "../../src/app";
-import { authentication } from "../../src/middleware/authentication.middleware";
+import * as config from "../../../src/config";
+import app from "../../../src/app";
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import { NextFunction, Response, Request } from "express";
-import { CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE } from "../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
-import { getCompanyRequest } from "../../src/service/overseas.entities.service";
-import { getApplicationData } from "../../src/utils/application.data";
+import { CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE } from "../../__mocks__/text.mock";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
+import { getApplicationData } from "../../../src/utils/application.data";
 
 const mockGetOeCompanyDetails = getCompanyRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

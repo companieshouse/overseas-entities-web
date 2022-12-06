@@ -25,6 +25,7 @@ import {
   LANDING_PAGE_URL,
   MANAGING_OFFICER_CORPORATE_URL,
   MANAGING_OFFICER_URL,
+  TRUST_DETAILS_URL
 } from "../../src/config";
 
 import * as CHANGE_LINKS from "../../src/config";
@@ -71,7 +72,7 @@ import {
   BO_GOV_ID_URL,
   MO_IND_ID_URL,
   MO_CORP_ID_URL,
-  TRANSACTION_ID, PUBLIC_REGISTER_NAME, PUBLIC_REGISTER_JURISDICTION, REGISTRATION_NUMBER,
+  TRANSACTION_ID, PUBLIC_REGISTER_NAME, PUBLIC_REGISTER_JURISDICTION, REGISTRATION_NUMBER, TRUST
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -364,7 +365,10 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
+
+    mockIsActiveFeature.mockReturnValue( false );  // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -373,6 +377,43 @@ describe("GET tests", () => {
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
+
+    mockIsActiveFeature.mockReturnValueOnce( false ); // another flag
+    mockIsActiveFeature.mockReturnValueOnce( true ); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+
+    const mockTrust1 = {
+      ...TRUST,
+      trust_id: 999,
+      trust_name: 'aaa',
+      creation_date_day: "21",
+      creation_date_month: "1",
+      creation_date_year: "1993",
+    };
+
+    const mockAppData = {
+      ...APPLICATION_DATA_MOCK,
+      [TrustKey]: [
+        mockTrust1,
+        TRUST,
+        TRUST,
+      ]
+    };
+
+    mockGetApplicationData.mockReturnValueOnce(mockAppData);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
+    expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${mockTrust1.trust_id}`);
+    expect(resp.text).toContain(mockTrust1.trust_name);
+    expect(resp.text).toMatch(/21[\s]*January[\s]*1993/m);
+
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {

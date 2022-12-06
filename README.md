@@ -1,33 +1,104 @@
 # overseas-entities-web
-Web front-end for the Register An Overseas Entity service
+
+Web front-end for the **Register an overseas entity and tell us about its beneficial owners** service.
+
+## Overseas entities architecture
+
+![Overseas entities architecture](./docs/Overseas%20entities%20architecture.png)
+
+## Technologies
+
+- [NodeJS](https://nodejs.org/)
+- [ExpressJS](https://expressjs.com/)
+- [Typescript](https://www.typescriptlang.org/)
+- [NunJucks](https://mozilla.github.io/nunjucks)
+- [GOV.UK Design System](https://design-system.service.gov.uk/)
+- [Jest](https://jestjs.io)
+- [Sonarqube](https://www.sonarqube.org)
+- [Docker](https://www.docker.com/)
+- [Tilt](https://tilt.dev/)
+- [Git](https://git-scm.com/downloads)
+
+## Project Structure
+
+Link ![Project Structure](./docs/Project%20Structure.md)
+
+## Running locally on Docker env
+
+The only local development mode available, that includes account, redis and other important service is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development), that uses [tilt](https://tilt.dev/).
+
+1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
+2. Run `./bin/chs-dev modules enable overseas-entities`
+3. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
+4. Run docker using `tilt up` in the docker-chs-development directory.
+5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.
+6. Open your browser and go to page <http://chs.local/register-an-overseas-entity>
+
+- Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 
 ### Requirements
 
-In order to run the service locally you will need the following:
+1. node v12.22.12 (Soon it will be v16)
+2. npm 6.14.16  (Soon it will be 8)
+3. Docker
 
-- [NodeJS](https://nodejs.org/en/)
-- [Git](https://git-scm.com/downloads)
+### Build and Test changes
 
-### Getting started
+1. To compile the project use `make build`
+2. To compile the project use `make test`
+3. or `make clean build test`
 
-To checkout and build the service:
+### To build the Docker container
 
-1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README. 
-2. Run ./bin/chs-dev modules enable overseas-entities
-3. Run ./bin/chs-dev development enable overseas-entities-web (this will allow you to make changes).
-4. Run docker using "tilt up" in the docker-chs-development directory.
-5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.
-6. Open your browser and go to page http://chs.local/register-an-overseas-entity
+1. `DOCKER_BUILDKIT=0 docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" --build-arg SSH_PRIVATE_KEY_PASSPHRASE -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/overseas-entities-web .`
 
-These instructions are for a local docker environment.
+### Endpoints
 
+Method | Path | Description
+--- | --- | ---
+GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point of many other pages to register and OE. URLs path [here](./src/routes/index.ts).
+GET | `/update-an-overseas-entity` | Returns the landing page for updating an overseas entity. URLs path [here](./src/routes/index.ts).
+GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP code `200` and a `OK` message body
 
-### Config variables
+### Config variables (No feature flags)
 
-Key             | Example Value   | Description
-----------------|---------------- |------------------------------------
-CDN_HOST     | http://cdn.chs.local | Used when navigating to the webpage
-COOKIE_DOMAIN| chs.local |
-COOKIE_NAME  |__SID |
-COOKIE_SECRET | 
-SHOW_SERVICE_OFFLINE_PAGE | false | Feature Flag
+Key             |  Description               | Example Value
+----------------|--------------------------- |-------------------------
+ACCOUNT_URL | URL to account service | `http://account.url`
+API_URL | URL to API call | `http://api.url`
+CACHE_SERVER | Redis cache server | redis
+CDN_HOST | CDN host | cdn.host
+CHS_API_KEY | CHS API key for SDK call | key
+CHS_URL | CHS local url | `http://url`
+COOKIE_DOMAIN | The domain of the cookie | `http://url.local`
+COOKIE_NAME | The name of the cookie | __SID
+COOKIE_SECRET | The shared secret used in validating/calculating the session cookie signature | secret
+INTERNAL_API_URL | Internal API URL | `http://api.url`
+LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter`
+UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
+LOG_LEVEL | LOG level | DEBUG
+OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
+OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
+PAYMENT_FEE | Payment Fee | 100
+PIWIK_URL | Matomo URL | `http://url`
+PIWIK_SITE_ID | Matomo Site ID | 1
+PIWIK_START_GOAL_ID | Matomo Start goal ID | 2
+SHOW_SERVICE_OFFLINE_PAGE | Feature Flag | false
+VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf`
+
+## MISC
+
+### Recommendations
+
+1. Use the [Visual Studio Code](https://code.visualstudio.com/) IDE for development.
+2. Use the preformatted `PULL_REQUEST_TEMPLATE` by adding meaningful description
+3. Make sure test coverage is well above `80%`
+4. Do not disable husky pre checks
+5. Use one of the main CH slack channel if you get stuck
+6. Use MVC as described [here](./docs/Add%20new%20page.md), with validation, authentication and navigation checks when adding new pages
+
+`Happy coding`
+
+### License
+
+This code is open source software licensed under the [MIT License]("https://opensource.org/licenses/MIT").

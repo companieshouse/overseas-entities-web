@@ -9,7 +9,7 @@ import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { NextFunction, Response, Request } from "express";
 import { CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, COMPANY_NUMBER } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 
@@ -72,19 +72,19 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(mockGetOeCompanyDetails).toHaveBeenCalled();
-    })
+    });
 
     test(`error log on get controller if error occurs`, async () => {
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.error).toThrowError;
-    })
+    });
 
     test(`error log on post controller if error occurs`, async () => {
       const resp = await request(app).post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
       expect(resp.statusCode).toEqual(302);
-      //update once update page is ready
+      // update once update page is ready
       expect(resp.error).toThrowError;
-    })
+    });
   });
 });

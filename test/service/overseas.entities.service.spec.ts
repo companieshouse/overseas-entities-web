@@ -109,9 +109,6 @@ describe(`Update Overseas Entity Service test suite`, () => {
 });
 
 describe(`Get overseas entity profile details`, () => {
-  const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";
-  const INFO_MSG = `OE NUMBER ID: ${COMPANY_NUMBER}`;
-
   beforeEach (() => {
     jest.clearAllMocks();
   });

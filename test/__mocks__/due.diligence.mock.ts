@@ -25,6 +25,19 @@ export const DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK = {
   ...IDENTITY_ADDRESS_REQ_BODY_MOCK,
 };
 
+export const DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
+  identity_date: DATE,
+  name: "Any name",
+  identity_address: ADDRESS,
+  email: " user@domain.roe ",
+  supervisory_name: "Any supervisory name",
+  aml_number: "Any AML number",
+  agent_code: "Any agent code",
+  partner_name: "Any partner name",
+  diligence: "agree",
+  ...IDENTITY_ADDRESS_REQ_BODY_MOCK,
+};
+
 const DUE_DILIGENCE_EMPTY_OBJECT_MOCK: DueDiligence = {
   identity_date: EMPTY_DATE,
   name: "",

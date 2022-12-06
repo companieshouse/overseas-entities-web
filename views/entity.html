@@ -68,8 +68,11 @@
       {% set hintText = "This is the law that the entity operates under" %}
       {% include "includes/inputs/governing-law-input.html" %}
 
+      {% set registerHintText = "Include the full name. For example, Jersey Financial Services Commission." %}
+      {% set includeJurisdiction = true %}
       {% set registerInCountryFormedText = "Is the overseas entity already on a public register in the country it was formed in?" %}
-      {% set registrationNumberText = "Entity's registration number" %}
+      {% set registrationNumberText = "Entity’s registration number" %}
+
       {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
       {{ govukInsetText({

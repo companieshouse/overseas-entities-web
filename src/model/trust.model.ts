@@ -56,7 +56,7 @@ interface TrustIndividual {
   date_became_interested_person_year: string;
 }
 
-interface TrustHistoricalBeneficialOwner {
+export interface TrustHistoricalBeneficialOwner {
   forename: string;
   other_forenames: string;
   surname: string;

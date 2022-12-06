@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% set title = "Confirm Overseas Data" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+    <h1 class="govuk-heading-xl">Confirm this is the registered overeseas entity (NOT LIVE)</h1>
+
+  {% from "govuk/components/table/macro.njk" import govukTable %}
+  {{ govukTable({
+    captionClasses: "govuk-table__caption--m",
+    firstCellIsHeader: true,
+    rows: [
+      [
+        {
+          text: "Overseas Entity Name",
+          attributes: {
+            "id": "oe_company_name"
+          }
+        },
+        {
+          text: companyData.companyName,
+          attributes: {
+            "id": "oe_company_name_value"
+          }
+        }
+      ],
+      [
+        {
+          text: "Registered Office Address",
+          attributes: {
+            "id": "oe_address"
+          }
+        },
+        {
+          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode,
+          attributes: {
+            "id": "oe_address_value"
+          }
+        }
+      ],
+      [
+        {
+          text: "Registered On",
+          attributes: {
+            "id": "oe_registered_date"
+          }
+        },
+        {
+          text: companyData.dateOfCreation,
+          attributes: {
+            "id": "oe_registered_date_value"
+          }
+        }
+      ]
+    ]
+    }) 
+  }}
+
+  <br>
+  <form method="post">
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Confirm and continue",
+        attributes: {
+          "id": "submit"
+        }
+      }) }}
+    </div>
+    <br>
+      <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Change company</a>  
+  </form>
+  </div>
+</div>
+
+{% endblock %}

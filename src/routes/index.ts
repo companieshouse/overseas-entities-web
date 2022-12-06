@@ -30,6 +30,7 @@ import {
   overseasEntityDueDiligence,
   accessibilityStatement,
   signOut,
+  trustDetails,
   resumeSubmission,
   confirmOverseasCompanyDetails,
   updateOverseasEntityDetails,
@@ -38,7 +39,8 @@ import {
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
-import { checkValidations, checkTrustValidations } from "../middleware/validation.middleware";
+import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
+import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
 
 const router = Router();
@@ -60,7 +62,7 @@ router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
@@ -135,6 +137,15 @@ router.get(config.UPDATE_AN_OVERSEAS_ENTITY_URL, authentication, updateOverseasE
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
+
+router
+  .route(config.TRUST_DETAILS_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustDetails.get)
+  .post(trustDetails.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

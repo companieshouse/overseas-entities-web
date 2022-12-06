@@ -1,0 +1,14 @@
+{{ govukInput({
+    errorMessage: fieldParam.error,
+    label: {
+        text: fieldParam.label,
+        classes: "govuk-label--m",
+        isPageHeading: false
+    },
+    id: fieldParam.id if fieldParam.id else fieldParam.name,
+    name: fieldParam.name,
+    value: fieldParam.value,
+    hint: {
+        text: fieldParam.hint
+    }
+}) }}

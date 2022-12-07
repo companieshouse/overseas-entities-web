@@ -6,6 +6,7 @@ Web front-end for the **register an overseas entity and tell us about its benefi
 ## Overseas entities architecture
 
 ![Overseas entities architecture](./docs/Overseas%20entities%20architecture.png)
+Simplified view of the architecture and does not show all services, components and infrastructure
 </br>
 
 ## Frontend Technologies and Utils
@@ -16,6 +17,7 @@ Web front-end for the **register an overseas entity and tell us about its benefi
 - [NunJucks](https://mozilla.github.io/nunjucks)
 - [GOV.UK Design System](https://design-system.service.gov.uk/)
 - [Jest](https://jestjs.io)
+- [SuperTest](https://www.npmjs.com/package/supertest)
 - [Sonarqube](https://www.sonarqube.org)
 - [Docker](https://www.docker.com/)
 - [Tilt](https://tilt.dev/)
@@ -40,8 +42,8 @@ Environment variables used to configure this service in docker are located in th
 
 ### Requirements
 
-1. node v12.22.12 (Soon it will be v16)
-2. npm 6.14.16  (Soon it will be 8)
+1. node v12.22.12
+2. npm 6.14.16
 3. Docker
 
 ### Build and Test changes

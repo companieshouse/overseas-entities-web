@@ -69,7 +69,6 @@ export const TRUST_DETAILS_PAGE = "trust-details";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
-export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;

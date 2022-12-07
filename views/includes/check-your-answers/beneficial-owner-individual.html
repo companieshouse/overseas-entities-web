@@ -47,144 +47,157 @@
 {% endset %}
 
 
+{# BUILD THE SUMMARY LIST - CONTAINS OPTIONAL ROWS #}
+{% set rows = [] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "First name"
+  },
+  value: {
+    text: boi.first_name
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
+      "Individual beneficial owner " + boiFullName + " - first name",
+      "change-individual-beneficial-owner-first-name-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Last name"
+  },
+  value: {
+    text: boi.last_name
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.LAST_NAME,
+      "Individual beneficial owner " + boiFullName + " - last name",
+      "change-individual-beneficial-owner-last-name-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date of birth"
+  },
+  value: {
+    text: boiDateOfBirth
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
+      "Individual beneficial owner " + boiFullName + " - date of birth",
+      "change-individual-beneficial-owner-date-of-birth-name-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Nationality"
+  },
+  value: {
+    text: boi.nationality
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NATIONALITY,
+      "Individual beneficial owner " + boiFullName + " - nationality",
+      "change-individual-beneficial-owner-nationality-button"
+    ) ]
+  }
+}), rows) %}
+
+{% if boi.second_nationality %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Second Nationality"
+    },
+    value: {
+      text: boi.second_nationality
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
+        "Individual beneficial owner " + boiFullName + " - first name",
+        "change-individual-beneficial-owner-first-name-button"
+      ) ]
+    }
+  }), rows) %}
+{% endif %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Home address"
+  },
+  value: {
+    html: boiFormattedResidentialAddressHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      "Individual beneficial owner " + boiFullName + " - home address",
+      "change-individual-beneficial-owner-residential-address-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date they became a beneficial owner"
+  },
+  value: {
+    text: boiStartDate
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.START_DATE,
+      "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
+      "change-individual-beneficial-owner-start-date-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Nature of control"
+  },
+  value: {
+    html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
+      "Individual beneficial owner " + boiFullName + " - nature of control",
+      "change-individual-beneficial-owner-nature-of-control-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Are they on the sanctions list?"
+  },
+  value: {
+    html: boiIsOnSanctionsListHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+      "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
+      "change-individual-beneficial-owner-sanctions-list-button"
+    ) ]
+  }
+}), rows) %}
+
 <h3 class="govuk-heading-m">Individual beneficial owner</h3>
 
 {{ govukSummaryList({
-  rows: [
-    {
-      key: {
-        text: "First name"
-      },
-      value: {
-        text: boi.first_name
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
-          "Individual beneficial owner " + boiFullName + " - first name",
-          "change-individual-beneficial-owner-first-name-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Last name"
-      },
-      value: {
-        text: boi.last_name
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.LAST_NAME,
-          "Individual beneficial owner " + boiFullName + " - last name",
-          "change-individual-beneficial-owner-last-name-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Date of birth"
-      },
-      value: {
-        text: boiDateOfBirth
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
-          "Individual beneficial owner " + boiFullName + " - date of birth",
-          "change-individual-beneficial-owner-date-of-birth-name-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Nationality"
-      },
-      value: {
-        text: boi.nationality
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NATIONALITY,
-          "Individual beneficial owner " + boiFullName + " - nationality",
-          "change-individual-beneficial-owner-nationality-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Home address"
-      },
-      value: {
-        html: boiFormattedResidentialAddressHtml
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
-          "Individual beneficial owner " + boiFullName + " - home address",
-          "change-individual-beneficial-owner-residential-address-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Correspondence address"
-      },
-      value: {
-        html: boiFormattedServiceAddressHtml
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + boiChangeServiceAddressHtml,
-          "Individual beneficial owner " + boiFullName + " - correspondence address",
-          "change-individual-beneficial-owner-correspondence-address-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Date they became a beneficial owner"
-      },
-      value: {
-        text: boiStartDate
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.START_DATE,
-          "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
-          "change-individual-beneficial-owner-start-date-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Nature of control"
-      },
-      value: {
-        html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
-          "Individual beneficial owner " + boiFullName + " - nature of control",
-          "change-individual-beneficial-owner-nature-of-control-button"
-        ) ]
-      }
-    },
-    {
-      key: {
-        text: "Are they on the sanctions list?"
-      },
-      value: {
-        html: boiIsOnSanctionsListHtml
-      },
-      actions: {
-        items: [ CREATE_CHANGE_LINK(
-          OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
-          "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
-          "change-individual-beneficial-owner-sanctions-list-button"
-        ) ]
-      }
-    }
-  ]
+  rows: rows
 }) }}

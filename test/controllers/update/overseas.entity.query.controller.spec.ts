@@ -58,6 +58,13 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
   });
 
+  test("catch error when posting data", async () => {
+    mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    const resp = await request(app)
+      .post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+    expect(resp.status).toEqual(500);
+  });
+
   describe("POST tests", () => {
     test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
       const resp = await request(app)

@@ -45,20 +45,11 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin?return_to=${SOLD_LAND_FILTER_URL}`;
-    req.session = undefined;
+   shouldRedirect(SOLD_LAND_FILTER_URL);
+  });
 
-    authentication(req, res, next);
-
-    expect(next).not.toHaveBeenCalled();
-
-    expect(res.redirect).toHaveBeenCalledTimes(1);
-    expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
-    expect(res.locals).toEqual({});
-
-    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
-    expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
-    expect(logger.errorRequest).not.toHaveBeenCalled();
+  test(`should redirect to signin page with ${OVERSEAS_ENTITY_QUERY_URL} page as return page`, () => {
+    shouldRedirect(OVERSEAS_ENTITY_QUERY_URL);
   });
 
   test('should catch the error and call next(err)', () => {
@@ -85,4 +76,30 @@ describe('Authentication middleware', () => {
 
     expect(res.locals).toEqual({});
   });
+
+  test("update should redirect to signin page", async () => {
+    const resp = await request(app).get(OVERSEAS_ENTITY_QUERY_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toContain('/signin');
+
+    expect(res.locals).toEqual({});
+  });
+
+  function shouldRedirect(returnUrl : string) {
+    const signinRedirectPath = `/signin?return_to=${returnUrl}`;
+    req.session = undefined;
+
+    authentication(req, res, next);
+
+    expect(next).not.toHaveBeenCalled();
+
+    expect(res.redirect).toHaveBeenCalledTimes(1);
+    expect(res.redirect).toHaveBeenCalledWith(signinRedirectPath);
+    expect(res.locals).toEqual({});
+
+    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
+    expect(logger.infoRequest).toHaveBeenCalledWith(req, REDIRECT_TO_SIGN_IN_PAGE);
+    expect(logger.errorRequest).not.toHaveBeenCalled();
+  }
 });

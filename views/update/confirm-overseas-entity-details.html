@@ -30,7 +30,7 @@
           }
         },
         {
-          text: companyData.companyName,
+          text: overseasEntityData.companyName,
           attributes: {
             "id": "oe_company_name_value"
           }
@@ -44,7 +44,7 @@
           }
         },
         {
-          text: "" if companyData.companyName === undefined else companyData.companyAddress.line_1 + " " + companyData.companyAddress.line_2 + " " + companyData.companyAddress.country + " " + companyData.companyAddress.postcode,
+          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.companyAddress.line_1 + " " + overseasEntityData.companyAddress.line_2 + " " + overseasEntityData.companyAddress.country + " " + overseasEntityData.companyAddress.postcode,
           attributes: {
             "id": "oe_address_value"
           }
@@ -58,7 +58,7 @@
           }
         },
         {
-          text: companyData.dateOfCreation,
+          text: overseasEntityData.dateOfCreation,
           attributes: {
             "id": "oe_registered_date_value"
           }

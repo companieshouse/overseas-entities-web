@@ -16,8 +16,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyDataResponse){
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
-    const companyData = mapOverseasEntityToDTO(companyDataResponse);
-    appData.company_profile_details = companyData;
+    const overseasEntity = mapOverseasEntityToDTO(companyDataResponse);
+    appData.company_profile_details = overseasEntity;
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
     const updateUrl: string = config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL;
@@ -27,7 +27,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       updateUrl,
       templateName: config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE,
       appData,
-      companyData
+      overseasEntityData: overseasEntity
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);
@@ -39,9 +39,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL);
-  } catch (error) {
-    logger.errorRequest(req, error);
-    next(error);
+  } catch (errors) {
+    logger.errorRequest(req, errors);
+    next(errors);
   }
 };
 

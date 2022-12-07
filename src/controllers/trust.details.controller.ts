@@ -85,8 +85,7 @@ const post = (
       },
     );
 
-    logger.debugRequest(req, `Going to the check your answers page (slice 1 only)`);
-
+    logger.debugRequest(req, `Going to the check your answers page (slice 1 only - TODO for next slice to got to "Do you need to add another trust? )`);
 
     return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
   } catch (error) {

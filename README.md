@@ -23,11 +23,11 @@ Web front-end for the **register an overseas entity and tell us about its benefi
 
 ## Project Structure
 
-Link [Project Structure and Code Style](./docs/Project%20Structure%20and%20Code%20Style.md)
+[Project Structure and Code Style](./docs/Project%20Structure%20and%20Code%20Style.md)
 
 ## Running locally on Docker env
 
-The only local development mode available, that includes account, redis and other important service is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development), that uses [tilt](https://tilt.dev/).
+The only local development mode available, that includes account, redis and other important service/dependency is only possible through our development orchestrator service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development), that uses [tilt](https://tilt.dev/).
 
 1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
 2. Run `./bin/chs-dev modules enable overseas-entities`
@@ -95,7 +95,7 @@ VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `ht
 3. Make sure test coverage is well above `80%`
 4. Do not disable husky pre checks locally
 5. Use one of the main CH slack channel if you get stuck
-6. Use MVC pattern when adding a new page/endpoint, including validation, authentication and navigation checks all together, otherwise featureflag it. Example can be found [here](https://github.com/companieshouse/overseas-entities-web/pull/226)
+6. Use MVC pattern when adding a new page/endpoint, including validation, authentication and navigation checks all together, otherwise featureflag it please. Example can be found on the following PR [here](https://github.com/companieshouse/overseas-entities-web/pull/226) and doc description [here](./docs/Project%20Structure%20and%20Code%20Style.md)
 7. **Happy coding**
 
 ## License

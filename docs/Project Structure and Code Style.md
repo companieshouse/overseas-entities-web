@@ -37,7 +37,7 @@ Others files | Other files related to modules dependency, CI/CD, *git, dockeriza
 
 Authentication is a simple middleware, one of many, that checks `signInInfo.SignedIn` in request session and verifies if user is authenticated with the `checkUserSignedIn(req.session)` util method, otherwise it will be redirected to sign in page `res.redirect('/signin?return_to=${SOLD_LAND_FILTER_URL}')`.
 
-To chain the middleware to the particular endpoint we add it to the router object like `router.METHOD(path, [callback, ...] callback)`. More [here](https://expressjs.com/en/5x/api.html#router.METHOD)
+To chain the middleware to the particular endpoint we add it to the router object like `router.METHOD(path, [callback, ...] callback)` as described [here](https://expressjs.com/en/5x/api.html#router.METHOD)
 
 ```js
 // Chain middlewares for the `presenter` endpoints
@@ -49,9 +49,39 @@ router.post(
 );
 ```
 
+## Navigation Checks
+
+To avoid users from skipping pages a check navigation logic has been implemented. Because each page depends on the previous one the checks are done by making sure that in the ​`​ApplicationData​`​ the previus page has been correctly submitted, if it has not the user will be redirected to the landing page.
+Link for the list of check condition [here](https://github.com/companieshouse/overseas-entities-web/blob/main/src/middleware/navigation/check.condition.ts)
+
+```js
+// Check that the secure register ​info in the application ​data model is correctly set before going through
+// to the next page that is the presenter right now.
+export const isSecureRegister = (req: Request, res: Response, next: NextFunction): void => {
+  try {
+    if ( !checkIsSecureRegisterDetailsEntered(getApplicationData(req.session) )){
+      logger.infoRequest(req, NavigationErrorMessage);
+      return res.redirect(SOLD_LAND_FILTER_URL);
+    }
+    next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+...
+
+export const checkIsSecureRegisterDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasSoldLandDetailsEntered(appData) && appData[IsSecureRegisterKey] === "0";
+};
+
+...
+
+```
+
 ## Validation
 
-In each `POST` endpoints for every page we have a sets of middlewares used to validate each fields, if one of the validation middlewares fails the `validationResult` [here](https://github.com/companieshouse/overseas-entities-web/blob/85238ed7dd56ed988725b9dd636942b8d8baca7a/src/middleware/validation.middleware.ts#L22) will extracts the validation errors from a request and it will be formatted as an `errors` object [here](https://github.com/companieshouse/overseas-entities-web/blob/85238ed7dd56ed988725b9dd636942b8d8baca7a/src/middleware/validation.middleware.ts#L86) and it will be passed to the render page for the correct error visualization.
+In each `POST` endpoints for every page we have a sets of middlewares used to validate each fields submitted by the user, if one of the validation middlewares fails the `validationResult` [here](https://github.com/companieshouse/overseas-entities-web/blob/85238ed7dd56ed988725b9dd636942b8d8baca7a/src/middleware/validation.middleware.ts#L22) will extracts the validation errors from a request (`req` object) and it will be formatted as an `errors` object [here](https://github.com/companieshouse/overseas-entities-web/blob/85238ed7dd56ed988725b9dd636942b8d8baca7a/src/middleware/validation.middleware.ts#L86) and it will be passed to the render page for the correct error visualization.
 
 ```js
 // Middlewares validation checks for the presenter page
@@ -85,36 +115,7 @@ export const presenter = [
 ...
 ```
 
-To make sure that the page will have the correct navigation (back link and others info) we use a simple object data [here](https://github.com/companieshouse/overseas-entities-web/blob/main/src/utils/navigation.ts) as a mapper for the current `routePath`.
-
-## Navigation Checks
-
-To avoid users from skipping pages a check navigation logic has been implemented. Because each page depends on the previous one the checks are done by making sure that in the ​`​ApplicationData​`​ the previus page has been correctly submitted, if it has not the user will be redirected to the landing page.
-Link for the list of check condition [here](https://github.com/companieshouse/overseas-entities-web/blob/main/src/middleware/navigation/check.condition.ts)
-
-```js
-// Check that the secure register ​info in the application ​data model is correctly set before going through
-export const isSecureRegister = (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    if ( !checkIsSecureRegisterDetailsEntered(getApplicationData(req.session) )){
-      logger.infoRequest(req, NavigationErrorMessage);
-      return res.redirect(SOLD_LAND_FILTER_URL);
-    }
-    next();
-  } catch (err) {
-    next(err);
-  }
-};
-
-...
-
-export const checkIsSecureRegisterDetailsEntered = (appData: ApplicationData): boolean => {
-  return checkHasSoldLandDetailsEntered(appData) && appData[IsSecureRegisterKey] === "0";
-};
-
-...
-
-```
+To make sure that the page will have the correct navigation (back link and others) we use a simple object data [here](https://github.com/companieshouse/overseas-entities-web/blob/main/src/utils/navigation.ts) as a mapper for the current `routePath`.
 
 ## MVC
 
@@ -137,7 +138,7 @@ export interface Presenter {
 ```
 
 For each interface we have a key used to represent the object on the application data model, and the `ApplicationData` represents the object that will be saved in redis, on the `extra_data`, a subfield of our session data. In particular it will be saved under the `roe` name key [APPLICATION_DATA_KEY](https://github.com/companieshouse/overseas-entities-web/blob/85238ed7dd56ed988725b9dd636942b8d8baca7a/src/model/application.model.ts#L17).
-`extra_data` is used to store any data that apps need in the session (more info [here](https://github.com/companieshouse/node-session-handler#session)).
+`extra_data` is used to store any data that the app needs during the live of user session (more info [here](https://github.com/companieshouse/node-session-handler#session)).
 
 ```js
 // OE Application Data model
@@ -160,46 +161,46 @@ If we need to be specific we add variable, by using `set`, as shown in the examp
 ```js
 // Nunjucks HTML inputs field on presenter page 
 ...
-    {% set title = "Who can we contact about this application?" %}
+{% set title = "Who can we contact about this application?" %}
 
-    {% block pageTitle %}
-        {% include "includes/page-title.html" %}
-    {% endblock %}
+{% block pageTitle %}
+    {% include "includes/page-title.html" %}
+{% endblock %}
 ...
-    <form method="post">
+<form method="post">
 
-        {{ govukInput({
-          errorMessage: errors.full_name if errors,
-          label: {
-            text: "Full name",
-            isPageHeading: false
-          },
-          id: "full_name",
-          name: "full_name",
-          value: full_name
-        }) }}
+  {{ govukInput({
+    errorMessage: errors.full_name if errors,
+    label: {
+      text: "Full name",
+      isPageHeading: false
+    },
+    id: "full_name",
+    name: "full_name",
+    value: full_name
+  }) }}
 
-        {{ govukInput({
-          errorMessage: errors.email if errors,
-          label: {
-            text: "Email address",
-            isPageHeading: false
-          },
-          id: "email",
-          name: "email",
-          value: email
-        }) }}
+  {{ govukInput({
+    errorMessage: errors.email if errors,
+    label: {
+      text: "Email address",
+      isPageHeading: false
+    },
+    id: "email",
+    name: "email",
+    value: email
+  }) }}
 
-        ...
+  ...
 
-        {% include "includes/save-and-continue-button.html" %}
+  {% include "includes/save-and-continue-button.html" %}
 
-    </form>
+</form>
 ```
 
 ### The controller
 
-The only http methods allowed are POST and GET, and therefore we will have mainly just the get and post controller, and literally the last successful middleware of the chain with the duty to respond to the user.
+The only http methods allowed are POST and GET, and therefore we will have mainly just the get and post controllers, and literally the last successful middleware of the chain with the duty to respond to the user.
 In the `get` method we fetch possible data and pass it to the view/template to be visualized to the user.
 
 ```js

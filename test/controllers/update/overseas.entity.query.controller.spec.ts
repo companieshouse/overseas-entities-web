@@ -20,6 +20,7 @@ import { deleteApplicationData, getApplicationData, setExtraData } from "../../.
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { ERROR } from "../../__mocks__/session.mock";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -64,6 +65,14 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .send({ oe_number: '12345678' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test("catch error when posting data", async () => {
+      mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL).send({});
+      
+      expect(resp.status).toEqual(500);
     });
 
     test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with error messages', async () => {

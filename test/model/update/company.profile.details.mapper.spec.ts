@@ -13,9 +13,9 @@ describe("Test company profile details DTO",  () => {
 
   test(`That company details address is mapped correctly`, () => {
     expect(mapOverseasEntityToDTO(appData.company_profile_details?.companyAddress)).resolves;
-  })
+  });
 
   test(`error is thrown when undefined data is parsed to data mapper`, () => {
     expect(mapOverseasEntityToDTO({})).toThrowError;
-  })
+  });
 });

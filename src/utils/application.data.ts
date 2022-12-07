@@ -119,7 +119,7 @@ const mapAddressDTO = (registeredOfficeAddress: any): Address => {
     county: registeredOfficeAddress?.region,
     country: registeredOfficeAddress?.country,
     postcode: registeredOfficeAddress?.postalCode
-  }
-}
+  };
+};
 
 

@@ -10,7 +10,7 @@ import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { NextFunction, Response, Request } from "express";
 import { ANY_MESSAGE_ERROR, CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, COMPANY_NUMBER } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { logger } from "../../../src/utils/logger";

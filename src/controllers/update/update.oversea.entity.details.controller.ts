@@ -8,8 +8,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE, {
       templateName: config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE,
     });
-  }  catch (error) {
-    logger.errorRequest(req, error);
-    next(error);
+  }  catch (errors) {
+    logger.errorRequest(req, errors);
+    next(errors);
   }
 };

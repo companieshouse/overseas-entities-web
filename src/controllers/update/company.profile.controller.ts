@@ -39,7 +39,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
-    return res.redirect(config.UPDATE_OVERSEAS_ENTRY_DETAILS_URL);
+    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

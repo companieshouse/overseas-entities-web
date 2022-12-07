@@ -72,7 +72,11 @@ import {
   BO_GOV_ID_URL,
   MO_IND_ID_URL,
   MO_CORP_ID_URL,
-  TRANSACTION_ID, PUBLIC_REGISTER_NAME, PUBLIC_REGISTER_JURISDICTION, REGISTRATION_NUMBER, TRUST
+  TRANSACTION_ID,
+  PUBLIC_REGISTER_NAME,
+  PUBLIC_REGISTER_JURISDICTION,
+  REGISTRATION_NUMBER,
+  TRUST,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -412,7 +416,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${mockTrust1.trust_id}`);
     expect(resp.text).toContain(mockTrust1.trust_name);
-    expect(resp.text).toMatch(/21[\s]*January[\s]*1993/m);
+    expect(resp.text).toMatch(/21\s+January\s+1993/m);
 
   });
 

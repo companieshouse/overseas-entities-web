@@ -30,7 +30,7 @@ describe("Confirm company data", () => {
 
     test("Redirection to What is your OE number page if OE number is undefined", async () => {
       mockGetApplicationData.mockReturnValueOnce({});
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
       expect(resp.text).toContain(config.OVERSEAS_ENTITY_QUERY_URL);
@@ -40,7 +40,7 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
 
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE);
     });
@@ -48,7 +48,7 @@ describe("Confirm company data", () => {
     test("confirm and continue button is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CONFIRM_AND_CONTINUE_BUTTON_TEXT);
     });
@@ -56,7 +56,7 @@ describe("Confirm company data", () => {
     test("Change company link is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CHANGE_COMPANY_TEST);
     });
@@ -64,7 +64,7 @@ describe("Confirm company data", () => {
     test(`redirect to the ${config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
-      const resp = await request(app).post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
     });
@@ -72,21 +72,21 @@ describe("Confirm company data", () => {
     test(`OE number is retrieved from session data`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(mockGetOeCompanyDetails).toHaveBeenCalled();
     });
 
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test('catch error when redirecting on post save and confirm', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+      const resp = await request(app).post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

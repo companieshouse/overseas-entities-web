@@ -51,7 +51,7 @@ export const MO_CORP_ID = "2df18e59-74dd-42d7-9494-8d40b953ddbe";
 export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
-export const COMPANY_NUMBER = "NI038379";
+export const COMPANY_NUMBER = "SA000392";
 
 export const EMAIL_ADDRESS = "user@domain.roe";
 export const PUBLIC_REGISTER_NAME = "publicRegister";
@@ -869,15 +869,12 @@ export const TRUST_PARTIAL_DATE: Trust = {
 };
 
 export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
-  companyName: "Polish brewery",
+  companyName: "acme",
   dateOfCreation: "1872-06-26",
   companyAddress: {},
   companyType: "registered-overseas-entity",
   jurisdiction: "europe-north",
-  companyNumber: "0E746324",
-  // street: "1 CH house, NORWAY",
-  // country: "NORWAY",
-  // postCode: "NR19 5DP",
+  companyNumber: "0E746324"
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

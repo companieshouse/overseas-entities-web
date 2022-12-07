@@ -25,7 +25,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const oeNumber = req.body[OeNumberKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
-    return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+    return res.redirect(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);

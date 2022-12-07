@@ -20,7 +20,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     appData.company_profile_details = companyData;
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
-    const updateUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
+    const updateUrl: string = config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL;
 
     return res.render(config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE, {
       backLinkUrl,

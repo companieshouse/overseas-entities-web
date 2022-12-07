@@ -106,12 +106,11 @@ export const mapOverseasEntityToDTO = (data: any): ICompanyDetails => {
     companyType: data?.type,
     companyNumber: data?.companyNumber,
     dateOfCreation: data?.dateOfCreation,
-    jurisdiction: data?.jurisdiction,
-    companyAddress: mapAddressDTO(data?.registeredOfficeAddress)
+    companyAddress: mapAddressEntityToDTO(data?.registeredOfficeAddress)
   };
 };
 
-const mapAddressDTO = (registeredOfficeAddress: any): Address => {
+const mapAddressEntityToDTO = (registeredOfficeAddress: any): Address => {
   return {
     line_1: registeredOfficeAddress?.addressLineOne,
     line_2: registeredOfficeAddress?.addressLineTwo,

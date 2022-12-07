@@ -124,4 +124,5 @@ export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registere
 export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
 export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
 export const CHANGE_COMPANY_TEST = "Change company";
+export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 

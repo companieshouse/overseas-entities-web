@@ -1,6 +1,6 @@
 # overseas-entities-web
 
-Web front-end for the **Register an overseas entity and tell us about its beneficial owners** service. Live link [here](https://www.gov.uk/guidance/register-an-overseas-entity)
+Web front-end for the **register an overseas entity and tell us about its beneficial owners** service. Link to the live page [here](https://www.gov.uk/guidance/register-an-overseas-entity)
 </br>
 
 ## Overseas entities architecture
@@ -23,7 +23,7 @@ Web front-end for the **Register an overseas entity and tell us about its benefi
 
 ## Project Structure
 
-Link [Project Structure](./docs/Project%20Structure.md)
+Link [Project Structure and Code Style](./docs/Project%20Structure%20and%20Code%20Style.md)
 
 ## Running locally on Docker env
 
@@ -36,7 +36,7 @@ The only local development mode available, that includes account, redis and othe
 5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.
 6. Open your browser and go to page <http://chs.local/register-an-overseas-entity>
 
-- Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
+Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 
 ### Requirements
 
@@ -47,7 +47,7 @@ The only local development mode available, that includes account, redis and othe
 ### Build and Test changes
 
 1. To compile the project use `make build`
-2. To compile the project use `make test`
+2. To test the project use `make test`
 3. or `make clean build test`
 
 ### To build the Docker container
@@ -58,7 +58,7 @@ The only local development mode available, that includes account, redis and othe
 
 Method | Path | Description
 --- | --- | ---
-GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point of many other pages to register an OE. URLs path [here](./src/routes/index.ts).
+GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point to different other pages to register an OE. URLs path [here](./src/routes/index.ts).
 GET | `/update-an-overseas-entity` | Returns the landing page for updating an overseas entity. URLs path [here](./src/routes/index.ts).
 GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP code `200` and a `OK` message body
 
@@ -88,19 +88,16 @@ PIWIK_START_GOAL_ID | Matomo Start goal ID | 2
 SHOW_SERVICE_OFFLINE_PAGE | Feature Flag | false
 VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf`
 
-## MISC
-
-### Recommendations
+## Recommendations
 
 1. Use the [Visual Studio Code](https://code.visualstudio.com/) IDE for development.
 2. Use the preformatted `PULL_REQUEST_TEMPLATE` by adding meaningful description
 3. Make sure test coverage is well above `80%`
-4. Do not disable husky pre checks
+4. Do not disable husky pre checks locally
 5. Use one of the main CH slack channel if you get stuck
 6. Use MVC pattern when adding a new page/endpoint, including validation, authentication and navigation checks all together, otherwise featureflag it. Example can be found [here](https://github.com/companieshouse/overseas-entities-web/pull/226)
+7. **Happy coding**
 
-`Happy coding`
-
-### License
+## License
 
 This code is open source software licensed under the [MIT License]("https://opensource.org/licenses/MIT").

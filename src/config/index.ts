@@ -20,6 +20,7 @@ export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
 export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");
+export const VF01_FORM_DOWNLOAD_URL = getEnvironmentValue("VF01_FORM_DOWNLOAD_URL");
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
@@ -156,6 +157,7 @@ export const ENTITY_CHANGE_EMAIL = ENTITY_URL + EMAIL;
 export const ENTITY_CHANGE_LEGAL_FORM = ENTITY_URL + LEGAL_FORM;
 export const ENTITY_CHANGE_GOVERNING_LAW = ENTITY_URL + LAW_GOVERNED;
 export const ENTITY_CHANGE_PUBLIC_REGISTER = ENTITY_URL + "#is_on_register_in_country_formed_in";
+export const CONCATENATED_VALUES_SEPARATOR = ",";
 
 export const DUE_DILIGENCE_CHANGE_WHO = WHO_IS_MAKING_FILING_URL;
 export const DUE_DILIGENCE_CHANGE_IDENTITY_DATE = DUE_DILIGENCE_URL + IDENTITY_DATE;

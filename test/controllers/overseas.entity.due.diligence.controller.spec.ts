@@ -34,12 +34,15 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
   OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
 } from "../__mocks__/text.mock";
+import { ApplicationDataType } from '../../src/model';
+import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { hasPresenter } from "../../src/middleware/navigation/has.presenter.middleware";
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_MOCK,
   OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -126,6 +129,26 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
     test("Test email is valid with long email address", async () => {
       const dueDiligenceMock = {
         ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
@@ -134,7 +157,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       dueDiligenceMock["identity_date-day"] =  twoMonthOldDate.day.toString();
       dueDiligenceMock["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceMock["identity_date-year"] = twoMonthOldDate.year.toString();
-      mockPrepareData.mockReturnValueOnce(dueDiligenceMock);
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
 
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
@@ -239,7 +262,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH_DUE_DILIGENCE);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);

@@ -45,7 +45,7 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
-   shouldRedirect(SOLD_LAND_FILTER_URL);
+    shouldRedirect(SOLD_LAND_FILTER_URL);
   });
 
   test(`should redirect to signin page with ${OVERSEAS_ENTITY_QUERY_URL} page as return page`, () => {
@@ -86,7 +86,7 @@ describe('Authentication middleware', () => {
     expect(res.locals).toEqual({});
   });
 
-  function shouldRedirect(returnUrl : string) {
+  function shouldRedirect(returnUrl: string) {
     const signinRedirectPath = `/signin?return_to=${returnUrl}`;
     req.session = undefined;
 

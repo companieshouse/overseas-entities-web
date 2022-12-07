@@ -66,9 +66,11 @@ export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 export const SIGN_OUT_PAGE = "sign-out";
 export const TRUST_DETAILS_PAGE = "trust-details";
+export const OVERSEAS_ENTITY_QUERY_PAGE = "overseas-entity-query";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
+export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
@@ -98,6 +100,7 @@ export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;
+export const  OVERSEAS_ENTITY_QUERY_URL = UPDATE_LANDING_URL + "/" + OVERSEAS_ENTITY_QUERY_PAGE;
 
 // URL PARAMS
 export const ID = "/:id"; // Same param name as the ID in the data model

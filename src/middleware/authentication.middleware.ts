@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { logger } from '../utils/logger';
-import { SOLD_LAND_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL } from '../config';
+import { SOLD_LAND_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_LANDING_URL  } from '../config';
 
 import {
   checkUserSignedIn,

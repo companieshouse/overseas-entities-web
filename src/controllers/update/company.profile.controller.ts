@@ -16,7 +16,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyDataResponse){
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
-
     const companyData = mapOverseasEntityToDTO(companyDataResponse);
     appData.company_profile_details = companyData;
     setExtraData(req.session, appData);

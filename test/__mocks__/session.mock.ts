@@ -875,9 +875,9 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
   companyType: "registered-overseas-entity",
   jurisdiction: "europe-north",
   companyNumber: "0E746324",
-  street: "1 CH house, NORWAY",
-  country: "NORWAY",
-  postCode: "NR19 5DP",
+  // street: "1 CH house, NORWAY",
+  // country: "NORWAY",
+  // postCode: "NR19 5DP",
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {

@@ -44,7 +44,7 @@
           }
         },
         {
-          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode,
+          text: "" if companyData.companyName === undefined else companyData.companyAddress.line_1 + " " + companyData.companyAddress.line_2 + " " + companyData.companyAddress.country + " " + companyData.companyAddress.postcode,
           attributes: {
             "id": "oe_address_value"
           }

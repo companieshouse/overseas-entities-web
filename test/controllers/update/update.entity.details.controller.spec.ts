@@ -9,7 +9,7 @@ import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { NextFunction, Response, Request } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
-import { SERVICE_UNAVAILABLE, UPDATE_OVERSEAS_ENTITY_TITLE } from "../../__mocks__/text.mock";
+import { UPDATE_OVERSEAS_ENTITY_TITLE } from "../../__mocks__/text.mock";
 import { ERROR } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
 
@@ -35,7 +35,6 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
       const resp = await request(app)
         .post(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL);
-      
       expect(resp.status).toEqual(404);
     });
   });

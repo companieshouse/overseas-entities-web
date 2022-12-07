@@ -71,7 +71,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL).send({});
-      
       expect(resp.status).toEqual(500);
     });
 

@@ -5,8 +5,8 @@ Web front-end for the **register an overseas entity and tell us about its benefi
 
 ## Overseas entities architecture
 
-![Overseas entities architecture](./docs/Overseas%20entities%20architecture.png)
 Simplified view of the architecture and does not show all services, components and infrastructure
+![Overseas entities architecture](./docs/Overseas%20entities%20architecture.png)
 </br>
 
 ## Frontend Technologies and Utils
@@ -42,7 +42,7 @@ Environment variables used to configure this service in docker are located in th
 
 ### Requirements
 
-1. node v12.22.12
+1. node v12.22.12 (Concourse pipeline builds using Node 10 and live runs on Node 12)
 2. npm 6.14.16
 3. Docker
 

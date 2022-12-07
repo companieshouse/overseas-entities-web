@@ -28,14 +28,14 @@ describe("service availability middleware tests", () => {
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
 
-  test("update request should return service offline page", async () => {
+  test("update disabled should return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(false);
     const response = await request(app).get("/update-an-overseas-entity");
 
     expect(response.text).toContain("Service offline - Register an overseas entity");
   });
 
-  test("update request should not return service offline page", async () => {
+  test("update enabled should not return service offline page", async () => {
     mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(true);
     const response = await request(app).get("/update-an-overseas-entity");
 

@@ -35,8 +35,11 @@
         {% set hintText = "This is the law that the beneficial owner operates under" %}
         {% include "includes/inputs/governing-law-input.html" %}
 
+        {% set registerHintText = "Include its jurisdiction. For example, Hong Kong or State of Delaware." %}
+        {% set includeJurisdiction = false %}
         {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was formed in?" %}
         {% set registrationNumberText = "Entity's registration number" %}
+
         {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
         {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}

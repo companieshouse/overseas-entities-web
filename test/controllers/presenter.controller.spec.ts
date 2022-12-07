@@ -18,7 +18,8 @@ import {
   WHO_IS_MAKING_FILING_URL,
   LANDING_PAGE_URL,
 } from "../../src/config";
-import { getApplicationData, setApplicationData } from "../../src/utils/application.data";
+import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
+import { ApplicationDataType } from '../../src/model';
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
@@ -29,9 +30,11 @@ import {
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
 import {
+  EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
   OVERSEAS_ENTITY_ID,
   PRESENTER_OBJECT_MOCK,
+  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   TRANSACTION_ID
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -60,6 +63,8 @@ mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockPrepareData = prepareData as jest.Mock;
 
 describe("PRESENTER controller", () => {
 
@@ -140,7 +145,7 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
-      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
     });
@@ -156,12 +161,58 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
     test("catch error when post data from presenter page", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("Test email is valid with long email address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+    });
+
+    test("Test email is valid with long email name and address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+    });
+
+    test("Test email is valid with very long email name and address", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
     });
   });
 });

@@ -5,12 +5,16 @@
     name: "public_register_name",
     value: public_register_name,
     hint: {
-      text: "Include its jurisdiction. For example, Hong Kong or State of Delaware."
+      text: registerHintText
     },
     label: {
       text: "Name of register"
     }
   }) }}
+
+  {% if includeJurisdiction %}
+     {% include "includes/inputs/fields/public-register-jurisdiction-input.html" %}
+  {% endif %}
 
   {% include "includes/inputs/fields/registration-number-input.html" %}
 {% endset -%}

@@ -1,0 +1,16 @@
+{{ govukCheckboxes({
+  errorMessage: fieldParam.error,
+  idPrefix: fieldParam.id if fieldParam.id else fieldParam.name,
+  name: fieldParam.name,
+  fieldset: {
+    legend: {
+      text: fieldParam.label,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--s"
+    }
+  },
+  hint: {
+    text: fieldParam.hint
+  },
+  items: fieldParam.items
+}) }}

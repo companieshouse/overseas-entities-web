@@ -1,5 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set boiFullName = boi.first_name + " " + boi.last_name %}
+
 {% set boiDateOfBirth = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
 
 {% set boiStartDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
@@ -59,7 +61,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
-          "Individual beneficial owner " + boi.first_name + " - first name",
+          "Individual beneficial owner " + boiFullName + " - first name",
           "change-individual-beneficial-owner-first-name-button"
         ) ]
       }
@@ -74,7 +76,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.LAST_NAME,
-          "Individual beneficial owner " + boi.first_name + " - last name",
+          "Individual beneficial owner " + boiFullName + " - last name",
           "change-individual-beneficial-owner-last-name-button"
         ) ]
       }
@@ -89,7 +91,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
-          "Individual beneficial owner " + boi.first_name + " - date of birth",
+          "Individual beneficial owner " + boiFullName + " - date of birth",
           "change-individual-beneficial-owner-date-of-birth-name-button"
         ) ]
       }
@@ -104,7 +106,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NATIONALITY,
-          "Individual beneficial owner " + boi.first_name + " - nationality",
+          "Individual beneficial owner " + boiFullName + " - nationality",
           "change-individual-beneficial-owner-nationality-button"
         ) ]
       }
@@ -119,7 +121,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
-          "Individual beneficial owner " + boi.first_name + " - home address",
+          "Individual beneficial owner " + boiFullName + " - home address",
           "change-individual-beneficial-owner-residential-address-button"
         ) ]
       }
@@ -134,7 +136,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + boiChangeServiceAddressHtml,
-          "Individual beneficial owner " + boi.first_name + " - correspondence address",
+          "Individual beneficial owner " + boiFullName + " - correspondence address",
           "change-individual-beneficial-owner-correspondence-address-button"
         ) ]
       }
@@ -149,7 +151,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.START_DATE,
-          "Individual beneficial owner " + boi.first_name + " - date they became a beneficial owner",
+          "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
           "change-individual-beneficial-owner-start-date-button"
         ) ]
       }
@@ -164,7 +166,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
-          "Individual beneficial owner " + boi.first_name + " - nature of control",
+          "Individual beneficial owner " + boiFullName + " - nature of control",
           "change-individual-beneficial-owner-nature-of-control-button"
         ) ]
       }
@@ -179,7 +181,7 @@
       actions: {
         items: [ CREATE_CHANGE_LINK(
           OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
-          "Individual beneficial owner " + boi.first_name + " - are they on the sanctions list?",
+          "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
           "change-individual-beneficial-owner-sanctions-list-button"
         ) ]
       }

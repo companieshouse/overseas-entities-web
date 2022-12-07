@@ -5,6 +5,7 @@ import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
+import { CONCATENATED_VALUES_SEPARATOR } from "../config";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -86,14 +87,21 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkSecondNationality = (nationality: string = "", secondNationality: string = "") => {
-  const separator = ",";
 
   if ( nationality && nationality === secondNationality ) {
     throw new Error(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
-  } else if ( nationality && secondNationality && `${nationality}${separator}${secondNationality}`.length > 50) {
+  } else if ( nationality && secondNationality && `${nationality}${CONCATENATED_VALUES_SEPARATOR}${secondNationality}`.length > 50) {
     throw new Error(ErrorMessages.NATIONALITIES_TOO_LONG);
   }
 
+  return true;
+};
+
+export const checkPublicRegisterJurisdiction = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
+
+  if (public_register_name && public_register_jurisdiction && `${public_register_name}${CONCATENATED_VALUES_SEPARATOR}${public_register_jurisdiction}`.length > 160) {
+    throw new Error(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+  }
   return true;
 };
 

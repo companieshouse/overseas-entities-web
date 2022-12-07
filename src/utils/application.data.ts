@@ -45,11 +45,11 @@ export const prepareData = (data: any, keys: string[]): ApplicationDataType => {
 };
 
 export const mapFieldsToDataObject = (data: any, htmlFields: string[], dataModelKeys: string[]) => {
-  return htmlFields.reduce((o, key, i) => Object.assign(o, { [dataModelKeys[i]]: data[key] }), {});
+  return (data) ? htmlFields.reduce((o, key, i) => Object.assign(o, { [dataModelKeys[i]]: data[key] }), {}) : {};
 };
 
 export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModelKeys: string[]) => {
-  return htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {});
+  return (data) ? htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {}) : {};
 };
 
 export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {

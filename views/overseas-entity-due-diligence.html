@@ -19,7 +19,7 @@
       <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out identity checks</h1>
 
       <form method="post">
-
+        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’" %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is their name?" %}
@@ -33,6 +33,8 @@
 
         {% include "includes/inputs/fields/supervisory-name-input.html" %}
         {% include "includes/inputs/fields/aml-number-input.html" %}
+
+        {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance" %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 
         {% set headerBlock = '<h2 class="govuk-heading-m">Information shown on the public register</h2>' %}

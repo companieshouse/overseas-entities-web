@@ -18,6 +18,7 @@ import { get } from "../../src/controllers/confirmation.controller";
 import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 import { WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { getLoggedInUserEmail } from "../../src/utils/session";
+import * as config from "../../src/config";
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -55,6 +56,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
     expect(resp.text).toContain(`£${PAYMENT_FEE}`);
     expect(resp.text).toContain(userMail);
+    expect(resp.text).toContain(config.VF01_FORM_DOWNLOAD_URL);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
 
@@ -70,6 +72,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(CONFIRMATION_PAGE_TITLE);
     expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
     expect(resp.text).toContain(userMail);
+    expect(resp.text).not.toContain(config.VF01_FORM_DOWNLOAD_URL);
     expect(resp.text).not.toContain(CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW);
     expect(resp.text).not.toContain(CONFIRMATION_NUMBER_OF_DAYS);
   });

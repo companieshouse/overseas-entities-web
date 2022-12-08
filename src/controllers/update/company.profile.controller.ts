@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData, mapOverseasEntityToDTO, setExtraData } from "../../utils/application.data";
+import { getApplicationData, mapCompanyProfileToOverseasEntityToDTO, setExtraData } from "../../utils/application.data";
 import { getCompanyRequest } from "../../service/overseas.entities.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -16,7 +16,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyDataResponse){
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
-    const overseasEntity = mapOverseasEntityToDTO(companyDataResponse);
+    const overseasEntity = mapCompanyProfileToOverseasEntityToDTO(companyDataResponse);
     appData.company_profile_details = overseasEntity;
     setExtraData(req.session, appData);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;

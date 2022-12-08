@@ -100,7 +100,7 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
   }
 };
 
-export const mapOverseasEntityToDTO = (data: any): ICompanyDetails => {
+export const mapCompanyProfileToOverseasEntityToDTO = (data: any): ICompanyDetails => {
   return {
     companyName: data?.companyName,
     companyType: data?.type,

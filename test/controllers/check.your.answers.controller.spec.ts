@@ -1,5 +1,3 @@
-import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-
 jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
@@ -97,6 +95,7 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.i
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 

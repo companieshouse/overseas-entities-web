@@ -370,8 +370,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
-
-    mockIsActiveFeature.mockReturnValue( false );  // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+    mockIsActiveFeature.mockReturnValue(false);  // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
@@ -384,9 +383,8 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-
-    mockIsActiveFeature.mockReturnValueOnce( false ); // another flag
-    mockIsActiveFeature.mockReturnValueOnce( true ); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+    mockIsActiveFeature.mockReturnValueOnce(false); // another flag
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
     const mockTrust1 = {
       ...TRUST,
@@ -417,7 +415,6 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${mockTrust1.trust_id}`);
     expect(resp.text).toContain(mockTrust1.trust_name);
     expect(resp.text).toMatch(/21\s+January\s+1993/m);
-
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {

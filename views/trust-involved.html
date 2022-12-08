@@ -41,60 +41,14 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-<!-- <span class="govuk-caption-l">{{ pageData.trustName }}</span> -->
-<h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+        <!-- <span class="govuk-caption-l">{{ pageData.trustName }}</span> -->
+        <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
 
-      <form class="form" action="" method="post">
-
-
-          {{ govukRadios({
-            name: "which-type-of-trust",
-            fieldset: {
-              legend: {
-                text: "Which type of individual or entity do you want to add to this trust?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--l"
-              }
-            },
-            items: [
-              {
-                value: "formerBeneficialOwner",
-                text: "Former beneficial owner"
-              },
-              {
-                value: "individual",
-                text: "individual"
-              },
-              {
-                value: "legalEntity",
-                text: "legal Entity"
-              },
-            ]
-          }) }}
-
-
-          <!-- <div class="govuk-button-group">
-            {{ govukButton({
-              text: "Add"
-            }) }}
-
-            {{ govukButton({
-              html: 'No more <span class="govuk-visually-hidden">individuals or entities</span> to add',
-              classes: "govuk-button--secondary",
-              href: '/register/trusts/add-trust'
-            }) }}
-          </div> -->
+        <form class="form" method="post">
 
 
 
-
-
-
-
-
-
-
-          </form>
+        </form>
     </div>
   </div>
 

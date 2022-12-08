@@ -64,5 +64,15 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
+
+    test("catch error when posting data", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: '12345678' });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 });

@@ -21,10 +21,9 @@
         <form method="post">
 
             {{ govukInput({
-            errorMessage: errors.oe_number if errors,
-            id: "oe_number",
-            name: "oe_number",
-            value: oe_number
+              id: "oe_number",
+              name: "oe_number",
+              value: oe_number
             }) }}
 
             {% include "includes/continue-button.html" %}

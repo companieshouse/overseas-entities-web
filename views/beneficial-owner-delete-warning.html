@@ -61,13 +61,14 @@
 
         <!-- Hidden input, needed to submit the beneficial owners statement -->
         {{ govukInput({
-          value: beneficial_owners_statement,
-          name: "beneficial_owners_statement",
-          classes: "govuk-visually-hidden",
           label: {
             text: "Hidden input, needed to submit the beneficial owners statement",
             classes: "govuk-visually-hidden"
-          }
+          },
+          id: "beneficial_owners_statement",
+          value: beneficial_owners_statement,
+          name: "beneficial_owners_statement",
+          classes: "govuk-visually-hidden"
         }) }}
 
         {% include "includes/continue-button.html" %}

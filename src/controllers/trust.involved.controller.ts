@@ -95,6 +95,6 @@ const get = (
 
 export {
   get,
-//   post,
+  //   post,
   TRUST_INVOLVED_TEXTS,
 };

@@ -133,10 +133,12 @@ router
   .get(trustDetails.get)
   .post(trustDetails.post);
 
-router.get(config.TRUST_INVOLVED_URL,
-    // authentication, 
-    // navigation.hasBOsOrMOs, 
-    trustInvolved.get);
+router.get(
+  config.TRUST_INVOLVED_URL,
+  // authentication,
+  // navigation.hasBOsOrMOs,
+  trustInvolved.get
+);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

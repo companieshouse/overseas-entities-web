@@ -79,7 +79,8 @@ import {
   PUBLIC_REGISTER_NAME,
   PUBLIC_REGISTER_JURISDICTION,
   REGISTRATION_NUMBER,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, MANAGING_OFFICER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";

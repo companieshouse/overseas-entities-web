@@ -36,10 +36,12 @@ import {
   CHANGE_LINK,
   CHANGE_LINK_INDIVIDUAL_BO_DOB,
   CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME,
-  CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS, CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST,
+  CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS,
+  CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST,
   CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME,
   CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY,
   CHANGE_LINK_INDIVIDUAL_BO_NOC,
+  CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY,
   CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS,
   CHANGE_LINK_INDIVIDUAL_BO_START_DATE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
@@ -77,6 +79,8 @@ import {
   PUBLIC_REGISTER_JURISDICTION,
   REGISTRATION_NUMBER,
   TRUST,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -93,6 +97,7 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.i
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 
@@ -183,7 +188,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_URL); // Change link for Statements
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual no second nationality`, async () => {
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerGovKey]: [],
@@ -201,6 +206,42 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_DOB);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
     expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.SECOND_NATIONALITY}`);
+    expect(resp.text).not.toContain(CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.CHANGE_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.START_DATE}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_START_DATE);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_NOC);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Individual with second nationality`, async () => {
+    const boIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK };
+    boIndividual.second_nationality = "Swedish";
+
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: [ boIndividual ],
+      [BeneficialOwnerGovKey]: [],
+      [BeneficialOwnerOtherKey]: []
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(`${BENEFICIAL_OWNER_OTHER_URL}${BO_OTHER_ID_URL}${CHANGE_LINKS.NAME}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.LAST_NAME}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.DATE_OF_BIRTH}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_DOB);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.SECOND_NATIONALITY}`);
+    expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_INDIVIDUAL_URL}${BO_IND_ID_URL}${CHANGE_LINKS.CHANGE_RESIDENTIAL_ADDRESS}`);
     expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS);
     expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS);
@@ -250,7 +291,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual no second nationality`, async () => {
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK
     });
@@ -264,6 +305,29 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.DATE_OF_BIRTH}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
+    expect(resp.text).not.toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.SECOND_NATIONALITY}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.OCCUPATION}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.ROLE_AND_RESPONSIBILITIES}`);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links MO Individual with second nationality`, async () => {
+    const moIndividual = { ...MANAGING_OFFICER_OBJECT_MOCK };
+    moIndividual.second_nationality = "Swedish";
+    mockGetApplicationData.mockReturnValueOnce({
+      ...APPLICATION_DATA_MOCK,
+      [ManagingOfficerKey]: [moIndividual]
+    });
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.FIRST_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.LAST_NAME}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.FORMER_NAMES}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.CHANGE_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.DATE_OF_BIRTH}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.NATIONALITY}`);
+    expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.SECOND_NATIONALITY}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.OCCUPATION}`);
     expect(resp.text).toContain(`${MANAGING_OFFICER_URL}${MO_IND_ID_URL}${CHANGE_LINKS.ROLE_AND_RESPONSIBILITIES}`);
   });
@@ -384,6 +448,7 @@ describe("GET tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(false); // another flag
+    mockIsActiveFeature.mockReturnValueOnce(false); // yet another another flag
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
     const mockTrust1 = {

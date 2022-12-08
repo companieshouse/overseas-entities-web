@@ -78,6 +78,7 @@ describe("Resume submission controller", () => {
       [IsSecureRegisterKey]: "",
     };
     mockIsActiveFeature.mockReturnValueOnce( false );
+    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
@@ -106,6 +107,7 @@ describe("Resume submission controller", () => {
       [IsSecureRegisterKey]: "",
     };
     mockIsActiveFeature.mockReturnValueOnce( false );
+    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
@@ -123,6 +125,7 @@ describe("Resume submission controller", () => {
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockImplementationOnce( null as any );

@@ -69,6 +69,7 @@ export const TRUST_DETAILS_PAGE = "trust-details";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
+export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
@@ -131,6 +132,7 @@ export const LAW_GOVERNED = "#law_governed";
 export const FIRST_NAME = "#first_name";
 export const LAST_NAME = "#last_name";
 export const NATIONALITY = "#nationality";
+export const SECOND_NATIONALITY = "#second_nationality";
 export const OCCUPATION = "#occupation";
 export const DATE_OF_BIRTH = "#date_of_birth-day";
 export const START_DATE = "#start_date-day";

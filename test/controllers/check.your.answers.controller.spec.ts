@@ -3,6 +3,7 @@ jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/feature.flag" );
@@ -84,6 +85,7 @@ import {
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../src/service/payment.service";
@@ -110,6 +112,9 @@ mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next:
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
@@ -447,8 +452,6 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(false); // another flag
-    mockIsActiveFeature.mockReturnValueOnce(false); // yet another another flag
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
     const mockAppData = {

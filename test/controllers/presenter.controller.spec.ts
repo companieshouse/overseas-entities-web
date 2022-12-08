@@ -70,6 +70,7 @@ describe("PRESENTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {

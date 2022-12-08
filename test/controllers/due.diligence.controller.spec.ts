@@ -1,5 +1,3 @@
-import { DateTime } from "luxon";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -49,6 +47,7 @@ import { EMAIL_ADDRESS } from "../__mocks__/session.mock";
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../__mocks__/fields/date.mock";
 import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { DateTime } from "luxon";
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -65,6 +64,7 @@ describe("DUE_DILIGENCE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
+    mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {

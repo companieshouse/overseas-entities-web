@@ -78,7 +78,7 @@ import {
   PUBLIC_REGISTER_NAME,
   PUBLIC_REGISTER_JURISDICTION,
   REGISTRATION_NUMBER,
-  TRUST,
+  TRUST_WITH_ID,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
@@ -451,21 +451,10 @@ describe("GET tests", () => {
     mockIsActiveFeature.mockReturnValueOnce(false); // yet another another flag
     mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
-    const mockTrust1 = {
-      ...TRUST,
-      trust_id: 999,
-      trust_name: 'aaa',
-      creation_date_day: "21",
-      creation_date_month: "1",
-      creation_date_year: "1993",
-    };
-
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
       [TrustKey]: [
-        mockTrust1,
-        TRUST,
-        TRUST,
+        TRUST_WITH_ID,
       ]
     };
 
@@ -477,9 +466,9 @@ describe("GET tests", () => {
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
-    expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${mockTrust1.trust_id}`);
-    expect(resp.text).toContain(mockTrust1.trust_name);
-    expect(resp.text).toMatch(/21\s+January\s+1993/m);
+    expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
+    expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
+    expect(resp.text).toMatch(/31\s+December\s+1999/m);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {

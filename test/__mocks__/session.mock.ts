@@ -864,6 +864,15 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
+export const TRUST_WITH_ID: Trust = {
+  trust_id: "1",
+  trust_name: "name of trust",
+  creation_date_day: "31",
+  creation_date_month: "12",
+  creation_date_year: "1999",
+  unable_to_obtain_all_trust_info: "No"
+};
+
 export const APPLICATION_DATA_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,

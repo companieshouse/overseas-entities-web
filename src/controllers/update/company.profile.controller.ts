@@ -8,7 +8,7 @@ import { getCompanyRequest } from "../../service/overseas.entities.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
@@ -22,10 +22,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
     const updateUrl: string = config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL;
 
-    return res.render(config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE, {
+    return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl,
       updateUrl,
-      templateName: config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE,
+      templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
       overseasEntityData: overseasEntity
     });
@@ -37,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

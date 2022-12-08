@@ -18,7 +18,7 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
-    nextPage: [config.CONFIRM_OVERSEA_ENTITY_DETAILS_PAGE]
+    nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,

@@ -131,6 +131,7 @@ export const LAW_GOVERNED = "#law_governed";
 export const FIRST_NAME = "#first_name";
 export const LAST_NAME = "#last_name";
 export const NATIONALITY = "#nationality";
+export const SECOND_NATIONALITY = "#second_nationality";
 export const OCCUPATION = "#occupation";
 export const DATE_OF_BIRTH = "#date_of_birth-day";
 export const START_DATE = "#start_date-day";

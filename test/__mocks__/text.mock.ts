@@ -112,6 +112,7 @@ export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + 
 export const CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - last name";
 export const CHANGE_LINK_INDIVIDUAL_BO_DOB = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date of birth";
 export const CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nationality";
+export const CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - second_nationality";
 export const CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - home address";
 export const CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - correspondence address";
 export const CHANGE_LINK_INDIVIDUAL_BO_START_DATE = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date they became a beneficial owner";

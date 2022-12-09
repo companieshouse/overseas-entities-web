@@ -3,6 +3,7 @@ jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/service/payment.service');
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/feature.flag" );
@@ -25,6 +26,7 @@ import {
   LANDING_PAGE_URL,
   MANAGING_OFFICER_CORPORATE_URL,
   MANAGING_OFFICER_URL,
+  TRUST_DETAILS_URL
 } from "../../src/config";
 
 import * as CHANGE_LINKS from "../../src/config";
@@ -77,11 +79,13 @@ import {
   PUBLIC_REGISTER_NAME,
   PUBLIC_REGISTER_JURISDICTION,
   REGISTRATION_NUMBER,
+  TRUST_WITH_ID,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../src/service/payment.service";
@@ -108,6 +112,9 @@ mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next:
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
@@ -431,7 +438,9 @@ describe("GET tests", () => {
     expect(resp.text).toContain(SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
+    mockIsActiveFeature.mockReturnValue(false);  // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
@@ -440,6 +449,29 @@ describe("GET tests", () => {
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
     expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+  });
+
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+
+    const mockAppData = {
+      ...APPLICATION_DATA_MOCK,
+      [TrustKey]: [
+        TRUST_WITH_ID,
+      ]
+    };
+
+    mockGetApplicationData.mockReturnValueOnce(mockAppData);
+
+    const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
+    expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
+    expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
+    expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
+    expect(resp.text).toMatch(/31\s+December\s+1999/m);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with no trust data`, async () => {

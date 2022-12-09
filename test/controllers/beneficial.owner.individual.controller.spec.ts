@@ -1,5 +1,3 @@
-import { DateTime } from "luxon";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -62,6 +60,7 @@ import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.m
 import { ApplicationDataType } from '../../src/model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import * as config from "../../src/config";
+import { DateTime } from "luxon";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

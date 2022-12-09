@@ -31,7 +31,7 @@ import {
   accessibilityStatement,
   signOut,
   resumeSubmission,
-  confirmOverseasCompanyDetails,
+  confirmOverseasEntityDetails,
   updateOverseasEntityDetails,
   trustDetails
 } from "../controllers";
@@ -126,8 +126,8 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 //  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.get);
-router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.post);
+router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
 
 router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, authentication, updateOverseasEntityDetails.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);

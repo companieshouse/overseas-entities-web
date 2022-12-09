@@ -28,5 +28,5 @@ export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning
 export * as signOut from "./sign.out.controller";
 export * as trustDetails from "./trust.details.controller";
 export * as resumeSubmission from "./resume.submission.controller";
-export * as confirmOverseasCompanyDetails from "./update/company.profile.controller";
-export * as updateOverseasEntityDetails from "./update/update.oversea.entity.details.controller";
+export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
+export * as updateOverseasEntityDetails from "./update/update.overseas.entity.details.controller";

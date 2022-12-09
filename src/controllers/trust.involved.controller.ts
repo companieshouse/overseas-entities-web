@@ -2,11 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
 // import { getApplicationData, setExtraData } from '../utils/application.data';
-// import * as mapperToPageService from '../utils/trust/mapper.to.page';
+import { getApplicationData } from '../utils/application.data';
+import * as mapperToPageService from '../utils/trust/mapper.to.page';
 // import * as mapperToSessionService from '../utils/trust/mapper.to.session';
-// import { ApplicationData } from '../model/application.model';
-// import * as PageModel from '../model/trust.page.model';
-// import { Trust, TrustKey } from '../model/trust.model';
+import { ApplicationData } from '../model/application.model';
+import * as PageModel from '../model/trust.page.model';
+import { TrustKey } from '../model/trust.model';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -20,12 +21,13 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(req.session);
 
-    // const trustId = req.params['id'];
-    // const pageData: PageModel.TrustDetails = mapperToPageService.mapDetailToPage(
-    //   appData[TrustKey]?.find(trust => trust.trust_id === trustId),
-    // );
+    const trustId = req.params['id'];
+    const pageData: PageModel.TrustWhoIsInvolved = mapperToPageService.mapTrustWhoIsInvolvedToPage(
+      appData[TrustKey]?.find(trust => trust.trust_id === trustId),
+    );
+
 
     const templateName = config.TRUST_INVOLVED_PAGE;
 
@@ -37,7 +39,7 @@ const get = (
         pageParams: {
           title: TRUST_INVOLVED_TEXTS.title,
         },
-        // pageData,
+        pageData,
       },
     );
   } catch (error) {

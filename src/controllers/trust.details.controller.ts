@@ -85,7 +85,10 @@ const post = (
       },
     );
 
-    return res.redirect(config.TRUST_DETAILS_URL);
+    const trustInvolvedUrl = `${config.TRUST_INVOLVED_PAGE}/${details.trust_id}`;
+
+    return res.redirect(trustInvolvedUrl);
+
   } catch (error) {
     logger.errorRequest(req, error);
 

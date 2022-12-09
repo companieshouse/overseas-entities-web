@@ -121,7 +121,12 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
-router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
+router.get(
+  config.TRUST_INFO_URL,
+  //   authentication,
+  //   navigation.hasBOsOrMOs,
+  trustInformation.get
+);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
@@ -134,7 +139,7 @@ router
   .post(trustDetails.post);
 
 router.get(
-  config.TRUST_INVOLVED_URL,
+  config.TRUST_INVOLVED_URL + config.ID,
   // authentication,
   // navigation.hasBOsOrMOs,
   trustInvolved.get

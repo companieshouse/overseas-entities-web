@@ -25,7 +25,6 @@
       ]
 %}
 
-
 {% set title = "Individuals or entities involved in the trust" %}
 
 {% block pageTitle %}
@@ -41,10 +40,10 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <span class="govuk-caption-l">{{ pageData.trustName }}</span>
-        <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+      <span class="govuk-caption-l">{{ pageData.trustName }}</span>
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
 
-        <form class="form" method="post">
+      <form class="form" method="post">
 
         {% set fieldParam = {
           name: 'typeOfTrustee',
@@ -52,46 +51,41 @@
           error: errors.typeOfTrustee,
           items: [
             {
-                value: "historical",
-                text: "Former beneficial owner",
-                hint: {
-                    text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
-                  },
-              checked: pageData.typeOfTrustee == "historical"
-            },
-            {
-                value:"individual",
-                text: "Individual",
-                hint: {
-                    text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
-                  },
-              checked: pageData.typeOfTrustee == "individual"
-            },
-            {
-                value: "legalEntity",
-                text: "Legal entity",
-                hint: {
-                  text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."
-                  },
-              checked: pageData.typeOfTrustee == "legalEntity"
+              value: "historical",
+              text: "Former beneficial owner",
+              hint: {
+                text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
+              }
+            }, {
+              value: "individual",
+              text: "Individual",
+              hint: {
+                text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
+              }
+            }, {
+              value: "legalEntity",
+              text: "Legal entity",
+              hint: {
+                text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."
+              }
             }
           ]
         } %}
         {% include "includes/inputs/radio-input.html" %}
 
-          <div class="govuk-button-group">
-            {{ govukButton({
+        <div class="govuk-button-group">
+          {{ govukButton({
               text: "Add"
             }) }}
 
-            {{ govukButton({
+          {{ govukButton({
               html: 'No more <span class="govuk-visually-hidden">individuals or entities</span> to add',
               classes: "govuk-button--secondary",
               href: '/register/trusts//trust-involved'
             }) }}
-          </div>
+        </div>
 
-        </form>
+      </form>
     </div>
   </div>
 

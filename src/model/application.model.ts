@@ -34,6 +34,7 @@ export interface ApplicationData {
     has_sold_land?: string;
     is_secure_register?: string;
     who_is_registering?: string;
+    oe_number?: string;
 }
 
 export const ApplicationDataArrayType = [

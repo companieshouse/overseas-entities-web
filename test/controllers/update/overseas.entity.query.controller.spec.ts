@@ -54,7 +54,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OE_NUMBER_FIELD_POPULATED);
-      expect(mockDeleteApplicationData).toBeCalledTimes(0);
+      expect(mockDeleteApplicationData).not.toHaveBeenCalled();
     });
 
     test('catch error when rendering the page', async () => {

@@ -20,7 +20,7 @@ import request from "supertest";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
 import app from "../../src/app";
-import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL, TRUST_INVOLVED_PAGE } from '../../src/config';
+import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { get, post, TRUST_DETAILS_TEXTS } from '../../src/controllers/trust.details.controller';
 import { getApplicationData, setExtraData } from "../../src/utils/application.data";
@@ -184,7 +184,7 @@ describe('Trust Details controller', () => {
         .send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_PAGE}/${mockTrust2Data.trust_id}`);
+      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${mockTrust2Data.trust_id}`);
     });
   });
 });

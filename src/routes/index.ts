@@ -133,7 +133,7 @@ router
   .route(config.TRUST_DETAILS_URL + config.ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-    authentication,
+    // authentication,
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
@@ -143,6 +143,13 @@ router.get(
   // authentication,
   // navigation.hasBOsOrMOs,
   trustInvolved.get
+);
+
+router.post(
+  config.TRUST_INVOLVED_URL + config.ID,
+  // authentication,
+  // navigation.hasBOsOrMOs,
+  trustInvolved.post
 );
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);

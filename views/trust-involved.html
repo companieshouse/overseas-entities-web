@@ -47,62 +47,37 @@
         <form class="form" method="post">
 
         {% set fieldParam = {
-          name: 'hasAllInfo',
-          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
-          error: errors.hasAllInfo,
+          name: 'typeOfTrustee',
+          label: 'Which type of individual or entity do you want to add to this trust?',
+          error: errors.typeOfTrustee,
           items: [
             {
-              value: 1,
-              text: 'Yes',
-              checked: pageData.hasAllInfo == 1
-            },
-            {
-              value: 0,
-              text: 'No',
-              checked: pageData.hasAllInfo == 0
-            }
-          ]
-        } %}
-        {% include "includes/inputs/radio-input.html" %}
-
-
-        {{ govukRadios({
-            idPrefix: "trustTypes",
-            name: "trustTypes",
-            fieldset: {
-              legend: {
-                text: "Which type of individual or entity do you want to add to this trust?",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--m"
-              }
-            },
-            hint: {
-              text: "You can add more later."
-            },
-            items: [
-              {
                 value: "historical",
                 text: "Former beneficial owner",
                 hint: {
                     text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
-                  }
-              },
-              {
-                value: "individual-trusts",
+                  },
+              checked: pageData.typeOfTrustee == "historical"
+            },
+            {
+                value:"individual",
                 text: "Individual",
                 hint: {
                     text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
-                  }
-              },
-              {
-                value: "ole-trusts",
+                  },
+              checked: pageData.typeOfTrustee == "individual"
+            },
+            {
+                value: "legalEntity",
                 text: "Legal entity",
                 hint: {
                   text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."
-                  }
-              }
-                ]
-          }) }}
+                  },
+              checked: pageData.typeOfTrustee == "legalEntity"
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
 
           <div class="govuk-button-group">
             {{ govukButton({
@@ -112,7 +87,7 @@
             {{ govukButton({
               html: 'No more <span class="govuk-visually-hidden">individuals or entities</span> to add',
               classes: "govuk-button--secondary",
-              href: '/register/trusts/add-trust'
+              href: '/register/trusts//trust-involved'
             }) }}
           </div>
 

@@ -46,6 +46,8 @@ export const InputDateKeys: string[] = [
 
 export const LANDING_PAGE_QUERY_PARAM = "start";
 
+export const OVERSEAS_NAME = "overseas_name";
+
 // BOs and MOs ID field name
 export const ID = "id";
 

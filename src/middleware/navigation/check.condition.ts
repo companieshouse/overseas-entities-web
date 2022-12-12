@@ -1,7 +1,7 @@
 import { SOLD_LAND_FILTER_URL } from '../../config';
 
 import { ApplicationData } from '../../model/application.model';
-import { HasSoldLandKey, IsSecureRegisterKey } from '../../model/data.types.model';
+import { HasSoldLandKey, IsSecureRegisterKey, OVERSEAS_NAME } from '../../model/data.types.model';
 import { PresenterKey } from '../../model/presenter.model';
 import { EntityKey } from '../../model/entity.model';
 import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
@@ -27,8 +27,12 @@ export const checkIsSecureRegisterDetailsEntered = (appData: ApplicationData): b
   return checkHasSoldLandDetailsEntered(appData) && appData[IsSecureRegisterKey] === "0";
 };
 
+export const checkOverseasNameDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkIsSecureRegisterDetailsEntered(appData) && appData[OVERSEAS_NAME]?.length !== 0;
+};
+
 export const checkPresenterDetailsEntered = (appData: ApplicationData): boolean => {
-  return checkIsSecureRegisterDetailsEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
+  return checkOverseasNameDetailsEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
 };
 
 export const checkDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {

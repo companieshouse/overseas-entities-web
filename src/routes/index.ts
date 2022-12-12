@@ -29,7 +29,8 @@ import {
   accessibilityStatement,
   signOut,
   trustDetails,
-  resumeSubmission
+  resumeSubmission,
+  overseasName
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -65,8 +66,11 @@ router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePape
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
-router.get(config.PRESENTER_URL, authentication, navigation.isSecureRegister, presenter.get);
-router.post(config.PRESENTER_URL, authentication, navigation.isSecureRegister, ...validator.presenter, checkValidations, presenter.post);
+router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
+router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+
+router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
+router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);

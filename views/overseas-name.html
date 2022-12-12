@@ -21,15 +21,16 @@
     <form method="post">
 
       {{ govukInput({
-        errorMessage: errors.overseas_name if errors,
+        errorMessage: errors.entity_name if errors,
         label: {
-          text: title,
+            text: title,
             classes: "govuk-label--m",
-            isPageHeading: false
+            isPageHeading: false,
+            classes: "govuk-visually-hidden"
           },
-          id: "overseas_name",
-          name: "overseas_name",
-          value: overseas_name
+          id: "entity_name",
+          name: "entity_name",
+          value: entity_name
       }) }}
 
       {% include "includes/save-and-continue-button.html" %}

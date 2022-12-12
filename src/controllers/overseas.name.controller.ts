@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../config";
 import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
-import { OVERSEAS_NAME } from "../model/data.types.model";
+import { EntityNameKey } from "../model/data.types.model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.OVERSEAS_NAME_PAGE, {
       backLinkUrl: config.INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_NAME_PAGE,
-      [OVERSEAS_NAME]: appData?.[OVERSEAS_NAME]
+      [EntityNameKey]: appData?.[EntityNameKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -25,11 +25,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.OVERSEAS_NAME_PAGE}`);
-    const overseasName = req.body[OVERSEAS_NAME];
+    const entityName = req.body[EntityNameKey];
 
     setExtraData(req.session, {
       ...getApplicationData(req.session),
-      [OVERSEAS_NAME]: overseasName
+      [EntityNameKey]: entityName
     });
 
     return res.redirect(config.PRESENTER_URL);

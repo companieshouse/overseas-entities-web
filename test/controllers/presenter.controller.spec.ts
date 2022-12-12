@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
+jest.mock('../../src/middleware/navigation/has.overseas.name.middleware');
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 
@@ -43,7 +43,7 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
+import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
 import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
@@ -54,8 +54,8 @@ mockTransactionService.mockReturnValue( TRANSACTION_ID );
 const mockOverseasEntity = createOverseasEntity as jest.Mock;
 mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
-const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
-mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasOverseasNameMiddleware = hasOverseasName as jest.Mock;
+mockHasOverseasNameMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );

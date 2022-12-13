@@ -42,6 +42,10 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+    if (req.body.noMoreToAdd) {
+      return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
+    }
+
     const typeOfTrustee = req.body.typeOfTrustee;
 
     switch (typeOfTrustee) {
@@ -57,8 +61,8 @@ const post = (
         default:
           logger.info("Error message and stay in same page ");
     }
-
-    return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
+    logger.info("For Current story, just re-displays the page (delete this comment and below line once all Trustee pages are done");
+    return res.redirect(`${config.TRUST_INVOLVED_URL}/${req.params['id']}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

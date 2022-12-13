@@ -11,13 +11,13 @@ export const hasTrust = (req: Request, res: Response, next: NextFunction): void 
   try {
     const trustId = req.params['id'];
     const appData: ApplicationData = getApplicationData(req.session);
-    const hasTrust =  appData[TrustKey]?.some(trust => trust.trust_id === trustId);
-    if ( ! hasTrust) {
+    const isTrustPresent =  appData[TrustKey]?.some(trust => trust.trust_id === trustId);
+    if ( ! isTrustPresent) {
       logger.infoRequest(req, NavigationErrorMessage);
 
       return res.redirect(SOLD_LAND_FILTER_URL);
     }
-    next();
+    return next();
   } catch (err) {
     next(err);
   }

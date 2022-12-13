@@ -17,6 +17,7 @@ import {
 export const APPLICATION_DATA_KEY = 'roe';
 
 export interface ApplicationData {
+    entity_name?: string;
     presenter?: presenterType.Presenter;
     due_diligence?: dueDiligenceType.DueDiligence;
     overseas_entity_due_diligence?: overseasEntityDueDiligenceType.OverseasEntityDueDiligence;

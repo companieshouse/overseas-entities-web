@@ -5,6 +5,7 @@ import { hasEntity } from "./has.entity.middleware";
 import { hasPresenter } from "./has.presenter.middleware";
 import { hasSoldLand } from "./has.sold.land.middleware";
 import { isSecureRegister } from "./is.secure.register.middleware";
+import { hasOverseasName } from "./has.overseas.name.middleware";
 
 export const navigation = {
   hasSoldLand,
@@ -13,5 +14,6 @@ export const navigation = {
   hasDueDiligence,
   hasEntity,
   hasBeneficialOwnersStatement,
-  hasBOsOrMOs
+  hasBOsOrMOs,
+  hasOverseasName
 };

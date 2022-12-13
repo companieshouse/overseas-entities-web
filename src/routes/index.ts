@@ -67,7 +67,7 @@ router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePape
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
-router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.post);
 
 router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
 router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);

@@ -1,0 +1,148 @@
+{% set formattedPrincipalAddressHtml %}
+  {% set address = appData.entity.principal_address %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set formattedServiceAddressHtml %}
+  {% if appData.entity.is_service_address_same_as_principal_address == 1 %}
+    The correspondence address is the same as the entity's principal or registered office address
+  {% else %}
+    {% set address = appData.entity.service_address %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set formattedPublicRegister %}
+  {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
+    {{ appData.entity.public_register_name }} / {{ appData.entity.public_register_jurisdiction }} / {{ appData.entity.registration_number }}
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+<h2 class="govuk-heading-l">Update overseas entity details (NOT LIVE)</h2>
+
+{{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name of the overseas entity"
+        },
+        value: {
+          text: appData.entity.name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_NAME,
+            "Name of the overseas entity",
+            "change-entity-name-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Country it was formed in"
+        },
+        value: {
+          text: appData.entity.incorporation_country
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_COUNTRY,
+            "Country it was formed in",
+            "change-entity-incorporation-country-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Principal or registered office address"
+        },
+        value: {
+          html: formattedPrincipalAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+            "Principal or registered office address",
+            "change-entity-principal-address-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Correspondence address"
+        },
+        value: {
+          html: formattedServiceAddressHtml
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+            "Correspondence address",
+            "change-entity-correspondence-address-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Email address at the overseas entity should we send communications to"
+        },
+        value: {
+          text: appData.entity.email
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_EMAIL,
+            "Email address at the overseas entity should we send communications to",
+            "change-entity-email-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Legal form"
+        },
+        value: {
+          text: appData.entity.legal_form
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_LEGAL_FORM,
+            "Legal form",
+            "change-entity-legal-form-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Governing law"
+        },
+        value: {
+          text: appData.entity.law_governed
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_GOVERNING_LAW,
+            "Governing law",
+            "change-entity-governing-law-button"
+          ) ]
+        }
+      },
+      {
+        key: {
+          text: "Overseas public register"
+        },
+        value: {
+          text: formattedPublicRegister
+        },
+        actions: {
+          items: [CREATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_CHANGE_PUBLIC_REGISTER,
+            "Already on a public register in the country it was formed in",
+            "change-entity-public-register-button"
+          )]
+        }
+      }
+    ]
+}) }}

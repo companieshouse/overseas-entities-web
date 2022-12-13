@@ -1,5 +1,3 @@
-import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -56,6 +54,7 @@ import {
 } from '../__mocks__/validation.mock';
 import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
+import { MAX_20, MAX_50, MAX_80 } from "../__mocks__/max.length.mock";
 
 const mockHasDueDiligenceMiddleware = hasDueDiligence as jest.Mock;
 mockHasDueDiligenceMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -71,6 +70,7 @@ describe("ENTITY controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {

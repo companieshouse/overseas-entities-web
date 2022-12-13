@@ -112,8 +112,13 @@ export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + 
 export const CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - last name";
 export const CHANGE_LINK_INDIVIDUAL_BO_DOB = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date of birth";
 export const CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nationality";
+export const CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - second_nationality";
 export const CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - home address";
 export const CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - correspondence address";
 export const CHANGE_LINK_INDIVIDUAL_BO_START_DATE = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date they became a beneficial owner";
 export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nature of control";
 export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - are they on the sanctions list?";
+
+// Update journey
+export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
+export const OE_NUMBER_FIELD_POPULATED = "value=\"12345678\"";

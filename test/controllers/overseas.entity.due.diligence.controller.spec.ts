@@ -1,5 +1,3 @@
-import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -52,6 +50,7 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE
 } from "../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
 mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -67,6 +66,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetApplicationData.mockReset();
   });
 
   describe("GET tests", () => {

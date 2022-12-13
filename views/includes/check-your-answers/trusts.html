@@ -1,34 +1,80 @@
+{% import "includes/date-macros.html" as dateMacros %}
 <h3 class="govuk-heading-m">Trust {{ trust_count }}</h3>
 
 {% set trustBeneficialOwnersHtml %}
   {% include "includes/check-your-answers/trust-beneficial-owners.html" %}
 {% endset %}
-
-{{ govukSummaryList({
-  rows: [
-    {
-      key: {
-        text: "Name"
+{% if pageParams.isTrustFeatureEnabled %}
+  {% set trustCreationDate = dateMacros.formatDate(trust.creation_date_day, trust.creation_date_month, trust.creation_date_year) %}
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Trust name"
+        },
+        value: {
+          text: trust.trust_name
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.NAME,
+            "Trust " + trust.trust_name + " -  name",
+            "change-trust-name-button"
+          ) ]
+        }
       },
-      value: {
-        text: trust.trust_name if trust
-      }
-    },
-    {
-      key: {
-        text: "Trust data"
+      {
+        key: {
+          text: "Date the trust was created"
+        },
+        value: {
+          text: trustCreationDate
+        },
+        actions: {
+          items: [ CREATE_CHANGE_LINK(
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.CREATED_DATE,
+            "Trust " + trust.trust_name + " -  created date",
+            "change-trust-created-date-button"
+          ) ]
+        }
       },
-      value: {
-        text: "Added"
+      {
+        key: {
+          text: "Beneficial owners involved in the trust"
+        },
+        value: {
+          html: trustBeneficialOwnersHtml
+        }
       }
-    },
-    {
-      key: {
-        text: "Involved with trust"
-      },
-      value: {
-        html: trustBeneficialOwnersHtml
-      }
-    }
-  ]
+    ]
 }) }}
+{% else %}
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Name"
+        },
+        value: {
+          text: trust.trust_name if trust
+        }
+      },
+      {
+        key: {
+          text: "Trust data"
+        },
+        value: {
+          text: "Added"
+        }
+      },
+      {
+        key: {
+          text: "Involved with trust"
+        },
+        value: {
+          html: trustBeneficialOwnersHtml
+        }
+      }
+    ]
+  }) }}
+{% endif %}

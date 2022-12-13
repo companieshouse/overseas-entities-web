@@ -12,7 +12,7 @@ import { Params } from 'express-serve-static-core';
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
-import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
+import { get, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
@@ -58,7 +58,7 @@ describe('Trust Involved controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
-/*
+    /*
     describe('POST unit tests', () => {
       mockReq.body = {
         id: 'dummyId',

@@ -6,6 +6,7 @@ import { ApplicationData } from "../model";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
 import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
 import { logger } from "../utils/logger";
+import { saveAndContinue } from "../utils/save.and.continue";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -25,13 +26,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST PRESENTER_PAGE`);
 
     const session = req.session as Session;
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(session, data, PresenterKey);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(config.WHO_IS_MAKING_FILING_URL);
   } catch (error) {

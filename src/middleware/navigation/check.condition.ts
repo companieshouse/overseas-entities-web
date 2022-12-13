@@ -28,7 +28,7 @@ export const checkIsSecureRegisterDetailsEntered = (appData: ApplicationData): b
 };
 
 export const checkOverseasNameDetailsEntered = (appData: ApplicationData): boolean => {
-  return checkIsSecureRegisterDetailsEntered(appData) && (appData[EntityNameKey] || "").length  !== 0;
+  return checkIsSecureRegisterDetailsEntered(appData) && (appData[EntityNameKey] || "").length !== 0;
 };
 
 export const checkPresenterDetailsEntered = (appData: ApplicationData): boolean => {

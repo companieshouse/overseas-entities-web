@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.overseas.name.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -40,6 +41,9 @@ import {
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockHasOverseasNameMiddleware = hasOverseasName as jest.Mock;
 mockHasOverseasNameMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -87,6 +91,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {
@@ -94,6 +99,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {
@@ -104,6 +110,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(LANDING_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {

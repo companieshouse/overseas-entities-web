@@ -139,7 +139,7 @@ router
   .post(trustDetails.post);
 
 router
-  .route(config.TRUST_INVOLVED_URL + config.ID + '?')
+  .route(config.TRUST_INVOLVED_URL + config.ID)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,

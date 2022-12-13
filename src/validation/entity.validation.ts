@@ -7,10 +7,6 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { email_validations } from "./fields/email.validation";
 
 export const entity = [
-  body("name")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ENTITY_NAME)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS),
   body("incorporation_country").not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTRY),
 
   ...principal_address_validations,

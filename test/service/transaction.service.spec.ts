@@ -25,6 +25,7 @@ import { HTTP_STATUS_CODE_500, TRANSACTION_ERROR } from "../__mocks__/text.mock"
 import { Request } from "express";
 import { closeTransaction, postTransaction } from "../../src/service/transaction.service";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
+import { EntityNameKey } from "../../src/model/data.types.model";
 
 const mockDebugRequestLog = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -43,13 +44,26 @@ describe('Transaction Service test suite', () => {
   });
 
   describe('POST Transaction', () => {
-    test('Should successfully post a transaction', async () => {
-      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, entity: undefined } );
+    test(`Should successfully post a transaction when ${EntityNameKey} is blank`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: undefined } );
       mockMakeApiCallWithRetry.mockReturnValueOnce( { httpStatusCode: 200, resource: TRANSACTION } );
       const response = await postTransaction(req, session);
 
       expect(mockMakeApiCallWithRetry).toBeCalledWith(
         serviceNameTransaction, fnNamePostTransaction, req, session, { ...TRANSACTION_POST_PARAMS, companyName: undefined }
+      );
+
+      expect(response).toEqual(TRANSACTION_ID);
+      expect(mockDebugRequestLog).toBeCalledTimes(1);
+    });
+
+    test(`Should successfully post a transaction when ${EntityNameKey} is not blank`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: 'overseasEntityName' } );
+      mockMakeApiCallWithRetry.mockReturnValueOnce( { httpStatusCode: 200, resource: TRANSACTION } );
+      const response = await postTransaction(req, session);
+
+      expect(mockMakeApiCallWithRetry).toBeCalledWith(
+        serviceNameTransaction, fnNamePostTransaction, req, session, TRANSACTION_POST_PARAMS
       );
 
       expect(response).toEqual(TRANSACTION_ID);

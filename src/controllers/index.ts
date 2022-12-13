@@ -27,3 +27,7 @@ export * as signOut from "./sign.out.controller";
 export * as trustDetails from "./trust.details.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 export * as overseasName from "./overseas.name.controller";
+
+// UPDATE controllers
+export * as updateLanding from "./update/update.landing.controller";
+export * as overseasEntityQuery from "./update/overseas.entity.query.controller";

@@ -24,6 +24,7 @@ app.set("dev", config.NODE_ENV === "development");
 // set up the template engine
 const nunjucksEnv = nunjucks.configure([
   "views",
+  "views/update",
   "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/components",
 ], {

@@ -24,6 +24,7 @@ const get = (
         templateName,
         pageParams: {
           title: TRUST_INVOLVED_TEXTS.title,
+          checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
         },
       },
     );

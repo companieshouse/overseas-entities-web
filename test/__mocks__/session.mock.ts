@@ -171,7 +171,6 @@ export const RESIDENTIAL_ADDRESS_MOCK = {
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: 1,
@@ -192,7 +191,6 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: "email@test.gov.uk",
@@ -207,7 +205,6 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: " " + EMAIL_ADDRESS + " ",

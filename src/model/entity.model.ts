@@ -8,7 +8,6 @@ export const EntityKey = "entity";
   be able to do the mapping correctly
 */
 export const EntityKeys: string[] = [
-  "name",
   "incorporation_country",
   "principal_address",
   "is_service_address_same_as_principal_address",
@@ -23,7 +22,6 @@ export const EntityKeys: string[] = [
 ];
 
 export interface Entity {
-    name?: string;
     incorporation_country?: string;
     principal_address?: Address;
     is_service_address_same_as_principal_address?: yesNoResponse;

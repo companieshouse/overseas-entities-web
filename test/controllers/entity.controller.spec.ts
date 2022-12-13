@@ -294,7 +294,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
@@ -365,7 +364,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
@@ -378,7 +376,6 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
@@ -400,7 +397,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);

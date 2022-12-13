@@ -3,7 +3,7 @@ import * as config from '../config';
 import { logger } from '../utils/logger';
 import { isValidUrl } from '../utils/validate.url';
 import { getApplicationData } from '../utils/application.data';
-import * as mapperToPageService from '../utils/trust/mapper.to.page';
+import * as mapperBo from '../utils/trust/historical.beneficial.owner.mapper';
 import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
 import { TrustKey } from '../model/trust.model';
@@ -11,6 +11,7 @@ import { TrustKey } from '../model/trust.model';
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
 };
+
 const get = (
   req: Request,
   res: Response,
@@ -22,7 +23,7 @@ const get = (
     const appData: ApplicationData = getApplicationData(req.session);
 
     const trustId = req.params[config.TRUST_ID_PATH_PARAMETER];
-    const trustData: PageModel.TrustDetails = mapperToPageService.mapDetailToPage(
+    const trustData: PageModel.TrustDetails = mapperBo.mapTrustToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
     );
 

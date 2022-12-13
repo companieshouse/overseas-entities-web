@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const presenter = appData[PresenterKey];
 
     return res.render(config.PRESENTER_PAGE, {
-      backLinkUrl: config.INTERRUPT_CARD_URL,
+      backLinkUrl: config.OVERSEAS_NAME_URL,
       templateName: config.PRESENTER_PAGE,
       ...presenter
     });

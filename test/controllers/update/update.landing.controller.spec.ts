@@ -1,7 +1,9 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/middleware/service.availability.middleware');
 
+import { NextFunction, Request, Response } from "express";
 import { describe, expect, test, jest } from '@jest/globals';
 import request from "supertest";
 import app from "../../../src/app";
@@ -11,8 +13,11 @@ import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE
 } from "../../__mocks__/text.mock";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("UPDATE LANDING controller", () => {
 

@@ -4,12 +4,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
-import { getApplicationData, setApplicationData, prepareData, setExtraData } from "../utils/application.data";
-import { isActiveFeature } from "../utils/feature.flag";
+import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
 import { logger } from "../utils/logger";
-import { postTransaction } from "../service/transaction.service";
-import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
-import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,25 +25,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST PRESENTER_PAGE`);
 
     const session = req.session as Session;
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(session, data, PresenterKey);
-
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      const appData: ApplicationData = getApplicationData(session);
-      if (!appData[Transactionkey]) {
-        const transactionID = await postTransaction(req, session);
-        appData[Transactionkey] = transactionID;
-        appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
-        setExtraData(session, appData);
-      } else {
-        await updateOverseasEntity(req, session);
-      }
-    }
 
     return res.redirect(config.WHO_IS_MAKING_FILING_URL);
   } catch (error) {

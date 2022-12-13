@@ -10,13 +10,17 @@ import { getApplicationData } from "../../src/utils/application.data";
 
 import {
   createOverseasEntity,
+  getCompanyRequest,
   getOverseasEntity,
   updateOverseasEntity
 } from "../../src/service/overseas.entities.service";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import {
   APPLICATION_DATA_MOCK,
+  companyServiceNameOE,
+  COMPANY_NUMBER,
   ERROR,
+  fnGetCompanyNameGetOE,
   fnNameGetOE,
   fnNamePutOE,
   getSessionRequestWithExtraData,
@@ -104,8 +108,21 @@ describe(`Update Overseas Entity Service test suite`, () => {
 
 });
 
-describe(`Get Overseas Entity Service test suite`, () => {
+describe(`Get overseas entity profile details`, () => {
+  beforeEach (() => {
+    jest.clearAllMocks();
+  });
 
+  test(`getCompanyRequest should respond with successful status code`, async () => {
+    const mockResponse = { httpStatusCode: 200, resource: APPLICATION_DATA_MOCK };
+    mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
+    const response = await getCompanyRequest(req, COMPANY_NUMBER);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    expect(response).toEqual(APPLICATION_DATA_MOCK);
+  });
+});
+describe(`Get Overseas Entity Service test suite`, () => {
   const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";
   const INFO_MSG = `Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
 

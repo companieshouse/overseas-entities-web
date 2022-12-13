@@ -1,4 +1,5 @@
 import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
+import { ICompanyDetails } from "./company.profile.model";
 import {
   entityType,
   presenterType,
@@ -34,6 +35,7 @@ export interface ApplicationData {
     has_sold_land?: string;
     is_secure_register?: string;
     who_is_registering?: string;
+    company_profile_details?: ICompanyDetails;
     oe_number?: string;
 }
 

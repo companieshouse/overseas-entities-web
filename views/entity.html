@@ -54,13 +54,27 @@
           classes: "govuk-label--m",
           isPageHeading: false
         },
-        hint: {
-          text: "We'll use this to send the Overseas Entity ID number, the notice of registration, and any other digital correspondence"
-        },
         id: "email",
         name: "email",
         value: email
       }) }}
+
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              What we'll use this email address for
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p class="govuk-body">We'll use this to send:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>the Overseas Entity ID</li>
+            <li>the notice of registration</li>
+            <li>any other important information</li>
+          </ul>
+          <p>We’ll also send the Overseas Entity ID to the email you used to sign in.</p>
+        </div>
+      </details>
 
       {% set hintText = "For example, limited company" %}
       {% include "includes/inputs/legal-form-input.html" %}

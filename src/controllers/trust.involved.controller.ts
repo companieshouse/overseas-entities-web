@@ -62,9 +62,8 @@ const post = (
           logger.info("Error message and stay in same page ");
     }
     logger.info("For Current story, just re-displays the page (delete this comment and below line once all Trustee pages are done");
-    // the req.params['id'] is already validated in the has.trust.middleware
-    const trustInvolvedUrl = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
-    return res.redirect(trustInvolvedUrl);
+    // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
+    return res.redirect(`${config.TRUST_INVOLVED_URL}/${req.params['id']}`); // NOSONAR
   } catch (error) {
     logger.errorRequest(req, error);
 

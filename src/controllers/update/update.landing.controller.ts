@@ -5,9 +5,8 @@ import * as config from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const landingUrl = config.UPDATE_LANDING_PAGE_URL;
-    logger.debugRequest(req, `Redirecting to ${landingUrl}`);
-    return res.redirect(landingUrl);
+    logger.debugRequest(req, `Redirecting to ${config.UPDATE_LANDING_PAGE_URL}`);
+    return res.redirect(config.UPDATE_LANDING_PAGE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

@@ -30,3 +30,4 @@ export * as trustDetails from "./trust.details.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as updateOverseasEntityDetails from "./update/update.overseas.entity.details.controller";
+// UPDATE controllers

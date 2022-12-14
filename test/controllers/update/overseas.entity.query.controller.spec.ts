@@ -13,14 +13,13 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  OVERSEAS_ENTITY_QUERY_PAGE_TITLE
+  OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
+  OE_NUMBER_FIELD_POPULATED
 } from "../../__mocks__/text.mock";
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
-import { ErrorMessages } from "../../../src/validation/error.messages";
-import { ERROR } from "../../__mocks__/session.mock";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -49,6 +48,15 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
 
+    test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: '12345678' });
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OE_NUMBER_FIELD_POPULATED);
+      expect(mockDeleteApplicationData).not.toHaveBeenCalled();
+    });
+
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
@@ -57,8 +65,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
-
-
 
   describe("POST tests", () => {
     test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
@@ -72,23 +78,11 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test("catch error when posting data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
-        .post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
-      expect(resp.status).toEqual(500);
-    });
-    test("catch error when posting data", async () => {
-      mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL).send({});
-      expect(resp.status).toEqual(500);
-    });
-
-    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with error messages', async () => {
-      const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '' });
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.OE_QUERY_NAME);
-      expect(resp.text).toContain(ErrorMessages.MAX_OE_LENGTH);
+        .send({ oe_number: '12345678' });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

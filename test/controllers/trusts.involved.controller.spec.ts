@@ -12,7 +12,7 @@ import { Params } from 'express-serve-static-core';
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
-import { get, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
+import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
@@ -58,16 +58,15 @@ describe('Trust Involved controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
-    /*
-    describe('POST unit tests', () => {
-      mockReq.body = {
-        id: 'dummyId',
-        typeOfTrustee: 'dummyTrusteeType',
-        noMoreToAdd: 'add',
-      };
 
+    describe('POST unit tests', () => {
 
       test('catch error when post data from page', () => {
+        mockReq.body = {
+          id: 'dummyId',
+          typeOfTrustee: 'dummyTrusteeType',
+          noMoreToAdd: 'add',
+        };
         const error = new Error(ANY_MESSAGE_ERROR);
         (mockRes.redirect as jest.Mock).mockImplementationOnce(() => {
           throw error;
@@ -80,7 +79,7 @@ describe('Trust Involved controller', () => {
       });
 
     });
-    */
+
   });
 
   describe('Endpoint Access tests with supertest', () => {
@@ -97,11 +96,41 @@ describe('Trust Involved controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('successfully access POST method', async () => {
+    test('successfully access POST method with historic Trustee type', async () => {
 
       const resp = await request(app)
         .post(pageUrl)
         .send({ typeOfTrustee: 'historical' });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+    });
+
+    test('successfully access POST method with individual Trustee type', async () => {
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({ typeOfTrustee: 'individual' });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+    });
+
+    test('successfully access POST method with legalEntity Trustee type', async () => {
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({ typeOfTrustee: 'legalEntity' });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+    });
+
+    test('successfully access POST method with unknown Trustee type', async () => {
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({ typeOfTrustee: 'unknown' });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);

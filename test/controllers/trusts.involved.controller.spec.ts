@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
 jest.mock('../../src/middleware/is.feature.enabled.middleware');

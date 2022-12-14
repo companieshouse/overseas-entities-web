@@ -54,7 +54,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ oe_number: '12345678' });
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -75,7 +75,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '12345678' });
+        .send({ oe_number: 'OE123456' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -84,7 +84,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '12345678' });
+        .send({ oe_number: 'OE123456' });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -95,16 +95,17 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
         .send({ oe_number: '' });
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.OE_QUERY_NAME);
-      expect(resp.text).toContain(ErrorMessages.INVALID_OE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.INVALID_OE_NUMBER);
     });
 
     test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message', async () => {
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '123' });
+        .send({ oe_number: 'OE123' });
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.INVALID_OE_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.INVALID_OE_NUMBER);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
     });
   });
 });

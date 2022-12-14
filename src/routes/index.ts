@@ -31,6 +31,7 @@ import {
   accessibilityStatement,
   signOut,
   trustDetails,
+  overseasEntityUpdateDetails,
   resumeSubmission
 } from "../controllers";
 
@@ -59,6 +60,8 @@ router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
+
+router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, overseasEntityUpdateDetails.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);

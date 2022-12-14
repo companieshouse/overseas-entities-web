@@ -47,26 +47,39 @@ const post = (
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
+    // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
 
     switch (typeOfTrustee) {
         case TrusteeTypeChoice.historical:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
+          if (isValidUrl (url) ) {
+
+            return res.redirect(url);
+          }
           break;
         case TrusteeTypeChoice.individual:
-          logger.info("TODO: Route to trust-individual page ");
+          logger.info("TODO: Route to trust-individual page when story coded ");
+          if (isValidUrl (url) ) {
+
+            return res.redirect(url);
+          }
           break;
         case TrusteeTypeChoice.legalEntity:
-          logger.info("TODO: Route to trust-ole page ");
+          logger.info("TODO: Route to trust-ole page when story coded ");
+          if (isValidUrl (url) ) {
+
+            return res.redirect(url);
+          }
           break;
         default:
-          logger.info("Error message and stay in same page ");
+          logger.info("TODO: On validation No trustee selected, re-displaying page");
+          if (isValidUrl (url) ) {
+
+            return res.redirect(url);
+          }
     }
-    logger.info("For Current story, just re-displays the page (delete this comment and below line once all Trustee pages are done");
-    // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
-    if (isValidUrl (url) ) {
-      return res.redirect(url);
-    }
+
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -74,8 +87,10 @@ const post = (
   }
 };
 
-function isValidUrl(url: String) {
+// Required for Sonar rule tssecurity:S5146
+function isValidUrl(url: string) {
   if (url.startsWith(config.TRUST_INVOLVED_URL)) {
+
     return true;
   }
 

@@ -19,7 +19,6 @@ const mapDetailToPage = (
   };
 };
 
-
 const mapBeneficialOwnerToPage = (
   data: Trust.TrustHistoricalBeneficialOwner | undefined,
   index: number,

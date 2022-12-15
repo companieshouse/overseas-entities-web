@@ -124,9 +124,7 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, au
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(
-  config.TRUST_INFO_URL,
-  //   authentication,
-  //   navigation.hasBOsOrMOs,
+  config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,
   trustInformation.get
 );
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);

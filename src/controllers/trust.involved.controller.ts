@@ -88,7 +88,7 @@ const post = (
 
 // Required for Sonar rule tssecurity:S5146 (this will never happen but Sonar can not understand middleware in this case)
 const isValidUrl = (url: string) => {
-  if (url) {
+  if (url.startsWith(config.UPDATE_AN_OVERSEAS_ENTITY_URL)) {
     return true;
   }
 

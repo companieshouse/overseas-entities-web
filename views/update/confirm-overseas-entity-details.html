@@ -26,13 +26,13 @@
         {
           text: "Overseas Entity Name",
           attributes: {
-            "id": "oe_company_name"
+            "id": "oe_entity_name"
           }
         },
         {
-          text: companyData.companyName,
+          text: overseasEntityData.companyName,
           attributes: {
-            "id": "oe_company_name_value"
+            "id": "oe_entity_name_value"
           }
         }
       ],
@@ -40,13 +40,13 @@
         {
           text: "Registered Office Address",
           attributes: {
-            "id": "oe_address"
+            "id": "oe_entity_registered_address"
           }
         },
         {
-          text: "" if companyData.companyName === undefined else companyData.street + " " + companyData.country + " " + companyData.postCode,
+          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.companyAddress.line_1 + " " + overseasEntityData.companyAddress.line_2 + " " + overseasEntityData.companyAddress.country + " " + overseasEntityData.companyAddress.postcode,
           attributes: {
-            "id": "oe_address_value"
+            "id": "oe_entity_address_value"
           }
         }
       ],
@@ -54,13 +54,13 @@
         {
           text: "Registered On",
           attributes: {
-            "id": "oe_registered_date"
+            "id": "oe_entity_registered_date"
           }
         },
         {
-          text: companyData.dateOfCreation,
+          text: overseasEntityData.dateOfCreation,
           attributes: {
-            "id": "oe_registered_date_value"
+            "id": "oe_entity_registered_date_value"
           }
         }
       ]

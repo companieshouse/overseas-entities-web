@@ -31,9 +31,9 @@ import {
   accessibilityStatement,
   signOut,
   resumeSubmission,
-  confirmOverseasCompanyDetails,
+  confirmOverseasEntityDetails,
+  updateOverseasEntityReview,
   updateOverseasEntityDetails,
-  overseasEntityUpdateDetails,
   trustDetails
 } from "../controllers";
 
@@ -65,7 +65,8 @@ router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFi
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
-router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, overseasEntityUpdateDetails.get);
+router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.post);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
@@ -129,10 +130,10 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 //  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.get);
-router.post(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL, authentication, confirmOverseasCompanyDetails.post);
+router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
 
-router.get(config.UPDATE_AN_OVERSEAS_ENTITY_URL, authentication, updateOverseasEntityDetails.get);
+router.get(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL, authentication, updateOverseasEntityReview.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 
@@ -155,5 +156,11 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMO
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
+
+// Routes for UPDATE journey
+router.get(config.UPDATE_LANDING_URL, updateLanding.get);
+
+router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
 
 export default router;

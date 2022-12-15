@@ -5,10 +5,6 @@ export interface ICompanyDetails {
     companyType?: string;
     jurisdiction?: string;
     companyNumber?: string;
-    addressLine1?: string;
-    country?: string;
-    postCode?: string;
-    street?: string;
     companyAddress?: Address;
 }
 

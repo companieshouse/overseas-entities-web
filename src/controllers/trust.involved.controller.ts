@@ -22,6 +22,9 @@ const get = (
       {
         backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['id']}`,
         templateName,
+        pageData: {
+          trusteeType: TrusteeType,
+        },
         pageParams: {
           title: TRUST_INVOLVED_TEXTS.title,
           checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
@@ -51,21 +54,21 @@ const post = (
     const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
 
     switch (typeOfTrustee) {
-        case TrusteeType.historical:
+        case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           if (isValidUrl (url) ) {
 
             return res.redirect(url);
           }
           break;
-        case TrusteeType.individual:
+        case TrusteeType.INDIVIDUAL:
           logger.info("TODO: Route to trust-individual page when story coded ");
           if (isValidUrl (url) ) {
 
             return res.redirect(url);
           }
           break;
-        case TrusteeType.legalEntity:
+        case TrusteeType.LEGAL_ENTITY:
           logger.info("TODO: Route to trust-ole page when story coded ");
           if (isValidUrl (url) ) {
 
@@ -96,7 +99,6 @@ function isValidUrl(url: string) {
 
   return false;
 }
-
 
 export {
   get,

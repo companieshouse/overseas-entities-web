@@ -1,7 +1,7 @@
 export const TrusteeTypeKey = "trustee_type";
 
 export enum TrusteeType {
-    historical = "historical",
-    individual = "individual",
-    legalEntity = "legalEntity",
+    HISTORICAL = "historical",
+    INDIVIDUAL = "individual",
+    LEGAL_ENTITY = "legalEntity",
 }

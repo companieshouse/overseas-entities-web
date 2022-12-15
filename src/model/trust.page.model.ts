@@ -1,3 +1,5 @@
+import { TrusteeType } from "./trustee.type.model";
+
 type TrustDetails = {
   id: string;
   name: string;
@@ -21,7 +23,16 @@ type TrustBeneficialOwner = {
   notifiedDateYear: string;
 };
 
+type TrustWhoIsInvolved = {
+  id: string;
+  trustName: string;
+  typeOfTrustee?: TrusteeType;
+};
+
+
+
 export {
   TrustDetails,
   TrustBeneficialOwner,
+  TrustWhoIsInvolved
 };

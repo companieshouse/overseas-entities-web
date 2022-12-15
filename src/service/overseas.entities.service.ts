@@ -83,3 +83,19 @@ export const getOverseasEntity = async (
 
   return response.resource;
 };
+
+// AKDEBUG added temporarily
+export const getCompanyRequest = async (
+  req: Request,
+  oeNumber: string,
+): Promise<ApplicationData> => {
+  const response = await makeApiCallWithRetry(
+    "companyProfile",
+    "getCompanyProfile",
+    req,
+    req.session as Session,
+    oeNumber,
+  );
+  logger.debugRequest(req, `AKDEBUG Overseas Entity Retrieved - ${oeNumber}`);
+  return response.resource;
+};

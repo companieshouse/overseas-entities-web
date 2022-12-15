@@ -8,6 +8,7 @@ import { OeNumberKey } from "../../model/data.types.model";
 
 import { Entity } from "../../model/entity.model";
 import { EntityKey } from "../../model/entity.model";
+import { getCompanyRequest } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
@@ -35,14 +36,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const oeNumber = req.body[OeNumberKey];
 
-
     // AKDEBUG create submission inside transaction
     // For ROE API disable validation by setting feature flag to false in docker compose file:
     //  - FEATURE_FLAG_ENABLE_VALIDATION_25082022=false
-    const data: Entity = {
-      name: 'Test OE ' + oeNumber,
-      registration_number: oeNumber
-    };
+
+    // AKDEBUG block 0 lookup entity
+    logger.info("AKDEBUG lookup " + oeNumber);
+    const companyDataResponse = await getCompanyRequest(req, oeNumber);
+    if (!companyDataResponse){
+      logger.info("AKDEBUG OE not found " + oeNumber);
+      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
+    }
+
+    logger.info("AKDEBUG found overseas entity");
+    const data: Entity = mapCompanyProfileToEntity(companyDataResponse);
 
     // AKDEBUG block 1 open
     const session = req.session as Session;
@@ -85,4 +92,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+
+export const mapCompanyProfileToEntity = (data: any): Entity => {
+  return {
+    name: data?.companyName,
+    registration_number: data?.companyNumber,
+  };
 };

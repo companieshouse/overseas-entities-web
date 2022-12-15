@@ -18,7 +18,7 @@ import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.inv
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_INVOLVED_URL } from '../../src/config';
+import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL } from '../../src/config';
 
 
 describe('Trust Involved controller', () => {
@@ -140,6 +140,17 @@ describe('Trust Involved controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(hasTrust).toBeCalledTimes(1);
+    });
+
+    test('no more to add button goes to the Check your answers page', async () => {
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({ noMoreToAdd: 'noMoreToAdd' });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
       expect(hasTrust).toBeCalledTimes(1);
     });
 

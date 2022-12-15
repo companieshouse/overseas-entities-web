@@ -91,14 +91,14 @@ const post = (
 };
 
 // Required for Sonar rule tssecurity:S5146
-function isValidUrl(url: string) {
+const isValidUrl = (url: string) => {
   if (url.startsWith(config.TRUST_INVOLVED_URL)) {
 
     return true;
   }
 
-  return false;
-}
+  throw new Error('Security failure with URL');
+};
 
 export {
   get,

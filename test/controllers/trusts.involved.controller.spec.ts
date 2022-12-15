@@ -18,9 +18,7 @@ import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.inv
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_INVOLVED_URL } from '../../src/config';
-// import { getApplicationData} from "../../src/utils/application.data";
-// import { APPLICATION_DATA_WITH_TRUST_ID_MOCK } from '../__mocks__/session.mock';
+import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL } from '../../src/config';
 
 
 describe('Trust Involved controller', () => {
@@ -98,6 +96,7 @@ describe('Trust Involved controller', () => {
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(TRUST_INVOLVED_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(hasTrust).toBeCalledTimes(1);
     });
 
     test('successfully access POST method with historic Trustee type', async () => {
@@ -108,6 +107,7 @@ describe('Trust Involved controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(hasTrust).toBeCalledTimes(1);
     });
 
     test('successfully access POST method with individual Trustee type', async () => {
@@ -118,6 +118,7 @@ describe('Trust Involved controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(hasTrust).toBeCalledTimes(1);
     });
 
     test('successfully access POST method with legalEntity Trustee type', async () => {
@@ -128,6 +129,7 @@ describe('Trust Involved controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(hasTrust).toBeCalledTimes(1);
     });
 
     test('successfully access POST method with unknown Trustee type', async () => {
@@ -138,33 +140,20 @@ describe('Trust Involved controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(hasTrust).toBeCalledTimes(1);
     });
 
-  });
-
-  /*
-  describe('Verify endpoint and has Trust Middleware integration with supertest', () => {
-
-    beforeEach(() => {
-      (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-    });
-
-    test('successfully access POST method with historic Trustee type', async () => {
-
-      (getApplicationData as jest.Mock).mockReturnValue(
-        APPLICATION_DATA_WITH_TRUST_ID_MOCK
-      );
-
-      jest.setTimeout(50000);
+    test('no more to add button goes to the Check your answers page', async () => {
 
       const resp = await request(app)
         .post(pageUrl)
-        .send({ typeOfTrustee: 'historical' });
+        .send({ noMoreToAdd: 'noMoreToAdd' });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
+      expect(hasTrust).toBeCalledTimes(1);
     });
+
   });
-  */
 
 });

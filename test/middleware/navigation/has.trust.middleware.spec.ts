@@ -1,4 +1,6 @@
 jest.mock(".../../../src/utils/application.data");
+jest.mock("ioredis");
+
 import { Request, Response } from "express";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { logger } from "../../../src/utils/logger";

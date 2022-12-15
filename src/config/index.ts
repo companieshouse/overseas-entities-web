@@ -70,7 +70,7 @@ export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 export const SIGN_OUT_PAGE = "sign-out";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
-
+export const UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE = "update-overseas-entity-details";
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
 export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
@@ -78,6 +78,7 @@ export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
 export const OVERSEAS_ENTITY_UPDATE_DETAILS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
+export const UPDATE_OVERSEAS_ENTRY_DETAILS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE;
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
 export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;

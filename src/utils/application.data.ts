@@ -14,6 +14,7 @@ import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../model/managing.officer.model';
+import { ICompanyDetails } from 'model/company.profile.model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -96,4 +97,18 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
   if (errorIfNotFound) {
     throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
+};
+
+export const mapOverseasEntityToDTO = (data: any): ICompanyDetails => {
+  return {
+    companyName: data?.companyName,
+    companyType: data?.type,
+    companyNumber: data?.companyNumber,
+    companyAddress: data?.registered_office_address,
+    dateOfCreation: data?.dateOfCreation,
+    jurisdiction: data?.jurisdiction,
+    street: data?.registeredOfficeAddress.addressLineOne,
+    country: data?.registeredOfficeAddress.addressLineTwo,
+    postCode: data?.registeredOfficeAddress.postalCode,
+  };
 };

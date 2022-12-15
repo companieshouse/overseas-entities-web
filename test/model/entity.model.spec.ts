@@ -12,6 +12,8 @@ describe("ENTITY model", () => {
   const entityDataKeys = Object.keys(appData.entity as Entity);
 
   test("ENTITY keys to be equal to EntityKeys object", () => {
+    console.log(`keys ${entityDataKeys}`);
+    console.log(`ekeys ${EntityKeys}`);
     expect(entityDataKeys).toEqual(EntityKeys);
   });
   test("HasSameAddressKey is a ENTITY key", () => {

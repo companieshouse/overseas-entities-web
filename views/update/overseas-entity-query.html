@@ -3,12 +3,11 @@
 {% set title = "What is the OE number? (NOT LIVE)" %}
 
 {% block pageTitle %}
-    {% include "includes/page-title.html" %}
+{% include "includes/page-title.html" %}
 {% endblock %}
 
-{% block beforeContent %}
-  {% include "includes/phase_banner.html" %}
-  {% include "includes/no-back-link.html" %}
+{% block backLink %}
+{% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
@@ -16,19 +15,16 @@
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <h1 class="govuk-heading-xl">{{title}}</h1>
+        {% include "includes/list/errors.html" %}
+        <h1 class="govuk-heading-xl">What is the OE number? (NOT LIVE)</h1>
 
         <form method="post">
 
             {{ govukInput({
-                label: {
-                    text: title,
-                    isPageHeading: false,
-                    classes: "govuk-visually-hidden"
-                },
-                id: "oe_number",
-                name: "oe_number",
-                value: oe_number
+            errorMessage: errors.oe_number if errors,
+            id: "oe_number",
+            name: "oe_number",
+            value: oe_number
             }) }}
 
             {% include "includes/continue-button.html" %}

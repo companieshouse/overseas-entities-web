@@ -5,16 +5,16 @@ import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
 import { Session } from "@companieshouse/node-session-handler";
 
-
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `GET ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
-    return res.render(config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE, {
-      templateName: config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE,
+    const backLinkUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
+
+    return res.render(config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE, {
+      templateName: config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE,
       backLinkUrl,
       appData
     });
@@ -26,9 +26,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `POST ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE}`);
 
-    // return res.redirect(config.); //where to redirect?
+    // return res.redirect(config.); //redirect to update overseas entity page
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

@@ -20,7 +20,7 @@
   {% endif %}
 {% endset %}
 
-<h2 class="govuk-heading-l">Update overseas entity details (NOT LIVE)</h2>
+<h2 class="govuk-heading-l">Overseas entity details</h2>
 
 {{ govukSummaryList({
     rows: [
@@ -32,8 +32,9 @@
           text: appData.entity.name
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_NAME,
+          items: [ CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.NAME,
             "Name of the overseas entity",
             "change-entity-name-button"
           ) ]
@@ -47,8 +48,9 @@
           text: appData.entity.incorporation_country
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_COUNTRY,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.INCORPORATION_COUNTRY,
             "Country it was formed in",
             "change-entity-incorporation-country-button"
           ) ]
@@ -62,8 +64,9 @@
           html: formattedPrincipalAddressHtml
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Principal or registered office address",
             "change-entity-principal-address-button"
           ) ]
@@ -77,8 +80,9 @@
           html: formattedServiceAddressHtml
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
             "Correspondence address",
             "change-entity-correspondence-address-button"
           ) ]
@@ -92,8 +96,9 @@
           text: appData.entity.email
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_EMAIL,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.EMAIL,
             "Email address at the overseas entity should we send communications to",
             "change-entity-email-button"
           ) ]
@@ -107,8 +112,9 @@
           text: appData.entity.legal_form
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_LEGAL_FORM,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.LEGAL_FORM,
             "Legal form",
             "change-entity-legal-form-button"
           ) ]
@@ -122,8 +128,9 @@
           text: appData.entity.law_governed
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_GOVERNING_LAW,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.LAW_GOVERNED,
             "Governing law",
             "change-entity-governing-law-button"
           ) ]
@@ -137,8 +144,9 @@
           text: formattedPublicRegister
         },
         actions: {
-          items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.UPDATE_ENTITY_CHANGE_PUBLIC_REGISTER,
+          items: [CREATE_UPDATE_CHANGE_LINK(
+            OE_CONFIGS.UPDATE_ENTITY_URL,
+            OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
             "Already on a public register in the country it was formed in",
             "change-entity-public-register-button"
           )]

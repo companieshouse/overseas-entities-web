@@ -61,7 +61,7 @@ describe("Confirm company data", () => {
       expect(resp.text).toContain(CHANGE_COMPANY_TEST);
     });
 
-    test(`redirect to the ${config.UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE} page`, async () => {
+    test(`redirect to the ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
       const resp = await request(app).post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);

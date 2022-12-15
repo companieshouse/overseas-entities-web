@@ -19,7 +19,7 @@ import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
 import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL } from '../../src/config';
-
+import { TrusteeType } from '../../src/model/trustee.type.model';
 
 describe('Trust Involved controller', () => {
 
@@ -103,7 +103,7 @@ describe('Trust Involved controller', () => {
 
       const resp = await request(app)
         .post(pageUrl)
-        .send({ typeOfTrustee: 'historical' });
+        .send({ typeOfTrustee: TrusteeType.HISTORICAL });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
@@ -114,7 +114,7 @@ describe('Trust Involved controller', () => {
 
       const resp = await request(app)
         .post(pageUrl)
-        .send({ typeOfTrustee: 'individual' });
+        .send({ typeOfTrustee: TrusteeType.INDIVIDUAL });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
@@ -125,7 +125,7 @@ describe('Trust Involved controller', () => {
 
       const resp = await request(app)
         .post(pageUrl)
-        .send({ typeOfTrustee: 'legalEntity' });
+        .send({ typeOfTrustee: TrusteeType.LEGAL_ENTITY });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
@@ -153,7 +153,6 @@ describe('Trust Involved controller', () => {
       expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
       expect(hasTrust).toBeCalledTimes(1);
     });
-
   });
 
 });

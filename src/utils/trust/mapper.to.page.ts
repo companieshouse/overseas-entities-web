@@ -20,19 +20,6 @@ const mapDetailToPage = (
 };
 
 
-const mapTrustWhoIsInvolvedToPage = (
-  data: Trust.Trust | undefined,
-): Page.TrustWhoIsInvolved => {
-  if (!data) {
-    return {} as Page.TrustWhoIsInvolved;
-  }
-
-  return {
-    id: data.trust_id,
-    trustName: data.trust_name,
-  };
-};
-
 const mapBeneficialOwnerToPage = (
   data: Trust.TrustHistoricalBeneficialOwner | undefined,
   index: number,
@@ -58,5 +45,4 @@ const mapBeneficialOwnerToPage = (
 export {
   mapDetailToPage,
   mapBeneficialOwnerToPage,
-  mapTrustWhoIsInvolvedToPage
 };

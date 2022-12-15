@@ -90,14 +90,14 @@ const post = (
   }
 };
 
-// Required for Sonar rule tssecurity:S5146
+// Required for Sonar rule tssecurity:S5146 (this will never happen but Sonar can not understand middleware in this case)
 const isValidUrl = (url: string) => {
   if (url.startsWith(config.TRUST_INVOLVED_URL)) {
 
     return true;
   }
 
-  throw new Error('Security failure with URL');
+  throw new Error('Security failure with URL ' + url);
 };
 
 export {

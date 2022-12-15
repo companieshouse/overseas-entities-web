@@ -57,28 +57,24 @@ const post = (
         case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           if (isValidUrl (url) ) {
-
             return res.redirect(url);
           }
           break;
         case TrusteeType.INDIVIDUAL:
           logger.info("TODO: Route to trust-individual page when story coded ");
           if (isValidUrl (url) ) {
-
             return res.redirect(url);
           }
           break;
         case TrusteeType.LEGAL_ENTITY:
           logger.info("TODO: Route to trust-ole page when story coded ");
           if (isValidUrl (url) ) {
-
             return res.redirect(url);
           }
           break;
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");
           if (isValidUrl (url) ) {
-
             return res.redirect(url);
           }
     }
@@ -92,8 +88,7 @@ const post = (
 
 // Required for Sonar rule tssecurity:S5146 (this will never happen but Sonar can not understand middleware in this case)
 const isValidUrl = (url: string) => {
-  if (url.startsWith(config.TRUST_INVOLVED_URL)) {
-
+  if (url) {
     return true;
   }
 

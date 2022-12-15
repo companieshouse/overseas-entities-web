@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { TrusteeTypeChoice } from '../model/trustee.type.model';
+import { TrusteeType } from '../model/trustee.type.model';
 import * as config from '../config';
 import { logger } from '../utils/logger';
 
@@ -51,21 +51,21 @@ const post = (
     const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
 
     switch (typeOfTrustee) {
-        case TrusteeTypeChoice.historical:
+        case TrusteeType.historical:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           if (isValidUrl (url) ) {
 
             return res.redirect(url);
           }
           break;
-        case TrusteeTypeChoice.individual:
+        case TrusteeType.individual:
           logger.info("TODO: Route to trust-individual page when story coded ");
           if (isValidUrl (url) ) {
 
             return res.redirect(url);
           }
           break;
-        case TrusteeTypeChoice.legalEntity:
+        case TrusteeType.legalEntity:
           logger.info("TODO: Route to trust-ole page when story coded ");
           if (isValidUrl (url) ) {
 

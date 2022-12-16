@@ -32,7 +32,8 @@ import {
   signOut,
   trustDetails,
   trustInvolved,
-  resumeSubmission
+  trustHistoricalbeneficialOwner,
+  resumeSubmission,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -147,6 +148,15 @@ router
   )
   .get(trustInvolved.get)
   .post(trustInvolved.post);
+
+router.get(
+  config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
+  // authentication,
+  // navigation.hasBOsOrMOs,
+  // ...validator.trustInformation,
+  // checkTrustValidations,
+  trustHistoricalbeneficialOwner.get
+);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

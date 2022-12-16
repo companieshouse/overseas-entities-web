@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% set title = "Historical beneficial owner" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <form class="form" method="post">
+        {% set fieldParam = {
+          name: 'name',
+          label: 'What is the beneficial owner’s name?',
+          value: pageData.name,
+          error: errors.name
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'createdDate',
+          label: 'When did they become a beneficial owner?',
+          hint: 'For example, 27 3 2007',
+          error: errors.createdDate,
+          value: {
+            'Day': pageData.createdDateDay,
+            'Month': pageData.createdDateMonth,
+            'Year': pageData.createdDateYear
+          }
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {% set fieldParam = {
+          name: 'createdDate',
+          label: 'When did they stop being a beneficial owner?',
+          hint: 'For example, 28 5 2011',
+          error: errors.createdDate,
+          value: {
+            'Day': pageData.createdDateDay,
+            'Month': pageData.createdDateMonth,
+            'Year': pageData.createdDateYear
+          }
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">Information shown on the public register</h2>
+            <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

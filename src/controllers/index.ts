@@ -26,6 +26,7 @@ export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning
 export * as signOut from "./sign.out.controller";
 export * as trustDetails from "./trust.details.controller";
 export * as trustInvolved from "./trust.involved.controller";
+export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.owner.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";

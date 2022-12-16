@@ -34,10 +34,11 @@ const get = (
       {
         backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['id']}`,
         templateName,
-        pageData: pageData,
+        pageData,
         pageParams: {
           title: TRUST_INVOLVED_TEXTS.title,
           checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
+          trusteeType: TrusteeType,
         },
       },
     );

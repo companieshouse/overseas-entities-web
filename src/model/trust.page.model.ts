@@ -26,10 +26,8 @@ type TrustBeneficialOwner = {
 type TrustWhoIsInvolved = {
   id: string;
   trustName: string;
-  typeOfTrustee?: TrusteeType;
+  trusteeType?: TrusteeType;
 };
-
-
 
 export {
   TrustDetails,

@@ -2,6 +2,11 @@ import { NextFunction, Request, Response } from 'express';
 import { TrusteeType } from '../model/trustee.type.model';
 import * as config from '../config';
 import { logger } from '../utils/logger';
+import { ApplicationData } from '../model/application.model';
+import { getApplicationData } from '../utils/application.data';
+import { TrustKey } from '../model/trust.model';
+import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.Is.Involved.mapper';
+import * as PageModel from '../model/trust.page.model';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -15,6 +20,13 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+    // Get current Trust from session and map to page data
+    const trustId = req.params["id"];
+    const appData: ApplicationData = getApplicationData(req.session);
+    const pageData: PageModel.TrustWhoIsInvolved = mapTrustWhoIsInvolvedToPage(
+      appData[TrustKey]?.find(trust => trust.trust_id === trustId),
+    );
+
     const templateName = config.TRUST_INVOLVED_PAGE;
 
     return res.render(
@@ -22,9 +34,7 @@ const get = (
       {
         backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['id']}`,
         templateName,
-        pageData: {
-          trusteeType: TrusteeType,
-        },
+        pageData: pageData,
         pageParams: {
           title: TRUST_INVOLVED_TEXTS.title,
           checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,

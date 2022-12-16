@@ -25,6 +25,7 @@ import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__
 
 
 describe('Trust Involved controller', () => {
+  const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = TRUST_INVOLVED_URL + "/" + trustId;
@@ -54,7 +55,7 @@ describe('Trust Involved controller', () => {
 
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      (mockRes.render as jest.Mock).mockImplementationOnce(() => {
+      mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
@@ -94,7 +95,6 @@ describe('Trust Involved controller', () => {
     });
 
     test(`successfully access GET method`, async () => {
-      const mockGetApplicationData = getApplicationData as jest.Mock;
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
 
       const resp = await request(app).get(pageUrl);

@@ -5,7 +5,7 @@ import { logger } from '../utils/logger';
 import { ApplicationData } from '../model/application.model';
 import { getApplicationData } from '../utils/application.data';
 import { TrustKey } from '../model/trust.model';
-import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.iss.Involved.mapper';
+import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import * as PageModel from '../model/trust.page.model';
 
 const TRUST_INVOLVED_TEXTS = {

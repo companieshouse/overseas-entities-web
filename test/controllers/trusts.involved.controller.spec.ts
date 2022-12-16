@@ -20,10 +20,14 @@ import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
 import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { TrusteeType } from '../../src/model/trustee.type.model';
+import { getApplicationData } from '../../src/utils/application.data';
+import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
+
 
 describe('Trust Involved controller', () => {
+  const mockGetApplicationData = getApplicationData as jest.Mock;
 
-  const trustId = "725";
+  const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = TRUST_INVOLVED_URL + "/" + trustId;
 
   let mockReq = {} as Request;
@@ -51,7 +55,7 @@ describe('Trust Involved controller', () => {
 
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
-      (mockRes.render as jest.Mock).mockImplementationOnce(() => {
+      mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
@@ -91,10 +95,13 @@ describe('Trust Involved controller', () => {
     });
 
     test(`successfully access GET method`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_WITH_TRUST_ID_MOCK);
+
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(TRUST_INVOLVED_TEXTS.title);
+      expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(hasTrust).toBeCalledTimes(1);
     });

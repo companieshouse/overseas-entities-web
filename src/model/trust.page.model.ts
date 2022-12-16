@@ -1,5 +1,3 @@
-import { TrusteeType } from "./trustee.type.model";
-
 type TrustDetails = {
   id: string;
   name: string;
@@ -26,13 +24,10 @@ type TrustBeneficialOwner = {
 type TrustWhoIsInvolved = {
   id: string;
   trustName: string;
-  typeOfTrustee?: TrusteeType;
 };
-
-
 
 export {
   TrustDetails,
   TrustBeneficialOwner,
-  TrustWhoIsInvolved
+  TrustWhoIsInvolved,
 };

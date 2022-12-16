@@ -19,21 +19,25 @@
       <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out identity checks</h1>
 
       <form method="post">
-        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’" %}
+        {% set identityDateLabelText = "When were the identity checks completed? (optional)" %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is their name?" %}
         {% set nameFieldTextHint = "Enter the company name, or the name of the person if they are self-employed" %}
         {% include "includes/inputs/fields/identity-name-input.html" %}
 
+        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’" %}
         {% include "includes/inputs/address/identity-address-input.html" %}
 
         {% set emailFieldText = "What is their email address?" %}
         {% include "includes/inputs/fields/email-input.html" %}
 
+        {% set supervisoryNameLabelText = "What is the name of the supervisory body? (optional)"%}
         {% include "includes/inputs/fields/supervisory-name-input.html" %}
+
         {% include "includes/inputs/fields/aml-number-input.html" %}
 
+        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for identity checks? (optional)" %}
         {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance" %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 

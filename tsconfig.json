@@ -9,7 +9,7 @@
     "baseUrl": "./src",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "strictNullChecks": true,
+    "strictNullChecks": false,
     "esModuleInterop": true,
     "resolveJsonModule": true
   },

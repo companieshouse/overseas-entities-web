@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { v4 as uuidv4 } from 'uuid';
 import { Session } from "@companieshouse/node-session-handler";
-import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import ApiClient from "../api/client"; // import ApiClient from "@companieshouse/api-sdk-node/dist/client";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 
 import { createAndLogErrorRequest, logger } from "../utils/logger";

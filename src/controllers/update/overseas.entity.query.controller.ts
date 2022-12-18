@@ -43,7 +43,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     // AKDEBUG block 0 lookup entity
     logger.info("AKDEBUG lookup " + oeNumber);
     const companyDataResponse = await getCompanyRequest(req, oeNumber);
-    if (!companyDataResponse){
+    if (!companyDataResponse) {
       logger.info("AKDEBUG OE not found " + oeNumber);
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
@@ -51,39 +51,41 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("AKDEBUG found overseas entity");
     const data: Entity = mapCompanyProfileToEntity(companyDataResponse);
 
-    // AKDEBUG block 1 open
-    const session = req.session as Session;
-    setApplicationData(session, data, EntityKey);
+    if (true) {
+      // AKDEBUG block 1 open
+      const session = req.session as Session;
+      setApplicationData(session, data, EntityKey);
 
-    logger.info("AKDEBUG open transaction");
+      logger.info("AKDEBUG open transaction");
 
-    const appData: ApplicationData = getApplicationData(session);
-    const transactionID = await postTransaction(req, session);
-    appData[Transactionkey] = transactionID;
-    setExtraData(session, appData);
-
-    // AKDEBUG block 2 save doc
-    logger.info("AKDEBUG save submission");
-
-    try {
-      const overseasEntityID = await createOverseasEntity(req, session, transactionID);
-      appData[OverseasEntityKey] = overseasEntityID;
+      const appData: ApplicationData = getApplicationData(session);
+      const transactionID = await postTransaction(req, session);
+      appData[Transactionkey] = transactionID;
       setExtraData(session, appData);
-    } catch (error) {
-      appData[OverseasEntityKey] = "";
-      logger.info("AKDEBUG save failed");
-      logger.errorRequest(req, error);
-    }
 
-    // AKDEBUG block 3 close transaction
-    logger.info("AKDEBUG close transaction");
-    const appData2: ApplicationData = getApplicationData(session);
-    const transactionID2 = appData2[Transactionkey] as string;
-    const overseasEntityID2 = appData2[OverseasEntityKey] as string;
-    const transactionClosedResponse = await closeTransaction(req, session, transactionID2, overseasEntityID2);
-    logger.infoRequest(req, `AKDEBUG Transaction Closed, ID: ${transactionID}`);
-    logger.info("close status" + transactionClosedResponse.httpStatusCode.toString());
-    // AKDBUG end
+      // AKDEBUG block 2 save doc
+      logger.info("AKDEBUG save submission");
+
+      try {
+        const overseasEntityID = await createOverseasEntity(req, session, transactionID);
+        appData[OverseasEntityKey] = overseasEntityID;
+        setExtraData(session, appData);
+      } catch (error) {
+        appData[OverseasEntityKey] = "";
+        logger.info("AKDEBUG save failed");
+        logger.errorRequest(req, error);
+      }
+
+      // AKDEBUG block 3 close transaction
+      logger.info("AKDEBUG close transaction");
+      const appData2: ApplicationData = getApplicationData(session);
+      const transactionID2 = appData2[Transactionkey] as string;
+      const overseasEntityID2 = appData2[OverseasEntityKey] as string;
+      const transactionClosedResponse = await closeTransaction(req, session, transactionID2, overseasEntityID2);
+      logger.infoRequest(req, `AKDEBUG Transaction Closed, ID: ${transactionID}`);
+      logger.info("close status" + transactionClosedResponse.httpStatusCode.toString());
+      // AKDBUG end
+    }
 
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
     return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);

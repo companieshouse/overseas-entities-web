@@ -13,7 +13,10 @@ import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model"
 import { Session } from "@companieshouse/node-session-handler";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
 import { closeTransaction, postTransaction } from "../../service/transaction.service";
+import { CompanyProfile } from "../../api/services/company-profile";
+import { yesNoResponse } from "api/services/overseas-entities";
 
+const DEMO_SAVE = false;
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -51,7 +54,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("AKDEBUG found overseas entity");
     const data: Entity = mapCompanyProfileToEntity(companyDataResponse);
 
-    if (true) {
+    logger.info("AKDEBUG Entity governed by " + data.law_governed);
+    // logger.info("AKDEBUG service address 1 " + data.service_address.line_1);
+    // logger.info("AKDEBUG registered office address 1 " + data.principal_address.line_1);
+
+    if (DEMO_SAVE) {
       // AKDEBUG block 1 open
       const session = req.session as Session;
       setApplicationData(session, data, EntityKey);
@@ -97,8 +104,38 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const mapCompanyProfileToEntity = (data: any): Entity => {
+  const cp: CompanyProfile = data as CompanyProfile;
   return {
-    name: data?.companyName,
-    registration_number: data?.companyNumber,
+    name: cp.companyName,
+    registration_number: cp.companyNumber,
+    law_governed: cp.foreignCompanyDetails?.governedBy,
+    legal_form: cp.foreignCompanyDetails?.legalForm
+    
+    /* ,
+    incorporation_country: cp.foreignCompanyDetails?.originatingRegistry?.country,
+    is_service_address_same_as_principal_address: yesNoResponse.No,
+    email: "",
+    principal_address: {
+      property_name_number: "",
+      line_1: "",
+      line_2: "",
+      town: "",
+      county: "",
+      country: "",
+      postcode: ""
+    },
+    service_address: {
+      property_name_number: "",
+      line_1: "",
+      line_2: "",
+      town: "",
+      county: "",
+      country: "",
+      postcode: "",
+    },
+    public_register_name: cp.foreignCompanyDetails?.originatingRegistry.name,
+    public_register_jurisdiction: cp.foreignCompanyDetails?.originatingRegistry.country,
+    is_on_register_in_country_formed_in: yesNoResponse.No 
+    */
   };
 };

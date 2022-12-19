@@ -36,6 +36,7 @@ import { isSecureRegister } from "../../src/middleware/navigation/is.secure.regi
 import { postTransaction } from "../../src/service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../../src/service/overseas.entities.service";
 import { EntityNameKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
+import { ErrorMessages } from '../../src/validation/error.messages';
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
@@ -127,6 +128,39 @@ describe("Overseas Name controller", () => {
       expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${PRESENTER_URL}`);
+    });
+
+    test(`renders the current page with ${ErrorMessages.ENTITY_NAME} error messages`, async () => {
+      const resp = await request(app)
+        .post(OVERSEAS_NAME_URL)
+        .send({ [EntityNameKey]: " ".repeat(161) });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
+    });
+
+    test(`renders the current page with ${ErrorMessages.MAX_NAME_LENGTH} error messages`, async () => {
+      const resp = await request(app)
+        .post(OVERSEAS_NAME_URL)
+        .send({ [EntityNameKey]: "Д".repeat(161) });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
+      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
+    });
+
+    test(`renders the current page with ${ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS} error messages`, async () => {
+      const resp = await request(app)
+        .post(OVERSEAS_NAME_URL)
+        .send({ [EntityNameKey]: "Дракон" });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
     });
 
     test(`catch error when post data from ${OVERSEAS_NAME_PAGE} page`, async () => {

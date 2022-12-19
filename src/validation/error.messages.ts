@@ -134,5 +134,5 @@ export enum ErrorMessages {
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
-  INVALID_OE_NUMBER = "OE number must be 8 characters",
+  INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
 }

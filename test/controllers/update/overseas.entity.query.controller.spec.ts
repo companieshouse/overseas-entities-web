@@ -34,6 +34,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const htmlDecodedString = "OE number must be &quot;OE&quot; followed by 6 digits";
 
 describe("OVERSEAS ENTITY QUERY controller", () => {
 
@@ -96,7 +97,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .send({ oe_number: '' });
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
-      expect(resp.text).toContain(ErrorMessages.INVALID_OE_NUMBER);
+      expect(resp.text).toContain(htmlDecodedString);
     });
 
     test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message', async () => {
@@ -104,7 +105,16 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
         .send({ oe_number: 'OE123' });
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.INVALID_OE_NUMBER);
+      expect(resp.text).toContain(htmlDecodedString);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+    });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message when input contains EO', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: 'EO123456' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(htmlDecodedString);
       expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
     });
   });

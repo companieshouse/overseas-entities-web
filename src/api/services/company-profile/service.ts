@@ -50,7 +50,6 @@ export default class CompanyProfileService {
         const roa = body.registered_office_address as RegisteredOfficeAddressResource;
         const serviceAddress = body.service_address as ServiceAddressResource;
 
-        logger.info("AKDEBUG service adress line 1" + serviceAddress?.address_line_1);
         const acc = body.accounts as AccountsResource;
 
         const nextAccs = acc?.next_accounts as NextAccountsResource;
@@ -58,9 +57,6 @@ export default class CompanyProfileService {
         const confirmationStatement = body.confirmation_statement as ConfirmationStatementResource;
 
         const foreignCompanyDetails = body.foreign_company_details as ForeignCompanyDetailsResource;
-        const originatingRegistry = foreignCompanyDetails?.originating_registry;
-
-        logger.info("AKDEBUG fcd governed by" + foreignCompanyDetails?.governed_by);
 
         const links = body.links as LinksResource;
 

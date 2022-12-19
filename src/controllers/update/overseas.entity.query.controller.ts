@@ -16,7 +16,7 @@ import { closeTransaction, postTransaction } from "../../service/transaction.ser
 import { CompanyProfile } from "../../api/services/company-profile";
 import { yesNoResponse } from "api/services/overseas-entities";
 
-const DEMO_SAVE = false;
+const DEMO_SAVE = true;
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -52,16 +52,16 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     logger.info("AKDEBUG found overseas entity");
-    const data: Entity = mapCompanyProfileToEntity(companyDataResponse);
+    const entity: Entity = mapCompanyProfileToEntity(companyDataResponse as CompanyProfile);
 
-    logger.info("AKDEBUG Entity governed by " + data.law_governed);
-    logger.info("AKDEBUG service address 1 " + data.service_address.line_1);
-    logger.info("AKDEBUG registered office address 1 " + data.principal_address.line_1);
+    logger.info("AKDEBUG Entity governed by " + entity.law_governed);
+    logger.info("AKDEBUG service address 1 " + entity.service_address.line_1);
+    logger.info("AKDEBUG registered office address 1 " + entity.principal_address.line_1);
 
     if (DEMO_SAVE) {
       // AKDEBUG block 1 open
       const session = req.session as Session;
-      setApplicationData(session, data, EntityKey);
+      setApplicationData(session, entity, EntityKey);
 
       logger.info("AKDEBUG open transaction");
 
@@ -103,8 +103,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const mapCompanyProfileToEntity = (data: any): Entity => {
-  const cp: CompanyProfile = data as CompanyProfile;
+export const mapCompanyProfileToEntity = (cp : CompanyProfile): Entity => {
   return {
     name: cp.companyName,
     registration_number: cp.companyNumber,

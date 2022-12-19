@@ -69,7 +69,7 @@ export const getCompanyRequest = async (
     req.session as Session,
     oeNumber,
   );
-  const infoMsg = `OE NUMBER ID: ${oeNumber}`;
+  const infoMsg = `OE NUMBER ID: ${response.resource}`;
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
   return response.resource;
 };

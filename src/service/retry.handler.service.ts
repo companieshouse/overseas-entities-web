@@ -54,11 +54,8 @@ export const makeApiCallWithRetry = async (
 
     client = createOAuthApiClient(session);
     response = await client[serviceName][fnName](...otherParams);
-
   }
-
   logger.debugRequest(req, 'Call successful.');
-
   return response;
 
 };

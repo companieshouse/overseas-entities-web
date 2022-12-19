@@ -5,7 +5,18 @@ export interface ICompanyDetails {
     companyType?: string;
     jurisdiction?: string;
     companyNumber?: string;
-    companyAddress?: Address;
+    registeredOfficeAddress?: Address;
+    // incorporationCountry?: string;
+    // principalAddress?: Address;
+    // isServiceAddressSameAsPrincipalAddress?: yesNoResponse;
+    // serviceAddress?: Address;
+    // email?: string;
+    // legalForm?: string;
+    // lawGoverned?: string;
+    // publicRegisterName?: string;
+    // publicRegisterJurisdiction?: string;
+    // registrationNumber?: string;
+    // isOnRegisterInCountryFormedIn?: yesNoResponse;
 }
 
 

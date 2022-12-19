@@ -3,9 +3,10 @@ import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData, mapCompanyProfileToOverseasEntityToDTO, setExtraData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { getCompanyRequest } from "../../service/overseas.entities.service";
 import { OeErrorKey } from "../../model/data.types.model";
+import { mapCompanyProfileToOverseasEntityToDTOUpdate } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,14 +15,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
     const companyDataResponse = await getCompanyRequest(req, id);
-    if (!companyDataResponse){
+    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
+
+    if (!companyDataResponse || overseasEntity.companyType !== "registered-overseas-entity"){
       return onOeError(req, res, id);
     }
-
-    const overseasEntity = mapCompanyProfileToOverseasEntityToDTO(companyDataResponse);
     appData.company_profile_details = overseasEntity;
     setExtraData(req.session, appData);
-
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL,
@@ -46,7 +46,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const onOeError = (req: Request, res: Response, oeNumber: string): void => {
-  const errorList = `The Overseas Entity with OE number ${oeNumber} does not exist.`;
+  const errorList = `The Overseas Entity with OE number ${oeNumber} is not valid or does not exist.`;
   setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
   return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
 };

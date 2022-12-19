@@ -44,7 +44,7 @@
           }
         },
         {
-          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.companyAddress.line_1 + " " + overseasEntityData.companyAddress.line_2 + " " + overseasEntityData.companyAddress.country + " " + overseasEntityData.companyAddress.postcode,
+          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.registeredOfficeAddress.line_1 + " " + overseasEntityData.registeredOfficeAddress.country,
           attributes: {
             "id": "oe_entity_address_value"
           }

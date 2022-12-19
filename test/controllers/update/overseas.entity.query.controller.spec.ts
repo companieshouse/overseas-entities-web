@@ -20,7 +20,11 @@ import {
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+jest.mock('../../../src/middleware/service.availability.middleware');
 
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;

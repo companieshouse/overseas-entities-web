@@ -871,10 +871,16 @@ export const TRUST_PARTIAL_DATE: Trust = {
 export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
   companyName: "acme",
   dateOfCreation: "1872-06-26",
-  companyAddress: {},
+  registeredOfficeAddress: {
+    addressLineOne: "serviceAddressLine1",
+    addressLineTwo: "serviceAddressLine2",
+    locality: "serviceTown",
+    country: "serviceCountry",
+    postalCode: "SBY 2",
+  },
   companyType: "registered-overseas-entity",
   jurisdiction: "europe-north",
-  companyNumber: "0E746324"
+  companyNumber: "0E746324",
 };
 
 export const TRUST_WITH_ID: Trust = {

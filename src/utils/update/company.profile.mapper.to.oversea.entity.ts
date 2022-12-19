@@ -32,4 +32,4 @@ export const mapCompanyAddressToOverseasEntityAddressDTO = (registeredOfficeAddr
     country: registeredOfficeAddress?.country,
     postcode: registeredOfficeAddress?.postalCode
   };
-}
+};

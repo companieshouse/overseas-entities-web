@@ -29,7 +29,7 @@ export default class CompanyProfileService {
             return resource;
         }
 
-        if (true) {
+        if (false) {
             logger.info("AKDEBUG ********");
             for (let prop in resp.body) {
                 logger.info(prop + ":" + resp.body[prop]);

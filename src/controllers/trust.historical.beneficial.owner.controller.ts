@@ -1,17 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-// import { getApplicationData, setExtraData } from '../utils/application.data';
-// import * as mapperToPageService from '../utils/trust/mapper.to.page';
-// import * as historicalBoMapper from '../utils/trust/historical.beneficial.owner.mapper';
-// import { ApplicationData } from '../model/application.model';
-// import * as PageModel from '../model/trust.page.model';
-// import { Trust, TrustKey } from '../model/trust.model';
+import { getApplicationData } from '../utils/application.data';
+import * as historicalBoMapper from '../utils/trust/historical.beneficial.owner.mapper';
+import { ApplicationData } from '../model/application.model';
+import * as PageModel from '../model/trust.page.model';
+import { TrustKey } from '../model/trust.model';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
 };
-
 const get = (
   req: Request,
   res: Response,
@@ -20,21 +18,22 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(req.session);
 
-    // const trustId = req.params['id'];
-    // const pageData: PageModel.TrustDetails = mapperToPageService.mapDetailToPage(
-    //   appData[TrustKey]?.find(trust => trust.trust_id === trustId),
-    // );
-
-    const pageData = {};
+    const trustId = req.params['id'];
+    const pageData: PageModel.TrustHistoricalBeneficialOwnerPage = historicalBoMapper.mapTrustDetailToPage(
+      appData[TrustKey]?.find(trust => trust.trust_id === trustId),
+    );
+    console.log(pageData.trustName);
 
     const templateName = config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
     console.log("i am here");
+    console.log(`${config.TRUST_INVOLVED_URL}/${trustId}`);
+
     return res.render(
       templateName,
       {
-        backLinkUrl: config.TRUST_INVOLVED_PAGE,
+        backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`, // currently not working correctly
         templateName,
         pageParams: {
           title: HISTORICAL_BO_TEXTS.title,
@@ -48,56 +47,31 @@ const get = (
   }
 };
 
-// const post = (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+const post = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
 
-//     const trustId = req.params['id'];
 
-//     //  get trust data from session
-//     const appData: ApplicationData = getApplicationData(req.session);
-//     const trusts: Trust[] = appData[TrustKey] ?? [];
-//     const trustIndex = trusts.findIndex(trust => trust.trust_id === trustId);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    console.log("look out");
+    console.log(req.params['id']);
 
-//     // remove trust from the array of trusts   if it is present in the trusts array
-//     if (trustIndex >= 0) {
-//       trusts?.splice(trustIndex, 1);
-//     }
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
 
-//     //  map form data to session trust data
-//     const details = mapperToSessionService.mapDetailToSession(req.body);
+    return res.redirect(url);
 
-//     //  add new details to session trusts array
-//     if (!details.trust_id) {
-//       details.trust_id = String(trusts.length + 1);
-//     }
+  } catch (error) {
+    logger.errorRequest(req, error);
 
-//     trusts.push(details);
-
-//     //  save to session
-//     setExtraData(
-//       req.session,
-//       {
-//         ...appData,
-//         [TrustKey]: trusts,
-//       },
-//     );
-
-//     return res.redirect(`${config.TRUST_INVOLVED_URL}/${details.trust_id}`);
-
-//   } catch (error) {
-//     logger.errorRequest(req, error);
-
-//     return next(error);
-//   }
-// };
+    return next(error);
+  }
+};
 
 export {
   get,
-  // post,
+  post,
   HISTORICAL_BO_TEXTS,
 };

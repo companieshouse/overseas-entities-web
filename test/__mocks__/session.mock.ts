@@ -921,6 +921,11 @@ export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
   [TrustKey]: [TRUST_PARTIAL_DATE]
 };
 
+export const APPLICATION_DATA_WITH_TRUST_ID_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_WITH_ID]
+};
+
 export const serviceNameOE = "overseasEntity";
 export const fnNamePutOE = "putOverseasEntity";
 export const fnNamePostOE = "postOverseasEntity";

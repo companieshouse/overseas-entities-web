@@ -2,10 +2,13 @@ jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/service/overseas.entities.service');
+jest.mock('../../../src/middleware/service.availability.middleware');
 
 import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { NextFunction, Response, Request } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -16,6 +19,8 @@ import { getApplicationData } from "../../../src/utils/application.data";
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Confirm company data", () => {
 

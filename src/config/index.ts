@@ -71,6 +71,7 @@ export const SIGN_OUT_PAGE = "sign-out";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const UPDATE_OVERSEAS_ENTITY_DETAILS_PAGE = "update-overseas-entity-details";
+export const TRUST_INVOLVED_PAGE = "trust-involved";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -108,6 +109,7 @@ export const CONFIRM_OVERSEAS_COMPANY_PROFILES_URL = UPDATE_AN_OVERSEAS_ENTITY_U
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;
+export const TRUST_INVOLVED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INVOLVED_PAGE;
 
 // URL PARAMS
 export const ID = "/:id"; // Same param name as the ID in the data model

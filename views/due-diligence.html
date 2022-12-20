@@ -21,19 +21,22 @@
 
       <form method="post">
 
-        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request." %}
+        {% set identityDateLabelText = "When were the identity checks completed?" %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is the agent’s name?" %}
         {% set nameFieldTextHint = "Enter the company name, or your own name if you are self-employed. It will need to match the name on the agent assurance code request exactly." %}
         {% include "includes/inputs/fields/identity-name-input.html" %}
 
+        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request." %}
         {% include "includes/inputs/address/identity-address-input.html" %}
 
         {% set emailFieldText = "What is the email address?" %}
         {% include "includes/inputs/fields/email-input.html" %}
 
+        {% set supervisoryNameLabelText = "What is the name of the supervisory body?"%}
         {% include "includes/inputs/fields/supervisory-name-input.html" %}
+
         {% include "includes/inputs/fields/aml-number-input.html" %}
 
         {{ govukInput({
@@ -52,6 +55,7 @@
           value: agent_code
         }) }}
 
+        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for identity checks?" %}
         {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request." %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 

@@ -49,7 +49,4 @@ describe("Test company profile details DTO",  () => {
       companyNumber: companyDetails.companyNumber
     });
   });
-
 });
-
-

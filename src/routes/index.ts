@@ -17,6 +17,8 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
+  updateLanding,
+  overseasEntityQuery,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -32,6 +34,7 @@ import {
   signOut,
   resumeSubmission,
   confirmOverseasEntityDetails,
+  trustInvolved,
   updateOverseasEntityDetails,
   trustDetails
 } from "../controllers";
@@ -134,7 +137,10 @@ router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overs
 
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
-router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
+router.get(
+  config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,
+  trustInformation.get
+);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
@@ -145,6 +151,16 @@ router
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
+
+router
+  .route(config.TRUST_INVOLVED_URL + config.ID)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInvolved.get)
+  .post(trustInvolved.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

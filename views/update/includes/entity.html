@@ -61,7 +61,7 @@
           text: "Principal or registered office address"
         },
         value: {
-          html: formattedPrincipalAddressHtml
+          text: "" if appData.entity.name === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country
         },
         actions: {
           items: [CREATE_UPDATE_CHANGE_LINK(

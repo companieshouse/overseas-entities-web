@@ -135,6 +135,7 @@ router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirm
 
 router.get(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL, authentication, updateOverseasEntityReview.get);
 router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, authentication, updateOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.post);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 

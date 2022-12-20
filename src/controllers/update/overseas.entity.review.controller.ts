@@ -28,7 +28,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE}`);
 
-    // return res.redirect(config.); //redirect to update overseas entity page
+    // return res.redirect(config.);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

@@ -4,10 +4,12 @@ import { NextFunction, Request, Response } from "express";
 import {
   setApplicationData,
   prepareData,
-  mapFieldsToDataObject
+  mapFieldsToDataObject,
+  getApplicationData,
+  mapDataObjectToFields,
 } from "../../utils/application.data";
 import { EntityKey, EntityKeys } from "../../model/entity.model";
-import { ApplicationDataType } from "../../model";
+import { ApplicationData, ApplicationDataType } from "../../model";
 import {
   AddressKeys,
   HasSamePrincipalAddressKey,
@@ -20,12 +22,28 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
+import { getEntityBackLink } from "../../utils/navigation";
 
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
+
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    const entity = appData[EntityKey];
+    const principalAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
+      : {};
+    const serviceAddress = (entity && Object.keys(entity).length)
+      ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
+      : {};
+
     return res.render(config.ENTITY_PAGE, {
+      backLinkUrl: getEntityBackLink(appData),
       templateName: config.ENTITY_PAGE,
+      ...entity,
+      ...principalAddress,
+      ...serviceAddress
     });
   }  catch (error) {
     logger.errorRequest(req, error);

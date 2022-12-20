@@ -30,7 +30,7 @@
           }
         },
         {
-          text: overseasEntityData.companyName,
+          text: appData.entity.name,
           attributes: {
             "id": "oe_entity_name_value"
           }
@@ -44,7 +44,7 @@
           }
         },
         {
-          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.registeredOfficeAddress.line_1 + " " + overseasEntityData.registeredOfficeAddress.country,
+          text: "" if appData.entity.name === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
           attributes: {
             "id": "oe_entity_address_value"
           }

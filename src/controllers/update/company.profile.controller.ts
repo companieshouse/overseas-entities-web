@@ -7,6 +7,7 @@ import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { getCompanyRequest } from "../../service/overseas.entities.service";
 import { OeErrorKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntityToDTOUpdate } from "../../utils/update/company.profile.mapper.to.oversea.entity";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,19 +16,19 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const id: string = appData?.oe_number || "";
     const companyDataResponse = await getCompanyRequest(req, id);
-    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
+    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse as CompanyProfile);
 
     if (!companyDataResponse){
       return onOeError(req, res, id);
     }
-    appData.company_profile_details = overseasEntity;
+    appData.entity = overseasEntity;
     setExtraData(req.session, appData);
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData,
-      overseasEntityData: overseasEntity
+      appData
+      // overseasEntityData: overseasEntity
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);
@@ -38,7 +39,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
-    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL);
+    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

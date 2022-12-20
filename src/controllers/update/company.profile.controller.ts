@@ -17,7 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const companyDataResponse = await getCompanyRequest(req, id);
     const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
 
-    if (!companyDataResponse || overseasEntity.companyType !== "registered-overseas-entity"){
+    if (!companyDataResponse){
       return onOeError(req, res, id);
     }
     appData.company_profile_details = overseasEntity;

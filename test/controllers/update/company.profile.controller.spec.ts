@@ -4,19 +4,21 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock("../../../src/controllers/update/company.profile.controller");
+
+import { NextFunction, Response, Request } from "express";
+import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { NextFunction, Response, Request } from "express";
 import { ANY_MESSAGE_ERROR, CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK, OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { logger } from "../../../src/utils/logger";
 import { OeErrorKey } from "../../../src/model/data.types.model";
-import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 const mockGetOeCompanyDetails = getCompanyRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -54,19 +56,9 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test("Sucessfully call company profile api with invalid OE number", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue( { oe_number: '12345678' } );
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
-      expect(resp.statusCode).toEqual(302);
-      expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
-    });
-
     test("confirm and continue button is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
-      mockGetOeCompanyDetails.mockReturnValue({ oeNumber: OVER_SEAS_ENTITY_MOCK_DATA.companyNumber  });
+      mockGetOeCompanyDetails.mockReturnValue( { oe_number: '12345678' } );
 
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);

@@ -54,15 +54,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("AKDEBUG found overseas entity");
     const entity: Entity = mapCompanyProfileToEntity(companyDataResponse as CompanyProfile);
 
+    const session = req.session as Session;
+    setApplicationData(session, entity, EntityKey);
+
     logger.info("AKDEBUG Entity governed by " + entity.law_governed);
     logger.info("AKDEBUG service address 1 " + entity.service_address.line_1);
     logger.info("AKDEBUG registered office address 1 " + entity.principal_address.line_1);
 
-    if (DEMO_SAVE) {
-      // AKDEBUG block 1 open
-      const session = req.session as Session;
-      setApplicationData(session, entity, EntityKey);
+    // AKDEBUG block 1 modify entity
+    entity.email = "user@test.org";
+    entity.principal_address.line_1 = "Entity modified was: " + entity.principal_address.line_1;
+    setApplicationData(session, entity, EntityKey);
 
+    if (DEMO_SAVE) {
+      // AKDEBUG block 2 open
       logger.info("AKDEBUG open transaction");
 
       const appData: ApplicationData = getApplicationData(session);
@@ -70,7 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       appData[Transactionkey] = transactionID;
       setExtraData(session, appData);
 
-      // AKDEBUG block 2 save doc
+      // AKDEBUG block 3 save doc
       logger.info("AKDEBUG save submission");
 
       try {
@@ -83,7 +88,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         logger.errorRequest(req, error);
       }
 
-      // AKDEBUG block 3 close transaction
+      // AKDEBUG block 4 close transaction
       logger.info("AKDEBUG close transaction");
       const appData2: ApplicationData = getApplicationData(session);
       const transactionID2 = appData2[Transactionkey] as string;
@@ -112,7 +117,7 @@ export const mapCompanyProfileToEntity = (cp : CompanyProfile): Entity => {
     incorporation_country: cp.jurisdiction,
     public_register_name: cp.foreignCompanyDetails?.originatingRegistry.name,
     public_register_jurisdiction: cp.foreignCompanyDetails?.originatingRegistry.country,
-    email: "",
+    email: "", // private data
     principal_address: {
       property_name_number: cp.registeredOfficeAddress?.premises,
       line_1: cp.registeredOfficeAddress?.addressLineOne,

@@ -14,20 +14,23 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
+    {% include "includes/list/errors.html" %}
+
     <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     <form method="post">
 
       {{ govukInput({
+        errorMessage: errors.entity_name if errors,
         label: {
-            text: title,
-            classes: "govuk-label--m",
-            isPageHeading: false,
-            classes: "govuk-visually-hidden"
-          },
-          id: "entity_name",
-          name: "entity_name",
-          value: entity_name
+          text: title,
+          classes: "govuk-label--m",
+          isPageHeading: false,
+          classes: "govuk-visually-hidden"
+        },
+        id: "entity_name",
+        name: "entity_name",
+        value: entity_name
       }) }}
 
       {% include "includes/save-and-continue-button.html" %}

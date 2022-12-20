@@ -86,6 +86,19 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
+export const checkOverseasName = (value: string = "") => {
+
+  if ( !value.trim() ) {
+    throw new Error(ErrorMessages.ENTITY_NAME);
+  } else if ( value.length > 160) {
+    throw new Error(ErrorMessages.MAX_NAME_LENGTH);
+  } else if ( !VALID_CHARACTERS.test(value) ) {
+    throw new Error(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
+  }
+
+  return true;
+};
+
 export const checkSecondNationality = (nationality: string = "", secondNationality: string = "") => {
 
   if ( nationality && nationality === secondNationality ) {

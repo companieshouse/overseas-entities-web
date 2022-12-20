@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { EntityNameKey } from "../model/data.types.model";
-import { checkEntityName } from "./custom.validation";
+import { checkOverseasName } from "./custom.validation";
 
 export const overseasName = [
-  body(EntityNameKey).custom((value) => checkEntityName(value))
+  body(EntityNameKey).custom((value) => checkOverseasName(value))
 ];

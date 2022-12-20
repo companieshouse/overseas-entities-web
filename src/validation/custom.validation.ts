@@ -86,7 +86,7 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-export const checkEntityName = (value: string = "") => {
+export const checkOverseasName = (value: string = "") => {
 
   if ( !value.trim() ) {
     throw new Error(ErrorMessages.ENTITY_NAME);

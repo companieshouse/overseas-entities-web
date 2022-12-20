@@ -66,6 +66,7 @@ router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
 
 router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.post);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);

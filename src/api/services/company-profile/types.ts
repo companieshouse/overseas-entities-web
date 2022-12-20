@@ -19,6 +19,7 @@ export interface CompanyProfileResource {
   accounts: AccountsResource;
   confirmation_statement?: ConfirmationStatementResource;
   foreign_company_details?: ForeignCompanyDetailsResource;
+  is_on_register_in_country_formed_in?: string;
   links: LinksResource;
 }
 
@@ -143,5 +144,6 @@ export interface CompanyProfile {
   accounts: Accounts;
   confirmationStatement?: ConfirmationStatement;
   foreignCompanyDetails?: ForeignCompanyDetails;
+  isOnRegisterInCountryFormedIn: boolean;
   links: Links;
 }

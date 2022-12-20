@@ -119,6 +119,7 @@ export default class CompanyProfileService {
                 isACreditFinacialInstitution: foreignCompanyDetails?.is_a_credit_finacial_institution,
                 legalForm: foreignCompanyDetails?.legal_form
             },
+            isOnRegisterInCountryFormedIn: body.is_on_register_in_country_formed_in === 'true',
             links: {
                 filingHistory: links?.filing_history
             }

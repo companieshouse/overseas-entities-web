@@ -149,14 +149,15 @@ router
   .get(trustInvolved.get)
   .post(trustInvolved.post);
 
-router.get(
-  config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
-  // authentication,
-  // navigation.hasBOsOrMOs,
-  // ...validator.trustInformation,
-  // checkTrustValidations,
-  trustHistoricalbeneficialOwner.get
-);
+router
+  .route(config.TRUST_INVOLVED_URL + config.ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .all(
+  //   isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+  //   authentication,
+  //   navigation.hasTrust,
+  )
+  .get(trustHistoricalbeneficialOwner.get)
+  .post(trustHistoricalbeneficialOwner.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

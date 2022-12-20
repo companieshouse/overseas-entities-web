@@ -7,7 +7,7 @@ import { getApplicationData } from '../utils/application.data';
 import { TrustKey } from '../model/trust.model';
 import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import * as PageModel from '../model/trust.page.model';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -69,8 +69,10 @@ const post = (
         case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           if (isValidUrl (url) ) {
-            const historicalBoId = uuidv4();
-            return res.redirect(`${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}/${historicalBoId}`);
+            // WORK IN PROGRESS - This may not be the best approach
+            // const historicalBoId = uuidv4();
+            // return res.redirect(`${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}/${historicalBoId}`);
+            return res.redirect(url);
           }
           break;
         case TrusteeType.INDIVIDUAL:

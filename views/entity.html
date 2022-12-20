@@ -16,7 +16,8 @@
 
     {% include "includes/list/errors.html" %}
 
-    <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entityName }}</span>
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     {{ govukDetails({
       summaryText: "What is an overseas entity?",

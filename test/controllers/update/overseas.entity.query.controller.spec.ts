@@ -16,6 +16,7 @@ import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
+  OE_NUMBER_FIELD_POPULATED
 } from "../../__mocks__/text.mock";
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";

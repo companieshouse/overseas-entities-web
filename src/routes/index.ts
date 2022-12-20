@@ -17,8 +17,6 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
-  updateLanding,
-  overseasEntityQuery,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -33,8 +31,9 @@ import {
   accessibilityStatement,
   signOut,
   resumeSubmission,
-  confirmOverseasEntityDetails,
   trustInvolved,
+  confirmOverseasEntityDetails,
+  updateOverseasEntityReview,
   updateOverseasEntityDetails,
   trustDetails
 } from "../controllers";
@@ -66,6 +65,8 @@ router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFi
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
+
+router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.get);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
@@ -132,6 +133,7 @@ router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, au
 router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
 
+router.get(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL, authentication, updateOverseasEntityReview.get);
 router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, authentication, updateOverseasEntityDetails.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 

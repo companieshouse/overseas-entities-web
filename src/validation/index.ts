@@ -9,6 +9,7 @@ import { entity } from "./entity.validation";
 import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
 import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
+import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
 import { trustInformation } from "./trust.information.validation";
 import { whoIsMakingFiling } from "./who.is.making.filing.validation";
@@ -21,6 +22,7 @@ export const validator = {
   secureRegisterFilter,
   entity,
   presenter,
+  overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,
   managingOfficerIndividual,

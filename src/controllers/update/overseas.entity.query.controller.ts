@@ -109,6 +109,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const mapCompanyProfileToEntity = (cp : CompanyProfile): Entity => {
+  const onRegister = cp.isOnRegisterInCountryFormedIn ? "1" : "0";
   return {
     name: cp.companyName,
     registration_number: cp.companyNumber,
@@ -135,10 +136,12 @@ export const mapCompanyProfileToEntity = (cp : CompanyProfile): Entity => {
       county: cp.serviceAddress?.region,
       country: cp.serviceAddress?.country,
       postcode: cp.serviceAddress?.postalCode,
-    }
+    },
+    is_on_register_in_country_formed_in: cp.isOnRegisterInCountryFormedIn,
+    is_service_address_same_as_principal_address: false // Should be deep equality tested
     /* ,
-    is_service_address_same_as_principal_address: yesNoResponse.No,
-    is_on_register_in_country_formed_in: yesNoResponse.No 
+    is_service_address_same_as_principal_address: yesNoResponse.No, // Breaks node build
+    is_on_register_in_country_formed_in: yesNoResponse.No // Breaks node build
     */
   };
 };

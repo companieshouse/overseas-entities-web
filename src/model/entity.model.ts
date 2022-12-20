@@ -26,7 +26,7 @@ export interface Entity {
     name?: string;
     incorporation_country?: string;
     principal_address?: Address;
-    is_service_address_same_as_principal_address?: yesNoResponse;
+    is_service_address_same_as_principal_address?: boolean;
     service_address?: Address;
     email?: string;
     legal_form?: string;
@@ -34,5 +34,5 @@ export interface Entity {
     public_register_name?: string;
     public_register_jurisdiction?: string;
     registration_number?: string;
-    is_on_register_in_country_formed_in?: yesNoResponse;
+    is_on_register_in_country_formed_in?: boolean;
 }

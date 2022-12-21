@@ -10,11 +10,11 @@ describe("Test company profile details DTO",  () => {
   const appData = getApplicationData(session) as ApplicationData;
 
   test(`That company details maps data correctly`, () => {
-    expect(mapCompanyProfileToOverseasEntityToDTOUpdate(appData.company_profile_details as CompanyProfile)).resolves;
+    expect(mapCompanyProfileToOverseasEntityToDTOUpdate(appData.entity as CompanyProfile)).resolves;
   });
 
   test(`That company details address is mapped correctly`, () => {
-    expect(mapCompanyProfileToOverseasEntityToDTOUpdate(appData.company_profile_details?.registeredOfficeAddress as CompanyProfile)).resolves;
+    expect(mapCompanyProfileToOverseasEntityToDTOUpdate(appData.entity?.principal_address as CompanyProfile)).resolves;
   });
 
   test(`error is thrown when undefined data is parsed to data mapper`, () => {

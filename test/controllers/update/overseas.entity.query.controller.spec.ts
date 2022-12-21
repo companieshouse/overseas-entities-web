@@ -22,6 +22,7 @@ import {
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -33,6 +34,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const htmlDecodedString = "OE number must be &quot;OE&quot; followed by 6 digits";
 
 describe("OVERSEAS ENTITY QUERY controller", () => {
 
@@ -53,7 +55,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ oe_number: '12345678' });
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -74,7 +76,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '12345678' });
+        .send({ oe_number: 'OE123456' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -83,10 +85,37 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '12345678' });
+        .send({ oe_number: 'OE123456' });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with both error messages', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: '' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(htmlDecodedString);
+    });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: 'OE123' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(htmlDecodedString);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+    });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message when input contains EO', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: 'EO123456' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(htmlDecodedString);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
     });
   });
 });

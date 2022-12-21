@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+
+{% set title = "Individuals or entities involved in the trust" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l">{{ pageData.trustName }}</span>
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <form class="form" method="post">
+
+        {% set fieldParam = {
+          name: 'typeOfTrustee',
+          label: 'Which type of individual or entity do you want to add to this trust?',
+          error: errors.typeOfTrustee,
+          items: [
+            {
+              value: pageParams.trusteeType.HISTORICAL,
+              text: "Former beneficial owner",
+              hint: {
+                text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
+              }
+            }, {
+              value: pageParams.trusteeType.INDIVIDUAL,
+              text: "Individual",
+              hint: {
+                text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
+              }
+            }, {
+              value: pageParams.trusteeType.LEGAL_ENTITY,
+              text: "Legal entity",
+              hint: {
+                text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+              text: "Add"
+            }) }}
+
+          {{ govukButton({
+              attributes: {
+                "id": "noMoreToAdd",
+                "name": "noMoreToAdd",
+                "value": "noMoreToAdd"
+              },
+              html: 'No more <span class="govuk-visually-hidden">individuals or entities</span> to add',
+              classes: "govuk-button--secondary"
+            }) }}
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

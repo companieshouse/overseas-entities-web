@@ -32,7 +32,8 @@ import {
   signOut,
   trustDetails,
   resumeSubmission,
-  overseasName
+  overseasName,
+  trustInvolved
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -126,7 +127,10 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, n
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
-router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
+router.get(
+  config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,
+  trustInformation.get
+);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
@@ -137,6 +141,16 @@ router
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
+
+router
+  .route(config.TRUST_INVOLVED_URL + config.ID)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInvolved.get)
+  .post(trustInvolved.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
@@ -149,6 +163,6 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
 export default router;

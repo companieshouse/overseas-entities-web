@@ -26,7 +26,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData
+      appData,
+      registrationDate: companyDataResponse.dateOfCreation
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);

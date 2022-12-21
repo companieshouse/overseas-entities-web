@@ -5,7 +5,7 @@ export const mapCompanyProfileToOverseasEntityToDTOUpdate = (cp: CompanyProfile)
   if (!cp){
     return {} as Entity;
   }
-  return {
+  const entity: Entity = {
     name: cp?.companyName,
     registration_number: cp?.companyNumber,
     law_governed: "",
@@ -22,9 +22,11 @@ export const mapCompanyProfileToOverseasEntityToDTOUpdate = (cp: CompanyProfile)
       county: cp.registeredOfficeAddress?.region,
       country: cp.registeredOfficeAddress?.country,
       postcode: cp.registeredOfficeAddress?.postalCode
-    }
+    },
   // is_on_register_in_country_formed_in: isOnReg // breaks node
   //  ,
   // is_service_address_same_as_principal_address: yesNoResponse.No,
   };
+  return entity;
 };
+

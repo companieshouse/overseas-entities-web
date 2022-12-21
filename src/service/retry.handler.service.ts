@@ -57,5 +57,4 @@ export const makeApiCallWithRetry = async (
   }
   logger.debugRequest(req, 'Call successful.');
   return response;
-
 };

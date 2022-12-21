@@ -64,13 +64,6 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CONFIRM_AND_CONTINUE_BUTTON_TEXT);
-    });
-
-    test("Change company link is rendered", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
-      const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
-      expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CHANGE_COMPANY_TEST);
     });
 

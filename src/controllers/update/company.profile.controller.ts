@@ -14,10 +14,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id: string = appData?.oe_number || "";
-    const companyDataResponse = await getCompanyRequest(req, id);
-    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse as CompanyProfile);
-
+    const id: string | any = appData?.oe_number;
+    const companyDataResponse = await getCompanyRequest(req, id) as CompanyProfile;
+    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
     if (!companyDataResponse){
       return onOeError(req, res, id);
     }
@@ -28,7 +27,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       updateUrl: config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData
-      // overseasEntityData: overseasEntity
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);
@@ -47,7 +45,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const onOeError = (req: Request, res: Response, oeNumber: string): void => {
-  const errorList = `The Overseas Entity with OE number ${oeNumber} is not valid or does not exist.`;
+  const errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
   setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
   return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
 };

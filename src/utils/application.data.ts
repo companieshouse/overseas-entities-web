@@ -100,6 +100,3 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
 
 
 
-
-
-

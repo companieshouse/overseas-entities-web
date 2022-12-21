@@ -14,7 +14,7 @@ import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { logger } from "../../../src/utils/logger";
@@ -29,6 +29,7 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const req = {} as Request;
+const oeNumber = 'OE123456';
 
 describe("Confirm company data", () => {
   beforeEach(() => {
@@ -46,11 +47,11 @@ describe("Confirm company data", () => {
     });
 
     test("OE error key is set when OE data does not exist", async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: oeNumber });
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(302);
       expect(mockSetExtraData).toBeCalledWith(req.session, {
-        [OeErrorKey]: "The Overseas Entity with OE number  is not valid or does not exist."
+        [OeErrorKey]: `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`
       });
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
@@ -58,7 +59,7 @@ describe("Confirm company data", () => {
 
     test("confirm and continue button is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue( { oe_number: '12345678' } );
+      mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
 
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
@@ -67,7 +68,7 @@ describe("Confirm company data", () => {
 
     test("Change company link is rendered", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
+      mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CHANGE_COMPANY_TEST);
@@ -75,7 +76,7 @@ describe("Confirm company data", () => {
 
     test(`redirect to the ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
+      mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
       const resp = await request(app).post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
@@ -83,7 +84,7 @@ describe("Confirm company data", () => {
 
     test(`OE number is retrieved from session data`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetOeCompanyDetails.mockReturnValue( APPLICATION_DATA_MOCK );
+      mockGetOeCompanyDetails.mockReturnValue( OVER_SEAS_ENTITY_MOCK_DATA );
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(mockGetOeCompanyDetails).toHaveBeenCalled();

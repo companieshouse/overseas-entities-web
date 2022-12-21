@@ -29,21 +29,6 @@ export default class CompanyProfileService {
             return resource;
         }
 
-        if (false) {
-            logger.info("AKDEBUG ********");
-            for (let prop in resp.body) {
-                logger.info(prop + ":" + resp.body[prop]);
-            }
-            const foreignCompanyAddress = resp.body['foreign_company_details'];
-            if (foreignCompanyAddress !== null && foreignCompanyAddress !== undefined) {
-                for (let prop in foreignCompanyAddress) {
-                    logger.info("AKDEBUG -------");
-                    logger.info(prop + ":" + foreignCompanyAddress[prop]);
-                }
-            }
-            logger.info("AKDEBUG *********");
-        }
-
         // cast the response body to the expected type
         const body = resp.body as CompanyProfileResource;
 
@@ -56,7 +41,27 @@ export default class CompanyProfileService {
 
         const confirmationStatement = body.confirmation_statement as ConfirmationStatementResource;
 
-        const foreignCompanyDetails = body.foreign_company_details as ForeignCompanyDetailsResource;
+        const foreignCompanyDetailsResource = body.foreign_company_details as ForeignCompanyDetailsResource;
+
+        const originatingRegistryResource = foreignCompanyDetailsResource?.originating_registry;
+        let originatingRegistry = null;
+        if (originatingRegistryResource !== undefined && originatingRegistryResource !== null) {
+            originatingRegistry = {
+                name: originatingRegistryResource.name,
+                country: originatingRegistryResource.country
+            };
+        }
+        
+        let foreignCompanyDetails = null;
+        if (foreignCompanyDetailsResource !== undefined && foreignCompanyDetailsResource !== null) {
+            foreignCompanyDetails = {
+                businessActivity: foreignCompanyDetailsResource?.business_activity,
+                governedBy: foreignCompanyDetailsResource?.governed_by,
+                originatingRegistry: originatingRegistry,
+                isACreditFinacialInstitution: foreignCompanyDetailsResource?.is_a_credit_finacial_institution,
+                legalForm: foreignCompanyDetailsResource?.legal_form
+            };
+        }
 
         const links = body.links as LinksResource;
 
@@ -109,16 +114,7 @@ export default class CompanyProfileService {
                 nextMadeUpTo: confirmationStatement?.next_made_up_to,
                 overdue: confirmationStatement?.overdue
             },
-            foreignCompanyDetails: {
-                businessActivity: foreignCompanyDetails?.business_activity,
-                governedBy: foreignCompanyDetails?.governed_by,
-                originatingRegistry: {
-                    name: foreignCompanyDetails?.originating_registry?.name,
-                    country: foreignCompanyDetails?.originating_registry?.country
-                },
-                isACreditFinacialInstitution: foreignCompanyDetails?.is_a_credit_finacial_institution,
-                legalForm: foreignCompanyDetails?.legal_form
-            },
+            foreignCompanyDetails: foreignCompanyDetails,
             isOnRegisterInCountryFormedIn: body.is_on_register_in_country_formed_in === 'true',
             links: {
                 filingHistory: links?.filing_history

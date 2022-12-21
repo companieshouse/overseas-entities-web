@@ -97,5 +97,3 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
     throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
 };
-
-

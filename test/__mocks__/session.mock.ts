@@ -871,15 +871,9 @@ export const TRUST_PARTIAL_DATE: Trust = {
 export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
   companyName: "acme",
   dateOfCreation: "1872-06-26",
-  registeredOfficeAddress: {
-    addressLineOne: "serviceAddressLine1",
-    addressLineTwo: "serviceAddressLine2",
-    locality: "serviceTown",
-    country: "serviceCountry",
-    postalCode: "SBY 2",
-  },
+  ...SERVICE_ADDRESS,
   companyType: "registered-overseas-entity",
-  jurisdiction: "europe-north",
+  jurisdiction: "country1",
   companyNumber: "0E746324",
 };
 
@@ -960,6 +954,3 @@ export const fnNamePutTransaction = "putTransaction";
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";
 export const fnGetCompanyNameGetOE = "getCompanyProfile";
-
-
-

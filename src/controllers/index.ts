@@ -29,6 +29,5 @@ export * as trustInvolved from "./trust.involved.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 // UPDATE controllers
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
-export * as updateOverseasEntityDetails from "./update/update.overseas.entity.details.controller";
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";

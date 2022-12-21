@@ -29,11 +29,11 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
-  signOut,
-  resumeSubmission,
   confirmOverseasEntityDetails,
+  signOut,
+  trustDetails,
   trustInvolved,
-  trustDetails
+  resumeSubmission,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -125,13 +125,6 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, navigation.ha
 router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
-//  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
-router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
-
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
-
-
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(
   config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,
@@ -167,8 +160,8 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
-
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
-
+router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
 export default router;

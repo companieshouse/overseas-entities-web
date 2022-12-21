@@ -13,7 +13,7 @@ export const mapCompanyProfileToOverseasEntityToDTOUpdate = (cp: CompanyProfile)
     incorporation_country: cp?.jurisdiction,
     public_register_name: "",
     public_register_jurisdiction: "",
-    email: "", // private data
+    email: "",
     principal_address: {
       property_name_number: cp.registeredOfficeAddress?.premises,
       line_1: cp.registeredOfficeAddress?.addressLineOne,
@@ -23,10 +23,6 @@ export const mapCompanyProfileToOverseasEntityToDTOUpdate = (cp: CompanyProfile)
       country: cp.registeredOfficeAddress?.country,
       postcode: cp.registeredOfficeAddress?.postalCode
     },
-  // is_on_register_in_country_formed_in: isOnReg // breaks node
-  //  ,
-  // is_service_address_same_as_principal_address: yesNoResponse.No,
   };
   return entity;
 };
-

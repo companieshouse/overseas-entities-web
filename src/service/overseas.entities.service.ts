@@ -58,22 +58,6 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
   logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
 };
 
-export const getCompanyRequest = async (
-  req: Request,
-  oeNumber: string,
-): Promise<ApplicationData> => {
-  const response = await makeApiCallWithRetry(
-    "companyProfile",
-    "getCompanyProfile",
-    req,
-    req.session as Session,
-    oeNumber,
-  );
-  const infoMsg = `OE NUMBER ID: ${response.resource}`;
-  logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
-  return response.resource;
-};
-
 export const getOverseasEntity = async (
   req: Request,
   transactionId: string,

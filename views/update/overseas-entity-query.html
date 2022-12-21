@@ -20,21 +20,22 @@
 
         <h1 class="govuk-heading-xl">{{title}}</h1>
         {% if errorList %}
-            {{ govukErrorSummary({
+            {{ govukErrorSummary
+              ({
                 titleText: "There is a problem",
                 errorList: [
                 {
                   text: errorList,
                   href: "#oe_number"
                 }
-              ]
-            }) 
+               ]
+              }) 
             }}
         {% endif %}
-                {% include "includes/list/errors.html" %}
+        {% include "includes/list/errors.html" %}
         <form method="post">
-
-            {{ govukInput({
+            {{ govukInput
+              ({
                 label: {
                     text: title,
                     isPageHeading: false,
@@ -44,10 +45,9 @@
                 id: "oe_number",
                 name: "oe_number",
                 value: oe_number
-            }) }}
-
+              }) 
+            }}
             {% include "includes/continue-button.html" %}
-
         </form>
     </div>
 </div>

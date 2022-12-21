@@ -16,6 +16,7 @@ import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_QUERY_PAGE_TITLE,
+  OE_NUMBER_FIELD_POPULATED,
 } from "../../__mocks__/text.mock";
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../../src/utils/application.data";
@@ -54,11 +55,11 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: '12345678' });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
-      // expect(resp.text).toContain(OE_NUMBER_FIELD_POPULATED);
+      expect(resp.text).toContain(OE_NUMBER_FIELD_POPULATED);
       expect(mockDeleteApplicationData).not.toHaveBeenCalled();
     });
 

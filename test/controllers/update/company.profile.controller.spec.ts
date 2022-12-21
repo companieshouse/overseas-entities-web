@@ -1,7 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock('../../../src/service/overseas.entities.service');
+jest.mock('../../../src/service/company.profile');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
 
@@ -13,14 +13,14 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
-import { ANY_MESSAGE_ERROR, CHANGE_COMPANY_TEST, CONFIRM_AND_CONTINUE_BUTTON_TEXT, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, CONFIRM_AND_CONTINUE_BUTTON_TEXT, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK, OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
-import { getCompanyRequest } from "../../../src/service/overseas.entities.service";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { logger } from "../../../src/utils/logger";
 import { OeErrorKey } from "../../../src/model/data.types.model";
+import { getCompanyProfile } from "../../../src/service/company.profile";
 
-const mockGetOeCompanyDetails = getCompanyRequest as jest.Mock;
+const mockGetOeCompanyDetails = getCompanyProfile as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -64,7 +64,6 @@ describe("Confirm company data", () => {
       const resp = await request(app).get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CONFIRM_AND_CONTINUE_BUTTON_TEXT);
-      expect(resp.text).toContain(CHANGE_COMPANY_TEST);
     });
 
     test(`OE number is retrieved from session data`, async () => {

@@ -9,8 +9,8 @@ import { OeErrorKey, OeNumberKey } from "../../model/data.types.model";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
-    setExtraData(req.session, { ...getApplicationData(req.session) });
     const appData: ApplicationData = getApplicationData(req.session);
+    setExtraData(req.session, { ...getApplicationData(req.session) });
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const oeNumber = req.body[OeNumberKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
-    return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+    return res.redirect(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);

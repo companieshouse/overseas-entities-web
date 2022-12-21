@@ -107,7 +107,6 @@ export enum ErrorMessages {
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 160 characters or less",
   MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 160 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
-  MAX_OE_LENGTH = "OE number must be 8 characters",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",

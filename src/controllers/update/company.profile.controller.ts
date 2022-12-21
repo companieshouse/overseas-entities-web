@@ -4,10 +4,10 @@ import { ApplicationData } from "model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { getCompanyRequest } from "../../service/overseas.entities.service";
 import { OeErrorKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntityToDTOUpdate } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { getCompanyProfile } from "../../service/company.profile";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const id: string | any = appData?.oe_number;
-    const companyDataResponse = await getCompanyRequest(req, id) as CompanyProfile;
+    const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
     if (!companyDataResponse){
       return onOeError(req, res, id);
@@ -50,4 +50,3 @@ const onOeError = (req: Request, res: Response, oeNumber: string): void => {
   setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
   return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
 };
-

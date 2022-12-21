@@ -1,3 +1,4 @@
+import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -20,9 +21,7 @@ import {
   trustType,
   dueDiligenceType,
 } from "../../src/model";
-import { ICompanyDetails } from "../../src/model/company.profile.model";
 import {
-  companyProfileKey,
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,
@@ -868,13 +867,22 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
-export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
+export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   companyName: "acme",
   dateOfCreation: "1872-06-26",
   ...SERVICE_ADDRESS,
-  companyType: "registered-overseas-entity",
+  type: "registered-overseas-entity",
   jurisdiction: "country1",
   companyNumber: "0E746324",
+  companyStatus: "",
+  companyStatusDetail: "",
+  sicCodes: [],
+  hasBeenLiquidated: false,
+  hasCharges: false,
+  hasInsolvencyHistory: false,
+  registeredOfficeAddress: {} as RegisteredOfficeAddress,
+  accounts: {} as Accounts,
+  links: {} as Links
 };
 
 export const TRUST_WITH_ID: Trust = {
@@ -904,7 +912,6 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST],
   [OeNumberKey]: COMPANY_NUMBER,
-  [companyProfileKey]: OVER_SEAS_ENTITY_MOCK_DATA,
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
@@ -949,7 +956,6 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
-
 
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";

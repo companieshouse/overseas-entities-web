@@ -55,7 +55,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ oe_number: '12345678' });
+      mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);

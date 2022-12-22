@@ -105,6 +105,7 @@ describe(`Update Overseas Entity Service test suite`, () => {
 });
 
 describe(`Get Overseas Entity Service test suite`, () => {
+
   const GET_OE_MSG_ERROR = "Something went wrong getting Overseas Entity";
   const INFO_MSG = `Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
 

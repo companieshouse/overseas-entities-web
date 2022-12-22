@@ -131,4 +131,4 @@ export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registere
 export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
 export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
 export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
-export const OE_NUMBER_FIELD_POPULATED = "value=\"12345678\"";
+export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";

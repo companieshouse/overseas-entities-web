@@ -1,7 +1,8 @@
 import { Session } from '@companieshouse/node-session-handler';
 
-import ApiClient from "../api/client"; // import ApiClient from "@companieshouse/api-sdk-node/dist/client";
-import { createApiClient } from "../api"; // import { createApiClient } from "@companieshouse/api-sdk-node";
+import ApiClient from "@companieshouse/api-sdk-node/dist/client"; // import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+// import { createApiClient } from "../api"; // AKDEBUG
+import { createApiClient } from "@companieshouse/api-sdk-node";
 
 import { getAccessToken } from "../utils/session";
 import { API_URL, CHS_API_KEY } from '../config';

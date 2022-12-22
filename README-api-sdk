@@ -1,0 +1,3 @@
+create a test branch with all files from dist (use -f to add)
+generally I call them test-sdk1 ... and after you can run the following npm install "https://github.com/companieshouse/api-sdk-node.git#test-sdk1" --savek
+

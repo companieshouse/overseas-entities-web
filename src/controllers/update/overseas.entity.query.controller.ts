@@ -13,8 +13,8 @@ import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model"
 import { Session } from "@companieshouse/node-session-handler";
 import { createOverseasEntity } from "../../service/overseas.entities.service";
 import { closeTransaction, postTransaction } from "../../service/transaction.service";
-import { CompanyProfile } from "../../api/services/company-profile";
-import { yesNoResponse } from "api/services/overseas-entities";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile";
+// import { yesNoResponse } from "api/services/overseas-entities";
 
 const DEMO_SAVE = true;
 

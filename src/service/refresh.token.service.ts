@@ -1,4 +1,4 @@
-import ApiClient from '../api/client'; // import ApiClient from '@companieshouse/api-sdk-node/dist/client';
+import ApiClient from '@companieshouse/api-sdk-node/dist/client'; // import ApiClient from '@companieshouse/api-sdk-node/dist/client';
 import { Session } from '@companieshouse/node-session-handler';
 import { Request } from "express";
 

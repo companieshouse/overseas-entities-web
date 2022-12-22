@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
 
-import { logger } from "../utils/logger";
+import { logger } from "@utils/logger";
 import * as config from "../config";
-import { ApplicationData } from "../model";
-import { deleteApplicationData, getApplicationData, setExtraData } from "../utils/application.data";
-import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "../model/data.types.model";
+import { ApplicationData } from "@model/index";
+import { deleteApplicationData, getApplicationData, setExtraData } from "@utils/application.data";
+import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "@model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

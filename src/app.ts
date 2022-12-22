@@ -9,11 +9,11 @@ import {
 } from '@companieshouse/node-session-handler';
 
 import * as config from "./config";
-import { logger } from "./utils/logger";
+import { logger } from "@utils/logger";
 import router from "./routes";
-import errorHandler from "./controllers/error.controller";
-import { createChangeLinkConfig } from "./utils/change.link";
-import { countryFilter } from "./utils/country.filter";
+import errorHandler from "@controller/error.controller";
+import { createChangeLinkConfig } from "@utils/change.link";
+import { countryFilter } from "@utils/country.filter";
 
 const app = express();
 

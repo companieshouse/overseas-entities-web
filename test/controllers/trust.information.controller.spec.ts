@@ -1,15 +1,15 @@
 jest.mock("ioredis");
-jest.mock('../../src/middleware/authentication.middleware');
-jest.mock("../../src/utils/application.data");
-jest.mock('../../src/utils/save.and.continue');
-jest.mock('../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
+jest.mock('@middleware/authentication.middleware');
+jest.mock("@utils/application.data");
+jest.mock('@utils/save.and.continue');
+jest.mock('@middleware/navigation/has.beneficial.owners.or.managing.officers.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { authentication } from "../../src/middleware/authentication.middleware";
+import { authentication } from "@middleware/authentication.middleware";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
 import {
   APPLICATION_DATA_MOCK,
@@ -29,9 +29,9 @@ import {
 } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
-import { getApplicationData, prepareData, getFromApplicationData } from "../../src/utils/application.data";
-import { saveAndContinue } from "../../src/utils/save.and.continue";
-import { hasBOsOrMOs } from "../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
+import { getApplicationData, prepareData, getFromApplicationData } from "@utils/application.data";
+import { saveAndContinue } from "@utils/save.and.continue";
+import { hasBOsOrMOs } from "@middleware/navigation/has.beneficial.owners.or.managing.officers.middleware";
 import {
   TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG,
   TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG,

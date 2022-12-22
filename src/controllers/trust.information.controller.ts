@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import { logger } from "../utils/logger";
+import { logger } from "@utils/logger";
 import * as config from "../config";
-import { ApplicationData, ApplicationDataType, trustType } from "../model";
-import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "../utils/application.data";
-import { TrustKey, TrustKeys } from "../model/trust.model";
-import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
-import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
-import { getBeneficialOwnerList } from "../utils/trusts";
-import { saveAndContinue } from "../utils/save.and.continue";
+import { ApplicationData, ApplicationDataType, trustType } from "@model/index";
+import { getApplicationData, prepareData, setApplicationData, getFromApplicationData } from "@utils/application.data";
+import { TrustKey, TrustKeys } from "@model/trust.model";
+import { BeneficialOwnerIndividualKey } from "@model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "@model/beneficial.owner.other.model";
+import { getBeneficialOwnerList } from "@utils/trusts";
+import { saveAndContinue } from "@utils/save.and.continue";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

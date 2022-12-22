@@ -5,7 +5,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { OeErrorKey } from "../../model/data.types.model";
-import { mapCompanyProfileToOverseasEntityToDTOUpdate } from "../../utils/update/company.profile.mapper.to.oversea.entity";
+import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
 
@@ -16,15 +16,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const id: string | any = appData?.oe_number;
     const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
-    const overseasEntity = mapCompanyProfileToOverseasEntityToDTOUpdate(companyDataResponse);
     if (!companyDataResponse){
       return onOeError(req, res, id);
     }
+    const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
     appData.entity = overseasEntity;
     setExtraData(req.session, appData);
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
-      updateUrl: config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL,
+      updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
       registrationDate: companyDataResponse.dateOfCreation

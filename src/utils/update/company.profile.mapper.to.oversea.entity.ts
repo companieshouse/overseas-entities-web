@@ -1,10 +1,7 @@
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { Entity } from "../../model/entity.model";
 
-export const mapCompanyProfileToOverseasEntityToDTOUpdate = (cp: CompanyProfile): Entity => {
-  if (!cp){
-    return {} as Entity;
-  }
+export const mapCompanyProfileToOverseasEntity = (cp: CompanyProfile): Entity => {
   const entity: Entity = {
     name: cp?.companyName,
     registration_number: cp?.companyNumber,

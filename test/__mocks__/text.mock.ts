@@ -128,3 +128,11 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
+export const OVERSEAS_ENTITY_UPDATE_TITLE = "Update overseas entity";
+export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#name";
+export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
+export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
+export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/entity#service_address_property_name_number";
+export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
+export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
+export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";

@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% set title = "Update overseas entity (NOT LIVE)" %} <!-- Edit this and remove NOT LIVE-->
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+      {% include "update/includes/entity.html" %}
+      {% include "includes/continue-button.html" %}
+    </div>
+  </div>
+{% endblock %}

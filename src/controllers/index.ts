@@ -30,3 +30,4 @@ export * as resumeSubmission from "./resume.submission.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
+export * as overseasEntityReview from "./update/overseas.entity.review.controller";

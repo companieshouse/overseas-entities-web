@@ -1,5 +1,6 @@
-import { BeneficialOwnerIndividual } from 'model/beneficial.owner.individual.model';
-import { BeneficialOwnerOther } from 'model/beneficial.owner.other.model';
+import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
+import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
+import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
 
 export const TrustKey = "trusts";
 
@@ -15,7 +16,10 @@ export interface Trusts {
   trusts: Trust[]
 }
 
-export type TrustBeneficialOwner = BeneficialOwnerOther | BeneficialOwnerIndividual;
+export type TrustBeneficialOwner = ( BeneficialOwnerOther | BeneficialOwnerIndividual ) & {
+  type?: BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
+  name?: string;
+};
 
 export interface Trust {
   trust_id: string;

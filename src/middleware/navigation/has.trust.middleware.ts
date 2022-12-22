@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import { SOLD_LAND_FILTER_URL, TRUST_ID_PATH_PARAMETER } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
@@ -10,14 +10,17 @@ export const hasTrust = (req: Request, res: Response, next: NextFunction): void 
   try {
     const trustId = req.params[TRUST_ID_PATH_PARAMETER];
     const appData: ApplicationData = getApplicationData(req.session);
+
     const isTrustPresent = appData[TrustKey]?.some(
-      (trust) => trust.trust_id === trustId
+      (trust) => trust.trust_id === trustId,
     );
+
     if (!isTrustPresent) {
       logger.infoRequest(req, NavigationErrorMessage);
 
       return res.redirect(SOLD_LAND_FILTER_URL);
     }
+
     return next();
   } catch (err) {
     next(err);

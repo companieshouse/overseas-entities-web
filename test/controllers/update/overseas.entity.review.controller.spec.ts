@@ -13,9 +13,9 @@ import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
   PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_UPDATE_TITLE,
   CHANGE_LINK,
-  CHANGE_LINK_ENTITY_NAME,
   CHANGE_LINK_ENTITY_EMAIL,
   CHANGE_LINK_ENTITY_GOVERNING_LAW,
   CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
@@ -51,7 +51,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("overseasEntityName");
+      expect(resp.text).toContain("Overseas Entity Name");
       expect(resp.text).toContain("incorporationCountry");
     });
 
@@ -64,13 +64,20 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
+    });
+
+    test("catch error when renders the Overseas Entity Review page on GET method", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 

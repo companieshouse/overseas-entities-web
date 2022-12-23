@@ -20,6 +20,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     const hasTrusts: boolean = checkEntityHasTrusts(appData);
+    const changeLinkUrl: string = config.ENTITY_URL;
+    const pageTitle: string = "Overseas entity details";
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
 
@@ -33,8 +35,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       hasTrusts,
       appData,
+      changeLinkUrl,
+      pageTitle,
       pageParams: {
-        isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+        isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+        isRegister: 'true'
       },
     });
   } catch (error) {

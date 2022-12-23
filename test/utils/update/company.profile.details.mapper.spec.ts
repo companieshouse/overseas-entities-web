@@ -3,6 +3,7 @@ import { describe, expect, test } from '@jest/globals';
 import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.oversea.entity';
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
+import { companyDetailsMock } from './mocks';
 
 describe("Test company profile details mapping", () => {
 
@@ -15,79 +16,34 @@ describe("Test company profile details mapping", () => {
   });
 
   test('map company details to overseas entity should return object', () => {
-    const companyDetails: CompanyProfile = {
-      companyName: "acme",
-      companyNumber: "12345",
-      companyStatus: "trading",
-      jurisdiction: "Australia",
-      companyStatusDetail: '',
-      dateOfCreation: '1/1/2000',
-      sicCodes: [],
-      hasBeenLiquidated: false,
-      type: 'Ltd',
-      hasCharges: false,
-      hasInsolvencyHistory: false,
-      registeredOfficeAddress: {
-        addressLineOne: "1",
-        addressLineTwo: "Victoria Park",
-        careOf: "",
-        country: "",
-        locality: "",
-        poBox: "",
-        premises: "",
-        postalCode: "",
-        region: ""
-      },
-      serviceAddress: {
-        addressLineOne: "100 Boulevard",
-        addressLineTwo: "of life",
-        careOf: "",
-        country: "",
-        locality: "",
-        poBox: "",
-        premises: "",
-        postalCode: "",
-        region: ""
-      },
-      accounts: {
-        nextAccounts: {
-          periodEndOn: "end",
-          periodStartOn: "start"
-        },
-        nextDue: "due",
-        overdue: false
-      },
-      links: {}
-    };
-
-    expect(mapCompanyProfileToOverseasEntity(companyDetails as CompanyProfile)).toEqual({
-      name: companyDetails.companyName,
+    expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
+      name: companyDetailsMock.companyName,
       email: "",
-      registration_number: companyDetails.companyNumber,
-      law_governed: companyDetails.foreignCompanyDetails?.governedBy,
-      legal_form: companyDetails.foreignCompanyDetails?.legalForm,
-      incorporation_country: companyDetails.jurisdiction,
+      registration_number: companyDetailsMock.companyNumber,
+      law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
+      legal_form: companyDetailsMock.foreignCompanyDetails?.legalForm,
+      incorporation_country: companyDetailsMock.jurisdiction,
       principal_address: {
-        country: companyDetails.registeredOfficeAddress.country,
-        county: companyDetails.registeredOfficeAddress.region,
-        line_1: companyDetails.registeredOfficeAddress.addressLineOne,
-        line_2: companyDetails.registeredOfficeAddress.addressLineTwo,
-        postcode: companyDetails.registeredOfficeAddress.postalCode,
-        property_name_number: companyDetails.registeredOfficeAddress.premises,
-        town: companyDetails.registeredOfficeAddress?.locality,
+        country: companyDetailsMock.registeredOfficeAddress.country,
+        county: companyDetailsMock.registeredOfficeAddress.region,
+        line_1: companyDetailsMock.registeredOfficeAddress.addressLineOne,
+        line_2: companyDetailsMock.registeredOfficeAddress.addressLineTwo,
+        postcode: companyDetailsMock.registeredOfficeAddress.postalCode,
+        property_name_number: companyDetailsMock.registeredOfficeAddress.premises,
+        town: companyDetailsMock.registeredOfficeAddress?.locality,
       },
       service_address: {
-        country: companyDetails.serviceAddress?.country,
-        county: companyDetails.serviceAddress?.region,
-        line_1: companyDetails.serviceAddress?.addressLineOne,
-        line_2: companyDetails.serviceAddress?.addressLineTwo,
-        postcode: companyDetails.serviceAddress?.postalCode,
-        property_name_number: companyDetails.serviceAddress?.premises,
-        town: companyDetails.serviceAddress?.locality,
+        country: companyDetailsMock.serviceAddress?.country,
+        county: companyDetailsMock.serviceAddress?.region,
+        line_1: companyDetailsMock.serviceAddress?.addressLineOne,
+        line_2: companyDetailsMock.serviceAddress?.addressLineTwo,
+        postcode: companyDetailsMock.serviceAddress?.postalCode,
+        property_name_number: companyDetailsMock.serviceAddress?.premises,
+        town: companyDetailsMock.serviceAddress?.locality,
       },
-      public_register_jurisdiction: companyDetails.foreignCompanyDetails?.originatingRegistry?.country,
-      public_register_name: companyDetails.foreignCompanyDetails?.originatingRegistry?.country,
-      is_on_register_in_country_formed_in: companyDetails.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
+      public_register_jurisdiction: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
       is_service_address_same_as_principal_address: yesNoResponse.No
     });
   });

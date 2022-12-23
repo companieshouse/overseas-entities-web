@@ -12,10 +12,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const backLinkUrl: string = config.OVERSEAS_ENTITY_REVIEW_PAGE; // to be changed
+    const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+    const pageTitle: string = "Overseas entity details (NOT LIVE)";
 
     return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
       templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
       backLinkUrl,
+      changeLinkUrl,
+      pageTitle,
       appData
     });
   } catch (errors) {

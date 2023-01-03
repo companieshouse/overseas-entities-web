@@ -80,13 +80,19 @@ export const INCORPORATION_COUNTRY_OPTION_SELECTED = "value=\"Taiwan\" selected"
 export const UNITED_KINGDOM_COUNTRY_OPTION_SELECTED = "value=\"United Kingdom\" selected";
 export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";
 export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information provided in this section will be shown on the public Register of Overseas Entities.";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When were the identity checks completed? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
 export const OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body? (optional)";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT = "For example, tell us the name of the Head of Compliance";
 export const DUE_DILIGENCE_NAME_TEXT = "What is the agent’s name?";
+export const DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When were the identity checks completed?";
 export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address, agent assurance code and date the identity checks were completed will not be shown.";
 export const DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request.";
+export const DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body?";
+export const DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks?";
 export const DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request.";
 export const AGENT_REGISTERING = "The UK agent";
 export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
@@ -121,9 +127,12 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
-export const OE_NUMBER_FIELD_POPULATED = "value=\"12345678\"";
-export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registered overeseas entity";
-export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
-export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
-export const CHANGE_COMPANY_TEST = "Change company";
-export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
+export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
+export const OVERSEAS_ENTITY_UPDATE_TITLE = "Update overseas entity";
+export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#name";
+export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
+export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
+export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/entity#service_address_property_name_number";
+export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
+export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
+export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";

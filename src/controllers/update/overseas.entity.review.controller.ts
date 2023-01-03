@@ -7,28 +7,21 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL;
+    const backLinkUrl: string = config.OVERSEAS_ENTITY_REVIEW_PAGE; // to be changed
+    const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+    const pageTitle: string = "Overseas entity details (NOT LIVE)";
 
-    return res.render(config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE, {
-      templateName: config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE,
+    return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
+      templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
       backLinkUrl,
+      changeLinkUrl,
+      pageTitle,
       appData
     });
-  } catch (errors) {
-    logger.errorRequest(req, errors);
-    next(errors);
-  }
-};
-
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `POST ${config.UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE}`);
-
-    // return res.redirect(config.); //redirect to update overseas entity page
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

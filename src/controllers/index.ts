@@ -25,10 +25,10 @@ export * as accessibilityStatement from "./accessibility.statement.controller";
 export * as beneficialOwnerDeleteWarning from "./beneficial.owner.delete.warning.controller";
 export * as signOut from "./sign.out.controller";
 export * as trustDetails from "./trust.details.controller";
+export * as trustInvolved from "./trust.involved.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
-export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
-export * as updateOverseasEntityReview from "./update/overseas.entity.review.controller";
-export * as updateOverseasEntityDetails from "./update/overseas.entity.update.details.controller";
+export * as overseasEntityReview from "./update/overseas.entity.review.controller";
+export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";

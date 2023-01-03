@@ -17,7 +17,7 @@ export enum ErrorMessages {
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
   OE_DUE_DILIGENCE_NAME = "Enter the name of the person or company that carried out identity checks",
-  OE_QUERY_NAME = "Enter the OE number",
+  OE_QUERY_NUMBER = "Enter the OE number",
   AGENT_CODE = "Enter the agent assurance code",
   PARTNER_NAME = "Enter the name of the person with overall responsibility for identity checks",
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
@@ -107,7 +107,6 @@ export enum ErrorMessages {
   MAX_PUBLIC_REGISTER_NAME_LENGTH = "Name of register must be 160 characters or less",
   MAX_PUBLIC_REGISTER_NUMBER_LENGTH = "Registration number must be 160 characters or less",
   MAX_OCCUPATION_LENGTH = "Occupation must be 100 characters or less",
-  MAX_OE_LENGTH = "OE number must be 8 characters",
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",
@@ -135,4 +134,5 @@ export enum ErrorMessages {
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
+  INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
 }

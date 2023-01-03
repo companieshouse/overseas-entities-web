@@ -878,7 +878,7 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
 };
 
 export const TRUST_WITH_ID: Trust = {
-  trust_id: "1",
+  trust_id: "725",
   trust_name: "name of trust",
   creation_date_day: "31",
   creation_date_month: "12",
@@ -934,6 +934,11 @@ export const APPLICATION_DATA_NO_TRUST_DATE_MOCK: ApplicationData = {
 export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
   ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_PARTIAL_DATE]
+};
+
+export const APPLICATION_DATA_WITH_TRUST_ID_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_NO_TRUSTS_MOCK,
+  [TrustKey]: [TRUST_WITH_ID]
 };
 
 export const serviceNameOE = "overseasEntity";

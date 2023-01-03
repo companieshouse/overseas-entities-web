@@ -21,7 +21,13 @@ type TrustBeneficialOwner = {
   notifiedDateYear: string;
 };
 
+type TrustWhoIsInvolved = {
+  id: string;
+  trustName: string;
+};
+
 export {
   TrustDetails,
   TrustBeneficialOwner,
+  TrustWhoIsInvolved,
 };

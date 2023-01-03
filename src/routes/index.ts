@@ -17,6 +17,7 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
+  overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -30,11 +31,10 @@ import {
   overseasEntityDueDiligence,
   accessibilityStatement,
   signOut,
+  trustDetails,
+  trustInvolved,
   resumeSubmission,
-  confirmOverseasEntityDetails,
-  updateOverseasEntityReview,
-  updateOverseasEntityDetails,
-  trustDetails
+  overseasEntityUpdateDetails
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -52,7 +52,6 @@ router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 
 router.get(config.LANDING_URL, landing.get);
-router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
@@ -62,11 +61,7 @@ router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
-router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.get(config.CANNOT_USE_URL, authentication, cannotUse.get);
-
-router.get(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.get);
-router.post(config.UPDATE_OVERSEAS_ENTITY_DETAILS_URL, updateOverseasEntityDetails.post);
 
 router.get(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, secureRegisterFilter.get);
 router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSoldLand, ...validator.secureRegisterFilter, checkValidations, secureRegisterFilter.post);
@@ -129,16 +124,11 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, navigation.ha
 router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
-//  FETCH AND UPDATE COMPANY PROFILE
-router.get(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.get);
-router.post(config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL, authentication, confirmOverseasEntityDetails.post);
-
-router.get(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL, authentication, updateOverseasEntityReview.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
-
-
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
-router.get(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, trustInformation.get);
+router.get(
+  config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,
+  trustInformation.get
+);
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
@@ -149,6 +139,16 @@ router
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
+
+router
+  .route(config.TRUST_INVOLVED_URL + config.ID)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInvolved.get)
+  .post(trustInvolved.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
@@ -161,6 +161,9 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+router.get(config.OVERSEAS_ENTITY_REVIEW_URL, authentication, overseasEntityReview.get);
+router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
+router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 export default router;

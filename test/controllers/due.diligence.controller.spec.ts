@@ -34,6 +34,7 @@ import {
   DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
   DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT,
   DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT,
+  DUE_DILIGENCE_ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -85,6 +86,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(DUE_DILIGENCE_ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
       expect(resp.text).toContain(DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);

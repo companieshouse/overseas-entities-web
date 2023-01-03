@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-  
+
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,

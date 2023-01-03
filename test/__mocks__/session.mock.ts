@@ -20,7 +20,6 @@ import {
   trustType,
   dueDiligenceType,
 } from "../../src/model";
-import { ICompanyDetails } from "../../src/model/company.profile.model";
 import {
   HasSoldLandKey,
   IsSecureRegisterKey,
@@ -867,15 +866,6 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
-export const OVER_SEAS_ENTITY_MOCK_DATA: ICompanyDetails = {
-  companyName: "acme",
-  dateOfCreation: "1872-06-26",
-  companyAddress: {},
-  companyType: "registered-overseas-entity",
-  jurisdiction: "europe-north",
-  companyNumber: "0E746324"
-};
-
 export const TRUST_WITH_ID: Trust = {
   trust_id: "725",
   trust_name: "name of trust",
@@ -938,6 +928,11 @@ export const APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK: ApplicationData = {
 export const APPLICATION_DATA_WITH_TRUST_ID_MOCK: ApplicationData = {
   ...APPLICATION_DATA_NO_TRUSTS_MOCK,
   [TrustKey]: [TRUST_WITH_ID]
+};
+
+export const OVER_SEAS_ENTITY_MOCK_DATA = {
+  companyName: "acme",
+  companyNumber: "0E746324"
 };
 
 export const serviceNameOE = "overseasEntity";

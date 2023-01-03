@@ -14,8 +14,6 @@ import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../model/managing.officer.model';
-import { ICompanyDetails } from 'model/company.profile.model';
-import { Address } from "model/data.types.model";
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -100,25 +98,5 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
   }
 };
 
-export const mapCompanyProfileToOverseasEntityToDTO = (data: any): ICompanyDetails => {
-  return {
-    companyName: data?.companyName,
-    companyType: data?.type,
-    companyNumber: data?.companyNumber,
-    dateOfCreation: data?.dateOfCreation,
-    companyAddress: mapCompanyAddressToOverseasEntityAddressDTO(data?.registeredOfficeAddress)
-  };
-};
-
-const mapCompanyAddressToOverseasEntityAddressDTO = (registeredOfficeAddress: any): Address => {
-  return {
-    line_1: registeredOfficeAddress?.addressLineOne,
-    line_2: registeredOfficeAddress?.addressLineTwo,
-    town: registeredOfficeAddress?.locality,
-    county: registeredOfficeAddress?.region,
-    country: registeredOfficeAddress?.country,
-    postcode: registeredOfficeAddress?.postalCode
-  };
-};
 
 

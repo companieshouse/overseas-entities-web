@@ -1,33 +1,33 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { NextFunction, Request, Response } from "express";
-import { ApplicationData } from "model";
+import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { getApplicationData, mapCompanyProfileToOverseasEntityToDTO, setExtraData } from "../../utils/application.data";
-import { getCompanyRequest } from "../../service/overseas.entities.service";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { OeErrorKey } from "../../model/data.types.model";
+import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { getCompanyProfile } from "../../service/company.profile";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
+    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id: string = appData?.oe_number || "";
-    const companyDataResponse = await getCompanyRequest(req, id);
+    const id: string | any = appData?.oe_number;
+    const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     if (!companyDataResponse){
-      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
+      return onOeError(req, res, id);
     }
-    const overseasEntity = mapCompanyProfileToOverseasEntityToDTO(companyDataResponse);
-    appData.company_profile_details = overseasEntity;
+    const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+    appData.entity = overseasEntity;
     setExtraData(req.session, appData);
-    const backLinkUrl: string = config.OVERSEAS_ENTITY_QUERY_URL;
-    const updateUrl: string = config.CONFIRM_OVERSEAS_ENTITY_PROFILES_URL;
-
-    return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
-      backLinkUrl,
-      updateUrl,
-      templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
+      backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
+      updateUrl: config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+      templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
       appData,
-      overseasEntityData: overseasEntity
+      registrationDate: companyDataResponse.dateOfCreation
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);
@@ -37,11 +37,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
-    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_REVIEW_URL);
+    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    return res.redirect("#");
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
   }
 };
 
+const onOeError = (req: Request, res: Response, oeNumber: string): void => {
+  const errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
+  setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
+  return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
+};

@@ -22,7 +22,6 @@ import {
 } from "../../src/model";
 import { ICompanyDetails } from "../../src/model/company.profile.model";
 import {
-  companyProfileKey,
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,

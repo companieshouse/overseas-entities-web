@@ -892,8 +892,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST],
-  [OeNumberKey]: COMPANY_NUMBER,
-  [companyProfileKey]: OVER_SEAS_ENTITY_MOCK_DATA,
+  [OeNumberKey]: COMPANY_NUMBER
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

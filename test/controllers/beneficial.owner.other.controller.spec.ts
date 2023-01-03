@@ -418,7 +418,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_BENEFICIAL_OWNER_OTHER_REGISTER_IN_COUNTRY_FORMED_IN);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();

@@ -200,9 +200,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.LAST_NAME);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.FORMER_NAME);
-      expect(resp.text).toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.MONTH_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.NATIONALITY);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);

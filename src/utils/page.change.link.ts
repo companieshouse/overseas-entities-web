@@ -1,4 +1,4 @@
-export const createUpdateChangeLinkConfig = (basePath: string, id: string, text: string, dataEventId: string) => {
+export const createPageChangeLinkConfig = (basePath: string, id: string, text: string, dataEventId: string) => {
   const href = basePath + id;
   return {
     href,

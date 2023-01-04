@@ -83,7 +83,6 @@ export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information p
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
 export const OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address.";
-export const OVERSEAS_ENTITY_DUE_DILIGENCE_ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks? (optional)";

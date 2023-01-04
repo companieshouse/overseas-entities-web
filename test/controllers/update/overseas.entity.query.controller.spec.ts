@@ -117,5 +117,14 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(htmlDecodedString);
       expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
     });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message when greater than 6 digits', async () => {
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ oe_number: 'OE123456789' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(htmlDecodedString);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+    });
   });
 });

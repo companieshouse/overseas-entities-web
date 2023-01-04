@@ -30,7 +30,7 @@
           }
         },
         {
-          text: overseasEntityData.companyName,
+          text:  appData.entity.name,
           attributes: {
             "id": "oe_entity_name_value"
           }
@@ -44,7 +44,7 @@
           }
         },
         {
-          text: "" if overseasEntityData.companyName === undefined else overseasEntityData.companyAddress.line_1 + " " + overseasEntityData.companyAddress.line_2 + " " + overseasEntityData.companyAddress.country + " " + overseasEntityData.companyAddress.postcode,
+          text: appData.entity.principal_address?.line_1 + " " + appData.entity.principal_address?.country,
           attributes: {
             "id": "oe_entity_address_value"
           }
@@ -58,7 +58,7 @@
           }
         },
         {
-          text: overseasEntityData.dateOfCreation,
+          text: registrationDate,
           attributes: {
             "id": "oe_entity_registered_date_value"
           }

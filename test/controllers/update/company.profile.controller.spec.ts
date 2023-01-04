@@ -40,7 +40,7 @@ describe("Confirm company data", () => {
 
     test("Redirection to What is your OE number page if OE number is undefined", async () => {
       mockGetApplicationData.mockReturnValueOnce({});
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
       expect(resp.text).toContain(config.OVERSEAS_ENTITY_QUERY_URL);
@@ -48,7 +48,7 @@ describe("Confirm company data", () => {
 
     test("OE error key is set when OE data does not exist", async () => {
       mockGetApplicationData.mockReturnValueOnce({ oe_number: oeNumber });
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
       expect(mockSetExtraData).toBeCalledWith(req.session, {
         [OeErrorKey]: `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`
@@ -61,7 +61,7 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
 
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(200);
       expect(resp.text).toContain(CONFIRM_AND_CONTINUE_BUTTON_TEXT);
     });
@@ -69,14 +69,14 @@ describe("Confirm company data", () => {
     test(`OE number is retrieved from session data`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue( OVER_SEAS_ENTITY_MOCK_DATA );
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(200);
       expect(mockGetOeCompanyDetails).toHaveBeenCalled();
     });
 
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
@@ -84,14 +84,14 @@ describe("Confirm company data", () => {
     test(`redirect to overseas entity review page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetOeCompanyDetails.mockReturnValue(OVER_SEAS_ENTITY_MOCK_DATA);
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
     });
 
     test('catch error when redirecting on post save and confirm', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

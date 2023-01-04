@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const oeNumber = req.body[OeNumberKey];
 
     setExtraData(req.session, { [OeNumberKey]: oeNumber });
-    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_URL);
+    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);

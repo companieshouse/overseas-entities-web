@@ -44,7 +44,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-
 const onOeError = (req: Request, res: Response, oeNumber: string): void => {
   const errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
   setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });

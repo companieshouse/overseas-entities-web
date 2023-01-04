@@ -169,6 +169,7 @@ describe('Trust Details controller', () => {
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.title);
+      expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

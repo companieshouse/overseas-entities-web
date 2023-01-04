@@ -14,14 +14,16 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id: string | any = appData?.oe_number;
-    const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
-    if (!companyDataResponse){
-      return onOeError(req, res, id);
+    if (!appData.entity) {
+      const id: string | any = appData?.oe_number;
+      const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
+      if (!companyDataResponse){
+        return onOeError(req, res, id);
+      }
+      const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+      appData.entity = overseasEntity;
+      setExtraData(req.session, appData);
     }
-    const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
-    appData.entity = overseasEntity;
-    setExtraData(req.session, appData);
 
     const backLinkUrl: string = config.OVERSEAS_ENTITY_REVIEW_PAGE; // to be changed
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;

@@ -1,4 +1,6 @@
 import { Session } from "@companieshouse/node-session-handler";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+
 import { NextFunction, Request, Response } from "express";
 import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
@@ -6,7 +8,6 @@ import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { OeErrorKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +15,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id: string | any = appData?.oe_number;
+    const id = appData?.oe_number as string;
     const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     if (!companyDataResponse){
       return onOeError(req, res, id);

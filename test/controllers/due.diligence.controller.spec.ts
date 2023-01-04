@@ -214,7 +214,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date day is outside valid numbers`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "32";
       dueDiligenceData["identity_date-month"] = "11";
@@ -234,7 +234,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
       dueDiligenceData["identity_date-month"] = "11";
@@ -308,7 +308,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date month is outside valid numbers`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
       dueDiligenceData["identity_date-month"] = "13";
@@ -326,7 +326,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date day is zero`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "0";
       dueDiligenceData["identity_date-month"] = "11";
@@ -344,7 +344,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with INVALID_DATE error when identity date month is zero`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
       dueDiligenceData["identity_date-month"] = "0";
@@ -362,7 +362,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS error when identity date month is more than 3 months in the past`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS error when identity date month is more than 3 months in the past`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] =  "30";
       dueDiligenceData["identity_date-month"] = "11";
@@ -380,7 +380,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${DUE_DILIGENCE_PAGE} page with DATE_NOT_IN_PAST error when identity date month is in the future`, async () => {
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only DATE_NOT_IN_PAST error when identity date month is in the future`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       const inTheFuture = DateTime.now().plus({ years: 28 });
       dueDiligenceData["identity_date-day"] =  inTheFuture.day.toString();

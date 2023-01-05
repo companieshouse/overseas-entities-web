@@ -779,6 +779,40 @@ export const TRUST_DATA_PARTIAL_CREATION_DATE: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUST_DATA_LEADING_AND_TRAILING_SPACES: string = `[{
+  "trust_name": " name of trust ",
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [
+    {
+      "type": " Beneficiary ",
+      "forename": "bob",
+      "surname": "smith",
+      "dob_day": "19",
+      "dob_month": "03",
+      "dob_year": "1976",
+      "nationality": "welsh",
+      "ura_address_line_1": "ss",
+      "ura_address_locality": "dd",
+      "ura_address_region": "dd",
+      "ura_address_country": "wales",
+      "ura_address_postal_code": "cf240tl",
+      "sa_address_line_1": "ss",
+      "sa_address_locality": "dd",
+      "sa_address_region": "dd",
+      "sa_address_country": "wales",
+      "sa_address_postal_code": "cf240tl",
+      "date_became_interested_person_day": "11",
+      "date_became_interested_person_month": "11",
+      "date_became_interested_person_year": "1987"
+    }
+  ],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
 export const TRUSTS_SUBMIT = {
   submit: "submit",
   beneficialOwners: "123",
@@ -823,6 +857,12 @@ export const TRUSTS_EMPTY_TRUST_DATA = {
 export const TRUSTS_EMPTY_CHECKBOX = {
   add: "add",
   [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_LEADING_AND_TRAILING_SPACES
 };
 
 const hasSoldLandKey = '0';

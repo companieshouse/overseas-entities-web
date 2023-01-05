@@ -8,7 +8,7 @@ import {
 } from "./fields/address.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { checkDateOfBirth, isDateValid } from "./custom.validation";
+import { checkDateOfBirth, checkMandatoryDate } from "./custom.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")
@@ -32,7 +32,7 @@ export const beneficialOwnerIndividual = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
   body("start_date")
-    .custom((value, { req }) => isDateValid(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+    .custom((value, { req }) => checkMandatoryDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
 
   ...usual_residential_address_validations,
   ...usual_residential_service_address_validations,

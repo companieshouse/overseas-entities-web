@@ -93,14 +93,14 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isValid = isDateValid(dayStr, monthStr, yearStr);
-  if (isValid) {
+  const isDateValid = checkMandatoryDate(dayStr, monthStr, yearStr);
+  if (isDateValid) {
     checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
   }
   return true;
 };
 
-export const isDateValid = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkMandatoryDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
   if (isDatePresent) {
     const areDateFieldsPresent = checkDateFieldsArePresent(dayStr, monthStr, yearStr);

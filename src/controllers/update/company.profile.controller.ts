@@ -19,14 +19,22 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyDataResponse){
       return onOeError(req, res, id);
     }
-    appData.entity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+
+    const entity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+    appData.entity = entity;
+    const oeName = entity.name ?? "";
+    const oeAddress = (entity.principal_address?.property_name_number ? entity.principal_address?.property_name_number + " " : "") +
+      (entity.principal_address?.line_1 ? entity.principal_address?.line_1 + " " : "") +
+      (entity.principal_address?.town ? entity.principal_address?.town : "");
+
     setExtraData(req.session, appData);
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData,
-      registrationDate: companyDataResponse.dateOfCreation
+      oeName,
+      oeAddress,
+      registrationDate: companyDataResponse.dateOfCreation ?? ""
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);

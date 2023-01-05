@@ -114,6 +114,7 @@ export const JURISDICTION_FIELD_LABEL = "Jurisdiction";
 export const PUBLIC_REGISTER_HINT_TEXT = "Include its jurisdiction. For example, Hong Kong or State of Delaware.";
 export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For example, Jersey Financial Services Commission.";
 export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
+export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

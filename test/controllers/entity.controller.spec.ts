@@ -20,6 +20,7 @@ import {
   ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   ENTITY_OBJECT_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
+  OVERSEAS_NAME_MOCK,
 } from "../__mocks__/session.mock";
 import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT,
@@ -85,8 +86,9 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(DUE_DILIGENCE_URL);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {
@@ -99,6 +101,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test(`renders the ${ENTITY_PAGE} page with public register jurisdiction field`, async () => {
@@ -110,6 +113,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(JURISDICTION_FIELD_LABEL);
       expect(resp.text).toContain(ENTITY_PUBLIC_REGISTER_HINT_TEXT);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("renders the entity page on GET method with session data populated", async () => {
@@ -121,6 +125,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.legal_form);
       expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("renders the entity page on GET method with Taiwan as country field", async () => {
@@ -139,6 +144,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(INCORPORATION_COUNTRY_OPTION_SELECTED);
       expect(resp.text).toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("renders the entity page on GET method without United Kingdom on incorporation country", async () => {
@@ -155,6 +161,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(UNITED_KINGDOM_COUNTRY_OPTION_SELECTED);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("renders the entity page on GET method with the three public register fields", async () => {
@@ -173,6 +180,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(PUBLIC_REGISTER_JURISDICTION_LABEL);
       expect(resp.text).toContain(REGISTRATION_NUMBER_LABEL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("catch error when renders the entity page on GET method", async () => {
@@ -294,7 +302,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).toContain(ErrorMessages.COUNTRY);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
@@ -365,7 +372,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.MAX_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
@@ -378,7 +384,6 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NUMBER_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.ENTITY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.COUNTRY);
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
@@ -400,7 +405,6 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);

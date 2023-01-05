@@ -143,7 +143,6 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain("fullName");
     expect(resp.text).toContain("user@domain.roe");
-    expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("BY 2");
@@ -173,7 +172,6 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHANGE_LINK);
     expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_FULL_NAME);
     expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_EMAIL);
-    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_NAME);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_COUNTRY);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PRINCIPAL_ADDRESS);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS);
@@ -419,7 +417,6 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("BY 2");

@@ -38,7 +38,8 @@ import {
   resumeSubmission,
   overseasName,
   startingNew,
-  overseasEntityUpdateDetails
+  overseasEntityUpdateDetails,
+  updateCheckYourAnswers
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -193,5 +194,8 @@ router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOv
 router.get(config.OVERSEAS_ENTITY_REVIEW_URL, authentication, overseasEntityReview.get);
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
+router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
+router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);
 
 export default router;

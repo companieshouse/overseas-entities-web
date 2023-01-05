@@ -260,6 +260,63 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date month and year are empty`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] =  "01";
+      beneficialOwnerGov["start_date-month"] = "";
+      beneficialOwnerGov["start_date-year"] = "";
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] =  "";
+      beneficialOwnerGov["start_date-month"] = "01";
+      beneficialOwnerGov["start_date-year"] = "";
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] =  "";
+      beneficialOwnerGov["start_date-month"] = "";
+      beneficialOwnerGov["start_date-year"] = "2020";
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only DAY error when start date day is empty`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-month"] = "06";

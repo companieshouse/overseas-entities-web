@@ -347,6 +347,60 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
+    test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with only INVALID DATE error when identity date month and year are empty`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceMock["identity_date-day"] = "01";
+      dueDiligenceMock["identity_date-month"] = "";
+      dueDiligenceMock["identity_date-year"] = "";
+      const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
+    test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with only INVALID DATE error when identity date day and year are empty`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceMock["identity_date-day"] = "";
+      dueDiligenceMock["identity_date-month"] = "01";
+      dueDiligenceMock["identity_date-year"] = "";
+      const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
+    test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with only INVALID DATE error when identity date day and month are empty`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      dueDiligenceMock["identity_date-day"] = "";
+      dueDiligenceMock["identity_date-month"] = "";
+      dueDiligenceMock["identity_date-year"] = "2020";
+      const resp = await request(app).post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
     test(`renders the current page ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with only INVALID_DATE error when identity date day is outside valid numbers`, async () => {
       const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       dueDiligenceMock["identity_date-day"] =  "32";

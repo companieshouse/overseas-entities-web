@@ -22,7 +22,7 @@ const get = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     // Get current Trust from session and map to page data
-    const trustId = req.params["id"];
+    const trustId = req.params["trustId"];
     const appData: ApplicationData = getApplicationData(req.session);
     const pageData: PageModel.TrustWhoIsInvolved = mapTrustWhoIsInvolvedToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
@@ -62,7 +62,7 @@ const post = (
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
-    // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
+    // the req.params['trustId'] is already validated in the has.trust.middleware but sonar can not recognise this.
     const url = `${config.TRUST_INVOLVED_URL}/${req.params['trustId']}`;
 
     switch (typeOfTrustee) {

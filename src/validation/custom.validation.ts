@@ -126,7 +126,7 @@ export const checkDateFieldsArePresent = (dayStr: string = "", monthStr: string 
 };
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isDatePresent =  checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+  const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
   if (isDatePresent) {
     const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
     if (areDateOfBirthFieldsPresent) {

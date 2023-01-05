@@ -80,8 +80,8 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
     const areDateFieldsPresent = checkDateFieldsArePresent(dayStr, monthStr, yearStr);
     if (areDateFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-      if (isDateValid) {
+      const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+      if (isOptionalDateValid) {
         const isDateInThePast = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
         if (isDateInThePast) {
           checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
@@ -93,8 +93,8 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isDateValid = checkMandatoryDate(dayStr, monthStr, yearStr);
-  if (isDateValid) {
+  const isMandatoryDateValid = checkMandatoryDate(dayStr, monthStr, yearStr);
+  if (isMandatoryDateValid) {
     checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
   }
   return true;

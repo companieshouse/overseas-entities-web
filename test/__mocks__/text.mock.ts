@@ -78,7 +78,6 @@ export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
 export const RADIO_BUTTON_SOMEONE_ELSE_SELECTED = "value=\"someone_else\" checked";
 export const INCORPORATION_COUNTRY_OPTION_SELECTED = "value=\"Taiwan\" selected";
 export const UNITED_KINGDOM_COUNTRY_OPTION_SELECTED = "value=\"United Kingdom\" selected";
-export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";
 export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information provided in this section will be shown on the public Register of Overseas Entities.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
@@ -88,7 +87,7 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What i
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT = "For example, tell us the name of the Head of Compliance";
 export const DUE_DILIGENCE_NAME_TEXT = "What is the agent’s name?";
-export const DUE_DILIGENCE_ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all other information you provide on this screen on the public Register of Overseas Entities.";
+export const ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all other information you provide on this screen on the public Register of Overseas Entities.";
 export const DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks?";
 export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address, agent assurance code and date the verification checks were completed.";
 export const DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request.";
@@ -114,6 +113,8 @@ export const JURISDICTION_FIELD_LABEL = "Jurisdiction";
 export const PUBLIC_REGISTER_HINT_TEXT = "Include its jurisdiction. For example, Hong Kong or State of Delaware.";
 export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For example, Jersey Financial Services Commission.";
 export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
+export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
+export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

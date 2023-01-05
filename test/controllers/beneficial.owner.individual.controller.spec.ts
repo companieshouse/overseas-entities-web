@@ -34,6 +34,9 @@ import {
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SECOND_NATIONALITY,
   SECOND_NATIONALITY_HINT,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
 } from '../__mocks__/text.mock';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -98,6 +101,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
   });
 

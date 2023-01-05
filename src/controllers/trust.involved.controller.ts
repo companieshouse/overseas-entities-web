@@ -33,7 +33,7 @@ const get = (
     return res.render(
       templateName,
       {
-        backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['id']}`,
+        backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['trustId']}`,
         templateName,
         pageData,
         pageParams: {
@@ -63,7 +63,7 @@ const post = (
 
     const typeOfTrustee = req.body.typeOfTrustee;
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params['trustId']}`;
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:

@@ -8,7 +8,7 @@ import { NavigationErrorMessage } from './check.condition';
 
 export const hasTrust = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    const trustId = req.params["id"];
+    const trustId = req.params["trustId"];
     const appData: ApplicationData = getApplicationData(req.session);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId

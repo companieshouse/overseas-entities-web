@@ -20,7 +20,7 @@ const get = (
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params['id'];
+    const trustId = req.params['trustId'];  // Question - should we use a constant for this url parameter (if so where)
     const pageData: PageModel.TrustHistoricalBeneficialOwnerPage = historicalBoMapper.mapTrustDetailToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
     );
@@ -33,7 +33,7 @@ const get = (
     return res.render(
       templateName,
       {
-        backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`, // currently not working correctly
+        backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`,
         templateName,
         pageParams: {
           title: HISTORICAL_BO_TEXTS.title,
@@ -57,9 +57,9 @@ const post = (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     console.log("look out");
-    console.log(req.params['id']);
+    console.log(req.params['trustId']);
 
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params['trustId']}`;
 
     return res.redirect(url);
 

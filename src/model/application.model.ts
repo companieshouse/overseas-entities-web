@@ -35,7 +35,6 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     oe_number?: string;
-    oe_error?: string;
 }
 
 export const ApplicationDataArrayType = [

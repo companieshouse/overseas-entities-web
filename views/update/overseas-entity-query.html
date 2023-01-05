@@ -12,25 +12,11 @@
 {% endblock %}
 
 {% block content %}
-{% from "govuk/components/input/macro.njk" import govukInput %}
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
         <h1 class="govuk-heading-xl">{{title}}</h1>
-        {% if errorList %}
-            {{ govukErrorSummary
-              ({
-                titleText: "There is a problem",
-                errorList: [
-                {
-                  text: errorList,
-                  href: "#oe_number"
-                }
-               ]
-              }) 
-            }}
-        {% endif %}
         {% include "includes/list/errors.html" %}
         <form method="post">
             {{ govukInput

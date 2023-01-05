@@ -4,7 +4,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
-import { OeErrorKey, OeNumberKey } from "../../model/data.types.model";
+import { OeNumberKey } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +15,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       [OeNumberKey]: appData?.[OeNumberKey],
-      errorList: appData?.[OeErrorKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);

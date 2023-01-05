@@ -6,7 +6,6 @@ import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { OeErrorKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 import { getCompanyProfile } from "../../service/company.profile";
 
@@ -18,7 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const id = appData?.oe_number as string;
     const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     if (!companyDataResponse){
-      return onOeError(req, res, id);
+      return onOeError(res);
     }
     const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
     appData.entity = overseasEntity;
@@ -46,8 +45,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const onOeError = (req: Request, res: Response, oeNumber: string): void => {
-  const errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
-  setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
+const onOeError = (res: Response): void => {
   return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
 };

@@ -13,7 +13,7 @@ import { logger } from "./utils/logger";
 import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { createChangeLinkConfig } from "./utils/change.link";
-import { createPageChangeLinkConfig as createPageChangeLinkConfig } from "./utils/page.change.link";
+import { createPageChangeLinkConfig } from "./utils/page.change.link";
 import { countryFilter } from "./utils/country.filter";
 
 const app = express();

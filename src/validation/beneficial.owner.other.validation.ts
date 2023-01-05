@@ -5,7 +5,7 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
-import { checkStartDate } from "./custom.validation";
+import { checkMandatoryDate } from "./custom.validation";
 
 export const beneficialOwnerOther = [
   body("name")
@@ -36,7 +36,7 @@ export const beneficialOwnerOther = [
   ...public_register_validations,
 
   body("start_date")
-    .custom((value, { req }) => checkStartDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+    .custom((value, { req }) => checkMandatoryDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
 
   ...nature_of_control_validations,
 

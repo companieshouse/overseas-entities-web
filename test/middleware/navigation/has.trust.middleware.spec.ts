@@ -30,7 +30,7 @@ describe("HasTrust Middleware tests", () => {
   test("Trust present, return next", () => {
     req = {
       params: {
-        id: TRUST_WITH_ID.trust_id,
+        trustId: TRUST_WITH_ID.trust_id,
       } as Params,
       session: {} as Session,
       route: "",

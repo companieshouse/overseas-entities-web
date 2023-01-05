@@ -11,13 +11,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-
     const oeNumber = appData?.oe_number;
-    let errorList = "";
+
+    const errors = { errorList: [] } as any;
     if (oeNumber) {
       const cp = await getCompanyProfile(req, oeNumber);
-      if (!cp){
-        errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
+      if (!cp) {
+        const msg = `The Overseas Entity with OE number "${oeNumber}" was not found.`;
+        errors.errorList.push({ href: `#error`, text: msg });
+        errors.error = { text: msg };
       }
     }
 
@@ -25,8 +27,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       [OeNumberKey]: appData?.[OeNumberKey],
-      errorList: errorList
+      errors
     });
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

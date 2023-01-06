@@ -1,7 +1,6 @@
 import { body } from "express-validator";
 
 import {
-  checkDateOfBirth,
   checkFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
   checkMaxFieldIfRadioButtonSelected
@@ -10,6 +9,7 @@ import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
+import { date_of_birth_validations } from "./fields/date.validation";
 
 export const managingOfficerIndividual = [
   body("first_name").not().isEmpty({ ignore_whitespace: true })
@@ -23,8 +23,8 @@ export const managingOfficerIndividual = [
     .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.has_former_names === '1', ErrorMessages.FORMER_NAME, value))
     .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body.has_former_names === '1', ErrorMessages.MAX_FORMER_NAME_LENGTH, 260, value))
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.has_former_names === '1', ErrorMessages.FORMER_NAMES_INVALID_CHARACTERS, value)),
-  body("date_of_birth")
-    .custom((value, { req }) => checkDateOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
+
+  ...date_of_birth_validations,
 
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)

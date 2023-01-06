@@ -1,4 +1,5 @@
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
+export const STARTING_NEW_PAGE_TITLE = "Do you want to continue with a saved application?";
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?";
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";

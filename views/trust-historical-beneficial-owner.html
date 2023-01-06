@@ -15,7 +15,7 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
 
-      <span class="govuk-caption-l">{{ pageData.trustName }}</span>
+      <span class="govuk-caption-l">{{ trustData.name }}</span>
       <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
 
       <form class="form" method="post">
@@ -23,7 +23,6 @@
           name: 'name',
           hint: 'You can add more later.',
           label: 'What is the beneficial owner’s name?',
-          value: pageData.name,
           error: errors.name
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -32,12 +31,7 @@
           name: 'createdDate',
           label: 'When did they become a beneficial owner?',
           hint: 'For example, 27 3 2007',
-          error: errors.createdDate,
-          value: {
-            'Day': pageData.createdDateDay,
-            'Month': pageData.createdDateMonth,
-            'Year': pageData.createdDateYear
-          }
+          error: errors.createdDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 
@@ -45,12 +39,7 @@
           name: 'createdDate',
           label: 'When did they stop being a beneficial owner?',
           hint: 'For example, 28 5 2011',
-          error: errors.createdDate,
-          value: {
-            'Day': pageData.createdDateDay,
-            'Month': pageData.createdDateMonth,
-            'Year': pageData.createdDateYear
-          }
+          error: errors.createdDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 

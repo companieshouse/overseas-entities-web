@@ -57,9 +57,9 @@ const post = (
 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     console.log("look out");
-    console.log(req.params['trustId']);
+    console.log(req.params[config.TRUST_ID_PATH_PARAMETER]);
 
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params['trustId']}`;
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
 
     return res.redirect(url);
 

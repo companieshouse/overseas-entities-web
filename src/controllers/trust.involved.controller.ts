@@ -7,7 +7,6 @@ import { getApplicationData } from '../utils/application.data';
 import { TrustKey } from '../model/trust.model';
 import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import * as PageModel from '../model/trust.page.model';
-import { v4 as uuidv4 } from 'uuid';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -64,15 +63,13 @@ const post = (
     const typeOfTrustee = req.body.typeOfTrustee;
     // the req.params[config.TRUST_ID_PATH_PARAMETER] is already validated in the has.trust.middleware but sonar can not recognise this.
     const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
-
+    let historicBeneficalOwnerUrl;
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
-          if (isValidUrl (url) ) {
-            // WORK IN PROGRESS - This may not be the best approach
-            const historicalBoId = uuidv4();
-            return res.redirect(`${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}/${historicalBoId}`);
-            // return res.redirect(url);
+          historicBeneficalOwnerUrl = `${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`;
+          if (isValidUrl (historicBeneficalOwnerUrl) ) {
+            return res.redirect(historicBeneficalOwnerUrl);
           }
           break;
         case TrusteeType.INDIVIDUAL:

@@ -113,7 +113,8 @@ export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = "/trust-historical-benefici
 
 // URL PARAMS
 export const ID = "/:id"; // Same param name as the ID in the data model
-export const TRUST_ID = "/:trustId";
+export const TRUST_ID_PATH_PARAMETER = "trustId";
+export const TRUST_ID = "/:" + TRUST_ID_PATH_PARAMETER;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

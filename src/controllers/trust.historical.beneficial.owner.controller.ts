@@ -20,7 +20,7 @@ const get = (
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params['trustId'];  // Question - should we use a constant for this url parameter (if so where)
+    const trustId = req.params[config.TRUST_ID_PATH_PARAMETER];
     const pageData: PageModel.TrustHistoricalBeneficialOwnerPage = historicalBoMapper.mapTrustDetailToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
     );

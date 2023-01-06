@@ -51,18 +51,21 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.info("ENTITYUPDATESAVEDEMO transaction & save update document");
 
     // AKDEBUG block 1 open
-    logger.info("ENTITYUPDATESAVEDEMO  open transaction");
+    logger.info("ENTITYUPDATESAVEDEMO open transaction");
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
 
-    const transactionID = await postTransaction(req, session);
+    if (appData.entity && !appData.entity.registration_number) {
+      appData.entity.registration_number = appData.oe_number;
+    }
 
+    const transactionID = await postTransaction(req, session);
     appData[Transactionkey] = transactionID;
     setExtraData(session, appData);
 
     // AKDEBUG block 2 save doc
-    logger.info("ENTITYUPDATESAVEDEMO save submission");
+    logger.info("ENTITYUPDATESAVEDEMO save submission **********>>>> " + appData.entity?.registration_number);
 
     try {
       const overseasEntityID = await createOverseasEntity(req, session, transactionID);

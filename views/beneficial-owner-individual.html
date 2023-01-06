@@ -60,13 +60,10 @@
         {% set sanctionsListHintText = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
         {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
-        {{ govukInsetText({
-          html: "
-            <h2 class='govuk-heading-m'>Information shown on the public register</h2>
-            <p class='govuk-body'>The beneficial owner's home address will not be shown unless it is the same as their correspondence address. Only the month and year of their date of birth will be shown.</p>
-            <p class='govuk-body'>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
-          "
-        }) }}
+        {% set headerBlock = '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>' %}
+        {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
+        {% set paragraphTwo = '<p>We will show all other information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+        {% include "includes/inset-text.html" %}
 
         {% include "includes/save-and-continue-button.html" %}
 

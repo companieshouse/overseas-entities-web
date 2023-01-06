@@ -16,7 +16,8 @@
 
     {% include "includes/list/errors.html" %}
 
-    <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">Overseas Entity {{ entityName }}</span>
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     {{ govukDetails({
       summaryText: "What is an overseas entity?",
@@ -27,18 +28,6 @@
     }) }}
 
     <form method="post">
-
-      {{ govukInput({
-        errorMessage: errors.name if errors,
-        label: {
-          text: "What is the name of the overseas entity?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "name",
-          name: "name",
-          value: name
-      }) }}
 
       {% set countryField = incorporation_country if incorporation_country else '' %}
       {% set countryFieldNameId = "incorporation_country" %}

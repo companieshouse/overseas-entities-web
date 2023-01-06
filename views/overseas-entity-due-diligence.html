@@ -19,7 +19,7 @@
       <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out identity checks</h1>
 
       <form method="post">
-        {% set identityDateLabelText = "When were the identity checks completed? (optional)" %}
+        {% set identityDateLabelText = "When did the agent complete the verification checks? (optional)" %}
         {% include "includes/inputs/date/identity-date-input.html" %}
 
         {% set nameFieldText = "What is their name?" %}
@@ -41,9 +41,9 @@
         {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance" %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 
-        {% set headerBlock = '<h2 class="govuk-heading-m">Information shown on the public register</h2>' %}
-        {% set paragraphOne = '<p>The email address will not be shown.</p>' %}
-        {% set paragraphTwo = '<p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>' %}
+        {% set headerBlock = '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>' %}
+        {% set paragraphOne = '<p>We will not show the email address.</p>' %}
+        {% set paragraphTwo = '<p>We will show all other information you provide on this screen on the public Register of Overseas Entities.</p>' %}
         {% include "includes/inset-text.html" %}
 
         {% include "includes/save-and-continue-button.html" %}

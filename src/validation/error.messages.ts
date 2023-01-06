@@ -46,7 +46,7 @@ export enum ErrorMessages {
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   // Date
-  DAY = "Date must include a day ",
+  DAY = "Date must include a day",
   MONTH = "Date must include a month",
   YEAR = "Date must include a year",
   YEAR_LENGTH = "Year must be 4 digits",

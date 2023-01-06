@@ -21,6 +21,7 @@ import {
   dueDiligenceType
 } from "../../src/model";
 import {
+  EntityNameKey,
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,
@@ -171,7 +172,6 @@ export const RESIDENTIAL_ADDRESS_MOCK = {
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: 1,
@@ -192,7 +192,6 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: "email@test.gov.uk",
@@ -207,7 +206,6 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: " " + EMAIL_ADDRESS + " ",
@@ -722,6 +720,8 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO
   registration_number: "123456"
 };
 
+export const OVERSEAS_NAME_MOCK = "Overseas Entity Name";
+
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: EMAIL_ADDRESS
@@ -874,6 +874,7 @@ export const TRUST_WITH_ID: Trust = {
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,

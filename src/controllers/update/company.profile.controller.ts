@@ -4,7 +4,6 @@ import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { OeErrorKey } from "../../model/data.types.model";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
@@ -14,19 +13,27 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id: string | any = appData?.oe_number;
+    const id: string = appData?.oe_number as string;
     const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     if (!companyDataResponse){
-      return onOeError(req, res, id);
+      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
-    appData.entity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+
+    const entity = mapCompanyProfileToOverseasEntity(companyDataResponse);
+    appData.entity = entity;
+    const oeName = entity.name ?? "";
+    const oeAddress = (entity.principal_address?.property_name_number ? entity.principal_address?.property_name_number + " " : "") +
+      (entity.principal_address?.line_1 ? entity.principal_address?.line_1 + " " : "") +
+      (entity.principal_address?.town ? entity.principal_address?.town : "");
+
     setExtraData(req.session, appData);
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-      appData,
-      registrationDate: companyDataResponse.dateOfCreation
+      oeName,
+      oeAddress,
+      registrationDate: companyDataResponse.dateOfCreation ?? ""
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);
@@ -42,10 +49,4 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, errors);
     next(errors);
   }
-};
-
-const onOeError = (req: Request, res: Response, oeNumber: string): void => {
-  const errorList = `The Overseas Entity with OE number "${oeNumber}" is not valid or does not exist.`;
-  setExtraData(req.session, { ...getApplicationData(req.session), [OeErrorKey]: errorList });
-  return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
 };

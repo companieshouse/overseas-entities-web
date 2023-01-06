@@ -77,5 +77,5 @@ export const RegistrationNumberKey = "registration_number";
 
 // Update Journey
 export const OeNumberKey = "oe_number";
-export const OeErrorKey = "oe_error";
+
 

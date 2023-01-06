@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/service/company.profile');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -23,6 +24,7 @@ import { deleteApplicationData, getApplicationData, setExtraData } from "../../.
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { getCompanyProfile } from "../../../src/service/company.profile";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -33,6 +35,8 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockGetCompanyDetails = getCompanyProfile as jest.Mock;
+
 const mockSetExtraData = setExtraData as jest.Mock;
 const htmlDecodedString = "OE number must be &quot;OE&quot; followed by 6 digits";
 
@@ -56,6 +60,8 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
+      mockGetCompanyDetails.mockReturnValueOnce(undefined);
+
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);

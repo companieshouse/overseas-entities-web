@@ -4,7 +4,6 @@ import { Entity } from "../../model/entity.model";
 
 export const mapCompanyProfileToOverseasEntity = (cp: CompanyProfile): Entity => {
   return {
-    name: cp.companyName,
     registration_number: cp.companyNumber,
     law_governed: cp.foreignCompanyDetails?.governedBy,
     legal_form: cp.foreignCompanyDetails?.legalForm,

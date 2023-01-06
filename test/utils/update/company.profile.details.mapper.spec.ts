@@ -17,7 +17,6 @@ describe("Test company profile details mapping", () => {
 
   test('map company details to overseas entity should return object', () => {
     expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
-      name: companyDetailsMock.companyName,
       email: "",
       registration_number: companyDetailsMock.companyNumber,
       law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,

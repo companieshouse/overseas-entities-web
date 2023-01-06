@@ -16,6 +16,7 @@ import { whoIsMakingFiling } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
 import { signOut } from "./sign.out.validation";
+import { overseasName } from "./overseas.name.validation";
 
 export const validator = {
   soldLandFilter,
@@ -35,5 +36,6 @@ export const validator = {
   overseasEntityDueDiligence,
   trustInformation,
   beneficialOwnerDeleteWarning,
-  signOut
+  signOut,
+  overseasName
 };

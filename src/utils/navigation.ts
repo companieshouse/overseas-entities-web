@@ -28,11 +28,16 @@ export const NAVIGATION: Navigation = {
   [config.INTERRUPT_CARD_URL]: {
     currentPage: config.INTERRUPT_CARD_PAGE,
     previousPage: () => config.SECURE_REGISTER_FILTER_URL,
+    nextPage: [config.OVERSEAS_NAME_URL]
+  },
+  [config.OVERSEAS_NAME_URL]: {
+    currentPage: config.OVERSEAS_NAME_PAGE,
+    previousPage: () => config.INTERRUPT_CARD_URL,
     nextPage: [config.PRESENTER_URL]
   },
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
-    previousPage: () => config.INTERRUPT_CARD_URL,
+    previousPage: () => config.OVERSEAS_NAME_URL,
     nextPage: [config.WHO_IS_MAKING_FILING_URL]
   },
   [config.WHO_IS_MAKING_FILING_URL]: {

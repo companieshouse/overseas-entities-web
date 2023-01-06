@@ -46,6 +46,8 @@ export const InputDateKeys: string[] = [
 
 export const LANDING_PAGE_QUERY_PARAM = "start";
 
+export const EntityNameKey = "entity_name";
+
 // BOs and MOs ID field name
 export const ID = "id";
 
@@ -77,4 +79,3 @@ export const RegistrationNumberKey = "registration_number";
 
 // Update Journey
 export const OeNumberKey = "oe_number";
-export const companyProfileKey = "company_profile_details";

@@ -19,6 +19,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (!companyDataResponse){
       return onOeError(res);
     }
+    appData.entity_name = companyDataResponse.companyName;
     const overseasEntity = mapCompanyProfileToOverseasEntity(companyDataResponse);
     appData.entity = overseasEntity;
     setExtraData(req.session, appData);

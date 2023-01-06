@@ -10,6 +10,7 @@ import { Trust, TrustKey } from '../model/trust.model';
 
 const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
+  subtitle: 'You can add more trusts later.'
 };
 
 const get = (
@@ -36,6 +37,7 @@ const get = (
         templateName,
         pageParams: {
           title: TRUST_DETAILS_TEXTS.title,
+          subtitle: TRUST_DETAILS_TEXTS.subtitle
         },
         pageData,
       },

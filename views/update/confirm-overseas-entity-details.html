@@ -24,7 +24,7 @@
           }
         },
         {
-          text: appData.entity.name,
+          text: appData.entity_name,
           attributes: {
             "id": "oe_entity_name_value"
           }
@@ -38,7 +38,7 @@
           }
         },
         {
-          text: "" if appData.entity.name === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
+          text: "" if appData.entity.registration_number === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
           attributes: {
             "id": "oe_entity_address_value"
           }

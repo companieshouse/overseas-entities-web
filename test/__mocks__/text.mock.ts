@@ -116,6 +116,7 @@ export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For exam
 export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
 export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

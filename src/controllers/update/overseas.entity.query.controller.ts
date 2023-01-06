@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const oeNumber = req.body[OeNumberKey];
 
-    setExtraData(req.session, { [OeNumberKey]: oeNumber });
+    setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
 
   } catch (error) {
@@ -35,3 +35,4 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+

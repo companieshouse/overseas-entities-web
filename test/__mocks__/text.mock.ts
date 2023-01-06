@@ -10,7 +10,7 @@ export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government o
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
 export const BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-type";
-export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";
+export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Has the overseas entity identified any registrable beneficial owners?";
 export const BENEFICIAL_OWNER_DELETE_WARNING_PAGE_HEADING = "Are you sure you want to change this information?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Which type of beneficial owner or managing officer do you want to add?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS = "Which type of beneficial owner do you want to add?";
@@ -61,8 +61,8 @@ export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Enti
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Have any registrable beneficial owners been identified?";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and all required information can be provided";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Has the overseas entity identified any registrable beneficial owners?";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and I can provide all required information";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE = "Corporate beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
@@ -117,6 +117,7 @@ export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For exam
 export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
 export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

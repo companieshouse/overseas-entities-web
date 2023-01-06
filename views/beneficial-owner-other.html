@@ -68,12 +68,10 @@
         {% set sanctionsListHintText = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
         {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
-        {{ govukInsetText({
-          html: '
-           <h2 class="govuk-heading-m">Information shown on the public register</h2>
-           <p class="govuk-body">All information provided in this section about the other legal entity will be shown on the public Register of Overseas Entities.</p>
-          '
-        }) }}
+        {% set headerBlock = '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>' %}
+        {% set paragraphOne = '<p>We will show all the information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+        {% set paragraphTwo = '' %}
+        {% include "includes/inset-text.html" %}
 
         {% include "includes/save-and-continue-button.html" %}
 

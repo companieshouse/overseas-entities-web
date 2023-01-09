@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
+import { isValidUrl } from '../utils/validate.url';
 import { getApplicationData } from '../utils/application.data';
 import * as mapperToPageService from '../utils/trust/mapper.to.page';
 import { ApplicationData } from '../model/application.model';
@@ -56,7 +57,9 @@ const post = (
 
     const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
 
-    return res.redirect(url);
+    if (isValidUrl(url)) {
+      return res.redirect(url);
+    }
 
   } catch (error) {
     logger.errorRequest(req, error);

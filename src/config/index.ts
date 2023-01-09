@@ -69,6 +69,7 @@ export const NOT_FOUND_PAGE = "page-not-found";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE = "overseas-entity-due-diligence";
 export const PRESENTER_PAGE = "presenter";
 export const SECURE_REGISTER_FILTER_PAGE = "secure-register-filter";
+export const SECURE_UPDATE_FILTER_PAGE = "secure-update-filter";
 export const SERVICE_OFFLINE_PAGE = "service-offline";
 export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
 export const TRUST_INFO_PAGE = "trust-information";
@@ -133,6 +134,7 @@ export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL = '/' + TRUST_LEGAL_ENTITY_
 
 // UPDATE overseas entity routes
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
+export const SECURE_UPDATE_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + SECURE_UPDATE_FILTER_PAGE;
 export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
 export const UPDATE_OVERSEAS_ENTITY_CONFIRM_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
 export const UPDATE_CONFIRMATION_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CONFIRMATION_PAGE;

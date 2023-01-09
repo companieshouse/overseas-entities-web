@@ -13,6 +13,7 @@ export default () => {
   process.env.PAYMENT_FEE = "100";
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.UPDATE_LANDING_PAGE_URL = "/update-an-overseas-entity/overseas-entity-query";
+  process.env.UPDATE_CONFIRMATION_LANDING_PAGE_URL = "/update-an-overseas-entity-confirmation";
   process.env.OAUTH2_CLIENT_ID = "clientId";
   process.env.OAUTH2_CLIENT_SECRET = "123";
   process.env.ACCOUNT_URL = "account.ch";

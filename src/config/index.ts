@@ -34,7 +34,7 @@ export const PAYMENT_PAID = "paid";
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
 export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
 export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');
-export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'false');
+export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'true');
 export const FEATURE_FLAG_ENABLE_ROE_REMOVE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022', 'false');
 
 // TEMPLATEs
@@ -55,6 +55,7 @@ export const HEALTHCHECK_PAGE = "healthcheck";
 export const INTERRUPT_CARD_PAGE = "interrupt-card";
 export const LANDING_PAGE = "landing";
 export const UPDATE_LANDING_PAGE = "update-landing";
+export const UPDATE_CONFIRMATION_PAGE = "update-confirmation";
 export const OVERSEAS_ENTITY_QUERY_PAGE = "overseas-entity-query";
 export const MANAGING_OFFICER_PAGE = "managing-officer";
 export const MANAGING_OFFICER_CORPORATE_PAGE = "managing-officer-corporate";
@@ -78,6 +79,7 @@ export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
+export const UPDATE_CONFIRMATION_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CONFIRMATION_PAGE;
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
 export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;

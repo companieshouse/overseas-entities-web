@@ -32,9 +32,10 @@ import {
   confirmOverseasEntityDetails,
   signOut,
   trustDetails,
+  trustInvolved,
   resumeSubmission,
   overseasName,
-  trustInvolved,
+  startingNew
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -57,6 +58,9 @@ router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
+
+router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
+router.post(config.STARTING_NEW_URL, authentication, ...validator.startingNew, checkValidations, startingNew.post);
 
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);

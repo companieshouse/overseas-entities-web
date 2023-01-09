@@ -29,6 +29,7 @@ export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
+export const YOUR_FILINGS_PATH = "/user/transactions";
 
 //  FEATURE FLAGS
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
@@ -69,6 +70,8 @@ export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 export const OVERSEAS_NAME_PAGE = "overseas-name";
 export const SIGN_OUT_PAGE = "sign-out";
+export const STARTING_NEW_PAGE = "starting-new";
+
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
@@ -104,6 +107,8 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL
 export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
 export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
 export const OVERSEAS_NAME_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_NAME_PAGE;
+export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_PAGE;
+
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;

@@ -9,10 +9,11 @@ import { DESCRIPTION, REFERENCE } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
+import { EntityNameKey } from "../model/data.types.model";
 
 export const postTransaction = async (req: Request, session: Session): Promise<string> => {
   const applicationData: ApplicationData = getApplicationData(session);
-  const companyName = applicationData.entity?.name;
+  const companyName = applicationData[EntityNameKey];
 
   const transaction: Transaction = { reference: REFERENCE, companyName, description: DESCRIPTION };
 

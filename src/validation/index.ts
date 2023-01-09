@@ -9,18 +9,22 @@ import { entity } from "./entity.validation";
 import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
 import { managingOfficerIndividual } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
+import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
 import { trustInformation } from "./trust.information.validation";
 import { whoIsMakingFiling } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
 import { signOut } from "./sign.out.validation";
+import { overseasName } from "./overseas.name.validation";
+import { startingNew } from "./starting.new.validation";
 
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
   entity,
   presenter,
+  overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,
   managingOfficerIndividual,
@@ -33,5 +37,7 @@ export const validator = {
   overseasEntityDueDiligence,
   trustInformation,
   beneficialOwnerDeleteWarning,
-  signOut
+  signOut,
+  overseasName,
+  startingNew
 };

@@ -29,6 +29,7 @@ export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
+export const YOUR_FILINGS_PATH = "/user/transactions";
 
 //  FEATURE FLAGS
 export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLINE_PAGE");
@@ -67,20 +68,22 @@ export const SOLD_LAND_FILTER_PAGE = "sold-land-filter";
 export const TRUST_INFO_PAGE = "trust-information";
 export const USE_PAPER_PAGE = "use-paper";
 export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
+export const OVERSEAS_NAME_PAGE = "overseas-name";
 export const SIGN_OUT_PAGE = "sign-out";
+export const STARTING_NEW_PAGE = "starting-new";
+
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
+export const UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
 export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
-export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
-export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
 export const BENEFICIAL_OWNER_GOV_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_GOV_PAGE;
 export const BENEFICIAL_OWNER_STATEMENTS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_STATEMENTS_PAGE;
 export const BENEFICIAL_OWNER_TYPE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + BENEFICIAL_OWNER_TYPE_PAGE;
@@ -104,12 +107,20 @@ export const DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + DUE_DILIGENCE
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE;
 export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
 export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
-export const CONFIRM_OVERSEAS_COMPANY_PROFILES_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
+export const OVERSEAS_NAME_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_NAME_PAGE;
+export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_PAGE;
+
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;
 export const TRUST_INVOLVED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INVOLVED_PAGE;
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = "/trust-historical-beneficial-owner";
+
+// UPDATE overseas entity routes
+export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
+export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
+export const UPDATE_OVERSEAS_ENTITY_CONFIRM_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
+export const UPDATE_ENTITY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
 
 // URL PARAMS
 export const ID = "/:id"; // Same param name as the ID in the data model
@@ -161,10 +172,11 @@ export const ROLE_AND_RESPONSIBILITIES = "#role_and_responsibilities";
 export const CONTACT_FULL_NAME = "#contact_full_name";
 export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
+export const INCORPORATION_COUNTRY = "#incorporation_country";
 
+export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + "#entity_name";
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
 export const PRESENTER_CHANGE_EMAIL = PRESENTER_URL + EMAIL;
-export const ENTITY_CHANGE_NAME = ENTITY_URL + NAME;
 export const ENTITY_CHANGE_COUNTRY = ENTITY_URL + "#incorporation_country";
 export const ENTITY_CHANGE_PRINCIPAL_ADDRESS = ENTITY_URL + CHANGE_PRINCIPAL_ADDRESS;
 export const ENTITY_CHANGE_CORRESPONDENCE_ADDRESS = ENTITY_URL + CHANGE_SERVICE_ADDRESS;

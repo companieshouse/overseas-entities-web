@@ -17,6 +17,7 @@ export enum ErrorMessages {
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
   OE_DUE_DILIGENCE_NAME = "Enter the name of the person or company that carried out identity checks",
+  OE_QUERY_NUMBER = "Enter the OE number",
   AGENT_CODE = "Enter the agent assurance code",
   PARTNER_NAME = "Enter the name of the person with overall responsibility for identity checks",
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
@@ -45,7 +46,7 @@ export enum ErrorMessages {
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   // Date
-  DAY = "Date must include a day ",
+  DAY = "Date must include a day",
   MONTH = "Date must include a month",
   YEAR = "Date must include a year",
   YEAR_LENGTH = "Year must be 4 digits",
@@ -79,6 +80,7 @@ export enum ErrorMessages {
   SELECT_NATURE_OF_CONTROL = "Select the nature of control",
   SELECT_IF_YOU_WANT_TO_CHANGE_INFORMATION = "Select yes if you want to change this information",
   SELECT_IF_SIGN_OUT = "Select yes if you are sure you want to sign out",
+  SELECT_IF_CONTINUE_SAVED_APPLICATION = "Select yes if you want to continue with a saved application",
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
@@ -133,4 +135,5 @@ export enum ErrorMessages {
   ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS = "Role and responsibilities must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
+  INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
 }

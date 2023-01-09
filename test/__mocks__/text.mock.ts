@@ -1,4 +1,5 @@
 export const SERVICE_UNAVAILABLE = "Sorry, the service is unavailable";
+export const STARTING_NEW_PAGE_TITLE = "Do you want to continue with a saved application?";
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?";
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
@@ -9,7 +10,7 @@ export const BENEFICIAL_OWNER_GOV_PAGE_HEADING = "Tell us about the government o
 export const BENEFICIAL_OWNER_OTHER_PAGE_HEADING = "Tell us about the other legal entity";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-statements";
 export const BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/beneficial-owner-type";
-export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Have you identified any beneficial owners?";
+export const BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING = "Has the overseas entity identified any registrable beneficial owners?";
 export const BENEFICIAL_OWNER_DELETE_WARNING_PAGE_HEADING = "Are you sure you want to change this information?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING = "Which type of beneficial owner or managing officer do you want to add?";
 export const BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS = "Which type of beneficial owner do you want to add?";
@@ -37,6 +38,7 @@ export const NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR = "No resource in payment
 export const PAYMENT_RESPONSE_500_MSG_ERROR = "payment.service failure to create payment, http response status code=500, http errors response=[{\"error\":\"Any error message\"}].";
 export const PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR = "payment.service failure to create payment, http response status code=No Status Code found in response, http errors response=\"No Errors found in response\".";
 export const PRESENTER_PAGE_TITLE = "Who can we contact about this application?";
+export const OVERSEAS_NAME_PAGE_TITLE = "What is the name of the overseas entity?";
 export const ENTITY_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/entity";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the individual person";
 export const MANAGING_OFFICER = "Managing officer";
@@ -59,8 +61,8 @@ export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Enti
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Have any registrable beneficial owners been identified?";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and all required information can be provided";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Has the overseas entity identified any registrable beneficial owners?";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and I can provide all required information";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE = "Corporate beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
@@ -68,7 +70,7 @@ export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual ma
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE = "Corporate managing officer";
 export const CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE = "Trust details";
 export const SECURE_REGISTER_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House?";
-export const CANNOT_USE_SERVICE_HEADING = "You cannot use this service";
+export const CANNOT_USE_SERVICE_HEADING = "You'll need to apply using the paper form";
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
@@ -78,15 +80,21 @@ export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
 export const RADIO_BUTTON_SOMEONE_ELSE_SELECTED = "value=\"someone_else\" checked";
 export const INCORPORATION_COUNTRY_OPTION_SELECTED = "value=\"Taiwan\" selected";
 export const UNITED_KINGDOM_COUNTRY_OPTION_SELECTED = "value=\"United Kingdom\" selected";
-export const INFORMATION_ON_PUBLIC_REGISTER = "All of the information provided in this section will be shown on the public Register of Overseas Entities.";
 export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information provided in this section will be shown on the public Register of Overseas Entities.";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
-export const OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
+export const OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body? (optional)";
+export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT = "For example, tell us the name of the Head of Compliance";
 export const DUE_DILIGENCE_NAME_TEXT = "What is the agent’s name?";
-export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "The email address, agent assurance code and date the identity checks were completed will not be shown.";
+export const ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all other information you provide on this screen on the public Register of Overseas Entities.";
+export const DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks?";
+export const DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address, agent assurance code and date the verification checks were completed.";
 export const DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request.";
+export const DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body?";
+export const DUE_DILIGENCE_PARTNER_NAME_LABEL_TEXT = "What is the name of the person with overall responsibility for identity checks?";
 export const DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request.";
 export const AGENT_REGISTERING = "The UK agent";
 export const SOMEONE_ELSE_REGISTERING = "Someone from the overseas entity";
@@ -106,6 +114,11 @@ export const REGISTRATION_NUMBER_LABEL = "Entity’s registration number";
 export const JURISDICTION_FIELD_LABEL = "Jurisdiction";
 export const PUBLIC_REGISTER_HINT_TEXT = "Include its jurisdiction. For example, Hong Kong or State of Delaware.";
 export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For example, Jersey Financial Services Commission.";
+export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
+export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
+export const NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
@@ -121,4 +134,8 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
-export const OE_NUMBER_FIELD_POPULATED = "value=\"12345678\"";
+export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registered overeseas entity";
+export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
+export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
+export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
+export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";

@@ -1,0 +1,65 @@
+{% extends "layout.html" %}
+
+{% set title = "Do you want to continue with a saved application?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+
+        {{ govukRadios({
+          errorMessage: errors.continue_saved_application if errors,
+          classes: "govuk-radios",
+          idPrefix: "continue_saved_application",
+          name: "continue_saved_application",
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }  
+          },
+          hint: {
+            text: "If you have saved applications, you can continue with one of these or start a new one. "
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes - continue with a saved application",
+              hint: {
+                text: "You’ll be able to choose which application you want to continue with."
+              },
+              attributes: {
+                "data-event-id": "yes-continue-saved-application"
+              }
+            },
+            {
+              value: "no",
+              text: "No - start a new application",
+              hint: {
+                text: "This will not delete any saved applications."
+              },
+              attributes: {
+                "data-event-id": "no-starting-new-application"
+              }
+            }
+          ]
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

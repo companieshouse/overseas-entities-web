@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-      [OeNumberKey]: appData?.[OeNumberKey]
+      [OeNumberKey]: appData?.[OeNumberKey],
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -28,10 +28,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const oeNumber = req.body[OeNumberKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
-    return res.redirect(config.CONFIRM_OVERSEAS_COMPANY_PROFILES_URL);
+    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
 
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
+

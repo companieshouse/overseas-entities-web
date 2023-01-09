@@ -82,6 +82,7 @@ import {
   TRUST_WITH_ID,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
+  OVERSEAS_NAME_MOCK,
 } from "../__mocks__/session.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -141,9 +142,9 @@ describe("GET tests", () => {
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+    expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
     expect(resp.text).toContain("fullName");
     expect(resp.text).toContain("user@domain.roe");
-    expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("BY 2");
@@ -171,9 +172,9 @@ describe("GET tests", () => {
     expect(resp.text).toContain(LANDING_PAGE_URL);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain(CHANGE_LINK);
+    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_NAME);
     expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_FULL_NAME);
     expect(resp.text).toContain(CHANGE_LINKS.PRESENTER_CHANGE_EMAIL);
-    expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_NAME);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_COUNTRY);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_PRINCIPAL_ADDRESS);
     expect(resp.text).toContain(CHANGE_LINKS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS);
@@ -419,7 +420,6 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).toContain("overseasEntityName");
     expect(resp.text).toContain("incorporationCountry");
     expect(resp.text).toContain("addressLine1");
     expect(resp.text).toContain("BY 2");
@@ -504,9 +504,12 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
+
+    // Overseas name
+    expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
 
     // Beneficial Owner Individual
-    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TITLE);
     expect(resp.text).toContain("Ivan");
     expect(resp.text).toContain("Drago");
     expect(resp.text).toContain("March");

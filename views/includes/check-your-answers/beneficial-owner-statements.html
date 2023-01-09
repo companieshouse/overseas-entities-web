@@ -1,14 +1,14 @@
 {% set statementText %}
     {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
-      All beneficial owners have been identified and all required information can be provided
+      All beneficial owners have been identified and I can provide all the required information
     {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
-      Some beneficial owners have been identified and all required information can be provided
+      Some beneficial owners have been identified and I can provide all required information
     {% elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" %}
       No beneficial owners have been identified
     {% endif %}
 {% endset %}
 
-<h2 class="govuk-heading-l">Have any registrable beneficial owners been identified?</h2>
+<h2 class="govuk-heading-l">Has the overseas entity identified any registrable beneficial owners?</h2>
 
 {{ govukSummaryList({
     rows: [

@@ -80,18 +80,18 @@
         }) }}
 
         {% set fieldParam = {
-          name: 'createdDate',
+          name: 'startDate',
           label: 'When did they become a beneficial owner?',
           hint: 'For example, 27 3 2007',
-          error: errors.createdDate
+          error: errors.startDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'createdDate',
+          name: 'endDate',
           label: 'When did they stop being a beneficial owner?',
           hint: 'For example, 28 5 2011',
-          error: errors.createdDate
+          error: errors.endDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 

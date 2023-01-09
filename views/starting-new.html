@@ -19,10 +19,10 @@
       <form method="post">
 
         {{ govukRadios({
-          errorMessage: errors.starting_new if errors,
+          errorMessage: errors.continue_saved_application if errors,
           classes: "govuk-radios",
-          idPrefix: "starting_new",
-          name: "starting_new",
+          idPrefix: "continue_saved_application",
+          name: "continue_saved_application",
           fieldset: {
             legend: {
               text: title,

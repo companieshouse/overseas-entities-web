@@ -44,7 +44,7 @@ describe("Starting new controller", () => {
     test(`renders the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ starting_new: 'yes' });
+        .send({ continue_saved_application: 'yes' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.YOUR_FILINGS_PATH);
@@ -54,7 +54,7 @@ describe("Starting new controller", () => {
     test(`redirects to the ${config.SOLD_LAND_FILTER_URL} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ starting_new: 'no' });
+        .send({ continue_saved_application: 'no' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${config.SOLD_LAND_FILTER_URL}?start=0`);
@@ -67,7 +67,7 @@ describe("Starting new controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(STARTING_NEW_PAGE_TITLE);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(ErrorMessages.SELECT_IF_STARTING_NEW);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_CONTINUE_SAVED_APPLICATION);
     });
   });
 });

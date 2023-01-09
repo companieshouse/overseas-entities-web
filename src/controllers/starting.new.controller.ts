@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response, _: NextFunction) => {
 export const post = (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `POST ${config.STARTING_NEW_PAGE}`);
 
-  if (req.body["starting_new"] === 'yes') {
+  if (req.body["continue_saved_application"] === 'yes') {
     return res.redirect(config.YOUR_FILINGS_PATH);
   }
 

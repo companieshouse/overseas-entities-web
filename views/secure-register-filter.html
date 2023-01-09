@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 
-{% set title = "Do any beneficial owners or managing officers have their personal information protected at Companies House?" %}
+{% set title %}
+  Do any beneficial owners or managing officers have their personal information protected at Companies House? {{notLiveTitle}} 
+{% endset %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -24,7 +26,7 @@
           name: "is_secure_register",
           fieldset: {
             legend: {
-              text: "Do any beneficial owners or managing officers have their personal information protected at Companies House?",
+              text: title,
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
             }

@@ -32,6 +32,7 @@ export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.o
 export * as overseasName from "./overseas.name.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
+export * as secureUpdateFilter from "./update/secure.update.filter.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";

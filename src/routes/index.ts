@@ -24,6 +24,7 @@ import {
   payment,
   soldLandFilter,
   secureRegisterFilter,
+  secureUpdateFilter,
   trustInformation,
   usePaper,
   whoIsMakingFiling,
@@ -186,11 +187,18 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
+
+router.get(config.SECURE_UPDATE_FILTER_URL, authentication, secureUpdateFilter.get);
+router.post(config.SECURE_UPDATE_FILTER_URL, authentication, ...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
+
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+
 router.get(config.OVERSEAS_ENTITY_REVIEW_URL, authentication, overseasEntityReview.get);
+
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 

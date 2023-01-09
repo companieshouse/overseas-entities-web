@@ -7,4 +7,4 @@ export const VALID_CHARACTERS_FOR_TEXT_BOX = /^[-,.:; 0-9A-Z&@$£¥€'"«»''""
 export const VALID_EMAIL_FORMAT = /^.+@.+\..+$/;
 
 // Valid OE number characters
-export const VALID_OE_NUMBER_FORMAT = /OE\d{6}/;
+export const VALID_OE_NUMBER_FORMAT = /^OE\d{6}$/;

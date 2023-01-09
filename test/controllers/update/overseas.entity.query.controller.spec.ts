@@ -100,22 +100,17 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(htmlDecodedString);
     });
 
-    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message', async () => {
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: 'OE123' });
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(htmlDecodedString);
-      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
-    });
+    const invalid_input_values = ['OE123', 'EO123456', 'OE123456789'];
 
-    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with correct error message when input contains EO', async () => {
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: 'EO123456' });
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(htmlDecodedString);
-      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
-    });
+    test.each(invalid_input_values)(
+      "given %p, renders OVERSEAS_ENTITY_QUERY_PAGE with validator failure", async (input_value) => {
+        const resp = await request(app)
+          .post(config.OVERSEAS_ENTITY_QUERY_URL)
+          .send({ oe_number: input_value });
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(htmlDecodedString);
+        expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+      }
+    );
   });
 });

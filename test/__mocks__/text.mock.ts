@@ -115,7 +115,8 @@ export const PUBLIC_REGISTER_HINT_TEXT = "Include its jurisdiction. For example,
 export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For example, Jersey Financial Services Commission.";
 export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
 export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
-export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
+export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";

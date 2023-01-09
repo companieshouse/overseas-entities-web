@@ -39,13 +39,14 @@ import {
   REMOVE
 } from "../../src/config";
 import {
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   JURISDICTION_FIELD_LABEL,
   MANAGING_OFFICER_CORPORATE_PAGE_TITLE,
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE, SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../__mocks__/text.mock";
 import {
   getFromApplicationData,
@@ -102,6 +103,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {

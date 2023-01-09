@@ -78,12 +78,10 @@
         value: contact_email
       }) }}
 
-      {{ govukInsetText({
-        html: '
-          <h2 class="govuk-heading-m">Information shown on the public register</h2>
-          <p class="govuk-body">All information provided in this section will be shown on the public Register of Overseas Entities.</p>
-        '
-      }) }}
+      {% set headerBlock = '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>' %}
+      {% set paragraphOne = '<p>We will show all the information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+      {% set paragraphTwo = '' %}
+      {% include "includes/inset-text.html" %}
 
       {% include "includes/save-and-continue-button.html" %}
 

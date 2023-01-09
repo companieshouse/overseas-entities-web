@@ -1,0 +1,49 @@
+import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
+import { describe, expect, test } from '@jest/globals';
+import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.oversea.entity';
+import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
+import { yesNoResponse } from "../../../src/model/data.types.model";
+import { companyDetailsMock } from './mocks';
+
+describe("Test company profile details mapping", () => {
+
+  test(`That company details maps data correctly`, () => {
+    expect(mapCompanyProfileToOverseasEntity(OVER_SEAS_ENTITY_MOCK_DATA)).resolves;
+  });
+
+  test(`error is thrown when undefined data is parsed to data mapper`, () => {
+    expect(mapCompanyProfileToOverseasEntity({} as CompanyProfile)).toThrowError;
+  });
+
+  test('map company details to overseas entity should return object', () => {
+    expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
+      email: "",
+      registration_number: companyDetailsMock.companyNumber,
+      law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
+      legal_form: companyDetailsMock.foreignCompanyDetails?.legalForm,
+      incorporation_country: companyDetailsMock.jurisdiction,
+      principal_address: {
+        country: companyDetailsMock.registeredOfficeAddress.country,
+        county: companyDetailsMock.registeredOfficeAddress.region,
+        line_1: companyDetailsMock.registeredOfficeAddress.addressLineOne,
+        line_2: companyDetailsMock.registeredOfficeAddress.addressLineTwo,
+        postcode: companyDetailsMock.registeredOfficeAddress.postalCode,
+        property_name_number: companyDetailsMock.registeredOfficeAddress.premises,
+        town: companyDetailsMock.registeredOfficeAddress?.locality,
+      },
+      service_address: {
+        country: companyDetailsMock.serviceAddress?.country,
+        county: companyDetailsMock.serviceAddress?.region,
+        line_1: companyDetailsMock.serviceAddress?.addressLineOne,
+        line_2: companyDetailsMock.serviceAddress?.addressLineTwo,
+        postcode: companyDetailsMock.serviceAddress?.postalCode,
+        property_name_number: companyDetailsMock.serviceAddress?.premises,
+        town: companyDetailsMock.serviceAddress?.locality,
+      },
+      public_register_jurisdiction: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
+      is_service_address_same_as_principal_address: yesNoResponse.No
+    });
+  });
+});

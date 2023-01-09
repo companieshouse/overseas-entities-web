@@ -37,7 +37,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     // If multiple selected, data is an array.
     const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
 
-    const trustData: trustType.Trust[] = JSON.parse(req.body.trusts);
+    const trustData: trustType.Trust[] = JSON.parse(req.body.trusts, (key, value) => {
+      if (typeof value === "string") {
+        return value.trim();
+      } else {
+        return value;
+      }
+    });
+
     const trustsReq: trustType.Trusts = {
       trusts: trustData
     };

@@ -29,11 +29,14 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
+  confirmOverseasEntityDetails,
   signOut,
   trustDetails,
   trustInvolved,
   trustHistoricalbeneficialOwner,
   resumeSubmission,
+  overseasName,
+  startingNew
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -57,6 +60,9 @@ router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
+router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
+router.post(config.STARTING_NEW_URL, authentication, ...validator.startingNew, checkValidations, startingNew.post);
+
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
@@ -69,8 +75,11 @@ router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePape
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
-router.get(config.PRESENTER_URL, authentication, navigation.isSecureRegister, presenter.get);
-router.post(config.PRESENTER_URL, authentication, navigation.isSecureRegister, ...validator.presenter, checkValidations, presenter.post);
+router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
+router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+
+router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
+router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
@@ -168,8 +177,8 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
-
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.post);
-
+router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
 export default router;

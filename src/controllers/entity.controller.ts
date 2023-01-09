@@ -11,6 +11,7 @@ import { EntityKey, EntityKeys } from "../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../model";
 import {
   AddressKeys,
+  EntityNameKey,
   HasSamePrincipalAddressKey,
   IsOnRegisterInCountryFormedInKey,
   PublicRegisterJurisdictionKey,
@@ -41,6 +42,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.ENTITY_PAGE, {
       backLinkUrl: getEntityBackLink(appData),
       templateName: config.ENTITY_PAGE,
+      entityName: appData[EntityNameKey],
       ...entity,
       ...principalAddress,
       ...serviceAddress

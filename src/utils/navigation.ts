@@ -10,10 +10,20 @@ export const getEntityBackLink = (data: ApplicationData): string => {
 };
 
 export const NAVIGATION: Navigation = {
+  [config.STARTING_NEW_URL]: {
+    currentPage: config.STARTING_NEW_PAGE,
+    previousPage: () => config.LANDING_PAGE_URL,
+    nextPage: [config.SOLD_LAND_FILTER_URL, config.YOUR_FILINGS_PATH]
+  },
   [config.SOLD_LAND_FILTER_URL]: {
     currentPage: config.SOLD_LAND_FILTER_PAGE,
-    previousPage: () => config.LANDING_PAGE_URL,
+    previousPage: () => config.LANDING_PAGE_URL, // TBD on ROE-1701
     nextPage: [config.SECURE_REGISTER_FILTER_URL]
+  },
+  [config.OVERSEAS_ENTITY_QUERY_URL]: {
+    currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
+    previousPage: () => config.UPDATE_LANDING_PAGE_URL,
+    nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
@@ -23,11 +33,16 @@ export const NAVIGATION: Navigation = {
   [config.INTERRUPT_CARD_URL]: {
     currentPage: config.INTERRUPT_CARD_PAGE,
     previousPage: () => config.SECURE_REGISTER_FILTER_URL,
+    nextPage: [config.OVERSEAS_NAME_URL]
+  },
+  [config.OVERSEAS_NAME_URL]: {
+    currentPage: config.OVERSEAS_NAME_PAGE,
+    previousPage: () => config.INTERRUPT_CARD_URL,
     nextPage: [config.PRESENTER_URL]
   },
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
-    previousPage: () => config.INTERRUPT_CARD_URL,
+    previousPage: () => config.OVERSEAS_NAME_URL,
     nextPage: [config.WHO_IS_MAKING_FILING_URL]
   },
   [config.WHO_IS_MAKING_FILING_URL]: {

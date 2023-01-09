@@ -57,7 +57,6 @@ interface TrustIndividual {
 }
 
 export interface TrustHistoricalBeneficialOwner {
-  id: string;
   forename: string;
   other_forenames: string;
   surname: string;

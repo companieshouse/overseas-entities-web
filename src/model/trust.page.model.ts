@@ -26,31 +26,8 @@ type TrustWhoIsInvolved = {
   trustName: string;
 };
 
-type TrustHistoricalBeneficialOwnerPage = {
-  id: string;
-  trustName: string;
-  TrustHistoricalBeneficialOwner: TrustHistoricalBeneficialOwner[];
-
-};
-
-type TrustHistoricalBeneficialOwner = {
-  id: string;
-  trustName: string;
-  forename?: string;
-  otherForenames?: string;
-  surname?: string;
-  ceasedDateDay: string;
-  ceasedDateMonth: string;
-  ceasedDateYear: string;
-  notifiedDateDay: string;
-  notifiedDateMonth: string;
-  notifiedDateYear: string;
-};
-
 export {
   TrustDetails,
   TrustBeneficialOwner,
   TrustWhoIsInvolved,
-  TrustHistoricalBeneficialOwnerPage,
-  TrustHistoricalBeneficialOwner,
 };

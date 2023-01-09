@@ -152,9 +152,9 @@ router
 router
   .route(config.TRUST_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.ID + '?')
   .all(
-  //   isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-  //   authentication,
-  //   navigation.hasTrust,
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);

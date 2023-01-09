@@ -29,11 +29,12 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
+  confirmOverseasEntityDetails,
   signOut,
   trustDetails,
   resumeSubmission,
   overseasName,
-  trustInvolved
+  trustInvolved,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -161,8 +162,8 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
-
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
-
+router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
 export default router;

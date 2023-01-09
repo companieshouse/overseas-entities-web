@@ -14,7 +14,9 @@ import {
 } from '../../src/config';
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
+jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/utils/logger', () => {
   return {
     logger: { info: jest.fn(), infoRequest: jest.fn(), errorRequest: jest.fn() }
@@ -24,6 +26,8 @@ jest.mock('../../src/utils/logger', () => {
 const req = {} as Request;
 const res = { locals: {}, redirect: jest.fn() as any } as Response;
 const next = jest.fn();
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe('Authentication middleware', () => {
   beforeEach(() => {
@@ -100,10 +104,23 @@ describe('Authentication middleware', () => {
   });
 
   test("should redirect to signin page", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(false);
     const resp = await request(app).get(SOLD_LAND_FILTER_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toContain('/signin');
+
+    expect(res.locals).toEqual({});
+  });
+
+  test("should redirect to signin page for update", async () => {
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const resp = await request(app).get(OVERSEAS_ENTITY_QUERY_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.text).toContain('/signin?return_to=/update-an-overseas-entity/overseas-entity-query');
 
     expect(res.locals).toEqual({});
   });

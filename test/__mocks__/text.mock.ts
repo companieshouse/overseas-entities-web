@@ -132,4 +132,8 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
+export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registered overeseas entity";
+export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
+export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
+export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";

@@ -23,11 +23,11 @@ import {
 } from '../../src/utils/application.data';
 import {
   BENEFICIAL_OWNER_GOV_PAGE_HEADING,
-  ERROR_LIST,
+  ERROR_LIST, INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE, SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -87,6 +87,8 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
   });
 

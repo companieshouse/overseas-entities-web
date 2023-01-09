@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% set title = "Do any beneficial owners or managing officers have their personal information protected at Companies House?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% include "includes/phase_banner.html" %}
+  {% include "includes/no-back-link.html" %}
+  {% include "includes/sign-out-user-banner.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.is_secure_update if errors,
+          classes: "govuk-radios--inline",
+          idPrefix: "is_secure_update",
+          name: "is_secure_update",
+          fieldset: {
+            legend: {
+              text: "Do any beneficial owners or managing officers have their personal information protected at Companies House?",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          hint: {
+            text: "This includes if they are waiting for the results of an application to protect their personal information."
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: is_secure_update == 1,
+              attributes: {
+                "data-event-id": "yes-secure-update"
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: is_secure_update == 0,
+              attributes: {
+                "data-event-id": "no-secure-update"
+              }
+            }
+          ]
+        }) }}
+        <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              What having personal information protected means
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">Some people can <a href="https://www.gov.uk/guidance/applying-to-protect-your-personal-information-on-the-companies-house-register" class="govuk-link" data-event-id="apply-to-protect-personal-information-link">apply to protect personal information from being shown on the Companies House public register</a> if they meet certain criteria. This process includes:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>providing evidence that they are eligible to have their details protected </li>
+              <li>paying a £100 fee</li>
+            </ul>
+            <p class="govuk-body">You should only select ‘yes’ if any of the beneficial owners or managing officers have already done this.</p>
+          </div>
+        </details>
+
+        {{ govukInsetText({
+          html: '
+          <h2 class="govuk-heading-m">Information shown on the public register</h2>
+          <p>None of the information provided on this screen will be shown on the public Register of Overseas Entities.</p>
+         '
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

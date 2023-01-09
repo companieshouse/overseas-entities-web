@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import { logger } from '../utils/logger';
-import { UPDATE_LANDING_URL, SOLD_LAND_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL } from '../config';
+import { UPDATE_LANDING_URL, SOLD_LAND_FILTER_URL, SECURE_UPDATE_FILTER_URL } from '../config';
 
 import {
   checkUserSignedIn,
@@ -14,9 +14,8 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
 
       const returnUrl = req.path.startsWith(UPDATE_LANDING_URL)
-        ? OVERSEAS_ENTITY_QUERY_URL
+        ? SECURE_UPDATE_FILTER_URL
         : SOLD_LAND_FILTER_URL;
-
       return res.redirect(`/signin?return_to=${returnUrl}`);
     }
     const userEmail = getLoggedInUserEmail(req.session);

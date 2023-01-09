@@ -16,12 +16,16 @@ import { whoIsMakingFiling } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
 import { signOut } from "./sign.out.validation";
+// Update journey
+import { secureUpdateFilter } from "./secure.update.filter.validation";
+
 
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
   entity,
   presenter,
+  secureUpdateFilter,
   overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,

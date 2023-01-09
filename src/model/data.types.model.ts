@@ -75,5 +75,7 @@ export const PublicRegisterNameKey = "public_register_name";
 export const PublicRegisterJurisdictionKey = "public_register_jurisdiction";
 export const RegistrationNumberKey = "registration_number";
 
-// Update Journey
+// Update journey
 export const OeNumberKey = "oe_number";
+export const IsSecureUpdateKey = "is_secure_update";
+

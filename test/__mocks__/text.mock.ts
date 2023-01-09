@@ -128,3 +128,4 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
+export const SECURE_UPDATE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House?";

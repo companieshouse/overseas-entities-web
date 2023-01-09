@@ -33,6 +33,7 @@ export interface ApplicationData {
     transaction_id?: string;
     has_sold_land?: string;
     is_secure_register?: string;
+    is_secure_update?: string;
     who_is_registering?: string;
     oe_number?: string;
 }

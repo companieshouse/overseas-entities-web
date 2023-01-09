@@ -6,6 +6,9 @@ import { hasPresenter } from "./has.presenter.middleware";
 import { hasSoldLand } from "./has.sold.land.middleware";
 import { isSecureRegister } from "./is.secure.register.middleware";
 import { hasTrust } from "./has.trust.middleware";
+// Update journey
+import { isSecureUpdate } from "./is.secure.update.middleware";
+
 
 
 export const navigation = {
@@ -17,4 +20,5 @@ export const navigation = {
   hasBeneficialOwnersStatement,
   hasBOsOrMOs,
   hasTrust,
+  isSecureUpdate
 };

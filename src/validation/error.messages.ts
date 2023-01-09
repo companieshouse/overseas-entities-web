@@ -74,6 +74,7 @@ export enum ErrorMessages {
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD = "Select the type of beneficial owner you want to add",
   SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
+  SELECT_IF_SECURE_UPDATE_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   SELECT_IF_ON_SANCTIONS_LIST = "Select yes if it is on the sanctions list",

@@ -1,7 +1,7 @@
 import { SOLD_LAND_FILTER_URL } from '../../config';
 
 import { ApplicationData } from '../../model/application.model';
-import { HasSoldLandKey, IsSecureRegisterKey } from '../../model/data.types.model';
+import { HasSoldLandKey, IsSecureRegisterKey, IsSecureUpdateKey } from '../../model/data.types.model';
 import { PresenterKey } from '../../model/presenter.model';
 import { EntityKey } from '../../model/entity.model';
 import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
@@ -55,5 +55,10 @@ export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean =
     Object.keys(appData[ManagingOfficerKey] || []).length !== 0 ||
     Object.keys(appData[ManagingOfficerCorporateKey] || []).length !== 0
   );
+};
+
+// Update journey
+export const checkIsSecureUpdateDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasAppData(appData) && appData[IsSecureUpdateKey] === "0";
 };
 

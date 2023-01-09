@@ -10,7 +10,7 @@ import { getSessionRequestWithPermission, userMail } from '../__mocks__/session.
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from '../../src/utils/logger';
 import {
-  LANDING_URL, UPDATE_LANDING_URL, SOLD_LAND_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL
+  LANDING_URL, UPDATE_LANDING_URL, SOLD_LAND_FILTER_URL, SECURE_UPDATE_FILTER_URL
 } from '../../src/config';
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
@@ -65,8 +65,8 @@ describe('Authentication middleware', () => {
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to signin page with ${OVERSEAS_ENTITY_QUERY_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin?return_to=${OVERSEAS_ENTITY_QUERY_URL}`;
+  test(`should redirect to signin page with ${SECURE_UPDATE_FILTER_URL} page as return page`, () => {
+    const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
     req.session = undefined;
     req.path = `${UPDATE_LANDING_URL}`;
 

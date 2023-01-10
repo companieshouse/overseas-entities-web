@@ -3,7 +3,8 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
-import { checkAtLeastOneFieldHasValue, checkMandatoryDate } from "./custom.validation";
+import { checkAtLeastOneFieldHasValue } from "./custom.validation";
+import { start_date_validations } from "./fields/date.validation";
 
 export const beneficialOwnerGov = [
   body("name")
@@ -34,6 +35,5 @@ export const beneficialOwnerGov = [
   body("is_on_sanctions_list")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST),
 
-  body("start_date")
-    .custom((value, { req }) => checkMandatoryDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+  ...start_date_validations,
 ];

@@ -51,9 +51,7 @@ const post = (
   next: NextFunction,
 ) => {
   try {
-
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    console.log(req.params[config.TRUST_ID_PATH_PARAMETER]);
 
     const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
 

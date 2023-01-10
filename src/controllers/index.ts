@@ -28,8 +28,8 @@ export * as startingNew from "./starting.new.controller";
 export * as resumeSubmission from "./resume.submission.controller";
 export * as trustDetails from "./trust.details.controller";
 export * as trustInvolved from "./trust.involved.controller";
+export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.owner.controller";
 export * as overseasName from "./overseas.name.controller";
-
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";

@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% set title = "Historical beneficial owner" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <span class="govuk-caption-l">{{ trustData.name }}</span>
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <form class="form" method="post">
+
+        {% set legalEntityHtml %}
+        <br>
+        {% set fieldParam = {
+          name: 'legalEntityName',
+          label: 'Name',
+          error: errors.legalEntityName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+        {% endset -%}
+
+        {% set individualBoHtml %}
+        <br>
+        {% set fieldParam = {
+          name: 'IndividualName',
+          label: 'First Name',
+          error: errors.IndividualName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'IndividualName',
+          label: 'Last Name',
+          error: errors.IndividualName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+        {% endset -%}
+
+        {{ govukRadios({
+          errorMessage: errors.former_bo_type if errors,
+          classes: "govuk-radios",
+          idPrefix: "former_bo_type",
+          name: "former_bo_type",
+          fieldset: {
+            legend: {
+              text: "Is the former beneficial owner an individual or a legal entity?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: 1,
+              text: "Legal Entity",
+              checked: former_bo_type == 1,
+              conditional: {
+                html: legalEntityHtml
+              }
+            },
+            {
+              value: 0,
+              text: "Individual",
+              checked: former_bo_type == 0,
+              conditional: {
+                html: individualBoHtml
+              }
+            }
+          ]
+        }) }}
+
+        {% set fieldParam = {
+          name: 'startDate',
+          label: 'When did they become a beneficial owner?',
+          hint: 'For example, 27 3 2007',
+          error: errors.startDate
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {% set fieldParam = {
+          name: 'endDate',
+          label: 'When did they stop being a beneficial owner?',
+          hint: 'For example, 28 5 2011',
+          error: errors.endDate
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">Information shown on the public register</h2>
+            <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

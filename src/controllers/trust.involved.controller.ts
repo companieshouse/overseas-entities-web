@@ -21,7 +21,7 @@ const get = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     // Get current Trust from session and map to page data
-    const trustId = req.params["id"];
+    const trustId = req.params["trustId"];
     const appData: ApplicationData = getApplicationData(req.session);
     const pageData: PageModel.TrustWhoIsInvolved = mapTrustWhoIsInvolvedToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
@@ -32,7 +32,7 @@ const get = (
     return res.render(
       templateName,
       {
-        backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params['id']}`,
+        backLinkUrl: `${config.TRUST_DETAILS_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`,
         templateName,
         pageData,
         pageParams: {
@@ -61,14 +61,15 @@ const post = (
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
-    // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params['id']}`;
-
+    // the req.params[config.TRUST_ID_PATH_PARAMETER] is already validated in the has.trust.middleware but sonar can not recognise this.
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
+    let historicBeneficalOwnerUrl;
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
-          if (isValidUrl (url) ) {
-            return res.redirect(url);
+          historicBeneficalOwnerUrl = `${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`;
+          if (isValidUrl (historicBeneficalOwnerUrl) ) {
+            return res.redirect(historicBeneficalOwnerUrl);
           }
           break;
         case TrusteeType.INDIVIDUAL:

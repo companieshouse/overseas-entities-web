@@ -74,6 +74,7 @@ export const STARTING_NEW_PAGE = "starting-new";
 
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
+export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 
@@ -113,6 +114,7 @@ export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;
 export const TRUST_INVOLVED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INVOLVED_PAGE;
+export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = "/trust-historical-beneficial-owner";
 
 // UPDATE overseas entity routes
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
@@ -122,6 +124,8 @@ export const UPDATE_ENTITY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
 
 // URL PARAMS
 export const ID = "/:id"; // Same param name as the ID in the data model
+export const TRUST_ID_PATH_PARAMETER = "trustId";
+export const TRUST_ID = "/:" + TRUST_ID_PATH_PARAMETER;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

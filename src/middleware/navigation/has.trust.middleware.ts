@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../../utils/logger';
-import { SOLD_LAND_FILTER_URL } from '../../config';
+import { SOLD_LAND_FILTER_URL, TRUST_ID_PATH_PARAMETER } from '../../config';
 import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
@@ -8,7 +8,7 @@ import { NavigationErrorMessage } from './check.condition';
 
 export const hasTrust = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    const trustId = req.params["trustId"];
+    const trustId = req.params[TRUST_ID_PATH_PARAMETER];
     const appData: ApplicationData = getApplicationData(req.session);
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId

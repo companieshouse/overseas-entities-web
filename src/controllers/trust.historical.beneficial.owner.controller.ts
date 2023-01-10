@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { isValidUrl } from '../utils/validate.url';
 import { getApplicationData } from '../utils/application.data';
 import * as mapperBo from '../utils/trust/historical.beneficial.owner.mapper';
 import { ApplicationData } from '../model/application.model';
@@ -22,7 +21,7 @@ const get = (
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params[config.TRUST_ID_PATH_PARAMETER];
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trustData: PageModel.TrustDetails = mapperBo.mapTrustToPage(
       appData[TrustKey]?.find(trust => trust.trust_id === trustId),
     );
@@ -54,12 +53,9 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
+    const url = `${config.TRUST_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
 
-    if (isValidUrl(url)) {
-      return res.redirect(url);
-    }
-
+    return res.safeRedirect(url);
   } catch (error) {
     logger.errorRequest(req, error);
 

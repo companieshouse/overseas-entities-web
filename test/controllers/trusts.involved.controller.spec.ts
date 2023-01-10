@@ -19,8 +19,8 @@ import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import {
   CHECK_YOUR_ANSWERS_URL,
   TRUST_ENTRY_URL,
+  TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_URL,
-  TRUST_TRUSTEE_HISTORICAL_INDIVIDUAL_URL,
   TRUST_TRUSTEE_INDIVIDUAL_URL,
   TRUST_TRUSTEE_LEGAL_ENTITY_URL,
 } from '../../src/config';
@@ -113,8 +113,7 @@ describe('Trust Involved controller', () => {
         .send({ typeOfTrustee: TrusteeType.HISTORICAL });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      // expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}${TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_TRUSTEE_HISTORICAL_INDIVIDUAL_URL}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`);
       expect(hasTrust).toBeCalledTimes(1);
     });
 

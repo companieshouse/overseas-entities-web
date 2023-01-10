@@ -1,15 +1,14 @@
-import * as Trust from '../../model/trust.model';
+import { Trust, TrustKey } from '../../model/trust.model';
 import { TrustWhoIsInvolved } from '../../model/trust.page.model';
 import { getTrustBoIndividuals, getTrustBoOthers } from '../../utils/trusts';
 import * as mapperBeneficialOwner from '../../utils/trust/beneficial.owner.mapper';
 import { ApplicationData } from '.../../model';
-import { TrustKey } from '../../model/trust.model';
 
 const mapTrustWhoIsInvolvedToPage = (
   appData: ApplicationData,
   trustId: string,
 ): TrustWhoIsInvolved => {
-  const data = appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust.Trust;
+  const data = appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 
   const boInTrust = [
     ...getTrustBoIndividuals(appData, trustId)

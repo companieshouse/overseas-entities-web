@@ -32,7 +32,7 @@ type TrustInvolvedPageProperties = {
 const getPageProperties = (
   req: Request,
 ): TrustInvolvedPageProperties => {
-  const trustId = req.params[config.TRUST_ID_PATH_PARAMETER];
+  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
     backLinkUrl: `${config.TRUST_DETAILS_URL}/${trustId}`,
@@ -82,14 +82,12 @@ const post = (
     const typeOfTrustee = req.body.typeOfTrustee;
 
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
-    // let url = `${config.TRUST_ENTRY_URL}/${req.params['trustId']}`;
-    let url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
+    let url = `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
           logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           url += config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
-          // url += config.TRUST_TRUSTEE_HISTORICAL_INDIVIDUAL_URL;
 
           break;
         case TrusteeType.INDIVIDUAL:
@@ -108,23 +106,12 @@ const post = (
           logger.info("TODO: On validation No trustee selected, re-displaying page");
     }
 
-    checkIsValidUrl(url);
-
-    return res.redirect(url);
+    return res.safeRedirect(url);
   } catch (error) {
     logger.errorRequest(req, error);
 
     return next(error);
   }
-};
-
-// Required for Sonar rule tssecurity:S5146 (this will never happen but Sonar can not understand middleware in this case)
-const checkIsValidUrl = (url: string): void => {
-  if (url.startsWith(config.TRUST_ENTRY_URL)) {
-    return;
-  }
-
-  throw new Error('Security failure with URL ' + url);
 };
 
 export {

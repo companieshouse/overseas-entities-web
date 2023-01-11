@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
 
     if (status === config.PAYMENT_PAID){
-      return res.redirect("#");
+      return res.redirect(config.UPDATE_CONFIRMATION_URL);
     } else {
       return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     }

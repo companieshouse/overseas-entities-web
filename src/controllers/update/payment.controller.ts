@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     if (status === config.PAYMENT_PAID){
       return res.redirect("#");
     } else {
-      return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
+      return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     }
   } catch (error){
     logger.errorRequest(req, error);

@@ -25,6 +25,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
+  [config.UPDATE_CONFIRMATION_URL]: {
+    currentPage: config.UPDATE_CONFIRMATION_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
+    nextPage: [config.UPDATE_LANDING_PAGE_URL]
+  },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
     previousPage: () => config.SOLD_LAND_FILTER_URL,

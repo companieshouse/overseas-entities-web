@@ -36,3 +36,4 @@ export * as overseasEntityQuery from "./update/overseas.entity.query.controller"
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as overseasEntityPayment from './update/payment.controller';
+export * as updateConfirmation from "./update/update.confirmation.controller";

@@ -26,9 +26,10 @@
         {% set fieldParam = {
           name: 'legalEntityName',
           label: 'Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.legalEntityName
         } %}
-        {% include "includes/inputs/sub-text-input.html" %}
+        {% include "includes/inputs/text-input.html" %}
         {% endset -%}
 
         {% set individualBoHtml %}
@@ -36,16 +37,18 @@
         {% set fieldParam = {
           name: 'IndividualName',
           label: 'First Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.IndividualName
         } %}
-        {% include "includes/inputs/sub-text-input.html" %}
+        {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
           name: 'IndividualName',
           label: 'Last Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.IndividualName
         } %}
-        {% include "includes/inputs/sub-text-input.html" %}
+        {% include "includes/inputs/text-input.html" %}
         {% endset -%}
 
         {{ govukRadios({

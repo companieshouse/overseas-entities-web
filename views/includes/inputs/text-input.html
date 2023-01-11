@@ -2,7 +2,7 @@
     errorMessage: fieldParam.error,
     label: {
         text: fieldParam.label,
-        classes: "govuk-label--m",
+        classes:  fieldParam.classes if fieldParam.classes else "govuk-label--m",
         isPageHeading: false
     },
     id: fieldParam.id if fieldParam.id else fieldParam.name,

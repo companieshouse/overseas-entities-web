@@ -12,7 +12,7 @@ import {
   EntityNameKey
 } from "../../model/data.types.model";
 import { logger } from "../../utils/logger";
-import { mapRequestToEntityData } from "../../utils/update/request.to.entity";
+import { mapRequestToEntityData } from "../../utils/request.to.entity.mapper";
 import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
@@ -38,7 +38,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...principalAddress,
       ...serviceAddress,
       pageParams: {
-        isRegister: 'false'
+        isRegistration: 'false'
       },
     });
   }  catch (error) {

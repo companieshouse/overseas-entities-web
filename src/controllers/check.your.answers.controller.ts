@@ -21,7 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const hasTrusts: boolean = checkEntityHasTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
-    const pageTitle: string = "Overseas entity details";
+    const overseasEntityHeading: string = "Overseas entity details";
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
 
@@ -36,10 +36,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       hasTrusts,
       appData,
       changeLinkUrl,
-      pageTitle,
+      overseasEntityHeading,
       pageParams: {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        isRegister: 'true'
+        isRegistration: 'true'
       },
     });
   } catch (error) {

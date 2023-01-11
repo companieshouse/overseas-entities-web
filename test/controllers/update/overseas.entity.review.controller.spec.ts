@@ -72,7 +72,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
     });
 
-    test("catch error when renders the Overseas Entity Review page on GET method", async () => {
+    test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 

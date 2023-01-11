@@ -2,10 +2,10 @@ import { Request } from "express";
 import {
   prepareData,
   mapFieldsToDataObject,
-} from "../../utils/application.data";
+} from "../utils/application.data";
 
-import { EntityKeys } from "../../model/entity.model";
-import { ApplicationDataType } from "../../model";
+import { EntityKeys } from "../model/entity.model";
+import { ApplicationDataType } from "../model";
 import {
   AddressKeys,
   HasSamePrincipalAddressKey,
@@ -13,8 +13,8 @@ import {
   PublicRegisterJurisdictionKey,
   PublicRegisterNameKey,
   RegistrationNumberKey
-} from "../../model/data.types.model";
-import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
+} from "../model/data.types.model";
+import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 
 export const mapRequestToEntityData = (req: Request): ApplicationDataType => {
 

@@ -13,13 +13,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const backLinkUrl: string = config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const pageTitle: string = "Overseas entity details (NOT LIVE)";
+    const overseasEntityHeading: string = "Overseas entity details (NOT LIVE)";
 
     return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
       templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
       backLinkUrl,
       changeLinkUrl,
-      pageTitle,
+      overseasEntityHeading,
       appData
     });
   } catch (errors) {

@@ -14,7 +14,7 @@ import {
 import { logger } from "../utils/logger";
 import * as config from "../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
-import { mapRequestToEntityData } from "../utils/update/request.to.entity";
+import { mapRequestToEntityData } from "../utils/request.to.entity.mapper";
 import { getEntityBackLink } from "../utils/navigation";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../utils/save.and.continue";

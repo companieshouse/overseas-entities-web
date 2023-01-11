@@ -145,6 +145,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
+    navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
   .post(trustDetails.post);

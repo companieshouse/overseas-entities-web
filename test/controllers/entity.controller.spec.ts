@@ -27,7 +27,6 @@ import {
   ENTITY_PAGE_TITLE,
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
-  ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   INCORPORATION_COUNTRY_OPTION_SELECTED,
   UNITED_KINGDOM_COUNTRY_OPTION_SELECTED,
@@ -37,7 +36,9 @@ import {
   REGISTRATION_NUMBER_LABEL,
   JURISDICTION_FIELD_LABEL,
   ENTITY_PUBLIC_REGISTER_HINT_TEXT,
-  ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
+  SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import {
@@ -83,8 +84,9 @@ describe("ENTITY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
-      expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(DUE_DILIGENCE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -97,8 +99,9 @@ describe("ENTITY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain(ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);

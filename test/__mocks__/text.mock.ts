@@ -83,6 +83,7 @@ export const UNITED_KINGDOM_COUNTRY_OPTION_SELECTED = "value=\"United Kingdom\" 
 export const ALL_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "All other information provided in this section will be shown on the public Register of Overseas Entities.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT = "When did the agent complete the verification checks? (optional)";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_NAME_TEXT = "What is their name?";
+export const OVERSEAS_ENTITY_NO_EMAIL_OR_VERIFICATION_DATE_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address and date the verification checks were completed.";
 export const OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the email address.";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT = "For example, ’Saron House’, ’116’ or ’Unit 37a’";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT = "What is the name of the supervisory body? (optional)";
@@ -114,11 +115,11 @@ export const REGISTRATION_NUMBER_LABEL = "Entity’s registration number";
 export const JURISDICTION_FIELD_LABEL = "Jurisdiction";
 export const PUBLIC_REGISTER_HINT_TEXT = "Include its jurisdiction. For example, Hong Kong or State of Delaware.";
 export const ENTITY_PUBLIC_REGISTER_HINT_TEXT = "Include the full name. For example, Jersey Financial Services Commission.";
-export const ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER = "The email address will not be shown";
 export const INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER = "What information we’ll show on the public register";
 export const NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
 export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.";
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
+export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

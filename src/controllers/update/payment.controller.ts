@@ -1,31 +1,27 @@
 import { Request, Response, NextFunction } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
-import { stat } from "fs";
 import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
 import { PaymentKey } from "../../model/data.types.model";
 import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  try{
-    
-    const {status, state} = req.query;
+  try {
+    const { status, state } = req.query;
 
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
 
-    if(status === config.PAYMENT_PAID){
-      return res.redirect("#")      
-    }else{
+    if (status === config.PAYMENT_PAID){
+      return res.redirect("#")
+    }else {
       return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
-    }  
-  }catch(error){
+    }
+  }catch (error){
     logger.errorRequest(req, error);
     next(error);
   }
 }
-
-

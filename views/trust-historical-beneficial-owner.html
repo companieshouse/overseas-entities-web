@@ -16,7 +16,8 @@
       {% include "includes/list/errors.html" %}
 
       <span class="govuk-caption-l">{{ trustData.name }}</span>
-      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <br> <p class="govuk-body">You can add more later.</p> <br>
 
       <form class="form" method="post">
 
@@ -25,6 +26,7 @@
         {% set fieldParam = {
           name: 'legalEntityName',
           label: 'Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.legalEntityName
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -35,6 +37,7 @@
         {% set fieldParam = {
           name: 'IndividualName',
           label: 'First Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.IndividualName
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -42,6 +45,7 @@
         {% set fieldParam = {
           name: 'IndividualName',
           label: 'Last Name',
+          classes: 'govuk-!-width-two-thirds',
           error: errors.IndividualName
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -97,14 +101,14 @@
 
         {{ govukInsetText({
           html: '
-            <h2 class="govuk-heading-m">Information shown on the public register</h2>
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
             <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
           '
         }) }}
 
         <input type="hidden" name="id" value="{{ pageData.id }}"/>
 
-        {% include "includes/continue-button.html" %}
+        {% include "includes/save-and-continue-button.html" %}
       </form>
     </div>
   </div>

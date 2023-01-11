@@ -8,7 +8,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
 
   describe('GET tests', () => {
     test("That query string is not empty", () => {
-      assert(true) //to change as test is implemented
+      assert(true); // to change as test is implemented
     });
   });
 });

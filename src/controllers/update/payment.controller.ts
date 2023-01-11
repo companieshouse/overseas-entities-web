@@ -16,12 +16,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
 
     if (status === config.PAYMENT_PAID){
-      return res.redirect("#")
-    }else {
+      return res.redirect("#");
+    } else {
       return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
     }
-  }catch (error){
+  } catch (error){
     logger.errorRequest(req, error);
     next(error);
   }
-}
+};

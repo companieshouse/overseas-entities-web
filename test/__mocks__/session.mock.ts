@@ -6,7 +6,16 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { DESCRIPTION, PAYMENT_PAID, PAYMENT_REQUIRED_HEADER, REFERENCE, REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
+import {
+  DESCRIPTION,
+  OVERSEAS_ENTITY,
+  PAYMENT_PAID,
+  PAYMENT_REQUIRED_HEADER,
+  REFERENCE,
+  TRANSACTION as TRANSACTION_PATH,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
+  RESUME
+} from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
@@ -98,6 +107,7 @@ export const PAYMENT_WITH_TRANSACTION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}t
 export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 export const PAYMENT_JOURNEY_URL = "PAYMENT_JOURNEY_URL";
+export const RESUME_SUBMISSION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION_PATH}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
 export const RR_CARRIAGE_RETURN = "abc-xyzž \r\n def";
 export const PAYMENT_MOCK_VALUE = {
   resource: {

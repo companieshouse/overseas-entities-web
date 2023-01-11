@@ -9,6 +9,7 @@ import request from "supertest";
 import * as config from "../../src/config";
 import app from "../../src/app";
 import {
+  FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   STARTING_NEW_PAGE_TITLE,
 } from "../__mocks__/text.mock";
@@ -41,23 +42,26 @@ describe("Starting new controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`renders the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
+    test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
         .send({ continue_saved_application: 'yes' });
 
       expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.YOUR_FILINGS_PATH}`);
       expect(resp.header.location).toEqual(config.YOUR_FILINGS_PATH);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.SOLD_LAND_FILTER_URL} page when no is selected`, async () => {
+      const soldLandFilterUrl = `${config.SOLD_LAND_FILTER_URL}?start=0`;
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
         .send({ continue_saved_application: 'no' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${config.SOLD_LAND_FILTER_URL}?start=0`);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${soldLandFilterUrl}`);
+      expect(resp.header.location).toEqual(soldLandFilterUrl);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 

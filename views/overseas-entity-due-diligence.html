@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Tell us about the UK-regulated agent that carried out identity checks" %}
+{% set title = "Tell us about the UK-regulated agent that carried out verification checks" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -16,7 +16,7 @@
 
       {% include "includes/list/errors.html" %}
 
-      <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out identity checks</h1>
+      <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out verification checks</h1>
 
       <form method="post">
         {% set identityDateLabelText = "When did the agent complete the verification checks? (optional)" %}
@@ -37,7 +37,7 @@
 
         {% include "includes/inputs/fields/aml-number-input.html" %}
 
-        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for identity checks? (optional)" %}
+        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for verification checks? (optional)" %}
         {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance" %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 

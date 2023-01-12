@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Complete this statement to confirm that identity checks have been completed" %}
+{% set title = "Complete this statement to confirm that verification checks have been completed" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -16,7 +16,7 @@
 
       {% include "includes/list/errors.html" %}
 
-      <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Complete this statement to confirm that identity checks have been completed</h1>
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Complete this statement to confirm that verification checks have been completed</h1>
       <p class="govuk-caption-l govuk-!-margin-bottom-8">The agent’s details must match the information used to request the agent assurance code.</p>
 
       <form method="post">
@@ -55,7 +55,7 @@
           value: agent_code
         }) }}
 
-        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for identity checks?" %}
+        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for verification checks?" %}
         {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request." %}
         {% include "includes/inputs/fields/partner-name-input.html" %}
 
@@ -73,7 +73,7 @@
           items: [
             {
               value: "agree",
-              text: "I confirm that verification has been carried out as required by The Register of Overseas Entities (Verification and Provision of Information) Regulations 2022. I confirm that the information provided in this statement is accurate.",
+              text: "I confirm that the agent has complied with the verification requirements as outlined in The Register of Overseas Entities (Verification and Provision of Information) Regulations 2022. I confirm that the information provided in this statement is accurate.",
               checked: diligence === "agree"
             }
           ]

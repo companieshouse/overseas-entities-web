@@ -6,6 +6,8 @@
 {% endset %}
 {% if pageParams.isTrustFeatureEnabled %}
   {% set trustCreationDate = dateMacros.formatDate(trust.creation_date_day, trust.creation_date_month, trust.creation_date_year) %}
+  {% set boLink = (OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + appData.beneficial_owners_corporate[0].id + OE_CONFIGS.NAME) if appData.beneficial_owners_corporate[0].id
+  else (OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + appData.beneficial_owners_individual[0].id + OE_CONFIGS.FIRST_NAME) %}
   {{ govukSummaryList({
     rows: [
       {
@@ -46,7 +48,7 @@
           html: trustBeneficialOwnersHtml
         },  actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + appData.beneficial_owners_corporate[0].id + OE_CONFIGS.NAME if appData.beneficial_owners_corporate[0].id else appData.beneficial_owners_individual[0].id + OE_CONFIGS.FIRSTNAME,
+            boLink ,
             "Trust " + trust.trust_name + " -  Beneficial Owner",
             "change-beneficial-owner-button"
           ) ]

@@ -64,18 +64,18 @@ const post = (
     // the req.params[config.TRUST_ID_PATH_PARAMETER] is already validated in the has.trust.middleware but sonar can not recognise this.
     const url = `${config.TRUST_INVOLVED_URL}/${req.params[`${config.TRUST_ID_PATH_PARAMETER}`]}`;
     let historicBeneficalOwnerUrl;
+    let individualBeneficalOwnerUrl;
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
-          logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           historicBeneficalOwnerUrl = `${url}${config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`;
           if (isValidUrl (historicBeneficalOwnerUrl) ) {
             return res.redirect(historicBeneficalOwnerUrl);
           }
           break;
         case TrusteeType.INDIVIDUAL:
-          logger.info("TODO: Route to trust-individual page when story coded ");
-          if (isValidUrl (url) ) {
-            return res.redirect(url);
+          individualBeneficalOwnerUrl = `${url}${config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL}`;
+          if (isValidUrl (individualBeneficalOwnerUrl) ) {
+            return res.redirect(individualBeneficalOwnerUrl);
           }
           break;
         case TrusteeType.LEGAL_ENTITY:

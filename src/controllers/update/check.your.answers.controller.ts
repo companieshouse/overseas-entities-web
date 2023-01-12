@@ -19,7 +19,6 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
-import * as config from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

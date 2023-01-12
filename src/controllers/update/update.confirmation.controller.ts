@@ -4,14 +4,11 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getLoggedInUserEmail } from "../../utils/session";
 import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
-import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationData } from "../../model/application.model";
 import { Transactionkey } from "../../model/data.types.model";
 import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  const session = req.session as Session;
-  const appData: ApplicationData = getApplicationData(session);
   try {
     logger.debugRequest(req, `GET ${config.UPDATE_CONFIRMATION_URL}`);
 

@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { describe, expect, test } from '@jest/globals';
 import { REGISTER_AN_OVERSEAS_ENTITY_URL } from '../../src/config';
-import { safeRedirect } from '../../src/utils/response.ext';
+import { safeRedirect } from '../../src/utils/http.ext';
 
 describe("Validate safe redirect (Sonar claim)", () => {
   const mockRes = {
@@ -17,13 +17,13 @@ describe("Validate safe redirect (Sonar claim)", () => {
   test('Should return redirect on valid URL ', () => {
     const url = `${REGISTER_AN_OVERSEAS_ENTITY_URL}/testUrl`;
 
-    safeRedirect.call(mockRes, url);
+    safeRedirect(mockRes, url);
 
     expect(mockRes.redirect).toBeCalledTimes(1);
     expect(mockRes.redirect).toBeCalledWith(url);
   });
 
   test('Should throw error on bad URL', () => {
-    expect(() => { safeRedirect.call(mockRes, 'wrongUrl'); }).toThrowError();
+    expect(() => { safeRedirect(mockRes, 'wrongUrl'); }).toThrowError();
   });
 });

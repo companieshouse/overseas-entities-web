@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { TrusteeType } from '../model/trustee.type.model';
 import * as config from '../config';
 import { logger } from '../utils/logger';
+import { safeRedirect } from '../utils/http.ext';
 import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import { getApplicationData } from '../utils/application.data';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
@@ -106,7 +107,7 @@ const post = (
           logger.info("TODO: On validation No trustee selected, re-displaying page");
     }
 
-    return res.safeRedirect(url);
+    return safeRedirect(res, url);
   } catch (error) {
     logger.errorRequest(req, error);
 

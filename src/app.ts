@@ -14,7 +14,6 @@ import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { createChangeLinkConfig, createSummaryListLink } from "./utils/change.link";
 import { countryFilter } from "./utils/country.filter";
-import { safeRedirect } from './utils/response.ext';
 
 const app = express();
 
@@ -46,12 +45,6 @@ nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
-app.use((req, res, next) => {
-  res.safeRedirect = safeRedirect.bind(res);
-
-  return next();
-});
 
 const cookieConfig = {
   cookieName: '__SID',

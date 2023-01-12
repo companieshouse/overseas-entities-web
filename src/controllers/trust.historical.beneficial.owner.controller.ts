@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
+import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
 import * as mapperBo from '../utils/trust/historical.beneficial.owner.mapper';
 import { ApplicationData } from '../model/application.model';
@@ -55,7 +56,7 @@ const post = (
 
     const url = `${config.TRUST_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
 
-    return res.safeRedirect(url);
+    return safeRedirect(res, url);
   } catch (error) {
     logger.errorRequest(req, error);
 

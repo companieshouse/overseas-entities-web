@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { logger } from "../../utils/logger";
+import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
@@ -9,11 +9,13 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     const { status, state } = req.query;
-
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
+    if ( !savedPayment.state || savedPayment.state !== state) {
+      return next(createAndLogErrorRequest(req, `Rejecting payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
+    }
 
     if (status === config.PAYMENT_PAID){
       return res.redirect(config.UPDATE_CONFIRMATION_URL);

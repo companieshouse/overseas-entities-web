@@ -19,6 +19,7 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
+import * as config from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -50,6 +51,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       overseasEntityID = appData[OverseasEntityKey] as string;
       await updateOverseasEntity(req, session);
     } else {
+      logger.debug("PAYDEBUG create Transaction");
+
       transactionID = await postTransaction(req, session);
       overseasEntityID = await createOverseasEntity(req, session, transactionID);
     }

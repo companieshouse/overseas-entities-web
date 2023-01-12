@@ -34,6 +34,7 @@ import {
   trustDetails,
   trustInvolved,
   trustHistoricalbeneficialOwner,
+  trustIndividualbeneficialOwner,
   resumeSubmission,
   overseasName,
   startingNew
@@ -143,8 +144,8 @@ router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-    authentication,
-    navigation.hasBOsOrMOs,
+    // authentication,
+    // navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
@@ -168,6 +169,16 @@ router
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
+
+router
+  .route(config.TRUST_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustIndividualbeneficialOwner.get)
+  .post(trustIndividualbeneficialOwner.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

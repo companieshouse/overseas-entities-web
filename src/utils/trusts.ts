@@ -60,6 +60,23 @@ const getBoOtherAssignableToTrust = (
     .filter((bo: BeneficialOwnerOther) => bo.trustees_nature_of_control_types?.length);
 };
 
+const getTrustBoIndividuals = (
+  appData: ApplicationData,
+  trustId: string,
+): BeneficialOwnerIndividual[] => {
+  return getBoIndividualAssignableToTrust(appData)
+    .filter((bo: BeneficialOwnerIndividual) => bo.trust_ids?.includes(trustId));
+};
+
+const getTrustBoOthers = (
+  appData: ApplicationData,
+  trustId: string,
+): BeneficialOwnerOther[] => {
+
+  return getBoOtherAssignableToTrust(appData)
+    .filter((bo: BeneficialOwnerIndividual) => bo.trust_ids?.includes(trustId));
+};
+
 const addTrustToBeneficialOwner = (
   beneficialOwner: TrustBeneficialOwner,
   trustId: string,
@@ -84,6 +101,8 @@ export {
   getBeneficialOwnerList,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
+  getTrustBoIndividuals,
+  getTrustBoOthers,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
 };

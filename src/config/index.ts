@@ -75,6 +75,7 @@ export const STARTING_NEW_PAGE = "starting-new";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";
+export const TRUST_BENEFICIAL_OWNER_DETACH_PAGE = "trust-bo-detach";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const UPDATE_OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 
@@ -112,9 +113,14 @@ export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_P
 
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
-export const TRUST_DETAILS_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_DETAILS_PAGE;
-export const TRUST_INVOLVED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUST_INVOLVED_PAGE;
-export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = "/trust-historical-beneficial-owner";
+
+export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + 'trusts';
+export const TRUST_DETAILS_URL = TRUST_ENTRY_URL;
+export const TRUST_INVOLVED_URL = '/' + TRUST_INVOLVED_PAGE;
+export const TRUST_BENEFICIAL_OWNER_DETACH_URL = '/' + TRUST_BENEFICIAL_OWNER_DETACH_PAGE;
+export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = '/' + TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
+export const TRUST_TRUSTEE_INDIVIDUAL_URL = '/trustee-individual';
+export const TRUST_TRUSTEE_LEGAL_ENTITY_URL = '/trustee-other-legal';
 
 // UPDATE overseas entity routes
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
@@ -123,9 +129,11 @@ export const UPDATE_OVERSEAS_ENTITY_CONFIRM_URL = UPDATE_AN_OVERSEAS_ENTITY_URL 
 export const UPDATE_ENTITY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
 
 // URL PARAMS
+export const ROUTE_PARAM_TRUST_ID = "trustId";
+export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
 export const ID = "/:id"; // Same param name as the ID in the data model
-export const TRUST_ID_PATH_PARAMETER = "trustId";
-export const TRUST_ID = "/:" + TRUST_ID_PATH_PARAMETER;
+export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
+export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

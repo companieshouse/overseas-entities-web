@@ -1,10 +1,19 @@
-export const createChangeLinkConfig = (href: string, text: string, dataEventId: string) => {
+export const createSummaryListLink = (
+  text: string,
+  href: string,
+  hiddenText: string,
+  dataEventId: string,
+): Record<string, unknown> => {
   return {
     href,
-    text: 'Change',
+    text: text,
     attributes: {
       'data-event-id': dataEventId
     },
-    visuallyHiddenText: text
+    visuallyHiddenText: hiddenText,
   };
+};
+
+export const createChangeLinkConfig = (href: string, text: string, dataEventId: string) => {
+  return createSummaryListLink('Change', href, text, dataEventId);
 };

@@ -150,7 +150,7 @@ router
   .post(trustDetails.post);
 
 router
-  .route(config.TRUST_INVOLVED_URL + config.TRUST_ID)
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
@@ -160,7 +160,7 @@ router
   .post(trustInvolved.post);
 
 router
-  .route(config.TRUST_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
@@ -168,6 +168,12 @@ router
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)
+  .get((_req, res) => {
+    return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
+  });
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

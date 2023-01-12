@@ -50,7 +50,7 @@ describe("HasTrust Middleware tests", () => {
   test("Trust not present, redirect to landing page", () => {
     req = {
       params: {
-        id: "otherID",
+        trustId: "otherID",
       } as Params,
       session: {} as Session,
       route: "",
@@ -71,7 +71,7 @@ describe("HasTrust Middleware tests", () => {
   test("catch error when renders the page", () => {
     req = {
       params: {
-        id: "otherID",
+        trustId: "otherID",
       } as Params,
       session: {} as Session,
       route: "",

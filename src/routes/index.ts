@@ -144,8 +144,8 @@ router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-    // authentication,
-    // navigation.hasBOsOrMOs,
+    authentication,
+    navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
   .post(trustDetails.post);

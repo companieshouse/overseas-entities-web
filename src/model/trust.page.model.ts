@@ -26,8 +26,6 @@ type CommonTrustData = {
   trustName: string;
 };
 
-
-
 export {
   TrustDetails,
   TrustBeneficialOwnerListItem,

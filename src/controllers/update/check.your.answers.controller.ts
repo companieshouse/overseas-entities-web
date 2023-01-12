@@ -50,8 +50,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       overseasEntityID = appData[OverseasEntityKey] as string;
       await updateOverseasEntity(req, session);
     } else {
-      logger.debug("PAYDEBUG create Transaction");
-
       transactionID = await postTransaction(req, session);
       overseasEntityID = await createOverseasEntity(req, session, transactionID);
     }

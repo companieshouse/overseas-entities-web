@@ -18,7 +18,7 @@ import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.inv
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import { CHECK_YOUR_ANSWERS_URL, TRUST_INVOLVED_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { TrusteeType } from '../../src/model/trustee.type.model';
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
@@ -124,7 +124,7 @@ describe('Trust Involved controller', () => {
         .send({ typeOfTrustee: TrusteeType.INDIVIDUAL });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}`);
+      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL}`);
       expect(hasTrust).toBeCalledTimes(1);
     });
 

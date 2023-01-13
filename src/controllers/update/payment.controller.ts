@@ -14,8 +14,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
 
     logger.infoRequest(req, `Returned state: ${ state }, saved state: ${savedPayment.state}, with status: ${ status }`);
-    if ( !savedPayment.state || savedPayment.state !== state) {
-      return next(createAndLogErrorRequest(req, `Rejecting payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
+    if (!savedPayment.state || savedPayment.state !== state) {
+      return next(createAndLogErrorRequest(req, `Rejecting update payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
     }
 
     if (status === config.PAYMENT_PAID){

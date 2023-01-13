@@ -14,11 +14,11 @@ import { startPaymentsSession } from "../../service/payment.service";
 import {
   CHS_URL,
   FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
+  FEATURE_FLAG_ENABLE_ROE_UPDATE,
   OVERSEAS_ENTITY_QUERY_PAGE,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
-import * as config from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,13 +45,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
 
     let transactionID: string, overseasEntityID: string;
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_ROE_UPDATE) && isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_ROE_UPDATE) && isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       transactionID = appData[Transactionkey] as string;
       overseasEntityID = appData[OverseasEntityKey] as string;
       await updateOverseasEntity(req, session);
     } else {
-      logger.debug("PAYDEBUG create Transaction");
-
       transactionID = await postTransaction(req, session);
       overseasEntityID = await createOverseasEntity(req, session, transactionID);
     }

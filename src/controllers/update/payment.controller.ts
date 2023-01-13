@@ -3,11 +3,12 @@ import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
-import { PaymentKey } from "../../model/data.types.model";
+import { OverseasEntityKey, PaymentKey } from "../../model/data.types.model";
 import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services/payment";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('INSIDE GET CONTROLLER')
     const { status, state } = req.query;
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;
@@ -18,8 +19,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (status === config.PAYMENT_PAID){
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_CONFIRMATION_URL}`);
       return res.redirect(config.UPDATE_CONFIRMATION_URL);
     } else {
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_CHECK_YOUR_ANSWERS_URL}`);
       return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     }
   } catch (error){

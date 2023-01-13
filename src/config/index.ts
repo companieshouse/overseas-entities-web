@@ -120,7 +120,7 @@ export const TRUST_DETAILS_URL = TRUST_ENTRY_URL;
 export const TRUST_INVOLVED_URL = '/' + TRUST_INVOLVED_PAGE;
 export const TRUST_BENEFICIAL_OWNER_DETACH_URL = '/' + TRUST_BENEFICIAL_OWNER_DETACH_PAGE;
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = '/' + TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
-export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL = "/trust-individual-beneficial-owner";
+export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL = "/trust-individual";
 export const TRUST_TRUSTEE_LEGAL_ENTITY_URL = '/trustee-other-legal';
 
 // UPDATE overseas entity routes

@@ -79,7 +79,6 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
   if (!baseURL) {
     baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
   }
-  logger.debug("AKDEBUG payment return baseURL " + baseURL);
 
   const reference = `${REFERENCE}_${transactionId}`;
 

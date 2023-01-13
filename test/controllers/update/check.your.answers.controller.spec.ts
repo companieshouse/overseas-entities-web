@@ -79,7 +79,7 @@ describe("POST tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page, after fetching transaction and OE id from appData`, async () => {
+  test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
@@ -88,7 +88,7 @@ describe("POST tests", () => {
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });
 
-  test(`catch error when post data from ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+  test(`catch error on POST action for ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
     mockOverseasEntity.mockImplementation(() => {
       throw ERROR;
     });

@@ -211,7 +211,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(resp.text).toContain(ErrorMessages.NATIONALITY);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
@@ -389,7 +389,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -408,7 +408,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -427,7 +427,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -446,7 +446,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -464,7 +464,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -482,7 +482,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -500,7 +500,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -519,7 +519,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -538,7 +538,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -557,7 +557,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -576,7 +576,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -596,7 +596,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -615,7 +615,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -635,7 +635,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -655,7 +655,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

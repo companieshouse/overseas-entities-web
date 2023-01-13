@@ -123,7 +123,7 @@ describe('Trust Involved controller', () => {
         .send({ typeOfTrustee: TrusteeType.INDIVIDUAL });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${trustId}${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL}`);
       expect(hasTrust).toBeCalledTimes(1);
     });
 

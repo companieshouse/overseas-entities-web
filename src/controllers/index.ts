@@ -31,3 +31,4 @@ export * as resumeSubmission from "./resume.submission.controller";
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
+export * as updateUsePaper from "./update/update.use.paper.contoller";

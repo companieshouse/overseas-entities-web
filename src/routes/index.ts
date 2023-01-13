@@ -26,6 +26,7 @@ import {
   secureUpdateFilter,
   trustInformation,
   usePaper,
+  updateUsePaper,
   whoIsMakingFiling,
   dueDiligence,
   overseasEntityDueDiligence,
@@ -161,6 +162,8 @@ router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.get(config.SECURE_UPDATE_FILTER_URL, authentication, secureUpdateFilter.get);
 router.post(config.SECURE_UPDATE_FILTER_URL, authentication, ...validator.secureUpdateFilter, checkValidations, secureUpdateFilter.post);
+
+router.get(config.UPDATE_USE_PAPER_URL, authentication, updateUsePaper.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, navigation.isSecureUpdate, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, navigation.isSecureUpdate, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);

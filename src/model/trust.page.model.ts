@@ -19,6 +19,7 @@ type TrustBeneficialOwnerListItem = {
 type TrustWhoIsInvolved = {
   id: string;
   trustName: string;
+  boInTrust: TrustBeneficialOwnerListItem[];
 };
 
 type CommonTrustData = {

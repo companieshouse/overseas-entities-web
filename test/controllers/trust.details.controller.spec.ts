@@ -9,6 +9,7 @@ jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
 jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/utils/trust/details.mapper');
+jest.mock('../../src/utils/trust/beneficial.owner.mapper');
 jest.mock('../../src/utils/trusts');
 
 import { Params } from 'express-serve-static-core';
@@ -20,7 +21,7 @@ import request from "supertest";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
 import app from "../../src/app";
-import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL, TRUST_ENTRY_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasBOsOrMOs } from '../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
 import { get, post, TRUST_DETAILS_TEXTS } from '../../src/controllers/trust.details.controller';
@@ -28,11 +29,13 @@ import { getApplicationData, setExtraData } from '../../src/utils/application.da
 import {
   generateTrustId,
   mapBeneficialOwnerToSession,
-  mapBoIndividualToPage,
-  mapBoOtherToPage,
   mapDetailToPage,
   mapDetailToSession,
 } from '../../src/utils/trust/details.mapper';
+import {
+  mapBoIndividualToPage,
+  mapBoOtherToPage,
+} from '../../src/utils/trust/beneficial.owner.mapper';
 import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '../../src/utils/trusts';
 import { Trust } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -293,7 +296,7 @@ describe('Trust Details controller', () => {
         .send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_INVOLVED_URL}/${mockTrust2Data.trust_id}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${mockTrust2Data.trust_id}${TRUST_INVOLVED_URL}`);
     });
   });
 });

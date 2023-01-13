@@ -6,7 +6,6 @@ jest.mock('../../../src/service/payment.service');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -38,14 +37,10 @@ import { postTransaction, closeTransaction } from "../../../src/service/transact
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue( false );
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -90,17 +85,6 @@ describe("POST tests", () => {
     const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
-  });
-
-  test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
-    mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-    const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
-
-    expect(resp.status).toEqual(302);
-    expect(mockTransactionService).toHaveBeenCalledTimes(1);
-    expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });
 

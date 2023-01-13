@@ -1,5 +1,4 @@
 jest.mock("ioredis");
-jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/service/payment.service');
@@ -18,7 +17,6 @@ import {
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
-  FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE
@@ -85,7 +83,7 @@ describe("POST tests", () => {
     const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
+    expect(resp.header.location).toEqual(`${PAYMENT_LINK_JOURNEY}`);
   });
 
   test(`catch error on POST action for ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {

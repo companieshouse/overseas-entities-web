@@ -558,7 +558,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth month and year are empty`, async () => {
@@ -575,7 +575,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth day and year are empty`, async () => {
@@ -592,7 +592,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth day and month are empty`, async () => {
@@ -609,7 +609,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only DAY_OF_BIRTH error error when date of birth day is empty`, async () => {
@@ -626,7 +626,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only MONTH_OF_BIRTH error error when date of birth month is empty`, async () => {
@@ -643,7 +643,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only YEAR_OF_BIRTH error error when date of birth year is empty`, async () => {
@@ -660,7 +660,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth day is outside valid numbers`, async () => {
@@ -677,7 +677,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth month is outside valid numbers`, async () => {
@@ -694,7 +694,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth day is zero`, async () => {
@@ -711,7 +711,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only INVALID_DATE error when date of birth month is zero`, async () => {
@@ -728,7 +728,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only DATE_NOT_IN_PAST error when date of birth is in the future`, async () => {
@@ -747,7 +747,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only DATE_NOT_IN_PAST error when date of birth is today`, async () => {
@@ -766,7 +766,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with only YEAR_LENGTH error when date of birth year is not 4 digits`, async () => {
@@ -784,7 +784,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
     test(`renders the current page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} with second nationality error when same as nationality`, async () => {

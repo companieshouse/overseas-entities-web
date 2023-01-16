@@ -12,6 +12,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
+  ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_UPDATE_TITLE,
@@ -28,6 +29,7 @@ import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { logger } from "../../../src/utils/logger";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -35,6 +37,7 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe("OVERSEAS ENTITY REVIEW controller", () => {
 
@@ -81,4 +84,22 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
     });
   });
 
+  describe("POST tests", () => {
+
+    test(`redirect to ${config.UPDATE_CHECK_YOUR_ANSWERS_PAGE}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+    });
+
+    test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
 });

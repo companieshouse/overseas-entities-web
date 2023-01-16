@@ -15,7 +15,9 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
       {% include "includes/entity.html" %}
-      {% include "includes/continue-button.html" %}
+      <form method="post">
+        {% include "includes/continue-button.html" %}
+      </form>
     </div>
   </div>
 {% endblock %}

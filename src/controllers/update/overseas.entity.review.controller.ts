@@ -27,3 +27,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     next(errors);
   }
 };
+
+export const post = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+  } catch (errors) {
+    logger.errorRequest(req, errors);
+    next(errors);
+  }
+};

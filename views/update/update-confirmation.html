@@ -25,31 +25,6 @@ Confirmation - {{ SERVICE_NAME }} - GOV.UK
         <p class="govuk-body">
             We have sent a confirmation email to <strong>{{ userEmail }}</strong> which contains your reference number.
         </p>
-
-        {% if not isAgentRegistering %}
-        <h2 class="govuk-heading-m">What you need to do now</h2>
-        <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed identity checks. </p>
-
-        <p class="govuk-body">Then the agent needs to complete an <a href="{{OE_CONFIGS.VF01_FORM_DOWNLOAD_URL}}" class="govuk-link">Overseas entity verification checks statement</a> and email it to agentcode@companieshouse.gov.uk.</p>
-
-        <p class="govuk-body">They must do this <strong>within {{ verificationCheckDays }} days</strong>. We cannot process this application until we've received the statement.</p>
-        {% endif %}
-
-        <h2 class="govuk-heading-m">What happens next</h2>
-        <p class="govuk-body">We'll email you to let you know if your application to register an overseas entity has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
-
-        <h3 class="govuk-heading-s">What happens if the application is accepted</h3>
-        <p class="govuk-body">We'll email the Overseas Entity ID to <strong>{{ userEmail }}</strong>. We'll send the notice of registration to <strong>{{ entityEmail }}</strong>, which will also include the Overseas Entity ID. This will need to be provided to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK. </p>
-
-        <p class="govuk-body">The overseas entity and its beneficial owners will be added to the Register of Overseas Entities.</p>
-
-        <h3 class="govuk-heading-s">What happens if the application is rejected</h3>
-        <p class="govuk-body">If it's rejected, we'll email you at <strong>{{ userEmail }}</strong> to explain what to do next. We'll also refund the £{{OE_CONFIGS.UPDATE_PAYMENT_FEE}} update fee.</p>
-
-        <br/>
-
-        <p class="govuk-body"><a href="https://www.smartsurvey.co.uk/s/roe-confirmation/">What did you think of this service?</a> (takes 30 seconds)</p>
-
     </div>
 </div>
 

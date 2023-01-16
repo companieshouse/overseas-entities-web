@@ -48,7 +48,9 @@ describe("UPDATE CONFIRMATION controller", () => {
     mockGetApplicationData.mockReturnValueOnce(
       { ...APPLICATION_DATA_MOCK }
     );
+
     const resp = await request(app).get(UPDATE_CONFIRMATION_URL);
+    expect(resp.status).toEqual(200);
     expect(resp.text).toContain(UPDATE_CONFIRMATION_PAGE_TITLE);
     expect(resp.text).toContain(UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER);
     expect(resp.text).toContain(`£${UPDATE_PAYMENT_FEE}`);
@@ -65,7 +67,6 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
-
 
   test("should test that deleteApplicationData does the work", () => {
     mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK } );

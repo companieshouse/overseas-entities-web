@@ -16,7 +16,7 @@ import { PAYMENT_OBJECT_MOCK, PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING, UPD
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
-import { FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 
@@ -73,6 +73,14 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
     expect(response.text).toContain(SERVICE_UNAVAILABLE);
     expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+  });
+
+  test('catch error on get request', async () => {
+    mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+    expect(resp.status).toEqual(500);
+    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 
 });

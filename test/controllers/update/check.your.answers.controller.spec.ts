@@ -55,44 +55,44 @@ mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 
-describe("GET tests", () => {
+describe("CHECK YOUR ANSWERS controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+  describe("GET tests", () => {
 
-    expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-    expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-  });
-});
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
-describe("POST tests", () => {
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
-  test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
-    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-    mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-    const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.header.location).toEqual(`${PAYMENT_LINK_JOURNEY}`);
-  });
-
-  test(`catch error on POST action for ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockOverseasEntity.mockImplementation(() => {
-      throw ERROR;
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
-    const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
-
-    expect(resp.status).toEqual(500);
-    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
+
+  describe("POST tests", () => {
+
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+    });
+
+    test(`catch error on POST action for ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+      mockOverseasEntity.mockImplementation(() => {
+        throw ERROR;
+      });
+      const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
 });

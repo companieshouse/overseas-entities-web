@@ -152,7 +152,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
     nextPage: []
   },
 };

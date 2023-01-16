@@ -11,7 +11,7 @@ import { startPaymentsSession } from "../../service/payment.service";
 
 import {
   CHS_URL,
-  OVERSEAS_ENTITY_QUERY_PAGE,
+  OVERSEAS_ENTITY_QUERY_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
-      backLinkUrl: OVERSEAS_ENTITY_QUERY_PAGE,
+      backLinkUrl: OVERSEAS_ENTITY_QUERY_URL, // TO DO: update whenever UAR-106 merged
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,
       appData
     });

@@ -34,3 +34,5 @@ export * as overseasName from "./overseas.name.controller";
 export * as updateLanding from "./update/update.landing.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
+export * as overseasEntityReview from "./update/overseas.entity.review.controller";
+export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";

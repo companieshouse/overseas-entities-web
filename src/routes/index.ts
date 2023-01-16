@@ -17,6 +17,7 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
+  overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -36,7 +37,8 @@ import {
   trustHistoricalbeneficialOwner,
   resumeSubmission,
   overseasName,
-  startingNew
+  startingNew,
+  overseasEntityUpdateDetails
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -188,4 +190,8 @@ router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+router.get(config.OVERSEAS_ENTITY_REVIEW_URL, authentication, overseasEntityReview.get);
+router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
+router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
 export default router;

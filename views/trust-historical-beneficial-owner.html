@@ -15,19 +15,19 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
 
-      <span class="govuk-caption-l">{{ trustData.name }}</span>
+      <span class="govuk-caption-l">{{ pageData.trustName }}</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
       <br> <p class="govuk-body">You can add more later.</p> <br>
 
       <form class="form" method="post">
-
         {% set legalEntityHtml %}
         <br>
         {% set fieldParam = {
-          name: 'legalEntityName',
+          name: 'corporateName',
           label: 'Name',
+          value: formData.corporateName,
           classes: 'govuk-!-width-two-thirds',
-          error: errors.legalEntityName
+          error: errors.corporateName
         } %}
         {% include "includes/inputs/text-input.html" %}
         {% endset -%}
@@ -35,67 +35,71 @@
         {% set individualBoHtml %}
         <br>
         {% set fieldParam = {
-          name: 'IndividualName',
+          name: 'firstName',
           label: 'First Name',
+          value: formData.firstName,
           classes: 'govuk-!-width-two-thirds',
-          error: errors.IndividualName
+          error: errors.firstName
         } %}
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
-          name: 'IndividualName',
+          name: 'lastName',
           label: 'Last Name',
           classes: 'govuk-!-width-two-thirds',
-          error: errors.IndividualName
+          value: formData.lastName,
+          error: errors.lastName
         } %}
         {% include "includes/inputs/text-input.html" %}
         {% endset -%}
 
-        {{ govukRadios({
-          errorMessage: errors.former_bo_type if errors,
-          classes: "govuk-radios",
-          idPrefix: "former_bo_type",
-          name: "former_bo_type",
-          fieldset: {
-            legend: {
-              text: "Is the former beneficial owner an individual or a legal entity?",
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
+        {% set fieldParam = {
+          name: 'type',
+          label: 'Is the former beneficial owner an individual or a legal entity?',
+          error: errors.type,
+          value: formData.type,
           items: [
             {
               value: 1,
               text: "Legal Entity",
-              checked: former_bo_type == 1,
               conditional: {
-                html: legalEntityHtml
-              }
+              html: legalEntityHtml
+            }
             },
             {
               value: 0,
               text: "Individual",
-              checked: former_bo_type == 0,
               conditional: {
-                html: individualBoHtml
-              }
+              html: individualBoHtml
+            }
             }
           ]
-        }) }}
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
 
         {% set fieldParam = {
-          name: 'startDate',
+          name: 'ceasedDate',
           label: 'When did they become a beneficial owner?',
+          value: {
+            'Day': formData.ceasedDateDay,
+            'Month': formData.ceasedDateMonth,
+            'Year': formData.ceasedDateYear
+          },
           hint: 'For example, 27 3 2007',
-          error: errors.startDate
+          error: errors.ceasedDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'endDate',
+          name: 'notifiedDate',
           label: 'When did they stop being a beneficial owner?',
+          value: {
+            'Day': formData.notifiedDateDay,
+            'Month': formData.notifiedDateMonth,
+            'Year': formData.notifiedDateYear
+          },
           hint: 'For example, 28 5 2011',
-          error: errors.endDate
+          error: errors.notifiedDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 
@@ -106,7 +110,7 @@
           '
         }) }}
 
-        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+        <input type="hidden" name="boId" value="{{ formData.boId }}"/>
 
         {% include "includes/save-and-continue-button.html" %}
       </form>

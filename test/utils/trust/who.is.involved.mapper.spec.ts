@@ -43,7 +43,7 @@ describe('Trust Involved Mapper to Page Service', () => {
       const actual = mapTrustWhoIsInvolvedToPage(mockAppData, mockTrust1.trust_id);
 
       expect(actual).toEqual({
-        id: mockTrust1.trust_id,
+        trustId: mockTrust1.trust_id,
         trustName: mockTrust1.trust_name,
         boInTrust: [
           expectBoIndividualResult,

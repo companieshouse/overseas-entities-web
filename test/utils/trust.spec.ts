@@ -4,9 +4,15 @@ import {
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
   getTrustByIdFromApp,
+  getTrustBoIndividuals,
+  getTrustBoOthers,
+  getTrustByIdFromApp,
+  saveHistoricalBoInTrust,
+  saveTrustInApp,
 } from '../../src/utils/trusts';
+import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
-import { Trust, TrustKey, TrustBeneficialOwner } from '../../src/model/trust.model';
+import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
@@ -14,6 +20,7 @@ import {
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
 
 describe('Trust Utils method tests', () => {
+  const trustId = 'dummyExistsTrustId';
   const newTrustId = 'dummyTrustId';
 
   const mockTrust1Data = {
@@ -28,12 +35,14 @@ describe('Trust Utils method tests', () => {
   const mockBoIndividual1 = {
     id: '9001',
     trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
   } as BeneficialOwnerIndividual;
 
   const mockBoIndividual2 = {
     id: '9002',
   } as BeneficialOwnerIndividual;
-
 
   const mockBoOle1 = {
     id: '8001',
@@ -42,31 +51,48 @@ describe('Trust Utils method tests', () => {
   const mockBoOle2 = {
     id: '8002',
     trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
   } as BeneficialOwnerOther;
 
-  const mockAppData = {
-    [TrustKey]: [
-      mockTrust1Data,
-      mockTrust2Data,
-    ],
-    [BeneficialOwnerIndividualKey]: [
-      mockBoIndividual1,
-      {} as BeneficialOwnerIndividual,
-      mockBoIndividual2,
-    ],
-    [BeneficialOwnerOtherKey]: [
-      {} as BeneficialOwnerOther,
-      mockBoOle1,
-      mockBoOle2,
-    ],
-  };
+  let mockAppData = {};
+
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    mockAppData = {
+      [TrustKey]: [
+        mockTrust1Data,
+        mockTrust2Data,
+      ],
+      [BeneficialOwnerIndividualKey]: [
+        mockBoIndividual1,
+        {} as BeneficialOwnerIndividual,
+        mockBoIndividual2,
+      ],
+      [BeneficialOwnerOtherKey]: [
+        {} as BeneficialOwnerOther,
+        mockBoOle1,
+        mockBoOle2,
+      ],
+    } as ApplicationData;
+  });
 
   test('test get Bo Individuals assignable to Trust', () => {
     expect(getBoIndividualAssignableToTrust(mockAppData)).toEqual([mockBoIndividual1]);
   });
 
+  test('test get Bo other legal assigned to trust', () => {
+    expect(getTrustBoIndividuals(mockAppData, trustId)).toEqual([mockBoIndividual1]);
+  });
+
   test('test get Bo other legal assignable to Trust', () => {
     expect(getBoOtherAssignableToTrust(mockAppData)).toEqual([mockBoOle2]);
+  });
+
+  test('test get Bo other legal assigned to trust', () => {
+    expect(getTrustBoOthers(mockAppData, trustId)).toEqual([mockBoOle2]);
   });
 
   test('test addTrustToBeneficialOwner, did not assigned to trust before', () => {
@@ -97,5 +123,94 @@ describe('Trust Utils method tests', () => {
 
   test('test getTrustByIdFromApp', () => {
     expect(getTrustByIdFromApp(mockAppData, mockTrust2Data.trust_id)).toEqual(mockTrust2Data);
+  });
+
+  describe('test Save Trust in Application data', () => {
+    const newTrust = {
+      trust_id: 'newTrust',
+    } as Trust;
+
+    test('test add', () => {
+      const actual = saveTrustInApp(mockAppData, newTrust);
+
+      expect(actual).toEqual(expect.objectContaining({
+        trusts: [
+          mockTrust1Data,
+          mockTrust2Data,
+          newTrust,
+        ],
+      }));
+    });
+
+    test('test update', () => {
+      const updatedTrust = {
+        ...mockTrust1Data,
+        creation_date_day: 'XXX',
+      };
+
+      const actual = saveTrustInApp(mockAppData, updatedTrust);
+
+      expect(actual).toEqual(expect.objectContaining({
+        trusts: [
+          mockTrust2Data,
+          updatedTrust,
+        ],
+      }));
+    });
+  });
+
+  describe('test Save Historical Beneficial Owner in Trust', () => {
+    const expectBo1 = {
+      id: '110',
+    } as TrustHistoricalBeneficialOwner;
+    const expectBo2 = {
+      id: '111',
+    } as TrustHistoricalBeneficialOwner;
+
+    let mockTrust = {} as Trust;
+
+    beforeEach(() => {
+      mockTrust = {
+        trust_id: '999',
+        HISTORICAL_BO: [
+          expectBo1,
+          expectBo2,
+        ],
+      } as Trust;
+    });
+
+    test('test add', () => {
+      const newBo = {
+        id: '101',
+      } as TrustHistoricalBeneficialOwner;
+
+      const actual = saveHistoricalBoInTrust(mockTrust, newBo);
+
+      expect(actual).toEqual({
+        ...mockTrust,
+        HISTORICAL_BO: [
+          expectBo1,
+          expectBo2,
+          newBo,
+        ],
+      });
+    });
+
+    test('test update', () => {
+      const updatedBo = {
+        ...expectBo1,
+        corporateName: 'dummy',
+      };
+
+      const actual = saveHistoricalBoInTrust(mockTrust, updatedBo);
+
+      expect(actual).toEqual({
+        ...mockTrust,
+        HISTORICAL_BO: [
+          expectBo2,
+          updatedBo,
+        ],
+      });
+    });
   });
 });

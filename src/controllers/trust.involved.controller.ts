@@ -61,7 +61,7 @@ const get = (
 
     const pageProps = getPageProperties(req);
 
-    return res.render(      pageProps.templateName, pageProps);
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

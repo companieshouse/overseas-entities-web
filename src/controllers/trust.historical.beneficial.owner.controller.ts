@@ -1,15 +1,45 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
+import { TRUST_INVOLVED_URL } from '../config';
 import { logger } from '../utils/logger';
-import { safeRedirect } from '../utils/http.ext';
-import { getApplicationData } from '../utils/application.data';
-import * as mapperBo from '../utils/trust/historical.beneficial.owner.mapper';
-import { ApplicationData } from '../model/application.model';
+import { getApplicationData, setExtraData } from '../utils/application.data';
+import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
+import { mapBeneficialOwnerToSession, mapTrustToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
-import { TrustKey } from '../model/trust.model';
+import * as Page from '../model/trust.page.model';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
+};
+
+type TrustHistoricalBeneficialOwnerProperties = {
+  backLinkUrl: string,
+  templateName: string;
+  pageParams: {
+    title: string;
+  },
+  pageData: Page.TrustHistoricalBeneficialOwner,
+  formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
+};
+
+const getPageProperties = (
+  req: Request,
+  formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
+): TrustHistoricalBeneficialOwnerProperties => {
+  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+
+  return {
+    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${TRUST_INVOLVED_URL}`,
+    templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE,
+    pageParams: {
+      title: HISTORICAL_BO_TEXTS.title,
+    },
+    pageData: {
+      ...mapTrustToPage(getApplicationData(req.session), trustId),
+    },
+    formData,
+  };
 };
 
 const get = (
@@ -20,29 +50,13 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const pageProps = getPageProperties(req);
 
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    const trustData: PageModel.TrustDetails = mapperBo.mapTrustToPage(
-      appData[TrustKey]?.find(trust => trust.trust_id === trustId),
-    );
-
-    const templateName = config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
-
-    return res.render(
-      templateName,
-      {
-        backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`,
-        templateName,
-        pageParams: {
-          title: HISTORICAL_BO_TEXTS.title,
-        },
-        trustData,
-      },
-    );
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
-    next(error);
+
+    return next(error);
   }
 };
 
@@ -54,9 +68,27 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
-    return safeRedirect(res, url);
+    //  convert form data to application (session) object
+    const boData = mapBeneficialOwnerToSession(req.body);
+
+    //  get trust data from session
+    let appData: ApplicationData = getApplicationData(req.session);
+
+    //  save (add/update) bo to trust
+    const updatedTrust = saveHistoricalBoInTrust(
+      getTrustByIdFromApp(appData, trustId),
+      boData,
+    );
+
+    //  update trust in application data
+    appData = saveTrustInApp(appData, updatedTrust);
+
+    //  save to session
+    setExtraData(req.session, appData);
+
+    return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

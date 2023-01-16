@@ -18,7 +18,7 @@ const mapTrustWhoIsInvolvedToPage = (
   ];
 
   return {
-    id: data.trust_id,
+    trustId: data.trust_id,
     trustName: data.trust_name,
     boInTrust,
   };

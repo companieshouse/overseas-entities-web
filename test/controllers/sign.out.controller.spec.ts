@@ -26,7 +26,7 @@ const previousPage = `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAN
 describe("Sign Out controller", () => {
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   describe("GET tests", () => {

@@ -4,6 +4,7 @@ import { logger } from '../utils/logger';
 import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
+import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
 import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
 import { Trust, TrustKey } from '../model/trust.model';
@@ -37,9 +38,9 @@ const getPageProperties = (
 
   const boAvailableForTrust = [
     ...getBoIndividualAssignableToTrust(appData)
-      .map(mapperDetails.mapBoIndividualToPage),
+      .map(mapperBo.mapBoIndividualToPage),
     ...getBoOtherAssignableToTrust(appData)
-      .map(mapperDetails.mapBoOtherToPage),
+      .map(mapperBo.mapBoOtherToPage),
   ];
 
   return {
@@ -170,8 +171,7 @@ const post = (
     //  save to session
     setExtraData(req.session, appData);
 
-    return res.redirect(`${config.TRUST_INVOLVED_URL}/${details.trust_id}`);
-
+    return res.redirect(`${config.TRUST_ENTRY_URL}/${details.trust_id}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

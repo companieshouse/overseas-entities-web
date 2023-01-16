@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import {
   generateTrustId,
-  mapBeneficialOwnerToSession, mapBoIndividualToPage, mapBoOtherToPage,
+  mapBeneficialOwnerToSession,
   mapDetailToPage,
   mapDetailToSession,
 } from "../../../src/utils/trust/details.mapper";
@@ -15,8 +15,7 @@ import {
   BeneficialOwnerOther,
   BeneficialOwnerOtherKey,
 } from '../../../src/model/beneficial.owner.other.model';
-import { BeneficialOwnerTypeChoice } from '../../../src/model/beneficial.owner.type.model';
-
+-
 describe('Trust Details page Mapper Service', () => {
   const mockTrust1 = {
     trust_id: '999',
@@ -67,33 +66,6 @@ describe('Trust Details page Mapper Service', () => {
           mockBoOle1.id,
         ],
         hasAllInfo: mockTrust1.unable_to_obtain_all_trust_info,
-      });
-    });
-
-    test('mapBoIndividualToPage should return object', () => {
-      const mockBo = {
-        id: '9999',
-        first_name: 'dummyFirst',
-        last_name: 'dummy Last',
-      } as BeneficialOwnerIndividual;
-
-      expect(mapBoIndividualToPage(mockBo)).toEqual({
-        id: mockBo.id,
-        name: `${mockBo.first_name} ${mockBo.last_name}`,
-        type: BeneficialOwnerTypeChoice.individual,
-      });
-    });
-
-    test('mapBoOtherToPage should return object', () => {
-      const mockBo = {
-        id: '9999',
-        name: 'dummyName',
-      } as BeneficialOwnerOther;
-
-      expect(mapBoOtherToPage(mockBo)).toEqual({
-        id: mockBo.id,
-        name: mockBo.name,
-        type: BeneficialOwnerTypeChoice.otherLegal,
       });
     });
   });

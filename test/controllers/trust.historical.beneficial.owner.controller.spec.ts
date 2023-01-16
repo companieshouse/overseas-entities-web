@@ -18,16 +18,15 @@ import { get, HISTORICAL_BO_TEXTS } from "../../src/controllers/trust.historical
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_INVOLVED_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import { TRUST_HISTORICAL_BENEFICIAL_OWNER_URL, TRUST_ENTRY_URL } from '../../src/config';
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
-
 
 describe('Trust Historical Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = TRUST_WITH_ID.trust_id;
-  const pageUrl = TRUST_INVOLVED_URL + "/" + trustId + TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
+  const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
 
   let mockReq = {} as Request;
   const mockRes = {
@@ -51,7 +50,6 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
-
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
@@ -63,7 +61,6 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
-
   });
 
   describe('Endpoint Access tests with supertest', () => {

@@ -151,4 +151,5 @@ export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/en
 export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
 export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
 export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";
-export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
+export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
+export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";

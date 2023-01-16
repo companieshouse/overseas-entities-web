@@ -24,7 +24,12 @@ import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.typ
 // directing the application to the Payment Platform to begin a payment session, otherwise
 // will return the CONFIRMATION URL.
 export const startPaymentsSession = async (
-  req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes, baseURL?: string
+  req: Request,
+  session: Session,
+  transactionId: string,
+  overseasEntityId: string,
+  transactionRes,
+  baseURL?: string
 ): Promise<string> => {
 
   setExtraData(session, {
@@ -79,7 +84,6 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
   if (!baseURL) {
     baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
   }
-  logger.debug("AKDEBUG payment return baseURL " + baseURL);
 
   const reference = `${REFERENCE}_${transactionId}`;
 

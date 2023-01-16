@@ -41,7 +41,7 @@ import {
   startingNew,
   updateCheckYourAnswers,
   overseasEntityPayment,
-  overseasEntityUpdateDetails,
+  overseasEntityUpdateDetails
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";

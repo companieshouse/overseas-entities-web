@@ -24,7 +24,12 @@ import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.typ
 // directing the application to the Payment Platform to begin a payment session, otherwise
 // will return the CONFIRMATION URL.
 export const startPaymentsSession = async (
-  req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes, baseURL?: string
+  req: Request,
+  session: Session,
+  transactionId: string,
+  overseasEntityId: string,
+  transactionRes,
+  baseURL?: string
 ): Promise<string> => {
 
   setExtraData(session, {

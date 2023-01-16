@@ -11,19 +11,19 @@ import { startPaymentsSession } from "../../service/payment.service";
 
 import {
   CHS_URL,
-  OVERSEAS_ENTITY_QUERY_URL,
+  OVERSEAS_ENTITY_REVIEW_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${UPDATE_CHECK_YOUR_ANSWERS_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
-      backLinkUrl: OVERSEAS_ENTITY_QUERY_URL, // TO DO: update whenever UAR-106 merged
+      backLinkUrl: OVERSEAS_ENTITY_REVIEW_URL,
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,
       appData
     });
@@ -35,7 +35,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${UPDATE_CHECK_YOUR_ANSWERS_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
 
@@ -46,7 +46,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);
 
     const baseURL = `${CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
-    const redirectPath = await startPaymentsSession(req, session, transactionID, overseasEntityID, transactionClosedResponse, baseURL);
+    const redirectPath = await startPaymentsSession(
+      req,
+      session,
+      transactionID,
+      overseasEntityID,
+      transactionClosedResponse,
+      baseURL
+    );
+
     logger.infoRequest(req, `Payments Session created with, Trans_ID: ${transactionID}, OE_ID: ${overseasEntityID}. Redirect to: ${redirectPath}`);
 
     return res.redirect(redirectPath);

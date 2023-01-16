@@ -4,12 +4,39 @@ import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
-import { TrustKey } from '../model/trust.model';
 
 const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
+};
+
+type TrustIndividualBeneificalOwnerPageProperties = {
+  backLinkUrl: string,
+  templateName: string;
+  trustData: {
+    id: string,
+    trustName: string,
+  } & PageModel.CommonTrustData,
+  pageParams: {
+    title: string;
+  },
+};
+
+const getPageProperties = (
+  req: Request,
+): TrustIndividualBeneificalOwnerPageProperties => {
+  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+
+  return {
+    backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`,
+    templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+    pageParams: {
+      title: INDIVIDUAL_BO_TEXTS.title,
+    },
+    trustData: {
+      ...CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+    },
+  };
 };
 
 const get = (
@@ -20,26 +47,9 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const pageProps = getPageProperties(req);
 
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    const trustData: PageModel.CommonTrustData = CommonTrustDataMapper.mapCommonTrustDataToPage(
-      appData[TrustKey]?.find(trust => trust.trust_id === trustId),
-    );
-
-    const templateName = config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE;
-
-    return res.render(
-      templateName,
-      {
-        backLinkUrl: `${config.TRUST_INVOLVED_URL}/${trustId}`,
-        templateName,
-        pageParams: {
-          title: INDIVIDUAL_BO_TEXTS.title,
-        },
-        trustData,
-      },
-    );
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

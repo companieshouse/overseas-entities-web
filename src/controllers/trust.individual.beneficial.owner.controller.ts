@@ -64,7 +64,7 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const url = `${config.TRUST_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
+    const url = `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}${config.TRUST_INVOLVED_URL}`;
 
     return safeRedirect(res, url);
   } catch (error) {

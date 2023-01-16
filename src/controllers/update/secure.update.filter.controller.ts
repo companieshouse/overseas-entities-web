@@ -30,10 +30,11 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setExtraData(req.session, { ...getApplicationData(req.session), [IsSecureRegisterKey]: isSecureRegister });
 
-    if (isSecureRegister === '0') {
+    if (isSecureRegister === '1') {
+      return res.redirect(config.UPDATE_USE_PAPER_URL);
+    } else if (isSecureRegister === '0') {
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_PAGE);
     }
-
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

@@ -128,3 +128,5 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
+export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
+export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";

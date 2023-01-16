@@ -12,7 +12,7 @@ import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
-  SERVICE_UNAVAILABLE, SIGN_OUT_HINT_TEXT,
+  SERVICE_UNAVAILABLE,
   SIGN_OUT_HINT_TEXT_NO_SAVE_AND_RESUME,
   SIGN_OUT_PAGE_TITLE
 } from "../__mocks__/text.mock";

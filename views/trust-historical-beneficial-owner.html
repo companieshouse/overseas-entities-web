@@ -78,28 +78,28 @@
         {% include "includes/inputs/radio-input.html" %}
 
         {% set fieldParam = {
-          name: 'ceasedDate',
+          name: 'startDate',
           label: 'When did they become a beneficial owner?',
           value: {
-            'Day': formData.ceasedDateDay,
-            'Month': formData.ceasedDateMonth,
-            'Year': formData.ceasedDateYear
+            'Day': formData.startDateDay,
+            'Month': formData.startDateMonth,
+            'Year': formData.startDateYear
           },
           hint: 'For example, 27 3 2007',
-          error: errors.ceasedDate
+          error: errors.startDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'notifiedDate',
+          name: 'endDate',
           label: 'When did they stop being a beneficial owner?',
           value: {
-            'Day': formData.notifiedDateDay,
-            'Month': formData.notifiedDateMonth,
-            'Year': formData.notifiedDateYear
+            'Day': formData.endDateDay,
+            'Month': formData.endDateMonth,
+            'Year': formData.endDateYear
           },
           hint: 'For example, 28 5 2011',
-          error: errors.notifiedDate
+          error: errors.endDate
         } %}
         {% include "includes/inputs/date-input.html" %}
 

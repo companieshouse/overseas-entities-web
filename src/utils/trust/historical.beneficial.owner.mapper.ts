@@ -22,12 +22,12 @@ const mapBeneficialOwnerToSession = (
   const data = {
     id: formData.boId || generateBoId(),
     corporateIndicator: formData.type as Trust.TrustHistoricalBeneficialOwnerType,
-    ceased_date_day: formData.ceasedDateDay,
-    ceased_date_month: formData.ceasedDateMonth,
-    ceased_date_year: formData.ceasedDateYear,
-    notified_date_day: formData.notifiedDateDay,
-    notified_date_month: formData.notifiedDateMonth,
-    notified_date_year: formData.notifiedDateYear,
+    ceased_date_day: formData.startDateDay,
+    ceased_date_month: formData.startDateMonth,
+    ceased_date_year: formData.startDateYear,
+    notified_date_day: formData.endDateDay,
+    notified_date_month: formData.endDateMonth,
+    notified_date_year: formData.endDateYear,
   };
 
   if (formData.type === '1') {

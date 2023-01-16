@@ -27,23 +27,23 @@ type TrustHistoricalBeneficialOwner = {
   trustName: string;
 };
 
-interface TrustHistoricalBeneficialOwnerFormBasic {
+interface TrustHistoricalBeneficialOwnerFormCommon {
   boId?: string;
   type: string;
-  ceasedDateDay: string;
-  ceasedDateMonth: string;
-  ceasedDateYear: string;
-  notifiedDateDay: string;
-  notifiedDateMonth: string;
-  notifiedDateYear: string;
+  startDateDay: string;
+  startDateMonth: string;
+  startDateYear: string;
+  endDateDay: string;
+  endDateMonth: string;
+  endDateYear: string;
 }
 
-interface  TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormBasic {
+interface  TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon  {
   type: '1';
   corporateName: string;
 }
 
-interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormBasic {
+interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon  {
   type: '0';
   firstName: string;
   lastName: string;

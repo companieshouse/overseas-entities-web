@@ -42,12 +42,12 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
   describe('To Session mapper methods test', () => {
     describe('History Beneficial owner mapper', () => {
       const mockFormDataBasic = {
-        ceasedDateDay: '99',
-        ceasedDateMonth: '98',
-        ceasedDateYear: '2097',
-        notifiedDateDay: '89',
-        notifiedDateMonth: '88',
-        notifiedDateYear: '2087',
+        startDateDay: '99',
+        startDateMonth: '98',
+        startDateYear: '2097',
+        endDateDay: '89',
+        endDateMonth: '88',
+        endDateYear: '2087',
       };
 
       test('map individual', () => {
@@ -64,12 +64,12 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           corporateIndicator: mockFormData.type,
           forename: mockFormData.firstName,
           surname: mockFormData.lastName,
-          ceased_date_day: mockFormData.ceasedDateDay,
-          ceased_date_month: mockFormData.ceasedDateMonth,
-          ceased_date_year: mockFormData.ceasedDateYear,
-          notified_date_day: mockFormData.notifiedDateDay,
-          notified_date_month: mockFormData.notifiedDateMonth,
-          notified_date_year: mockFormData.notifiedDateYear,
+          ceased_date_day: mockFormData.startDateDay,
+          ceased_date_month: mockFormData.startDateMonth,
+          ceased_date_year: mockFormData.startDateYear,
+          notified_date_day: mockFormData.endDateDay,
+          notified_date_month: mockFormData.endDateMonth,
+          notified_date_year: mockFormData.endDateYear,
         });
       });
 
@@ -87,12 +87,12 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           id: expectNewId,
           corporateIndicator: mockFormData.type,
           corporateName: mockFormData.corporateName,
-          ceased_date_day: mockFormData.ceasedDateDay,
-          ceased_date_month: mockFormData.ceasedDateMonth,
-          ceased_date_year: mockFormData.ceasedDateYear,
-          notified_date_day: mockFormData.notifiedDateDay,
-          notified_date_month: mockFormData.notifiedDateMonth,
-          notified_date_year: mockFormData.notifiedDateYear,
+          ceased_date_day: mockFormData.startDateDay,
+          ceased_date_month: mockFormData.startDateMonth,
+          ceased_date_year: mockFormData.startDateYear,
+          notified_date_day: mockFormData.endDateDay,
+          notified_date_month: mockFormData.endDateMonth,
+          notified_date_year: mockFormData.endDateYear,
         });
       });
     });

@@ -67,7 +67,7 @@ interface TrustIndividual {
 
 export type TrustHistoricalBeneficialOwnerType = '1' | '0';
 
-interface TrustHistoricalBeneficialOwnerBasic {
+interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
   corporateIndicator: TrustHistoricalBeneficialOwnerType;
   ceased_date_day: string;
@@ -78,11 +78,11 @@ interface TrustHistoricalBeneficialOwnerBasic {
   notified_date_year: string;
 }
 
-interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerBasic {
+interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {
   corporateName: string;
 }
 
-interface TrustHistoricalBeneficialOwnerIndividual extends TrustHistoricalBeneficialOwnerBasic {
+interface TrustHistoricalBeneficialOwnerIndividual extends TrustHistoricalBeneficialOwnerCommon {
   forename: string;
   other_forenames?: string;
   surname: string;

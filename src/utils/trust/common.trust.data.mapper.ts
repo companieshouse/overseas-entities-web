@@ -1,16 +1,16 @@
-import * as Trust from 'model/trust.model';
+import { ApplicationData } from 'model';
+import { Trust, TrustKey } from '../../model/trust.model';
 import { CommonTrustData } from 'model/trust.page.model';
 
 const mapCommonTrustDataToPage = (
-  data: Trust.Trust | undefined,
+  appData: ApplicationData,
+  trustId: string,
 ): CommonTrustData => {
-  if (!data) {
-    return {} as CommonTrustData;
-  }
+  const trustData = appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 
   return {
-    id: data.trust_id,
-    trustName: data.trust_name,
+    id: trustData.trust_id,
+    trustName: trustData.trust_name,
   };
 };
 export {

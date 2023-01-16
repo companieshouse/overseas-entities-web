@@ -20,7 +20,15 @@
   {% endif %}
 {% endset %}
 
-<h2 class="govuk-heading-l">Overseas entity details</h2>
+{% if pageParams.isRegistration %}
+{% set entityNameLink = CREATE_CHANGE_LINK(
+                           OE_CONFIGS.ENTITY_CHANGE_NAME,
+                           "Name of the overseas entity",
+                           "change-entity-name-button")
+%}
+{% endif %}
+
+<h2 class="govuk-heading-l">{{overseasEntityHeading}}</h2>
 
 {{ govukSummaryList({
     rows: [
@@ -32,11 +40,7 @@
           text: appData.entity_name
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_NAME,
-            "Name of the overseas entity",
-            "change-entity-name-button"
-          ) ]
+          items : [entityNameLink]
         }
       },
       {
@@ -48,7 +52,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_COUNTRY,
+            changeLinkUrl + OE_CONFIGS.INCORPORATION_COUNTRY,
             "Country it was formed in",
             "change-entity-incorporation-country-button"
           ) ]
@@ -63,7 +67,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_PRINCIPAL_ADDRESS,
+            changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Principal or registered office address",
             "change-entity-principal-address-button"
           ) ]
@@ -78,7 +82,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_CORRESPONDENCE_ADDRESS,
+            changeLinkUrl + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
             "Correspondence address",
             "change-entity-correspondence-address-button"
           ) ]
@@ -93,7 +97,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_EMAIL,
+            changeLinkUrl + OE_CONFIGS.EMAIL,
             "Email address at the overseas entity should we send communications to",
             "change-entity-email-button"
           ) ]
@@ -108,7 +112,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_LEGAL_FORM,
+            changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Legal form",
             "change-entity-legal-form-button"
           ) ]
@@ -123,7 +127,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_GOVERNING_LAW,
+            changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Governing law",
             "change-entity-governing-law-button"
           ) ]
@@ -138,7 +142,7 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            OE_CONFIGS.ENTITY_CHANGE_PUBLIC_REGISTER,
+            changeLinkUrl + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
             "Already on a public register in the country it was formed in",
             "change-entity-public-register-button"
           )]

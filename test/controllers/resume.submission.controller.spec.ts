@@ -1,4 +1,5 @@
 jest.mock("ioredis");
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/utils/application.data');
@@ -26,6 +27,7 @@ import {
   TRANSACTION_ID
 } from '../__mocks__/session.mock';
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { setExtraData } from "../../src/utils/application.data";
 import { getOverseasEntity } from "../../src/service/overseas.entities.service";
@@ -35,6 +37,9 @@ import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockInfoRequest = logger.infoRequest as jest.Mock;
@@ -76,8 +81,6 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
@@ -105,8 +108,6 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
@@ -124,8 +125,6 @@ describe("Resume submission controller", () => {
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockImplementationOnce( null as any );
 

@@ -164,7 +164,7 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
     if (areDateOfBirthFieldsPresent) {
       const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
       if (isDateValid) {
-        checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST, dayStr, monthStr, yearStr);
+        checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
       }
     }
   }

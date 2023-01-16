@@ -55,10 +55,10 @@ export enum ErrorMessages {
   YEAR_OF_BIRTH = "Date of birth must include a year",
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   ENTER_DATE = "Enter the date",
-  INVALID_DATE = "Date entered must be a real date",
+  INVALID_DATE = "Date must be a real date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
-  DATE_NOT_IN_PAST = "The date must be in the past",
-  DATE_NOT_IN_PAST_OR_TODAY = "The date must be today or in the past",
+  DATE_OF_BIRTH_NOT_IN_PAST = "Date of birth must be in the past",
+  DATE_NOT_IN_PAST_OR_TODAY = "Date must be today or in the past",
   IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS = "The date the identity checks were completed must be in the past 3 months",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

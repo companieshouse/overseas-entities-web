@@ -18,27 +18,60 @@
       <span class="govuk-caption-l">{{ pageData.trustName }}</span>
       <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
 
-      <form class="form" method="post">
+      {% set boItems = [] %}
+      {% for bo in pageData.boInTrust %}
+        {% set type = pageData.beneficialOwnerTypeTitle[bo.type] %}
+        {% set boItems = (
+          boItems.push({
+            key: {
+              text: type
+            },
+            value: {
+              text: bo.name
+            },
+            actions: {
+              items: [SUMMARY_LIST_LINK(
+                'remove',
+                pageData.beneficialOwnerUrlDetach + '/' + bo.id,
+                [type, bo.name, "detach from trust button"] | join(' '),
+                "detach-beneficial-owner-from-trust-button"
+              )]
+            }
+          }),
+          boItems
+        ) %}
+      {% endfor %}
 
+      {% if boItems | length %}
+        <h1 class="govuk-heading-m">
+          What <span class="govuk-visually-hidden">individuals or entities</span>
+          you have added so far for this trust
+        </h1>
+        {{ govukSummaryList({
+          rows: boItems
+        }) }}
+      {% endif %}
+
+      <form class="form" method="post">
         {% set fieldParam = {
           name: 'typeOfTrustee',
           label: 'Which type of individual or entity do you want to add to this trust?',
           error: errors.typeOfTrustee,
           items: [
             {
-              value: pageParams.trusteeType.HISTORICAL,
+              value: pageData.trusteeType.HISTORICAL,
               text: "Former beneficial owner",
               hint: {
                 text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
               }
             }, {
-              value: pageParams.trusteeType.INDIVIDUAL,
+              value: pageData.trusteeType.INDIVIDUAL,
               text: "Individual",
               hint: {
                 text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
               }
             }, {
-              value: pageParams.trusteeType.LEGAL_ENTITY,
+              value: pageData.trusteeType.LEGAL_ENTITY,
               text: "Legal entity",
               hint: {
                 text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."

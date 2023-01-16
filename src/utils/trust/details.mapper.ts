@@ -1,10 +1,9 @@
 import { ApplicationData } from '../../model';
 import { Trust, TrustBeneficialOwner, TrustKey } from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
+import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
+import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
 import { addTrustToBeneficialOwner, removeTrustFromBeneficialOwner } from '../../utils/trusts';
-import { BeneficialOwnerTypeChoice } from '../../model/beneficial.owner.type.model';
 
 //  to page form mapping
 const mapDetailToPage = (
@@ -29,26 +28,6 @@ const mapDetailToPage = (
     createdDateYear: trustData.creation_date_year,
     hasAllInfo: trustData.unable_to_obtain_all_trust_info,
     beneficialOwnersIds: trustBoIds,
-  };
-};
-
-const mapBoIndividualToPage = (
-  beneficialOwner: BeneficialOwnerIndividual,
-): Page.TrustBeneficialOwnerListItem => {
-  return {
-    id: beneficialOwner.id,
-    name: [beneficialOwner.first_name, beneficialOwner.last_name].join(' '),
-    type: BeneficialOwnerTypeChoice.individual,
-  };
-};
-
-const mapBoOtherToPage = (
-  beneficialOwner: BeneficialOwnerOther,
-): Page.TrustBeneficialOwnerListItem => {
-  return {
-    id: beneficialOwner.id,
-    name: beneficialOwner.name!,
-    type: BeneficialOwnerTypeChoice.otherLegal,
   };
 };
 
@@ -91,8 +70,6 @@ const generateTrustId = (appData: ApplicationData): string => {
 
 export {
   mapDetailToPage,
-  mapBoIndividualToPage,
-  mapBoOtherToPage,
   mapDetailToSession,
   mapBeneficialOwnerToSession,
   generateTrustId,

@@ -56,13 +56,11 @@ const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 
 describe("CHECK YOUR ANSWERS controller", () => {
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe("GET tests", () => {
-
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
@@ -74,7 +72,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
   });
 
   describe("POST tests", () => {
-
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
@@ -94,5 +91,4 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
-
 });

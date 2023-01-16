@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
 import { logger } from "../../utils/logger";
-import { getApplicationData } from "../../utils/application.data";
-import { ApplicationData } from "../../model";
 import { Session } from "@companieshouse/node-session-handler";
 
 import { createOverseasEntity } from "../../service/overseas.entities.service";
@@ -20,12 +18,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: OVERSEAS_ENTITY_REVIEW_URL,
-      templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-      appData
+      templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE
     });
   } catch (error) {
     logger.errorRequest(req, error);

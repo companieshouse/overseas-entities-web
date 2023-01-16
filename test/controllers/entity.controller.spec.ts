@@ -42,6 +42,7 @@ import {
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import {
+  EntityNameKey,
   HasSamePrincipalAddressKey,
   IsOnRegisterInCountryFormedInKey,
   PublicRegisterJurisdictionKey,
@@ -346,13 +347,16 @@ describe("ENTITY controller", () => {
     });
 
     test(`POST empty object and check for error in page title`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
       const resp = await request(app).post(ENTITY_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
     });
 
     test("renders the current page with public register error messages", async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
       mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
       const resp = await request(app)
         .post(ENTITY_URL)
@@ -365,10 +369,12 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
       expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with MAX error messages", async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
@@ -398,10 +404,12 @@ describe("ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION);
       expect(resp.text).not.toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
       const resp = await request(app)
         .post(ENTITY_URL)
         .send(ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
@@ -420,6 +428,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NUMBER_INVALID_CHARACTERS);
+      expect(resp.text).toContain(`Overseas Entity ${OVERSEAS_NAME_MOCK}`);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

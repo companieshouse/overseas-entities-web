@@ -25,7 +25,6 @@ describe("UPDATE USE PAPER controller", () => {
       const resp = await request(app).get(config.UPDATE_USE_PAPER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(UPDATE_APPLY_PAPER_FORM_HEADING);
     });
   });

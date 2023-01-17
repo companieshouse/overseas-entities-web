@@ -12,7 +12,8 @@ import app from "../../../src/app";
 import {
   SECURE_REGISTER_FILTER_PAGE,
   SECURE_UPDATE_FILTER_URL,
-  UPDATE_LANDING_PAGE_URL
+  UPDATE_LANDING_PAGE_URL,
+  UPDATE_USE_PAPER_URL
 } from "../../../src/config";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import {
@@ -82,6 +83,14 @@ describe("SECURE UPDATE FILTER controller", () => {
   });
 
   describe("POST tests", () => {
+    test("redirect to update use paper page if user selects yes", async () => {
+      const resp = await request(app)
+        .post(SECURE_UPDATE_FILTER_URL)
+        .send({ is_secure_register: '1' });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_USE_PAPER_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
     test("redirect to overseas entity query page if user selects no", async () => {
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL)

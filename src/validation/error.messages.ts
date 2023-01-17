@@ -46,7 +46,7 @@ export enum ErrorMessages {
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   // Date
-  DAY = "Date must include a day ",
+  DAY = "Date must include a day",
   MONTH = "Date must include a month",
   YEAR = "Date must include a year",
   YEAR_LENGTH = "Year must be 4 digits",
@@ -55,10 +55,10 @@ export enum ErrorMessages {
   YEAR_OF_BIRTH = "Date of birth must include a year",
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   ENTER_DATE = "Enter the date",
-  INVALID_DATE = "Date entered must be a real date",
+  INVALID_DATE = "Date must be a real date",
   INVALID_DATE_OF_BIRTH = "Date of birth must be a real date",
-  DATE_NOT_IN_PAST = "The date must be in the past",
-  DATE_NOT_IN_PAST_OR_TODAY = "The date must be today or in the past",
+  DATE_OF_BIRTH_NOT_IN_PAST = "Date of birth must be in the past",
+  DATE_NOT_IN_PAST_OR_TODAY = "Date must be today or in the past",
   IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS = "The date the identity checks were completed must be in the past 3 months",
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
@@ -80,6 +80,7 @@ export enum ErrorMessages {
   SELECT_NATURE_OF_CONTROL = "Select the nature of control",
   SELECT_IF_YOU_WANT_TO_CHANGE_INFORMATION = "Select yes if you want to change this information",
   SELECT_IF_SIGN_OUT = "Select yes if you are sure you want to sign out",
+  SELECT_IF_CONTINUE_SAVED_APPLICATION = "Select yes if you want to continue with a saved application",
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

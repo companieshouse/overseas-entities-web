@@ -17,6 +17,11 @@ describe("NAVIGATION utils", () => {
     expect(entityBackLink).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
   });
 
+  test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
+    const navigation = NAVIGATION[config.STARTING_NEW_URL].previousPage();
+    expect(navigation).toEqual(config.LANDING_PAGE_URL);
+  });
+
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.SOLD_LAND_FILTER_URL} object`, () => {
     const navigation = NAVIGATION[config.SOLD_LAND_FILTER_URL].previousPage();
     expect(navigation).toEqual(config.LANDING_PAGE_URL);
@@ -32,9 +37,14 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.SECURE_REGISTER_FILTER_URL);
   });
 
-  test(`NAVIGATION returns ${config.INTERRUPT_CARD_URL} when calling previousPage on ${config.PRESENTER_URL} object`, () => {
-    const navigation = NAVIGATION[config.PRESENTER_URL].previousPage();
+  test(`NAVIGATION returns ${config.INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_NAME_URL} object`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_NAME_URL].previousPage();
     expect(navigation).toEqual(config.INTERRUPT_CARD_URL);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_NAME_URL} when calling previousPage on ${config.PRESENTER_URL} object`, () => {
+    const navigation = NAVIGATION[config.PRESENTER_URL].previousPage();
+    expect(navigation).toEqual(config.OVERSEAS_NAME_URL);
   });
 
   test(`NAVIGATION returns ${config.PRESENTER_URL} when calling previousPage on ${config.WHO_IS_MAKING_FILING_URL} object`, () => {

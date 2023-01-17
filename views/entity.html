@@ -16,7 +16,8 @@
 
     {% include "includes/list/errors.html" %}
 
-    <h1 class="govuk-heading-xl">Tell us about the overseas entity</h1>
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">Overseas Entity {{ entityName }}</span>
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     {{ govukDetails({
       summaryText: "What is an overseas entity?",
@@ -27,18 +28,6 @@
     }) }}
 
     <form method="post">
-
-      {{ govukInput({
-        errorMessage: errors.name if errors,
-        label: {
-          text: "What is the name of the overseas entity?",
-            classes: "govuk-label--m",
-            isPageHeading: false
-          },
-          id: "name",
-          name: "name",
-          value: name
-      }) }}
 
       {% set countryField = incorporation_country if incorporation_country else '' %}
       {% set countryFieldNameId = "incorporation_country" %}
@@ -91,9 +80,9 @@
 
       {{ govukInsetText({
         html: '
-         <h2 class="govuk-heading-m">Information shown on the public register</h2>
-         <p>The email address will not be shown.</p>
-         <p>All other information provided in this section will be shown on the public Register of Overseas Entities.</p>
+         <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+         <p>We will not show the email address.</p>
+         <p>We will show all the other information you provide on this screen on the public Register of Overseas Entities.</p>
         '
       }) }}
 

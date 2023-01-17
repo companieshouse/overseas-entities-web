@@ -1,7 +1,5 @@
 {% extends "layout.html" %}
 
-{% set title = "Add trust information for the beneficial owners" %}
-
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
 {% endblock %}
@@ -16,13 +14,14 @@
       {% include "includes/list/errors.html" %}
 
       <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+      <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
 
       <form class="form" method="post">
         {% set fieldParam = {
           name: 'name',
           label: 'What is the name of the trust?',
           hint: 'If the trust does not have a name, give a description that it can be identified by.',
-          value: pageData.name,
+          value: formData.name,
           error: errors.name
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -32,9 +31,9 @@
           label: 'When was the trust created?',
           error: errors.createdDate,
           value: {
-            'Day': pageData.createdDateDay,
-            'Month': pageData.createdDateMonth,
-            'Year': pageData.createdDateYear
+            'Day': formData.createdDateDay,
+            'Month': formData.createdDateMonth,
+            'Year': formData.createdDateYear
           }
         } %}
         {% include "includes/inputs/date-input.html" %}
@@ -47,12 +46,12 @@
             {
               value: 1,
               text: 'Yes',
-              checked: pageData.hasAllInfo == 1
+              checked: formData.hasAllInfo == 1
             },
             {
               value: 0,
               text: 'No',
-              checked: pageData.hasAllInfo == 0
+              checked: formData.hasAllInfo == 0
             }
           ]
         } %}
@@ -62,9 +61,10 @@
         {% for bo in pageData.beneficialOwners %}
           {% set boItems = (
             boItems.push({
-              name: "beneficialOwners[" + bo.id + "]",
+              id: bo.id,
               value: bo.id,
-              text: [bo.forename, bo.other_forenames, bo.surname] | join(' ')
+              text: bo.name,
+              checked: true if bo.id in formData.beneficialOwnersIds
             }),
             boItems
             ) %}
@@ -72,7 +72,7 @@
 
         {% if boItems | length %}
           {% set fieldParam = {
-            name: 'beneficialOwner',
+            name: 'beneficialOwnersIds',
             label: 'Which of the overseas entity’s beneficial owners are trustees of this trust?',
             hint: 'Select all that apply. You can add more later.',
             error: errors.beneficialOwner,
@@ -88,7 +88,7 @@
           '
         }) }}
 
-        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+        <input type="hidden" name="id" value="{{ formData.id }}"/>
 
         {% include "includes/continue-button.html" %}
       </form>

@@ -18,6 +18,7 @@ import {
   updateLanding,
   overseasEntityQuery,
   updateConfirmation,
+  overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -30,10 +31,16 @@ import {
   dueDiligence,
   overseasEntityDueDiligence,
   accessibilityStatement,
+  confirmOverseasEntityDetails,
   signOut,
   trustDetails,
   trustInvolved,
-  resumeSubmission
+  trustHistoricalbeneficialOwner,
+  resumeSubmission,
+  overseasName,
+  startingNew,
+  overseasEntityUpdateDetails,
+  updateCheckYourAnswers
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -57,6 +64,9 @@ router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
+router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
+router.post(config.STARTING_NEW_URL, authentication, ...validator.startingNew, checkValidations, startingNew.post);
+
 router.get(config.SOLD_LAND_FILTER_URL, authentication, soldLandFilter.get);
 router.post(config.SOLD_LAND_FILTER_URL, authentication, ...validator.soldLandFilter, checkValidations, soldLandFilter.post);
 
@@ -69,8 +79,11 @@ router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePape
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
-router.get(config.PRESENTER_URL, authentication, navigation.isSecureRegister, presenter.get);
-router.post(config.PRESENTER_URL, authentication, navigation.isSecureRegister, ...validator.presenter, checkValidations, presenter.post);
+router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
+router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+
+router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
+router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
@@ -131,16 +144,17 @@ router.get(
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
-  .route(config.TRUST_DETAILS_URL + config.ID + '?')
+  .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
+    navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
   .post(trustDetails.post);
 
 router
-  .route(config.TRUST_INVOLVED_URL + config.ID)
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
@@ -148,6 +162,22 @@ router
   )
   .get(trustInvolved.get)
   .post(trustInvolved.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustHistoricalbeneficialOwner.get)
+  .post(trustHistoricalbeneficialOwner.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)
+  .get((_req, res) => {
+    return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
+  });
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
@@ -161,5 +191,19 @@ router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
+router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
+router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
+router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
+  .all(authentication)
+  .get(overseasEntityReview.get)
+  .post( overseasEntityReview.post);
+
+router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
+  .all(authentication)
+  .get(updateCheckYourAnswers.get)
+  .post( updateCheckYourAnswers.post);
 
 export default router;

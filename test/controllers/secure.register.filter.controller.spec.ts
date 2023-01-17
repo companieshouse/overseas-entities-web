@@ -13,6 +13,8 @@ import * as config from "../../src/config";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import {
   ANY_MESSAGE_ERROR,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
@@ -54,6 +56,8 @@ describe( "SECURE REGISTER FILTER controller", () => {
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test(`renders the ${config.SECURE_REGISTER_FILTER_PAGE} page with radios selected to no`, async () => {

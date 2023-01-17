@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Have any registrable beneficial owners been identified?" %}
+{% set title = "Has the overseas entity identified any registrable beneficial owners?" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -19,14 +19,6 @@
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
 
-      {{ govukDetails({
-        summaryText: "What is a registrable beneficial owner?",
-        attributes: {
-          "data-event-id": "what-is-a-beneficial-owner-details"
-        },
-        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the natures of control.</p>"
-      }) }}
-
       <form method="post">
 
         {{ govukRadios({
@@ -35,7 +27,7 @@
           name: "beneficial_owners_statement",
           fieldset: {
             legend: {
-              text: "Have you identified any beneficial owners?",
+              text: title,
               isPageHeading: false,
               classes: "govuk-visually-hidden"
             }
@@ -43,7 +35,7 @@
           items: [
             {
               value: "ALL_IDENTIFIED_ALL_DETAILS",
-              text: "All beneficial owners have been identified and all required information can be provided",
+              text: "All beneficial owners have been identified and I can provide all the required information",
               checked: beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS",
               attributes: {
                 "data-event-id": "all-identified-all-details-radio-option"
@@ -51,7 +43,7 @@
             },
             {
               value: "SOME_IDENTIFIED_ALL_DETAILS",
-              text: "Some beneficial owners have been identified and all required information can be provided",
+              text: "Some beneficial owners have been identified and I can provide all required information",
               hint: {
                 text: "You will also need to provide information about at least one managing officer"
               },
@@ -72,6 +64,14 @@
               }
             }
           ]
+        }) }}
+
+        {{ govukDetails({
+          summaryText: "What are registrable beneficial owners and managing officers?",
+          attributes: {
+            "data-event-id": "what-is-a-beneficial-owner-details"
+          },
+        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the natures of control.</p><p>A managing officer is a director, manager or company secretary of the overseas entity.</p>"
         }) }}
 
         {% include "includes/save-and-continue-button.html" %}

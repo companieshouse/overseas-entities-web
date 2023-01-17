@@ -67,12 +67,8 @@
           </div>
         </details>
 
-        {{ govukInsetText({
-          html: '
-          <h2 class="govuk-heading-m">Information shown on the public register</h2>
-          <p>None of the information provided on this screen will be shown on the public Register of Overseas Entities.</p>
-         '
-        }) }}
+        {% set paragraphTwo = '<p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+        {% include "includes/inset-text.html" %}
 
         {% include "includes/continue-button.html" %}
 

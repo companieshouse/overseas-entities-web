@@ -5,7 +5,11 @@ import {
   IDENTITY_ADDRESS_REQ_BODY_MAX_LENGTH_MOCK,
   IDENTITY_ADDRESS_REQ_BODY_MOCK,
 } from "./fields/address.mock";
-import { DATE, EMPTY_DATE, EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, IDENTITY_DATE_REQ_BODY_MOCK } from "./fields/date.mock";
+import {
+  DATE,
+  EMPTY_DATE,
+  EMPTY_IDENTITY_DATE_REQ_BODY_MOCK,
+  IDENTITY_DATE_REQ_BODY_MOCK } from "./fields/date.mock";
 import { MAX_256 } from "./max.length.mock";
 import { EMAIL_ADDRESS } from "./session.mock";
 

@@ -1,3 +1,16 @@
-{{ govukInsetText({
-    html: headerBlock + paragraphOne + paragraphTwo
-}) }}
+{% set headerBlock = '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>' %}
+{% if paragraphOne %}
+    {% if not paragraphTwo %}
+       {% set paragraphTwo = '<p>We will show all other information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+    {% endif %}
+    {{ govukInsetText({
+       html: headerBlock + paragraphOne + paragraphTwo
+    }) }}
+{% else %}
+    {% if not paragraphTwo %}
+       {% set paragraphTwo = '<p>We will show all the information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+    {% endif %}
+    {{ govukInsetText({
+       html: headerBlock + paragraphTwo
+    }) }}
+{% endif %}

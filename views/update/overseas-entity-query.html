@@ -19,8 +19,8 @@
         <h1 class="govuk-heading-xl">{{title}}</h1>
         {% include "includes/list/errors.html" %}
         <form method="post">
-
-            {{ govukInput({
+            {{ govukInput
+              ({
                 label: {
                     text: title,
                     isPageHeading: false,
@@ -30,10 +30,9 @@
                 id: "oe_number",
                 name: "oe_number",
                 value: oe_number
-            }) }}
-
+              }) 
+            }}
             {% include "includes/continue-button.html" %}
-
         </form>
     </div>
 </div>

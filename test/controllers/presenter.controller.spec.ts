@@ -1,9 +1,8 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/middleware/navigation/is.secure.register.middleware');
-jest.mock('../../src/service/transaction.service');
-jest.mock('../../src/service/overseas.entities.service');
+jest.mock('../../src/utils/save.and.continue');
+jest.mock('../../src/middleware/navigation/has.overseas.name.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -32,10 +31,8 @@ import { PresenterKey } from '../../src/model/presenter.model';
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
-  OVERSEAS_ENTITY_ID,
   PRESENTER_OBJECT_MOCK,
-  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
-  TRANSACTION_ID
+  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
@@ -43,19 +40,13 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
-import { isSecureRegister } from "../../src/middleware/navigation/is.secure.register.middleware";
-import { postTransaction } from "../../src/service/transaction.service";
-import { createOverseasEntity } from "../../src/service/overseas.entities.service";
-import { OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
+import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
+import { saveAndContinue } from "../../src/utils/save.and.continue";
 
-const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
-const mockOverseasEntity = createOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
-
-const mockIsSecureRegisterMiddleware = isSecureRegister as jest.Mock;
-mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasOverseasNameMiddleware = hasOverseasName as jest.Mock;
+mockHasOverseasNameMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
@@ -100,6 +91,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {
@@ -107,19 +99,7 @@ describe("PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
-    });
-
-    test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful creation of transaction and overseas entity`, async () => {
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce(mockData);
-      const resp = await request(app).post(PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
-
-      expect(resp.status).toEqual(302);
-      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
-      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
-      expect(mockTransactionService).toHaveBeenCalledTimes(1);
-      expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {
@@ -130,6 +110,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(LANDING_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {

@@ -1,3 +1,4 @@
+import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -5,7 +6,16 @@ import { SessionKey } from "@companieshouse/node-session-handler/lib/session/key
 import { SignInInfoKeys } from "@companieshouse/node-session-handler/lib/session/keys/SignInInfoKeys";
 import { UserProfileKeys } from "@companieshouse/node-session-handler/lib/session/keys/UserProfileKeys";
 import { IAccessToken, ISignInInfo } from "@companieshouse/node-session-handler/lib/session/model/SessionInterfaces";
-import { DESCRIPTION, PAYMENT_PAID, PAYMENT_REQUIRED_HEADER, REFERENCE, REGISTER_AN_OVERSEAS_ENTITY_URL } from "../../src/config";
+import {
+  DESCRIPTION,
+  OVERSEAS_ENTITY,
+  PAYMENT_PAID,
+  PAYMENT_REQUIRED_HEADER,
+  REFERENCE,
+  TRANSACTION as TRANSACTION_PATH,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
+  RESUME
+} from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
   beneficialOwnerGovType,
@@ -18,12 +28,14 @@ import {
   managingOfficerType,
   presenterType,
   trustType,
-  dueDiligenceType
+  dueDiligenceType,
 } from "../../src/model";
 import {
+  EntityNameKey,
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,
+  OeNumberKey,
   OverseasEntityKey,
   PaymentKey,
   Transactionkey,
@@ -48,6 +60,7 @@ export const MO_CORP_ID = "2df18e59-74dd-42d7-9494-8d40b953ddbe";
 export const MO_CORP_ID_URL = "/" + MO_CORP_ID;
 
 export const COMPANY_NAME = "my company name";
+export const COMPANY_NUMBER = "SA000392";
 
 export const EMAIL_ADDRESS = "user@domain.roe";
 export const PUBLIC_REGISTER_NAME = "publicRegister";
@@ -94,6 +107,7 @@ export const PAYMENT_WITH_TRANSACTION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}t
 export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 export const PAYMENT_JOURNEY_URL = "PAYMENT_JOURNEY_URL";
+export const RESUME_SUBMISSION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION_PATH}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
 export const RR_CARRIAGE_RETURN = "abc-xyzž \r\n def";
 export const PAYMENT_MOCK_VALUE = {
   resource: {
@@ -171,7 +185,6 @@ export const RESIDENTIAL_ADDRESS_MOCK = {
 };
 
 export const ENTITY_OBJECT_MOCK: entityType.Entity = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: 1,
@@ -192,7 +205,6 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: "email@test.gov.uk",
@@ -207,7 +219,6 @@ export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
-  name: "overseasEntityName",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: " " + EMAIL_ADDRESS + " ",
@@ -722,6 +733,8 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO
   registration_number: "123456"
 };
 
+export const OVERSEAS_NAME_MOCK = "Overseas Entity Name";
+
 export const PRESENTER_OBJECT_MOCK: presenterType.Presenter = {
   full_name: "fullName",
   email: EMAIL_ADDRESS
@@ -779,6 +792,40 @@ export const TRUST_DATA_PARTIAL_CREATION_DATE: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUST_DATA_LEADING_AND_TRAILING_SPACES: string = `[{
+  "trust_name": " name of trust ",
+  "creation_date_day": "31",
+  "creation_date_month": "12",
+  "creation_date_year": "1999",
+  "unable_to_obtain_all_trust_info": false,
+  "INDIVIDUALS": [
+    {
+      "type": " Beneficiary ",
+      "forename": "bob",
+      "surname": "smith",
+      "dob_day": "19",
+      "dob_month": "03",
+      "dob_year": "1976",
+      "nationality": "welsh",
+      "ura_address_line_1": "ss",
+      "ura_address_locality": "dd",
+      "ura_address_region": "dd",
+      "ura_address_country": "wales",
+      "ura_address_postal_code": "cf240tl",
+      "sa_address_line_1": "ss",
+      "sa_address_locality": "dd",
+      "sa_address_region": "dd",
+      "sa_address_country": "wales",
+      "sa_address_postal_code": "cf240tl",
+      "date_became_interested_person_day": "11",
+      "date_became_interested_person_month": "11",
+      "date_became_interested_person_year": "1987"
+    }
+  ],
+  "HISTORICAL_BO": [],
+  "CORPORATES": []
+}]`;
+
 export const TRUSTS_SUBMIT = {
   submit: "submit",
   beneficialOwners: "123",
@@ -825,6 +872,12 @@ export const TRUSTS_EMPTY_CHECKBOX = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
+export const TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_LEADING_AND_TRAILING_SPACES
+};
+
 const hasSoldLandKey = '0';
 const isSecureRegisterKey = '0';
 
@@ -864,6 +917,24 @@ export const TRUST_PARTIAL_DATE: Trust = {
   unable_to_obtain_all_trust_info: "No"
 };
 
+export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
+  companyName: "acme",
+  dateOfCreation: "1872-06-26",
+  ...SERVICE_ADDRESS,
+  type: "registered-overseas-entity",
+  jurisdiction: "country1",
+  companyNumber: "0E746324",
+  companyStatus: "",
+  companyStatusDetail: "",
+  sicCodes: [],
+  hasBeenLiquidated: false,
+  hasCharges: false,
+  hasInsolvencyHistory: false,
+  registeredOfficeAddress: {} as RegisteredOfficeAddress,
+  accounts: {} as Accounts,
+  links: {} as Links
+};
+
 export const TRUST_WITH_ID: Trust = {
   trust_id: "725",
   trust_name: "name of trust",
@@ -874,6 +945,7 @@ export const TRUST_WITH_ID: Trust = {
 };
 
 export const APPLICATION_DATA_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
@@ -889,7 +961,8 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
-  [TrustKey]: [TRUST]
+  [TrustKey]: [TRUST],
+  [OeNumberKey]: COMPANY_NUMBER,
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
@@ -934,3 +1007,7 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
+
+// update overseas entity mocks
+export const companyServiceNameOE = "companyProfile";
+export const fnGetCompanyNameGetOE = "getCompanyProfile";

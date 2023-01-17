@@ -3,8 +3,8 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { identity_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
-import { identity_check_date_validations } from "./fields/date.validation";
 import { email_validations } from "./fields/email.validation";
+import { identity_check_date_validations } from "./fields/date.validation";
 
 export const dueDiligence = [
 

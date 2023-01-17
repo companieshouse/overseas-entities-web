@@ -1,16 +1,28 @@
 <noscript>
-  <style type="text/css">
+  <style>
     a[id="print-button"] {
-      display:none;
+      display: none;
+    }
+    .check-your-answers-javascript-disabled-text-style {
+      display: block !important;
     }
   </style>
 </noscript>
+
+<style>
+  .check-your-answers-javascript-disabled-text-style {
+    display: none;
+  }
+</style>
 
 {{ govukButton({
   text: "Print this page",
   classes: "govuk-button--secondary",
   href: "javascript: window.print()",
   attributes: {
-      "id": "print-button"
+      "id": "print-button",
+      "data-event-id": "print-button"
   }
 }) }}
+
+<p class="govuk-body govuk-!-font-size-20 check-your-answers-javascript-disabled-text-style">To print this page, select print from your browser menu.</p>

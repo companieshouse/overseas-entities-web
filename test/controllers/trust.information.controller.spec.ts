@@ -25,7 +25,8 @@ import {
   TRUSTS_SUBMIT_PARTIAL_CREATION_DATE,
   TRUSTS_ADD_MORE,
   TRUSTS_EMPTY_TRUST_DATA,
-  TRUSTS_EMPTY_CHECKBOX
+  TRUSTS_EMPTY_CHECKBOX,
+  TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE
 } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -39,6 +40,7 @@ import {
   TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG,
   TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG
 } from "../__mocks__/validation.mock";
+import { trustType } from '../../src/model';
 
 const mockHasBOsOrMOsMiddleware = hasBOsOrMOs as jest.Mock;
 mockHasBOsOrMOsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -243,6 +245,29 @@ describe("TRUST INFORMATION controller", () => {
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
       const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`trims values in trust data and does not display error message when trust data with leading and trailing spaces submitted`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES );
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
+      const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValueOnce(bo);
+
+      // check the data has leading and trailing spaces before testing
+      expect(TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE[trustType.TrustKey]).toContain('"trust_name": " name of trust "');
+      expect(TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE[trustType.TrustKey]).toContain('"type": " Beneficiary "');
+
+      // do the test
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE);
+
+      const trustDataAfterTrimming = mockPrepareData.mock.calls[0][0];
+      expect(trustDataAfterTrimming[trustType.TrustKey][0]["trust_name"]).toEqual("name of trust");
+      expect(trustDataAfterTrimming[trustType.TrustKey][0]["INDIVIDUALS"][0]["type"]).toEqual("Beneficiary");
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.CHECK_YOUR_ANSWERS_PAGE);

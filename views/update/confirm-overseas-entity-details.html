@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% set title = "Confirm Overseas Data" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+    <h1 class="govuk-heading-xl">Confirm this is the registered overeseas entity (NOT LIVE)</h1>
+    
+  {{ govukTable({
+    captionClasses: "govuk-table__caption--m",
+    firstCellIsHeader: true,
+    rows: [
+      [
+        {
+          text: "Overseas Entity Name",
+          attributes: {
+            "id": "oe_entity_name"
+          }
+        },
+        {
+          text: appData.entity_name,
+          attributes: {
+            "id": "oe_entity_name_value"
+          }
+        }
+      ],
+      [
+        {
+          text: "Registered Office Address",
+          attributes: {
+            "id": "oe_entity_registered_address"
+          }
+        },
+        {
+          text: "" if appData.entity.registration_number === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
+          attributes: {
+            "id": "oe_entity_address_value"
+          }
+        }
+      ],
+      [
+        {
+          text: "Registered On",
+          attributes: {
+            "id": "oe_entity_registered_date"
+          }
+        },
+        {
+          text: registrationDate,
+          attributes: {
+            "id": "oe_entity_registered_date_value"
+          }
+        }
+      ]
+    ]
+    }) 
+  }}
+
+  <br>
+  <form method="post">
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Confirm and continue",
+        attributes: {
+          "id": "submit"
+        }
+      }) }}
+    </div>
+    <br>
+      <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Change company</a>  
+  </form>
+  </div>
+</div>
+
+{% endblock %}

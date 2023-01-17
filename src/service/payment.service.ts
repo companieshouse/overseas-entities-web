@@ -24,7 +24,12 @@ import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.typ
 // directing the application to the Payment Platform to begin a payment session, otherwise
 // will return the CONFIRMATION URL.
 export const startPaymentsSession = async (
-  req: Request, session: Session, transactionId: string, overseasEntityId: string, transactionRes
+  req: Request,
+  session: Session,
+  transactionId: string,
+  overseasEntityId: string,
+  transactionRes,
+  baseURL?: string
 ): Promise<string> => {
 
   setExtraData(session, {
@@ -40,7 +45,7 @@ export const startPaymentsSession = async (
     return CONFIRMATION_URL;
   }
 
-  const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId);
+  const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId, baseURL);
 
   // Save info into the session extra data field, including the state used as `nonce` against CSRF.
   setApplicationData(session, createPaymentRequest, PaymentKey);
@@ -72,11 +77,14 @@ export const startPaymentsSession = async (
   }
 };
 
-const setPaymentRequest = (transactionId: string, overseasEntityId: string): CreatePaymentRequest => {
+const setPaymentRequest = (transactionId: string, overseasEntityId: string, baseURL?: string): CreatePaymentRequest => {
 
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
 
-  const baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
+  if (!baseURL) {
+    baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
+  }
+
   const reference = `${REFERENCE}_${transactionId}`;
 
   // Once payment has been taken, the platform redirects the user back to the application,

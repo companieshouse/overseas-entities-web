@@ -1,4 +1,5 @@
 jest.mock("ioredis");
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/service/overseas.entities.service');
 jest.mock('../../src/utils/application.data');
@@ -12,19 +13,21 @@ import request from "supertest";
 import app from "../../src/app";
 import {
   SOLD_LAND_FILTER_URL,
-  SOLD_LAND_FILTER_PAGE,
-  RESUME,
-  OVERSEAS_ENTITY,
-  TRANSACTION,
-  REGISTER_AN_OVERSEAS_ENTITY_URL,
+  SOLD_LAND_FILTER_PAGE
 } from "../../src/config";
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
   SERVICE_UNAVAILABLE
 } from '../__mocks__/text.mock';
-import { APPLICATION_DATA_MOCK, OVERSEAS_ENTITY_ID, TRANSACTION_ID } from '../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  RESUME_SUBMISSION_URL,
+  OVERSEAS_ENTITY_ID,
+  TRANSACTION_ID
+} from '../__mocks__/session.mock';
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { setExtraData } from "../../src/utils/application.data";
 import { getOverseasEntity } from "../../src/service/overseas.entities.service";
@@ -34,6 +37,9 @@ import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockInfoRequest = logger.infoRequest as jest.Mock;
@@ -49,8 +55,6 @@ mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const MOCK_RESUME_SUBMISSION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
-
 describe("Resume submission controller", () => {
 
   beforeEach(() => {
@@ -58,7 +62,7 @@ describe("Resume submission controller", () => {
   });
 
   test(`Redirect to ${SOLD_LAND_FILTER_PAGE} page`, async () => {
-    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
@@ -77,11 +81,9 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
-    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
@@ -106,11 +108,9 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
-    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
@@ -125,13 +125,11 @@ describe("Resume submission controller", () => {
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false );
-    mockIsActiveFeature.mockReturnValueOnce( false );
     mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockImplementationOnce( null as any );
 
     const errorMsg = `Error on resuming OE - Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;
-    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -144,7 +142,7 @@ describe("Resume submission controller", () => {
 
   test("Catch error when resuming Overseas Entity", async () => {
     mockInfoRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    const resp = await request(app).get(MOCK_RESUME_SUBMISSION_URL);
+    const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);

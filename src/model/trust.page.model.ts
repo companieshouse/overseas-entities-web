@@ -1,33 +1,29 @@
+import { BeneficialOwnerTypeChoice } from 'model/beneficial.owner.type.model';
+
 type TrustDetails = {
   id: string;
   name: string;
   createdDateDay: string;
   createdDateMonth: string;
   createdDateYear: string;
-  beneficialOwners: TrustBeneficialOwner[];
+  beneficialOwnersIds: string[];
   hasAllInfo: string;
 };
 
-type TrustBeneficialOwner = {
+type TrustBeneficialOwnerListItem = {
   id: string;
-  forename?: string;
-  otherForenames?: string;
-  surname?: string;
-  ceasedDateDay: string;
-  ceasedDateMonth: string;
-  ceasedDateYear: string;
-  notifiedDateDay: string;
-  notifiedDateMonth: string;
-  notifiedDateYear: string;
+  name: string;
+  type: BeneficialOwnerTypeChoice,
 };
 
 type TrustWhoIsInvolved = {
   id: string;
   trustName: string;
+  boInTrust: TrustBeneficialOwnerListItem[];
 };
 
 export {
   TrustDetails,
-  TrustBeneficialOwner,
+  TrustBeneficialOwnerListItem,
   TrustWhoIsInvolved,
 };

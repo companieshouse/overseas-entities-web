@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/feature.flag');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -11,11 +12,13 @@ import * as config from "../../src/config";
 import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
+  LANDING_LINK,
   PAGE_TITLE_ERROR,
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
   SERVICE_UNAVAILABLE,
   SOLD_LAND_FILTER_PAGE_TITLE,
+  STARTING_NEW_LINK,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
 
@@ -23,6 +26,9 @@ import { deleteApplicationData, getApplicationData, setExtraData } from "../../s
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -90,6 +96,36 @@ describe("SOLD LAND FILTER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with updated back link when 
+      save and resume feature flag is active`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
+      const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(STARTING_NEW_LINK); // back button
+      // page heading will contain LANDING_LINK so remove this to check back button link isn't set to LANDING_LINK
+      let respTextWithFirstLandingLinkRemoved = resp.text.replace(LANDING_LINK, " ");
+      expect(respTextWithFirstLandingLinkRemoved).not.toContain(LANDING_LINK);
+      expect(mockDeleteApplicationData).toBeCalledTimes(0);
+    });
+
+    test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with original back link when 
+      save and resume feature flag is inactive`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
+      const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(LANDING_LINK); // back button
+      expect(resp.text).not.toContain(STARTING_NEW_LINK); // back button
+      expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });
   });
 

@@ -13,7 +13,7 @@ import {
 } from "../model/date.model";
 
 import { logger } from '../utils/logger';
-import { ID } from "../model/data.types.model";
+import { EntityNameKey, ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 
@@ -39,11 +39,13 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // that don't use id will just ignore it.
       const id = req.params[ID];
       const appData: ApplicationData = getApplicationData(req.session);
+      const entityName = appData?.[EntityNameKey];
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,
         id,
+        entityName,
         ...appData,
         ...req.body,
         ...dates,

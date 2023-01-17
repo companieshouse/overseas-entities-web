@@ -25,11 +25,6 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
-  [config.UPDATE_CONFIRMATION_URL]: {
-    currentPage: config.UPDATE_CONFIRMATION_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
-    nextPage: [config.UPDATE_LANDING_PAGE_URL]
-  },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
@@ -162,7 +157,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: []
-  },
+  }
 };

@@ -4,7 +4,8 @@ import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import * as PageModel from '../model/trust.page.model';
+import { IndividualTrusteeType } from '../model/individual.trustee.type.model';
+import { CommonTrustData } from '../model/trust.page.model';
 
 const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -13,10 +14,10 @@ const INDIVIDUAL_BO_TEXTS = {
 type TrustIndividualBeneificalOwnerPageProperties = {
   backLinkUrl: string,
   templateName: string;
-  trustData: {
-    id: string,
-    trustName: string,
-  } & PageModel.CommonTrustData,
+  pageData: {
+    trustData: CommonTrustData,
+    individualTrusteeType: typeof IndividualTrusteeType;
+  },
   pageParams: {
     title: string;
   },
@@ -33,8 +34,9 @@ const getPageProperties = (
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
     },
-    trustData: {
-      ...CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+    pageData: {
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+      individualTrusteeType: IndividualTrusteeType
     },
   };
 };

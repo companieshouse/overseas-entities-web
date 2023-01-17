@@ -1,0 +1,102 @@
+{% extends "layout.html" %}
+
+{% set title = "Tell us about an individual (Trusts)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <br> <p class="govuk-body">You can add more later.</p> <br>
+
+      <form class="form" method="post">
+
+        {% set interestedPersonDateHtml %}
+          <br>
+          {% set fieldParam = {
+            name: 'interestedPersonDate',
+            label: 'What date did they become an interested person?',
+            classes: 'govuk-fieldset__legend--s',
+            error: errors.interestedPersonDate
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endset -%}
+
+        {% set fieldParam = {
+          name: 'firstName',
+          label: 'What is their first name?',
+          hint: 'This is also known as their given name.',
+          error: errors.firstName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'lastName',
+          label: 'What is their last name?',
+          hint: 'This is also known as their family name.',
+          error: errors.lastName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'dateOfBirth',
+          label: 'What is their date of birth?',
+          error: errors.dateOfBirth
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {% set fieldParam = {
+          name: 'roleWithinTrust',
+          label: 'What is their role within the trust?',
+          error: errors.roleWithinTrust,
+          items: [
+            {
+              value: pageData.IndividualTrusteeType.BENEFICIARY,
+              text: "Beneficiary"
+            }, {
+              value: pageData.IndividualTrusteeType.SETTLOR,
+              text: "Settlor"
+            }, {
+              value: pageData.IndividualTrusteeType.GRANTOR,
+              text: "Grantor"
+            }, 
+            {
+              value: pageData.IndividualTrusteeType.INTERESTED_PERSON,
+              text: "Interested Person",
+              conditional: {
+                html: interestedPersonDateHtml
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {% include "includes/inputs/nationality/nationality.html" %}
+        {% include "includes/inputs/nationality/second-nationality.html" %}
+
+        {% include "includes/inputs/address/residential-address-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+
+        {% include "includes/save-and-continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

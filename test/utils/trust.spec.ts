@@ -3,9 +3,10 @@ import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
+  getTrustByIdFromApp,
 } from '../../src/utils/trusts';
 import { NatureOfControlType } from '../../src/model/data.types.model';
-import { TrustBeneficialOwner } from '../../src/model/trust.model';
+import { Trust, TrustKey, TrustBeneficialOwner } from '../../src/model/trust.model';
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
@@ -14,6 +15,15 @@ import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/b
 
 describe('Trust Utils method tests', () => {
   const newTrustId = 'dummyTrustId';
+
+  const mockTrust1Data = {
+    trust_id: '999',
+  } as Trust;
+
+  const mockTrust2Data = {
+    trust_id: '802',
+    trust_name: 'dummyName',
+  } as Trust;
 
   const mockBoIndividual1 = {
     id: '9001',
@@ -35,6 +45,10 @@ describe('Trust Utils method tests', () => {
   } as BeneficialOwnerOther;
 
   const mockAppData = {
+    [TrustKey]: [
+      mockTrust1Data,
+      mockTrust2Data,
+    ],
     [BeneficialOwnerIndividualKey]: [
       mockBoIndividual1,
       {} as BeneficialOwnerIndividual,
@@ -79,5 +93,9 @@ describe('Trust Utils method tests', () => {
         newTrustId,
       ],
     });
+  });
+
+  test('test getTrustByIdFromApp', () => {
+    expect(getTrustByIdFromApp(mockAppData, mockTrust2Data.trust_id)).toEqual(mockTrust2Data);
   });
 });

@@ -5,7 +5,7 @@
     legend: {
       text: fieldParam.label,
       isPageHeading: false,
-      classes: "govuk-fieldset__legend--m"
+      classes: fieldParam.classes if fieldParam.classes else "govuk-fieldset__legend--m"
     }
   },
   hint: {

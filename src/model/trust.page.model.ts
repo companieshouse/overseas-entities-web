@@ -22,8 +22,14 @@ type TrustWhoIsInvolved = {
   boInTrust: TrustBeneficialOwnerListItem[];
 };
 
+type CommonTrustData = {
+  trustId: string;
+  trustName: string;
+};
+
 export {
   TrustDetails,
   TrustBeneficialOwnerListItem,
   TrustWhoIsInvolved,
+  CommonTrustData,
 };

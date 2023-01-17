@@ -35,6 +35,7 @@ import {
   trustDetails,
   trustInvolved,
   trustHistoricalbeneficialOwner,
+  trustIndividualbeneficialOwner,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -171,6 +172,16 @@ router
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustIndividualbeneficialOwner.get)
+  .post(trustIndividualbeneficialOwner.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)

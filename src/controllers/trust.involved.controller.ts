@@ -87,21 +87,15 @@ const post = (
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
-          logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           url += config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
-
           break;
         case TrusteeType.INDIVIDUAL:
-          logger.info("TODO: Route to trust-individual page when story coded ");
-
-          url += config.TRUST_TRUSTEE_INDIVIDUAL_URL;
-
+          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
           break;
         case TrusteeType.LEGAL_ENTITY:
           logger.info("TODO: Route to trust-ole page when story coded ");
 
           url += config.TRUST_TRUSTEE_LEGAL_ENTITY_URL;
-
           break;
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");

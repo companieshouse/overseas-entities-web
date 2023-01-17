@@ -9,7 +9,7 @@ const mapCommonTrustDataToPage = (
   const trustData = getTrustByIdFromApp(appData, trustId);
 
   return {
-    id: trustData.trust_id,
+    trustId: trustData.trust_id,
     trustName: trustData.trust_name,
   };
 };

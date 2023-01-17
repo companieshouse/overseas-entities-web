@@ -23,7 +23,7 @@ type TrustWhoIsInvolved = {
 };
 
 type CommonTrustData = {
-  id: string;
+  trustId: string;
   trustName: string;
 };
 

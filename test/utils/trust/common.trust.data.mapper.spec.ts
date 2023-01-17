@@ -30,7 +30,6 @@ describe('Common Trust Data Mapper to Page Service', () => {
     });
 
     test('mapCommonTrustDataToPage should return object with mapped data', () => {
-
       expect(mapCommonTrustDataToPage(mockAppData, mockTrust1.trust_id)).toEqual({
         trustId: mockTrust1.trust_id,
         trustName: mockTrust1.trust_name,

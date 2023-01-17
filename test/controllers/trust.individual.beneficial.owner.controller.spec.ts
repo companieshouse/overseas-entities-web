@@ -18,7 +18,7 @@ import { get, INDIVIDUAL_BO_TEXTS } from "../../src/controllers/trust.individual
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
 
@@ -81,6 +81,16 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(resp.text).toContain(INDIVIDUAL_BO_TEXTS.title);
       expect(resp.text).toContain(TRUST_WITH_ID.trust_name);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(hasTrust).toBeCalledTimes(1);
+    });
+
+    test('successfully access POST method', async () => {
+      const resp = await request(app).post(pageUrl);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+
+      expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
     });
   });

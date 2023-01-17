@@ -121,7 +121,7 @@ export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
-
+export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

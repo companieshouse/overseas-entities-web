@@ -22,10 +22,12 @@ import { ApplicationDataType } from '../../src/model';
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   PRESENTER_PAGE_TITLE,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE, USE_INFORMATION_NEED_MORE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
 import {
@@ -74,6 +76,9 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(USE_INFORMATION_NEED_MORE);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test("catch error when renders the presenter page", async () => {

@@ -1,7 +1,7 @@
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
-import { BeneficialOwnerItem, TrustBeneficialOwner } from "../model/trust.model";
+import { BeneficialOwnerItem, TrustBeneficialOwner, Trust, TrustKey } from "../model/trust.model";
 
 // Checks whether any beneficial owners have trust data
 const checkEntityHasTrusts = (appData: ApplicationData): boolean => {
@@ -44,6 +44,16 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
 
 const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
+};
+
+/**
+ * Get Trust object from application object in session
+ *
+ * @param appData Application Data in Session
+ * @param trustId Trust details to save
+ */
+const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
+  return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 };
 
 const getBoIndividualAssignableToTrust = (
@@ -105,4 +115,5 @@ export {
   getTrustBoOthers,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
+  getTrustByIdFromApp,
 };

@@ -1,12 +1,12 @@
 import { ApplicationData } from 'model';
-import { Trust, TrustKey } from '../../model/trust.model';
 import { CommonTrustData } from 'model/trust.page.model';
+import { getTrustByIdFromApp } from '../trusts';
 
 const mapCommonTrustDataToPage = (
   appData: ApplicationData,
   trustId: string,
 ): CommonTrustData => {
-  const trustData = appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+  const trustData = getTrustByIdFromApp(appData, trustId);
 
   return {
     id: trustData.trust_id,

@@ -22,14 +22,14 @@
       <form class="form" method="post">
 
         {% set interestedPersonDateHtml %}
-        <br>
-        {% set fieldParam = {
-          name: 'interestedPersonDate',
-          label: 'What date did they become an interested person?',
-          classes: 'govuk-fieldset__legend--s',
-          error: errors.interestedPersonDate
-        } %}
-        {% include "includes/inputs/date-input.html" %}
+          <br>
+          {% set fieldParam = {
+            name: 'interestedPersonDate',
+            label: 'What date did they become an interested person?',
+            classes: 'govuk-fieldset__legend--s',
+            error: errors.interestedPersonDate
+          } %}
+          {% include "includes/inputs/date-input.html" %}
         {% endset -%}
 
         {% set fieldParam = {

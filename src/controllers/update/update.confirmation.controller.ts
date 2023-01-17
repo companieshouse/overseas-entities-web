@@ -23,7 +23,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       entityEmail: appData.entity?.email,
       userEmail: getLoggedInUserEmail(req.session),
       verificationCheckDays: 14,
-      templateName: config.UPDATE_CONFIRMATION_PAGE
+      paymentFee: config.UPDATE_PAYMENT_FEE,
+      paymentProduct: "update",
+      templateName: config.CONFIRMATION_PAGE
     });
   } catch (error) {
     logger.errorRequest(req, error);

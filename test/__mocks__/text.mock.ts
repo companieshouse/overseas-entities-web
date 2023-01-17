@@ -75,7 +75,7 @@ export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
 export const STARTING_NEW_LINK = "register-an-overseas-entity/starting-new";
-export const LANDING_LINK = "register-an-overseas-entity/sold-land-filter?start=0"
+export const LANDING_LINK = "register-an-overseas-entity/sold-land-filter?start=0";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";

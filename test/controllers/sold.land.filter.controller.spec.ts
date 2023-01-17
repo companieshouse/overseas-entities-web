@@ -109,7 +109,7 @@ describe("SOLD LAND FILTER controller", () => {
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(STARTING_NEW_LINK); // back button
       // page heading will contain LANDING_LINK so remove this to check back button link isn't set to LANDING_LINK
-      let respTextWithFirstLandingLinkRemoved = resp.text.replace(LANDING_LINK, " ");
+      const respTextWithFirstLandingLinkRemoved = resp.text.replace(LANDING_LINK, " ");
       expect(respTextWithFirstLandingLinkRemoved).not.toContain(LANDING_LINK);
       expect(mockDeleteApplicationData).toBeCalledTimes(0);
     });

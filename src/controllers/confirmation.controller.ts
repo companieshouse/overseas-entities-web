@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response) => {
     userEmail: getLoggedInUserEmail(req.session),
     verificationCheckDays: 14,
     paymentFee: PAYMENT_FEE,
-    paymentProduct: "update",
+    paymentProduct: "register",
     templateName: CONFIRMATION_PAGE
   });
 };

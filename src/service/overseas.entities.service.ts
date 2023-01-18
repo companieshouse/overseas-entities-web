@@ -6,6 +6,7 @@ import { getApplicationData } from "../utils/application.data";
 import { Transactionkey, OverseasEntityKey } from "../model/data.types.model";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { ApplicationData } from "../model/application.model";
+import { ApiResponse } from "@companieshouse/api-sdk-node/dist/services/resource";
 
 export const createOverseasEntity = async (
   req: Request,
@@ -62,7 +63,7 @@ export const getOverseasEntity = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string
-): Promise<ApplicationData> => {
+): Promise<ApiResponse<ApplicationData>> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getOverseasEntity",
@@ -74,12 +75,12 @@ export const getOverseasEntity = async (
 
   const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
 
-  if (response.httpStatusCode !== 200) {
+  if ([200, 402].indexOf(response?.httpStatusCode) === -1) {
     const errorMsg = `Something went wrong getting Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
 
-  return response.resource;
+  return response;
 };

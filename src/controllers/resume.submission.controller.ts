@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
+import { Session } from "@companieshouse/node-session-handler";
 
 import * as config from "../config";
 
@@ -17,7 +18,7 @@ import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../mode
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../model/managing.officer.corporate.model";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../model/managing.officer.model";
-import { Session } from "@companieshouse/node-session-handler";
+import { startPaymentsSession } from "../service/payment.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,13 +30,32 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
+      const session = req.session as Session;
+      const response = await getOverseasEntity(req, transactionId, overseaEntityId);
 
-      if (!appData || !Object.keys(appData).length) {
+      if (response.httpStatusCode === 402) {
+        // Assumption that PAYMENT_REQUIRED_HEADER is equal to PAYMENTS_API_URL + "/payments"
+        // link https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/resources/application.properties#L1 and
+        // https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/java/uk/gov/companieshouse/api/transactions/controller/PublicTransactionController.java#L503
+        const headersPaymentUrl = {
+          headers: {
+            [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + "/payments"
+          }
+        };
+        const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl);
+
+        logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
+
+        return res.redirect(redirectPath);
+      }
+
+      const appData: ApplicationData = response.resource || {};
+
+      if (!Object.keys(appData).length) {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
       }
 
-      setWebApplicationData(req.session as Session, appData, transactionId, overseaEntityId);
+      setWebApplicationData(session, appData, transactionId, overseaEntityId);
     }
 
     return res.redirect(config.SOLD_LAND_FILTER_URL);

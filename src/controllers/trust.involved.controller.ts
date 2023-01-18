@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
-import { TrusteeType } from '../model/trustee.type.model';
 import * as config from '../config';
+import { TrusteeType } from '../model/trustee.type.model';
+import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
+import { CommonTrustData, TrustWhoIsInvolved } from '../model/trust.page.model';
 import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
-import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import { getApplicationData } from '../utils/application.data';
-import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { TrustWhoIsInvolved } from '../model/trust.page.model';
+import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mapper';
+import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -24,6 +25,7 @@ type TrustInvolvedPageProperties = {
     trusteeType: typeof TrusteeType;
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
+    trustData: CommonTrustData,
   } & TrustWhoIsInvolved,
   pageParams: {
     title: string;
@@ -42,6 +44,7 @@ const getPageProperties = (
       title: TRUST_INVOLVED_TEXTS.title,
     },
     pageData: {
+      trustData: mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
       ...mapTrustWhoIsInvolvedToPage(getApplicationData(req.session), trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeType: TrusteeType,
@@ -61,7 +64,7 @@ const get = (
 
     const pageProps = getPageProperties(req);
 
-    return res.render(      pageProps.templateName, pageProps);
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

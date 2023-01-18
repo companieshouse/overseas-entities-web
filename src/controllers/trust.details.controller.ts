@@ -5,9 +5,9 @@ import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '.
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
+import { saveTrustInApp } from '../utils/trusts';
 import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
-import { Trust, TrustKey } from '../model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 
@@ -27,12 +27,12 @@ type TrustDetailPageProperties = {
     beneficialOwners: PageModel.TrustBeneficialOwnerListItem[];
     errors?: any[];
   };
-  formData: PageModel.TrustDetails,
+  formData: PageModel.TrustDetailsForm,
 };
 
 const getPageProperties = (
   req: Request,
-  formData: PageModel.TrustDetails,
+  formData: PageModel.TrustDetailsForm,
 ): TrustDetailPageProperties => {
   const appData: ApplicationData = getApplicationData(req.session);
 
@@ -68,7 +68,7 @@ const get = (
     const appData: ApplicationData = getApplicationData(req.session);
 
     const trustId = req.params['trustId'];
-    const formData: PageModel.TrustDetails = mapperDetails.mapDetailToPage(
+    const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,
       trustId,
     );
@@ -87,37 +87,6 @@ const post = (
   res: Response,
   next: NextFunction,
 ) => {
-  /**
-   * Update trust in application data
-   *
-   * @param appData Application Data in Session
-   * @param trustDetails Trust details to save
-   */
-  const updateTrustInApp = (appData: ApplicationData, trustDetails: Trust): ApplicationData => {
-    const trusts: Trust[] = appData[TrustKey] ?? [];
-
-    //  get index of trust in trusts array, if exists
-    const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
-
-    if (trustIndex >= 0) {
-      //  get updated trust and remove it from array of trusts
-      const updateTrust = trusts.splice(trustIndex, 1).shift() ?? {};
-
-      //  update trust with new details
-      trustDetails = {
-        ...updateTrust,
-        ...trustDetails,
-      };
-    }
-
-    trusts.push(trustDetails);
-
-    return {
-      ...appData,
-      [TrustKey]: trusts,
-    };
-  };
-
   /**
    * Set/remove trust id to/from beneficial owner in Application data
    *
@@ -162,7 +131,7 @@ const post = (
     }
 
     //  update trust details in application data at session
-    appData = updateTrustInApp(appData, details);
+    appData = saveTrustInApp(appData, details);
 
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];

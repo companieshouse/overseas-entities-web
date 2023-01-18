@@ -3,14 +3,14 @@ import { Trust, TrustBeneficialOwner, TrustKey } from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
-import { addTrustToBeneficialOwner, removeTrustFromBeneficialOwner } from '../../utils/trusts';
+import { addTrustToBeneficialOwner, getTrustByIdFromApp, removeTrustFromBeneficialOwner } from '../../utils/trusts';
 
 //  to page form mapping
 const mapDetailToPage = (
   appData: ApplicationData,
   trustId: string,
-): Page.TrustDetails => {
-  const trustData = appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+): Page.TrustDetailsForm => {
+  const trustData = getTrustByIdFromApp(appData, trustId);
 
   const trustBoIds: string[] =
     [
@@ -21,7 +21,7 @@ const mapDetailToPage = (
       .map(bo => bo.id!);
 
   return {
-    id: trustData.trust_id,
+    trustId: trustData.trust_id,
     name: trustData.trust_name,
     createdDateDay: trustData.creation_date_day,
     createdDateMonth: trustData.creation_date_month,
@@ -33,12 +33,12 @@ const mapDetailToPage = (
 
 //  to session mapping
 const mapDetailToSession = (
-  formData: Page.TrustDetails,
+  formData: Page.TrustDetailsForm,
 ): Trust => {
   const data = formData;
 
   return {
-    trust_id: data.id,
+    trust_id: data.trustId,
     trust_name: data.name,
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,

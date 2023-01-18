@@ -6,7 +6,6 @@ import { ApplicationData } from "../model";
 import { deleteApplicationData, getApplicationData, setExtraData } from "../utils/application.data";
 import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "../model/data.types.model";
 import { isActiveFeature } from "../utils/feature.flag";
-import { FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 } from "../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -19,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     let backLinkUrl: string = config.LANDING_PAGE_URL;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       backLinkUrl = config.LANDING_PAGE_STARTING_NEW_URL;
     }
     return res.render(config.SOLD_LAND_FILTER_PAGE, {

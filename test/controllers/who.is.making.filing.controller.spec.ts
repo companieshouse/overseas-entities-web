@@ -15,7 +15,7 @@ import {
   PAGE_TITLE_ERROR,
   RADIO_BUTTON_AGENT_SELECTED,
   RADIO_BUTTON_SOMEONE_ELSE_SELECTED,
-  SERVICE_UNAVAILABLE,
+  SERVICE_UNAVAILABLE, UK_REGULATED_AGENT,
   WHO_IS_MAKING_FILING_PAGE_TITLE,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -53,6 +53,7 @@ describe("Who is making filing controller tests", () => {
       expect(resp.text).not.toContain(RADIO_BUTTON_AGENT_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UK_REGULATED_AGENT);
     });
 
     test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {

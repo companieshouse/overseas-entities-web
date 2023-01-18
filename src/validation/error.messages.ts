@@ -1,7 +1,7 @@
 export enum ErrorMessages {
   ENTITY_NAME = "Enter the name of the overseas entity",
   MANAGING_OFFICER_CORPORATE_NAME = "Enter the corporate managing officer’s name",
-  EMAIL = "Enter an email address",
+  EMAIL = "Enter an email address.",
   LEGAL_FORM = "Enter the legal form",
   LAW_GOVERNED = "Enter the governing law",
   FULL_NAME = "Enter a full name",

@@ -1,6 +1,6 @@
 // Custom validation utils - For now checking is not empty
 
-import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { trustType } from "../model";
@@ -294,4 +294,36 @@ const checkCorporatesAddress = (trust: trustType.Trust, addressMaxLength: number
       }
     }
   }
+};
+
+export const validateEmail = (email: string, maxLength: number) => {
+  const isEmailPresent = checkEmailIsPresent(email);
+  if (isEmailPresent) {
+    const isWithinLengthLimit = checkIsWithinLengthLimit(email, maxLength);
+    if (isWithinLengthLimit) {
+      checkCorrectIsFormat(email);
+    }
+  }
+  return true;
+};
+
+const checkEmailIsPresent = (email: string) => {
+  if (email === undefined || email === "") {
+    throw new Error(ErrorMessages.EMAIL);
+  }
+  return true;
+};
+
+const checkIsWithinLengthLimit = (email: string, maxLength: number) => {
+  if (email.length > maxLength) {
+    throw new Error(ErrorMessages.MAX_EMAIL_LENGTH);
+  }
+  return true;
+};
+
+const checkCorrectIsFormat = (email: string) => {
+  if (!email.match(VALID_EMAIL_FORMAT)) {
+    throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
+  }
+  return true;
 };

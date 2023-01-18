@@ -8,7 +8,6 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('INSIDE GET CONTROLLER');
     const { status, state } = req.query;
     const appData: ApplicationData = getApplicationData(req.session);
     const savedPayment = appData[PaymentKey] || {} as CreatePaymentRequest;

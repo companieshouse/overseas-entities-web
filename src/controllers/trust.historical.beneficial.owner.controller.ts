@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
-import { TRUST_INVOLVED_URL } from '../config';
 import { logger } from '../utils/logger';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
-import { mapBeneficialOwnerToSession, mapTrustToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { mapBeneficialOwnerToSession } from '../utils/trust/historical.beneficial.owner.mapper';
+import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
-import * as Page from '../model/trust.page.model';
+import { CommonTrustData } from '../model/trust.page.model';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -19,7 +19,9 @@ type TrustHistoricalBeneficialOwnerProperties = {
   pageParams: {
     title: string;
   },
-  pageData: Page.TrustHistoricalBeneficialOwner,
+  pageData: {
+    trustData: CommonTrustData,
+  },
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
 };
 
@@ -30,13 +32,13 @@ const getPageProperties = (
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${config.TRUST_INVOLVED_URL}`,
     templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE,
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,
     },
     pageData: {
-      ...mapTrustToPage(getApplicationData(req.session), trustId),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
     },
     formData,
   };
@@ -88,7 +90,7 @@ const post = (
     //  save to session
     setExtraData(req.session, appData);
 
-    return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+    return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

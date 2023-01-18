@@ -3,7 +3,6 @@ import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
-  getTrustByIdFromApp,
   getTrustBoIndividuals,
   getTrustBoOthers,
   getTrustByIdFromApp,

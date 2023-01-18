@@ -17,14 +17,7 @@ type TrustBeneficialOwnerListItem = {
 };
 
 type TrustWhoIsInvolved = {
-  trustId: string;
-  trustName: string;
   boInTrust: TrustBeneficialOwnerListItem[];
-};
-
-type TrustHistoricalBeneficialOwner = {
-  trustId: string;
-  trustName: string;
 };
 
 interface TrustHistoricalBeneficialOwnerFormCommon {
@@ -61,7 +54,6 @@ export {
   TrustDetailsForm,
   TrustBeneficialOwnerListItem,
   TrustWhoIsInvolved,
-  TrustHistoricalBeneficialOwner,
   TrustHistoricalBeneficialOwnerForm,
   CommonTrustData,
 };

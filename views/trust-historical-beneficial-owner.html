@@ -15,7 +15,7 @@
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
 
-      <span class="govuk-caption-l">{{ pageData.trustName }}</span>
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
       <br> <p class="govuk-body">You can add more later.</p> <br>
 
@@ -63,15 +63,15 @@
               value: 1,
               text: "Legal Entity",
               conditional: {
-              html: legalEntityHtml
-            }
+                html: legalEntityHtml
+              }
             },
             {
               value: 0,
               text: "Individual",
               conditional: {
-              html: individualBoHtml
-            }
+                html: individualBoHtml
+              }
             }
           ]
         } %}

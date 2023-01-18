@@ -7,6 +7,7 @@ jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
 jest.mock('../../src/utils/trusts');
+jest.mock('../../src/utils/trust/common.trust.data.mapper');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -23,7 +24,8 @@ import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_
 import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
-import { mapBeneficialOwnerToSession, mapTrustToPage } from '../../src/utils/trust/historical.beneficial.owner.mapper';
+import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
+import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 
 describe('Trust Historical Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -154,7 +156,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       const mockTrust = {
         trustName: 'dummyName',
       };
-      (mapTrustToPage as jest.Mock).mockReturnValue(mockTrust);
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust);
 
       const resp = await request(app).get(pageUrl);
 

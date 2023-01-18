@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/feature.flag');
 
@@ -24,6 +25,7 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { logger } from "../../src/utils/logger";
 import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -34,6 +36,9 @@ const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -100,8 +105,6 @@ describe("SOLD LAND FILTER controller", () => {
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with updated back link when 
       save and resume feature flag is active`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_UPDATE
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 
@@ -116,8 +119,6 @@ describe("SOLD LAND FILTER controller", () => {
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with original back link when 
       save and resume feature flag is inactive`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_UPDATE
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 

@@ -5,7 +5,6 @@ import {
   UPDATE_PAYMENT_FEE,
   CONFIRMATION_PAGE,
   UPDATE_CONFIRMATION_URL,
-  UPDATE_CONFIRMATION_PAGE
 } from "../../config";
 import { getLoggedInUserEmail } from "../../utils/session";
 import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
@@ -22,7 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     deleteApplicationData(req.session);
 
-    return res.render(UPDATE_CONFIRMATION_PAGE, {
+    return res.render(CONFIRMATION_PAGE, {
       isAgentRegistering: appData.who_is_registering === WhoIsRegisteringType.AGENT,
       referenceNumber,
       entityEmail: appData.entity?.email,

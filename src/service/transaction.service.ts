@@ -68,3 +68,38 @@ export const closeTransaction = async (
 
   return response;
 };
+
+export const getTransaction = async (
+  req: Request,
+  transactionId: string
+): Promise<Transaction> => {
+
+  const response = await makeApiCallWithRetry(
+    "transaction",
+    "getTransaction",
+    req,
+    req.session as Session,
+    transactionId
+  );
+
+  if (!response || !response.resource) {
+    throw createAndLogErrorRequest(req, `GET - Transaction API request returned no response`);
+  } else if (!response.httpStatusCode || response.httpStatusCode >= 400) {
+    throw createAndLogErrorRequest(req, `Http status code ${JSON.stringify(response)}`);
+  }
+
+  logger.debugRequest(req, `Getting transaction ${JSON.stringify(response)}`);
+
+  return response.resource;
+};
+
+// const handleHttpResponse = (request: Request, transactionResponse: any, errorMsg: string) => {
+
+//   if (!transactionResponse) {
+//     throw createAndLogErrorRequest(request, `PUT - Transaction API request returned no response`);
+//   } else if (!transactionResponse.httpStatusCode || transactionResponse.httpStatusCode >= 400) {
+//     throw createAndLogErrorRequest(request, `Http status code ${transactionResponse.httpStatusCode}`);
+//   }
+
+//   logger.debugRequest(request, `${errorMsg} ${JSON.stringify(transactionResponse)}`);
+// };

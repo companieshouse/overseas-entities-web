@@ -19,6 +19,7 @@ import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/benefici
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../model/managing.officer.corporate.model";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../model/managing.officer.model";
 import { startPaymentsSession } from "../service/payment.service";
+import { getTransaction } from "../service/transaction.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,10 +31,18 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-      const session = req.session as Session;
-      const response = await getOverseasEntity(req, transactionId, overseaEntityId);
+      const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
-      if (response.httpStatusCode === 402) {
+      if (!Object.keys(appData).length) {
+        throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
+      }
+
+      const session = req.session as Session;
+      setWebApplicationData(session, appData, transactionId, overseaEntityId);
+
+      const resource = await getTransaction(req, transactionId);
+
+      if (resource.status === "closed pending payment") {
         // Assumption that PAYMENT_REQUIRED_HEADER is equal to PAYMENTS_API_URL + "/payments"
         // link https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/resources/application.properties#L1 and
         // https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/java/uk/gov/companieshouse/api/transactions/controller/PublicTransactionController.java#L503
@@ -48,14 +57,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
         return res.redirect(redirectPath);
       }
-
-      const appData: ApplicationData = response.resource || {};
-
-      if (!Object.keys(appData).length) {
-        throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
-      }
-
-      setWebApplicationData(session, appData, transactionId, overseaEntityId);
     }
 
     return res.redirect(config.SOLD_LAND_FILTER_URL);

@@ -17,7 +17,6 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
-  updateConfirmation,
   overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
@@ -41,7 +40,8 @@ import {
   startingNew,
   updateCheckYourAnswers,
   overseasEntityPayment,
-  overseasEntityUpdateDetails
+  overseasEntityUpdateDetails,
+  updateConfirmation
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";

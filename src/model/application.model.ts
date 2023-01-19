@@ -18,6 +18,7 @@ export const APPLICATION_DATA_KEY = 'roe';
 
 export interface ApplicationData {
     entity_name?: string;
+    entity_number?: string;
     presenter?: presenterType.Presenter;
     due_diligence?: dueDiligenceType.DueDiligence;
     overseas_entity_due_diligence?: overseasEntityDueDiligenceType.OverseasEntityDueDiligence;
@@ -35,7 +36,6 @@ export interface ApplicationData {
     has_sold_land?: string;
     is_secure_register?: string;
     who_is_registering?: string;
-    oe_number?: string;
 }
 
 export const ApplicationDataArrayType = [

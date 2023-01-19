@@ -122,6 +122,7 @@ export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the informa
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
+export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

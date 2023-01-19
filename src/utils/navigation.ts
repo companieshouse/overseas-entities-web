@@ -154,10 +154,5 @@ export const NAVIGATION: Navigation = {
     currentPage: config.SIGN_OUT_PAGE,
     previousPage: () => "",
     nextPage: []
-  },
-  [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
-    currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
-    nextPage: []
   }
 };

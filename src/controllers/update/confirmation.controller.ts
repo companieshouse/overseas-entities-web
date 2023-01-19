@@ -4,7 +4,6 @@ import { logger } from "../../utils/logger";
 import {
   UPDATE_PAYMENT_FEE,
   CONFIRMATION_PAGE,
-  UPDATE_CONFIRMATION_URL,
 } from "../../config";
 import { getLoggedInUserEmail } from "../../utils/session";
 import { deleteApplicationData, getApplicationData } from "../../utils/application.data";
@@ -14,7 +13,7 @@ import { WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${UPDATE_CONFIRMATION_URL}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
     const referenceNumber = appData[Transactionkey];

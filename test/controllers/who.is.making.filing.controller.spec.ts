@@ -15,7 +15,8 @@ import {
   PAGE_TITLE_ERROR,
   RADIO_BUTTON_AGENT_SELECTED,
   RADIO_BUTTON_SOMEONE_ELSE_SELECTED,
-  SERVICE_UNAVAILABLE, UK_REGULATED_AGENT,
+  SERVICE_UNAVAILABLE,
+  UK_REGULATED_AGENT,
   WHO_IS_MAKING_FILING_PAGE_TITLE,
 } from "../__mocks__/text.mock";
 import { ErrorMessages } from '../../src/validation/error.messages';

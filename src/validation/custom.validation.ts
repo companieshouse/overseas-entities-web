@@ -297,9 +297,10 @@ const checkCorporatesAddress = (trust: trustType.Trust, addressMaxLength: number
 };
 
 export const validateEmail = (email: string, maxLength: number) => {
-  checkEmailIsPresent(email.trim());
-  checkIsWithinLengthLimit(email.trim(), maxLength);
-  checkCorrectIsFormat(email.trim());
+  const emailString = email.trim();
+  checkEmailIsPresent(emailString);
+  checkIsWithinLengthLimit(emailString, maxLength);
+  checkCorrectIsFormat(emailString);
   return true;
 };
 

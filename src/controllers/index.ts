@@ -30,6 +30,7 @@ export * as trustDetails from "./trust.details.controller";
 export * as trustInvolved from "./trust.involved.controller";
 export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.owner.controller";
 export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.owner.controller";
+export * as trustInterrupt from "./trust.interrupt.controller";
 export * as overseasName from "./overseas.name.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";

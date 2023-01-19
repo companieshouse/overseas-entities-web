@@ -36,6 +36,7 @@ import {
   trustInvolved,
   trustHistoricalbeneficialOwner,
   trustIndividualbeneficialOwner,
+  trustInterrupt,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -188,6 +189,16 @@ router
   .get((_req, res) => {
     return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
   });
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);

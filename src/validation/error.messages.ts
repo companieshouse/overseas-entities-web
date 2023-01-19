@@ -45,6 +45,7 @@ export enum ErrorMessages {
   TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH = "Individual correspondence address must be 50 characters or less",
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
+  TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
   // Date
   DAY = "Date must include a day",
   MONTH = "Date must include a month",

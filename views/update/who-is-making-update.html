@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% set title = "Who is completing this update?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+
+        {% include "includes/list/errors.html" %}
+
+        <form method="post">
+
+            {{ govukRadios({
+                errorMessage: errors.who_is_registering if errors,
+                idPrefix: "who_is_registering",
+                name: "who_is_registering",
+                fieldset: {
+                    legend: {
+                        text: "Who is completing this update?",
+                        isPageHeading: true,
+                        classes: "govuk-fieldset__legend--xl"
+                    }
+                },
+                items: [
+                    {
+                        value: "agent",
+                        text: "Someone who works for the UK-regulated agent that carried out verification checks",
+                        checked: who_is_registering === "agent"
+                    },
+                    {
+                        value: "someone_else",
+                        text: "Someone else",
+                        checked: who_is_registering === "someone_else"
+                    }
+                ]
+            }) }}
+
+            {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+
+{% endblock %}

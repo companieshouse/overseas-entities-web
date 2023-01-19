@@ -308,19 +308,16 @@ const checkEmailIsPresent = (email: string) => {
   if (email === undefined || email === "") {
     throw new Error(ErrorMessages.EMAIL);
   }
-  return true;
 };
 
 const checkIsWithinLengthLimit = (email: string, maxLength: number) => {
   if (email.length > maxLength) {
     throw new Error(ErrorMessages.MAX_EMAIL_LENGTH);
   }
-  return true;
 };
 
 const checkCorrectIsFormat = (email: string) => {
   if (!email.match(VALID_EMAIL_FORMAT)) {
     throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
   }
-  return true;
 };

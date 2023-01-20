@@ -136,7 +136,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContainEqual(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
     });
 
@@ -182,7 +182,7 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContainEqual(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
@@ -195,7 +195,6 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });

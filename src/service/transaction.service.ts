@@ -92,14 +92,3 @@ export const getTransaction = async (
 
   return response.resource;
 };
-
-// const handleHttpResponse = (request: Request, transactionResponse: any, errorMsg: string) => {
-
-//   if (!transactionResponse) {
-//     throw createAndLogErrorRequest(request, `PUT - Transaction API request returned no response`);
-//   } else if (!transactionResponse.httpStatusCode || transactionResponse.httpStatusCode >= 400) {
-//     throw createAndLogErrorRequest(request, `Http status code ${transactionResponse.httpStatusCode}`);
-//   }
-
-//   logger.debugRequest(request, `${errorMsg} ${JSON.stringify(transactionResponse)}`);
-// };

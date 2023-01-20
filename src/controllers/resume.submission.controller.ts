@@ -33,7 +33,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
-      if (!Object.keys(appData).length) {
+      if (!Object.keys(appData || {}).length) {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
       }
 
@@ -42,10 +42,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
       const resource = await getTransaction(req, transactionId);
 
+      // https://companieshouse.atlassian.net/wiki/spaces/TTL/pages/4063854602/Pay+Now+link+Resume
       if (resource.status === "closed pending payment") {
-        // Assumption that PAYMENT_REQUIRED_HEADER is equal to PAYMENTS_API_URL + "/payments"
-        // link https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/resources/application.properties#L1 and
-        // https://github.com/companieshouse/transactions.api.ch.gov.uk/blob/0ca3f69cb71d2b326300335643645fdbfc9c10c0/src/main/java/uk/gov/companieshouse/api/transactions/controller/PublicTransactionController.java#L503
         const headersPaymentUrl = {
           headers: {
             [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + "/payments"

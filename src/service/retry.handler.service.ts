@@ -21,6 +21,7 @@ import { refreshToken } from "./refresh.token.service";
  *        For the getOverseasEntity call we have (transactionID, overseasEntityID)
  *        For the postTransaction call we have (transaction as Transaction)
  *        For the putTransaction call we have (transaction as Transaction)
+ *        For the getTransaction call we have (transactionId)
  *
  * @returns Promise<
  *    ApiResponse<Transaction> |

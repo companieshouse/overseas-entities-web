@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/service/overseas.entities.service');
+jest.mock('../../src/service/transaction.service');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/feature.flag" );
 jest.mock("../../src/utils/logger");
@@ -31,12 +32,14 @@ import { serviceAvailabilityMiddleware } from "../../src/middleware/service.avai
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { setExtraData } from "../../src/utils/application.data";
 import { getOverseasEntity } from "../../src/service/overseas.entities.service";
+import { getTransaction } from "../../src/service/transaction.service";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 import { DueDiligenceKey } from '../../src/model/due.diligence.model';
 import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey } from '../../src/model/data.types.model';
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
+import { mockGetTransactionResponse } from '../__mocks__/transaction.mock';
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -48,6 +51,9 @@ mockCreateAndLogErrorRequest.mockReturnValue("Error on resuming OE");
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );
+
+const mockGetTransactionService = getTransaction as jest.Mock;
+mockGetTransactionService.mockReturnValue( mockGetTransactionResponse );
 
 const mockGetOverseasEntity = getOverseasEntity as jest.Mock;
 mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );

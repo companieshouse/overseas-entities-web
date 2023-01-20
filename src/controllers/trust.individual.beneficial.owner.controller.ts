@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { IndividualTrusteeType } from '../model/individual.trustee.type.model';
+import { RoleWithinTrustType } from '../model/role.with.trust.type.model';
 import { CommonTrustData } from '../model/trust.page.model';
 
 const INDIVIDUAL_BO_TEXTS = {
@@ -16,7 +16,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   templateName: string;
   pageData: {
     trustData: CommonTrustData,
-    individualTrusteeType: typeof IndividualTrusteeType;
+    roleWithinTrustType: typeof RoleWithinTrustType;
   },
   pageParams: {
     title: string;
@@ -36,7 +36,7 @@ const getPageProperties = (
     },
     pageData: {
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
-      individualTrusteeType: IndividualTrusteeType
+      roleWithinTrustType: RoleWithinTrustType
     },
   };
 };

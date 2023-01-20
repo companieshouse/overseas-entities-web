@@ -1,4 +1,4 @@
-export enum IndividualTrusteeType {
+export enum RoleWithinTrustType {
     BENEFICIARY = "Beneficiary",
     SETTLOR = "Settlor",
     GRANTOR = "Grantor",

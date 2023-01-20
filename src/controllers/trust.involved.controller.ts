@@ -96,9 +96,7 @@ const post = (
           url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
           break;
         case TrusteeType.LEGAL_ENTITY:
-          logger.info("TODO: Route to trust-ole page when story coded ");
-
-          url += config.TRUST_TRUSTEE_LEGAL_ENTITY_URL;
+          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
           break;
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");

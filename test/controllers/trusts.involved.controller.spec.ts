@@ -22,7 +22,7 @@ import {
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_URL,
-  TRUST_TRUSTEE_LEGAL_ENTITY_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
 } from '../../src/config';
 import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
@@ -133,7 +133,7 @@ describe('Trust Involved controller', () => {
         .send({ typeOfTrustee: TrusteeType.LEGAL_ENTITY });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_TRUSTEE_LEGAL_ENTITY_URL}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL}`);
       expect(hasTrust).toBeCalledTimes(1);
     });
 

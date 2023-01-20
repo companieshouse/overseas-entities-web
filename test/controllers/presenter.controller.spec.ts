@@ -149,7 +149,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContainEqual(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
     });
 

@@ -162,7 +162,10 @@ router
     navigation.hasTrust,
   )
   .get(trustInvolved.get)
-  .post(trustInvolved.post);
+  .post(
+    ...validator.trustInvolved,
+    trustInvolved.post,
+  );
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')

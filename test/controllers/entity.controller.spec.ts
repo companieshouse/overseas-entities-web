@@ -271,6 +271,8 @@ describe("ENTITY controller", () => {
         .send(entity);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -284,6 +286,8 @@ describe("ENTITY controller", () => {
         .send(entity);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -297,6 +301,8 @@ describe("ENTITY controller", () => {
         .send(entity);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -312,6 +318,8 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN);
@@ -388,6 +396,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH);
@@ -423,6 +432,8 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);

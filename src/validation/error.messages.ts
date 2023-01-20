@@ -1,7 +1,7 @@
 export enum ErrorMessages {
   ENTITY_NAME = "Enter the name of the overseas entity",
   MANAGING_OFFICER_CORPORATE_NAME = "Enter the corporate managing officer’s name",
-  EMAIL = "Enter an email address",
+  EMAIL = "Enter an email address.",
   LEGAL_FORM = "Enter the legal form",
   LAW_GOVERNED = "Enter the governing law",
   FULL_NAME = "Enter a full name",
@@ -45,6 +45,7 @@ export enum ErrorMessages {
   TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH = "Individual correspondence address must be 50 characters or less",
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
+  TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
   // Date
   DAY = "Date must include a day",
   MONTH = "Date must include a month",

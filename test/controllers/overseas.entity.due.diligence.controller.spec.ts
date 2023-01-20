@@ -151,6 +151,9 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${ENTITY_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -172,6 +175,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
         .send(dueDiligenceMock);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -190,6 +195,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
         .send(dueDiligenceMock);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -208,6 +215,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
         .send(dueDiligenceMock);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -242,6 +251,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.UK_COUNTRY);
       expect(resp.text).toContain(ErrorMessages.POSTCODE);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.SUPERVISORY_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
@@ -271,6 +282,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);
@@ -564,6 +577,8 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
     });
 
   });

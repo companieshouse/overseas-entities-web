@@ -2,7 +2,6 @@ jest.mock("ioredis");
 jest.mock(".../../../src/utils/application.data");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
-jest.mock('../../src/middleware/is.feature.enabled.middleware');
 jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
@@ -22,7 +21,6 @@ import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_WITH_TRUST_ID_MOCK, TRUST_WITH_ID } from '../__mocks__/session.mock';
 
-
 describe('Trust Individual Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
 
@@ -35,7 +33,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
     redirect: jest.fn() as any,
   } as Response;
   const mockNext = jest.fn();
-
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -51,7 +48,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
-
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
@@ -63,7 +59,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
-
   });
 
   describe('Endpoint Access tests with supertest', () => {

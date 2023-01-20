@@ -55,7 +55,9 @@ import {
   CHECK_YOUR_ANSWERS_PAGE_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   FOUND_REDIRECT_TO,
-  IDENTITY_CHECKS,
+  VERIFICATION_CHECKS,
+  VERIFICATION_CHECKS_DATE,
+  VERIFICATION_CHECKS_PERSON,
   PRINT_BUTTON_TEXT,
   SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT,
   SERVICE_UNAVAILABLE,
@@ -383,7 +385,9 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(IDENTITY_CHECKS);
+    expect(resp.text).toContain(VERIFICATION_CHECKS);
+    expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+    expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
     expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
     expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
     expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
@@ -402,7 +406,9 @@ describe("GET tests", () => {
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
     expect(resp.status).toEqual(200);
-    expect(resp.text).toContain(IDENTITY_CHECKS);
+    expect(resp.text).toContain(VERIFICATION_CHECKS);
+    expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+    expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
     expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.name);
     expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.email);
     expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);

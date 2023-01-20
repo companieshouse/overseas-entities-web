@@ -160,7 +160,7 @@ describe('Trust Involved controller', () => {
       ],
       [
         TrusteeType.LEGAL_ENTITY,
-        TRUST_TRUSTEE_LEGAL_ENTITY_URL,
+        TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
       ],
       [
         'unknown',
@@ -286,58 +286,5 @@ describe('Trust Involved controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(hasTrust).toBeCalledTimes(1);
     });
-<<<<<<< HEAD
-
-    test('successfully access POST method with historic Trustee type', async () => {
-      const resp = await request(app)
-        .post(pageUrl)
-        .send({ typeOfTrustee: TrusteeType.HISTORICAL });
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_HISTORICAL_BENEFICIAL_OWNER_URL}`);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-
-    test('successfully access POST method with individual Trustee type', async () => {
-      const resp = await request(app)
-        .post(pageUrl)
-        .send({ typeOfTrustee: TrusteeType.INDIVIDUAL });
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL}`);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-
-    test('successfully access POST method with legalEntity Trustee type', async () => {
-      const resp = await request(app)
-        .post(pageUrl)
-        .send({ typeOfTrustee: TrusteeType.LEGAL_ENTITY });
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL}`);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-
-    test('successfully access POST method with unknown Trustee type', async () => {
-      const resp = await request(app)
-        .post(pageUrl)
-        .send({ typeOfTrustee: 'unknown' });
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}`);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-
-    test('no more to add button goes to the Check your answers page', async () => {
-      const resp = await request(app)
-        .post(pageUrl)
-        .send({ noMoreToAdd: 'noMoreToAdd' });
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(CHECK_YOUR_ANSWERS_URL);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-=======
->>>>>>> main
   });
 });

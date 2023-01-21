@@ -15,7 +15,7 @@ import app from "../../../src/app";
 import { APPLICATION_DATA_MOCK, ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK } from "../../__mocks__/session.mock";
 
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
-import { authentication } from "../../../src/middleware/authentication.middleware";
+import { authentication, companyAuthentication } from "../../../src/middleware/authentication.middleware";
 import {
   ANY_MESSAGE_ERROR,
   ENTITY_PAGE_TITLE,
@@ -36,6 +36,11 @@ import { ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/vali
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

@@ -9,7 +9,7 @@ import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
-import { authentication } from "../../src/middleware/authentication.middleware";
+import { authentication, companyAuthentication } from "../../src/middleware/authentication.middleware";
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
   BENEFICIAL_OWNER_INDIVIDUAL_URL,
@@ -70,6 +70,10 @@ mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;

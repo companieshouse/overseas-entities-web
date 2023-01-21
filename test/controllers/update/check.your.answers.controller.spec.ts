@@ -30,7 +30,7 @@ import {
   TRANSACTION_ID
 } from "../../__mocks__/session.mock";
 
-import { authentication } from "../../../src/middleware/authentication.middleware";
+import { authentication, companyAuthentication } from "../../../src/middleware/authentication.middleware";
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
@@ -38,7 +38,11 @@ import { getApplicationData } from "../../../src/utils/application.data";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
+
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

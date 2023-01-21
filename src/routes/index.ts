@@ -44,7 +44,7 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
-import { authentication } from "../middleware/authentication.middleware";
+import { authentication, companyAuthentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
@@ -205,16 +205,18 @@ router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
-router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
-router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, companyAuthentication, overseasEntityUpdateDetails.get);
+router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, companyAuthentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)
+  .all(companyAuthentication)
   .get(overseasEntityReview.get)
   .post( overseasEntityReview.post);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(authentication)
+  .all(companyAuthentication)
   .get(updateCheckYourAnswers.get)
   .post( updateCheckYourAnswers.post);
 

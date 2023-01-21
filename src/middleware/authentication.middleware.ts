@@ -1,7 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
-
+import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
 import { logger } from '../utils/logger';
+import { isOENumberValid } from '../utils/oe.number.validator';
+import { getApplicationData } from "../utils/application.data";
+import { ApplicationData } from "../model";
+import { OeNumberKey } from "../model/data.types.model";
+
 import {
+  CHS_URL,
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
   OVERSEAS_ENTITY_QUERY_URL,
@@ -13,6 +19,7 @@ import {
   checkUserSignedIn,
   getLoggedInUserEmail
 } from "../utils/session";
+
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
@@ -40,4 +47,29 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     logger.errorRequest(req, err);
     next(err);
   }
+};
+
+export const companyAuthentication = (req: Request, res: Response, next: NextFunction) => {
+
+  logger.debugRequest(req, `COMPANY AUTHENTICATION REQUEST`);
+
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  const oeNumber: string = appData?.[OeNumberKey] as string;
+  const returnUrl = OVERSEAS_ENTITY_QUERY_URL;
+
+  if (!isOENumberValid(oeNumber)) {
+    logger.errorRequest(req, "The OE Number selected : " + oeNumber + " is Not Valid ");
+
+    return res.redirect(`/signin?return_to=${returnUrl}`);
+  }
+
+
+  const authMiddlewareConfig: AuthOptions = {
+    chsWebUrl: CHS_URL,
+    returnUrl: req.originalUrl,
+    companyNumber: oeNumber
+  };
+
+  return authMiddleware(authMiddlewareConfig)(req, res, next);
 };

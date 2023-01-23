@@ -82,10 +82,12 @@ export const getTransaction = async (
     transactionId
   );
 
-  if (!response?.httpStatusCode || response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `Http status code ${response.httpStatusCode}`);
-  } else if (!response.resource) {
-    throw createAndLogErrorRequest(req, `GET - Transaction API request returned no response`);
+  if ( !response?.httpStatusCode ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no correct response`);
+  } else if ( response.httpStatusCode >= 400 ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Http status code ${response.httpStatusCode}`);
+  } else if ( !response.resource ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no resource`);
   }
 
   logger.debugRequest(req, `Getting transaction ${JSON.stringify(response)}`);

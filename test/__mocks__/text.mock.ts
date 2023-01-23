@@ -52,6 +52,7 @@ export const IDENTITY_CHECKS = "Identity checks";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const CONFIRMATION_NUMBER_OF_DAYS = "14 days";
 export const CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW = "What you need to do now";
+export const TRANSACTION_API_REQUEST_ERROR_MSG = "Transaction API request returned no";
 export const UNAUTHORISED = "Unauthorised";
 export const BAD_REQUEST = "Bad Request";
 export const HTTP_STATUS_CODE_500 = "Http status code 500";

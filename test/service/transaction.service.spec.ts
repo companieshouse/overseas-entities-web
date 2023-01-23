@@ -7,6 +7,7 @@ import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import {
   APPLICATION_DATA_MOCK,
   ERROR,
+  fnNameGetTransaction,
   fnNamePostTransaction,
   fnNamePutTransaction,
   getSessionRequestWithExtraData,
@@ -21,13 +22,27 @@ import {
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 import { getApplicationData } from "../../src/utils/application.data";
 
-import { HTTP_STATUS_CODE_500, TRANSACTION_ERROR } from "../__mocks__/text.mock";
+import {
+  HTTP_STATUS_CODE_500,
+  TRANSACTION_API_REQUEST_ERROR_MSG,
+  TRANSACTION_ERROR
+} from "../__mocks__/text.mock";
 import { Request } from "express";
-import { closeTransaction, postTransaction } from "../../src/service/transaction.service";
+import {
+  closeTransaction,
+  postTransaction,
+  getTransaction
+} from "../../src/service/transaction.service";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import { EntityNameKey } from "../../src/model/data.types.model";
+import {
+  MOCK_GET_ERROR_TRANSACTION_RESPONSE,
+  MOCK_GET_TRANSACTION_RESPONSE,
+  MOCK_TRANSACTION_ID
+} from "../__mocks__/transaction.mock";
 
 const mockDebugRequestLog = logger.debugRequest as jest.Mock;
+
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
 
@@ -114,6 +129,61 @@ describe('Transaction Service test suite', () => {
 
       await expect( closeTransaction(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID) ).rejects.toThrow(ERROR);
       expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `PUT - ${TRANSACTION_ERROR}`);
+      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET Transaction', () => {
+    test('Should successfully get transaction', async () => {
+      mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_TRANSACTION_RESPONSE);
+      const mockReq = { session } as Request;
+      const response = await getTransaction(mockReq, MOCK_TRANSACTION_ID);
+
+      expect(mockMakeApiCallWithRetry).toBeCalledWith(
+        serviceNameTransaction, fnNameGetTransaction, mockReq, session, MOCK_TRANSACTION_ID
+      );
+      expect(response).toEqual(MOCK_GET_TRANSACTION_RESPONSE.resource);
+      expect(mockDebugRequestLog).toBeCalledTimes(1);
+    });
+
+    test(`Should throw an error (${HTTP_STATUS_CODE_500}) when httpStatusCode 500`, async () => {
+      mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_ERROR_TRANSACTION_RESPONSE);
+
+      await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogErrorRequest).toBeCalledWith(req, `${fnNameGetTransaction} - ${HTTP_STATUS_CODE_500}`);
+      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+    });
+
+    test(`Should throw an error when response is not correct`, async () => {
+      mockMakeApiCallWithRetry.mockResolvedValueOnce( null );
+
+      await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogErrorRequest).toBeCalledWith(
+        req,
+        `${fnNameGetTransaction} - ${TRANSACTION_API_REQUEST_ERROR_MSG} correct response`
+      );
+      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+    });
+
+    test(`Should throw an error when response does not have httpStatusCode field`, async () => {
+      mockMakeApiCallWithRetry.mockResolvedValueOnce( { status: "any", body: "any" } );
+
+      await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogErrorRequest).toBeCalledWith(
+        req,
+        `${fnNameGetTransaction} - ${TRANSACTION_API_REQUEST_ERROR_MSG} correct response`
+      );
+      expect(mockDebugRequestLog).not.toHaveBeenCalled();
+    });
+
+    test(`Should throw an error when no resource returned`, async () => {
+      mockMakeApiCallWithRetry.mockResolvedValueOnce({ httpStatusCode: 200, any: "any" });
+
+      await expect( getTransaction(req, MOCK_TRANSACTION_ID) ).rejects.toThrow(ERROR);
+      expect(mockCreateAndLogErrorRequest).toBeCalledWith(
+        req,
+        `${fnNameGetTransaction} - ${TRANSACTION_API_REQUEST_ERROR_MSG} resource`
+      );
       expect(mockDebugRequestLog).not.toHaveBeenCalled();
     });
   });

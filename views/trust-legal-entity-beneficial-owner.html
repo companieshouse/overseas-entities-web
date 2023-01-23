@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% set title = "Tell us about an individual (Trusts)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <br> <p class="govuk-body">You can add more later.</p> <br>
+
+      <form class="form" method="post">
+
+        {% set interestedPersonDateHtml %}
+          <br>
+          {% set fieldParam = {
+            name: 'interestedPersonDate',
+            label: 'What date did it become an interested person?',
+            classes: 'govuk-fieldset__legend--s',
+            error: errors.interestedPersonDate
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endset -%}
+
+        {% set fieldParam = {
+          name: 'legalEntityName',
+          label: 'What is its name?',
+          error: errors.legalEntityName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'roleWithinTrust',
+          label: 'What is its role within the trust?',
+          error: errors.roleWithinTrust,
+          items: [
+            {
+              value: pageData.roleWithinTrustType.BENEFICIARY,
+              text: "Beneficiary"
+            }, {
+              value: pageData.roleWithinTrustType.SETTLOR,
+              text: "Settlor"
+            }, {
+              value: pageData.roleWithinTrustType.GRANTOR,
+              text: "Grantor"
+            }, 
+            {
+              value: pageData.roleWithinTrustType.INTERESTED_PERSON,
+              text: "Interested Person",
+              conditional: {
+                html: interestedPersonDateHtml
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+
+        {% include "includes/inputs/address/principal-address-input.html" %}
+
+        {% set fieldParam = {
+          name: 'legalForm',
+          label: 'What is its legal form?',
+          hint: 'For example, limited company',
+          error: errors.legalForm
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'governingLaw',
+          label: 'What is the governing law?',
+          hint: 'This is the law that the entity operates under.',
+          error: errors.governingLaw
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set registerInCountryFormedText = "Is it already on a public register in the country it was formed in?" %}
+        {% set registerHintText = "Include the full name. For example, Jersey Financial Services Commission." %}
+        {% set includeJurisdiction = true %}
+        {% set registrationNumberText = "Entity’s registration number" %}
+  
+        {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+
+        {% include "includes/save-and-continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

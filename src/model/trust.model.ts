@@ -9,14 +9,14 @@ export const TrustKey = "trusts";
   be able to do the mapping correctly
 */
 export const TrustKeys: string[] = [
-  "trusts"
+  "trusts",
 ];
 
 export interface Trusts {
   trusts: Trust[]
 }
 
-export type TrustBeneficialOwner = ( BeneficialOwnerOther | BeneficialOwnerIndividual ) & {
+export type TrustBeneficialOwner = (BeneficialOwnerOther | BeneficialOwnerIndividual) & {
   type?: BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
   name?: string;
 };
@@ -65,10 +65,11 @@ interface TrustIndividual {
   date_became_interested_person_year: string;
 }
 
-export interface TrustHistoricalBeneficialOwner {
-  forename: string;
-  other_forenames: string;
-  surname: string;
+export type TrustHistoricalBeneficialOwnerType = '1' | '0';
+
+interface TrustHistoricalBeneficialOwnerCommon {
+  id?: string;
+  corporateIndicator: TrustHistoricalBeneficialOwnerType;
   ceased_date_day: string;
   ceased_date_month: string;
   ceased_date_year: string;
@@ -76,6 +77,20 @@ export interface TrustHistoricalBeneficialOwner {
   notified_date_month: string;
   notified_date_year: string;
 }
+
+interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {
+  corporateName: string;
+}
+
+interface TrustHistoricalBeneficialOwnerIndividual extends TrustHistoricalBeneficialOwnerCommon {
+  forename: string;
+  other_forenames?: string;
+  surname: string;
+}
+
+export type TrustHistoricalBeneficialOwner =
+  TrustHistoricalBeneficialOwnerLegal
+  | TrustHistoricalBeneficialOwnerIndividual;
 
 interface TrustCorporate {
   type: string;

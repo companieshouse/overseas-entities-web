@@ -1,9 +1,14 @@
-import { describe, expect, test } from '@jest/globals';
+jest.mock('../../src/utils/feature.flag');
+
+import { describe, expect, jest, test } from '@jest/globals';
 
 import * as config from "../../src/config";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-import { NAVIGATION, getEntityBackLink } from "../../src/utils/navigation";
+import { NAVIGATION, getEntityBackLink, getSoldLandFilterBackLink } from "../../src/utils/navigation";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("NAVIGATION utils", () => {
 
@@ -15,6 +20,17 @@ describe("NAVIGATION utils", () => {
   test(`getEntityBackLink returns ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.SOMEONE_ELSE} selected`, () => {
     const entityBackLink = getEntityBackLink({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
     expect(entityBackLink).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+  });
+
+  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_STARTING_NEW_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active`, () => {
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const soldLandFilterBackLink = getSoldLandFilterBackLink();
+    expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_STARTING_NEW_URL);
+  });
+
+  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active`, () => {
+    const soldLandFilterBackLink = getSoldLandFilterBackLink();
+    expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {

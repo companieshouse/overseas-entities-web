@@ -22,10 +22,12 @@ import { ApplicationDataType } from '../../src/model';
 import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
+  INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
+  NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   PRESENTER_PAGE_TITLE,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE, USE_INFORMATION_NEED_MORE
 } from '../__mocks__/text.mock';
 import { PresenterKey } from '../../src/model/presenter.model';
 import {
@@ -74,6 +76,9 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(USE_INFORMATION_NEED_MORE);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
     test("catch error when renders the presenter page", async () => {
@@ -109,6 +114,8 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(LANDING_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
@@ -127,8 +134,8 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
     });
 
@@ -141,6 +148,7 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -172,7 +180,8 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test("Test email is valid with long email name and address", async () => {
@@ -183,7 +192,8 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test("Test email is valid with very long email name and address", async () => {
@@ -195,6 +205,8 @@ describe("PRESENTER controller", () => {
         .send(presenter);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
   });
 });

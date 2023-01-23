@@ -24,7 +24,7 @@ describe('Trust Involved Mapper to Page Service', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   describe('mapTrustWhoIsInvolvedToPage method tests', () => {
@@ -43,8 +43,6 @@ describe('Trust Involved Mapper to Page Service', () => {
       const actual = mapTrustWhoIsInvolvedToPage(mockAppData, mockTrust1.trust_id);
 
       expect(actual).toEqual({
-        id: mockTrust1.trust_id,
-        trustName: mockTrust1.trust_name,
         boInTrust: [
           expectBoIndividualResult,
           expectBoIndividualResult,

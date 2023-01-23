@@ -50,7 +50,7 @@
 {% endif %}
 
 
-<h3 class="govuk-heading-l">Identity checks</h3>
+<h3 class="govuk-heading-l">Verification checks</h3>
 
 {{ govukSummaryList({
     rows: [
@@ -71,7 +71,7 @@
       },
       {
         key: {
-         text: "Date the identity checks were completed"
+         text: "Date the verification checks were completed"
         },
         value: {
            html: checkDate
@@ -162,7 +162,7 @@
       agentCode,
       {
         key: {
-          text: "Person responsible for overseeing identity checks"
+          text: "Person responsible for overseeing verification checks"
         },
         value: {
           text: dueDiligence.partner_name

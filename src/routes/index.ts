@@ -35,12 +35,15 @@ import {
   trustDetails,
   trustInvolved,
   trustHistoricalbeneficialOwner,
+  trustIndividualbeneficialOwner,
+  trustLegalEntitybeneficialOwner,
   resumeSubmission,
   overseasName,
   startingNew,
   updateCheckYourAnswers,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  updateCheckYourAnswers,
   updateConfirmation
 } from "../controllers";
 
@@ -162,7 +165,10 @@ router
     navigation.hasTrust,
   )
   .get(trustInvolved.get)
-  .post(trustInvolved.post);
+  .post(
+    ...validator.trustInvolved,
+    trustInvolved.post,
+  );
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')
@@ -173,6 +179,26 @@ router
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustIndividualbeneficialOwner.get)
+  .post(trustIndividualbeneficialOwner.post);
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustLegalEntitybeneficialOwner.get)
+  .post(trustLegalEntitybeneficialOwner.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)

@@ -18,6 +18,7 @@ import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.vali
 import { signOut } from "./sign.out.validation";
 import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
+import { trustInvolved } from './trust.involved.validation';
 
 export const validator = {
   soldLandFilter,
@@ -39,5 +40,6 @@ export const validator = {
   beneficialOwnerDeleteWarning,
   signOut,
   overseasName,
-  startingNew
+  startingNew,
+  trustInvolved,
 };

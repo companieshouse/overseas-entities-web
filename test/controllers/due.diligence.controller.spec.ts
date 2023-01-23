@@ -179,6 +179,8 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.UK_COUNTRY);
       expect(resp.text).toContain(ErrorMessages.POSTCODE);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.SUPERVISORY_NAME);
       expect(resp.text).toContain(ErrorMessages.AGENT_CODE);
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
@@ -209,6 +211,8 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(ErrorMessages.MAX_AML_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH);
@@ -389,6 +393,8 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -407,6 +413,8 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -425,6 +433,8 @@ describe("DUE_DILIGENCE controller", () => {
         .send(dueDiligenceData);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -548,6 +558,7 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
     });
 
     test(`catch error when renders the ${DUE_DILIGENCE_PAGE} page on POST method`, async () => {

@@ -1,7 +1,13 @@
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
-import { BeneficialOwnerItem, TrustBeneficialOwner } from "../model/trust.model";
+import {
+  BeneficialOwnerItem,
+  Trust,
+  TrustBeneficialOwner,
+  TrustHistoricalBeneficialOwner,
+  TrustKey,
+} from "../model/trust.model";
 
 // Checks whether any beneficial owners have trust data
 const checkEntityHasTrusts = (appData: ApplicationData): boolean => {
@@ -46,6 +52,47 @@ const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | Benefici
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
 };
 
+/**
+ * Get Trust object from application object in session
+ *
+ * @param appData Application Data in Session
+ * @param trustId Trust details to save
+ */
+const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
+  return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+};
+
+/**
+ * Update trust in application data
+ *
+ * @param appData Application Data in Session
+ * @param trustDetails Trust details to save
+ */
+const saveTrustInApp = (appData: ApplicationData, trustDetails: Trust): ApplicationData => {
+  const trusts: Trust[] = appData[TrustKey] ?? [];
+
+  //  get index of trust in trusts array, if exists
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
+
+  if (trustIndex >= 0) {
+    //  get updated trust and remove it from array of trusts
+    const updateTrust = trusts.splice(trustIndex, 1).shift() ?? {};
+
+    //  update trust with new details
+    trustDetails = {
+      ...updateTrust,
+      ...trustDetails,
+    };
+  }
+
+  trusts.push(trustDetails);
+
+  return {
+    ...appData,
+    [TrustKey]: trusts,
+  };
+};
+
 const getBoIndividualAssignableToTrust = (
   appData: ApplicationData,
 ): BeneficialOwnerIndividual[] => {
@@ -72,7 +119,6 @@ const getTrustBoOthers = (
   appData: ApplicationData,
   trustId: string,
 ): BeneficialOwnerOther[] => {
-
   return getBoOtherAssignableToTrust(appData)
     .filter((bo: BeneficialOwnerIndividual) => bo.trust_ids?.includes(trustId));
 };
@@ -96,13 +142,30 @@ const removeTrustFromBeneficialOwner = (
   trust_ids: (beneficialOwner.trust_ids ?? []).filter((id: string) => id !== trustId),
 });
 
+const saveHistoricalBoInTrust = (
+  trust: Trust,
+  boData: TrustHistoricalBeneficialOwner,
+): Trust => {
+  const bos = trust.HISTORICAL_BO?.filter((bo: TrustHistoricalBeneficialOwner) => bo.id !== boData.id);
+
+  trust.HISTORICAL_BO = [
+    ...(bos ?? []),
+    boData,
+  ];
+
+  return trust;
+};
+
 export {
   checkEntityHasTrusts,
   getBeneficialOwnerList,
+  getTrustByIdFromApp,
+  saveTrustInApp,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
   getTrustBoIndividuals,
   getTrustBoOthers,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
+  saveHistoricalBoInTrust,
 };

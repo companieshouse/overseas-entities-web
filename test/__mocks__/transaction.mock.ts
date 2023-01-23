@@ -8,7 +8,7 @@ export const MOCK_GET_TRANSACTION = {
   "closed_at": "2023-01-17T20:09:07Z",
   "company_name": "Test1",
   "etag": "1b72eddd5ee869c6a02c56575b270722d28d7ae0",
-  "status": "closed pending paymentx",
+  "status": "closed pending payment",
   "links": {
     "self": "/transactions/075044-629416-739860",
     "payment": "/transactions/075044-629416-739860/payment"

@@ -1007,6 +1007,7 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
+export const fnNameGetTransaction = "getTransaction";
 
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";

@@ -30,9 +30,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsUpdating });
 
     if ( whoIsUpdating === WhoIsRegisteringType.AGENT ){
-      return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE); // TO DO: update to UAR-101
-    } else {
       return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE); // TO DO: update to UAR-102
+    } else {
+      return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE); // TO DO: update to UAR-104
     }
   } catch (error) {
     logger.errorRequest(req, error);

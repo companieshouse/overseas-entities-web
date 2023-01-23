@@ -41,5 +41,5 @@ export const validator = {
   signOut,
   overseasName,
   startingNew,
-  trustInvolved
+  trustInvolved,
 };

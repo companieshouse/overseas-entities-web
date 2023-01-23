@@ -7,8 +7,8 @@ import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper'
 import { RoleWithinTrustType } from '../model/role.with.trust.type.model';
 import { CommonTrustData } from '../model/trust.page.model';
 
-const INDIVIDUAL_BO_TEXTS = {
-  title: 'Tell us about the individual',
+const LEGAL_ENTITY_BO_TEXTS = {
+  title: 'Tell us about the legal entity',
 };
 
 type TrustIndividualBeneificalOwnerPageProperties = {
@@ -16,7 +16,7 @@ type TrustIndividualBeneificalOwnerPageProperties = {
   templateName: string;
   pageData: {
     trustData: CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
+    individualTrusteeType: typeof RoleWithinTrustType;
   },
   pageParams: {
     title: string;
@@ -30,13 +30,13 @@ const getPageProperties = (
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
-    templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+    templateName: config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE,
     pageParams: {
-      title: INDIVIDUAL_BO_TEXTS.title,
+      title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
-      roleWithinTrustType: RoleWithinTrustType
+      individualTrusteeType: RoleWithinTrustType
     },
   };
 };
@@ -79,5 +79,5 @@ const post = (
 export {
   get,
   post,
-  INDIVIDUAL_BO_TEXTS,
+  LEGAL_ENTITY_BO_TEXTS,
 };

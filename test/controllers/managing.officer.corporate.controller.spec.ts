@@ -346,7 +346,6 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);

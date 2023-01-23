@@ -40,7 +40,6 @@ import {
   resumeSubmission,
   overseasName,
   startingNew,
-  updateCheckYourAnswers,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
   updateCheckYourAnswers,

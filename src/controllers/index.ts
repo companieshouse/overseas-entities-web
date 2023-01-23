@@ -29,6 +29,8 @@ export * as resumeSubmission from "./resume.submission.controller";
 export * as trustDetails from "./trust.details.controller";
 export * as trustInvolved from "./trust.involved.controller";
 export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.owner.controller";
+export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.owner.controller";
+export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficial.owner.controller";
 export * as overseasName from "./overseas.name.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
@@ -36,6 +38,6 @@ export * as overseasEntityQuery from "./update/overseas.entity.query.controller"
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as overseasEntityPayment from './update/payment.controller';
-export * as updateConfirmation from "./update/update.confirmation.controller";
+export * as updateConfirmation from "./update/confirmation.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";

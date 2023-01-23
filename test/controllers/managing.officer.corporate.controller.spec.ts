@@ -196,6 +196,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficerCorporate);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -210,6 +212,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficerCorporate);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -224,6 +228,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
         .send(managingOfficerCorporate);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
@@ -260,6 +266,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.ROLE_AND_RESPONSIBILITIES_CORPORATE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
@@ -306,6 +314,8 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_ROLE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.MANAGING_OFFICER_CORPORATE_NAME);
       expect(resp.text).not.toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).not.toContain(ErrorMessages.ADDRESS_LINE1);
@@ -335,6 +345,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).toContain(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS);

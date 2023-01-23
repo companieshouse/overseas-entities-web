@@ -76,7 +76,7 @@ describe("UPDATE CONFIRMATION controller", () => {
 
     const appData = getApplicationData(req.session);
 
-    expect(appData).toBeFalsy; // Check extra data deleted
+    expect(appData).toBeFalsy;
     expect(res.render).toHaveBeenCalledTimes(1);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });

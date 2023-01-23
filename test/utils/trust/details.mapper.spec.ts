@@ -56,7 +56,7 @@ describe('Trust Details page Mapper Service', () => {
   describe('To Page mapper methods tests', () => {
     test('mapDetailToPage should return object', () => {
       expect(mapDetailToPage(mockAppData, mockTrust1.trust_id)).toEqual({
-        id: mockTrust1.trust_id,
+        trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
         createdDateDay: mockTrust1.creation_date_day,
         createdDateMonth: mockTrust1.creation_date_month,
@@ -72,17 +72,17 @@ describe('Trust Details page Mapper Service', () => {
 
   describe('To Session mapper methods test', () => {
     const mockFormData = {
-      id: '999',
+      trustId: '999',
       name: 'dummyName',
       createdDateDay: '99',
       createdDateMonth: '88',
       createdDateYear: '2077',
       hasAllInfo: '1',
-    } as Page.TrustDetails;
+    } as Page.TrustDetailsForm;
 
     test('mapDetailToSession should return object', () => {
       expect(mapDetailToSession(mockFormData)).toEqual({
-        trust_id: mockFormData.id,
+        trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,

@@ -2,11 +2,20 @@ import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
+import { isActiveFeature } from "./feature.flag";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
     ? config.DUE_DILIGENCE_URL
     : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
+};
+
+export const getSoldLandFilterBackLink = (): string => {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+    return config.LANDING_PAGE_STARTING_NEW_URL;
+  } else {
+    return config.LANDING_PAGE_URL;
+  }
 };
 
 export const NAVIGATION: Navigation = {
@@ -17,18 +26,13 @@ export const NAVIGATION: Navigation = {
   },
   [config.SOLD_LAND_FILTER_URL]: {
     currentPage: config.SOLD_LAND_FILTER_PAGE,
-    previousPage: () => config.LANDING_PAGE_URL, // TBD on ROE-1701
+    previousPage: getSoldLandFilterBackLink,
     nextPage: [config.SECURE_REGISTER_FILTER_URL]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
-  },
-  [config.UPDATE_CONFIRMATION_URL]: {
-    currentPage: config.UPDATE_CONFIRMATION_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
-    nextPage: [config.UPDATE_LANDING_PAGE_URL]
   },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
@@ -159,10 +163,5 @@ export const NAVIGATION: Navigation = {
     currentPage: config.SIGN_OUT_PAGE,
     previousPage: () => "",
     nextPage: []
-  },
-  [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
-    currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_PAGE,
-    nextPage: []
-  },
+  }
 };

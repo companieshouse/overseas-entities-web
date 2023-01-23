@@ -1,12 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
-import { TrusteeType } from '../model/trustee.type.model';
 import * as config from '../config';
+import { TrusteeType } from '../model/trustee.type.model';
+import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
+import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../model/trust.page.model';
+import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
-import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import { getApplicationData } from '../utils/application.data';
-import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { TrustWhoIsInvolved } from '../model/trust.page.model';
+import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mapper';
+import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -19,21 +22,28 @@ const TRUST_INVOLVED_TEXTS = {
 type TrustInvolvedPageProperties = {
   backLinkUrl: string,
   templateName: string;
+  pageParams: {
+    title: string;
+  },
   pageData: {
     beneficialOwnerTypeTitle: Record<string, string>;
     trusteeType: typeof TrusteeType;
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
+    trustData: CommonTrustData,
   } & TrustWhoIsInvolved,
-  pageParams: {
-    title: string;
-  },
+  formData?: TrustWhoIsInvolvedForm,
+  errors?: FormattedValidationErrors,
 };
 
 const getPageProperties = (
   req: Request,
+  formData?: TrustWhoIsInvolvedForm,
+  errors?: FormattedValidationErrors,
 ): TrustInvolvedPageProperties => {
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+
+  const appData = getApplicationData(req.session);
 
   return {
     backLinkUrl: `${config.TRUST_DETAILS_URL}/${trustId}`,
@@ -42,12 +52,15 @@ const getPageProperties = (
       title: TRUST_INVOLVED_TEXTS.title,
     },
     pageData: {
-      ...mapTrustWhoIsInvolvedToPage(getApplicationData(req.session), trustId),
+      trustData: mapCommonTrustDataToPage(appData, trustId),
+      ...mapTrustWhoIsInvolvedToPage(appData, trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeType: TrusteeType,
       checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
     },
+    formData,
+    errors,
   };
 };
 
@@ -61,7 +74,7 @@ const get = (
 
     const pageProps = getPageProperties(req);
 
-    return res.render(      pageProps.templateName, pageProps);
+    return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -80,6 +93,19 @@ const post = (
       return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
     }
 
+    //  check on errors
+    const errorList = validationResult(req);
+
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        req.body,
+        formatValidationError(errorList.array()),
+      );
+
+      return res.render(pageProps.templateName, pageProps);
+    }
+
     const typeOfTrustee = req.body.typeOfTrustee;
 
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
@@ -87,21 +113,13 @@ const post = (
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
-          logger.info("TODO: Route to trust-historical-beneficial-owner page ");
           url += config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
-
           break;
         case TrusteeType.INDIVIDUAL:
-          logger.info("TODO: Route to trust-individual page when story coded ");
-
-          url += config.TRUST_TRUSTEE_INDIVIDUAL_URL;
-
+          url += config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
           break;
         case TrusteeType.LEGAL_ENTITY:
-          logger.info("TODO: Route to trust-ole page when story coded ");
-
-          url += config.TRUST_TRUSTEE_LEGAL_ENTITY_URL;
-
+          url += config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
           break;
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");

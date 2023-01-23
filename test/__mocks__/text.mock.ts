@@ -48,7 +48,9 @@ export const SIGN_OUT_PAGE_TITLE = "Are you sure you want to sign out?";
 export const SIGN_OUT_HINT_TEXT = "We will save your application.";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
-export const IDENTITY_CHECKS = "Identity checks";
+export const VERIFICATION_CHECKS = "Verification checks";
+export const VERIFICATION_CHECKS_DATE = "Date the verification checks were completed";
+export const VERIFICATION_CHECKS_PERSON = "Person responsible for overseeing verification checks";
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const CONFIRMATION_NUMBER_OF_DAYS = "14 days";
 export const CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW = "What you need to do now";
@@ -121,7 +123,8 @@ export const NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER = "We will
 export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the information you provide on this screen on the public Register of Overseas Entities.";
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
-
+export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
+export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
@@ -142,7 +145,6 @@ export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas ent
 export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
 export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
-export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const OVERSEAS_ENTITY_UPDATE_TITLE = "Update overseas entity";
 export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#name";
 export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
@@ -151,5 +153,6 @@ export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/en
 export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
 export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
 export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";
+export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";

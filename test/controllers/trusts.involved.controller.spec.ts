@@ -29,7 +29,7 @@ import {
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_PAGE,
   TRUST_INVOLVED_URL,
-  TRUST_TRUSTEE_LEGAL_ENTITY_URL,
+  TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
 } from '../../src/config';
 import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
@@ -160,7 +160,7 @@ describe('Trust Involved controller', () => {
       ],
       [
         TrusteeType.LEGAL_ENTITY,
-        TRUST_TRUSTEE_LEGAL_ENTITY_URL,
+        TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
       ],
       [
         'unknown',

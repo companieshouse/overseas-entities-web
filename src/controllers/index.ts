@@ -39,3 +39,4 @@ export * as confirmOverseasEntityDetails from "./update/company.profile.controll
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
+export * as updateDueDiligence from "./update/due.diligence.controller";

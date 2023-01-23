@@ -81,7 +81,7 @@ export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE = "trust-legal-entity-bene
 export const TRUST_BENEFICIAL_OWNER_DETACH_PAGE = "trust-bo-detach";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
-export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = 'update-check-your-answers';
+export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
 export const UPDATE_DUE_DILIGENCE_PAGE = "update-due-diligence";
 
 // ROUTING PATHs

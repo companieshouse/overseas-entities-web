@@ -19,7 +19,7 @@ import {
   WHO_IS_MAKING_UPDATE_PAGE_TITLE,
 } from "../../__mocks__/text.mock";
 import { ErrorMessages } from '../../../src/validation/error.messages';
-import { getApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
@@ -33,6 +33,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("Who is making update controller tests", () => {
 
@@ -78,19 +79,34 @@ describe("Who is making update controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test("renders the current page with error message", async () => {
+    // TO DO: Update test to redirect to UAR-102 when completed
+    test(`redirect to ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
       const resp = await request(app)
-        .post(config.WHO_IS_MAKING_UPDATE_URL);
+        .post(config.WHO_IS_MAKING_UPDATE_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_FILING);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`POST empty object and check for error in page title`, async () => {
+    // TO DO: Update test to redirect to UAR-104 when completed
+    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_UPDATE_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test("POST empty object and check for error in page title", async () => {
       const resp = await request(app).post(config.WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_FILING);
     });
 
     test("catch error when posting the page", async () => {

@@ -9,6 +9,7 @@ export const COOKIE_SECRET = getEnvironmentValue("COOKIE_SECRET");
 export const COOKIE_DOMAIN = getEnvironmentValue("COOKIE_DOMAIN");
 export const DEFAULT_SESSION_EXPIRATION = getEnvironmentValue("DEFAULT_SESSION_EXPIRATION", "3600");
 export const CACHE_SERVER = getEnvironmentValue("CACHE_SERVER");
+export const PAYMENTS_API_URL = getEnvironmentValue("PAYMENTS_API_URL");
 export const API_URL = getEnvironmentValue("API_URL");
 export const CHS_URL = getEnvironmentValue("CHS_URL");
 export const CHS_API_KEY = getEnvironmentValue("CHS_API_KEY");
@@ -31,6 +32,8 @@ export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
+export const CLOSED_PENDING_PAYMENT = "closed pending payment";
+export const PAYMENTS = "/payments";
 export const YOUR_FILINGS_PATH = "/user/transactions";
 
 //  FEATURE FLAGS

@@ -68,3 +68,29 @@ export const closeTransaction = async (
 
   return response;
 };
+
+export const getTransaction = async (
+  req: Request,
+  transactionId: string
+): Promise<Transaction> => {
+
+  const response = await makeApiCallWithRetry(
+    "transaction",
+    "getTransaction",
+    req,
+    req.session as Session,
+    transactionId
+  );
+
+  if ( !response?.httpStatusCode ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no correct response`);
+  } else if ( response.httpStatusCode >= 400 ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Http status code ${response.httpStatusCode}`);
+  } else if ( !response.resource ) {
+    throw createAndLogErrorRequest(req, `getTransaction - Transaction API request returned no resource`);
+  }
+
+  logger.debugRequest(req, `Getting transaction ${JSON.stringify(response)}`);
+
+  return response.resource;
+};

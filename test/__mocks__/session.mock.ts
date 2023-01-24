@@ -76,9 +76,10 @@ export const TRANSACTION = {
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
   description: DESCRIPTION
 };
-export const PAYMENT_URL = "http://payment";
+export const PAYMENT_URL = "http://chs.local/payments";
 export const STATE_ID = "ad83863d-7713-4b39-a625-3ec282d6710e";
 export const PAYMENT_HEADER = { [PAYMENT_REQUIRED_HEADER]: PAYMENT_URL };
+export const FULL_PAYMENT_REDIRECT_PATH = `${PAYMENT_URL}/11KlXILS123zoLXn22/pay`;
 export const TRANSACTION_POST_PARAMS = {
   reference: REFERENCE,
   companyName: "overseasEntityName",
@@ -1008,6 +1009,7 @@ export const fnNameGetOE = "getOverseasEntity";
 export const serviceNameTransaction = "transaction";
 export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
+export const fnNameGetTransaction = "getTransaction";
 
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";

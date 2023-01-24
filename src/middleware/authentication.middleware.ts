@@ -4,9 +4,9 @@ import { logger } from '../utils/logger';
 import {
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
-  OVERSEAS_ENTITY_QUERY_URL,
   RESUME,
-  STARTING_NEW_URL
+  STARTING_NEW_URL,
+  SECURE_UPDATE_FILTER_URL
 } from '../config';
 
 import {
@@ -22,7 +22,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
       let returnUrl = SOLD_LAND_FILTER_URL;
 
       if (req.path.startsWith(UPDATE_LANDING_URL)) {
-        returnUrl = OVERSEAS_ENTITY_QUERY_URL;
+        returnUrl = SECURE_UPDATE_FILTER_URL;
       } else if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`)) {
         returnUrl = req.path;
       }

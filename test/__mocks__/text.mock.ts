@@ -73,6 +73,7 @@ export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual ma
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE = "Corporate managing officer";
 export const CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE = "Trust details";
 export const SECURE_REGISTER_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House?";
+export const SECURE_UPDATE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House? (NOT LIVE)";
 export const CANNOT_USE_SERVICE_HEADING = "You'll need to apply using the paper form";
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";

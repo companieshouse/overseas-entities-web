@@ -60,4 +60,3 @@ export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean =
     Object.keys(appData[ManagingOfficerCorporateKey] || []).length !== 0
   );
 };
-

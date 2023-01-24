@@ -42,7 +42,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  
+
     const session = req.session as Session;
     const data = prepareData(req.body, DueDiligenceKeys);
     data[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
@@ -51,9 +51,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     setApplicationData(session, data, DueDiligenceKey);
 
     // Empty OverseasEntityDueDiligence object
-    // setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
+    setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
-    return res.redirect(config.ENTITY_URL);
+    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
   } catch (error) {
     next(error);
   }

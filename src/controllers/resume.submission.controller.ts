@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
+import { Session } from "@companieshouse/node-session-handler";
 
 import * as config from "../config";
 
@@ -17,7 +18,8 @@ import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../mode
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../model/managing.officer.corporate.model";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../model/managing.officer.model";
-import { Session } from "@companieshouse/node-session-handler";
+import { startPaymentsSession } from "../service/payment.service";
+import { getTransaction } from "../service/transaction.service";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,11 +33,27 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
       const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
-      if (!appData || !Object.keys(appData).length) {
+      if (!Object.keys(appData || {}).length) {
         throw createAndLogErrorRequest(req, `Error on resuming OE - ${infoMsg}`);
       }
 
-      setWebApplicationData(req.session as Session, appData, transactionId, overseaEntityId);
+      const session = req.session as Session;
+      setWebApplicationData(session, appData, transactionId, overseaEntityId);
+
+      const transactionResource = await getTransaction(req, transactionId);
+
+      if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
+        const headersPaymentUrl = {
+          headers: {
+            [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
+          }
+        };
+        const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl);
+
+        logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
+
+        return res.redirect(redirectPath);
+      }
     }
 
     return res.redirect(config.SOLD_LAND_FILTER_URL);

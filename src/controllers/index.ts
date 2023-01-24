@@ -34,9 +34,13 @@ export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficia
 export * as overseasName from "./overseas.name.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
+export * as secureUpdateFilter from "./update/secure.update.filter.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
+export * as overseasEntityPayment from './update/payment.controller';
+export * as updateConfirmation from "./update/confirmation.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as updateDueDiligence from "./update/due.diligence.controller";
+

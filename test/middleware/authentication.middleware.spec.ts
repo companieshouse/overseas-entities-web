@@ -17,8 +17,8 @@ import {
   LANDING_URL,
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
-  OVERSEAS_ENTITY_QUERY_URL,
-  STARTING_NEW_URL
+  STARTING_NEW_URL,
+  SECURE_UPDATE_FILTER_URL
 } from '../../src/config';
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
@@ -77,8 +77,8 @@ describe('Authentication middleware', () => {
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to signin page with ${OVERSEAS_ENTITY_QUERY_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin?return_to=${OVERSEAS_ENTITY_QUERY_URL}`;
+  test(`should redirect to signin page with ${SECURE_UPDATE_FILTER_URL} page as return page`, () => {
+    const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
     req.session = undefined;
     req.path = `${UPDATE_LANDING_URL}`;
 
@@ -159,12 +159,14 @@ describe('Authentication middleware', () => {
   });
 
   test("should redirect to signin page for update", async () => {
+    const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
+
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true);
-    const resp = await request(app).get(OVERSEAS_ENTITY_QUERY_URL);
+    const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toContain('/signin?return_to=/update-an-overseas-entity/overseas-entity-query');
+    expect(resp.header.location).toEqual(signinRedirectPath);
 
     expect(res.locals).toEqual({});
   });

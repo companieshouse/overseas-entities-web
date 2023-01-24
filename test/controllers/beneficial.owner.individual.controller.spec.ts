@@ -327,10 +327,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
@@ -344,10 +341,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
@@ -361,10 +355,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
@@ -571,10 +562,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
@@ -588,10 +576,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
@@ -605,10 +590,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 

@@ -61,6 +61,13 @@ export enum ErrorMessages {
   DATE_OF_BIRTH_NOT_IN_PAST = "Date of birth must be in the past",
   DATE_NOT_IN_PAST_OR_TODAY = "Date must be today or in the past",
   IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS = "The date the identity checks were completed must be in the past 3 months",
+  DAY_AND_MONTH = "Date must include a day and month",
+  MONTH_AND_YEAR = "Date must include a month and year",
+  DAY_AND_YEAR = "Date must include a day and year",
+  DAY_AND_MONTH_OF_BIRTH = "Date of birth must include a day and month",
+  MONTH_AND_YEAR_OF_BIRTH = "Date of birth must include a month and year",
+  DAY_AND_YEAR_OF_BIRTH = "Date of birth must include a day and year",
+
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",

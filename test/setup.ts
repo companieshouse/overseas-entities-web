@@ -3,6 +3,7 @@ export default () => {
   process.env.CDN_HOST = "CDN_HOST";
   process.env.COOKIE_SECRET = "123456789123456789123456789";
   process.env.COOKIE_DOMAIN = "test";
+  process.env.PAYMENTS_API_URL = "http://chs.local";
   process.env.CACHE_SERVER = "test";
   process.env.API_URL = "test";
   process.env.CHS_API_KEY = "test";
@@ -11,6 +12,7 @@ export default () => {
   process.env.PIWIK_SITE_ID = "test";
   process.env.PIWIK_START_GOAL_ID = "test";
   process.env.PAYMENT_FEE = "100";
+  process.env.UPDATE_PAYMENT_FEE = "200";
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.LANDING_PAGE_STARTING_NEW_URL = "/register-an-overseas-entity/starting-new";
   process.env.UPDATE_LANDING_PAGE_URL = "/update-an-overseas-entity/overseas-entity-query";

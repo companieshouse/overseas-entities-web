@@ -53,7 +53,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // Empty OverseasEntityDueDiligence object
     setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
-    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
   } catch (error) {
     next(error);
   }

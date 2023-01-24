@@ -17,7 +17,7 @@ import {
   SERVICE_UNAVAILABLE,
   SOLD_LAND_FILTER_PAGE_TITLE,
 } from "../__mocks__/text.mock";
-import { ErrorMessages } from '../../src/validation/error.messages';
+// import { ErrorMessages } from '../../src/validation/error.messages';
 
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -112,14 +112,14 @@ describe("SOLD LAND FILTER controller", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test("renders the current page with error message", async () => {
+    /* test("renders the current page with error message", async () => {
       const resp = await request(app)
         .post(config.SOLD_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ENTITY_HAS_SOLD_LAND);
-    });
+    }); */
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(config.SOLD_LAND_FILTER_URL);

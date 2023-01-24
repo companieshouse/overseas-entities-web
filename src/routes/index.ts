@@ -220,7 +220,7 @@ router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOv
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 router.get(config.UPDATE_DUE_DILIGENCE_URL, authentication, updateDueDiligence.get);
-router.post(config.UPDATE_DUE_DILIGENCE_URL, authentication, ...validator.dueDiligence, updateDueDiligence.post);
+router.post(config.UPDATE_DUE_DILIGENCE_URL, authentication, ...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

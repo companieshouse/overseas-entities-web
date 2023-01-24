@@ -37,6 +37,10 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 const mockGetLoggedInUserEmail = getLoggedInUserEmail as jest.Mock;
 
+const APPLICATION_TO_UPDATE_TEXT = "application to update an overseas entity";
+const NOTICE_OF_UPDATE_TEXT = "notice of update to";
+const UPDATE_FEE_TEXT = "update fee";
+
 describe("UPDATE CONFIRMATION controller", () => {
 
   beforeEach(() => {
@@ -56,6 +60,9 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(`£${UPDATE_PAYMENT_FEE}`);
     expect(resp.text).toContain(ENTITY_OBJECT_MOCK.email);
     expect(resp.text).toContain(userMail);
+    expect(resp.text).toContain(APPLICATION_TO_UPDATE_TEXT);
+    expect(resp.text).toContain(NOTICE_OF_UPDATE_TEXT);
+    expect(resp.text).toContain(UPDATE_FEE_TEXT);
     expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });

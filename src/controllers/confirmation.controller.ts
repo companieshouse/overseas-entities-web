@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 import { logger } from "../utils/logger";
-import { CONFIRMATION_PAGE } from "../config";
+import { CONFIRMATION_PAGE, PAYMENT_FEE } from "../config";
 import { getLoggedInUserEmail } from "../utils/session";
 import { deleteApplicationData, getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model/application.model";
@@ -22,6 +22,7 @@ export const get = (req: Request, res: Response) => {
     entityEmail: appData.entity?.email,
     userEmail: getLoggedInUserEmail(req.session),
     verificationCheckDays: 14,
+    paymentFee: PAYMENT_FEE,
     templateName: CONFIRMATION_PAGE
   });
 };

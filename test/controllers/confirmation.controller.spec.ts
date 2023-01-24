@@ -33,6 +33,10 @@ const mockGetLoggedInUserEmail = getLoggedInUserEmail as jest.Mock;
 const req = {} as Request;
 const res = { render: jest.fn() as any } as Response;
 
+const APPLICATION_TO_REGISTER_TEXT = "application to register an overseas entity";
+const NOTICE_OF_REGISTRATION_TEXT = "notice of registration to";
+const REGISTRATION_FEE_TEXT = "registration fee";
+
 describe("Confirmation controller tests", () => {
 
   beforeEach(() => {
@@ -58,6 +62,9 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(userMail);
     expect(resp.text).toContain(config.VF01_FORM_DOWNLOAD_URL);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
+    expect(resp.text).toContain(APPLICATION_TO_REGISTER_TEXT);
+    expect(resp.text).toContain(NOTICE_OF_REGISTRATION_TEXT);
+    expect(resp.text).toContain(REGISTRATION_FEE_TEXT);
   });
 
   test("renders the confirmation page for agent", async () => {
@@ -75,6 +82,9 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).not.toContain(config.VF01_FORM_DOWNLOAD_URL);
     expect(resp.text).not.toContain(CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW);
     expect(resp.text).not.toContain(CONFIRMATION_NUMBER_OF_DAYS);
+    expect(resp.text).toContain(APPLICATION_TO_REGISTER_TEXT);
+    expect(resp.text).toContain(NOTICE_OF_REGISTRATION_TEXT);
+    expect(resp.text).toContain(REGISTRATION_FEE_TEXT);
   });
 
   test("should test that deleteApplicationData does the work", () => {

@@ -151,10 +151,20 @@ export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: stri
     return false;
   } else if (yearStr === "" && dayStr !== "" && monthStr !== "") {
     return false;
-  } else if ((dayStr === "" && monthStr === "") || (dayStr === "" && yearStr === "") || (monthStr === "" && yearStr === "")) {
-    throw new Error(ErrorMessages.INVALID_DATE);
+  } else {
+    checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr);
   }
   return true;
+};
+
+export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR);
+  }
 };
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -178,10 +188,20 @@ export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: 
     return false;
   } else if (yearStr === "" && dayStr !== "" && monthStr !== "") {
     return false;
-  } else if ((dayStr === "" && monthStr === "") || (dayStr === "" && yearStr === "") || (monthStr === "" && yearStr === "")) {
-    throw new Error(ErrorMessages.INVALID_DATE_OF_BIRTH);
+  } else {
+    checkMoreThanOneDateOfBirthFieldIsNotMissing(dayStr, monthStr, yearStr);
   }
   return true;
+};
+
+export const checkMoreThanOneDateOfBirthFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH_OF_BIRTH);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR_OF_BIRTH);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR_OF_BIRTH);
+  }
 };
 
 export const checkOverseasName = (value: string = "") => {

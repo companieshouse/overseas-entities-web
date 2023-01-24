@@ -230,10 +230,6 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
 
-  // router.route(config.UPDATE_DUE_DILIGENCE_URL)
-  // .all(authentication)
-  // .get(updateDueDiligence.get);
- 
 router.get(config.UPDATE_DUE_DILIGENCE_URL, authentication, updateDueDiligence.get);
 router.post(config.UPDATE_DUE_DILIGENCE_URL, authentication, ...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 

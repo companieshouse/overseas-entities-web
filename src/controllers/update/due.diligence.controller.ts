@@ -12,7 +12,7 @@ import {
   mapFieldsToDataObject,
 } from "../../utils/application.data";
 import { DueDiligenceKey, DueDiligenceKeys } from "../../model/due.diligence.model";
-import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
+// import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 import { IdentityDateKey, IdentityDateKeys } from "../../model/date.model";
 import { IdentityAddressKey, IdentityAddressKeys } from "../../model/address.model";
 import { AddressKeys, InputDateKeys } from "../../model/data.types.model";
@@ -42,7 +42,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  
+
     const session = req.session as Session;
     const data = prepareData(req.body, DueDiligenceKeys);
     data[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);
@@ -53,7 +53,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // Empty OverseasEntityDueDiligence object
     // setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
-    return res.redirect(config.ENTITY_URL);
+    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
   } catch (error) {
     next(error);
   }

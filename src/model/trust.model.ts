@@ -92,36 +92,38 @@ export type TrustHistoricalBeneficialOwner =
   TrustHistoricalBeneficialOwnerLegal
   | TrustHistoricalBeneficialOwnerIndividual;
 
-interface TrustCorporate {
+export type TrustCorporate = {
+  id?: string
   type: string;
   name: string;
-  date_became_interested_person_day: string;
-  date_became_interested_person_month: string;
-  date_became_interested_person_year: string;
+  date_became_interested_person_day?: string;
+  date_became_interested_person_month?: string;
+  date_became_interested_person_year?: string;
+  ro_address_premises: string;
   ro_address_line1: string;
-  ro_address_line2: string;
-  ro_address_care_of: string;
-  ro_address_country: string;
+  ro_address_line2?: string;
   ro_address_locality: string;
-  ro_address_po_box: string;
-  ro_address_postal_code: string;
-  ro_address_premises?: string;
   ro_address_region: string;
-  sa_address_line1: string;
-  sa_address_line2: string;
-  sa_address_care_of: string;
-  sa_address_country: string;
-  sa_address_locality: string;
-  sa_address_po_box: string;
-  sa_address_postal_code: string;
+  ro_address_country: string;
+  ro_address_postal_code: string;
+  ro_address_care_of?: string;
+  ro_address_po_box?: string;
   sa_address_premises?: string;
-  sa_address_region: string;
-  identification_country_registration: string;
+  sa_address_line1?: string;
+  sa_address_line2?: string;
+  sa_address_locality?: string;
+  sa_address_region?: string;
+  sa_address_country?: string;
+  sa_address_postal_code?: string;
+  sa_address_care_of?: string;
+  sa_address_po_box?: string;
   identification_legal_authority: string;
   identification_legal_form: string;
-  identification_place_registered: string;
-  identification_registration_number: string;
-}
+  identification_place_registered?: string;
+  identification_country_registration?: string;
+  identification_registration_number?: string;
+};
+
 
 export interface BeneficialOwnerItem {
   id: string

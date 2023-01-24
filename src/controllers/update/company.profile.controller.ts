@@ -14,7 +14,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const id = appData?.oe_number as string;
+    const id = appData?.entity_number as string;
     const companyDataResponse = await getCompanyProfile(req, id) as CompanyProfile;
     if (!companyDataResponse){
       return onOeError(res);

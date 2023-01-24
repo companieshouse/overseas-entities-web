@@ -55,7 +55,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page with value if exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ oe_number: 'OE123456' });
+      mockGetApplicationData.mockReturnValueOnce({ entity_number: 'OE123456' });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_QUERY_URL);
 
       expect(resp.status).toEqual(200);
@@ -76,7 +76,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('renders the CONFIRM_OVERSEAS_COMPANY_PROFILES page when valid oeNumber submitted', async () => {
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: 'OE123456' });
+        .send({ entity_number: 'OE123456' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
@@ -85,7 +85,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: 'OE123456' });
+        .send({ entity_number: 'OE123456' });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -94,7 +94,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with both error messages', async () => {
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ oe_number: '' });
+        .send({ entity_number: '' });
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
       expect(resp.text).toContain(htmlDecodedString);
@@ -106,7 +106,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       "given %p, renders OVERSEAS_ENTITY_QUERY_PAGE with validator failure", async (input_value) => {
         const resp = await request(app)
           .post(config.OVERSEAS_ENTITY_QUERY_URL)
-          .send({ oe_number: input_value });
+          .send({ entity_number: input_value });
         expect(resp.status).toEqual(200);
         expect(resp.text).toContain(htmlDecodedString);
         expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);

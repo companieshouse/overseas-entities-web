@@ -84,6 +84,7 @@ LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
 PAYMENT_FEE | Payment Fee | 100
+UPDATE_PAYMENT_FEE | Update Payment Fee | 100
 PIWIK_URL | Matomo URL | `http://url`
 PIWIK_SITE_ID | Matomo Site ID | 1
 PIWIK_START_GOAL_ID | Matomo Start goal ID | 2

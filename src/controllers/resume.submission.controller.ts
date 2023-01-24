@@ -40,13 +40,12 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       const session = req.session as Session;
       setWebApplicationData(session, appData, transactionId, overseaEntityId);
 
-      const resource = await getTransaction(req, transactionId);
+      const transactionResource = await getTransaction(req, transactionId);
 
-      // https://companieshouse.atlassian.net/wiki/spaces/TTL/pages/4063854602/Pay+Now+link+Resume
-      if (resource.status === "closed pending payment") {
+      if (transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
         const headersPaymentUrl = {
           headers: {
-            [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + "/payments"
+            [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
           }
         };
         const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl);

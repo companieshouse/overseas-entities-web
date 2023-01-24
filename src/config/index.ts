@@ -30,6 +30,8 @@ export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
 export const PAYMENT_PAID = "paid";
+export const CLOSED_PENDING_PAYMENT = "closed pending payment";
+export const PAYMENTS = "/payments";
 export const YOUR_FILINGS_PATH = "/user/transactions";
 
 //  FEATURE FLAGS

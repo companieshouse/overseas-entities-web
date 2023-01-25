@@ -541,7 +541,6 @@ describe("DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-
     test(`renders the ${DUE_DILIGENCE_PAGE} page with invalid character errors`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK };
       const resp = await request(app).post(DUE_DILIGENCE_URL)

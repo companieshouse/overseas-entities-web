@@ -171,7 +171,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_DUE_DILIGENCE_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
-    previousPage: () => "",
-    nextPage: []
+    previousPage: () => config.UPDATE_LANDING_PAGE_URL,
+    nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   }
 };

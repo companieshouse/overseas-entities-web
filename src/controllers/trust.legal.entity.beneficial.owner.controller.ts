@@ -7,9 +7,8 @@ import { getTrustByIdFromApp, saveLegalEntityBoInTrust, saveTrustInApp } from '.
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { mapLegalEntityToSession } from '../utils/trust/legal.entity.beneficial.owner.mapper';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
-import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
-import { CommonTrustData } from '../model/trust.page.model';
+import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
 
 const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -25,7 +24,7 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
     trustData: CommonTrustData,
     roleWithinTrustType: typeof RoleWithinTrustType;
   },
-  formData?: PageModel.TrustLegalEntityForm,
+  formData?: TrustLegalEntityForm,
 };
 
 const getPageProperties = (

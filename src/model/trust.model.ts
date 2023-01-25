@@ -29,14 +29,14 @@ export interface Trust {
   creation_date_month: string;
   creation_date_year: string;
   unable_to_obtain_all_trust_info: string;
-  INDIVIDUALS?: (TrustIndividual | GeneralTrustee) [];
+  INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
 }
 
 interface TrustIndividual {
   id?: string;
-  type: BeneficialOwnerTypeChoice | RoleWithinTrustType;
+  type: RoleWithinTrustType;
   forename: string;
   other_forenames: string;
   surname: string;

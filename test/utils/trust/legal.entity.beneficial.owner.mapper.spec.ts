@@ -77,29 +77,6 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_registration_number: mockFormData.registration_number,
         });
       });
-
-      // test('map corporate', () => {
-      //   const mockFormData = {
-      //     ...mockFormDataBasic,
-      //     type: '1' as TrustHistoricalBeneficialOwnerType,
-      //     corporateName: 'dummyCorporateName',
-      //   };
-
-      //   const expectNewId = '9999';
-      //   jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);
-
-      //   expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
-      //     id: expectNewId,
-      //     corporateIndicator: mockFormData.type,
-      //     corporateName: mockFormData.corporateName,
-      //     ceased_date_day: mockFormData.startDateDay,
-      //     ceased_date_month: mockFormData.startDateMonth,
-      //     ceased_date_year: mockFormData.startDateYear,
-      //     notified_date_day: mockFormData.endDateDay,
-      //     notified_date_month: mockFormData.endDateMonth,
-      //     notified_date_year: mockFormData.endDateYear,
-      //   });
-      // });
     });
   });
 

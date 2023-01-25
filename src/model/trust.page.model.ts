@@ -46,7 +46,7 @@ type IndividualTrusteesFormCommon = {
   date_of_birth_year: string,
   nationality: string,
   second_nationality?: string,
-  property_name?: string,
+  property_name: string,
   address_line1: string,
   address_line2: string,
   city: string,

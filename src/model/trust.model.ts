@@ -1,7 +1,7 @@
 import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
-import { RoleWithinTrustType } from './role.with.trust.type.model';
+import { RoleWithinTrustType } from './role.within.trust.type.model';
 
 export const TrustKey = "trusts";
 
@@ -10,7 +10,15 @@ export const TrustKey = "trusts";
   be able to do the mapping correctly
 */
 export const TrustKeys: string[] = [
-  "trusts",
+  'trust_id',
+  'trust_name',
+  'creation_date_day',
+  'creation_date_month',
+  'creation_date_year',
+  'unable_to_obtain_all_trust_info',
+  'INDIVIDUALS',
+  'HISTORICAL_BO',
+  'CORPORATES',
 ];
 
 export interface Trusts {
@@ -29,7 +37,7 @@ export interface Trust {
   creation_date_month: string;
   creation_date_year: string;
   unable_to_obtain_all_trust_info: string;
-  INDIVIDUALS?: TrustIndividual[];
+  INDIVIDUALS?: (TrustIndividual | GeneralTrustee) [];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
 }

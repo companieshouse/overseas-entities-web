@@ -7,6 +7,7 @@ import {
   getTrustBoOthers,
   getTrustByIdFromApp,
   saveHistoricalBoInTrust,
+  saveIndividualTrusteeInTrust,
   saveTrustInApp,
   saveLegalEntityBoInTrust,
 } from '../../src/utils/trusts';
@@ -270,6 +271,7 @@ describe('Trust Utils method tests', () => {
         ],
       } as Trust;
     });
+    
     test('test add', () => {
       const trustee = {
         id: '101',

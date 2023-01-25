@@ -10,15 +10,7 @@ export const TrustKey = "trusts";
   be able to do the mapping correctly
 */
 export const TrustKeys: string[] = [
-  'trust_id',
-  'trust_name',
-  'creation_date_day',
-  'creation_date_month',
-  'creation_date_year',
-  'unable_to_obtain_all_trust_info',
-  'INDIVIDUALS',
-  'HISTORICAL_BO',
-  'CORPORATES',
+  "trusts",
 ];
 
 export interface Trusts {

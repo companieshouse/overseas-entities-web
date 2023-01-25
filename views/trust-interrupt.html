@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% set title = "Individuals or entities involved in the trust" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
+      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+
+      <form class="form" method="post">
+        <p class="govuk-body">At least one individual or entity you’ve told us about is a beneficial owner
+          of the overseas entity, due to being a trustee of a trust.</p>
+
+        <p class="govuk-body">
+          In the next section, you’ll need to tell us about the trust. If relevant, you’ll also need to tell
+          us about:</p>
+
+        <ul class="govuk-list govuk-list--bullet">
+          <li>former beneficial owners</li>
+          <li>individuals and legal entities involved in the trust</li>
+        </ul>
+
+        <p class="govuk-body">You can add information about multiple trusts if needed.</p>
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

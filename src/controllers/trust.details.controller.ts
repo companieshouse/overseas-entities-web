@@ -67,7 +67,7 @@ const get = (
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params['trustId'];
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,
       trustId,

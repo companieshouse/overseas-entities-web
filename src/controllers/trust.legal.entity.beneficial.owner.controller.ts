@@ -74,7 +74,7 @@ const post = (
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     //  convert form data to application (session) object
-    const boData = mapLegalEntityToSession(req.body);
+    const legalEntityBoData = mapLegalEntityToSession(req.body);
 
     //  get trust data from session
     let appData: ApplicationData = getApplicationData(req.session);
@@ -82,7 +82,7 @@ const post = (
     //  save (add/update) bo to trust
     const updatedTrust = saveLegalEntityBoInTrust(
       getTrustByIdFromApp(appData, trustId),
-      boData,
+      legalEntityBoData,
     );
 
     //  update trust in application data

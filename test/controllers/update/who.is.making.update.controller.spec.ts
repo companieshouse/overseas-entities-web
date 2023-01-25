@@ -7,7 +7,11 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-import * as config from "../../../src/config";
+import {
+  WHO_IS_MAKING_UPDATE_PAGE,
+  WHO_IS_MAKING_UPDATE_URL,
+  OVERSEAS_ENTITY_REVIEW_PAGE
+} from "../../../src/config";
 import app from "../../../src/app";
 import {
   ANY_MESSAGE_ERROR,
@@ -42,9 +46,9 @@ describe("Who is making update controller tests", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.WHO_IS_MAKING_UPDATE_PAGE} page`, async () => {
+    test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ });
-      const resp = await request(app).get(config.WHO_IS_MAKING_UPDATE_URL);
+      const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
       expect(resp.text).not.toContain(RADIO_BUTTON_AGENT_SELECTED);
@@ -53,17 +57,17 @@ describe("Who is making update controller tests", () => {
       expect(resp.text).toContain(UK_REGULATED_AGENT);
     });
 
-    test(`renders the ${config.WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
+    test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
-      const resp = await request(app).get(config.WHO_IS_MAKING_UPDATE_URL);
+      const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_AGENT_SELECTED);
     });
 
-    test(`renders the ${config.WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
+    test(`renders the ${WHO_IS_MAKING_UPDATE_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
-      const resp = await request(app).get(config.WHO_IS_MAKING_UPDATE_URL);
+      const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
@@ -71,7 +75,7 @@ describe("Who is making update controller tests", () => {
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.WHO_IS_MAKING_UPDATE_URL);
+      const resp = await request(app).get(WHO_IS_MAKING_UPDATE_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -80,29 +84,29 @@ describe("Who is making update controller tests", () => {
 
   describe("POST tests", () => {
     // TO DO: Update test to redirect to UAR-102 when completed
-    test(`redirect to ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+    test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
       const resp = await request(app)
-        .post(config.WHO_IS_MAKING_UPDATE_URL)
+        .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_REVIEW_PAGE);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     // TO DO: Update test to redirect to UAR-104 when completed
-    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+    test(`redirects to the ${OVERSEAS_ENTITY_REVIEW_PAGE} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
       const resp = await request(app)
-        .post(config.WHO_IS_MAKING_UPDATE_URL)
+        .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_REVIEW_PAGE);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("POST empty object and check for error in page title", async () => {
-      const resp = await request(app).post(config.WHO_IS_MAKING_UPDATE_URL);
+      const resp = await request(app).post(WHO_IS_MAKING_UPDATE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
@@ -112,7 +116,7 @@ describe("Who is making update controller tests", () => {
     test("catch error when posting the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
-        .post(config.WHO_IS_MAKING_UPDATE_URL)
+        .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(500);

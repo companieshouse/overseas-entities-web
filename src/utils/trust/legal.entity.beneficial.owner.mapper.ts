@@ -7,7 +7,7 @@ const mapLegalEntityToSession = (
 ): Trust.TrustCorporate => {
   return {
     id: formData.legalEntityId || generateId(),
-    type: formData.roleWithinTrust, // to do use enum like in historical(requires change is trust model)
+    type: formData.roleWithinTrust,
     name: formData.legalEntityName,
     date_became_interested_person_day: formData.interestedPersonStartDateDay,
     date_became_interested_person_month: formData.interestedPersonStartDateMonth,

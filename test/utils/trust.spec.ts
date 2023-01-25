@@ -12,7 +12,7 @@ import {
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
-import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate } from '../../src/model/trust.model';
+import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate, GeneralTrustee } from '../../src/model/trust.model';
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
@@ -247,6 +247,42 @@ describe('Trust Utils method tests', () => {
           expectLe1,
           expectLe2,
           newLe,
+        ],
+      });
+    });
+  });
+  describe('test Save Individual Beneficial Owner trustee in Trust', () => {
+    const expectTrustee1 = {
+      id: '110',
+    } as GeneralTrustee;
+    const expectTrustee2 = {
+      id: '111',
+    } as GeneralTrustee;
+
+    let mockTrust = {} as Trust;
+
+    beforeEach(() => {
+      mockTrust = {
+        trust_id: '1000',
+        INDIVIDUALS: [
+          expectTrustee1,
+          expectTrustee2,
+        ],
+      } as Trust;
+    });
+    test('test add', () => {
+      const trustee = {
+        id: '101',
+      } as GeneralTrustee;
+
+      const actual = saveIndividualTrusteeInTrust(mockTrust, trustee);
+
+      expect(actual).toEqual({
+        ...mockTrust,
+        INDIVIDUALS: [
+          expectTrustee1,
+          expectTrustee2,
+          trustee,
         ],
       });
     });

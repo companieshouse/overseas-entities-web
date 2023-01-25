@@ -1,6 +1,7 @@
 import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
+import { RoleWithinTrustType } from './role.with.trust.type.model';
 
 export const TrustKey = "trusts";
 
@@ -9,14 +10,22 @@ export const TrustKey = "trusts";
   be able to do the mapping correctly
 */
 export const TrustKeys: string[] = [
-  "trusts",
+  'trust_id',
+  'trust_name',
+  'creation_date_day',
+  'creation_date_month',
+  'creation_date_year',
+  'unable_to_obtain_all_trust_info',
+  'INDIVIDUALS',
+  'HISTORICAL_BO',
+  'CORPORATES',
 ];
 
 export interface Trusts {
   trusts: Trust[]
 }
 
-export type TrustBeneficialOwner = (BeneficialOwnerOther | BeneficialOwnerIndividual) & {
+export type TrustBeneficialOwner = ( BeneficialOwnerOther | BeneficialOwnerIndividual ) & {
   type?: BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
   name?: string;
 };
@@ -28,13 +37,14 @@ export interface Trust {
   creation_date_month: string;
   creation_date_year: string;
   unable_to_obtain_all_trust_info: string;
-  INDIVIDUALS?: TrustIndividual[];
+  INDIVIDUALS?: (TrustIndividual | GeneralTrustee) [];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
 }
 
 interface TrustIndividual {
-  type: string;
+  id?: string;
+  type: BeneficialOwnerTypeChoice | RoleWithinTrustType;
   forename: string;
   other_forenames: string;
   surname: string;
@@ -42,6 +52,7 @@ interface TrustIndividual {
   date_of_birth_month: string;
   date_of_birth_year: string;
   nationality: string;
+  second_nationality?: string;
   sa_address_line1: string;
   sa_address_line2: string;
   sa_address_care_of: string;
@@ -60,12 +71,9 @@ interface TrustIndividual {
   ura_address_postal_code: string;
   ura_address_premises?: string;
   ura_address_region: string;
-  date_became_interested_person_day: string;
-  date_became_interested_person_month: string;
-  date_became_interested_person_year: string;
 }
 
-export type TrustHistoricalBeneficialOwnerType = '1' | '0';
+export type TrustHistoricalBeneficialOwnerType = BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
 
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
@@ -76,6 +84,19 @@ interface TrustHistoricalBeneficialOwnerCommon {
   notified_date_day: string;
   notified_date_month: string;
   notified_date_year: string;
+}
+
+export type GeneralTrustee = IndividualTrusteeCommon | InterestedIndividualPersonTrustee;
+
+interface IndividualTrusteeCommon extends TrustIndividual{
+  type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
+}
+
+interface InterestedIndividualPersonTrustee extends TrustIndividual{
+  type: RoleWithinTrustType.INTERESTED_PERSON;
+  date_became_interested_person_day: string;
+  date_became_interested_person_month: string;
+  date_became_interested_person_year: string;
 }
 
 interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {

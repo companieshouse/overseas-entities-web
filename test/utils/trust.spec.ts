@@ -8,10 +8,11 @@ import {
   getTrustByIdFromApp,
   saveHistoricalBoInTrust,
   saveTrustInApp,
+  saveLegalEntityBoInTrust,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
-import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
+import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate } from '../../src/model/trust.model';
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
@@ -208,6 +209,44 @@ describe('Trust Utils method tests', () => {
         HISTORICAL_BO: [
           expectBo2,
           updatedBo,
+        ],
+      });
+    });
+  });
+
+  describe('test Save Legal Entity Beneficial Owner in Trust', () => {
+    const expectLe1 = {
+      id: '998',
+    } as TrustCorporate;
+    const expectLe2 = {
+      id: '997',
+    } as TrustCorporate;
+
+    let mockTrust = {} as Trust;
+
+    beforeEach(() => {
+      mockTrust = {
+        trust_id: '900',
+        CORPORATES: [
+          expectLe1,
+          expectLe2,
+        ],
+      } as Trust;
+    });
+
+    test('test add new Legal Entity Trustee', () => {
+      const newLe = {
+        id: '1000',
+      } as TrustCorporate;
+
+      const actual = saveLegalEntityBoInTrust(mockTrust, newLe);
+
+      expect(actual).toEqual({
+        ...mockTrust,
+        CORPORATES: [
+          expectLe1,
+          expectLe2,
+          newLe,
         ],
       });
     });

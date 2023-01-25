@@ -3,7 +3,8 @@ import {
   checkDateFieldDay,
   checkDateFieldMonth,
   checkDateFieldYear,
-  checkDateOfBirth, checkDateYearValueIsFourNumbers,
+  checkDateOfBirth,
+  checkDateYearValueIsFourNumbers,
   checkIdentityDate,
   checkStartDate
 } from "../custom.validation";

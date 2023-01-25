@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+
+{% set title = "Individuals or entities involved in the trust" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="interrupt-card">
+      <h1 class="govuk-heading-l">Before you start</h1>
+      <h2 class="govuk-heading-m">Agent assurance codes for verification checks</h2>
+      <p class="govuk-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris tincidunt erat non diam condimentum, id lacinia odio scelerisque. Nam ac elit neque. Nullam purus purus, porta nec dictum et, accumsan vitae nisl. on all beneficial owners and managing officers no more than 3 months before the overseas entity is registered. They'll need to provide an to confirm they have authorisation to carry out verification checks.</p>
+
+      <h2 class="govuk-heading-m">Trusts</h2>
+      <p class="govuk-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ex felis, finibus ut luctus vitae, vulputate in sem. Mauris tincidunt erat non diam condimentum, id lacinia odio scelerisque. Praesent dapibus augue sit amet lorem ullamcorper, eget condimentum enim elementum. Nullam scelerisque, libero eget ultrices aliquet, turpis velit ullamcorper urna, id dapibus lacus velit id elit.</p>
+      <p class="govuk-body">Sed varius suscipit sapien, tempor imperdiet libero porta eu. </p>
+      <a href="{{OE_CONFIGS.OVERSEAS_ENTITY_QUERY_PAGE}}"  id="continue" onclick="_paq.push(['trackGoal', '{{PIWIK_START_GOAL_ID}}'])" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        Continue
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

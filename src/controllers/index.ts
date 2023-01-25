@@ -36,6 +36,7 @@ export * as overseasName from "./overseas.name.controller";
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
 export * as updateUsePaper from "./update/update.use.paper.controller";
+export * as updateInterruptCard from "./update/update.interrupt.card.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";

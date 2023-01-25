@@ -14,6 +14,7 @@ import {
   entity,
   healthcheck,
   interruptCard,
+  updateInterruptCard,
   landing,
   updateLanding,
   overseasEntityQuery,
@@ -225,6 +226,11 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
 router.route(config.UPDATE_USE_PAPER_URL)
   .all(authentication)
   .get(updateUsePaper.get);
+
+router.route(config.UPDATE_INTERRUPT_CARD_URL)
+  .all(authentication)
+  .get(updateInterruptCard.get);
+// .post(updateInterruptCard.post);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 

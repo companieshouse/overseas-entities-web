@@ -8,7 +8,7 @@ import request from "supertest";
 
 import * as config from "../../src/config";
 import app from "../../src/app";
-import { CANNOT_USE_SERVICE_HEADING } from "../__mocks__/text.mock";
+import { APPLY_PAPER_FORM_HEADING } from "../__mocks__/text.mock";
 
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
@@ -26,7 +26,7 @@ describe("USE PAPER controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
-      expect(resp.text).toContain(CANNOT_USE_SERVICE_HEADING);
+      expect(resp.text).toContain(APPLY_PAPER_FORM_HEADING);
     });
   });
 });

@@ -27,6 +27,7 @@ import {
   secureUpdateFilter,
   trustInformation,
   usePaper,
+  updateUsePaper,
   whoIsMakingFiling,
   dueDiligence,
   overseasEntityDueDiligence,
@@ -221,6 +222,10 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
   .all(authentication)
   .get(secureUpdateFilter.get)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
+
+router.route(config.UPDATE_USE_PAPER_URL)
+  .all(authentication)
+  .get(updateUsePaper.get);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 

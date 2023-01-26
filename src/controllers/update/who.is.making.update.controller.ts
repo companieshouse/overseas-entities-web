@@ -4,11 +4,12 @@ import { logger } from "../../utils/logger";
 import {
   WHO_IS_MAKING_UPDATE_PAGE,
   UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-  OVERSEAS_ENTITY_REVIEW_PAGE
+  OVERSEAS_ENTITY_REVIEW_PAGE,
+  UPDATE_DUE_DILIGENCE_URL
 } from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { WhoIsRegisteringKey } from "../../model/who.is.making.filing.model";
+import { WhoIsRegisteringKey,  WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,8 +34,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsUpdating });
 
-    // TO DO: actual re-directs to be implemented for UAR-102 & UAR-104
-    return res.redirect(OVERSEAS_ENTITY_REVIEW_PAGE);
+    if ( whoIsUpdating === WhoIsRegisteringType.AGENT ){
+      return res.redirect(UPDATE_DUE_DILIGENCE_URL);
+    } else {
+      // TO DO: actual re-direct to be implemented for UAR-104
+      return res.redirect(OVERSEAS_ENTITY_REVIEW_PAGE);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

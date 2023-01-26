@@ -28,7 +28,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const identityDate = (data?.[IdentityDateKey]) ? mapDataObjectToFields(data[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
     return res.render(config.UPDATE_DUE_DILIGENCE_PAGE, {
-      backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
+      backLinkUrl: config.WHO_IS_MAKING_UPDATE_URL,
       templateName: config.UPDATE_DUE_DILIGENCE_PAGE,
       ...data,
       ...identityAddress,

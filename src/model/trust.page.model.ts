@@ -1,4 +1,5 @@
-import { BeneficialOwnerTypeChoice } from 'model/beneficial.owner.type.model';
+import { BeneficialOwnerTypeChoice } from './beneficial.owner.type.model';
+import { RoleWithinTrustType } from './role.within.trust.type.model';
 
 type TrustDetailsForm = {
   trustId: string;
@@ -35,13 +36,42 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
   endDateYear: string;
 }
 
+type IndividualTrusteesFormCommon = {
+  trusteeId?: string,
+  type: RoleWithinTrustType,
+  forename: string,
+  surname: string,
+  date_of_birth_day: string,
+  date_of_birth_month: string,
+  date_of_birth_year: string,
+  nationality: string,
+  second_nationality?: string,
+  property_name: string,
+  address_line1: string,
+  address_line2?: string,
+  city: string,
+  county?: string,
+  country: string,
+  postal_code?: string,
+  correspondence_property_name?: string,
+  correspondence_address_line1?: string,
+  correspondence_address_line2?: string,
+  correspondence_city?: string,
+  correspondence_county?: string,
+  correspondence_country?: string,
+  correspondence_postal_code?: string,
+  date_became_ip_day?: string,
+  date_became_ip_month?: string,
+  date_became_ip_year?: string,
+};
+
 interface  TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon  {
-  type: '1';
+  type: BeneficialOwnerTypeChoice.otherLegal;
   corporateName: string;
 }
 
 interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon  {
-  type: '0';
+  type: BeneficialOwnerTypeChoice.individual;
   firstName: string;
   lastName: string;
 }
@@ -90,4 +120,5 @@ export {
   TrustHistoricalBeneficialOwnerForm,
   CommonTrustData,
   TrustLegalEntityForm,
+  IndividualTrusteesFormCommon
 };

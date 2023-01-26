@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { mapBoIndividualToPage, mapBoOtherToPage } from "../../../src/utils/trust/beneficial.owner.mapper";
 import { BeneficialOwnerIndividual } from '../../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../../../src/model/beneficial.owner.other.model';
-import { BeneficialOwnerTypeChoice } from '../../../src/model/beneficial.owner.type.model';
+import { BeneficialOwnerTypeChoice } from "../../../src/model/beneficial.owner.type.model";
 
 describe('Trust Details page Mapper Service', () => {
   beforeEach(() => {

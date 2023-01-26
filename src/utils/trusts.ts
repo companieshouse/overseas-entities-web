@@ -6,7 +6,9 @@ import {
   Trust,
   TrustBeneficialOwner,
   TrustHistoricalBeneficialOwner,
+  GeneralTrustee,
   TrustKey,
+  TrustCorporate,
 } from "../model/trust.model";
 
 // Checks whether any beneficial owners have trust data
@@ -156,6 +158,31 @@ const saveHistoricalBoInTrust = (
   return trust;
 };
 
+const saveLegalEntityBoInTrust = (
+  trust: Trust,
+  legalEntityData: TrustCorporate,
+): Trust => {
+  const legalEntities = trust.CORPORATES?.filter((legalEntity: TrustCorporate) => legalEntity.id !== legalEntityData.id);
+
+  trust.CORPORATES = [
+    ...(legalEntities ?? []),
+    legalEntityData,
+  ];
+
+  return trust;
+};
+
+const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: GeneralTrustee ): Trust => {
+  const trusteeItem = trust.INDIVIDUALS?.filter((trustee) => trustee?.id !== trusteeData?.id);
+
+  trust.INDIVIDUALS = [
+    ...(trusteeItem ?? []),
+    trusteeData
+  ];
+
+  return trust;
+};
+
 export {
   checkEntityHasTrusts,
   getBeneficialOwnerList,
@@ -168,4 +195,6 @@ export {
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
   saveHistoricalBoInTrust,
+  saveLegalEntityBoInTrust,
+  saveIndividualTrusteeInTrust,
 };

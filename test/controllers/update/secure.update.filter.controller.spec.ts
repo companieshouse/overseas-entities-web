@@ -82,12 +82,12 @@ describe("SECURE UPDATE FILTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect to overseas entity query page if user selects no", async () => {
+    test("redirect to update interrupt card page if user selects no", async () => {
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL)
         .send({ is_secure_register: '0' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual("overseas-entity-query");
+      expect(resp.header.location).toEqual("update-interrupt-card");
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

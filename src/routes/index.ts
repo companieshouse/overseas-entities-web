@@ -40,11 +40,13 @@ import {
   trustHistoricalbeneficialOwner,
   trustIndividualbeneficialOwner,
   trustLegalEntitybeneficialOwner,
+  trustInterrupt,
   resumeSubmission,
   overseasName,
   startingNew,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateConfirmation
 } from "../controllers";
@@ -208,6 +210,16 @@ router
     return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
   });
 
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
@@ -229,8 +241,8 @@ router.route(config.UPDATE_USE_PAPER_URL)
 
 router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .all(authentication)
-  .get(updateInterruptCard.get);
-// .post(updateInterruptCard.post);
+  .get(updateInterruptCard.get)
+  .post(updateInterruptCard.post);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 
@@ -247,6 +259,11 @@ router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, 
 
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(authentication)
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

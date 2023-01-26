@@ -9,9 +9,9 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
   UPDATE_DUE_DILIGENCE_PAGE,
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+  OVERSEAS_ENTITY_REVIEW_PAGE,
   UPDATE_DUE_DILIGENCE_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_URL
+  OVERSEAS_ENTITY_REVIEW_URL
 } from "../../../src/config";
 import app from "../../../src/app";
 
@@ -99,7 +99,7 @@ describe("Update due diligence controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} when successful`, async () => {
+    test(`redirects to ${OVERSEAS_ENTITY_REVIEW_PAGE} when successful`, async () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
@@ -114,7 +114,7 @@ describe("Update due diligence controller tests", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_CHECK_YOUR_ANSWERS_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -132,7 +132,7 @@ describe("Update due diligence controller tests", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_CHECK_YOUR_ANSWERS_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];

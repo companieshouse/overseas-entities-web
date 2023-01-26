@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import * as config from "../../config";
+import {
+  UPDATE_DUE_DILIGENCE_PAGE,
+  WHO_IS_MAKING_UPDATE_URL,
+  OVERSEAS_ENTITY_REVIEW_URL
+} from "../../config";
+
 import { ApplicationData } from "../../model";
 import { logger } from "../../utils/logger";
 import {
@@ -27,9 +32,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const identityAddress = (data?.[IdentityAddressKey]) ? mapDataObjectToFields(data[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};
     const identityDate = (data?.[IdentityDateKey]) ? mapDataObjectToFields(data[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
-    return res.render(config.UPDATE_DUE_DILIGENCE_PAGE, {
-      backLinkUrl: config.WHO_IS_MAKING_UPDATE_URL,
-      templateName: config.UPDATE_DUE_DILIGENCE_PAGE,
+    return res.render(UPDATE_DUE_DILIGENCE_PAGE, {
+      backLinkUrl: WHO_IS_MAKING_UPDATE_URL,
+      templateName: UPDATE_DUE_DILIGENCE_PAGE,
       ...data,
       ...identityAddress,
       [IdentityDateKey]: identityDate
@@ -53,7 +58,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // Empty OverseasEntityDueDiligence object
     setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
-    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+    return res.redirect(OVERSEAS_ENTITY_REVIEW_URL);
   } catch (error) {
     next(error);
   }

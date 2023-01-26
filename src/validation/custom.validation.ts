@@ -69,10 +69,16 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {
     throw new Error(errMsg);
-  } else if (yearStr.length !== 4) {
-    throw new Error(ErrorMessages.YEAR_LENGTH);
+  } else if (yearStr !== "" && yearStr.length !== 4) {
+    return false;
   }
+  return true;
+};
 
+export const checkDateYearValueIsFourNumbers = (errMsg: string, yearStr: string = "")  => {
+  if (yearStr !== "" && yearStr.length !== 4) {
+    throw new Error(errMsg);
+  }
   return true;
 };
 

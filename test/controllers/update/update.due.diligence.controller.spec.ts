@@ -96,6 +96,21 @@ describe("Update due diligence controller tests", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page on GET method with session data populated`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK } );
+      const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.diligence);
+    });
   });
 
   describe("POST tests", () => {

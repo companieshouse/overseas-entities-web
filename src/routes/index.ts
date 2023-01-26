@@ -253,8 +253,6 @@ router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, 
 
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
-router.get(config.UPDATE_DUE_DILIGENCE_URL, authentication, updateDueDiligence.get);
-router.post(config.UPDATE_DUE_DILIGENCE_URL, authentication, ...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)
@@ -265,5 +263,10 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(authentication)
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_URL)
+  .all(authentication)
+  .get(updateDueDiligence.get)
+  .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
 export default router;

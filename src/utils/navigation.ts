@@ -171,7 +171,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_DUE_DILIGENCE_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
-    previousPage: () => config.UPDATE_LANDING_PAGE_URL,
+    previousPage: () => config.UPDATE_LANDING_PAGE_URL, // TODO: update to UAR-101
     nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   }
 };

@@ -11,10 +11,7 @@ import {
   UPDATE_DUE_DILIGENCE_PAGE,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
   UPDATE_DUE_DILIGENCE_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  // OVERSEAS_ENTITY_QUERY_URL,
-  // UPDATE_LANDING_PAGE_URL,
-  // WHO_IS_MAKING_FILING_URL
+  UPDATE_CHECK_YOUR_ANSWERS_URL
 } from "../../../src/config";
 import app from "../../../src/app";
 
@@ -22,11 +19,10 @@ import {
   ANY_MESSAGE_ERROR,
   SERVICE_UNAVAILABLE,
   FOUND_REDIRECT_TO,
-  DUE_DILIGENCE_PAGE_TITLE,
+  UPDATE_DUE_DILIGENCE_PAGE_TITLE,
   DUE_DILIGENCE_NAME_TEXT,
   DUE_DILIGENCE_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
-  // SAVE_AND_CONTINUE_BUTTON_TEXT,
   DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT,
   DUE_DILIGENCE_PARTNER_NAME_HINT_TEXT,
   DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
@@ -82,7 +78,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(DUE_DILIGENCE_IDENTITY_DATE_LABEL_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_NAME_TEXT);
       expect(resp.text).toContain(DUE_DILIGENCE_IDENTITY_ADDRESS_HINT_TEXT);
@@ -149,7 +145,7 @@ describe("Update due diligence controller tests", () => {
         .send(DUE_DILIGENCE_REQ_BODY_EMPTY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DUE_DILIGENCE_NAME);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
@@ -165,15 +161,12 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).toContain(ErrorMessages.AGENT_CODE);
       expect(resp.text).toContain(ErrorMessages.PARTNER_NAME);
       expect(resp.text).toContain(ErrorMessages.CHECK_DILIGENCE);
-      // expect(resp.text).toContain(WHO_IS_MAKING_FILING_URL);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`POST empty object and check for error in page title`, async () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} with MAX error messages`, async () => {
@@ -182,7 +175,7 @@ describe("Update due diligence controller tests", () => {
         .send(DUE_DILIGENCE_REQ_BODY_MAX_LENGTH_FIELDS_OBJECT_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_AGENT_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
@@ -197,7 +190,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_PARTNER_NAME_LENGTH);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only ENTER DATE error when identity date is completely empty`, async () => {
@@ -205,7 +197,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -213,7 +205,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when month and year are empty`, async () => {
@@ -222,12 +213,11 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when day and year are empty`, async () => {
@@ -236,12 +226,11 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when day and month are empty`, async () => {
@@ -250,12 +239,11 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only DAY error when identity date day is empty`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
@@ -264,7 +252,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -272,7 +260,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only MONTH error when identity date month is empty`, async () => {
@@ -282,7 +269,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).toContain(ErrorMessages.MONTH);
@@ -290,7 +277,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only YEAR error when identity date year is empty`, async () => {
@@ -300,7 +286,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -308,7 +294,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is outside valid numbers`, async () => {
@@ -319,7 +304,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -327,7 +312,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      // expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
@@ -338,7 +322,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
@@ -367,7 +351,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      // expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test("Test email is valid with long email name and address", async () => {
@@ -388,7 +371,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      // expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test("Test email is valid with very long email name and address", async () => {
@@ -409,7 +391,6 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      // expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is outside valid numbers`, async () => {
@@ -420,7 +401,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -438,7 +419,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -456,7 +437,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -474,7 +455,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
@@ -494,7 +475,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
@@ -514,7 +495,7 @@ describe("Update due diligence controller tests", () => {
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);

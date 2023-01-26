@@ -36,7 +36,7 @@ import {
   HasSoldLandKey,
   IsSecureRegisterKey,
   NatureOfControlType,
-  OeNumberKey,
+  EntityNumberKey,
   OverseasEntityKey,
   PaymentKey,
   Transactionkey,
@@ -964,7 +964,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST],
-  [OeNumberKey]: COMPANY_NUMBER,
+  [EntityNumberKey]: COMPANY_NUMBER,
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {

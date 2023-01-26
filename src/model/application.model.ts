@@ -36,6 +36,16 @@ export interface ApplicationData {
     has_sold_land?: string;
     is_secure_register?: string;
     who_is_registering?: string;
+
+    update?: UpdateApplicationModel;
+    // registration?: RegistrationApplicationModel;
+}
+
+// export interface RegistrationApplicationModel {
+// }
+
+export interface UpdateApplicationModel {
+  date_of_creation?: string;
 }
 
 export const ApplicationDataArrayType = [

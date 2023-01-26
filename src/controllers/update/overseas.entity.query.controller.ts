@@ -4,7 +4,10 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
-import { OeNumberKey } from "../../model/data.types.model";
+import { EntityNumberKey } from "../../model/data.types.model";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { getCompanyProfile } from "../../service/company.profile";
+import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-      [OeNumberKey]: appData?.[OeNumberKey],
+      [EntityNumberKey]: appData?.[EntityNumberKey],
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -22,17 +25,48 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
-    const oeNumber = req.body[OeNumberKey];
 
-    setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });
-    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+    const entityNumber = req.body[EntityNumberKey];
+    const companyProfile = await getCompanyProfile(req, entityNumber) as CompanyProfile;
+    if (!companyProfile) {
+      const msg = `The Overseas Entity with OE number "${entityNumber}" was not found.`;
+      const errors = createEntityNumberError(msg);
+      return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
+        backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
+        templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+        [EntityNumberKey]: entityNumber,
+        errors
+      });
+    } else {
+      const appData: ApplicationData = getApplicationData(req.session);
+      appData.entity_name = companyProfile.companyName;
+      appData.entity_number = entityNumber;
+      const overseasEntity = mapCompanyProfileToOverseasEntity(companyProfile);
+      appData.entity = overseasEntity;
+      if (!appData.update) {
+        appData.update = {
+          date_of_creation: companyProfile.dateOfCreation
+        };
+      } else {
+        appData.update.date_of_creation = companyProfile.dateOfCreation;
+      }
+      setExtraData(req.session, appData);
 
+      return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
+
+function createEntityNumberError(msg: string): any {
+  const errors = { errorList: [] } as any;
+  errors.errorList.push({ href: "#entity_number", text: msg });
+  errors.entity_number = { text: msg };
+  return errors;
+}
 

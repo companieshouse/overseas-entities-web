@@ -253,8 +253,11 @@ router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, 
 
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
-router.get(config.WHO_IS_MAKING_UPDATE_URL, authentication, whoIsMakingUpdate.get);
-router.post(config.WHO_IS_MAKING_UPDATE_URL, authentication, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(authentication)
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

@@ -24,8 +24,13 @@
         {% set interestedPersonDateHtml %}
           <br>
           {% set fieldParam = {
-            name: 'interestedPersonDate',
+            name: 'interestedPersonStartDate',
             label: 'What date did it become an interested person?',
+            value: {
+              'Day': formData.interestedPersonStartDateDay,
+              'Month': formData.interestedPersonStartDateMonth,
+              'Year': formData.interestedPersonStartDateYear
+            },
             classes: 'govuk-fieldset__legend--s',
             error: errors.interestedPersonDate
           } %}
@@ -35,6 +40,7 @@
         {% set fieldParam = {
           name: 'legalEntityName',
           label: 'What is its name?',
+          value: formData.legalEntityName,
           error: errors.legalEntityName
         } %}
         {% include "includes/inputs/text-input.html" %}
@@ -42,6 +48,7 @@
         {% set fieldParam = {
           name: 'roleWithinTrust',
           label: 'What is its role within the trust?',
+          value: formData.roleWithinTrust,
           error: errors.roleWithinTrust,
           items: [
             {
@@ -71,6 +78,7 @@
         {% set fieldParam = {
           name: 'legalForm',
           label: 'What is its legal form?',
+          value: formData.legalForm,
           hint: 'For example, limited company',
           error: errors.legalForm
         } %}
@@ -79,6 +87,7 @@
         {% set fieldParam = {
           name: 'governingLaw',
           label: 'What is the governing law?',
+          value: formData.governingLaw,
           hint: 'This is the law that the entity operates under.',
           error: errors.governingLaw
         } %}

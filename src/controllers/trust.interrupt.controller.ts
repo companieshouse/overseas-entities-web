@@ -1,42 +1,41 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
-import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
-import { CommonTrustData } from '../model/trust.page.model';
+import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mapper';
+import * as PageModel from '../model/trust.page.model';
+import { safeRedirect } from '../utils/http.ext';
 
-const INDIVIDUAL_BO_TEXTS = {
-  title: 'Tell us about the individual',
+const TRUST_INTERRUPT_TEXTS = {
+  title: 'You now need to submit trust information',
 };
 
-type TrustIndividualBeneificalOwnerPageProperties = {
-  backLinkUrl: string,
+type TrustDetailPageProperties = {
+  backLinkUrl: string;
   templateName: string;
-  pageData: {
-    trustData: CommonTrustData,
-    roleWithinTrustType: typeof RoleWithinTrustType;
-  },
   pageParams: {
     title: string;
-  },
+  };
+  pageData: {
+    trustData: PageModel.CommonTrustData;
+  };
 };
 
 const getPageProperties = (
   req: Request,
-): TrustIndividualBeneificalOwnerPageProperties => {
+): TrustDetailPageProperties => {
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+
+  const appData = getApplicationData(req.session);
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
-    templateName: config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+    templateName: config.TRUST_INTERRUPT_PAGE,
     pageParams: {
-      title: INDIVIDUAL_BO_TEXTS.title,
+      title: TRUST_INTERRUPT_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
-      roleWithinTrustType: RoleWithinTrustType
+      trustData: mapCommonTrustDataToPage(appData, trustId),
     },
   };
 };
@@ -66,9 +65,9 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const url = `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}${config.TRUST_INVOLVED_URL}`;
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
-    return safeRedirect(res, url);
+    return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}`);
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -79,5 +78,5 @@ const post = (
 export {
   get,
   post,
-  INDIVIDUAL_BO_TEXTS,
+  TRUST_INTERRUPT_TEXTS,
 };

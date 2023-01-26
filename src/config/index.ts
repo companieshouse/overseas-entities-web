@@ -85,6 +85,7 @@ export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-benefici
 export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE = "trust-individual-beneficial-owner";
 export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE = "trust-legal-entity-beneficial-owner";
 export const TRUST_BENEFICIAL_OWNER_DETACH_PAGE = "trust-bo-detach";
+export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
@@ -131,6 +132,8 @@ export const TRUST_BENEFICIAL_OWNER_DETACH_URL = '/' + TRUST_BENEFICIAL_OWNER_DE
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = '/' + TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
 export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL = '/' + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE;
 export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL = '/' + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE;
+export const TRUST_TRUSTEE_LEGAL_ENTITY_URL = '/trustee-other-legal';
+export const TRUST_INTERRUPT_URL = '/' + TRUST_INTERRUPT_PAGE;
 
 // UPDATE overseas entity routes
 export const UPDATE_LANDING_URL = "/update-an-overseas-entity";

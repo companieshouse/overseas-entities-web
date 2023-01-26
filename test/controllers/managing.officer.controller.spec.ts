@@ -581,7 +581,7 @@ describe("MANAGING_OFFICER controller", () => {
         .send(managingOfficer);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);

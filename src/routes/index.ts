@@ -43,6 +43,8 @@ import {
   startingNew,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  whoIsMakingUpdate,
+  updateDueDiligenceOverseasEntity,
   updateCheckYourAnswers,
   updateConfirmation
 } from "../controllers";
@@ -236,6 +238,21 @@ router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, 
 
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(authentication)
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(authentication)
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
+  .all(authentication)
+  .get(updateDueDiligenceOverseasEntity.get)
+  .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

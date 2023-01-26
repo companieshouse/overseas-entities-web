@@ -158,3 +158,4 @@ export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/enti
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
+export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";

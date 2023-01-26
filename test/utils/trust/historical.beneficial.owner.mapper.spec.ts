@@ -8,6 +8,7 @@ import {
   generateBoId,
   mapBeneficialOwnerToSession,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
+import { BeneficialOwnerTypeChoice } from "../../../src/model/beneficial.owner.type.model";
 
 describe('Historical Beneficial Owner page Mapper Service', () => {
   beforeEach(() => {
@@ -29,7 +30,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           boId: '9999',
-          type: '0' as TrustHistoricalBeneficialOwnerType,
+          type: BeneficialOwnerTypeChoice.individual as TrustHistoricalBeneficialOwnerType,
           firstName: 'dummyFirstName',
           lastName: 'dummyLastName',
         };
@@ -51,7 +52,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
       test('map corporate', () => {
         const mockFormData = {
           ...mockFormDataBasic,
-          type: '1' as TrustHistoricalBeneficialOwnerType,
+          type: BeneficialOwnerTypeChoice.otherLegal as TrustHistoricalBeneficialOwnerType,
           corporateName: 'dummyCorporateName',
         };
 

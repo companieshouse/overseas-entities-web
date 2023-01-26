@@ -1,5 +1,5 @@
-import { ApplicationData } from 'model';
-import { CommonTrustData } from 'model/trust.page.model';
+import { ApplicationData } from '../../model';
+import { CommonTrustData } from '../../model/trust.page.model';
 import { getTrustByIdFromApp } from '../trusts';
 
 const mapCommonTrustDataToPage = (

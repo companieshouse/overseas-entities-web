@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData } from '../utils/application.data';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { RoleWithinTrustType } from '../model/role.with.trust.type.model';
+import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { CommonTrustData } from '../model/trust.page.model';
 
 const INDIVIDUAL_BO_TEXTS = {

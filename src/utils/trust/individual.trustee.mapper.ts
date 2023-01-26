@@ -1,7 +1,7 @@
 import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 import { v4 as uuidv4 } from 'uuid';
-import { RoleWithinTrustType } from '../../model/role.with.trust.type.model';
+import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,

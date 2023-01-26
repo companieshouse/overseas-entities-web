@@ -271,7 +271,7 @@ describe('Trust Utils method tests', () => {
         ],
       } as Trust;
     });
-    
+
     test('test add', () => {
       const trustee = {
         id: '101',

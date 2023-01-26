@@ -1,7 +1,7 @@
 jest.mock('uuid');
 
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { RoleWithinTrustType } from "../../../src/model/role.with.trust.type.model";
+import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import * as Page from '../../../src/model/trust.page.model';
 import {
   mapIndividualTrusteeToSession,

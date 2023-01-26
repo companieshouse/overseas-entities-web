@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { getApplicationData, setExtraData } from '../utils/application.data';
-import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from '../../src/utils/trusts';
+import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from '../utils/trusts';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
 import { mapIndividualTrusteeToSession } from '../utils/trust/individual.trustee.mapper';

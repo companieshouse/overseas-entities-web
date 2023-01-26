@@ -37,14 +37,10 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
 
-    update?: UpdateApplicationModel;
-    // registration?: RegistrationApplicationModel;
+    update?: UpdateApplicationData;
 }
 
-// export interface RegistrationApplicationModel {
-// }
-
-export interface UpdateApplicationModel {
+export interface UpdateApplicationData {
   date_of_creation?: string;
 }
 

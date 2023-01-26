@@ -32,8 +32,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber) as CompanyProfile;
     if (!companyProfile) {
-      const msg = `The Overseas Entity with OE number "${entityNumber}" was not found.`;
-      const errors = createEntityNumberError(msg);
+      const errors = createEntityNumberError(entityNumber);
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
         backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
         templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
@@ -63,7 +62,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-function createEntityNumberError(msg: string): any {
+function createEntityNumberError(entityNumber: string): any {
+  const msg = `The Overseas Entity with OE number "${entityNumber}" was not found.`;
   const errors = { errorList: [] } as any;
   errors.errorList.push({ href: "#entity_number", text: msg });
   errors.entity_number = { text: msg };

@@ -11,42 +11,5 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-      {% include "includes/list/errors.html" %}
-
-      <h1 class="govuk-heading-xl">Tell us about the UK-regulated agent that carried out verification checks</h1>
-
-      <form method="post">
-        {% set identityDateLabelText = "When did the agent complete the verification checks? (optional)" %}
-        {% include "includes/inputs/date/identity-date-input.html" %}
-
-        {% set nameFieldText = "What is their name?" %}
-        {% set nameFieldTextHint = "Enter the company name, or the name of the person if they are self-employed" %}
-        {% include "includes/inputs/fields/identity-name-input.html" %}
-
-        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’" %}
-        {% include "includes/inputs/address/identity-address-input.html" %}
-
-        {% set emailFieldText = "What is their email address?" %}
-        {% include "includes/inputs/fields/email-input.html" %}
-
-        {% set supervisoryNameLabelText = "What is the name of the supervisory body? (optional)"%}
-        {% include "includes/inputs/fields/supervisory-name-input.html" %}
-
-        {% include "includes/inputs/fields/aml-number-input.html" %}
-
-        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for verification checks? (optional)" %}
-        {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance" %}
-        {% include "includes/inputs/fields/partner-name-input.html" %}
-
-        {% set paragraphOne = '<p>We will not show the email address and date the verification checks were completed.</p>' %}
-        {% include "includes/inset-text.html" %}
-
-        {% include "includes/save-and-continue-button.html" %}
-
-      </form>
-    </div>
-  </div>
+  {% include "includes/templates/content/due-diligence-overseas-entity.html" %}
 {% endblock %}

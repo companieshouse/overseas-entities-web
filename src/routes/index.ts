@@ -48,7 +48,8 @@ import {
   overseasEntityPresenter,
   whoIsMakingUpdate,
   updateCheckYourAnswers,
-  updateConfirmation
+  updateConfirmation,
+  updateDueDiligenceOverseasEntity
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -266,6 +267,11 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .all(authentication)
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
+  .all(authentication)
+  .get(updateDueDiligenceOverseasEntity.get)
+  .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

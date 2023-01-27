@@ -5,6 +5,7 @@ import { getApplicationData } from '../utils/application.data';
 import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mapper';
 import * as PageModel from '../model/trust.page.model';
 import { safeRedirect } from '../utils/http.ext';
+import { TrustKey } from '../model/trust.model';
 
 const TRUST_INTERRUPT_TEXTS = {
   title: 'You now need to submit trust information',
@@ -24,12 +25,12 @@ type TrustDetailPageProperties = {
 const getPageProperties = (
   req: Request,
 ): TrustDetailPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   const appData = getApplicationData(req.session);
+  const trustId = `${(appData[TrustKey] ?? []).length + 1}`;
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.BENEFICIAL_OWNER_TYPE_URL}`,
     templateName: config.TRUST_INTERRUPT_PAGE,
     pageParams: {
       title: TRUST_INTERRUPT_TEXTS.title,
@@ -65,9 +66,7 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-
-    return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}`);
+    return safeRedirect(res, `${config.TRUST_ENTRY_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

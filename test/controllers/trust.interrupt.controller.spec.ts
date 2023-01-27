@@ -19,7 +19,6 @@ import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { TRUST_ENTRY_URL, TRUST_INTERRUPT_PAGE, TRUST_INTERRUPT_URL } from '../../src/config';
 import { get, post, TRUST_INTERRUPT_TEXTS } from '../../src/controllers/trust.interrupt.controller';
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
 import { getApplicationData } from '../../src/utils/application.data';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 
@@ -27,7 +26,7 @@ describe('Trust Interrupt controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = TRUST_WITH_ID.trust_id;
-  const pageUrl = `${TRUST_ENTRY_URL}/${trustId}${TRUST_INTERRUPT_URL}`;
+  const pageUrl = `${TRUST_ENTRY_URL}${TRUST_INTERRUPT_URL}`;
 
   let mockReq = {} as Request;
   const mockRes = {
@@ -63,12 +62,15 @@ describe('Trust Interrupt controller', () => {
       };
       (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
 
+      // When no session increment by 1
+      const noSessionTrustId = '1';
+
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
 
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
-      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId);
+      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, noSessionTrustId);
 
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(
@@ -99,7 +101,7 @@ describe('Trust Interrupt controller', () => {
       post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}`);
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}`);
     });
 
     test('catch error when post data from page', () => {
@@ -123,7 +125,6 @@ describe('Trust Interrupt controller', () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -140,17 +141,15 @@ describe('Trust Interrupt controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
     });
 
     test('successfully access POST method', async () => {
       const resp = await request(app).post(pageUrl);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}`);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
     });
   });
 });

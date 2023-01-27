@@ -40,7 +40,6 @@ export * as updateUsePaper from "./update/update.use.paper.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as whoIsMakingUpdate from "./update/who.is.making.update.controller";
-export * as updateDueDiligenceOverseasEntity from "./update/due.diligence.overseas.entity.controller";
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as overseasEntityPayment from './update/payment.controller';
 export * as updateConfirmation from "./update/confirmation.controller";

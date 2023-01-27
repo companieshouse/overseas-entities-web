@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
+import { BeneficialOwnerTypeChoice } from '../../model/beneficial.owner.type.model';
 import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 
@@ -16,7 +17,7 @@ const mapBeneficialOwnerToSession = (
     notified_date_year: formData.endDateYear,
   };
 
-  if (formData.type === '1') {
+  if (formData.type === BeneficialOwnerTypeChoice.otherLegal) {
     return {
       ...data,
       corporateName: formData.corporateName,

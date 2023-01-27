@@ -27,6 +27,7 @@ import {
   secureUpdateFilter,
   trustInformation,
   usePaper,
+  updateUsePaper,
   whoIsMakingFiling,
   dueDiligence,
   overseasEntityDueDiligence,
@@ -38,6 +39,7 @@ import {
   trustHistoricalbeneficialOwner,
   trustIndividualbeneficialOwner,
   trustLegalEntitybeneficialOwner,
+  trustInterrupt,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -208,6 +210,16 @@ router
     return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
   });
 
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
@@ -222,6 +234,10 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
   .all(authentication)
   .get(secureUpdateFilter.get)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
+
+router.route(config.UPDATE_USE_PAPER_URL)
+  .all(authentication)
+  .get(updateUsePaper.get);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 

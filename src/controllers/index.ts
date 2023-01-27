@@ -31,10 +31,12 @@ export * as trustInvolved from "./trust.involved.controller";
 export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.owner.controller";
 export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.owner.controller";
 export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficial.owner.controller";
+export * as trustInterrupt from "./trust.interrupt.controller";
 export * as overseasName from "./overseas.name.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
+export * as updateUsePaper from "./update/update.use.paper.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as whoIsMakingUpdate from "./update/who.is.making.update.controller";

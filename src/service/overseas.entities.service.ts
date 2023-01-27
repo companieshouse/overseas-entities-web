@@ -39,6 +39,7 @@ export const updateOverseasEntity = async (req: Request, session: Session) => {
 };
 
 export const updateOverseasEntityWithAppData = async (req: Request, appData: ApplicationData, session: Session) => {
+  console.log("********* HERE ********");
   const transactionID = appData[Transactionkey] as string;
   const overseasEntityID = appData[OverseasEntityKey] as string;
 

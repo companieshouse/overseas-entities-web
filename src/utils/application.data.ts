@@ -20,7 +20,7 @@ import { OverseasEntityDueDiligence, DueDiligence } from '@companieshouse/api-sd
 import { DueDiligenceKey } from '../model/due.diligence.model';
 import { OverseasEntityDueDiligenceKey } from '../model/overseas.entity.due.diligence.model';
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../model/who.is.making.filing.model';
-import { getOverseasEntity } from 'service/overseas.entities.service';
+import { getOverseasEntity } from '../service/overseas.entities.service';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -45,6 +45,7 @@ export const updateApplicationData = (appData: ApplicationData, dataToAdd: any, 
   } else {
     appData = { ...appData, [key]: { ...dataToAdd } } as ApplicationData;
   }
+  return appData;
 };
 
 export const setExtraData = (session: Session | undefined, appData: ApplicationData): undefined | void => {

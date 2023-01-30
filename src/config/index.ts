@@ -43,7 +43,7 @@ export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_
 export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'false');
 export const FEATURE_FLAG_ENABLE_ROE_REMOVE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022', 'false');
 
-// TEMPLATEs
+// TEMPLATES
 export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";
 export const BENEFICIAL_OWNER_GOV_PAGE = "beneficial-owner-gov";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "beneficial-owner-individual";
@@ -59,7 +59,6 @@ export const ENTITY_PAGE = "entity";
 export const ERROR_PAGE = "error-page";
 export const HEALTHCHECK_PAGE = "healthcheck";
 export const INTERRUPT_CARD_PAGE = "interrupt-card";
-export const LANDING_PAGE = "landing";
 export const UPDATE_LANDING_PAGE = "update-landing";
 export const UPDATE_CONFIRMATION_PAGE = "update-confirmation";
 export const OVERSEAS_ENTITY_QUERY_PAGE = "overseas-entity-query";

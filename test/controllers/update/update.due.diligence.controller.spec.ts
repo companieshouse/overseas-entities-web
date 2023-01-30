@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
+// jest.mock('../../../src/middleware/navigation/has.presenter.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -40,6 +41,8 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
 } from "../../__mocks__/due.diligence.mock";
 
+// import { hasPresenter } from "../../../src/middleware/navigation/has.presenter.middleware";
+
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -63,6 +66,9 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+
+// const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
+// mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Update due diligence controller tests", () => {
 

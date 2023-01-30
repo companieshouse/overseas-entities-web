@@ -275,4 +275,10 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .get(updateDueDiligence.get)
   .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
+// TODO: update to have hasUpdatePresenter
+// router.route(config.UPDATE_DUE_DILIGENCE_URL)
+// .all(authentication)
+// .get(navigation.hasPresenter, updateDueDiligence.get)
+// .post(navigation.hasPresenter, ...validator.dueDiligence, checkValidations, updateDueDiligence.post);
+
 export default router;

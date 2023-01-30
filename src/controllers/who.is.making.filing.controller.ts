@@ -5,14 +5,21 @@ import * as config from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.WHO_IS_MAKING_FILING_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
+    let backLinkUrl = config.PRESENTER_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      backLinkUrl = getUrlWithParamsToPath(config.PRESENTER_PARAMS_URL, req);
+    }
+
     return res.render(config.WHO_IS_MAKING_FILING_PAGE, {
-      backLinkUrl: config.PRESENTER_URL,
+      backLinkUrl,
       templateName: config.WHO_IS_MAKING_FILING_PAGE,
       [WhoIsRegisteringKey]: appData[WhoIsRegisteringKey]
     });

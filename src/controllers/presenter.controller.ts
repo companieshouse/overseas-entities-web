@@ -7,6 +7,8 @@ import { PresenterKey, PresenterKeys } from "../model/presenter.model";
 import { getApplicationData, setApplicationData, prepareData } from "../utils/application.data";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,7 +38,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAndContinue(req, session);
 
-    return res.redirect(config.WHO_IS_MAKING_FILING_URL);
+    let nextPageUrl = config.WHO_IS_MAKING_FILING_URL;
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      nextPageUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_PARAMS_URL, req);
+    }
+    return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

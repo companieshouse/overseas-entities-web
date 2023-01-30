@@ -17,6 +17,8 @@ import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { IdentityAddressKey, IdentityAddressKeys } from "../model/address.model";
 import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,8 +30,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const identityAddress = (data?.[IdentityAddressKey]) ? mapDataObjectToFields(data[IdentityAddressKey], IdentityAddressKeys, AddressKeys) : {};
     const identityDate = (data?.[IdentityDateKey]) ? mapDataObjectToFields(data[IdentityDateKey], IdentityDateKeys, InputDateKeys) : {};
 
+    let backLinkUrl = config.WHO_IS_MAKING_FILING_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      backLinkUrl = getUrlWithParamsToPath(config.WHO_IS_MAKING_FILING_PARAMS_URL, req);
+    }
+
     return res.render(config.DUE_DILIGENCE_PAGE, {
-      backLinkUrl: config.WHO_IS_MAKING_FILING_URL,
+      backLinkUrl,
       templateName: config.DUE_DILIGENCE_PAGE,
       ...data,
       ...identityAddress,

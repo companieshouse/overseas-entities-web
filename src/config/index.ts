@@ -90,6 +90,11 @@ export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-det
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = 'update-check-your-answers';
 
+export enum urlParams {
+  PARAM_TRANSACTION_ID = "transactionId",
+  PARAM_OVERSEAS_ENTITY_ID = "overseasEntityId"
+}
+
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
 export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
@@ -125,6 +130,14 @@ export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_P
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 
+// REGISTRATION URLS WITH PARAMS
+export const ACTIVE_SUBMISSION_BASE = `transaction/:${urlParams.PARAM_TRANSACTION_ID}/overseas-entity/:${urlParams.PARAM_OVERSEAS_ENTITY_ID}/`;
+export const REGISTER_AN_OVERSEAS_ENTITY_PARAMS_URL = LANDING_URL + "/" + ACTIVE_SUBMISSION_BASE;
+export const PRESENTER_PARAMS_URL = REGISTER_AN_OVERSEAS_ENTITY_PARAMS_URL + PRESENTER_PAGE;
+export const WHO_IS_MAKING_FILING_PARAMS_URL = REGISTER_AN_OVERSEAS_ENTITY_PARAMS_URL + WHO_IS_MAKING_FILING_PAGE;
+
+
+// TRUST URLS
 export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + 'trusts';
 export const TRUST_DETAILS_URL = TRUST_ENTRY_URL;
 export const TRUST_INVOLVED_URL = '/' + TRUST_INVOLVED_PAGE;

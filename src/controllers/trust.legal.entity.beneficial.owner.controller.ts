@@ -90,7 +90,6 @@ const post = (
     //  save to session
     setExtraData(req.session, appData);
 
-    console.log(req.session);
     logger.debugRequest(req, "requestHere");
 
     return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);

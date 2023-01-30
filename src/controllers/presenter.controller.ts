@@ -42,9 +42,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     // setApplicationData(session, data, PresenterKey);
     let appData = await getAppDataFromAPI(req);
 
-    console.log("----- BEFORE ---- " + JSON.stringify(appData, null, 2));
     appData = updateApplicationData(appData, presenterData, PresenterKey);
-    console.log("----- AFTER ---- " + JSON.stringify(appData, null, 2));
 
     // await saveAndContinue(req, session);
 

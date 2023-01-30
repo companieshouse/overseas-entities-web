@@ -8,6 +8,9 @@ import { isSecureRegister } from "./is.secure.register.middleware";
 import { hasOverseasName } from "./has.overseas.name.middleware";
 import { hasTrust } from "./has.trust.middleware";
 
+// UPDATE
+import { hasUpdatePresenter } from "./update/has.presenter";
+
 export const navigation = {
   hasSoldLand,
   isSecureRegister,
@@ -18,4 +21,8 @@ export const navigation = {
   hasBOsOrMOs,
   hasOverseasName,
   hasTrust
+};
+
+export const updateNavigation = {
+  hasUpdatePresenter
 };

@@ -1,16 +1,16 @@
 jest.mock("ioredis");
-jest.mock("../../../src/utils/logger");
-jest.mock('../../../src/middleware/navigation/check.condition');
+jest.mock("../../../../src/utils/logger");
+jest.mock('../../../../src/middleware/navigation/check.condition');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
-import { logger } from "../../../src/utils/logger";
-import { UPDATE_LANDING_URL } from '../../../src/config';
-import { ANY_MESSAGE_ERROR } from '../../__mocks__/text.mock';
+import { logger } from "../../../../src/utils/logger";
+import { UPDATE_LANDING_URL } from '../../../../src/config';
+import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
 
-import { checkOverseasEntityNumberEntered, NavigationErrorMessage } from '../../../src/middleware/navigation/check.condition';
-import { hasOverseasEntityNumber } from '../../../src/middleware/navigation/has.overseas.entity.middleware';
+import { checkOverseasEntityNumberEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
+import { hasOverseasEntityNumber } from '../../../../src/middleware/navigation/update/has.overseas.entity.middleware';
 
 const mockCheckOverseasEntityDetailsEntered = checkOverseasEntityNumberEntered as unknown as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { getPresenterPage, postPresenterPage } from "../../utils/presenter";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getPresenterPage(req, res, next, config.OVERSEAS_ENTITY_PRESENTER_PAGE, config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
+  getPresenterPage(req, res, next, config.UPDATE_PRESENTER_PAGE, config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

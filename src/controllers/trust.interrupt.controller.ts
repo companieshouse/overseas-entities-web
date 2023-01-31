@@ -7,26 +7,6 @@ const TRUST_INTERRUPT_TEXTS = {
   title: 'You now need to submit trust information',
 };
 
-type TrustDetailPageProperties = {
-  backLinkUrl: string;
-  templateName: string;
-  pageParams: {
-    title: string;
-  };
-};
-
-const getPageProperties = (
-): TrustDetailPageProperties => {
-
-  return {
-    backLinkUrl: `${config.BENEFICIAL_OWNER_TYPE_URL}`,
-    templateName: config.TRUST_INTERRUPT_PAGE,
-    pageParams: {
-      title: TRUST_INTERRUPT_TEXTS.title,
-    },
-  };
-};
-
 const get = (
   req: Request,
   res: Response,
@@ -35,7 +15,13 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties();
+    const pageProps = {
+      backLinkUrl: `${config.BENEFICIAL_OWNER_TYPE_URL}`,
+      templateName: config.TRUST_INTERRUPT_PAGE,
+      pageParams: {
+        title: TRUST_INTERRUPT_TEXTS.title,
+      },
+    };
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {

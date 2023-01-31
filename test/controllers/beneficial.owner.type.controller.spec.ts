@@ -38,14 +38,10 @@ import {
   APPLICATION_DATA_NO_TRUSTS_MOCK,
   ERROR
 } from '../__mocks__/session.mock';
-import {
-  BeneficialOwnerTypeChoice,
-  BeneficialOwnerTypeKey,
-  ManagingOfficerTypeChoice,
-} from "../../src/model/beneficial.owner.type.model";
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../src/model/beneficial.owner.statement.model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
+import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey, ManagingOfficerTypeChoice } from '../../src/model/beneficial.owner.type.model';
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

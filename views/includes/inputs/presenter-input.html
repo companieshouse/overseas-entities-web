@@ -1,0 +1,40 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% include "includes/list/errors.html" %}
+
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
+    <p class="govuk-caption-m govuk-!-margin-bottom-4">We’ll use this if we need more information about the {{ submission }}.</p>
+
+    <form method="post">
+
+      {{ govukInput({
+        errorMessage: errors.full_name if errors,
+        label: {
+          text: "Full name",
+          isPageHeading: false
+        },
+        id: "full_name",
+        name: "full_name",
+        value: full_name
+      }) }}
+
+      {{ govukInput({
+        errorMessage: errors.email if errors,
+        label: {
+          text: "Email address",
+          isPageHeading: false
+        },
+        id: "email",
+        name: "email",
+        value: email
+      }) }}
+
+      {% set paragraphTwo = '<p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities.</p>' %}
+      {% include "includes/inset-text.html" %}
+
+      {% include "includes/save-and-continue-button.html" %}
+
+    </form>
+  </div>
+</div>

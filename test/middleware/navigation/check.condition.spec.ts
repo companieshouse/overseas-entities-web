@@ -7,13 +7,14 @@ import {
   checkHasSoldLandDetailsEntered,
   checkIsSecureRegisterDetailsEntered,
   checkDueDiligenceDetailsEntered,
-  checkOverseasNameDetailsEntered
+  checkOverseasNameDetailsEntered,
+  checkOverseasEntityNumberEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
-import { EntityNameKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
+import { EntityNameKey, OeNumberKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { EntityKey } from '../../../src/model/entity.model';
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
@@ -161,5 +162,10 @@ describe("check condition navigation tests", () => {
   test("checkBOsOrMOsDetailsEntered should return true, all good", () => {
     const data = checkBOsOrMOsDetailsEntered(APPLICATION_DATA_MOCK);
     expect(data).toEqual(true);
+  });
+
+  test("checkOverseasEntityNumberEntered should return false", () => {
+    const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [OeNumberKey]: undefined });
+    expect(data).toEqual(false);
   });
 });

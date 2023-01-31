@@ -39,11 +39,14 @@ import {
   trustHistoricalbeneficialOwner,
   trustIndividualbeneficialOwner,
   trustLegalEntitybeneficialOwner,
+  trustInterrupt,
   resumeSubmission,
   overseasName,
   startingNew,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  overseasEntityPresenter,
+  whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateConfirmation
 } from "../controllers";
@@ -149,6 +152,15 @@ router.get(
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
+router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
@@ -234,6 +246,14 @@ router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overs
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
 
+router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
+  .all(
+    authentication,
+    navigation.hasOverseasEntityNumber,
+  )
+  .get(overseasEntityPresenter.get)
+  .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
+
 router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
 router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);
 
@@ -241,6 +261,11 @@ router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, 
 
 router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+
+router.route(config.WHO_IS_MAKING_UPDATE_URL)
+  .all(authentication)
+  .get(whoIsMakingUpdate.get)
+  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

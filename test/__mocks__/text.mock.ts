@@ -38,6 +38,7 @@ export const NO_RESOURCE_ON_PAYMENT_RESPONSE_MSG_ERROR = "No resource in payment
 export const PAYMENT_RESPONSE_500_MSG_ERROR = "payment.service failure to create payment, http response status code=500, http errors response=[{\"error\":\"Any error message\"}].";
 export const PAYMENT_RESPONSE_NO_STATUS_CODE_MSG_ERROR = "payment.service failure to create payment, http response status code=No Status Code found in response, http errors response=\"No Errors found in response\".";
 export const PRESENTER_PAGE_TITLE = "Who can we contact about this application?";
+export const OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE = "Who can we contact about this update?";
 export const OVERSEAS_NAME_PAGE_TITLE = "What is the name of the overseas entity?";
 export const ENTITY_PAGE_REDIRECT = "Found. Redirecting to /register-an-overseas-entity/entity";
 export const BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING = "Tell us about the individual person";
@@ -128,6 +129,7 @@ export const SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the informa
 export const SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER = "We will show all the other information you provide on this screen on the public Register of Overseas Entities.";
 export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of the information you provide on this screen on the public Register of Overseas Entities.";
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
+export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
@@ -160,3 +162,5 @@ export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/enti
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
+export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
+

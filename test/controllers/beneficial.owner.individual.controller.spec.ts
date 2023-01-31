@@ -760,7 +760,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);

@@ -25,6 +25,11 @@
           <br>
           {% set fieldParam = {
             name: 'interestedPersonDate',
+            value: {
+              'Day': formData.date_became_ip_day,
+              'Month': formData.date_became_ip_month,
+              'Year': formData.date_became_ip_year
+            },
             label: 'What date did they become an interested person?',
             classes: 'govuk-fieldset__legend--s',
             error: errors.interestedPersonDate
@@ -34,6 +39,7 @@
 
         {% set fieldParam = {
           name: 'firstName',
+          value: formData.firstName,
           label: 'What is their first name?',
           hint: 'This is also known as their given name.',
           error: errors.firstName
@@ -42,6 +48,7 @@
 
         {% set fieldParam = {
           name: 'lastName',
+          value: formData.lastName,
           label: 'What is their last name?',
           hint: 'This is also known as their family name.',
           error: errors.lastName
@@ -50,6 +57,11 @@
 
         {% set fieldParam = {
           name: 'dateOfBirth',
+          value: {
+            'Day': formData.date_of_birth_day,
+            'Month': formData.date_of_birth_month,
+            'Year': formData.date_of_birth_year
+          },
           label: 'What is their date of birth?',
           error: errors.dateOfBirth
         } %}
@@ -58,6 +70,7 @@
         {% set fieldParam = {
           name: 'roleWithinTrust',
           label: 'What is their role within the trust?',
+          value: formData.type,
           error: errors.roleWithinTrust,
           items: [
             {
@@ -93,7 +106,7 @@
           '
         }) }}
 
-        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+        <input type="hidden" name="trusteeId" value="{{ formData.trusteeId }}"/>
 
         {% include "includes/save-and-continue-button.html" %}
       </form>

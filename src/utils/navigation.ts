@@ -52,6 +52,11 @@ export const NAVIGATION: Navigation = {
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
     previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    nextPage: [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE] // TO DO: UAR-102 needs added
+  },
+  [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
+    currentPage: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_PAGE]
   },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {

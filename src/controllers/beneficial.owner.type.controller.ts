@@ -29,7 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...appData,
       pageParams: {
         urlToTrust: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-          ? config.TRUST_DETAILS_URL
+          ? `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`
           : config.TRUST_INFO_URL,
         urlToCheckYourAnswers: config.CHECK_YOUR_ANSWERS_URL,
       },

@@ -69,7 +69,7 @@ describe("Confirm company data", () => {
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
     });
 
     test('catch error when posting to the page', async () => {

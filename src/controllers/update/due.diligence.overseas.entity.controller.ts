@@ -53,7 +53,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     // Empty DueDiligence object
     setApplicationData(session, {}, DueDiligenceKey);
 
-    return res.redirect(config.ENTITY_URL);
+    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_URL);
   } catch (error) {
     next(error);
   }

@@ -3,7 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
-// jest.mock('../../../src/middleware/navigation/has.presenter.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -41,15 +41,13 @@ import {
   DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK
 } from "../../__mocks__/due.diligence.mock";
 
-// import { hasPresenter } from "../../../src/middleware/navigation/has.presenter.middleware";
-
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ApplicationDataType } from '../../../src/model';
-
+import { hasWhoIsMakingUpdate } from "../../../src/middleware/navigation/update/has.who.is.making.update.middleware";
 import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
@@ -59,6 +57,9 @@ import { DateTime } from "luxon";
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockHasWhoIsMakingUpdateMiddleware = hasWhoIsMakingUpdate as jest.Mock;
+mockHasWhoIsMakingUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
@@ -66,9 +67,6 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
-
-// const mockHasPresenterMiddleware = hasPresenter as jest.Mock;
-// mockHasPresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Update due diligence controller tests", () => {
 

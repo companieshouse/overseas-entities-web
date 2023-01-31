@@ -268,6 +268,14 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
+router.route(config.UPDATE_DUE_DILIGENCE_URL)
+  .all(
+    authentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligence.get)
+  .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
+
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)
   .get(overseasEntityReview.get)
@@ -277,16 +285,5 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(authentication)
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
-
-router.route(config.UPDATE_DUE_DILIGENCE_URL)
-  .all(authentication)
-  .get(updateDueDiligence.get)
-  .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
-
-// TODO: update to have hasUpdatePresenter
-// router.route(config.UPDATE_DUE_DILIGENCE_URL)
-// .all(authentication)
-// .get(navigation.hasPresenter, updateDueDiligence.get)
-// .post(navigation.hasPresenter, ...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
 export default router;

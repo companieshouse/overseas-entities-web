@@ -7,7 +7,10 @@ import { hasSoldLand } from "./has.sold.land.middleware";
 import { isSecureRegister } from "./is.secure.register.middleware";
 import { hasOverseasName } from "./has.overseas.name.middleware";
 import { hasTrust } from "./has.trust.middleware";
+
+// UPDATE journey
 import { hasOverseasEntityNumber } from "./update/has.overseas.entity.middleware";
+import { hasWhoIsMakingUpdate } from "./update/has.who.is.making.update.middleware";
 
 export const navigation = {
   hasSoldLand,
@@ -19,5 +22,6 @@ export const navigation = {
   hasBOsOrMOs,
   hasOverseasName,
   hasTrust,
-  hasOverseasEntityNumber
+  hasOverseasEntityNumber,
+  hasWhoIsMakingUpdate
 };

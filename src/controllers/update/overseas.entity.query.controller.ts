@@ -41,15 +41,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       });
     } else {
       const appData: ApplicationData = getApplicationData(req.session);
-      resetEntityUpdate(appData);
-      appData.entity_name = companyProfile.companyName;
-      appData.entity_number = entityNumber;
-      appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
-      if (appData.update) {
-        appData.update.date_of_creation = companyProfile.dateOfCreation;
-      }
+      if (appData.entity_number !== entityNumber) {
+        resetEntityUpdate(appData);
+        appData.entity_name = companyProfile.companyName;
+        appData.entity_number = entityNumber;
+        appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
+        if (appData.update) {
+          appData.update.date_of_creation = companyProfile.dateOfCreation;
+        }
 
-      setExtraData(req.session, appData);
+        setExtraData(req.session, appData);
+      }
       return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
     }
   } catch (error) {

@@ -31,11 +31,27 @@ describe("Confirm company data", () => {
 
   describe("Get confirm company profile", () => {
     test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page`, async () => {
+      const testDateOfCreation = "1/1/2023";
+      const testEntityName = "testEntity";
       mockGetApplicationData.mockReturnValueOnce({
-        entity: {}
+        entity_name: testEntityName,
+        entity_number: "OE111129",
+        entity: {
+          principal_address: {
+            property_name_number: "123456",
+            line_1: "abcxyz",
+            country: "UK"
+          }
+        },
+        update: {
+          date_of_creation: testDateOfCreation
+        }
       });
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(testEntityName);
+      expect(resp.text).toContain(testDateOfCreation);
+      expect(resp.text).toContain("123456 abcxyz UK");
     });
 
     test('catch error when rendering the page', async () => {

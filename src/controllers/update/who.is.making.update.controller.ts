@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import {
   WHO_IS_MAKING_UPDATE_PAGE,
-  UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+  OVERSEAS_ENTITY_PRESENTER_URL,
   OVERSEAS_ENTITY_REVIEW_PAGE
 } from "../../config";
 import { ApplicationData } from "../../model";
@@ -16,7 +16,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(WHO_IS_MAKING_UPDATE_PAGE, {
-      backLinkUrl: UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+      backLinkUrl: OVERSEAS_ENTITY_PRESENTER_URL,
       templateName: WHO_IS_MAKING_UPDATE_PAGE,
       [WhoIsRegisteringKey]: appData[WhoIsRegisteringKey]
     });

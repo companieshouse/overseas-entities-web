@@ -45,6 +45,7 @@ import {
   startingNew,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  overseasEntityPresenter,
   whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateConfirmation
@@ -151,6 +152,15 @@ router.get(
 router.post(config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs, ...validator.trustInformation, checkTrustValidations, trustInformation.post);
 
 router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
+router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
@@ -209,16 +219,6 @@ router
     return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');
   });
 
-router
-  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INTERRUPT_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-    authentication,
-    navigation.hasTrust,
-  )
-  .get(trustInterrupt.get)
-  .post(trustInterrupt.post);
-
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
@@ -245,6 +245,14 @@ router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overs
 
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+
+router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
+  .all(
+    authentication,
+    navigation.hasOverseasEntityNumber,
+  )
+  .get(overseasEntityPresenter.get)
+  .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
 router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
 router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);

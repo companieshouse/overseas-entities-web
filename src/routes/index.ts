@@ -45,6 +45,7 @@ import {
   startingNew,
   overseasEntityPayment,
   overseasEntityUpdateDetails,
+  overseasEntityPresenter,
   whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateConfirmation
@@ -245,6 +246,14 @@ router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overs
 
 router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
 router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+
+router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
+  .all(
+    authentication,
+    navigation.hasOverseasEntityNumber,
+  )
+  .get(overseasEntityPresenter.get)
+  .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
 router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
 router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);

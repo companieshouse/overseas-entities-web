@@ -39,6 +39,21 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.SECURE_UPDATE_FILTER_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
+  [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
+    currentPage: config.UPDATE_PRESENTER_PAGE,
+    previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE]
+  },
+  [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
+    currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_QUERY_PAGE,
+    nextPage: [config.UPDATE_PRESENTER_PAGE]
+  },
+  [config.WHO_IS_MAKING_UPDATE_URL]: {
+    currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
+    previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    nextPage: [config.OVERSEAS_ENTITY_REVIEW_PAGE]
+  },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,

@@ -4,7 +4,7 @@
   idPrefix: fieldParam.id if fieldParam.id else fieldParam.name,
   name: fieldParam.name,
   fieldset: {
-    legend: {
+    legend: fieldParam.legend if fieldParam.legend else {
       text: fieldParam.label,
       isPageHeading: false,
       classes: "govuk-fieldset__legend--m"

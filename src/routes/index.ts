@@ -269,7 +269,10 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    navigation.hasWhoIsMakingUpdate
+  )
   .get(updateDueDiligenceOverseasEntity.get)
   .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 

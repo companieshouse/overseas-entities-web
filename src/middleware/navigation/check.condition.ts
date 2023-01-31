@@ -1,7 +1,7 @@
 import { SOLD_LAND_FILTER_URL } from '../../config';
 
 import { ApplicationData } from '../../model/application.model';
-import { HasSoldLandKey, IsSecureRegisterKey, EntityNameKey, OeNumberKey } from '../../model/data.types.model';
+import { HasSoldLandKey, IsSecureRegisterKey, EntityNameKey, EntityNumberKey } from '../../model/data.types.model';
 import { PresenterKey } from '../../model/presenter.model';
 import { EntityKey } from '../../model/entity.model';
 import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
@@ -62,5 +62,5 @@ export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean =
 };
 
 export const checkOverseasEntityNumberEntered = (appData: ApplicationData): boolean => {
-  return checkHasAppData(appData) && (appData[OeNumberKey] || "").length !== 0;
+  return checkHasAppData(appData) && (appData[EntityNumberKey] || "").length !== 0;
 };

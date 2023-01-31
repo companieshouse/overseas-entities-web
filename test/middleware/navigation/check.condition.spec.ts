@@ -14,7 +14,7 @@ import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.m
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
-import { EntityNameKey, OeNumberKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
+import { EntityNameKey, EntityNumberKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { EntityKey } from '../../../src/model/entity.model';
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
@@ -165,7 +165,7 @@ describe("check condition navigation tests", () => {
   });
 
   test("checkOverseasEntityNumberEntered should return false", () => {
-    const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [OeNumberKey]: undefined });
+    const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [EntityNumberKey]: undefined });
     expect(data).toEqual(false);
   });
 });

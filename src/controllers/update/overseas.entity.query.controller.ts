@@ -3,11 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { ApplicationData, updateType } from "../../model";
+import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
+import { resetEntityUpdate } from "../../model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,11 +60,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-
-function resetEntityUpdate(appData: ApplicationData): updateType.Update {
-  appData.update = {};
-  return appData.update;
-}
 
 function createEntityNumberError(entityNumber: string): any {
   const msg = `The Overseas Entity with OE number "${entityNumber}" was not found.`;

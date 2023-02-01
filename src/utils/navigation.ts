@@ -32,11 +32,16 @@ export const NAVIGATION: Navigation = {
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
+    nextPage: [config.UPDATE_INTERRUPT_CARD_PAGE]
+  },
+  [config.UPDATE_INTERRUPT_CARD_URL]: {
+    currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
+    previousPage: () => config.UPDATE_INTERRUPT_CARD_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {

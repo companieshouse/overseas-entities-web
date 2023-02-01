@@ -3,13 +3,15 @@ import { NextFunction, Request, Response } from "express";
 import {
   WHO_IS_MAKING_UPDATE_PAGE,
   OVERSEAS_ENTITY_PRESENTER_URL,
+  UPDATE_DUE_DILIGENCE_URL,
+  UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL
 } from "../../config";
-import { getWhoIsFilling, postWhoIsFilling } from "../../utils/who.is.making.filing";
+import { getWhoIsFiling, postWhoIsFiling } from "../../utils/who.is.making.filing";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getWhoIsFilling(req, res, next, WHO_IS_MAKING_UPDATE_PAGE, OVERSEAS_ENTITY_PRESENTER_URL);
+  getWhoIsFiling(req, res, next, WHO_IS_MAKING_UPDATE_PAGE, OVERSEAS_ENTITY_PRESENTER_URL);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postWhoIsFilling(req, res, next, false);
+  postWhoIsFiling(req, res, next, UPDATE_DUE_DILIGENCE_URL, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
 };

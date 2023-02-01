@@ -11,6 +11,8 @@ import request from "supertest";
 import {
   WHO_IS_MAKING_UPDATE_PAGE,
   WHO_IS_MAKING_UPDATE_URL,
+  UPDATE_DUE_DILIGENCE_PAGE,
+  UPDATE_DUE_DILIGENCE_URL,
   OVERSEAS_ENTITY_REVIEW_PAGE
 } from "../../../src/config";
 import app from "../../../src/app";
@@ -88,14 +90,13 @@ describe("Who is making update controller tests", () => {
   });
 
   describe("POST tests", () => {
-    // TO DO: Update test to redirect to UAR-102 when completed
-    test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+    test(`redirect to ${UPDATE_DUE_DILIGENCE_PAGE} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
       const resp = await request(app)
         .post(WHO_IS_MAKING_UPDATE_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_DUE_DILIGENCE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

@@ -89,11 +89,12 @@ export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
 export const WHO_IS_MAKING_UPDATE_PAGE = "who-is-making-update";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
-export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = 'update-check-your-answers';
+export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
+export const UPDATE_DUE_DILIGENCE_PAGE = "update-due-diligence";
+export const UPDATE_INTERRUPT_CARD_PAGE = "update-interrupt-card";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
-export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const REGISTER_AN_OVERSEAS_ENTITY_URL = LANDING_URL + "/";
 export const INTERRUPT_CARD_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + INTERRUPT_CARD_PAGE;
@@ -140,6 +141,8 @@ export const TRUST_INTERRUPT_URL = '/' + TRUST_INTERRUPT_PAGE;
 export const UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE = "due-diligence-overseas-entity";
 
 // UPDATE overseas entity routes
+export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
+
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
 export const SECURE_UPDATE_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + SECURE_UPDATE_FILTER_PAGE;
 export const UPDATE_USE_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
@@ -152,6 +155,8 @@ export const UPDATE_CONFIRMATION_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CO
 export const OVERSEAS_ENTITY_UPDATE_DETAILS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
 export const OVERSEAS_ENTITY_REVIEW_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_REVIEW_PAGE;
 export const UPDATE_CHECK_YOUR_ANSWERS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CHECK_YOUR_ANSWERS_PAGE;
+export const UPDATE_DUE_DILIGENCE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_DUE_DILIGENCE_PAGE;
+export const UPDATE_INTERRUPT_CARD_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_INTERRUPT_CARD_PAGE;
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";

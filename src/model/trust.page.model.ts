@@ -1,4 +1,5 @@
 import { BeneficialOwnerTypeChoice } from './beneficial.owner.type.model';
+import { TrusteeType } from './trustee.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
 
 type TrustDetailsForm = {
@@ -14,11 +15,12 @@ type TrustDetailsForm = {
 type TrustBeneficialOwnerListItem = {
   id: string;
   name: string;
-  type: BeneficialOwnerTypeChoice,
+  type: BeneficialOwnerTypeChoice;
 };
 
 type TrustWhoIsInvolved = {
   boInTrust: TrustBeneficialOwnerListItem[];
+  trustees: TrusteeItem[];
 };
 
 type TrustWhoIsInvolvedForm = {
@@ -112,6 +114,12 @@ public_register_jurisdiction?: string
 registration_number?: string
 };
 
+type TrusteeItem = {
+    id?: string;
+    name: string;
+    trusteeItemType: TrusteeType;
+};
+
 export {
   TrustDetailsForm,
   TrustBeneficialOwnerListItem,
@@ -120,5 +128,6 @@ export {
   TrustHistoricalBeneficialOwnerForm,
   CommonTrustData,
   TrustLegalEntityForm,
-  IndividualTrusteesFormCommon
+  IndividualTrusteesFormCommon,
+  TrusteeItem,
 };

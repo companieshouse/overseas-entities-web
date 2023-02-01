@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% set title = "Before you start (NOT LIVE)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <div class="interrupt-card">
+      <h1 class="govuk-heading-l">Before you start</h1>
+      <h2 class="govuk-heading-m">Agent assurance codes for verification checks</h2>
+      <p class="govuk-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum
+      </p>
+      <h2 class="govuk-heading-m">Trusts</h2>
+      <p class="govuk-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ex felis, finibus ut luctus vitae, vulputate in sem. 
+        Mauris tincidunt erat non diam condimentum, id lacinia odio scelerisque. 
+        Praesent dapibus augue sit amet lorem ullamcorper, eget condimentum enim elementum. 
+        Nullam scelerisque, libero eget ultrices aliquet, turpis velit ullamcorper urna, id dapibus lacus velit id elit.
+      </p>
+      <p class="govuk-body">
+        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.
+         Et harum quidem rerum facilis est et expedita distinctio.
+      </p>
+      <form method="post">
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

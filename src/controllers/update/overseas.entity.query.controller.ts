@@ -3,12 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
-import { ApplicationData } from "../../model";
+import { ApplicationData, resetEntityUpdate } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
-import { resetEntityUpdate } from "../../model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

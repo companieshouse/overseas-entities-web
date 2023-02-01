@@ -10,6 +10,7 @@ import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.indiv
 import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../../model/managing.officer.model';
+import { WhoIsRegisteringKey } from '../../model/who.is.making.filing.model';
 import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
 import { DueDiligenceKey } from '../../model/due.diligence.model';
 
@@ -61,6 +62,12 @@ export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean =
   );
 };
 
+// UPDATE journey
+
 export const checkOverseasEntityNumberEntered = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && (appData[OeNumberKey] || "").length !== 0;
+};
+
+export const checkWhoIsFilingEntered = (appData: ApplicationData): boolean => {
+  return checkHasAppData(appData) && (appData[WhoIsRegisteringKey] || "").length !== 0;
 };

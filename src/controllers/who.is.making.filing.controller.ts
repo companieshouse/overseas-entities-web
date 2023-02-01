@@ -1,12 +1,17 @@
 import { NextFunction, Request, Response } from "express";
 
-import * as config from "../config";
-import { getWhoIsFilling, postWhoIsFilling } from "../utils/who.is.making.filing";
+import {
+  WHO_IS_MAKING_FILING_PAGE,
+  PRESENTER_URL,
+  DUE_DILIGENCE_URL,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_URL
+} from "../config";
+import { getWhoIsFiling, postWhoIsFiling } from "../utils/who.is.making.filing";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getWhoIsFilling(req, res, next, config.WHO_IS_MAKING_FILING_PAGE, config.PRESENTER_URL);
+  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, PRESENTER_URL);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postWhoIsFilling(req, res, next, true);
+  postWhoIsFiling(req, res, next, DUE_DILIGENCE_URL, OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
 };

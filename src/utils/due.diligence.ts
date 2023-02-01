@@ -17,7 +17,7 @@ import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { OverseasEntityDueDiligenceKey, OverseasEntityDueDiligenceKeys } from "../model/overseas.entity.due.diligence.model";
 import { saveAndContinue } from "./save.and.continue";
 
-export const getDueDeligence = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
+export const getDueDiligence = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -39,7 +39,7 @@ export const getDueDeligence = (req: Request, res: Response, next: NextFunction,
   }
 };
 
-export const postDueDeligence = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
+export const postDueDiligence = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
   try {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`);
 
@@ -55,7 +55,6 @@ export const postDueDeligence = async (req: Request, res: Response, next: NextFu
 
     if (registrationFlag) {
       await saveAndContinue(req, session);
-
     }
 
     return res.redirect(redirectUrl);

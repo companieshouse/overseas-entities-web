@@ -74,7 +74,6 @@ describe("UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY controller", () => {
   });
 
   describe("GET tests", () => {
-
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE}`, async () => {
       mockGetApplicationData.mockReturnValueOnce( { [OverseasEntityDueDiligenceKey]: null } );
       const resp = await request(app).get(UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL);
@@ -116,7 +115,6 @@ describe("UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY controller", () => {
   });
 
   describe("POST tests", () => {
-
     test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page after a successful post from ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
       const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const twoMonthOldDate = getTwoMonthOldDate();
@@ -558,6 +556,4 @@ describe("UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY controller", () => {
     });
 
   });
-
-  // TO DO: POST tests
 });

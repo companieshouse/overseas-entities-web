@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { checkIfPresenterDataExists } from './common-code/has.presenter';
+import { checkIfPresenterDataExists } from './checks/has.presenter';
 import { SOLD_LAND_FILTER_URL } from '../../config';
 
 export const hasPresenter = (req: Request, res: Response, next: NextFunction): void => {

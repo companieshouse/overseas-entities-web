@@ -1,7 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 
 import { logger } from "./logger";
-import * as config from "../config";
+import {
+  WHO_IS_MAKING_FILING_PAGE,
+  DUE_DILIGENCE_URL,
+  OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
+  OVERSEAS_ENTITY_REVIEW_PAGE
+} from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData, setExtraData } from "./application.data";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.making.filing.model";
@@ -24,7 +29,7 @@ export const getWhoIsFilling = (req: Request, res: Response, next: NextFunction,
 
 export const postWhoIsFilling = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
   try {
-    logger.debugRequest(req, `POST ${config.WHO_IS_MAKING_FILING_PAGE}`);
+    logger.debugRequest(req, `POST ${WHO_IS_MAKING_FILING_PAGE}`);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegistering });
@@ -38,8 +43,8 @@ export const postWhoIsFilling = (req: Request, res: Response, next: NextFunction
 
 const filterJourneyType = (res: Response, registrationFlag: boolean, whoIsRegistering: string) => {
   if (registrationFlag) {
-    return whoIsRegistering === WhoIsRegisteringType.AGENT ? res.redirect(config.DUE_DILIGENCE_URL) : res.redirect(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+    return whoIsRegistering === WhoIsRegisteringType.AGENT ? res.redirect(DUE_DILIGENCE_URL) : res.redirect(OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
   } else {
-    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+    return res.redirect(OVERSEAS_ENTITY_REVIEW_PAGE);
   }
 };

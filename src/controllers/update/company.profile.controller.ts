@@ -9,7 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    if (!appData?.entity) {
+    if (!appData.entity || !appData.update?.date_of_creation) {
       return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
     }
 
@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
-      registrationDate: appData?.update?.date_of_creation
+      registrationDate: appData.update?.date_of_creation
     });
   }  catch (errors) {
     logger.errorRequest(req, errors);

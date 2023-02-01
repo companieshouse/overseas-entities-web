@@ -26,6 +26,8 @@ import { NextFunction } from "express";
 import { getCompanyProfile } from "../../../src/service/company.profile";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.oversea.entity";
 
+import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
+
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
 const notFoundOENumberError = "The Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
@@ -103,10 +105,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
     test('redirects to confirm page for valid oe number', async () => {
       mockGetApplicationData.mockReturnValueOnce({});
-      mockGetCompanyProfile.mockReturnValueOnce({
-        companyName: "Test1",
-        companyNumber: "OE111129"
-      });
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 
       const resp = await request(app)

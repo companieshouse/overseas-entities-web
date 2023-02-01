@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-      [EntityNumberKey]: appData?.[EntityNumberKey],
+      [EntityNumberKey]: appData[EntityNumberKey],
     });
   } catch (error) {
     logger.errorRequest(req, error);

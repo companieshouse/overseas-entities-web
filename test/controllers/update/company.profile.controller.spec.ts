@@ -21,7 +21,8 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
+const testDateOfCreation = "1/1/2023";
+const testEntityName = "testEntity";
 
 describe("Confirm company data", () => {
 
@@ -31,8 +32,7 @@ describe("Confirm company data", () => {
 
   describe("Get confirm company profile", () => {
     test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page`, async () => {
-      const testDateOfCreation = "1/1/2023";
-      const testEntityName = "testEntity";
+
       mockGetApplicationData.mockReturnValueOnce({
         entity_name: testEntityName,
         entity_number: "OE111129",
@@ -52,6 +52,38 @@ describe("Confirm company data", () => {
       expect(resp.text).toContain(testEntityName);
       expect(resp.text).toContain(testDateOfCreation);
       expect(resp.text).toContain("123456 abcxyz UK");
+    });
+
+    test(`redirects if no update data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        entity_name: testEntityName,
+        entity_number: "OE111129",
+        entity: {
+          principal_address: {
+            property_name_number: "123456",
+            line_1: "abcxyz",
+            country: "UK"
+          }
+        },
+      });
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirects if no entity data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        update: {
+          date_of_creation: testDateOfCreation
+        }
+      });
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
     test('catch error when rendering the page', async () => {

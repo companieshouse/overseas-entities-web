@@ -554,6 +554,5 @@ describe("UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
     });
-
   });
 });

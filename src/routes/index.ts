@@ -264,7 +264,10 @@ router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEn
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
-  .all(authentication) // TO DO: add updateNavigation.hasUpdatePresenter when UAR-100 complete
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 

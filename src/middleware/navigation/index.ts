@@ -27,7 +27,3 @@ export const navigation = {
   hasUpdatePresenter,
   hasWhoIsMakingUpdate
 };
-
-export const updateNavigation = {
-  hasUpdatePresenter
-};

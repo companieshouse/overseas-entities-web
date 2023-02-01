@@ -17,6 +17,11 @@ const TRUST_INVOLVED_TEXTS = {
     [BeneficialOwnerTypeChoice.individual]: 'Individual beneficial owner',
     [BeneficialOwnerTypeChoice.otherLegal]: 'Other legal beneficial owner',
   },
+  trusteeTypeTitle: {
+    [TrusteeType.HISTORICAL]: 'Former beneficial owner',
+    [TrusteeType.INDIVIDUAL]: 'Indiviudal',
+    [TrusteeType.LEGAL_ENTITY]: 'Legal entity',
+  },
 };
 
 type TrustInvolvedPageProperties = {
@@ -27,6 +32,7 @@ type TrustInvolvedPageProperties = {
   },
   pageData: {
     beneficialOwnerTypeTitle: Record<string, string>;
+    trusteeTypeTitle: Record<string, string>;
     trusteeType: typeof TrusteeType;
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
@@ -55,6 +61,7 @@ const getPageProperties = (
       trustData: mapCommonTrustDataToPage(appData, trustId),
       ...mapTrustWhoIsInvolvedToPage(appData, trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
+      trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
       trusteeType: TrusteeType,
       checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,

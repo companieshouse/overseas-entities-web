@@ -158,6 +158,13 @@ const saveHistoricalBoInTrust = (
   return trust;
 };
 
+const getLegalEntityBosInTrust = (
+  trust: Trust,
+): TrustCorporate[] => {
+
+  return trust.CORPORATES ?? [];
+};
+
 const saveLegalEntityBoInTrust = (
   trust: Trust,
   legalEntityData: TrustCorporate,
@@ -195,6 +202,7 @@ export {
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
   saveHistoricalBoInTrust,
+  getLegalEntityBosInTrust,
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
 };

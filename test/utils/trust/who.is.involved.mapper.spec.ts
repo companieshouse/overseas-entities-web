@@ -1,10 +1,12 @@
 jest.mock('../../../src/utils/trusts');
 jest.mock('../../../src/utils/trust/beneficial.owner.mapper');
+jest.mock('../../../src/utils/trust/legal.entity.beneficial.owner.mapper');
 
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { mapTrustWhoIsInvolvedToPage } from "../../../src/utils/trust/who.is.involved.mapper";
-import { getTrustBoIndividuals, getTrustBoOthers } from '../../../src/utils/trusts';
+import { getTrustBoIndividuals, getTrustBoOthers, getTrustByIdFromApp, getLegalEntityBosInTrust } from '../../../src/utils/trusts';
 import { mapBoIndividualToPage, mapBoOtherToPage } from "../../../src/utils/trust/beneficial.owner.mapper";
+import { mapLegalEntityItemToPage } from "../../../src/utils/trust/legal.entity.beneficial.owner.mapper";
 import { TrustKey } from '../../../src/model/trust.model';
 
 describe('Trust Involved Mapper to Page Service', () => {
@@ -33,12 +35,18 @@ describe('Trust Involved Mapper to Page Service', () => {
       (getTrustBoIndividuals as jest.Mock).mockReturnValue(mockBoIndividuals);
       const mockBoOthers = [{}];
       (getTrustBoOthers as jest.Mock).mockReturnValue(mockBoOthers);
+      const mocklegalEntities = [{}];
+      (getLegalEntityBosInTrust as jest.Mock).mockReturnValue(mocklegalEntities);
 
       const expectBoIndividualResult = 'dummyBoIndividualMappingResult';
       (mapBoIndividualToPage as jest.Mock).mockReturnValue(expectBoIndividualResult);
 
       const expectBoOtherResult = 'dummyBoOtherMappingResult';
       (mapBoOtherToPage as jest.Mock).mockReturnValue(expectBoOtherResult);
+
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust1);
+      const expectlegalEntityResult = 'dummylegalEntityResult';
+      (mapLegalEntityItemToPage as jest.Mock).mockReturnValue(expectlegalEntityResult);
 
       const actual = mapTrustWhoIsInvolvedToPage(mockAppData, mockTrust1.trust_id);
 
@@ -48,10 +56,14 @@ describe('Trust Involved Mapper to Page Service', () => {
           expectBoIndividualResult,
           expectBoOtherResult,
         ],
+        trustees: [
+          expectlegalEntityResult,
+        ]
       });
 
       expect(getTrustBoIndividuals).toBeCalledWith(mockAppData, mockTrust1.trust_id);
       expect(getTrustBoOthers).toBeCalledWith(mockAppData, mockTrust1.trust_id);
+      expect(getLegalEntityBosInTrust).toBeCalledWith(mockTrust1);
     });
   });
 });

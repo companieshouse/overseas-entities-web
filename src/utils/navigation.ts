@@ -60,7 +60,7 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
   },
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
-    currentPage: config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
+    currentPage: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_PAGE]
   },

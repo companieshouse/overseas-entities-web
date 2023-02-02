@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
-import * as config from "../config";
 import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
 import {
@@ -41,7 +40,7 @@ export const getDueDiligence = (req: Request, res: Response, next: NextFunction,
 
 export const postDueDiligence = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
     const data = prepareData(req.body, OverseasEntityDueDiligenceKeys);

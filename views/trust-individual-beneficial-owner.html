@@ -38,20 +38,20 @@
         {% endset -%}
 
         {% set fieldParam = {
-          name: 'firstName',
-          value: formData.firstName,
+          name: 'forename',
+          value: formData.forename,
           label: 'What is their first name?',
           hint: 'This is also known as their given name.',
-          error: errors.firstName
+          error: errors.forename
         } %}
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
-          name: 'lastName',
-          value: formData.lastName,
+          name: 'surname',
+          value: formData.surname,
           label: 'What is their last name?',
           hint: 'This is also known as their family name.',
-          error: errors.lastName
+          error: errors.surname
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -68,10 +68,10 @@
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'roleWithinTrust',
+          name: 'role',
           label: 'What is their role within the trust?',
-          value: formData.type,
-          error: errors.roleWithinTrust,
+          value: formData.role,
+          error: errors.role,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,

@@ -10,6 +10,7 @@ import {
   saveIndividualTrusteeInTrust,
   saveTrustInApp,
   saveLegalEntityBoInTrust,
+  getTrusteesFromTrust,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -287,6 +288,20 @@ describe('Trust Utils method tests', () => {
           trustee,
         ],
       });
+    });
+
+    test("test getTrusteeFromTrust", () => {
+      const test_trust_id = '247';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [{}, {}, {}] as GeneralTrustee[],
+        }]
+      } as ApplicationData;
+
+      const result = getTrusteesFromTrust(appData, test_trust_id);
+      expect(result.length).toEqual(3);
+      expect(result).toEqual([{}, {}, {}]);
     });
   });
 });

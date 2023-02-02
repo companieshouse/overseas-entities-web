@@ -2,6 +2,7 @@ import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { TrusteeType } from './trustee.type.model';
 
 export const TrustKey = "trusts";
 
@@ -36,7 +37,8 @@ export interface Trust {
 
 interface TrustIndividual {
   id?: string;
-  type: RoleWithinTrustType;
+  type: TrusteeType;
+  role: RoleWithinTrustType;
   forename: string;
   other_forenames: string;
   surname: string;
@@ -81,11 +83,11 @@ interface TrustHistoricalBeneficialOwnerCommon {
 export type GeneralTrustee = IndividualTrusteeCommon | InterestedIndividualPersonTrustee;
 
 interface IndividualTrusteeCommon extends TrustIndividual{
-  type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
+  role: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
 }
 
 interface InterestedIndividualPersonTrustee extends TrustIndividual{
-  type: RoleWithinTrustType.INTERESTED_PERSON;
+  role: RoleWithinTrustType.INTERESTED_PERSON;
   date_became_interested_person_day: string;
   date_became_interested_person_month: string;
   date_became_interested_person_year: string;

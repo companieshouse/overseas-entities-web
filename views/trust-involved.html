@@ -84,7 +84,7 @@
               items: [SUMMARY_LIST_LINK(
                 'remove',
                 pageData.beneficialOwnerUrlDetach + '/' + trustee.id,
-                [type, name, "detach from trust button"] | join(' '),
+                [type, trustee.name, "detach from trust button"] | join(' '),
                 "detach-trustee-from-trust-button"
               )]
             }

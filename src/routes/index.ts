@@ -243,13 +243,18 @@ router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.ge
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
-router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
-router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
+  .all(
+    authentication,
+    navigation.hasOverseasEntity
+  )
+  .get(confirmOverseasEntityDetails.get)
+  .post(confirmOverseasEntityDetails.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(
     authentication,
-    navigation.hasOverseasEntityNumber,
+    navigation.hasOverseasEntityNumber
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);

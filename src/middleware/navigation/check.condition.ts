@@ -12,6 +12,7 @@ import { ManagingOfficerCorporateKey } from '../../model/managing.officer.corpor
 import { ManagingOfficerKey } from '../../model/managing.officer.model';
 import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
 import { DueDiligenceKey } from '../../model/due.diligence.model';
+import { UpdateKey } from '../../model/update.type.model';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
 
@@ -63,4 +64,12 @@ export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean =
 
 export const checkOverseasEntityNumberEntered = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && (appData[EntityNumberKey] || "").length !== 0;
+};
+
+export const checkHasOverseasEntity = (appData: ApplicationData): boolean => {
+  return checkHasAppData(appData) && appData[EntityKey] !== undefined;
+};
+
+export const checkHasDateOfCreation = (appData: ApplicationData): boolean => {
+  return checkHasAppData(appData) && appData[UpdateKey]?.date_of_creation !== undefined;
 };

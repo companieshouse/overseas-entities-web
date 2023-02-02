@@ -14,6 +14,14 @@ import { getApplicationData } from "../../../src/utils/application.data";
 import request from "supertest";
 import { NextFunction } from "express";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
+import {
+  testDateOfCreation,
+  testEntityName,
+  entityModelMock,
+  entityProfileModelMock,
+  updateModelMock,
+  missingDateOfCreationMock
+} from "../../__mocks__/update.entity.mocks";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -21,8 +29,6 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-const testDateOfCreation = "1/1/2023";
-const testEntityName = "testEntity";
 
 describe("Confirm company data", () => {
 
@@ -33,20 +39,7 @@ describe("Confirm company data", () => {
   describe("Get confirm company profile", () => {
     test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page`, async () => {
 
-      mockGetApplicationData.mockReturnValueOnce({
-        entity_name: testEntityName,
-        entity_number: "OE111129",
-        entity: {
-          principal_address: {
-            property_name_number: "123456",
-            line_1: "abcxyz",
-            country: "UK"
-          }
-        },
-        update: {
-          date_of_creation: testDateOfCreation
-        }
-      });
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(testEntityName);
@@ -55,17 +48,16 @@ describe("Confirm company data", () => {
     });
 
     test(`redirects if no update data`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        entity_name: testEntityName,
-        entity_number: "OE111129",
-        entity: {
-          principal_address: {
-            property_name_number: "123456",
-            line_1: "abcxyz",
-            country: "UK"
-          }
-        },
-      });
+      mockGetApplicationData.mockReturnValueOnce(entityModelMock);
+
+      const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+      expect(resp.statusCode).toEqual(302);
+      expect(resp.redirect).toEqual(true);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirects if no date of creation`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(missingDateOfCreationMock);
 
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -74,11 +66,7 @@ describe("Confirm company data", () => {
     });
 
     test(`redirects if no entity data`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        update: {
-          date_of_creation: testDateOfCreation
-        }
-      });
+      mockGetApplicationData.mockReturnValueOnce(updateModelMock);
 
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
@@ -87,6 +75,8 @@ describe("Confirm company data", () => {
     });
 
     test('catch error when rendering the page', async () => {
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock);
+
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(500);
@@ -95,16 +85,18 @@ describe("Confirm company data", () => {
   });
 
   describe("Post confirm company profile", () => {
-    test(`redirects`, async () => {
+    test(`redirects if no entity`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
     test('catch error when posting to the page', async () => {
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock);
+
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
       expect(resp.status).toEqual(500);

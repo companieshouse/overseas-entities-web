@@ -9,9 +9,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    if (!appData.entity || !appData.update?.date_of_creation) {
-      return res.redirect(config.OVERSEAS_ENTITY_QUERY_URL);
-    }
 
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,

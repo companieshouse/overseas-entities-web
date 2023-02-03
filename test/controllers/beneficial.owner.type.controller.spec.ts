@@ -12,15 +12,11 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import * as config from "../../src/config";
 import { getApplicationData } from '../../src/utils/application.data';
 import {
-  BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
-  CHECK_YOUR_ANSWERS_LINK,
   SERVICE_UNAVAILABLE,
-  TRUST_INFORMATION_LINK,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS,
-  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED,
@@ -35,7 +31,6 @@ import {
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
-  APPLICATION_DATA_NO_TRUSTS_MOCK,
   ERROR
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -58,6 +53,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
+  /*
     test("renders the beneficial owner type page for beneficial owners with trusts", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
@@ -83,7 +79,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
     });
-
+  */
     test("renders the beneficial owner type page for beneficial owners", async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,

@@ -279,6 +279,10 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
   return true;
 };
 
+export const checkBeneficialOwnerSubmission = (req) => {
+  throw new Error("SUMISSION ERROR " + req);
+};
+
 const checkTrustCreationDate = (trust: trustType.Trust) => {
   if (trust.creation_date_day === undefined ||
     trust.creation_date_day === "" ||

@@ -25,14 +25,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
+      submitUrl: config.BENEFICIAL_OWNER_TYPE_SUBMISSION_URL,
       hasTrusts,
       ...appData,
-      pageParams: {
-        urlToTrust: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-          ? `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`
-          : config.TRUST_INFO_URL,
-        urlToCheckYourAnswers: config.CHECK_YOUR_ANSWERS_URL,
-      },
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -44,6 +39,18 @@ export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+};
+
+export const postSubmit = (req: Request, res: Response) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  const hasTrusts: boolean = checkEntityHasTrusts(appData);
+  let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
+  if (hasTrusts) {
+    nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+      ? `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`
+      : config.TRUST_INFO_URL;
+  }
+  return res.redirect(nextPageUrl);
 };
 
 // With validation in place we have got just these 5 possible choices

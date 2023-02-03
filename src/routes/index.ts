@@ -115,6 +115,7 @@ router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigati
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMISSION_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.get);
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.getById);

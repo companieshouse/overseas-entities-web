@@ -55,3 +55,4 @@ export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.de
 export * as updateBeneficialOwnerType from "./update/beneficial.owner.type.controller";
 export * as updateBeneficialOwnerGov from "./update/update.beneficial.owner.gov.controller";
 export * as updateBeneficialOwnerIndividual from "./update/update.beneficial.owner.individual.controller";
+export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";

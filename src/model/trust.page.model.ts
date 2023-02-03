@@ -67,12 +67,12 @@ type IndividualTrusteesFormCommon = {
   date_became_ip_year?: string,
 };
 
-interface  TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon  {
+interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
   type: BeneficialOwnerTypeChoice.otherLegal;
   corporateName: string;
 }
 
-interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon  {
+interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon {
   type: BeneficialOwnerTypeChoice.individual;
   firstName: string;
   lastName: string;

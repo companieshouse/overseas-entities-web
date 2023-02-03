@@ -333,7 +333,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "32";
+      dueDiligenceData["identity_date-day"] = "32";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -352,7 +352,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "30";
+      dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "20";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -375,7 +375,7 @@ describe("DUE_DILIGENCE controller", () => {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       const twoMonthOldDate = getTwoMonthOldDate();
-      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
 
@@ -395,7 +395,7 @@ describe("DUE_DILIGENCE controller", () => {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       const twoMonthOldDate = getTwoMonthOldDate();
-      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
 
@@ -415,7 +415,7 @@ describe("DUE_DILIGENCE controller", () => {
         ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       const twoMonthOldDate = getTwoMonthOldDate();
-      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
 
@@ -431,7 +431,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is outside valid numbers`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "30";
+      dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "13";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -449,7 +449,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "0";
+      dueDiligenceData["identity_date-day"] = "0";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -467,7 +467,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "30";
+      dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "0";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -485,7 +485,7 @@ describe("DUE_DILIGENCE controller", () => {
 
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS error when identity date month is more than 3 months in the past`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] =  "30";
+      dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(DUE_DILIGENCE_URL)
@@ -504,7 +504,7 @@ describe("DUE_DILIGENCE controller", () => {
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only DATE_NOT_IN_PAST error when identity date month is in the future`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       const inTheFuture = DateTime.now().plus({ years: 28 });
-      dueDiligenceData["identity_date-day"] =  inTheFuture.day.toString();
+      dueDiligenceData["identity_date-day"] = inTheFuture.day.toString();
       dueDiligenceData["identity_date-month"] = inTheFuture.month.toString();
       dueDiligenceData["identity_date-year"] = inTheFuture.year.toString();
 
@@ -524,7 +524,7 @@ describe("DUE_DILIGENCE controller", () => {
     test(`renders the ${DUE_DILIGENCE_PAGE} page with no date errors when identity date is today`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       const today = DateTime.now();
-      dueDiligenceData["identity_date-day"] =  today.day.toString();
+      dueDiligenceData["identity_date-day"] = today.day.toString();
       dueDiligenceData["identity_date-month"] = today.month.toString();
       dueDiligenceData["identity_date-year"] = today.year.toString();
 
@@ -557,7 +557,7 @@ describe("DUE_DILIGENCE controller", () => {
       const twoMonthOldDate = getTwoMonthOldDate();
 
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
-      dueDiligenceData["identity_date-day"] =  twoMonthOldDate.day.toString();
+      dueDiligenceData["identity_date-day"] = twoMonthOldDate.day.toString();
       dueDiligenceData["identity_date-month"] = twoMonthOldDate.month.toString();
       dueDiligenceData["identity_date-year"] = twoMonthOldDate.year.toString();
 

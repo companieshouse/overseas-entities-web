@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% set bos = [{
+    value: "individualOwner",
+    text: "Individual beneficial owner"
+  },
+  {
+    value: "otherLegalOwner",
+    text: "Other legal entity beneficial owner"
+  },
+  {
+    value: "governmentOrPublicOwner",
+    text: "Government or public authority beneficial owner"
+  }]
+%}
+
+{% set beneficial_owners_statement = "ALL_IDENTIFIED_ALL_DETAILS" %}
+{% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
+{% set title = "Which type of beneficial owner do you want to add? (NOT LIVE)" %}
+{% set boTypes = bos %}
+{% set whatToAdd = "another beneficial owner" %}
+{% set hiddenTextValue = "beneficial owners" %}
+
+{% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0) %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
+  {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
+  {% include "includes/page-templates/beneficial-owner.html" %}
+{% endblock %}

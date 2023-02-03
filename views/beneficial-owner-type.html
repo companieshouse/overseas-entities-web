@@ -26,19 +26,19 @@
 
 {% if beneficial_owners_statement === "ALL_IDENTIFIED_ALL_DETAILS" %}
   {% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
-  {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
+  {% set title = "Which type of beneficial owner do you want to add?" %}
   {% set boTypes = bos %}
   {% set whatToAdd = "another beneficial owner" %}
   {% set hiddenTextValue = "beneficial owners" %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
   {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
-  {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
+  {% set title = "Which type of managing officer do you want to add?" %}
   {% set boTypes = mos %}
   {% set whatToAdd = "another managing officer" %}
   {% set hiddenTextValue = "managing officers" %}
 {% else %}
   {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
-  {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
+  {% set title = "Which type of beneficial owner or managing officer do you want to add?" %}
   {% set boTypes = bos %}
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
   {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
@@ -54,10 +54,7 @@ or (beneficial_owners_government_or_public_authority and beneficial_owners_gover
 or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
 
 {% block pageTitle %}
-  {% if errors and errors.errorList and errors.errorList.length > 0 %}
-    Error:
-  {% endif %}
-  {{ boTypesTitle }} - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
@@ -65,71 +62,7 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
 {% endblock %}
 
 {% block content %}
-
-  <div class="govuk-grid-row govuk-body">
-    <div class="govuk-grid-column-two-thirds">
-
-      {% include "includes/list/errors.html" %}
-
-      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ boTypesTitle }}</h1>
-      <br/>
-
-      {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
-        {{ govukDetails({
-          summaryText: "What is a managing officer?",
-          attributes: {
-            "data-event-id": "what-is-a-managing-officer-details"
-          },
-          html: "<p>This is a director, manager or company secretary of the overseas entity.</p>"
-        }) }}
-      {% endif %}
-
-      <form method="post">
-
-        {{ govukRadios({
-          errorMessage: errors.beneficial_owner_type if errors,
-          idPrefix: "beneficial_owner_type",
-          name: "beneficial_owner_type",
-          fieldset: {
-            legend: {
-              text: boTypesLegendText,
-              isPageHeading: false,
-              classes: "govuk-fieldset__legend--m"
-            }
-          },
-          hint: {
-            text: "You can add more later."
-          },
-          items: boTypes
-        }) }}
-
-        <button class="govuk-button" data-module="govuk-button" id="add" formaction="/register-an-overseas-entity/beneficial-owner-type" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
-
-        {% if (hasBeneficialOwners or hasManagingOfficers) %}
-          <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>
-          <br>
-          {% include "includes/list/beneficial-owner.html" %}
-          {% include "includes/list/managing-officer.html" %}
-
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="/register-an-overseas-entity/beneficial-owner-type/submit" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
-
-        {% endif %}
-
-        <!-- Hidden input, needed to submit the beneficial owners statement -->
-        {{ govukInput({
-          label: {
-            text: "Hidden input, needed to submit the beneficial owners statement",
-            classes: "govuk-visually-hidden"
-          },
-          id: "beneficial_owners_statement",
-          value: beneficial_owners_statement,
-          name: "beneficial_owners_statement",
-          classes: "govuk-visually-hidden"
-        }) }}
-
-      </form>
-
-    </div>
-  </div>
-
+  {% set addButtonAction = "/register-an-overseas-entity/beneficial-owner-type" %}
+  {% set noMoreToAddButtonAction = "/register-an-overseas-entity/beneficial-owner-type/submit" %}
+  {% include "includes/page-templates/beneficial-owner.html" %}
 {% endblock %}

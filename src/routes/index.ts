@@ -52,7 +52,8 @@ import {
   updateDueDiligence,
   updateDueDiligenceOverseasEntity,
   updateConfirmation,
-  paymentFailed
+  paymentFailed,
+  updateBeneficialOwnerType
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -302,6 +303,16 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+  .all(
+    authentication,
+    navigation.hasEntityUpdateDetails
+  )
+  .get(updateBeneficialOwnerType.get)
+  .post(...validator.beneficialOwnersType, checkValidations, updateBeneficialOwnerType.post);
+
+router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateBeneficialOwnerType.postSubmit);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(authentication)

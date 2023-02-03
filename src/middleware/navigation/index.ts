@@ -12,6 +12,7 @@ import { hasTrust } from "./has.trust.middleware";
 import { hasOverseasEntityNumber } from "./update/has.overseas.entity.middleware";
 import { hasUpdatePresenter } from "./update/has.presenter.middleware";
 import { hasWhoIsMakingUpdate } from "./update/has.who.is.making.update.middleware";
+import { hasEntityUpdateDetails } from "./update/has.entity.update.middleware";
 
 export const navigation = {
   hasSoldLand,
@@ -25,5 +26,6 @@ export const navigation = {
   hasTrust,
   hasOverseasEntityNumber,
   hasUpdatePresenter,
-  hasWhoIsMakingUpdate
+  hasWhoIsMakingUpdate,
+  hasEntityUpdateDetails
 };

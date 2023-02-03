@@ -1,0 +1,58 @@
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+
+    <span class="govuk-caption-xl">Beneficial owner</span>
+    
+    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1> 
+    <br> <p class="govuk-body">You can add more later.</p> <br>
+
+    <form method="post">
+      {% include "includes/inputs/fields/first-name-input.html" %}
+
+      {% set hintLastNameText = "This is also known as your family name." %}
+      {% include "includes/inputs/fields/last-name-input.html" %}
+
+      {% include "includes/inputs/date/date-of-birth-input.html" %}
+
+      {% include "includes/inputs/nationality/nationality.html" %}
+      {% include "includes/inputs/nationality/second-nationality.html" %}
+
+      {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
+      {% include "includes/inputs/address/residential-address-input.html" %}
+
+      {% set dateText = "When did they become a beneficial owner for the overseas entity?" %}
+      {% include "includes/inputs/date/start-date-input.html" %}
+
+      {% call govukFieldset({
+        legend: {
+          text: "What is their nature of control?",
+          classes: "govuk-fieldset__legend--m",
+          isPageHeading: false
+        }
+      }) %}
+
+      {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
+      {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
+
+      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+      {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
+
+      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+      {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+
+      {% endcall %}
+
+      {% set sanctionsListText = "Are they on the sanctions list?" %}
+      {% set sanctionsListHintText = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
+      {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
+
+      {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
+      {% include "includes/inset-text.html" %}
+
+      {% include "includes/save-and-continue-button.html" %}
+      {% set nameToBeRemoved = first_name + " " + last_name %}
+      {% include "includes/remove-button.html" %}
+    </form>
+  </div>
+</div>

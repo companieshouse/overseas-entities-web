@@ -13,11 +13,11 @@ import { email_validations } from "./fields/email.validation";
 
 export const overseasEntityDueDiligence = [
 
-  body("identity_date-day")
+  body("identity_date")
     .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
-  body("identity_date-month")
+  body("identity_date")
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
-  body("identity_date-year")
+  body("identity_date")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date")
     .custom((value, { req }) => checkOptionalDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),

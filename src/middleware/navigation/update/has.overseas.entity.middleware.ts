@@ -7,7 +7,7 @@ import { checkOverseasEntityNumberEntered, NavigationErrorMessage } from '../che
 
 export const hasOverseasEntityNumber = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if (!checkOverseasEntityNumberEntered(getApplicationData(req.session)) ) {
+    if (!checkOverseasEntityNumberEntered(getApplicationData(req.session))) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(SECURE_UPDATE_FILTER_URL);
     }

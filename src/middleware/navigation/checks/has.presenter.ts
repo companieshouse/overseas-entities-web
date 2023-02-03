@@ -6,7 +6,7 @@ import { checkPresenterDetailsEntered, NavigationErrorMessage } from '.././check
 
 export const checkIfPresenterDataExists = (req: Request, res: Response, next: NextFunction, redirectUrl: string): void => {
   try {
-    if ( !checkPresenterDetailsEntered(getApplicationData(req.session)) ) {
+    if (!checkPresenterDetailsEntered(getApplicationData(req.session))) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(redirectUrl);
     }

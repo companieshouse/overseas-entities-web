@@ -28,7 +28,7 @@ export const postWhoIsFiling = (req: Request, res: Response, next: NextFunction,
 
     setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegistering });
 
-    if ( whoIsRegistering === WhoIsRegisteringType.AGENT ){
+    if (whoIsRegistering === WhoIsRegisteringType.AGENT){
       return res.redirect(agentUrl);
     } else {
       return res.redirect(oeUrl);

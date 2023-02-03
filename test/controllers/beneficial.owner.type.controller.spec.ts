@@ -3,6 +3,8 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 jest.mock('../../src/utils/trusts.ts');
+jest.mock('../../src/middleware/service.availability.middleware');
+jest.mock("../../src/utils/feature.flag" );
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -46,12 +48,20 @@ import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { checkEntityHasTrusts } from "../../src/utils/trusts";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
@@ -246,6 +256,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(config.TRUST_INFO_URL);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} with trusts and Feature Flag ON`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockCheckEntityHasTrusts.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.TRUST_INTERRUPT_URL);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer no trusts`, async () => {

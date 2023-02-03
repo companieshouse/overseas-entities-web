@@ -14,7 +14,8 @@ import { isActiveFeature } from '../utils/feature.flag';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const appData: ApplicationData = getApplicationData(req.session);
     const hasTrusts: boolean = checkEntityHasTrusts(appData);
 
@@ -33,7 +34,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response) => {
-  logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
+  logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };

@@ -8,7 +8,8 @@ import {
   checkIsSecureRegisterDetailsEntered,
   checkDueDiligenceDetailsEntered,
   checkOverseasNameDetailsEntered,
-  checkOverseasEntityNumberEntered
+  checkOverseasEntityNumberEntered,
+  checkWhoIsFilingEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
@@ -21,6 +22,7 @@ import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { PresenterKey } from '../../../src/model/presenter.model';
+import { WhoIsRegisteringKey } from '../../../src/model/who.is.making.filing.model';
 import { DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/due.diligence.mock';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
@@ -164,8 +166,15 @@ describe("check condition navigation tests", () => {
     expect(data).toEqual(true);
   });
 
+  // UPDATE JOURNEY
+
   test("checkOverseasEntityNumberEntered should return false", () => {
     const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [OeNumberKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkWhoIsFilingEntered should return false", () => {
+    const data = checkWhoIsFilingEntered({ ...APPLICATION_DATA_MOCK, [WhoIsRegisteringKey]: undefined });
     expect(data).toEqual(false);
   });
 });

@@ -14,6 +14,7 @@ import {
   entity,
   healthcheck,
   interruptCard,
+  updateInterruptCard,
   landing,
   updateLanding,
   overseasEntityQuery,
@@ -48,6 +49,7 @@ import {
   overseasEntityPresenter,
   whoIsMakingUpdate,
   updateCheckYourAnswers,
+  updateDueDiligence,
   updateConfirmation
 } from "../controllers";
 
@@ -238,6 +240,11 @@ router.route(config.UPDATE_USE_PAPER_URL)
   .all(authentication)
   .get(updateUsePaper.get);
 
+router.route(config.UPDATE_INTERRUPT_CARD_URL)
+  .all(authentication)
+  .get(updateInterruptCard.get)
+  .post(updateInterruptCard.post);
+
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
@@ -266,6 +273,14 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .all(authentication)
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_URL)
+  .all(
+    authentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligence.get)
+  .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

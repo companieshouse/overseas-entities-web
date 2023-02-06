@@ -44,6 +44,23 @@
         ) %}
       {% endfor %}
 
+      {% set trustees = [] %}
+      {% for trustee in pageData.trustees %}
+        {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
+        {% set trustees = (
+          trustees.push({
+            key: {
+              text: type
+            },
+            value: {
+              text: trustee.name
+            }
+          }),
+          trustees
+        ) %}
+      {% endfor %}
+
+
       {% if boItems | length %}
         <h1 class="govuk-heading-m">
           What <span class="govuk-visually-hidden">individuals or entities</span>
@@ -51,6 +68,9 @@
         </h1>
         {{ govukSummaryList({
           rows: boItems
+        }) }}
+        {{ govukSummaryList({
+          rows: trustees
         }) }}
       {% endif %}
 

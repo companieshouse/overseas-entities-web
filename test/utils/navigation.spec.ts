@@ -147,4 +147,15 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.TRUST_INFO_URL].previousPage();
     expect(navigation).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
   });
+
+  // Update Journey
+  test(`NAVIGATION returns ${config.SECURE_UPDATE_FILTER_URL} when calling previousPage on ${config.UPDATE_INTERRUPT_CARD_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_INTERRUPT_CARD_URL].previousPage();
+    expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
+  });
 });

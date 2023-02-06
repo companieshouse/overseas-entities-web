@@ -15,7 +15,7 @@
             {% endfor %}
             {% for boo in beneficial_owners_corporate %}
                 <tr class="govuk-table__row">
-                    <th scope="row" class="govuk-table__header">Corporate</th>
+                    <th scope="row" class="govuk-table__header">Other legal entity</th>
                     <td class="govuk-table__cell">{{ boo.name }}</td>
                     <td class="govuk-table__cell">
                         <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL }}/{{ boo.id }}" data-event-id="change-or-remove-link">

@@ -3,8 +3,11 @@ jest.mock('uuid');
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import * as uuid from 'uuid';
 import * as Page from '../../../src/model/trust.page.model';
+import * as Trust from '../../../src/model/trust.model';
+import { TrusteeType } from "../../../src/model/trustee.type.model";
 import {
   generateId,
+  mapLegalEntityItemToPage,
   mapLegalEntityToSession,
 } from '../../../src/utils/trust/legal.entity.beneficial.owner.mapper';
 
@@ -14,7 +17,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
   });
 
   describe('Test session mapper methods', () => {
-    describe('Test trust legal entity form to sesson mapping', () => {
+    describe('Test trust legal entity form to session mapping', () => {
       const mockFormData = {
         legalEntityId: "9999",
         legalEntityName: "My Legal Entity",
@@ -77,13 +80,57 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_registration_number: mockFormData.registration_number,
         });
       });
+
+      test('test generateId', () => {
+        const expectNewId = '9999';
+        jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);
+
+        expect(generateId()).toBe(expectNewId);
+      });
     });
-  });
 
-  test('test generateId', () => {
-    const expectNewId = '9999';
-    jest.spyOn(uuid, 'v4').mockReturnValue(expectNewId);
+    describe('Test trust legal session to page mapping', () => {
 
-    expect(generateId()).toBe(expectNewId);
+      const mockSessionData = {
+        id: "9998",
+        name: "My Legal Entity in Session",
+        type: "Interest Person",
+        date_became_interested_person_day: "01",
+        date_became_interested_person_month: "01",
+        date_became_interested_person_year: "2020",
+        ro_address_premises: "99",
+        ro_address_line1: "Reg Office First Line",
+        ro_address_line2: "Reg Office Second Line",
+        ro_address_locality: "Reg Office Town",
+        ro_address_region: "Reg Office County",
+        ro_address_country: "Reg Office Country",
+        ro_address_postal_code: "Reg Office Postcode",
+        ro_address_care_of: "",
+        ro_address_po_box: "",
+        sa_address_premises: "100",
+        sa_address_line1: "Serv First Line",
+        sa_address_line2: "Serv Second Line",
+        sa_address_locality: "Serv Town",
+        sa_address_region: "Serv County",
+        sa_address_country: "Serv Country",
+        sa_address_postal_code: "Serv Postcode",
+        sa_address_care_of: "",
+        sa_address_po_box: "",
+        identification_legal_form: "Legal Form",
+        identification_legal_authority: "Governing Law",
+        identification_place_registered: "Reg Name",
+        identification_country_registration: "Reg Jurisdiction",
+        identification_registration_number: "9002",
+      };
+      test("Map legal entity trustee session data to page trustee item", () => {
+        expect(
+          mapLegalEntityItemToPage(mockSessionData as Trust.TrustCorporate)
+        ).toEqual({
+          id: mockSessionData.id,
+          name: mockSessionData.name,
+          trusteeItemType: TrusteeType.LEGAL_ENTITY,
+        });
+      });
+    });
   });
 });

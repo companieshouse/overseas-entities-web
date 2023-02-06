@@ -6,7 +6,7 @@ import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
 import { logger } from "../../../../src/utils/logger";
-import { SECURE_UPDATE_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL } from '../../../../src/config';
+import { SECURE_UPDATE_FILTER_PAGE, SECURE_UPDATE_FILTER_URL, OVERSEAS_ENTITY_QUERY_URL } from '../../../../src/config';
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
 
 import {
@@ -34,7 +34,7 @@ describe("has.overseas.entity navigation entity number validation tests", () => 
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, () => {
     mockCheckOverseasEntityDetailsEntered.mockImplementationOnce( () => { return false; });
     hasOverseasEntityNumber(req, res, next);
 

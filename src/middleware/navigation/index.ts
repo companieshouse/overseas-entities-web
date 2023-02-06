@@ -10,6 +10,7 @@ import { hasTrust } from "./has.trust.middleware";
 
 // UPDATE journey
 import { hasOverseasEntityNumber, hasOverseasEntity } from "./update/has.overseas.entity.middleware";
+import { hasUpdatePresenter } from "./update/has.presenter.middleware";
 import { hasWhoIsMakingUpdate } from "./update/has.who.is.making.update.middleware";
 
 export const navigation = {
@@ -24,5 +25,6 @@ export const navigation = {
   hasTrust,
   hasOverseasEntityNumber,
   hasOverseasEntity,
+  hasUpdatePresenter,
   hasWhoIsMakingUpdate
 };

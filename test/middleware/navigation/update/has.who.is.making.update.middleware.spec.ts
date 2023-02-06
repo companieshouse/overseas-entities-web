@@ -6,7 +6,7 @@ import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { Request, Response } from 'express';
 
 import { logger } from "../../../../src/utils/logger";
-import { UPDATE_LANDING_URL } from '../../../../src/config';
+import { SECURE_UPDATE_FILTER_PAGE, SECURE_UPDATE_FILTER_URL } from '../../../../src/config';
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
 
 import { checkWhoIsFilingEntered, NavigationErrorMessage } from '../../../../src/middleware/navigation/check.condition';
@@ -25,7 +25,7 @@ describe("has.who.is.making.update navigation middleware tests", () => {
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${UPDATE_LANDING_URL} page and log message error ${NavigationErrorMessage}`, () => {
+  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage}`, () => {
     mockCheckWhoIsFilingEntered.mockImplementationOnce( () => { return false; });
     hasWhoIsMakingUpdate(req, res, next);
 
@@ -35,7 +35,7 @@ describe("has.who.is.making.update navigation middleware tests", () => {
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
 
     expect(res.redirect).toHaveBeenCalledTimes(1);
-    expect(res.redirect).toHaveBeenCalledWith(UPDATE_LANDING_URL);
+    expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
   });
 
   test(`should not redirect and pass to the next middleware`, () => {

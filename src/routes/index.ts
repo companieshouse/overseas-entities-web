@@ -50,6 +50,7 @@ import {
   whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateDueDiligence,
+  updateDueDiligenceOverseasEntity,
   updateConfirmation
 } from "../controllers";
 
@@ -270,7 +271,10 @@ router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEn
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
   .get(whoIsMakingUpdate.get)
   .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
 
@@ -281,6 +285,14 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
   )
   .get(updateDueDiligence.get)
   .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
+  .all(
+    authentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligenceOverseasEntity.get)
+  .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

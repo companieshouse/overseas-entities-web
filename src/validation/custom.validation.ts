@@ -65,12 +65,10 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
   return true;
 };
 
-export const checkDateValueIsValid = (invalidDateErrMsg: string, yearLengthErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {
     throw new Error(invalidDateErrMsg);
-  } else if (yearStr.length !== 4) {
-    throw new Error(yearLengthErrMsg);
   }
 
   return true;
@@ -80,7 +78,7 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
     const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
     if (areDateFieldsPresent) {
-      const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
+      const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
       if (isOptionalDateValid) {
         const isDateInThePast = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
         if (isDateInThePast) {
@@ -97,7 +95,7 @@ export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", ye
   if (isDatePresent) {
     const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
     if (areAllDateFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
+      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
       if (isDateValid) {
         const isDatePastOrToday = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
         if (isDatePastOrToday) {
@@ -114,7 +112,7 @@ export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearS
   if (isDatePresent) {
     const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
     if (areAllDateFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
+      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
       if (isDateValid) {
         checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
       }
@@ -172,7 +170,7 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
   if (isDatePresent) {
     const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
     if (areDateOfBirthFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH, dayStr, monthStr, yearStr);
+      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
       if (isDateValid) {
         checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
       }

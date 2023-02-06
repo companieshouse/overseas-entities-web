@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import * as Trust from "../../model/trust.model";
 import * as Page from "../../model/trust.page.model";
+import { TrusteeType } from '../../model/trustee.type.model';
 
 const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm
@@ -37,9 +38,25 @@ const mapLegalEntityToSession = (
     identification_registration_number: formData.registration_number,
   };
 };
+
+const mapLegalEntityItemToPage = (
+  legalEntity: Trust.TrustCorporate,
+): Page.TrusteeItem => {
+  return {
+    id: legalEntity.id,
+    name: legalEntity.name,
+    trusteeItemType: TrusteeType.LEGAL_ENTITY,
+  };
+};
+
 //  other
 const generateId = (): string => {
   return uuidv4();
 };
 
-export { mapLegalEntityToSession, generateId };
+
+export {
+  mapLegalEntityToSession,
+  mapLegalEntityItemToPage,
+  generateId,
+};

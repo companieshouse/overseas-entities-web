@@ -1,0 +1,76 @@
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">{{title}}</h1>
+      <p class="govuk-caption-l govuk-!-margin-bottom-8">The agent’s details must match the information used to request the agent assurance code.</p>
+
+      <form method="post">
+
+        {% set identityDateLabelText = "When did the agent complete the verification checks?" %}
+        {% include "includes/inputs/date/identity-date-input.html" %}
+
+        {% set nameFieldText = "What is the agent’s name?" %}
+        {% set nameFieldTextHint = "Enter the company name, or your own name if you are self-employed. It will need to match the name on the agent assurance code request exactly." %}
+        {% include "includes/inputs/fields/identity-name-input.html" %}
+
+        {% set identityAddressHintText = "For example, ’Saron House’, ’116’ or ’Unit 37a’. It will need to match the correspondence address on the agent assurance code request." %}
+        {% include "includes/inputs/address/identity-address-input.html" %}
+
+        {% set emailFieldText = "What is the email address?" %}
+        {% include "includes/inputs/fields/email-input.html" %}
+
+        {% set supervisoryNameLabelText = "What is the name of the supervisory body?"%}
+        {% include "includes/inputs/fields/supervisory-name-input.html" %}
+
+        {% include "includes/inputs/fields/aml-number-input.html" %}
+
+        {{ govukInput({
+          errorMessage: errors.agent_code if errors,
+          label: {
+            text: "What is the agent assurance code?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            text: "This is provided by Companies House and is used to authenticate the UK-regulated agent"
+          },
+          classes: "govuk-!-width-one-half",
+          id: "agent_code",
+          name: "agent_code",
+          value: agent_code
+        }) }}
+
+        {% set partnerNameLabelText = "What is the name of the person with overall responsibility for verification checks?" %}
+        {% set partnerNameHintText = "For example, tell us the name of the Head of Compliance. It will need to match the name on the agent assurance code request." %}
+        {% include "includes/inputs/fields/partner-name-input.html" %}
+
+        {{ govukCheckboxes({
+          errorMessage: errors.diligence if errors,
+          idPrefix: "diligence",
+          name: "diligence",
+          fieldset: {
+            legend: {
+              text: "Declaration",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "agree",
+              text: "I confirm that the agent has complied with the verification requirements as outlined in The Register of Overseas Entities (Verification and Provision of Information) Regulations 2022. I confirm that the information provided in this statement is accurate.",
+              checked: diligence === "agree"
+            }
+          ]
+        }) }}
+
+        {% set paragraphOne = '<p>We will not show the email address, agent assurance code and date the verification checks were completed.</p>' %}
+        {% include "includes/inset-text.html" %}
+
+        {% include "includes/save-and-continue-button.html" %}
+
+      </form>
+    </div>
+  </div>

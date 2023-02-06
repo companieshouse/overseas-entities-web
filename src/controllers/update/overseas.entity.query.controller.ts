@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
-      backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
+      backLinkUrl: config.UPDATE_INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
       [EntityNumberKey]: appData[EntityNumberKey],
     });

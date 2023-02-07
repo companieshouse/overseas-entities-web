@@ -46,7 +46,7 @@
 
       {% set trusteeList = [] %}
       {% for trustee in pageData.trusteeData %}
-        {% set type = pageData.trusteeType.INDIVIDUAL %}
+        {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
         {% set trusteeList = (
           trusteeList.push({

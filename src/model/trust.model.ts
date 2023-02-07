@@ -81,11 +81,11 @@ interface TrustHistoricalBeneficialOwnerCommon {
 export type GeneralTrustee = IndividualTrusteeCommon | InterestedIndividualPersonTrustee;
 
 interface IndividualTrusteeCommon extends TrustIndividual{
-  role: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
+  type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
 }
 
 interface InterestedIndividualPersonTrustee extends TrustIndividual{
-  role: RoleWithinTrustType.INTERESTED_PERSON;
+  type: RoleWithinTrustType.INTERESTED_PERSON;
   date_became_interested_person_day: string;
   date_became_interested_person_month: string;
   date_became_interested_person_year: string;

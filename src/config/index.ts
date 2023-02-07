@@ -78,6 +78,7 @@ export const WHO_IS_MAKING_FILING_PAGE = "who-is-making-filing";
 export const OVERSEAS_NAME_PAGE = "overseas-name";
 export const SIGN_OUT_PAGE = "sign-out";
 export const STARTING_NEW_PAGE = "starting-new";
+export const PAYMENT_FAILED_PAGE = "payment-failed";
 
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
@@ -123,6 +124,7 @@ export const ACCESSIBILITY_STATEMENT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + ACC
 export const SIGN_OUT_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + SIGN_OUT_PAGE;
 export const OVERSEAS_NAME_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + OVERSEAS_NAME_PAGE;
 export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_PAGE;
+export const PAYMENT_FAILED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
 
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";

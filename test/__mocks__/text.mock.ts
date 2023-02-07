@@ -131,6 +131,7 @@ export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of 
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
+export const PAYMENT_FAILED_PAGE_HEADING = "Payment failed";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

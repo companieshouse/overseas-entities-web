@@ -280,7 +280,7 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
   return true;
 };
 
-export const checkBeneficialOwnerSubmission = (req) => {
+export const checkBeneficialOwnersSubmission = (req) => {
   const appData: ApplicationData = getApplicationData(req.session);
   if (appData.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
     if (!hasBeneficialOwners(appData)) {

@@ -79,6 +79,8 @@ export const CANNOT_USE_SERVICE_HEADING = "You'll need to apply using the paper 
 export const APPLY_PAPER_FORM_HEADING = "You&#39;ll need to apply using the paper form";
 export const UPDATE_APPLY_PAPER_FORM_HEADING = "You&#39;ll need to file an update using the paper form (NOT LIVE)";
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
+export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
+export const TRUST_INFORMATION_LINK = "trust-information";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";

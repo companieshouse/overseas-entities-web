@@ -189,7 +189,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL)
         .send({ delete_beneficial_owners: "1" });

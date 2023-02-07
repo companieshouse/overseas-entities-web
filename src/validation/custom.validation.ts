@@ -39,7 +39,7 @@ export const checkDateIsInPast = (errMsg: string, day: string = "", month: strin
   const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
   const now = DateTime.now();
   const currentDate = DateTime.utc(now.year, now.month, now.day); // exclude time of day
-  if (inputDate  >= currentDate) {
+  if (inputDate >= currentDate) {
     throw new Error(errMsg);
   }
   return true;
@@ -49,7 +49,7 @@ export const checkDateIsInPastOrToday = (errMsg: string, day: string = "", month
   const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
   const now = DateTime.now();
   const currentDate = DateTime.utc(now.year, now.month, now.day); // exclude time of day
-  if (inputDate  > currentDate) {
+  if (inputDate > currentDate) {
     throw new Error(errMsg);
   }
   return true;
@@ -58,7 +58,7 @@ export const checkDateIsInPastOrToday = (errMsg: string, day: string = "", month
 export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
   const inputDate = DateTime.utc(Number(year), Number(month), Number(day));
   const now = DateTime.now();
-  const threeMonthOldDate =  DateTime.utc(now.year, now.month, now.day).minus({ months: 3 });
+  const threeMonthOldDate = DateTime.utc(now.year, now.month, now.day).minus({ months: 3 });
   if (inputDate <= threeMonthOldDate) {
     throw new Error(errMsg);
   }
@@ -75,7 +75,7 @@ export const checkDateValueIsValid = (errMsg: string, dayStr: string = "", month
   return true;
 };
 
-export const checkDateYearValueIsFourNumbers = (errMsg: string, yearStr: string = "")  => {
+export const checkDateYearValueIsFourNumbers = (errMsg: string, yearStr: string = "") => {
   if (yearStr !== "" && yearStr.length !== 4) {
     throw new Error(errMsg);
   }

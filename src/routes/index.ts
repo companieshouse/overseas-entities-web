@@ -276,7 +276,7 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
     navigation.hasUpdatePresenter
   )
   .get(whoIsMakingUpdate.get)
-  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+  .post(...validator.whoIsMakingUpdate, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .all(

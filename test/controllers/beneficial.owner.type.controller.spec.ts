@@ -258,7 +258,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(config.CHECK_YOUR_ANSWERS_URL);
     });
 
-    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no individual beneficial owner`, async () => {
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual beneficial owner`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,

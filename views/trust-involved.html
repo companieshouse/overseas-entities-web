@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Individuals or entities involved in the trust" %}
+{% set title = pageParams.title %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -44,6 +44,31 @@
         ) %}
       {% endfor %}
 
+      {% set individualTrustees = [] %}
+      {% for trustee in pageData.individualTrusteeData %}
+        {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
+        {% set name = trustee.forename + " " + trustee.surname %}
+        {% set individualTrustees = (
+          individualTrustees.push({
+            key: {
+              text: type  
+            },
+            value: {
+              text: name
+            },
+            actions: {
+              items: [SUMMARY_LIST_LINK(
+                'remove',
+                pageData.beneficialOwnerUrlDetach + '/' + trustee.id,
+                [type, name, "detach from trust button"] | join(' '),
+                "detach-trustee-from-trust-button"
+              )]
+            }
+          }),
+          individualTrustees
+        ) %}
+      {% endfor %}
+
       {% set trustees = [] %}
       {% for trustee in pageData.trustees %}
         {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
@@ -60,7 +85,6 @@
         ) %}
       {% endfor %}
 
-
       {% if boItems | length %}
         <h1 class="govuk-heading-m">
           What <span class="govuk-visually-hidden">individuals or entities</span>
@@ -71,6 +95,12 @@
         }) }}
         {{ govukSummaryList({
           rows: trustees
+        }) }}
+      {% endif %}
+
+      {% if individualTrustees | length %}
+        {{ govukSummaryList({
+          rows: individualTrustees
         }) }}
       {% endif %}
 

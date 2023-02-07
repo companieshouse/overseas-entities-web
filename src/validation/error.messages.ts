@@ -27,6 +27,8 @@ export enum ErrorMessages {
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",
   PUBLIC_REGISTER_JURISDICTION = "Enter the jurisdiction",
+  MUST_ADD_BENEFICIAL_OWNER = "You need to add at least one beneficial owner",
+  MUST_ADD_MANAGING_OFFICER = "You need to add at least one managing officer",
 
   // Address
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",

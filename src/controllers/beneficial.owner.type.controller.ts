@@ -15,9 +15,7 @@ import { isActiveFeature } from '../utils/feature.flag';
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
-
     const hasTrusts: boolean = checkEntityHasTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} hasTrusts=${hasTrusts}`);
@@ -25,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
-      submitUrl: config.BENEFICIAL_OWNER_TYPE_SUBMISSION_URL,
+      submitUrl: config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL,
       hasTrusts,
       ...appData,
     });

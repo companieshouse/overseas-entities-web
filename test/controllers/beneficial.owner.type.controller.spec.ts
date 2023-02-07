@@ -276,7 +276,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
     });
 
-    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only corporate beneficial owner`, async () => {
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only ole corporate beneficial owner`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,

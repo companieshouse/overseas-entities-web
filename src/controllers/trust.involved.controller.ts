@@ -10,7 +10,7 @@ import { getApplicationData } from '../utils/application.data';
 import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
-import { GeneralTrustee } from '../model/trust.model';
+import { IndividualTrustee } from '../model/trust.model';
 import { getTrusteesFromTrust } from '../utils/trusts';
 
 const TRUST_INVOLVED_TEXTS = {
@@ -36,7 +36,7 @@ type TrustInvolvedPageProperties = {
     beneficialOwnerTypeTitle: Record<string, string>;
     trusteeTypeTitle: Record<string, string>;
     trusteeType: typeof TrusteeType;
-    individualTrusteeData: GeneralTrustee[];
+    individualTrusteeData: IndividualTrustee[];
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,

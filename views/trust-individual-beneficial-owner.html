@@ -68,10 +68,10 @@
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'role',
+          name: 'type',
           label: 'What is their role within the trust?',
-          value: formData.role,
-          error: errors.role,
+          value: formData.type,
+          error: errors.type,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,

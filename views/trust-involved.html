@@ -46,7 +46,7 @@
 
       {% set trusteeList = [] %}
       {% for trustee in pageData.trusteeData %}
-        {% set type = pageData.trusteeTypeTitle[trustee.type] %}
+        {% set type = pageData.trusteeType.INDIVIDUAL %}
         {% set name = trustee.forename + " " + trustee.surname %}
         {% set trusteeList = (
           trusteeList.push({
@@ -79,14 +79,6 @@
             },
             value: {
               text: trustee.name
-            },
-            actions: {
-              items: [SUMMARY_LIST_LINK(
-                'remove',
-                pageData.beneficialOwnerUrlDetach + '/' + trustee.id,
-                [type, trustee.name, "detach from trust button"] | join(' '),
-                "detach-trustee-from-trust-button"
-              )]
             }
           }),
           trustees

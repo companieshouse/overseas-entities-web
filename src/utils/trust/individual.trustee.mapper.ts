@@ -2,15 +2,13 @@ import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 import { v4 as uuidv4 } from 'uuid';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
-import { TrusteeType } from '../../model/trustee.type.model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
 ): Trust.GeneralTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
-    type: formData.type || TrusteeType.INDIVIDUAL,
-    role: formData.role,
+    type: formData.type,
     forename: formData.forename,
     other_forenames: '',
     surname: formData.surname,
@@ -39,7 +37,7 @@ export const mapIndividualTrusteeToSession = (
     sa_address_po_box: '',
   };
 
-  if (formData.role === RoleWithinTrustType.INTERESTED_PERSON){
+  if (formData.type === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
       date_became_interested_person_day: formData.date_became_ip_day,

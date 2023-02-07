@@ -3,7 +3,6 @@ jest.mock('uuid');
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import * as Page from '../../../src/model/trust.page.model';
-import { TrusteeType } from "../../../src/model/trustee.type.model";
 import {
   mapIndividualTrusteeToSession,
 } from '../../../src/utils/trust/individual.trustee.mapper';
@@ -16,9 +15,9 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
   describe('To Session mapper methods test', () => {
     describe('Individual Beneficial Owner mapper', () => {
       const testParam = [
-        ['9999', RoleWithinTrustType.BENEFICIARY, TrusteeType.INDIVIDUAL],
-        ['10000', RoleWithinTrustType.GRANTOR, TrusteeType.LEGAL_ENTITY],
-        ['10001', RoleWithinTrustType.SETTLOR, TrusteeType.INDIVIDUAL]
+        ['9999', RoleWithinTrustType.BENEFICIARY],
+        ['10000', RoleWithinTrustType.GRANTOR],
+        ['10001', RoleWithinTrustType.SETTLOR]
       ];
 
       const mockFormDataBasic = {
@@ -49,18 +48,16 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         date_became_ip_year: '1964',
       };
 
-      test.each(testParam)('map Individual trustees', (id: string, roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>, type) => {
+      test.each(testParam)('map Individual trustees', (id: string, roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
         const mockFormData = {
           ...mockFormDataBasic,
           trusteeId: id,
-          role: roleWithinTrust,
-          type: type,
+          type: roleWithinTrust,
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
           id: mockFormData.trusteeId,
           type: mockFormData.type,
-          role: mockFormData.role,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',
@@ -94,8 +91,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           trusteeId: '10002',
-          type: TrusteeType.INDIVIDUAL,
-          role: RoleWithinTrustType.INTERESTED_PERSON,
+          type: RoleWithinTrustType.INTERESTED_PERSON,
           date_became_ip_day: '2',
           date_became_ip_month: '11',
           date_became_ip_year: '2022',
@@ -104,7 +100,6 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
           id: mockFormData.trusteeId,
           type: mockFormData.type,
-          role: mockFormData.role,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',

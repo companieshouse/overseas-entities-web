@@ -20,6 +20,7 @@ import {
   BeneficialOwnerIndividualKey,
 } from '../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
+import { TrustIndividual } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
 describe('Trust Utils method tests', () => {
   const trustId = 'dummyExistsTrustId';
@@ -256,10 +257,10 @@ describe('Trust Utils method tests', () => {
   describe('test Save Individual Beneficial Owner trustee in Trust', () => {
     const expectTrustee1 = {
       id: '110',
-    } as GeneralTrustee;
+    } as TrustIndividual;
     const expectTrustee2 = {
       id: '111',
-    } as GeneralTrustee;
+    } as TrustIndividual;
 
     let mockTrust = {} as Trust;
 
@@ -295,7 +296,7 @@ describe('Trust Utils method tests', () => {
       const appData = {
         [TrustKey]: [{
           'trust_id': test_trust_id,
-          'INDIVIDUALS': [{}, {}, {}] as GeneralTrustee[],
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
         }]
       } as ApplicationData;
 

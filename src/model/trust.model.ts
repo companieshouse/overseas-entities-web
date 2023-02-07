@@ -2,7 +2,6 @@ import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
-import { TrusteeType } from './trustee.type.model';
 
 export const TrustKey = "trusts";
 
@@ -37,8 +36,7 @@ export interface Trust {
 
 interface TrustIndividual {
   id?: string;
-  type: TrusteeType;
-  role: RoleWithinTrustType;
+  type: RoleWithinTrustType;
   forename: string;
   other_forenames: string;
   surname: string;

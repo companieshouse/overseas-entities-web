@@ -77,6 +77,10 @@ export const checkHasDateOfCreation = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && appData[UpdateKey]?.date_of_creation !== undefined;
 };
 
+export const checkUpdatePresenterEntered = (appData: ApplicationData): boolean => {
+  return checkOverseasEntityNumberEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
+};
+
 export const checkWhoIsFilingEntered = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && (appData[WhoIsRegisteringKey] || "").length !== 0;
 };

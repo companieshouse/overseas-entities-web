@@ -36,7 +36,7 @@ type TrustInvolvedPageProperties = {
     beneficialOwnerTypeTitle: Record<string, string>;
     trusteeTypeTitle: Record<string, string>;
     trusteeType: typeof TrusteeType;
-    trusteeData: GeneralTrustee[];
+    individualTrusteeData: GeneralTrustee[];
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,
@@ -65,7 +65,7 @@ const getPageProperties = (
       ...mapTrustWhoIsInvolvedToPage(appData, trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      trusteeData: getTrusteesFromTrust(appData, trustId),
+      individualTrusteeData: getTrusteesFromTrust(appData, trustId),
       trusteeType: TrusteeType,
       checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,

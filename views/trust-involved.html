@@ -44,12 +44,12 @@
         ) %}
       {% endfor %}
 
-      {% set trusteeList = [] %}
-      {% for trustee in pageData.trusteeData %}
+      {% set individualTrustees = [] %}
+      {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
-        {% set trusteeList = (
-          trusteeList.push({
+        {% set individualTrustees = (
+          individualTrustees.push({
             key: {
               text: type  
             },
@@ -65,7 +65,7 @@
               )]
             }
           }),
-          trusteeList
+          individualTrustees
         ) %}
       {% endfor %}
 
@@ -98,9 +98,9 @@
         }) }}
       {% endif %}
 
-      {% if trusteeList | length %}
+      {% if individualTrustees | length %}
         {{ govukSummaryList({
-          rows: trusteeList
+          rows: individualTrustees
         }) }}
       {% endif %}
 

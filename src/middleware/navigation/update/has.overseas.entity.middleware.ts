@@ -20,7 +20,7 @@ export const hasOverseasEntityNumber = (req: Request, res: Response, next: NextF
 export const hasOverseasEntity = (req: Request, res: Response, next: NextFunction): void => {
   try {
     const appData = getApplicationData(req.session);
-    if (!checkHasOverseasEntity(appData) || !checkHasDateOfCreation(appData)) {
+    if (!checkOverseasEntityNumberEntered(appData) && !checkHasOverseasEntity(appData) || !checkHasDateOfCreation(appData)) {
       logger.infoRequest(req, NavigationErrorMessage);
       return res.redirect(OVERSEAS_ENTITY_QUERY_URL);
     }

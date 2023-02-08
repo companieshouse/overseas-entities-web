@@ -9,8 +9,10 @@ import {
   checkDueDiligenceDetailsEntered,
   checkOverseasNameDetailsEntered,
   checkOverseasEntityNumberEntered,
+  checkHasOverseasEntity,
   checkUpdatePresenterEntered,
-  checkWhoIsFilingEntered
+  checkWhoIsFilingEntered,
+  checkHasDateOfCreation
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
@@ -23,6 +25,7 @@ import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { PresenterKey } from '../../../src/model/presenter.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 import { WhoIsRegisteringKey } from '../../../src/model/who.is.making.filing.model';
 import { DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/due.diligence.mock';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
@@ -171,6 +174,21 @@ describe("check condition navigation tests", () => {
 
   test("checkOverseasEntityNumberEntered should return false", () => {
     const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [EntityNumberKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkOverseasEntity should return false", () => {
+    const data = checkHasOverseasEntity({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDataOfCreation should return false", () => {
+    const data = checkHasDateOfCreation({ ...APPLICATION_DATA_MOCK, [UpdateKey]: {} });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDataOfCreation should return false if not update", () => {
+    const data = checkHasDateOfCreation({ ...APPLICATION_DATA_MOCK, [UpdateKey]: undefined });
     expect(data).toEqual(false);
   });
 

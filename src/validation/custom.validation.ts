@@ -3,9 +3,10 @@
 import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
-import { trustType } from "../model";
+import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 import { CONCATENATED_VALUES_SEPARATOR } from "../config";
+import { getApplicationData } from "../utils/application.data";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -277,6 +278,31 @@ export const checkBeneficialOwnerType = (beneficialOwnersStatement: string, valu
     throw new Error(errMsg);
   }
   return true;
+};
+
+export const checkBeneficialOwnersSubmission = (req) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  if (appData.beneficial_owners_statement === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS) {
+    if (!hasBeneficialOwners(appData)) {
+      throw new Error(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+    }
+    if (!hasManagingOfficers(appData)) {
+      throw new Error(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
+    }
+  }
+  return true;
+};
+
+const hasBeneficialOwners = (appData: ApplicationData) => {
+  return (appData.beneficial_owners_individual && appData.beneficial_owners_individual.length > 0) ||
+    (appData.beneficial_owners_corporate && appData.beneficial_owners_corporate.length > 0) ||
+    (appData.beneficial_owners_government_or_public_authority &&
+      appData.beneficial_owners_government_or_public_authority.length > 0);
+};
+
+const hasManagingOfficers = (appData: ApplicationData) => {
+  return (appData.managing_officers_individual && appData.managing_officers_individual.length > 0) ||
+    (appData.managing_officers_corporate && appData.managing_officers_corporate.length > 0);
 };
 
 const checkTrustCreationDate = (trust: trustType.Trust) => {

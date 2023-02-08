@@ -19,6 +19,7 @@ import { signOut } from "./sign.out.validation";
 import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
+import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
 
 export const validator = {
   soldLandFilter,
@@ -28,6 +29,7 @@ export const validator = {
   overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,
+  beneficialOwnersTypeSubmission,
   managingOfficerIndividual,
   managingOfficerCorporate,
   beneficialOwnerIndividual,

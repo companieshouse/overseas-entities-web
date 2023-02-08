@@ -111,7 +111,7 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
           {% include "includes/list/beneficial-owner.html" %}
           {% include "includes/list/managing-officer.html" %}
 
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{submitUrl}}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
+          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="/register-an-overseas-entity/beneficial-owner-type/submit" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 
         {% endif %}
 

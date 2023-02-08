@@ -33,6 +33,8 @@ export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.o
 export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficial.owner.controller";
 export * as trustInterrupt from "./trust.interrupt.controller";
 export * as overseasName from "./overseas.name.controller";
+export * as paymentFailed from "./payment.failed.controller";
+
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";

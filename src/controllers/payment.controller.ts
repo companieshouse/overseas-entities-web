@@ -38,12 +38,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       // Payment Successful, redirect to confirmation page
       return res.redirect(CONFIRMATION_URL);
     } else {
-      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
 
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
       if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
         return res.redirect(PAYMENT_FAILED_URL);
       } else {
+        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
         // Redirect to CHECK_YOUR_ANSWERS. Try again eventually
         return res.redirect(CHECK_YOUR_ANSWERS_URL);
       }

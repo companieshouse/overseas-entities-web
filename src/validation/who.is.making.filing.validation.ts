@@ -8,5 +8,5 @@ export const whoIsMakingFiling = [
 ];
 
 export const whoIsMakingUpdate = [
-  body(WhoIsRegisteringKey).not().isEmpty().withMessage(ErrorMessages.SELECT_WHO_IS_MAKING_FILING_UPDATE),
+  body(WhoIsRegisteringKey).not().isEmpty().withMessage(ErrorMessages.SELECT_WHO_IS_MAKING_UPDATE_FILING),
 ];

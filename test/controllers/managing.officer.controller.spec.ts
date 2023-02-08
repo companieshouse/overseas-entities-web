@@ -591,11 +591,11 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when invalid characters are used`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when invalid date is used`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
-      managingOfficer["date_of_birth-day"] =  "a";
-      managingOfficer["date_of_birth-month"] = "b";
-      managingOfficer["date_of_birth-year"] = "c";
+      managingOfficer["date_of_birth-day"] =  "35";
+      managingOfficer["date_of_birth-month"] = "15";
+      managingOfficer["date_of_birth-year"] = "2022";
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL)
         .send(managingOfficer);

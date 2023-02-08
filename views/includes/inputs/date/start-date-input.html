@@ -1,5 +1,57 @@
+{% set startDateErrorMessage = '' %}
+{% set isStartDateDayError = false %}
+{% set isStartDateMonthError = false %}
+{% set isStartDateYearError = false %}
+
+{% if errors %}
+  {% for key, value in errors %}
+
+    {% if not startDateErrorMessage %}
+      {% if "start_date" == key|string %}
+        {% set startDateErrorMessage = value %}
+        {% if start_date %}
+          {% if not start_date["start_date-day"] %}
+            {% set isStartDateDayError = true %}
+          {% endif %}
+          {% if not start_date["start_date-month"] %}
+            {% set isStartDateMonthError = true %}
+          {% endif %}
+          {% if not start_date["start_date-year"] %}
+            {% set isStartDateYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif "start_date" in key|string %}
+        {% set startDateErrorMessage = value %}
+        {% if "-day" in key|string %}
+          {% set isStartDateDayError = true %}
+        {% elif "-month" in key|string %} 
+          {% set isStartDateMonthError = true %}
+        {% elif "-year" in key|string %} 
+          {% set isStartDateYearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}    
+{% endif %}
+
+
+{% set start_date_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set start_date_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set start_date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+{% if isStartDateDayError %}
+  {% set start_date_classes_day = start_date_classes_day + "--error" %}
+{% endif %}
+{% if isStartDateMonthError %}
+  {% set start_date_classes_month = start_date_classes_month + "--error" %}
+{% endif %}
+{% if isStartDateYearError %}
+  {% set start_date_classes_year = start_date_classes_year + "--error" %}
+{% endif %}
+
+
 {{ govukDateInput({
-  errorMessage: errors.start_date if errors,
+  errorMessage: startDateErrorMessage,
   id: "start_date",
   namePrefix: "start_date",
   fieldset: {
@@ -14,17 +66,17 @@
   },
   items: [
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: start_date_classes_day,
       name: "day",
       value: start_date["start_date-day"] if start_date
     },
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: start_date_classes_month,
       name: "month",
       value: start_date["start_date-month"] if start_date
     },
     {
-      classes: "govuk-input--width-4 govuk-input",
+      classes: start_date_classes_year,
       name: "year",
       value: start_date["start_date-year"] if start_date
     }

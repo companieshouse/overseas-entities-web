@@ -34,18 +34,18 @@
 {% endif %}
 
 
-{% set identity_date_classes_year = "govuk-input--width-4" %}
-{% set identity_date_classes_month = "govuk-input--width-2" %}
-{% set identity_date_classes_day = "govuk-input--width-2" %}
+{% set identity_date_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set identity_date_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set identity_date_classes_day = "govuk-input--width-2 govuk-input" %}
 
 {% if isIdentityDateDayError %}
-  {% set identity_date_classes_day = identity_date_classes_day + " govuk-input--error" %}
+  {% set identity_date_classes_day = identity_date_classes_day + "--error" %}
 {% endif %}
 {% if isIdentityDateMonthError %}
-  {% set identity_date_classes_month = identity_date_classes_month + " govuk-input--error" %}
+  {% set identity_date_classes_month = identity_date_classes_month + "--error" %}
 {% endif %}
 {% if isIdentityDateYearError %}
-  {% set identity_date_classes_year = identity_date_classes_year + " govuk-input--error" %}
+  {% set identity_date_classes_year = identity_date_classes_year + "--error" %}
 {% endif %}
 
 {{ govukDateInput({

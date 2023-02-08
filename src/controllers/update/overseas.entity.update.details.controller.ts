@@ -4,6 +4,7 @@ import {
   setApplicationData,
   getApplicationData,
   mapDataObjectToFields,
+  setExtraData
 } from "../../utils/application.data";
 import { EntityKey } from "../../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../../model";
@@ -38,7 +39,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...principalAddress,
       ...serviceAddress,
       pageParams: {
-        isRegistration: 'false'
+        isRegistration: false
       },
     });
   }  catch (error) {
@@ -52,9 +53,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST OVERSEAS_ENTITY_UPDATE_DETAILS`);
 
     const data: ApplicationDataType = mapRequestToEntityData(req);
-
     const session = req.session as Session;
+    const entityName = req.body[EntityNameKey];
+
     setApplicationData(session, data, EntityKey);
+
+    setExtraData(req.session, {
+      ...getApplicationData(req.session),
+      [EntityNameKey]: entityName
+    });
 
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);

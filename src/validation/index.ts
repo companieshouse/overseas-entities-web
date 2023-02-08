@@ -12,7 +12,7 @@ import { presenter } from "./presenter.validation";
 import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
 import { trustInformation } from "./trust.information.validation";
-import { whoIsMakingFiling } from "./who.is.making.filing.validation";
+import { whoIsMakingFiling, whoIsMakingUpdate } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
 import { signOut } from "./sign.out.validation";
@@ -34,6 +34,7 @@ export const validator = {
   beneficialOwnerOther,
   beneficialOwnerGov,
   whoIsMakingFiling,
+  whoIsMakingUpdate,
   dueDiligence,
   overseasEntityDueDiligence,
   trustInformation,

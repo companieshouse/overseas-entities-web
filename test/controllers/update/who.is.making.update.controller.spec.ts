@@ -116,7 +116,7 @@ describe("Who is making update controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(WHO_IS_MAKING_UPDATE_PAGE_TITLE);
-      expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_FILING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_UPDATE_FILING);
     });
 
     test("catch error when posting the page", async () => {

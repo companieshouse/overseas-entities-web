@@ -23,6 +23,7 @@ export enum ErrorMessages {
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
   BENEFICIAL_OWNER_OTHER_NAME="Enter the other legal entity’s name",
   BO_GOV_NAME = "Enter the name of the government or public authority",
+
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
   PUBLIC_REGISTER_NUMBER = "Enter the registration number",
@@ -36,6 +37,7 @@ export enum ErrorMessages {
   COUNTRY = "Select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
+
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
   TRUST_NAME = "Enter the trust name",
@@ -46,6 +48,7 @@ export enum ErrorMessages {
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
+
   // Date
   DAY = "Date must include a day",
   MONTH = "Date must include a month",
@@ -84,6 +87,7 @@ export enum ErrorMessages {
   SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of managing officer you want to add",
   SELECT_IF_SECURE_REGISTER_FILTER = "Select yes if any of the entity’s beneficial owners have ever applied to protect personal information at Companies House",
   SELECT_WHO_IS_MAKING_FILING = "Select who is completing this registration",
+  SELECT_WHO_IS_MAKING_UPDATE_FILING = "Select who is completing this update",
   CHECK_DILIGENCE = "Check and confirm the statement of compliance",
   SELECT_IF_ON_SANCTIONS_LIST = "Select yes if it is on the sanctions list",
   SELECT_NATURE_OF_CONTROL = "Select the nature of control",
@@ -120,6 +124,7 @@ export enum ErrorMessages {
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",
+
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

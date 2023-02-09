@@ -208,5 +208,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_URL]
+  },
+  [config.UPDATE_MANAGING_OFFICER_TYPE_URL]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_TYPE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   }
 };

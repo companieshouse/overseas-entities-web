@@ -52,3 +52,4 @@ export * as updateConfirmation from "./update/confirmation.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateBeneficialOwnerType from "./update/beneficial.owner.type.controller";
+export * as updateManagingOfficerType from "./update/managing.officer.type.controller";

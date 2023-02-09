@@ -4,7 +4,7 @@ import { IsSecureRegisterKey } from "../model/data.types.model";
 import { getApplicationData, setExtraData } from "./application.data";
 import { logger } from "./logger";
 
-export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string,  backLinkUrl: string): void => {
+export const getFilterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);

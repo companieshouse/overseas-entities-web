@@ -42,7 +42,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         isRegistration: false
       },
     });
-  }  catch (error) {
+  } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }

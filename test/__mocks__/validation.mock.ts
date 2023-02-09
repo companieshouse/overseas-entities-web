@@ -74,7 +74,7 @@ const SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK = {
   service_address_postcode: "١١١١١١١"
 };
 
-const DATE_OF_BIRTH_MOCK = { 'date_of_birth-day': "1",  "date_of_birth-month": "1", "date_of_birth-year": "2000" };
+const DATE_OF_BIRTH_MOCK = { 'date_of_birth-day': "1", "date_of_birth-month": "1", "date_of_birth-year": "2000" };
 const START_DATE_MOCK = { 'start_date-day': "1", 'start_date-month': "1", 'start_date-year': "2022" };
 
 export const PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK = {

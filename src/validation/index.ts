@@ -12,13 +12,14 @@ import { presenter } from "./presenter.validation";
 import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
 import { trustInformation } from "./trust.information.validation";
-import { whoIsMakingFiling } from "./who.is.making.filing.validation";
+import { whoIsMakingFiling, whoIsMakingUpdate } from "./who.is.making.filing.validation";
 import { dueDiligence } from "./due.diligence.validation";
 import { overseasEntityDueDiligence } from "./overseas.entity.due.diligence.validation";
 import { signOut } from "./sign.out.validation";
 import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
+import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
 
 export const validator = {
   soldLandFilter,
@@ -28,12 +29,14 @@ export const validator = {
   overseasEntityQuery,
   beneficialOwnersStatement,
   beneficialOwnersType,
+  beneficialOwnersTypeSubmission,
   managingOfficerIndividual,
   managingOfficerCorporate,
   beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerGov,
   whoIsMakingFiling,
+  whoIsMakingUpdate,
   dueDiligence,
   overseasEntityDueDiligence,
   trustInformation,

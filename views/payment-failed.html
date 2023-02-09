@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% set title = "Payment failed" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">{{ title }}</h1>
+
+      <p class="govuk-body">Your application has not been submitted because we have not been able to take payment. This could be because:</p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>you cancelled your payment</li>
+        <li>your payment was declined</li>
+        <li>your payment expired</li>
+        <li>there was an error (for example, a technical error)</li>
+      </ul>
+
+      <p class="govuk-body">Your application has been saved in Your Filings. To submit the application, you will need to <a href="{{ OE_CONFIGS.YOUR_FILINGS_PATH }}" class="govuk-link" data-event-id="payment-failed-your-filings-link">find the application in Your Filings</a> and complete payment</p>
+    </div>
+  </div>
+{% endblock %}

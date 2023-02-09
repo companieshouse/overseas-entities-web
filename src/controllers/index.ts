@@ -33,6 +33,8 @@ export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.o
 export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficial.owner.controller";
 export * as trustInterrupt from "./trust.interrupt.controller";
 export * as overseasName from "./overseas.name.controller";
+export * as paymentFailed from "./payment.failed.controller";
+
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
@@ -42,9 +44,10 @@ export * as overseasEntityQuery from "./update/overseas.entity.query.controller"
 export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
 export * as overseasEntityPresenter from "./update/overseas.entity.presenter.controller";
 export * as whoIsMakingUpdate from "./update/who.is.making.update.controller";
+export * as updateDueDiligence from "./update/due.diligence.controller";
+export * as updateDueDiligenceOverseasEntity from "./update/due.diligence.overseas.entity.controller";
+export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as overseasEntityPayment from './update/payment.controller';
 export * as updateConfirmation from "./update/confirmation.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
-export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
-export * as updateDueDiligence from "./update/due.diligence.controller";

@@ -68,6 +68,10 @@ export const checkOverseasEntityNumberEntered = (appData: ApplicationData): bool
   return checkHasAppData(appData) && (appData[OeNumberKey] || "").length !== 0;
 };
 
+export const checkUpdatePresenterEntered = (appData: ApplicationData): boolean => {
+  return checkOverseasEntityNumberEntered(appData) && Object.keys(appData[PresenterKey] || {}).length !== 0;
+};
+
 export const checkWhoIsFilingEntered = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && (appData[WhoIsRegisteringKey] || "").length !== 0;
 };

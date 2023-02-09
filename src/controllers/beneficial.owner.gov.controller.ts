@@ -115,8 +115,8 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
   data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
-    ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
-    :  {};
+    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   // It needs concatenations because if in the check boxes we select only one option

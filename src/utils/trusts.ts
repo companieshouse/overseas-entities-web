@@ -6,7 +6,7 @@ import {
   Trust,
   TrustBeneficialOwner,
   TrustHistoricalBeneficialOwner,
-  GeneralTrustee,
+  IndividualTrustee,
   TrustKey,
   TrustCorporate,
 } from "../model/trust.model";
@@ -125,6 +125,14 @@ const getTrustBoOthers = (
     .filter((bo: BeneficialOwnerIndividual) => bo.trust_ids?.includes(trustId));
 };
 
+const getTrusteesFromTrust = (
+  appData: ApplicationData,
+  trustId: string,
+): IndividualTrustee[] => {
+  return appData[TrustKey]?.find(trust =>
+    trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+};
+
 const addTrustToBeneficialOwner = (
   beneficialOwner: TrustBeneficialOwner,
   trustId: string,
@@ -179,7 +187,7 @@ const saveLegalEntityBoInTrust = (
   return trust;
 };
 
-const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: GeneralTrustee ): Trust => {
+const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrustee ): Trust => {
   const trusteeItem = trust.INDIVIDUALS?.filter((trustee) => trustee?.id !== trusteeData?.id);
 
   trust.INDIVIDUALS = [
@@ -199,6 +207,7 @@ export {
   getBoOtherAssignableToTrust,
   getTrustBoIndividuals,
   getTrustBoOthers,
+  getTrusteesFromTrust,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
   saveHistoricalBoInTrust,

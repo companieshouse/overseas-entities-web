@@ -480,7 +480,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerI
 export const REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY = {
   first_name: "",
   last_name: "",
-  date_of_birth: { 'date_of_birth-day': "",  "date_of_birth-month": "", "date_of_birth-year": "" },
+  date_of_birth: { 'date_of_birth-day': "", "date_of_birth-month": "", "date_of_birth-year": "" },
   nationality: "",
   usual_residential_address: {},
   is_service_address_same_as_usual_residential_address: "",
@@ -576,7 +576,7 @@ export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
   last_name: "",
   has_former_names: "",
   former_names: "",
-  date_of_birth: { 'date_of_birth-day': "",  "date_of_birth-month": "", "date_of_birth-year": "" },
+  date_of_birth: { 'date_of_birth-day': "", "date_of_birth-month": "", "date_of_birth-year": "" },
   nationality: "",
   usual_residential_address: {},
   service_address: {},

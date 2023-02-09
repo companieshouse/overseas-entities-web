@@ -60,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
 
-    const session  = req.session as Session;
+    const session = req.session as Session;
     setApplicationData(session, data, ManagingOfficerKey);
     await saveAndContinue(req, session);
 
@@ -82,7 +82,7 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
     const data: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
 
     // Save new Managing Officer
-    const session  = req.session as Session;
+    const session = req.session as Session;
     setApplicationData(session, data, ManagingOfficerKey);
     await saveAndContinue(req, session);
 
@@ -98,7 +98,7 @@ export const remove = async (req: Request, res: Response, next: NextFunction) =>
     logger.debugRequest(req, `REMOVE ${MANAGING_OFFICER_PAGE}`);
 
     removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
-    const session  = req.session as Session;
+    const session = req.session as Session;
     await saveAndContinue(req, session);
 
     return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
@@ -115,8 +115,8 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
 
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
-    ?  mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
-    :  {};
+    ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
+    : {};
   data[HasFormerNames] = (data[HasFormerNames]) ? +data[HasFormerNames] : '';
   if (!data[HasFormerNames]) {
     data[FormerNamesKey] = "";

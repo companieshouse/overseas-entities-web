@@ -1,12 +1,19 @@
+{% if errors %}
+  {% if errors.public_register_name.text == 'Name of register and jurisdiction must be 159 characters or less in total'  %}
+    {% set errorMsg = errors.public_register_name %}
+  {% else %}
+    {% set errorMsg = errors.public_register_jurisdiction %}
+  {% endif %}
+{% endif %}
 {{ govukInput({
-  errorMessage: errors.public_register_jurisdiction if errors,
+  errorMessage: errorMsg if errors,
   id: "public_register_jurisdiction",
   name: "public_register_jurisdiction",
   value: public_register_jurisdiction,
-    hint: {
-      text: "For example, Jersey."
-    },
-    label: {
-     text: "Jurisdiction"
+  hint: {
+    text: "For example, Jersey."
+  },
+  label: {
+    text: "Jurisdiction"
   }
 }) }}

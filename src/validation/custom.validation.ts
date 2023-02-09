@@ -74,8 +74,12 @@ export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string 
   return true;
 };
 
+const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
+  return (yearStr.length === 0 || yearStr.length === 4);
+};
+
 export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
     if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
       const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
       if (areDateFieldsPresent) {
@@ -93,7 +97,8 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
     const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
     if (isDatePresent) {
       const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
@@ -112,7 +117,8 @@ export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
     const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
     if (isDatePresent) {
       const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
@@ -127,20 +133,16 @@ export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearS
   return true;
 };
 
-export const checkDateFieldDay = (message: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
-    if (dayStr === "" && monthStr !== "" && yearStr !== "") {
-      throw new Error(message);
-    }
+export const checkDateFieldDay = (dayMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr !== "" && yearStr !== "") {
+    throw new Error(dayMissingMessage);
   }
   return true;
 };
 
-export const checkDateFieldMonth = (message: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
-    if (monthStr === "" && dayStr !== "" && yearStr !== "") {
-      throw new Error(message);
-    }
+export const checkDateFieldMonth = (monthMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (monthStr === "" && dayStr !== "" && yearStr !== "") {
+    throw new Error(monthMissingMessage);
   }
   return true;
 };
@@ -149,7 +151,7 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   if (yearStr === "" && dayStr !== "" && monthStr !== "") {
     throw new Error(yearMissingMessage);
   }
-  if (yearStr.length > 0 && yearStr.length < 4) {
+  if (yearStr.length !== 0 && yearStr.length !== 4) {
     throw new Error(yearLengthMessage);
   }
   return true;
@@ -179,7 +181,8 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
 };
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (yearStr.length === 0 || yearStr.length === 4) {
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
     const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
     if (isDatePresent) {
       const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);

@@ -1,4 +1,4 @@
-{% set errorMess = '' %}
+{% set identityDateErrorMsg = '' %}
 {% set isIdentityDateDayError = false %}
 {% set isIdentityDateMonthError = false %}
 {% set isIdentityDateYearError = false %}
@@ -7,7 +7,7 @@
   {% for key, value in errors %}
 
     {% if "identity_date" == key|string %}
-      {% set errorMess = value %}
+      {% set identityDateErrorMsg = value %}
       {% if identity_date %}
         {% if not identity_date["identity_date-day"] %}
           {% set isIdentityDateDayError = true %}
@@ -19,8 +19,8 @@
           {% set isIdentityDateYearError = true %}
         {% endif %}
       {% endif %}
-    {% elif not errorMess and "identity_date" in key|string %}
-      {% set errorMess = value %}
+    {% elif not identityDateErrorMsg and "identity_date" in key|string %}
+      {% set identityDateErrorMsg = value %}
       {% if "-day" in key|string %}
         {% set isIdentityDateDayError = true %}
       {% elif "-month" in key|string %} 
@@ -49,7 +49,7 @@
 {% endif %}
 
 {{ govukDateInput({
-  errorMessage: errorMess,
+  errorMessage: identityDateErrorMsg,
   id: "identity_date",
   namePrefix: "identity_date",
   fieldset: {

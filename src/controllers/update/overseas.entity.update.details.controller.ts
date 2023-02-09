@@ -50,7 +50,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST OVERSEAS_ENTITY_UPDATE_DETAILS`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const data: ApplicationDataType = mapRequestToEntityData(req);
     const session = req.session as Session;
@@ -63,7 +63,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       [EntityNameKey]: entityName
     });
 
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -106,6 +106,7 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
 };
 
 export const ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  entity_name: "^ name of a company ^",
   incorporation_country: maxLengthMocks.NO_MAX,
   is_service_address_same_as_principal_address: 0,
   email: EMAIL_INVALID_FORMAT,

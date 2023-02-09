@@ -106,6 +106,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS);

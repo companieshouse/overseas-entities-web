@@ -207,6 +207,7 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
 };
 
 export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  entity_name: "name of a company",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: "email@test.gov.uk",

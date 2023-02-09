@@ -21,6 +21,8 @@ import { Session } from "@companieshouse/node-session-handler";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
 
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const appData: ApplicationData = getApplicationData(req.session);
 
     const entity = appData[EntityKey];

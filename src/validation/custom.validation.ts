@@ -65,26 +65,31 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
   return true;
 };
 
-export const checkDateValueIsValid = (invalidDateErrMsg: string, yearLengthErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) || !DateTime.utc(year, month, day).isValid) {
     throw new Error(invalidDateErrMsg);
-  } else if (yearStr.length !== 4) {
-    throw new Error(yearLengthErrMsg);
   }
 
   return true;
 };
 
+const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
+  return (yearStr.length === 0 || yearStr.length === 4);
+};
+
 export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
-    const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
-    if (areDateFieldsPresent) {
-      const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
-      if (isOptionalDateValid) {
-        const isDateInThePast = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-        if (isDateInThePast) {
-          checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
+      const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
+      if (areDateFieldsPresent) {
+        const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+        if (isOptionalDateValid) {
+          const isDateInThePast = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+          if (isDateInThePast) {
+            checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
+          }
         }
       }
     }
@@ -93,15 +98,18 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
-  if (isDatePresent) {
-    const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
-    if (areAllDateFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
-      if (isDateValid) {
-        const isDatePastOrToday = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-        if (isDatePastOrToday) {
-          checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
+    if (isDatePresent) {
+      const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
+      if (areAllDateFieldsPresent) {
+        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+        if (isDateValid) {
+          const isDatePastOrToday = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+          if (isDatePastOrToday) {
+            checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
+          }
         }
       }
     }
@@ -110,36 +118,42 @@ export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
-  if (isDatePresent) {
-    const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
-    if (areAllDateFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, ErrorMessages.YEAR_LENGTH, dayStr, monthStr, yearStr);
-      if (isDateValid) {
-        checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
+    if (isDatePresent) {
+      const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
+      if (areAllDateFieldsPresent) {
+        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+        if (isDateValid) {
+          checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+        }
       }
     }
   }
   return true;
 };
 
-export const checkDateFieldDay = (message: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldDay = (dayMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" && monthStr !== "" && yearStr !== "") {
-    throw new Error(message);
+    throw new Error(dayMissingMessage);
   }
   return true;
 };
 
-export const checkDateFieldMonth = (message: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldMonth = (monthMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (monthStr === "" && dayStr !== "" && yearStr !== "") {
-    throw new Error(message);
+    throw new Error(monthMissingMessage);
   }
   return true;
 };
 
-export const checkDateFieldYear = (message: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (yearStr === "" && dayStr !== "" && monthStr !== "") {
-    throw new Error(message);
+    throw new Error(yearMissingMessage);
+  }
+  if (!isYearEitherMissingOrCorrectLength(yearStr)) {
+    throw new Error(yearLengthMessage);
   }
   return true;
 };
@@ -168,13 +182,16 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
 };
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
-  if (isDatePresent) {
-    const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
-    if (areDateOfBirthFieldsPresent) {
-      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH, dayStr, monthStr, yearStr);
-      if (isDateValid) {
-        checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+    if (isDatePresent) {
+      const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
+      if (areDateOfBirthFieldsPresent) {
+        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+        if (isDateValid) {
+          checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
+        }
       }
     }
   }

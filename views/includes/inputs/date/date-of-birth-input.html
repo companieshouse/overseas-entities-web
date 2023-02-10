@@ -1,5 +1,67 @@
+{% set dobErrorMessage = '' %}
+{% set isDobDayError = false %}
+{% set isDobMonthError = false %}
+{% set isDobYearError = false %}
+
+{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
+{# We need to loop through the errors returned to pick out the first date_of_birth error #}
+{# to prevent duplicate messages on the same field. #}
+{# We can use its message text and then work out which of the day/month/year fields #}
+{# to mark as 'red' using the error style class #}
+
+{% if errors %}
+  {% for key, value in errors %}
+
+    {# only look at first matching error #}
+    {% if not dobErrorMessage %}
+      {% if "date_of_birth" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
+        {% set dobErrorMessage = value %}
+        {% if date_of_birth %}
+          {% if not date_of_birth["date_of_birth-day"] %}
+            {% set isDobDayError = true %}
+          {% endif %}
+          {% if not date_of_birth["date_of_birth-month"] %}
+            {% set isDobMonthError = true %}
+          {% endif %}
+          {% if not date_of_birth["date_of_birth-year"] %}
+            {% set isDobYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif "date_of_birth" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
+        {% set dobErrorMessage = value %}
+        {% if "-day" in key|string %}
+          {% set isDobDayError = true %}
+        {% elif "-month" in key|string %} 
+          {% set isDobMonthError = true %}
+        {% elif "-year" in key|string %} 
+          {% set isDobYearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}    
+{% endif %}
+
+
+{% set date_of_birth_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set date_of_birth_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set date_of_birth_classes_day = "govuk-input--width-2 govuk-input" %}
+
+{% if isDobDayError %}
+  {% set date_of_birth_classes_day = date_of_birth_classes_day + "--error" %}
+{% endif %}
+{% if isDobMonthError %}
+  {% set date_of_birth_classes_month = date_of_birth_classes_month + "--error" %}
+{% endif %}
+{% if isDobYearError %}
+  {% set date_of_birth_classes_year = date_of_birth_classes_year + "--error" %}
+{% endif %}
+
+
+
 {{ govukDateInput({
-  errorMessage: errors.date_of_birth if errors,
+  errorMessage: dobErrorMessage,
   id: "date_of_birth",
   namePrefix: "date_of_birth",
   fieldset: {
@@ -14,17 +76,17 @@
   },
   items: [
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: date_of_birth_classes_day,
       name: "day",
       value: date_of_birth["date_of_birth-day"] if date_of_birth
     },
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: date_of_birth_classes_month,
       name: "month",
       value: date_of_birth["date_of_birth-month"] if date_of_birth
     },
     {
-      classes: "govuk-input--width-4 govuk-input",
+      classes: date_of_birth_classes_year,
       name: "year",
       value: date_of_birth["date_of_birth-year"] if date_of_birth
     }

@@ -3,32 +3,42 @@
 {% set isIdentityDateMonthError = false %}
 {% set isIdentityDateYearError = false %}
 
+{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
+{# We need to loop through the errors returned to pick out the first identity_date error #}
+{# to prevent duplicate messages on the same field. #}
+{# We can use its message text and then work out which of the day/month/year fields #}
+{# to mark as 'red' using the error style class #}
+
 {% if errors %}
   {% for key, value in errors %}
 
-    {% if "identity_date" == key|string %}
-      {% set identityDateErrorMsg = value %}
-      {% if identity_date %}
-        {% if not identity_date["identity_date-day"] %}
+    {# only look at first matching error #}
+    {% if not identityDateErrorMsg %}
+      {% if "identity_date" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
+        {% set identityDateErrorMsg = value %}
+        {% if identity_date %}
+          {% if not identity_date["identity_date-day"] %}
+            {% set isIdentityDateDayError = true %}
+          {% endif %}
+          {% if not identity_date["identity_date-month"] %}
+            {% set isIdentityDateMonthError = true %}
+          {% endif %}
+          {% if not identity_date["identity_date-year"] %}
+            {% set isIdentityDateYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif "identity_date" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
+        {% set identityDateErrorMsg = value %}
+        {% if "-day" in key|string %}
           {% set isIdentityDateDayError = true %}
-        {% endif %}
-        {% if not identity_date["identity_date-month"] %}
+        {% elif "-month" in key|string %} 
           {% set isIdentityDateMonthError = true %}
-        {% endif %}
-        {% if not identity_date["identity_date-year"] %}
+        {% elif "-year" in key|string %} 
           {% set isIdentityDateYearError = true %}
         {% endif %}
       {% endif %}
-    {% elif not identityDateErrorMsg and "identity_date" in key|string %}
-      {% set identityDateErrorMsg = value %}
-      {% if "-day" in key|string %}
-        {% set isIdentityDateDayError = true %}
-      {% elif "-month" in key|string %} 
-        {% set isIdentityDateMonthError = true %}
-      {% elif "-year" in key|string %} 
-        {% set isIdentityDateYearError = true %}
-      {% endif %}
-
     {% endif %}
   {% endfor %}    
 {% endif %}

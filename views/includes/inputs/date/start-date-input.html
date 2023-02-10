@@ -3,11 +3,19 @@
 {% set isStartDateMonthError = false %}
 {% set isStartDateYearError = false %}
 
+{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
+{# We need to loop through the errors returned to pick out the first start_date error #}
+{# to prevent duplicate messages on the same field. #}
+{# We can use its message text and then work out which of the day/month/year fields #}
+{# to mark as 'red' using the error style class #}
+
 {% if errors %}
   {% for key, value in errors %}
 
+    {# only look at first matching error #}
     {% if not startDateErrorMessage %}
       {% if "start_date" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
         {% set startDateErrorMessage = value %}
         {% if start_date %}
           {% if not start_date["start_date-day"] %}
@@ -21,6 +29,7 @@
           {% endif %}
         {% endif %}
       {% elif "start_date" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
         {% set startDateErrorMessage = value %}
         {% if "-day" in key|string %}
           {% set isStartDateDayError = true %}

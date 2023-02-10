@@ -152,7 +152,7 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   if (yearStr === "" && dayStr !== "" && monthStr !== "") {
     throw new Error(yearMissingMessage);
   }
-  if (yearStr.length !== 0 && yearStr.length !== 4) {
+  if (!isYearEitherMissingOrCorrectLength(yearStr)) {
     throw new Error(yearLengthMessage);
   }
   return true;

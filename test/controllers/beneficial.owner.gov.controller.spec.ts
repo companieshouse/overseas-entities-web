@@ -444,7 +444,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with only YEAR_LENGTH error when invalid charcters are used`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with only YEAR_LENGTH error when invalid characters are used`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] =  "a";
       beneficialOwnerGov["start_date-month"] = "b";

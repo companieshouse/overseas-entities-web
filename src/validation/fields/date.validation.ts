@@ -10,7 +10,7 @@ import {
 import { ErrorMessages } from "../error.messages";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that teh year check is checked before some others
+// This means that the year check is checked before some others
 export const start_date_validations = [
   body("start_date-day")
     .if(body("start_date-year").isLength({ min: 4, max: 4 }))
@@ -25,7 +25,7 @@ export const start_date_validations = [
 ];
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that teh year check is checked before some others
+// This means that the year check is checked before some others
 export const date_of_birth_validations = [
   body("date_of_birth-day")
     .if(body("date_of_birth-year").isLength({ min: 4, max: 4 }))
@@ -40,7 +40,7 @@ export const date_of_birth_validations = [
 ];
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that teh year check is checked before some others
+// This means that the year check is checked before some others
 export const identity_check_date_validations = [
   body("identity_date-day")
     .if(body("identity_date-year").isLength({ min: 4, max: 4 }))

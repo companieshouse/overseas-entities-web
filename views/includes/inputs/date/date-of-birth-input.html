@@ -3,11 +3,19 @@
 {% set isDobMonthError = false %}
 {% set isDobYearError = false %}
 
+{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
+{# We need to loop through the errors returned to pick out the first date_of_birth error #}
+{# to prevent duplicate messages on the same field. #}
+{# We can use its message text and then work out which of the day/month/year fields #}
+{# to mark as 'red' using the error style class #}
+
 {% if errors %}
   {% for key, value in errors %}
 
+    {# only look at first matching error #}
     {% if not dobErrorMessage %}
       {% if "date_of_birth" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
         {% set dobErrorMessage = value %}
         {% if date_of_birth %}
           {% if not date_of_birth["date_of_birth-day"] %}
@@ -21,6 +29,7 @@
           {% endif %}
         {% endif %}
       {% elif "date_of_birth" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
         {% set dobErrorMessage = value %}
         {% if "-day" in key|string %}
           {% set isDobDayError = true %}

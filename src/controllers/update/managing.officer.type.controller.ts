@@ -5,7 +5,7 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import {
   ManagingOfficerTypeChoice,
-  BeneficialOwnerTypeKey,
+  ManagingOfficerTypeKey,
 } from "../../model/beneficial.owner.type.model";
 import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
@@ -29,7 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+  return res.redirect(getNextPage(req.body[ManagingOfficerTypeKey]));
 };
 
 export const postSubmit = (req: Request, res: Response) => {

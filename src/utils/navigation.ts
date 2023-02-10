@@ -209,6 +209,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_URL]
   },
+  // TO-DO: Next and previous steps will need changed once add MO pages have been made
   [config.UPDATE_MANAGING_OFFICER_TYPE_URL]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_TYPE_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,

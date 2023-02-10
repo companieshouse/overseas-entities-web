@@ -1,5 +1,5 @@
 export const BeneficialOwnerTypeKey = "beneficial_owner_type";
-// export const ManagingOfficerTypeKey = "managing_officer_type";
+export const ManagingOfficerTypeKey = "managing_officer_type";
 
 export enum BeneficialOwnerTypeChoice {
     individual = "individualOwner",

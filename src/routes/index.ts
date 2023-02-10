@@ -272,7 +272,10 @@ router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYou
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, overseasEntityPayment.get);
 
 router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    navigation.hasOverseasEntityNumber
+  )
   .get(overseasEntityUpdateDetails.get)
   .post(...validator.entity, ...validator.overseasName, checkValidations, overseasEntityUpdateDetails.post);
 

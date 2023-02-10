@@ -139,7 +139,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test("Should render the error page", async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const response = await request(app).get(BENEFICIAL_OWNER_OTHER_URL  + BO_OTHER_ID_URL);
+      const response = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
       expect(response.status).toEqual(500);
       expect(response.text).toContain(SERVICE_UNAVAILABLE);
@@ -316,7 +316,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "";
+      beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "";
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -335,7 +335,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "02";
+      beneficialOwnerOther["start_date-day"] = "02";
       beneficialOwnerOther["start_date-month"] = "";
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -352,7 +352,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "";
+      beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "02";
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -368,7 +368,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and month are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "";
+      beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -384,7 +384,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE}  page with only DAY error when start date day is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "";
+      beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "2022";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -403,7 +403,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only MONTH error when start date month is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "23";
+      beneficialOwnerOther["start_date-day"] = "23";
       beneficialOwnerOther["start_date-month"] = "";
       beneficialOwnerOther["start_date-year"] = "2022";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -422,7 +422,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR error when start date year is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "11";
+      beneficialOwnerOther["start_date-day"] = "11";
       beneficialOwnerOther["start_date-month"] = "4";
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -441,7 +441,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "32";
+      beneficialOwnerOther["start_date-day"] = "32";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -460,7 +460,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "30";
+      beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "20";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -480,7 +480,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "30";
+      beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "13";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -499,7 +499,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day is zero`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "0";
+      beneficialOwnerOther["start_date-day"] = "0";
       beneficialOwnerOther["start_date-month"] = "11";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -518,7 +518,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month is zero`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerOther["start_date-day"] =  "30";
+      beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "0";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
@@ -536,11 +536,11 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
-      const beneficialOwnerOther =  { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const inTheFuture = DateTime.now().plus({ days: 1 });
-      beneficialOwnerOther["start_date-day"] =  inTheFuture.day.toString();
-      beneficialOwnerOther["start_date-month"] =  inTheFuture.month.toString();
-      beneficialOwnerOther["start_date-year"] =  inTheFuture.year.toString();
+      beneficialOwnerOther["start_date-day"] = inTheFuture.day.toString();
+      beneficialOwnerOther["start_date-month"] = inTheFuture.month.toString();
+      beneficialOwnerOther["start_date-year"] = inTheFuture.year.toString();
       const resp = await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
       expect(resp.status).toEqual(200);
@@ -558,7 +558,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const today = DateTime.now();
-      beneficialOwnerOther["start_date-day"] =  today.day.toString();
+      beneficialOwnerOther["start_date-day"] = today.day.toString();
       beneficialOwnerOther["start_date-month"] = today.month.toString();
       beneficialOwnerOther["start_date-year"] = today.year.toString();
       const resp = await request(app)

@@ -15,9 +15,7 @@ import { isActiveFeature } from '../utils/feature.flag';
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
-
     const hasTrusts: boolean = checkEntityHasTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} hasTrusts=${hasTrusts}`);
@@ -27,12 +25,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
       hasTrusts,
       ...appData,
-      pageParams: {
-        urlToTrust: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-          ? `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`
-          : config.TRUST_INFO_URL,
-        urlToCheckYourAnswers: config.CHECK_YOUR_ANSWERS_URL,
-      },
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -44,6 +36,18 @@ export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `POST ${config.BENEFICIAL_OWNER_TYPE_PAGE}`);
 
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+};
+
+export const postSubmit = (req: Request, res: Response) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+  const hasTrusts: boolean = checkEntityHasTrusts(appData);
+  let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
+  if (hasTrusts) {
+    nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+      ? `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`
+      : config.TRUST_INFO_URL;
+  }
+  return res.redirect(nextPageUrl);
 };
 
 // With validation in place we have got just these 5 possible choices

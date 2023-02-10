@@ -50,7 +50,9 @@ import {
   whoIsMakingUpdate,
   updateCheckYourAnswers,
   updateDueDiligence,
-  updateConfirmation
+  updateDueDiligenceOverseasEntity,
+  updateConfirmation,
+  paymentFailed
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -115,6 +117,7 @@ router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigati
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.get);
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.getById);
@@ -226,6 +229,8 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMO
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
+router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
+
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 
 // Routes for UPDATE journey
@@ -270,9 +275,12 @@ router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEn
 router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
   .get(whoIsMakingUpdate.get)
-  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+  .post(...validator.whoIsMakingUpdate, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .all(
@@ -281,6 +289,14 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
   )
   .get(updateDueDiligence.get)
   .post(...validator.dueDiligence, checkValidations, updateDueDiligence.post);
+
+router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
+  .all(
+    authentication,
+    navigation.hasWhoIsMakingUpdate
+  )
+  .get(updateDueDiligenceOverseasEntity.get)
+  .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(authentication)

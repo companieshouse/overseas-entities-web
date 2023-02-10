@@ -24,8 +24,8 @@ export const mapRequestToEntityData = (req: Request): ApplicationDataType => {
 
   data[HasSamePrincipalAddressKey] = (data[HasSamePrincipalAddressKey]) ? +data[HasSamePrincipalAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSamePrincipalAddressKey])
-    ?  mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
-    :  {};
+    ? mapFieldsToDataObject(req.body, ServiceAddressKeys, AddressKeys)
+    : {};
   data[IsOnRegisterInCountryFormedInKey] = (data[IsOnRegisterInCountryFormedInKey]) ? +data[IsOnRegisterInCountryFormedInKey] : '';
 
   // Wipe 'register in country formed in' data if IsOnRegisterInCountryFormedInKey is no or not selected

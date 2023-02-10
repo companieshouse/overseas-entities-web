@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
+jest.mock('../../src/utils/trusts.ts');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -12,15 +13,11 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import * as config from "../../src/config";
 import { getApplicationData } from '../../src/utils/application.data';
 import {
-  BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
-  CHECK_YOUR_ANSWERS_LINK,
   SERVICE_UNAVAILABLE,
-  TRUST_INFORMATION_LINK,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_NONE_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS,
-  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED,
@@ -31,17 +28,24 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
-  PAGE_TITLE_ERROR
+  PAGE_TITLE_ERROR,
+  BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
+  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT,
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
-  APPLICATION_DATA_NO_TRUSTS_MOCK,
   ERROR
 } from '../__mocks__/session.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../src/model/beneficial.owner.statement.model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import { BeneficialOwnerTypeChoice, BeneficialOwnerTypeKey, ManagingOfficerTypeChoice } from '../../src/model/beneficial.owner.type.model';
+import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
+import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
+import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
+import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
+import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
+import { checkEntityHasTrusts } from "../../src/utils/trusts";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -51,6 +55,8 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
+const mockCheckEntityHasTrusts = checkEntityHasTrusts as jest.Mock;
+
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
@@ -58,29 +64,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
-    test("renders the beneficial owner type page for beneficial owners with trusts", async () => {
+
+    test("renders the beneficial owner type page when some are identified", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
-      expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
-      expect(resp.text).not.toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(TRUST_INFORMATION_LINK); // continue button
-    });
-
-    test("renders the beneficial owner type page for beneficial owners without trusts", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_NO_TRUSTS_MOCK);
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
-      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
-      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_LINK); // continue button
-      expect(resp.text).not.toContain(TRUST_INFORMATION_LINK); // continue button
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+      expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
     });
 
@@ -239,6 +233,152 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+    });
+  });
+
+  describe("POST Submit tests", () => {
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer with trusts`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockCheckEntityHasTrusts.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.TRUST_INFO_URL);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer no trusts`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockCheckEntityHasTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.CHECK_YOUR_ANSWERS_URL);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual beneficial owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerOtherKey]: [],
+        [BeneficialOwnerGovKey]: [],
+        [ManagingOfficerKey]: [],
+        [ManagingOfficerCorporateKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only ole corporate beneficial owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerIndividualKey]: [],
+        [BeneficialOwnerGovKey]: [],
+        [ManagingOfficerKey]: [],
+        [ManagingOfficerCorporateKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only gov beneficial owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerIndividualKey]: [],
+        [BeneficialOwnerOtherKey]: [],
+        [ManagingOfficerKey]: [],
+        [ManagingOfficerCorporateKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only individual managing officer`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerCorporateKey]: [],
+        [BeneficialOwnerIndividualKey]: [],
+        [BeneficialOwnerOtherKey]: [],
+        [BeneficialOwnerGovKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has only corporate managing officer`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerKey]: [],
+        [BeneficialOwnerIndividualKey]: [],
+        [BeneficialOwnerOtherKey]: [],
+        [BeneficialOwnerGovKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no beneficial owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerIndividualKey]: [],
+        [BeneficialOwnerOtherKey]: [],
+        [BeneficialOwnerGovKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+    });
+
+    test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has no managing officer`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerKey]: [],
+        [ManagingOfficerCorporateKey]: []
+      });
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
     });
   });
 });

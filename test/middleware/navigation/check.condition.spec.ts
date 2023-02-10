@@ -9,6 +9,7 @@ import {
   checkDueDiligenceDetailsEntered,
   checkOverseasNameDetailsEntered,
   checkOverseasEntityNumberEntered,
+  checkUpdatePresenterEntered,
   checkWhoIsFilingEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
@@ -170,6 +171,11 @@ describe("check condition navigation tests", () => {
 
   test("checkOverseasEntityNumberEntered should return false", () => {
     const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [OeNumberKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkUpdatePresenterEntered should return false", () => {
+    const data = checkUpdatePresenterEntered({ ...APPLICATION_DATA_MOCK, [PresenterKey]: undefined });
     expect(data).toEqual(false);
   });
 

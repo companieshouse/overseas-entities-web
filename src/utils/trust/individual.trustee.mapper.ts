@@ -5,7 +5,7 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
-): Trust.GeneralTrustee => {
+): Trust.IndividualTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
     type: formData.type,
@@ -43,9 +43,9 @@ export const mapIndividualTrusteeToSession = (
       date_became_interested_person_day: formData.date_became_ip_day,
       date_became_interested_person_month: formData.date_became_ip_month,
       date_became_interested_person_year: formData.date_became_ip_year,
-    } as Trust.GeneralTrustee;
+    } as Trust.IndividualTrustee;
   }
   return {
-    ...data as Trust.GeneralTrustee
+    ...data as Trust.IndividualTrustee
   };
 };

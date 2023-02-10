@@ -5,10 +5,22 @@ import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import {
   ManagingOfficerTypeChoice,
-  ManagingOfficerTypeKey,
+  BeneficialOwnerTypeKey
 } from "../../model/beneficial.owner.type.model";
 import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
+
+export const post = (req: Request, res: Response) => {
+  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+  return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+};
+
+export const postSubmit = (req: Request, res: Response) => {
+  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+};
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,18 +36,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, error);
     next(error);
   }
-};
-
-export const post = (req: Request, res: Response) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  return res.redirect(getNextPage(req.body[ManagingOfficerTypeKey]));
-};
-
-export const postSubmit = (req: Request, res: Response) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
 // With validation in place we will only have 2 choices

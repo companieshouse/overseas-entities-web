@@ -261,7 +261,7 @@ router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOv
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(
     authentication,
-    navigation.hasOverseasEntityNumber,
+    navigation.hasOverseasEntityNumber
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);

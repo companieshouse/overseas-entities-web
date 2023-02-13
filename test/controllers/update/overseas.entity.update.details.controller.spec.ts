@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -33,11 +34,14 @@ import {
 } from "../../../src/model/data.types.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
+import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasOverseasEntityNumber = hasOverseasEntityNumber as jest.Mock;
+mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockPrepareData = prepareData as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

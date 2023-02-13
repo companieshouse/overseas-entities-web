@@ -58,7 +58,7 @@ import {
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
-import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
+import { checkTrustValidations, checkValidations, checkUpdateValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
 
@@ -277,7 +277,7 @@ router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
     navigation.hasOverseasEntityNumber
   )
   .get(overseasEntityUpdateDetails.get)
-  .post(...validator.entity, ...validator.overseasName, checkValidations, overseasEntityUpdateDetails.post);
+  .post(...validator.entity, ...validator.overseasName, checkUpdateValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .all(

@@ -40,9 +40,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...entity,
       ...principalAddress,
       ...serviceAddress,
-      pageParams: {
-        isRegistration: false
-      },
+      isUpdate: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

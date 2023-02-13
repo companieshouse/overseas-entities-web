@@ -28,8 +28,7 @@
     }) }}
 
     <form method="post">
-
-      {% if not pageParams.isRegistration %}
+      {% if isUpdate %}
         {% set fieldParam = {
           name: 'entity_name',
           error: errors.entity_name if errors,

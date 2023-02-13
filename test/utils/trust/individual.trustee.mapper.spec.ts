@@ -130,9 +130,9 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: mockFormData.service_address_postcode,
           sa_address_care_of: '',
           sa_address_po_box: '',
-          dateBecameInterestedPersonDay: mockFormData.dateBecameIPDay,
-          dateBecameInterestedPersonMonth: mockFormData.dateBecameIPMonth,
-          dateBecameInterestedPersonYear: mockFormData.dateBecameIPYear,
+          date_became_interested_person_day: mockFormData.dateBecameIPDay,
+          date_became_interested_person_month: mockFormData.dateBecameIPMonth,
+          date_became_interested_person_year: mockFormData.dateBecameIPYear,
         });
       });
     });

@@ -59,7 +59,6 @@
 
       {% for trust in appData.trusts %}
           {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
-            <br><h2 class="govuk-heading-l">Individual for {{trust.trust_name}}</h2>
             {% for individualTrustee in trust.INDIVIDUALS  %}
               {% include "includes/check-your-answers/individual-trustee.html" %}
             {% endfor %}

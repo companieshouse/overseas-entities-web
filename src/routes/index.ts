@@ -323,6 +323,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_TYPE_URL)
   .get(updateManagingOfficerType.get)
   .post(...validator.beneficialOwnersType, checkValidations, updateManagingOfficerType.post);
 
+// TO-DO: Navigation check to ensure we come from BO type page
 router.post(config.UPDATE_MANAGING_OFFICER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateManagingOfficerType.postSubmit);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)

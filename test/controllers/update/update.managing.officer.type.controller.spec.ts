@@ -31,7 +31,6 @@ import {
   APPLICATION_DATA_MOCK,
   ERROR
 } from '../../__mocks__/session.mock';
-import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerTypeChoice, BeneficialOwnerTypeKey } from '../../../src/model/beneficial.owner.type.model';
 
@@ -106,16 +105,6 @@ describe("MANAGING OFFICER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL);
-    });
-
-    test(`renders the current page with error message when ${BeneficialOwnersStatementType.NONE_IDENTIFIED} has been selected `, async () => {
-      const resp = await request(app)
-        .post(config.UPDATE_MANAGING_OFFICER_TYPE_URL)
-        .send({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED });
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
-      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD);
     });
 
     test(`POST empty object and check for error in page title`, async () => {

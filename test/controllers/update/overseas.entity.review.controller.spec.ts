@@ -90,6 +90,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
+      // TO-DO: Redirect will change once the position of the MO type page in the journey is agreed upon
       expect(resp.header.location).toEqual(config.UPDATE_MANAGING_OFFICER_TYPE_PAGE);
     });
 

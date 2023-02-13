@@ -35,7 +35,7 @@ export const post = (req: Request, res: Response) => {
 export const postSubmit = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+  return res.redirect(config.UPDATE_MANAGING_OFFICER_TYPE_URL);
 };
 
 // With validation in place we will only have 3 choices

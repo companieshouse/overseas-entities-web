@@ -12,9 +12,9 @@ export const mapIndividualTrusteeToSession = (
     forename: formData.forename,
     other_forenames: '',
     surname: formData.surname,
-    date_of_birth_day: formData.date_of_birth_day,
-    date_of_birth_month: formData.date_of_birth_month,
-    date_of_birth_year: formData.date_of_birth_year,
+    date_of_birth_day: formData.dateOfBirthDay,
+    date_of_birth_month: formData.dateOfBirthMonth,
+    date_of_birth_year: formData.dateOfBirthYear,
     nationality: formData.nationality,
     second_nationality: formData.second_nationality,
     ura_address_premises: formData.usual_residential_address_property_name_number,
@@ -41,9 +41,9 @@ export const mapIndividualTrusteeToSession = (
   if (formData.type === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
-      date_became_interested_person_day: formData.date_became_ip_day,
-      date_became_interested_person_month: formData.date_became_ip_month,
-      date_became_interested_person_year: formData.date_became_ip_year,
+      dateBecameInterestedPersonDay: formData.date_became_ip_day,
+      dateBecameInterestedPersonMonth: formData.date_became_ip_month,
+      dateBecameInterestedPersonYear: formData.date_became_ip_year,
     } as Trust.IndividualTrustee;
   }
   return {

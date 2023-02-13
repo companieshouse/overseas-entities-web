@@ -291,7 +291,7 @@ describe('Trust Utils method tests', () => {
       });
     });
 
-    test("test getTrusteeFromTrust", () => {
+    test("test getTrusteeFromTrust with application data and trust id", () => {
       const test_trust_id = '247';
       const appData = {
         [TrustKey]: [{
@@ -303,6 +303,20 @@ describe('Trust Utils method tests', () => {
       const result = getIndividualTrusteesFromTrust(appData, test_trust_id);
       expect(result.length).toEqual(3);
       expect(result).toEqual([{}, {}, {}]);
+    });
+
+    test("test getTrusteeFromTrust with application data and no trust id", () => {
+      const appData = {
+        [TrustKey]: [{
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
+        }, {
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrusteesFromTrust(appData);
+      expect(result.length).toEqual(6);
+      expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });
   });
 });

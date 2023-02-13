@@ -135,9 +135,9 @@ const getIndividualTrusteesFromTrust = (
   appData: ApplicationData,
   trustId?: string,
 ): IndividualTrustee[] => {
-  const individuals: IndividualTrustee[] = [];
+  let individuals: IndividualTrustee[] = [];
   if (trustId) {
-    return appData[TrustKey]?.find(trust =>
+    individuals = appData[TrustKey]?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
   } else {
     appData[TrustKey]?.map(trust => trust.INDIVIDUALS?.map(individual => {

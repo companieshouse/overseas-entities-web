@@ -81,10 +81,7 @@ const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
 
 export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
-  if (!isYearEitherMissingOrCorrectLength(yearStr)) {
-    return true;
-  }
-  if ( dayStr !== "" || monthStr !== "" || yearStr !== "" ) {
+  if ( (dayStr !== "" || monthStr !== "" || yearStr !== "") && isYearEitherMissingOrCorrectLength(yearStr)) {
     const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
     if (areDateFieldsPresent) {
       const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);

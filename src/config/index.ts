@@ -80,6 +80,7 @@ export const SIGN_OUT_PAGE = "sign-out";
 export const STARTING_NEW_PAGE = "starting-new";
 export const PAYMENT_FAILED_PAGE = "payment-failed";
 
+export const TRUSTS_URL = "trusts";
 export const TRUST_DETAILS_PAGE = "trust-details";
 export const TRUST_INVOLVED_PAGE = "trust-involved";
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE = "trust-historical-beneficial-owner";

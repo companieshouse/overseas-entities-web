@@ -1,0 +1,181 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set legalEntityDateOfBirth = dateMacros.formatDate(legalEntity.dateOfBirthDay, legalEntity.dateOfBirthMonth, legalEntity.dateOfBirthYear) %}
+
+{% set legalEntityFormattedResidentialAddressHtml %}
+   {% set address = {
+      property_name_number: legalEntity.ura_address_premises,
+      line_1: legalEntity.ro_address_line1,
+      line_2: legalEntity.ro_address_line2,
+      town: legalEntity.ro_address_locality,
+      county: legalEntity.ro_address_region,
+      country: legalEntity.ro_address_country,
+      postcode: legalEntity.ro_address_postal_code
+    } %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set legalEntityChangeServiceAddressHtml = "" %}
+{% set legalEntityFormattedServiceAddressHtml %}
+  {% if legalEntity.is_correspondence_address_same_as_home_address %}
+    The correspondence address is the same as the home address
+    {% set legalEntityChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
+  {% else %}
+    {% set legalEntityChangeServiceAddressHtml = "#service_address_property_name_number" %}
+    {% set address = {
+      property_name_number: legalEntity.sa_address_premises,
+      line_1: legalEntity.sa_address_line1,
+      line_2: legalEntity.sa_address_line2,
+      town: legalEntity.sa_address_locality,
+      county: legalEntity.sa_address_region,
+      country: legalEntity.sa_address_country,
+      postcode: legalEntity.sa_address_postal_code
+    } %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set hasSameHomeAndCorrespondingAddess %}
+  {% if legalEntity.hasSameAddress == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{# Build and add each govukSummaryList row separately so that some rows can be optional #}
+{% set rows=[] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Name"
+  },
+  value: {
+    text: legalEntity.name
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalEntityName",
+      "Legal entity " + legalEntity.name + " - name",
+      "change-legal-entity-name-button"
+   ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Role within trust"
+  },
+  value: {
+    text: legalEntity.type
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      "Legal entity " + legalEntity.name + " - type",
+      "change-legal-entity-type-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Principal or registered office address"
+  },
+  value: {
+      html: legalEntityFormattedResidentialAddressHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#principal_address_property_name_number",
+      "Legal entity " + legalEntity.name + " - home address",
+      "change-legal-entity-residential-address-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Correspondence address"
+  },
+  value: {
+    html: legalEntityFormattedServiceAddressHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangeServiceAddressHtml,
+      "Legal entity " + legalEntity.name + " - correspondence address",
+      "change-legal-entity-correspondence-address-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Country it was formed in"
+  },
+  value: {
+    text: legalEntity.identification_place_registered
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      "Legal entity " + legalEntity.name + " - country formed in",
+      "change-legal-entity-country-formed-in-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Legal form"
+  },
+  value: {
+    text: legalEntity.identification_legal_form
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalForm",
+      "Legal entity " + legalEntity.name + " - legal form",
+      "change-legal-entity-legal-form-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Governing Law"
+  },
+  value: {
+    text: legalEntity.identification_legal_authority
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      "Legal entity " + legalEntity.name + " - legal authority",
+      "change-legal-entity-governing-law-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Overseas public register"
+  },
+  value: {
+    text: legalEntity.identification_registration_number
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      "Legal entity " + legalEntity.name + " - legal authority",
+      "change-legal-entity-identification-registration-number-button"
+    ) ]
+  }
+}), rows) %}
+
+<h3 class="govuk-heading-m">Legal Entity for {{trust.trust_name}}</h3>
+
+{{ govukSummaryList({
+  rows: rows
+}) }}

@@ -1,6 +1,7 @@
 import { BeneficialOwnerIndividual } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
+import { yesNoResponse } from './data.types.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
 
 export const TrustKey = "trusts";
@@ -54,7 +55,6 @@ interface TrustIndividual {
   ura_address_postal_code: string;
   ura_address_care_of?: string;
   ura_address_po_box?: string;
-  is_correspondence_address_same_as_home_address: boolean,
   sa_address_premises?: string;
   sa_address_line1?: string;
   sa_address_line2?: string;
@@ -79,7 +79,8 @@ interface TrustHistoricalBeneficialOwnerCommon {
   notified_date_year: string;
 }
 
-export type IndividualTrustee = NonInterestedIndividualPersonTrustee | InterestedIndividualPersonTrustee;
+export type IndividualTrustee = (NonInterestedIndividualPersonTrustee | InterestedIndividualPersonTrustee) & 
+{ is_service_address_same_as_principal_address: yesNoResponse };
 interface NonInterestedIndividualPersonTrustee extends TrustIndividual{
   type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
 }

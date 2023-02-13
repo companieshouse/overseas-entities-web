@@ -1,6 +1,7 @@
 import { BeneficialOwnerTypeChoice } from './beneficial.owner.type.model';
 import { TrusteeType } from './trustee.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { yesNoResponse } from './data.types.model';
 
 type TrustDetailsForm = {
   trustId: string;
@@ -62,7 +63,7 @@ type IndividualTrusteesFormCommon = {
   service_address_county?: string,
   service_address_country?: string,
   service_address_postcode?: string,
-  is_correspondence_address_same_as_home_address: true,
+  is_service_address_same_as_principal_address: yesNoResponse,
   dateBecameIPDay?: string,
   dateBecameIPMonth?: string,
   dateBecameIPYear?: string,

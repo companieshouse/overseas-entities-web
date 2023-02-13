@@ -2,7 +2,7 @@
 
 {% set individualTrusteeFullName = individualTrustee.forename + " " + individualTrustee.surname %}
 
-{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.dateOfBirthDay, individualTrustee.dateOfBirthMonth, individualTrustee.dateOfBirthYear) %}
+{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.date_of_birth_day, individualTrustee.date_of_birth_month, individualTrustee.date_of_birth_year) %}
 
 {% set individualTrusteeFormattedResidentialAddressHtml %}
    {% set address = {
@@ -19,7 +19,7 @@
 
 {% set individualTrusteeChangeServiceAddressHtml = "" %}
 {% set individualTrusteeFormattedServiceAddressHtml %}
-  {% if individualTrustee.is_correspondence_address_same_as_home_address %}
+  {% if individualTrustee.is_service_address_same_as_principal_address == 1 %}
     The correspondence address is the same as the home address
     {% set individualTrusteeChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
   {% else %}
@@ -178,7 +178,7 @@
   }
 }), rows) %}
 
-<h3 class="govuk-heading-m">Individual trustee</h3>
+<h3 class="govuk-heading-m">Individual for {{trust.trust_name}}</h3>
 
 {{ govukSummaryList({
   rows: rows

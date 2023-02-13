@@ -49,13 +49,22 @@
       {% endif %}
 
       {% if (appData.trusts and appData.trusts.length > 0) %}
-        <br><h2 class="govuk-heading-l">Trust details</h2>
+        <br><h2 class="govuk-heading-l">Trusts</h2>
         {% set trust_count = 0 %}
         {% for trust in appData.trusts %}
           {% set trust_count = trust_count + 1 %}
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
       {% endif %}
+
+      {% for trust in appData.trusts %}
+          {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
+            <br><h2 class="govuk-heading-l">Individual for {{trust.trust_name}}</h2>
+            {% for individualTrustee in trust.INDIVIDUALS  %}
+              {% include "includes/check-your-answers/individual-trustee.html" %}
+            {% endfor %}
+          {% endif %}
+      {% endfor %}
 
       <br>
       <form method="post">

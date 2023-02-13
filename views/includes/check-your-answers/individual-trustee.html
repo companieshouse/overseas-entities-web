@@ -1,0 +1,185 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set individualTrusteeFullName = individualTrustee.forename + " " + individualTrustee.surname %}
+
+{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.dateOfBirthDay, individualTrustee.dateOfBirthMonth, individualTrustee.dateOfBirthYear) %}
+
+{% set individualTrusteeFormattedResidentialAddressHtml %}
+   {% set address = {
+      property_name_number: individualTrustee.ura_address_premises,
+      line_1: individualTrustee.ura_address_line1,
+      line_2: individualTrustee.ura_address_line2,
+      town: individualTrustee.ura_address_locality,
+      county: individualTrustee.ura_address_region,
+      country: individualTrustee.ura_address_country,
+      postcode: individualTrustee.ura_address_postal_code
+    } %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set individualTrusteeChangeServiceAddressHtml = "" %}
+{% set individualTrusteeFormattedServiceAddressHtml %}
+  {% if individualTrustee.is_correspondence_address_same_as_home_address %}
+    The correspondence address is the same as the home address
+    {% set individualTrusteeChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
+  {% else %}
+    {% set individualTrusteeChangeServiceAddressHtml = "#service_address_property_name_number" %}
+    {% set address = {
+      property_name_number: individualTrustee.sa_address_premises,
+      line_1: individualTrustee.sa_address_line1,
+      line_2: individualTrustee.sa_address_line2,
+      town: individualTrustee.sa_address_locality,
+      county: individualTrustee.sa_address_region,
+      country: individualTrustee.sa_address_country,
+      postcode: individualTrustee.sa_address_postal_code
+    } %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set hasSameHomeAndCorrespondingAddess %}
+  {% if individualTrustee.hasSameAddress == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{# Build and add each govukSummaryList row separately so that some rows can be optional #}
+{% set rows=[] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "First name"
+  },
+  value: {
+    text: individualTrustee.forename
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.FIRST_NAME,
+      "Individual beneficial owner " + individualTrusteeFullName + " - first name",
+      "change-individual-beneficial-owner-first-name-button"
+   ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Last name"
+  },
+  value: {
+    text: individualTrustee.surname
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.LAST_NAME,
+      "Individual beneficial owner " + individualTrusteeFullName + " - last name",
+      "change-individual-beneficial-owner-last-name-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date of birth"
+  },
+  value: {
+    text: individualTrusteeDateOfBirth
+  },
+  actions: {
+  items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.DATE_OF_BIRTH,
+      "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
+      "change-individual-beneficial-owner-date-of-birth-name-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Role within trust"
+  },
+  value: {
+    text: individualTrustee.type
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.TYPE,
+      "Individual beneficial owner " + individualTrusteeFullName + " - type",
+      "change-individual-beneficial-owner-type-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Nationality"
+  },
+  value: {
+    text: individualTrustee.nationality
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.NATIONALITY,
+      "Individual beneficial owner " + individualTrusteeFullName + " - nationality",
+      "change-individual-beneficial-owner-nationality-button"
+    ) ]
+  }
+}), rows) %}
+
+{% if individualTrustee.second_nationality %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Second nationality"
+    },
+    value: {
+     text: individualTrustee.second_nationality
+    },
+    actions: {
+    items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.SECOND_NATIONALITY,
+        "Individual beneficial owner " + individualTrusteeFullName + " - second_nationality",
+        "change-individual-beneficial-owner-second-nationality-button"
+      ) ]
+    }
+  }), rows) %}
+{% endif %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Home address"
+  },
+  value: {
+      html: individualTrusteeFormattedResidentialAddressHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      "Individual beneficial owner " + individualTrusteeFullName + " - home address",
+      "change-individual-beneficial-owner-residential-address-button"
+    ) ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Correspondence address"
+  },
+  value: {
+    html: individualTrusteeFormattedServiceAddressHtml
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + individualTrusteeChangeServiceAddressHtml,
+      "Individual beneficial owner " + individualTrusteeFullName + " - correspondence address",
+      "change-individual-beneficial-owner-correspondence-address-button"
+    ) ]
+  }
+}), rows) %}
+
+<h3 class="govuk-heading-m">Individual trustee</h3>
+
+{{ govukSummaryList({
+  rows: rows
+}) }}

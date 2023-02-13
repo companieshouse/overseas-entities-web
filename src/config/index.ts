@@ -215,6 +215,7 @@ export const CONTACT_FULL_NAME = "#contact_full_name";
 export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
+export const ENTITY_NAME = "#entity_name";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + "#entity_name";
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

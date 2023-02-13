@@ -605,6 +605,25 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when invalid date is used`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "35";
+      managingOfficer["date_of_birth-month"] = "15";
+      managingOfficer["date_of_birth-year"] = "2022";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();

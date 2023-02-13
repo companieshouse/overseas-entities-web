@@ -20,6 +20,9 @@ export const beneficialOwnerIndividual = [
     .isLength({ max: 160 })
     .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
+
+  ...date_of_birth_validations,
+
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
@@ -31,12 +34,10 @@ export const beneficialOwnerIndividual = [
   body("is_service_address_same_as_usual_residential_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
-  ...start_date_validations,
-
   ...usual_residential_address_validations,
   ...usual_residential_service_address_validations,
 
-  ...date_of_birth_validations,
+  ...start_date_validations,
 
   ...nature_of_control_validations
 ];

@@ -7,21 +7,22 @@ import {
   checkDateFieldDay,
   checkDateFieldMonth,
   checkDateFieldYear,
-  checkDateYearValueIsFourNumbers,
   checkOptionalDate
 } from "./custom.validation";
 import { email_validations } from "./fields/email.validation";
 
 export const overseasEntityDueDiligence = [
 
+  // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
+  // This means that the year check is checked before some others
   body("identity_date-day")
+    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
+    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-year")
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
-  body("identity_date-year")
-    .custom((value, { req }) => checkDateYearValueIsFourNumbers(ErrorMessages.YEAR_LENGTH, req.body["identity_date-year"])),
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date")
     .custom((value, { req }) => checkOptionalDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 

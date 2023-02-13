@@ -79,7 +79,7 @@ interface TrustHistoricalBeneficialOwnerCommon {
   notified_date_year: string;
 }
 
-export type IndividualTrustee = (NonInterestedIndividualPersonTrustee | InterestedIndividualPersonTrustee) & 
+export type IndividualTrustee = (NonInterestedIndividualPersonTrustee | InterestedIndividualPersonTrustee) &
 { is_service_address_same_as_principal_address: yesNoResponse };
 interface NonInterestedIndividualPersonTrustee extends TrustIndividual{
   type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;

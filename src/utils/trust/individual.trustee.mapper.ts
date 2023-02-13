@@ -41,9 +41,9 @@ export const mapIndividualTrusteeToSession = (
   if (formData.type === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
-      dateBecameInterestedPersonDay: formData.dateBecameIPDay,
-      dateBecameInterestedPersonMonth: formData.dateBecameIPMonth,
-      dateBecameInterestedPersonYear: formData.dateBecameIPYear,
+      date_became_interested_person_day: formData.dateBecameIPDay,
+      date_became_interested_person_month: formData.dateBecameIPMonth,
+      date_became_interested_person_year: formData.dateBecameIPYear,
     } as Trust.IndividualTrustee;
   }
   return {

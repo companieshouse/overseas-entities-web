@@ -11,7 +11,7 @@ import { mapCommonTrustDataToPage } from '../utils/trust/common.trust.data.mappe
 import { mapTrustWhoIsInvolvedToPage } from '../utils/trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee } from '../model/trust.model';
-import { getTrusteesFromTrust } from '../utils/trusts';
+import { getIndividualTrusteesFromTrust } from '../utils/trusts';
 
 const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -65,7 +65,7 @@ const getPageProperties = (
       ...mapTrustWhoIsInvolvedToPage(appData, trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      individualTrusteeData: getTrusteesFromTrust(appData, trustId),
+      individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId),
       trusteeType: TrusteeType,
       checkYourAnswersUrl: config.CHECK_YOUR_ANSWERS_URL,
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,

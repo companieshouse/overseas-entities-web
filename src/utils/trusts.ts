@@ -125,12 +125,26 @@ const getTrustBoOthers = (
     .filter((bo: BeneficialOwnerIndividual) => bo.trust_ids?.includes(trustId));
 };
 
-const getTrusteesFromTrust = (
+/**
+ *
+ * @param appData Application model type ApplicationData from session
+ * @param trustId interested trust Id type string
+ * @returns IndividualTrustee type
+ */
+const getIndividualTrusteesFromTrust = (
   appData: ApplicationData,
-  trustId: string,
+  trustId?: string,
 ): IndividualTrustee[] => {
-  return appData[TrustKey]?.find(trust =>
-    trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+  const individuals: IndividualTrustee[] = [];
+  if (trustId) {
+    return appData[TrustKey]?.find(trust =>
+      trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+  } else {
+    appData[TrustKey]?.map(trust => trust.INDIVIDUALS?.map(individual => {
+      individuals.push(individual as IndividualTrustee);
+    }));
+  }
+  return individuals;
 };
 
 const addTrustToBeneficialOwner = (
@@ -207,7 +221,7 @@ export {
   getBoOtherAssignableToTrust,
   getTrustBoIndividuals,
   getTrustBoOthers,
-  getTrusteesFromTrust,
+  getIndividualTrusteesFromTrust,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
   saveHistoricalBoInTrust,

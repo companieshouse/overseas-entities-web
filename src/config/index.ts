@@ -130,7 +130,8 @@ export const PAYMENT_FAILED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAIL
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
 
-export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + 'trusts';
+export const TRUSTS_URL = "trusts";
+export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUSTS_URL;
 export const TRUST_DETAILS_URL = TRUST_ENTRY_URL;
 export const TRUST_INVOLVED_URL = '/' + TRUST_INVOLVED_PAGE;
 export const TRUST_BENEFICIAL_OWNER_DETACH_URL = '/' + TRUST_BENEFICIAL_OWNER_DETACH_PAGE;
@@ -216,6 +217,7 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
+export const TYPE = "#role_within_trust";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

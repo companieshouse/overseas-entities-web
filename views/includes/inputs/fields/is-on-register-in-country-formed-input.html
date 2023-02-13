@@ -1,5 +1,3 @@
-{{ errors|dump|safe }}
-
 {% set entityPublicRegisterHtml %}
   {{ govukInput({
     errorMessage: errors.public_register_name if errors,

@@ -40,13 +40,13 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
 }
 
 type IndividualTrusteesFormCommon = {
-  trusteeId?: string,
+  trustee_id?: string,
   type: RoleWithinTrustType,
   forename: string,
   surname: string,
-  dateOfBirthDay: string,
-  dateOfBirthMonth: string,
-  dateOfBirthYear: string,
+  date_of_birth_day: string,
+  date_of_birth_month: string,
+  date_of_birth_year: string,
   nationality: string,
   second_nationality?: string,
   usual_residential_address_property_name_number: string,
@@ -64,9 +64,9 @@ type IndividualTrusteesFormCommon = {
   service_address_country?: string,
   service_address_postcode?: string,
   is_service_address_same_as_principal_address: yesNoResponse,
-  dateBecameIPDay?: string,
-  dateBecameIPMonth?: string,
-  dateBecameIPYear?: string,
+  date_became_ip_day?: string,
+  date_became_ip_month?: string,
+  date_became_ip_year?: string,
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {

@@ -128,7 +128,7 @@ const getTrustBoOthers = (
 /**
  *
  * @param appData Application model type ApplicationData from session
- * @param trustId interested trust Id type string
+ * @param trustId interested trust Id type string - optional
  * @returns IndividualTrustee type
  */
 const getIndividualTrusteesFromTrust = (

@@ -58,9 +58,9 @@
         {% set fieldParam = {
           name: 'dateOfBirth',
           value: {
-            'Day': formData.dateOfBirthDay,
-            'Month': formData.dateOfBirthMonth,
-            'Year': formData.dateOfBirthYear
+            'Day': formData.date_of_birth_day,
+            'Month': formData.date_of_birth_month,
+            'Year': formData.date_of_birth_year
           },
           label: 'What is their date of birth?',
           error: errors.dateOfBirth
@@ -106,7 +106,7 @@
           '
         }) }}
 
-        <input type="hidden" name="trusteeId" value="{{ formData.trusteeId }}"/>
+        <input type="hidden" name="trusteeId" value="{{ formData.trustee_id }}"/>
 
         {% include "includes/save-and-continue-button.html" %}
       </form>

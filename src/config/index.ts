@@ -217,7 +217,7 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
-export const TYPE = "#role_within_trust";
+export const ROLE_WITHIN_TRUST = "#role_within_trust";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

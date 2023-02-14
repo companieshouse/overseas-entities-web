@@ -243,7 +243,7 @@ export const checkSecondNationality = (nationality: string = "", secondNationali
   return true;
 };
 
-export const checkPublicRegisterJurisdiction = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
+export const checkPublicRegisterJurisdictionLength = (public_register_name: string = "", public_register_jurisdiction: string = "") => {
 
   if (public_register_name && public_register_jurisdiction && `${public_register_name}${CONCATENATED_VALUES_SEPARATOR}${public_register_jurisdiction}`.length > 160) {
     throw new Error(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);

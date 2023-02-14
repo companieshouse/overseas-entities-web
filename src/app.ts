@@ -14,6 +14,7 @@ import router from "./routes";
 import errorHandler from "./controllers/error.controller";
 import { createChangeLinkConfig, createSummaryListLink } from "./utils/change.link";
 import { countryFilter } from "./utils/country.filter";
+import { ErrorMessages } from "./validation/error.messages";
 
 const app = express();
 
@@ -34,6 +35,7 @@ const nunjucksEnv = nunjucks.configure([
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("OE_CONFIGS", config);
+nunjucksEnv.addGlobal("ERROR_MESSAGES", ErrorMessages);
 nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
 nunjucksEnv.addGlobal("CREATE_CHANGE_LINK", createChangeLinkConfig);
 nunjucksEnv.addGlobal("SUMMARY_LIST_LINK", createSummaryListLink);

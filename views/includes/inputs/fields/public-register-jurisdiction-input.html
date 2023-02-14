@@ -1,5 +1,5 @@
 {% if errors %}
-  {% if errors.public_register_name.text == 'Name of register and jurisdiction must be 159 characters or less in total'  %}
+  {% if errors.public_register_name.text == ERROR_MESSAGES.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH  %}
     {% set errorMsg = errors.public_register_name %}
   {% else %}
     {% set errorMsg = errors.public_register_jurisdiction %}

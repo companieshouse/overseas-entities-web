@@ -63,6 +63,11 @@
               {% include "includes/check-your-answers/individual-trustee.html" %}
             {% endfor %}
           {% endif %}
+          {% if (trust.CORPORATES and trust.CORPORATES.length > 0) %}
+            {% for legalEntity in trust.CORPORATES %}
+              {% include "includes/check-your-answers/beneficial-owner-legal.html" %}
+            {% endfor %}
+          {% endif %}
       {% endfor %}
 
       <br>

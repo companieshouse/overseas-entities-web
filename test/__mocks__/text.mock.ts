@@ -72,7 +72,7 @@ export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Governmen
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual managing officer";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE = "Corporate managing officer";
-export const CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE = "Trust details";
+export const CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE = "Trust";
 export const SECURE_REGISTER_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House?";
 export const SECURE_UPDATE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have their personal information protected at Companies House? (NOT LIVE)";
 export const CANNOT_USE_SERVICE_HEADING = "You'll need to apply using the paper form";
@@ -81,6 +81,7 @@ export const UPDATE_APPLY_PAPER_FORM_HEADING = "You&#39;ll need to file an updat
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
+export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
@@ -131,6 +132,7 @@ export const NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER = "We will not show any of 
 export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
+export const PAYMENT_FAILED_PAGE_HEADING = "Payment failed";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
@@ -151,8 +153,8 @@ export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas ent
 export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
 export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
-export const OVERSEAS_ENTITY_UPDATE_TITLE = "Update overseas entity";
-export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#name";
+export const OVERSEAS_ENTITY_UPDATE_TITLE = "Check the overseas entity details";
+export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#entity_name";
 export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
 export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
 export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/entity#service_address_property_name_number";

@@ -5,7 +5,6 @@ import * as config from "../../config";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData, resetEntityUpdate } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { getCompanyProfile } from "../../service/company.profile";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 
@@ -30,7 +29,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
 
     const entityNumber = req.body[EntityNumberKey];
-    const companyProfile = await getCompanyProfile(req, entityNumber) as CompanyProfile;
+    const companyProfile = await getCompanyProfile(req, entityNumber);
     if (!companyProfile) {
       const errors = createEntityNumberError(entityNumber);
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {

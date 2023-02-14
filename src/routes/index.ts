@@ -51,7 +51,10 @@ import {
   updateCheckYourAnswers,
   updateDueDiligence,
   updateDueDiligenceOverseasEntity,
-  updateConfirmation
+  updateConfirmation,
+  paymentFailed,
+  updateBeneficialOwnerType,
+  updateBeneficialOwnerGov
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -116,6 +119,7 @@ router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigati
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.get);
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.getById);
@@ -129,10 +133,16 @@ router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, navigation.hasBen
 router.post(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
 router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
 
-router.get(config.BENEFICIAL_OWNER_GOV_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.get);
-router.get(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.getById);
-router.post(config.BENEFICIAL_OWNER_GOV_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
-router.post(config.BENEFICIAL_OWNER_GOV_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+router.route(config.BENEFICIAL_OWNER_GOV_URL)
+  .all(authentication, navigation.hasBeneficialOwnersStatement)
+  .get(beneficialOwnerGov.get)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
+
+router.route(config.BENEFICIAL_OWNER_GOV_URL + config.ID)
+  .all(authentication, navigation.hasBeneficialOwnersStatement)
+  .get(beneficialOwnerGov.getById)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+
 router.get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.remove);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerIndividual.get);
@@ -227,6 +237,8 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMO
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 
+router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
+
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 
 // Routes for UPDATE journey
@@ -281,7 +293,7 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
     navigation.hasUpdatePresenter
   )
   .get(whoIsMakingUpdate.get)
-  .post(...validator.whoIsMakingFiling, checkValidations, whoIsMakingUpdate.post);
+  .post(...validator.whoIsMakingUpdate, checkValidations, whoIsMakingUpdate.post);
 
 router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .all(
@@ -304,9 +316,30 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
 
+router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
+  .all(
+    authentication,
+    navigation.hasEntityUpdateDetails
+  )
+  .get(updateBeneficialOwnerType.get)
+  .post(...validator.beneficialOwnersType, checkValidations, updateBeneficialOwnerType.post);
+
+router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateBeneficialOwnerType.postSubmit);
+
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(authentication)
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
+  .all(authentication, navigation.hasUpdatePresenter)
+  .get(updateBeneficialOwnerGov.get)
+  .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
+  .all(authentication, navigation.hasUpdatePresenter)
+  .get(updateBeneficialOwnerGov.getById)
+  .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
+router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerGov.remove);
 
 export default router;

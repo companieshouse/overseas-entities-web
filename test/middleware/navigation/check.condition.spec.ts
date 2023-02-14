@@ -12,7 +12,8 @@ import {
   checkHasOverseasEntity,
   checkUpdatePresenterEntered,
   checkWhoIsFilingEntered,
-  checkHasDateOfCreation
+  checkHasDateOfCreation,
+  checkEntityUpdateDetailsEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
@@ -199,6 +200,11 @@ describe("check condition navigation tests", () => {
 
   test("checkWhoIsFilingEntered should return false", () => {
     const data = checkWhoIsFilingEntered({ ...APPLICATION_DATA_MOCK, [WhoIsRegisteringKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkEntityUpdateDetailsEntered should return false", () => {
+    const data = checkEntityUpdateDetailsEntered({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
     expect(data).toEqual(false);
   });
 });

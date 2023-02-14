@@ -13,14 +13,17 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
     const backLinkUrl: string = config.WHO_IS_MAKING_UPDATE_PAGE;
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const overseasEntityHeading: string = "Overseas entity details (NOT LIVE)";
+    const overseasEntityHeading: string = "Check the overseas entity details (NOT LIVE)";
 
     return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
       templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
       backLinkUrl,
       changeLinkUrl,
       overseasEntityHeading,
-      appData
+      appData,
+      pageParams: {
+        isRegistration: false
+      },
     });
   } catch (errors) {
     logger.errorRequest(req, errors);
@@ -31,7 +34,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
-    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

@@ -17,6 +17,7 @@ import {
   SERVICE_UNAVAILABLE,
   OVERSEAS_ENTITY_UPDATE_TITLE,
   CHANGE_LINK,
+  CHANGE_LINK_ENTITY_NAME,
   CHANGE_LINK_ENTITY_EMAIL,
   CHANGE_LINK_ENTITY_GOVERNING_LAW,
   CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
@@ -67,6 +68,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
@@ -85,13 +87,12 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
   });
 
   describe("POST tests", () => {
-
-    test(`redirect to ${config.UPDATE_CHECK_YOUR_ANSWERS_PAGE}`, async () => {
+    test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
     });
 
     test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {

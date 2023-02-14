@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+
+{% set title = "Tell us about the government or public authority (NOT LIVE)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  {% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL + OE_CONFIGS.REMOVE + "/" + id %}
+  {% include "includes/page-templates/beneficial-owner-gov.html" %}
+{% endblock %}

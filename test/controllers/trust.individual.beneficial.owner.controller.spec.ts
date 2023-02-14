@@ -23,7 +23,7 @@ import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
 import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
-import { GeneralTrustee, Trust, TrustKey } from '../../src/model/trust.model';
+import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapIndividualTrusteeToSession } from '../../src/utils/trust/individual.trustee.mapper';
 import { getTrustByIdFromApp, saveIndividualTrusteeInTrust, saveTrustInApp } from '../../src/utils/trusts';
@@ -96,7 +96,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
 
   describe('POST unit tests', () => {
     test('Save', () => {
-      const mockTrustee = {} as GeneralTrustee ;
+      const mockTrustee = {} as IndividualTrustee ;
       (mapIndividualTrusteeToSession as jest.Mock).mockReturnValue(mockTrustee);
 
       mockGetApplicationData.mockReturnValue(mockAppData);

@@ -12,6 +12,7 @@ import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
+import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -33,13 +34,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
+      roleTypes: RoleWithinTrustType,
       hasTrusts,
       appData,
       changeLinkUrl,
       overseasEntityHeading,
       pageParams: {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        isRegistration: 'true'
+        isRegistration: true
       },
     });
   } catch (error) {

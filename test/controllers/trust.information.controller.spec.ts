@@ -159,7 +159,7 @@ describe("TRUST INFORMATION controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.TRUST_INFO_URL)
         .send({ TrustKey: "Trust info" });

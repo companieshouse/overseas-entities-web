@@ -10,15 +10,17 @@ import {
   saveIndividualTrusteeInTrust,
   saveTrustInApp,
   saveLegalEntityBoInTrust,
+  getIndividualTrusteesFromTrust,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
-import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate, GeneralTrustee } from '../../src/model/trust.model';
+import { Trust, TrustBeneficialOwner, TrustHistoricalBeneficialOwner, TrustKey, TrustCorporate, IndividualTrustee } from '../../src/model/trust.model';
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
 } from '../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
+import { TrustIndividual } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
 describe('Trust Utils method tests', () => {
   const trustId = 'dummyExistsTrustId';
@@ -255,10 +257,10 @@ describe('Trust Utils method tests', () => {
   describe('test Save Individual Beneficial Owner trustee in Trust', () => {
     const expectTrustee1 = {
       id: '110',
-    } as GeneralTrustee;
+    } as TrustIndividual;
     const expectTrustee2 = {
       id: '111',
-    } as GeneralTrustee;
+    } as TrustIndividual;
 
     let mockTrust = {} as Trust;
 
@@ -275,7 +277,7 @@ describe('Trust Utils method tests', () => {
     test('test add', () => {
       const trustee = {
         id: '101',
-      } as GeneralTrustee;
+      } as IndividualTrustee;
 
       const actual = saveIndividualTrusteeInTrust(mockTrust, trustee);
 
@@ -287,6 +289,34 @@ describe('Trust Utils method tests', () => {
           trustee,
         ],
       });
+    });
+
+    test("test getTrusteeFromTrust with application data and trust id", () => {
+      const test_trust_id = '247';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrusteesFromTrust(appData, test_trust_id);
+      expect(result.length).toEqual(3);
+      expect(result).toEqual([{}, {}, {}]);
+    });
+
+    test("test getTrusteeFromTrust with application data and no trust id", () => {
+      const appData = {
+        [TrustKey]: [{
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
+        }, {
+          'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrusteesFromTrust(appData);
+      expect(result.length).toEqual(6);
+      expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });
   });
 });

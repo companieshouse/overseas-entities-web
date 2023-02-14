@@ -19,7 +19,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       appData,
       registrationDate: update.date_of_creation
     });
-  }  catch (errors) {
+  } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
   }

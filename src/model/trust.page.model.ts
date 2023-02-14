@@ -1,6 +1,7 @@
 import { BeneficialOwnerTypeChoice } from './beneficial.owner.type.model';
 import { TrusteeType } from './trustee.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { yesNoResponse } from './data.types.model';
 
 type TrustDetailsForm = {
   trustId: string;
@@ -39,7 +40,7 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
 }
 
 type IndividualTrusteesFormCommon = {
-  trusteeId?: string,
+  trustee_id?: string,
   type: RoleWithinTrustType,
   forename: string,
   surname: string,
@@ -48,31 +49,32 @@ type IndividualTrusteesFormCommon = {
   date_of_birth_year: string,
   nationality: string,
   second_nationality?: string,
-  property_name: string,
-  address_line1: string,
-  address_line2?: string,
-  city: string,
-  county?: string,
-  country: string,
-  postal_code?: string,
-  correspondence_property_name?: string,
-  correspondence_address_line1?: string,
-  correspondence_address_line2?: string,
-  correspondence_city?: string,
-  correspondence_county?: string,
-  correspondence_country?: string,
-  correspondence_postal_code?: string,
+  usual_residential_address_property_name_number: string,
+  usual_residential_address_line_1: string,
+  usual_residential_address_line_2?: string,
+  usual_residential_address_town: string,
+  usual_residential_address_county?: string,
+  usual_residential_address_country: string,
+  usual_residential_address_postcode?: string,
+  service_address_property_name_number?: string,
+  service_address_line_1?: string,
+  service_address_line_2?: string,
+  service_address_town?: string,
+  service_address_county?: string,
+  service_address_country?: string,
+  service_address_postcode?: string,
+  is_service_address_same_as_principal_address: yesNoResponse,
   date_became_ip_day?: string,
   date_became_ip_month?: string,
   date_became_ip_year?: string,
 };
 
-interface  TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon  {
+interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
   type: BeneficialOwnerTypeChoice.otherLegal;
   corporateName: string;
 }
 
-interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon  {
+interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon {
   type: BeneficialOwnerTypeChoice.individual;
   firstName: string;
   lastName: string;

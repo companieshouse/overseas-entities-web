@@ -337,7 +337,9 @@ describe("ENTITY controller", () => {
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+      expect(resp.text).toContain("<a href=\"#public_register_name\">Name of register and jurisdiction must be 159 characters or less in total</a>");
+      expect(resp.text).toContain("  <p id=\"public_register_name-error\" class=\"govuk-error-message\">\n    <span class=\"govuk-visually-hidden\">Error:</span> Name of register and jurisdiction must be 159 characters or less in total\n  </p>");
+      expect(resp.text).toContain("  <p id=\"public_register_jurisdiction-error\" class=\"govuk-error-message\">\n    <span class=\"govuk-visually-hidden\">Error:</span> Name of register and jurisdiction must be 159 characters or less in total\n  </p>");
     });
 
     test("redirect to the next page when public register name and jurisdiction is just on maxlength", async () => {

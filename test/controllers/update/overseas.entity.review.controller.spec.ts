@@ -87,13 +87,12 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
   });
 
   describe("POST tests", () => {
-
-    test(`redirect to ${config.UPDATE_CHECK_YOUR_ANSWERS_PAGE}`, async () => {
+    test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
     });
 
     test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {

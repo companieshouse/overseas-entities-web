@@ -7,7 +7,7 @@
                     <th scope="row" class="govuk-table__header">Individual</th>
                     <td class="govuk-table__cell">{{ boi.first_name }} {{ boi.last_name }}</td>
                     <td class="govuk-table__cell">
-                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL }}/{{ boi.id }}" data-event-id="change-or-remove-link">
+                        <a class="govuk-link" href="{{ beneficialOwnerIndividualUrl }}/{{ boi.id }}" data-event-id="change-or-remove-link">
                             Change or remove
                         </a>
                     </td>
@@ -18,7 +18,7 @@
                     <th scope="row" class="govuk-table__header">Other legal entity</th>
                     <td class="govuk-table__cell">{{ boo.name }}</td>
                     <td class="govuk-table__cell">
-                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL }}/{{ boo.id }}" data-event-id="change-or-remove-link">
+                        <a class="govuk-link" href="{{ beneficialOwnerOtherUrl }}/{{ boo.id }}" data-event-id="change-or-remove-link">
                             Change or remove
                         </a>
                     </td>
@@ -29,7 +29,7 @@
                     <th scope="row" class="govuk-table__header">Government or public authority</th>
                     <td class="govuk-table__cell">{{ bog.name }}</td>
                     <td class="govuk-table__cell">
-                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL }}/{{ bog.id }}">
+                        <a class="govuk-link" href="{{ beneficialOwnerGovUrl }}/{{ bog.id }}">
                             Change or remove
                         </a>
                     </td>

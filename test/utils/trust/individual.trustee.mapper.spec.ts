@@ -95,9 +95,9 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           ...mockFormDataBasic,
           trustee_id: '10002',
           type: RoleWithinTrustType.INTERESTED_PERSON,
-          dateBecameIPDay: '2',
-          dateBecameIPMonth: '11',
-          dateBecameIPYear: '2022',
+          date_became_ip_day: '2',
+          date_became_ip_month: '11',
+          date_became_ip_year: '2022',
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({

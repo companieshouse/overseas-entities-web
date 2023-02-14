@@ -67,7 +67,12 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-    nextPage: []
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   },
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
     currentPage: config.ENTITY_PAGE,
@@ -130,6 +135,11 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL, config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+  },
+  [config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
@@ -198,5 +208,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_GOV_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   }
 };

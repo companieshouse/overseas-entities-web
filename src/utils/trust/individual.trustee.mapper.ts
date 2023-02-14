@@ -5,9 +5,9 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
-): Trust.GeneralTrustee => {
+): Trust.IndividualTrustee => {
   const data = {
-    id: formData.trusteeId || uuidv4(),
+    id: formData.trustee_id || uuidv4(),
     type: formData.type,
     forename: formData.forename,
     other_forenames: '',
@@ -17,22 +17,23 @@ export const mapIndividualTrusteeToSession = (
     date_of_birth_year: formData.date_of_birth_year,
     nationality: formData.nationality,
     second_nationality: formData.second_nationality,
-    ura_address_premises: formData.property_name,
-    ura_address_line1: formData.address_line1,
-    ura_address_line2: formData.address_line2,
+    ura_address_premises: formData.usual_residential_address_property_name_number,
+    ura_address_line1: formData.usual_residential_address_line_1,
+    ura_address_line2: formData.usual_residential_address_line_2,
+    ura_address_locality: formData.usual_residential_address_town,
+    ura_address_region: formData.usual_residential_address_county,
+    ura_address_country: formData.usual_residential_address_country,
+    ura_address_postal_code: formData.usual_residential_address_postcode,
     ura_address_care_of: '',
-    ura_address_locality: formData.city,
-    ura_address_region: formData.county,
-    ura_address_country: formData.country,
-    ura_address_postal_code: formData.postal_code,
     ura_address_po_box: '',
-    sa_address_premises: formData.correspondence_property_name,
-    sa_address_line1: formData.correspondence_address_line1,
-    sa_address_line2: formData.correspondence_address_line2,
-    sa_address_locality: formData.correspondence_city,
-    sa_address_region: formData.correspondence_county,
-    sa_address_country: formData.correspondence_country,
-    sa_address_postal_code: formData.correspondence_postal_code,
+    is_service_address_same_as_principal_address: formData.is_service_address_same_as_principal_address,
+    sa_address_premises: formData.service_address_property_name_number,
+    sa_address_line1: formData.service_address_line_1,
+    sa_address_line2: formData.service_address_line_2,
+    sa_address_locality: formData.service_address_town,
+    sa_address_region: formData.service_address_county,
+    sa_address_country: formData.service_address_country,
+    sa_address_postal_code: formData.service_address_postcode,
     sa_address_care_of: '',
     sa_address_po_box: '',
   };
@@ -43,9 +44,9 @@ export const mapIndividualTrusteeToSession = (
       date_became_interested_person_day: formData.date_became_ip_day,
       date_became_interested_person_month: formData.date_became_ip_month,
       date_became_interested_person_year: formData.date_became_ip_year,
-    } as Trust.GeneralTrustee;
+    } as Trust.IndividualTrustee;
   }
   return {
-    ...data as Trust.GeneralTrustee
+    ...data as Trust.IndividualTrustee
   };
 };

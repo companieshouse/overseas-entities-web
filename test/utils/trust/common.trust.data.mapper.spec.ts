@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
-import { mapCommonTrustDataToPage  } from "../../../src/utils/trust/common.trust.data.mapper";
+import { mapCommonTrustDataToPage } from "../../../src/utils/trust/common.trust.data.mapper";
 import { TrustKey } from '../../../src/model/trust.model';
 
 describe('Common Trust Data Mapper to Page Service', () => {

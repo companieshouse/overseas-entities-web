@@ -30,7 +30,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       appData,
       registrationDate: companyDataResponse.dateOfCreation
     });
-  }  catch (errors) {
+  } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
   }

@@ -100,7 +100,7 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
     });
 
     test("catch error when posting data", async () => {
-      mockGetApplicationData.mockImplementationOnce(() =>  { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });

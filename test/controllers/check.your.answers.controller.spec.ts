@@ -360,7 +360,7 @@ describe("GET tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with someone else change links when this is selected`, async () => {
     const applicationData = { APPLICATION_DATA_MOCK };
-    applicationData[WhoIsRegisteringKey] =  WhoIsRegisteringType.SOMEONE_ELSE;
+    applicationData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;
     mockGetApplicationData.mockReturnValueOnce(applicationData);
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
 
@@ -445,7 +445,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag off`, async () => {
-    mockIsActiveFeature.mockReturnValue(false);  // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+    mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
 
     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 

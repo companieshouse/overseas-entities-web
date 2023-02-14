@@ -19,7 +19,6 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-
     const appData: ApplicationData = getApplicationData(req.session);
 
     const entity = appData[EntityKey];
@@ -49,14 +48,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST OVERSEAS_ENTITY_UPDATE_DETAILS`);
-
     const data: ApplicationDataType = mapRequestToEntityData(req);
 
     const session = req.session as Session;
     setApplicationData(session, data, EntityKey);
 
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -8,7 +8,6 @@ import { OeNumberKey } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
@@ -24,7 +23,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
     const oeNumber = req.body[OeNumberKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [OeNumberKey]: oeNumber });

@@ -7,8 +7,6 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
-
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const backLinkUrl: string = config.WHO_IS_MAKING_UPDATE_PAGE;
@@ -30,7 +28,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
     return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
   } catch (errors) {
     logger.errorRequest(req, errors);

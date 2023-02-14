@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import { ApplicationData } from "../model";
-import { logger } from "../utils/logger";
 import {
   getApplicationData,
   setApplicationData,
@@ -19,8 +18,6 @@ import { saveAndContinue } from "../utils/save.and.continue";
 
 export const getDueDiligencePage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
     const agentData = appData[DueDiligenceKey];
 
@@ -41,8 +38,6 @@ export const getDueDiligencePage = (req: Request, res: Response, next: NextFunct
 
 export const postDueDiligencePage = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
     const agentData = prepareData(req.body, DueDiligenceKeys);
     agentData[IdentityAddressKey] = mapFieldsToDataObject(req.body, IdentityAddressKeys, AddressKeys);

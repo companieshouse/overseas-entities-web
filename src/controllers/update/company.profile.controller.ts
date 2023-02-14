@@ -11,7 +11,6 @@ import { getCompanyProfile } from "../../service/company.profile";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     const id = appData?.entity_number as string;
@@ -38,7 +37,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
     return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

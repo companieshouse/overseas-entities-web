@@ -8,8 +8,6 @@ import { saveAndContinue } from "./save.and.continue";
 
 export const getPresenterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
     const presenter = appData[PresenterKey];
 
@@ -26,8 +24,6 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
 
 export const postPresenterPage = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(session, data, PresenterKey);

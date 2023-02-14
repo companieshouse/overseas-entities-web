@@ -16,8 +16,6 @@ import {
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: OVERSEAS_ENTITY_REVIEW_URL,
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE
@@ -30,8 +28,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
 
     const transactionID = await postTransaction(req, session);

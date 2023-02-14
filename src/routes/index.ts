@@ -61,6 +61,7 @@ import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
+import { serviceLoggingMiddleware } from "../middleware/service.logging.middleware";
 
 const router = Router();
 
@@ -94,17 +95,17 @@ router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegiste
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
 router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
 
-router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
-router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
+router.get(config.PRESENTER_URL, authentication, serviceLoggingMiddleware, navigation.hasOverseasName, presenter.get);
+router.post(config.PRESENTER_URL, authentication, serviceLoggingMiddleware, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
 
-router.get(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, dueDiligence.get);
-router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
+router.get(config.DUE_DILIGENCE_URL, authentication, serviceLoggingMiddleware, navigation.hasPresenter, dueDiligence.get);
+router.post(config.DUE_DILIGENCE_URL, authentication, serviceLoggingMiddleware, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
 
-router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
-router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
+router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, serviceLoggingMiddleware, navigation.hasPresenter, overseasEntityDueDiligence.get);
+router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, serviceLoggingMiddleware, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
 
 router.get(config.ENTITY_URL, authentication, navigation.hasDueDiligence, entity.get);
 router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
@@ -234,10 +235,17 @@ router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 
 // Routes for UPDATE journey
+
+// Another option to use middleware on all of UPDATE routes but think there is some we dont want like payments, error controller etc
+// router.use("update-an-overseas-entity/", serviceLoggingMiddleware)
+//  could try figure out how to do exclusions?
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
 router.route(config.SECURE_UPDATE_FILTER_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
   .get(secureUpdateFilter.get)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
 
@@ -252,31 +260,53 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
 
-router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
-router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
+router.route(config.OVERSEAS_ENTITY_QUERY_URL)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
+  .get(overseasEntityQuery.get)
+  .post(...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
-router.get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.get);
-router.post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL, authentication, confirmOverseasEntityDetails.post);
+router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
+  .get(confirmOverseasEntityDetails.get)
+  .post(confirmOverseasEntityDetails.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(
     authentication,
+    serviceLoggingMiddleware,
     navigation.hasOverseasEntityNumber,
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
-router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
-router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);
+router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
+  .get(updateCheckYourAnswers.get)
+  .post(updateCheckYourAnswers.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, overseasEntityPayment.get);
 
-router.get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, overseasEntityUpdateDetails.get);
-router.post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL, authentication, ...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
+router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
+  .get(overseasEntityUpdateDetails.get)
+  .post(...validator.entity, checkValidations, overseasEntityUpdateDetails.post);
 
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .all(
     authentication,
+    serviceLoggingMiddleware,
     navigation.hasUpdatePresenter
   )
   .get(whoIsMakingUpdate.get)
@@ -285,6 +315,7 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
 router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .all(
     authentication,
+    serviceLoggingMiddleware,
     navigation.hasWhoIsMakingUpdate
   )
   .get(updateDueDiligence.get)
@@ -293,18 +324,25 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
 router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
   .all(
     authentication,
+    serviceLoggingMiddleware,
     navigation.hasWhoIsMakingUpdate
   )
   .get(updateDueDiligenceOverseasEntity.get)
   .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    serviceLoggingMiddleware
+  )
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
 

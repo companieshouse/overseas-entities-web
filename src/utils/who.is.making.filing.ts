@@ -7,7 +7,6 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../model/who.is.makin
 
 export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(templateName, {
@@ -23,7 +22,6 @@ export const getWhoIsFiling = (req: Request, res: Response, next: NextFunction, 
 
 export const postWhoIsFiling = (req: Request, res: Response, next: NextFunction, agentUrl: string, oeUrl: string) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const whoIsRegistering = req.body[WhoIsRegisteringKey];
 
     setExtraData(req.session, { ...getApplicationData(req.session), [WhoIsRegisteringKey]: whoIsRegistering });

@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Update overseas entity (NOT LIVE)" %} <!-- Edit this and remove NOT LIVE-->
+{% set title = overseasEntityHeading %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -13,6 +13,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ appData.entity_name }}</span>
       {% include "includes/list/errors.html" %}
       {% include "includes/entity.html" %}
       <form method="post">

@@ -25,20 +25,20 @@
 %}
 
 {% if beneficial_owners_statement === "ALL_IDENTIFIED_ALL_DETAILS" %}
-  {% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
-  {% set boTypesTitle = "Which type of beneficial owner do you want to add?" %}
+  {% set boTypesLegendText = "Which type of beneficial owner do you want to add?" %}
+  {% set boTypesTitle = "Beneficial owners involved in the overseas entity" %}
   {% set boTypes = bos %}
   {% set whatToAdd = "another beneficial owner" %}
   {% set hiddenTextValue = "beneficial owners" %}
 {% elif beneficial_owners_statement === "NONE_IDENTIFIED" %}
-  {% set boTypesLegendText = "Select the type of managing officer you want to add" %}
-  {% set boTypesTitle = "Which type of managing officer do you want to add?" %}
+  {% set boTypesLegendText = "Which type of managing officer do you want to add?" %}
+  {% set boTypesTitle = "Managing officers involved in the overseas entity" %}
   {% set boTypes = mos %}
   {% set whatToAdd = "another managing officer" %}
   {% set hiddenTextValue = "managing officers" %}
 {% else %}
-  {% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
-  {% set boTypesTitle = "Which type of beneficial owner or managing officer do you want to add?" %}
+  {% set boTypesLegendText = "Which type of beneficial owner or managing officer do you want to add?" %}
+  {% set boTypesTitle = "Beneficial owners and managing officers involved in the overseas entity" %}
   {% set boTypes = bos %}
   {% set boTypes = (boTypes.push(mos[0]), boTypes) %}
   {% set boTypes = (boTypes.push(mos[1]), boTypes) %}
@@ -74,17 +74,11 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ boTypesTitle }}</h1>
       <br/>
 
-      {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
-        {{ govukDetails({
-          summaryText: "What is a managing officer?",
-          attributes: {
-            "data-event-id": "what-is-a-managing-officer-details"
-          },
-          html: "<p>This is a director, manager or company secretary of the overseas entity.</p>"
-        }) }}
-      {% endif %}
-
       <form method="post">
+
+        {% if hasBeneficialOwners or hasManagingOfficers %}
+          {% include "includes/list/beneficial-owners-and-managing-officers.html" %}
+        {% endif %}
 
         {{ govukRadios({
           errorMessage: errors.beneficial_owner_type if errors,
@@ -103,17 +97,12 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
           items: boTypes
         }) }}
 
-        <button class="govuk-button" data-module="govuk-button" id="add" formaction="/register-an-overseas-entity/beneficial-owner-type" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
-
-        {% if (hasBeneficialOwners or hasManagingOfficers) %}
-          <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>
-          <br>
-          {% include "includes/list/beneficial-owner.html" %}
-          {% include "includes/list/managing-officer.html" %}
-
-          <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="/register-an-overseas-entity/beneficial-owner-type/submit" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
-
-        {% endif %}
+        <div class="govuk-button-group">
+          <button class="govuk-button" data-module="govuk-button" id="add" formaction="/register-an-overseas-entity/beneficial-owner-type" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
+          {% if (hasBeneficialOwners or hasManagingOfficers) %}
+            <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="/register-an-overseas-entity/beneficial-owner-type/submit" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
+          {% endif %}
+        </div>
 
         <!-- Hidden input, needed to submit the beneficial owners statement -->
         {{ govukInput({

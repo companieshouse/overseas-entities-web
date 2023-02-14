@@ -1,0 +1,64 @@
+{% if hasBeneficialOwners or hasManagingOfficers %}
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">What <span class="govuk-visually-hidden">beneficial owners or managing officers</span> you have added so far</caption>
+        <tbody class="govuk-table__body">
+            {% for boi in beneficial_owners_individual %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
+                    <td class="govuk-table__cell">Individual beneficial owner</td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL }}/{{ boi.id }}" data-event-id="change-or-remove-link">
+                            Change or remove
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for boo in beneficial_owners_corporate %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
+                    <td class="govuk-table__cell">Other legal entity beneficial owner</td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL }}/{{ boo.id }}" data-event-id="change-or-remove-link">
+                            Change or remove
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% for bog in beneficial_owners_government_or_public_authority %}
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
+                    <td class="govuk-table__cell">Government or public authority beneficial owner</td>
+                    <td class="govuk-table__cell">
+                        <a class="govuk-link" href="{{ OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL }}/{{ bog.id }}" data-event-id="change-or-remove-link">
+                            Change or remove
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            {% if beneficial_owners_statement === "NONE_IDENTIFIED" or "SOME_IDENTIFIED_ALL_DETAILS"
+              {% for mo in managing_officers_individual %}
+                <tr class="govuk-table__row">
+                  <th scope="row" class="govuk-table__header">{{ mo.first_name }} {{ mo.last_name }}</th>
+                  <td class="govuk-table__cell">Individual managing officer</td>
+                  <td class="govuk-table__cell">
+                      <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_URL }}/{{ mo.id }}" data-event-id="change-or-remove-link">
+                          Change or remove
+                      </a>
+                  </td>
+                </tr>
+              {% endfor %}
+              {% for moc in managing_officers_corporate %}
+                <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">{{ moc.name }}</th>
+                  <td class="govuk-table__cell">Corporate managing officer</td>
+                  <td class="govuk-table__cell">
+                      <a class="govuk-link" href="{{ OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL }}/{{ moc.id }}" data-event-id="change-or-remove-link">
+                          Change or remove
+                      </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+{% endif %}

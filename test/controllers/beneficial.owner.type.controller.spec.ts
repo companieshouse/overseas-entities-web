@@ -30,7 +30,6 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
   PAGE_TITLE_ERROR,
   BENEFICIAL_OWNER_TYPE_PAGE_HEADING,
-  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT,
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
@@ -75,7 +74,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
       expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED);
     });
 
     test("renders the beneficial owner type page for beneficial owners", async () => {

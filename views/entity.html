@@ -28,7 +28,7 @@
     }) }}
 
     <form method="post">
-      {% if isUpdate %}
+      {% if entity_number %}
         {% set fieldParam = {
           name: 'entity_name',
           error: errors.entity_name if errors,

@@ -444,11 +444,30 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with only INVALID_DATE error when invalid characters are used`, async () => {
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with only YEAR_LENGTH error when invalid characters are used`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "a";
       beneficialOwnerGov["start_date-month"] = "b";
       beneficialOwnerGov["start_date-year"] = "c";
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the current page ${config.BENEFICIAL_OWNER_GOV_PAGE} with only INVALID_DATE error when invalid date is used`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "11";
+      beneficialOwnerGov["start_date-month"] = "33";
+      beneficialOwnerGov["start_date-year"] = "2022";
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);

@@ -39,7 +39,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       overseasEntityHeading,
       pageParams: {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-        isRegistration: 'true'
+        isRegistration: true
       },
     });
   } catch (error) {

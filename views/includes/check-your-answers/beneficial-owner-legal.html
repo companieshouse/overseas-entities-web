@@ -4,7 +4,7 @@
 
 {% set legalEntityFormattedResidentialAddressHtml %}
    {% set address = {
-      property_name_number: legalEntity.ura_address_premises,
+      property_name_number: legalEntity.ro_address_premises,
       line_1: legalEntity.ro_address_line1,
       line_2: legalEntity.ro_address_line2,
       town: legalEntity.ro_address_locality,
@@ -35,6 +35,14 @@
   {% endif %}
 {% endset %}
 
+{% set formattedPublicRegister %}
+  {% if legalEntity.is_on_register_in_country_formed_in == 1 %}
+     {{ legalEntity.public_register_name | safe}} / {{ legalEntity.public_register_jurisdiction | safe }} / {{ legalEntity.registration_number | safe }}
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
 
@@ -56,7 +64,7 @@
 
 {% set rows = (rows.push({
   key: {
-    text: "Role within trust"
+    text: "Role within the trust"
   },
   value: {
     text: legalEntity.type
@@ -125,7 +133,7 @@
     text: "Country it was formed in"
   },
   value: {
-    text: legalEntity.identification_place_registered
+    text: legalEntity.incorporation_country
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
@@ -173,7 +181,7 @@
     text: "Overseas public register"
   },
   value: {
-    text: legalEntity.identification_registration_number
+    text: formattedPublicRegister
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(

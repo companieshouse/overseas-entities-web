@@ -2,9 +2,9 @@
 
 {% set individualTrusteeFullName = individualTrustee.forename + " " + individualTrustee.surname %}
 
-{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.date_of_birth_day, individualTrustee.date_of_birth_month, individualTrustee.date_of_birth_year) %}
+{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.date_of_birthDay, individualTrustee.date_of_birthMonth, individualTrustee.date_of_birthYear) %}
 
-{% set interestedPersonDate = dateMacros.formatDate(individualTrustee.date_became_interested_person_day, individualTrustee.date_became_interested_person_month, individualTrustee.date_became_interested_person_year) %}
+{% set interestedPersonDate = dateMacros.formatDate(individualTrustee.date_became_interested_personDay, individualTrustee.date_became_interested_personMonth, individualTrustee.date_became_interested_personYear) %}
 
 {% set individualTrusteeFormattedResidentialAddressHtml %}
    {% set address = {
@@ -92,7 +92,7 @@
 
 {% set rows = (rows.push({
   key: {
-    text: "Role within trust"
+    text: "Role within the trust"
   },
   value: {
     text: individualTrustee.type

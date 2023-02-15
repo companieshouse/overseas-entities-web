@@ -24,7 +24,7 @@
         {% set interestedPersonDateHtml %}
           <br>
           {% set fieldParam = {
-            name: 'interestedPersonDate',
+            name: 'interested_person_date',
             value: {
               'Day': formData.date_became_ip_day,
               'Month': formData.date_became_ip_month,
@@ -32,7 +32,7 @@
             },
             label: 'What date did they become an interested person?',
             classes: 'govuk-fieldset__legend--s',
-            error: errors.interestedPersonDate
+            error: errors.date
           } %}
           {% include "includes/inputs/date-input.html" %}
         {% endset -%}
@@ -56,14 +56,14 @@
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
-          name: 'dateOfBirth',
+          name: 'date_of_birth',
           value: {
             'Day': formData.date_of_birth_day,
             'Month': formData.date_of_birth_month,
             'Year': formData.date_of_birth_year
           },
           label: 'What is their date of birth?',
-          error: errors.dateOfBirth
+          error: errors.date
         } %}
         {% include "includes/inputs/date-input.html" %}
 

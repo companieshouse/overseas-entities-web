@@ -46,7 +46,7 @@ import {
   CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS,
   CHANGE_LINK_INDIVIDUAL_BO_START_DATE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE,
-  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE,
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OLE_SUB_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT,
   CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE,
   CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_CORPORATE_SUB_TITLE,
@@ -260,7 +260,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST);
   });
 
-  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Others`, async () => {
+  test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including change links BO Other legal entity`, async () => {
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
       [BeneficialOwnerIndividualKey]: [],
@@ -535,7 +535,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT);
 
     // Beneficial Owner Other
-    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE);
+    expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OLE_SUB_TITLE);
     expect(resp.text).toContain("TestCorporation");
     expect(resp.text).toContain("TheLegalForm");
     expect(resp.text).toContain("November");

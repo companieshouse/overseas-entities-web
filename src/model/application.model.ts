@@ -11,7 +11,8 @@ import {
   managingOfficerType,
   trustType,
   dueDiligenceType,
-  overseasEntityDueDiligenceType
+  overseasEntityDueDiligenceType,
+  updateType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -36,6 +37,7 @@ export interface ApplicationData {
     has_sold_land?: string;
     is_secure_register?: string;
     who_is_registering?: string;
+    update?: updateType.Update;
 }
 
 export const ApplicationDataArrayType = [
@@ -59,4 +61,5 @@ export type ApplicationDataType =
   | managingOfficerType.ManagingOfficerIndividual
   | trustType.Trust
   | CreatePaymentRequest
-  | dataType.Address;
+  | dataType.Address
+  | updateType.Update;

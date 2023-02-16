@@ -206,7 +206,22 @@ export const ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS = {
   service_address: SERVICE_ADDRESS
 };
 
-export const ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+export const REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  incorporation_country: "incorporationCountry",
+  is_service_address_same_as_principal_address: "0",
+  email: "email@test.gov.uk",
+  legal_form: "legalForm",
+  law_governed: "governedLaw",
+  public_register_name: PUBLIC_REGISTER_NAME,
+  public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
+  registration_number: REGISTRATION_NUMBER,
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK
+};
+
+export const UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  entity_name: "name of a company",
   incorporation_country: "incorporationCountry",
   is_service_address_same_as_principal_address: "0",
   email: "email@test.gov.uk",

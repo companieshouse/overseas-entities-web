@@ -67,7 +67,7 @@ export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to 
 export const SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS_TEXT = "The correspondence address is the same as the entity's principal or registered office address";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE = "Has the overseas entity identified any registrable beneficial owners?";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_SUB_TEXT = "Some beneficial owners have been identified and I can provide all required information";
-export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OTHER_SUB_TITLE = "Corporate beneficial owner";
+export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_OLE_SUB_TITLE = "Other legal entity beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_GOV_SUB_TITLE = "Government or public authority beneficial owner";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_TITLE = "Managing officer details";
 export const CHECK_YOUR_ANSWERS_PAGE_MANAGING_OFFICER_SUB_TITLE = "Individual managing officer";
@@ -166,4 +166,5 @@ export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
+export const TRUSTS_URL = "trusts";
 

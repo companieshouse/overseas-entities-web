@@ -65,7 +65,7 @@
           {% endif %}
           {% if (trust.CORPORATES and trust.CORPORATES.length > 0) %}
             {% for legalEntity in trust.CORPORATES %}
-              {% include "includes/check-your-answers/beneficial-owner-legal.html" %}
+              {% include "includes/check-your-answers/legal-entity-trustee.html" %}
             {% endfor %}
           {% endif %}
       {% endfor %}

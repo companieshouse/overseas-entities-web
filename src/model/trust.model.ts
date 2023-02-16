@@ -67,8 +67,6 @@ interface TrustIndividual {
   sa_address_po_box?: string;
 }
 
-// export type TrustHistoricalBeneficialOwnerType = BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
-
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
   corporateIndicator: TrusteeType;

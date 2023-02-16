@@ -11,6 +11,8 @@ jest.mock('../../src/validation/trust.involved.validation', () => ({
 }));
 jest.mock('../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../src/utils/trust/who.is.involved.mapper');
+jest.mock('../../src/utils/trust/who.is.involved.mapper');
+jest.mock('../../src/utils/trusts');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -39,6 +41,7 @@ import { TrusteeType } from '../../src/model/trustee.type.model';
 import { getApplicationData } from '../../src/utils/application.data';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involved.mapper';
+import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../../src/utils/trusts';
 
 describe('Trust Involved controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -85,6 +88,18 @@ describe('Trust Involved controller', () => {
       };
       (mapTrustWhoIsInvolvedToPage as any as jest.Mock).mockReturnValue(mockInvolvedData);
 
+      const indiviudalTrusteeData = {
+        name: "indiviudalTrustee"
+      };
+
+      (getIndividualTrusteesFromTrust as any as jest.Mock).mockReturnValue(indiviudalTrusteeData);
+
+      const formerTrusteeData = {
+        name: "formerTrustee"
+      };
+
+      (getFormerTrusteesFromTrust as any as jest.Mock).mockReturnValue(formerTrusteeData);
+
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
@@ -95,6 +110,12 @@ describe('Trust Involved controller', () => {
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId);
 
+      expect(getIndividualTrusteesFromTrust).toBeCalledTimes(1);
+      expect(getIndividualTrusteesFromTrust).toBeCalledWith(mockAppData, trustId);
+
+      expect(getFormerTrusteesFromTrust).toBeCalledTimes(1);
+      expect(getFormerTrusteesFromTrust).toBeCalledWith(mockAppData, trustId);
+
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(
         TRUST_INVOLVED_PAGE,
@@ -102,6 +123,8 @@ describe('Trust Involved controller', () => {
           pageData: expect.objectContaining({
             trustData: mockTrustData,
             ...mockInvolvedData,
+            individualTrusteeData: indiviudalTrusteeData,
+            formerTrusteeData: formerTrusteeData,
           }),
         }),
       );

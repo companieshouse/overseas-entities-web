@@ -3,12 +3,11 @@ jest.mock('uuid');
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import * as uuid from 'uuid';
 import * as Page from '../../../src/model/trust.page.model';
-import { TrustHistoricalBeneficialOwnerType } from '../../../src/model/trust.model';
 import {
   generateBoId,
   mapBeneficialOwnerToSession,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
-import { BeneficialOwnerTypeChoice } from "../../../src/model/beneficial.owner.type.model";
+import { TrusteeType } from "../../../src/model/trustee.type.model";
 
 describe('Historical Beneficial Owner page Mapper Service', () => {
   beforeEach(() => {
@@ -30,7 +29,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           boId: '9999',
-          type: BeneficialOwnerTypeChoice.individual as TrustHistoricalBeneficialOwnerType,
+          type: TrusteeType.INDIVIDUAL as TrusteeType,
           firstName: 'dummyFirstName',
           lastName: 'dummyLastName',
         };
@@ -52,7 +51,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
       test('map corporate', () => {
         const mockFormData = {
           ...mockFormDataBasic,
-          type: BeneficialOwnerTypeChoice.otherLegal as TrustHistoricalBeneficialOwnerType,
+          type: TrusteeType.LEGAL_ENTITY as TrusteeType,
           corporateName: 'dummyCorporateName',
         };
 

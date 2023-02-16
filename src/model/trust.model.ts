@@ -3,6 +3,7 @@ import { BeneficialOwnerOther } from '../model/beneficial.owner.other.model';
 import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
 import { yesNoResponse } from './data.types.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { TrusteeType } from './trustee.type.model';
 
 export const TrustKey = "trusts";
 
@@ -66,11 +67,9 @@ interface TrustIndividual {
   sa_address_po_box?: string;
 }
 
-export type TrustHistoricalBeneficialOwnerType = BeneficialOwnerTypeChoice.individual | BeneficialOwnerTypeChoice.otherLegal;
-
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
-  corporateIndicator: TrustHistoricalBeneficialOwnerType;
+  corporateIndicator: TrusteeType;
   ceased_date_day: string;
   ceased_date_month: string;
   ceased_date_year: string;

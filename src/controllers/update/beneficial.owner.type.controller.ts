@@ -6,6 +6,7 @@ import * as config from "../../config";
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
+  ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
@@ -38,13 +39,16 @@ export const postSubmit = (req: Request, res: Response) => {
   return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
-// With validation in place we will only have 3 choices
 const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice): string => {
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
     return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
     return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
-  } else {
+  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.individual) {
+    return config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL;
+  } else {
+    return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
   }
 };

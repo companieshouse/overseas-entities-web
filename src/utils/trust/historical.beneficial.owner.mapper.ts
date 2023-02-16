@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { BeneficialOwnerTypeChoice } from '../../model/beneficial.owner.type.model';
+import { TrusteeType } from '../../model/trustee.type.model';
 import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 
@@ -8,7 +8,7 @@ const mapBeneficialOwnerToSession = (
 ): Trust.TrustHistoricalBeneficialOwner => {
   const data = {
     id: formData.boId || generateBoId(),
-    corporateIndicator: formData.type as Trust.TrustHistoricalBeneficialOwnerType,
+    corporateIndicator: formData.type as TrusteeType,
     ceased_date_day: formData.startDateDay,
     ceased_date_month: formData.startDateMonth,
     ceased_date_year: formData.startDateYear,
@@ -17,7 +17,7 @@ const mapBeneficialOwnerToSession = (
     notified_date_year: formData.endDateYear,
   };
 
-  if (formData.type === BeneficialOwnerTypeChoice.otherLegal) {
+  if (formData.type === TrusteeType.LEGAL_ENTITY) {
     return {
       ...data,
       corporateName: formData.corporateName,

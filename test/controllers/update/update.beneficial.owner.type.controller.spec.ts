@@ -16,8 +16,8 @@ import * as config from "../../../src/config";
 import { getApplicationData } from '../../../src/utils/application.data';
 import {
   SERVICE_UNAVAILABLE,
-  BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS,
-  BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS,
+  BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT,
+  BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING,
   BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED,
   BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO,
@@ -52,7 +52,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners`, async () => {
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and manging officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS
@@ -60,12 +60,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
-      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
-      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners with just the BOs options`, async () => {
@@ -73,8 +73,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED);
     });
 
@@ -121,7 +121,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         .send({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS });
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
     });
 

@@ -11,19 +11,32 @@
   {
     value: "governmentOrPublicOwner",
     text: "Government or public authority beneficial owner"
+  },
+  {
+    value: "individualOfficer",
+    text: "Individual managing officer"
+  },
+  {
+    value: "corporateOfficer",
+    text: "Corporate managing officer"
   }]
 %}
 
 {% set beneficial_owners_statement = "ALL_IDENTIFIED_ALL_DETAILS" %}
-{% set boTypesLegendText = "Select the type of beneficial owner you want to add" %}
-{% set title = "Which type of beneficial owner do you want to add? (NOT LIVE)" %}
+{% set boTypesLegendText = "Select the type of beneficial owner or managing officer you want to add" %}
+{% set title = "Which type of beneficial owner or managing officer do you want to add? (NOT LIVE)" %}
 {% set boTypes = bos %}
-{% set whatToAdd = "another beneficial owner" %}
-{% set hiddenTextValue = "beneficial owners" %}
+{% set whatToAdd = "another beneficial owner or managing officer" %}
+{% set hiddenTextValue = "beneficial owners and managing officers" %}
 
 {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
-or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
-or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0) %}
+  or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
+  or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
+%}
+
+{% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
+  or (managing_officers_corporate and managing_officers_corporate.length > 0)
+%}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}

@@ -105,7 +105,22 @@ export const ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK = {
   ...PRINCIPAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK
 };
 
-export const ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+export const REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  incorporation_country: maxLengthMocks.NO_MAX,
+  is_service_address_same_as_principal_address: 0,
+  email: EMAIL_INVALID_FORMAT,
+  legal_form: "площадь",
+  law_governed: "площадь",
+  public_register_name: "Москва",
+  public_register_jurisdiction: "Москва",
+  registration_number: "Москва",
+  is_on_register_in_country_formed_in: "1",
+  ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
+};
+
+export const UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
+  entity_name: "^ name of a company ^",
   incorporation_country: maxLengthMocks.NO_MAX,
   is_service_address_same_as_principal_address: 0,
   email: EMAIL_INVALID_FORMAT,

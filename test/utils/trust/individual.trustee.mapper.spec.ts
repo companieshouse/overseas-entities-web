@@ -135,6 +135,19 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           date_became_interested_person_year: mockFormData.dateBecameIPYear,
         });
       });
+
+      test('trustee Id should not be null after mapping', () => {
+        const mockFormData = {
+          ...mockFormDataBasic,
+          type: RoleWithinTrustType.INTERESTED_PERSON,
+          dateBecameIPDay: '2',
+          dateBecameIPMonth: '11',
+          dateBecameIPYear: '2022',
+        };
+        const mappedObj = mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData);
+
+        expect(mappedObj.id).not.toBeNull();
+      });
     });
   });
 });

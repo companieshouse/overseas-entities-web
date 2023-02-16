@@ -10,6 +10,7 @@ import {
   mapLegalEntityItemToPage,
   mapLegalEntityToSession,
 } from '../../../src/utils/trust/legal.entity.beneficial.owner.mapper';
+import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
   beforeEach(() => {
@@ -44,6 +45,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         public_register_name: "Reg Name",
         public_register_jurisdiction: "Reg Jurisdiction",
         registration_number: "9001",
+        is_service_address_same_as_principal_address: yesNoResponse.Yes
       };
 
       test('Map legal entity trustee to session', () => {
@@ -78,6 +80,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           identification_place_registered: mockFormData.public_register_name,
           identification_country_registration: mockFormData.public_register_jurisdiction,
           identification_registration_number: mockFormData.registration_number,
+          is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address
         });
       });
 
@@ -121,6 +124,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         identification_place_registered: "Reg Name",
         identification_country_registration: "Reg Jurisdiction",
         identification_registration_number: "9002",
+        is_service_address_same_as_principal_address: yesNoResponse.Yes
       };
       test("Map legal entity trustee session data to page trustee item", () => {
         expect(

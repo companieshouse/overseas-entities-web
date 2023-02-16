@@ -7,14 +7,14 @@ export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
 ): Trust.IndividualTrustee => {
   const data = {
-    id: formData.trustee_id || uuidv4(),
+    id: formData.trusteeId || uuidv4(),
     type: formData.type,
     forename: formData.forename,
     other_forenames: '',
     surname: formData.surname,
-    date_of_birth_day: formData.date_of_birth_day,
-    date_of_birth_month: formData.date_of_birth_month,
-    date_of_birth_year: formData.date_of_birth_year,
+    date_of_birth_day: formData.dateOfBirthDay,
+    date_of_birth_month: formData.dateOfBirthMonth,
+    date_of_birth_year: formData.dateOfBirthYear,
     nationality: formData.nationality,
     second_nationality: formData.second_nationality,
     ura_address_premises: formData.usual_residential_address_property_name_number,
@@ -26,7 +26,7 @@ export const mapIndividualTrusteeToSession = (
     ura_address_postal_code: formData.usual_residential_address_postcode,
     ura_address_care_of: '',
     ura_address_po_box: '',
-    is_service_address_same_as_principal_address: formData.is_service_address_same_as_principal_address,
+    is_service_address_same_as_usual_residential_address: formData.is_service_address_same_as_usual_residential_address,
     sa_address_premises: formData.service_address_property_name_number,
     sa_address_line1: formData.service_address_line_1,
     sa_address_line2: formData.service_address_line_2,
@@ -41,9 +41,9 @@ export const mapIndividualTrusteeToSession = (
   if (formData.type === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
-      date_became_interested_person_day: formData.date_became_ip_day,
-      date_became_interested_person_month: formData.date_became_ip_month,
-      date_became_interested_person_year: formData.date_became_ip_year,
+      date_became_interested_person_day: formData.dateBecameIPDay,
+      date_became_interested_person_month: formData.dateBecameIPMonth,
+      date_became_interested_person_year: formData.dateBecameIPYear,
     } as Trust.IndividualTrustee;
   }
   return {

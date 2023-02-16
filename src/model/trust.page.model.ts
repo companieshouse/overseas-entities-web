@@ -40,13 +40,13 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
 }
 
 type IndividualTrusteesFormCommon = {
-  trustee_id?: string,
+  trusteeId?: string,
   type: RoleWithinTrustType,
   forename: string,
   surname: string,
-  date_of_birth_day: string,
-  date_of_birth_month: string,
-  date_of_birth_year: string,
+  dateOfBirthDay: string,
+  dateOfBirthMonth: string,
+  dateOfBirthYear: string,
   nationality: string,
   second_nationality?: string,
   usual_residential_address_property_name_number: string,
@@ -63,10 +63,10 @@ type IndividualTrusteesFormCommon = {
   service_address_county?: string,
   service_address_country?: string,
   service_address_postcode?: string,
-  is_service_address_same_as_principal_address: yesNoResponse,
-  date_became_ip_day?: string,
-  date_became_ip_month?: string,
-  date_became_ip_year?: string,
+  is_service_address_same_as_usual_residential_address: yesNoResponse,
+  dateBecameIPDay?: string,
+  dateBecameIPMonth?: string,
+  dateBecameIPYear?: string,
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
@@ -92,28 +92,30 @@ type TrustLegalEntityForm = {
 legalEntityId?: string;
 legalEntityName: string;
 roleWithinTrust: string;
-interestedPersonStartDateDay?: string
-interestedPersonStartDateMonth?: string
-interestedPersonStartDateYear?: string
-principal_address_property_name_number: string
-principal_address_line_1: string
-principal_address_line_2?: string
-principal_address_town: string
-principal_address_county: string
-principal_address_country: string
-principal_address_postcode: string
-service_address_property_name_number?: string
-service_address_line_1?: string
-service_address_line_2?: string
-service_address_town?: string
-service_address_county?: string
-service_address_country?: string
-service_address_postcode?: string
-governingLaw: string
-legalForm: string
-public_register_name?: string
-public_register_jurisdiction?: string
-registration_number?: string
+interestedPersonStartDateDay?: string;
+interestedPersonStartDateMonth?: string;
+interestedPersonStartDateYear?: string;
+principal_address_property_name_number: string;
+principal_address_line_1: string;
+principal_address_line_2?: string;
+principal_address_town: string;
+principal_address_county: string;
+principal_address_country: string;
+principal_address_postcode: string;
+service_address_property_name_number?: string;
+service_address_line_1?: string;
+service_address_line_2?: string;
+service_address_town?: string;
+service_address_county?: string;
+service_address_country?: string;
+service_address_postcode?: string;
+governingLaw: string;
+legalForm: string;
+public_register_name?: string;
+public_register_jurisdiction?: string;
+registration_number?: string;
+is_service_address_same_as_principal_address: yesNoResponse;
+is_on_register_in_country_formed_in: yesNoResponse;
 };
 
 type TrusteeItem = {

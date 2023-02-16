@@ -27,8 +27,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
 
     let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
+
     if (hasTrusts) {
-      backLinkUrl = config.TRUST_INFO_PAGE;
+      backLinkUrl = `${config.TRUSTS_URL}`;
     }
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {

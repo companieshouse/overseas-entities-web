@@ -24,11 +24,11 @@
         {% set interestedPersonDateHtml %}
           <br>
           {% set fieldParam = {
-            name: 'interested_person_date',
+            name: 'dateBecameIP',
             value: {
-              'Day': formData.date_became_ip_day,
-              'Month': formData.date_became_ip_month,
-              'Year': formData.date_became_ip_year
+              'Day': formData.dateBecameIPDay,
+              'Month': formData.dateBecameIPMonth,
+              'Year': formData.dateBecameIPYear
             },
             label: 'What date did they become an interested person?',
             classes: 'govuk-fieldset__legend--s',
@@ -56,11 +56,11 @@
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
-          name: 'date_of_birth',
+          name: 'dateOfBirth',
           value: {
-            'Day': formData.date_of_birth_day,
-            'Month': formData.date_of_birth_month,
-            'Year': formData.date_of_birth_year
+            'Day': formData.dateOfBirthDay,
+            'Month': formData.dateOfBirthMonth,
+            'Year': formData.dateOfBirthYear
           },
           label: 'What is their date of birth?',
           error: errors.date
@@ -106,7 +106,7 @@
           '
         }) }}
 
-        <input type="hidden" name="trusteeId" value="{{ formData.trustee_id }}"/>
+        <input type="hidden" name="trusteeId" value="{{ formData.trusteeId }}"/>
 
         {% include "includes/save-and-continue-button.html" %}
       </form>

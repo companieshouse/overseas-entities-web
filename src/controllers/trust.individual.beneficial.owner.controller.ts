@@ -75,6 +75,7 @@ const post = (
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const url = `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
 
+
     // convert from data to application (session) object
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
 

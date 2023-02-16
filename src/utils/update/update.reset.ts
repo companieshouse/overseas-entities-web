@@ -1,6 +1,6 @@
 
-import { ApplicationData } from "./application.model";
-import { Update } from "./update.type.model";
+import { ApplicationData } from "../../model/application.model";
+import { Update } from "../../model/update.type.model";
 
 export const resetEntityUpdate = (appData: ApplicationData): Update => {
   // Entity data will be filled in by caller so not reset.
@@ -26,4 +26,5 @@ export const resetEntityUpdate = (appData: ApplicationData): Update => {
   // Don't reset has_sold_land as registration only.
   return appData.update;
 };
+
 

@@ -85,8 +85,6 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    logger.debugRequest(req, `${JSON.stringify(req.session)}`);
-
     const pageProps = getPageProperties(req);
 
     return res.render(pageProps.templateName, pageProps);

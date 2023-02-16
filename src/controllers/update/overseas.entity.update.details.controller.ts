@@ -4,6 +4,7 @@ import {
   setApplicationData,
   getApplicationData,
   mapDataObjectToFields,
+  setExtraData
 } from "../../utils/application.data";
 import { EntityKey } from "../../model/entity.model";
 import { ApplicationData, ApplicationDataType } from "../../model";
@@ -19,6 +20,8 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
+
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
@@ -37,9 +40,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...entity,
       ...principalAddress,
       ...serviceAddress,
-      pageParams: {
-        isRegistration: 'false'
-      },
+      ...appData
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -49,14 +50,19 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST OVERSEAS_ENTITY_UPDATE_DETAILS`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const data: ApplicationDataType = mapRequestToEntityData(req);
-
     const session = req.session as Session;
+    const entityName = req.body[EntityNameKey];
+
     setApplicationData(session, data, EntityKey);
 
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    setExtraData(req.session, {
+      ...getApplicationData(req.session),
+      [EntityNameKey]: entityName
+    });
+
     return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
   } catch (error) {
     logger.errorRequest(req, error);

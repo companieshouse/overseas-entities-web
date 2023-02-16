@@ -12,7 +12,9 @@ export const dueDiligence = [
 
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.DUE_DILIGENCE_NAME)
+    .bail()
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AGENT_NAME_LENGTH)
+    .bail()
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS),
 
   ...identity_address_validations,

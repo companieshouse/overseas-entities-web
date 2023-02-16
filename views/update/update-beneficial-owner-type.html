@@ -49,5 +49,8 @@
 {% block content %}
   {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
   {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
+  {% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+  {% set beneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
+  {% set beneficialOwnerGovUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
   {% include "includes/page-templates/beneficial-owner.html" %}
 {% endblock %}

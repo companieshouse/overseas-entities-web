@@ -21,14 +21,20 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-{% set entityNameLink = CREATE_CHANGE_LINK(
-                           OE_CONFIGS.ENTITY_CHANGE_NAME,
-                           "Name of the overseas entity",
-                           "change-entity-name-button")
-%}
+  {% set entityNameLink = CREATE_CHANGE_LINK(
+    OE_CONFIGS.ENTITY_CHANGE_NAME,
+    "Name of the overseas entity",
+    "change-entity-name-button")
+  %}
+{% else %}
+  {% set entityNameLink = CREATE_CHANGE_LINK(
+    changeLinkUrl + OE_CONFIGS.ENTITY_NAME,
+    "Name of the overseas entity",
+    "change-entity-name-button")
+  %}
 {% endif %}
 
-<h2 class="govuk-heading-l">{{overseasEntityHeading}}</h2>
+<h2 class="govuk-heading-l">{{ overseasEntityHeading }}</h2>
 
 {{ govukSummaryList({
     rows: [

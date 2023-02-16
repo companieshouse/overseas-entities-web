@@ -16,7 +16,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
-  ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
   ENTITY_BODY_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
   ENTITY_OBJECT_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
@@ -52,7 +52,7 @@ import {
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { EntityKey } from '../../src/model/entity.model';
 import {
-  ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
+  REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../__mocks__/validation.mock';
 import { hasDueDiligence } from "../../src/middleware/navigation/has.due.diligence.middleware";
@@ -202,7 +202,7 @@ describe("ENTITY controller", () => {
       mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
@@ -213,7 +213,7 @@ describe("ENTITY controller", () => {
       mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS );
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
@@ -224,7 +224,7 @@ describe("ENTITY controller", () => {
       mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [HasSamePrincipalAddressKey]: "" } );
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
@@ -235,7 +235,7 @@ describe("ENTITY controller", () => {
       mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" } );
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_REDIRECT);
@@ -264,7 +264,7 @@ describe("ENTITY controller", () => {
 
     test("Test email is valid with long email address", async () => {
       const entity = {
-        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
@@ -279,7 +279,7 @@ describe("ENTITY controller", () => {
 
     test("Test email is valid with long email name and address", async () => {
       const entity = {
-        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
@@ -294,7 +294,7 @@ describe("ENTITY controller", () => {
 
     test("Test email is valid with very long email name and address", async () => {
       const entity = {
-        ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
+        ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
@@ -337,13 +337,15 @@ describe("ENTITY controller", () => {
         .send(ENTITY_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+      expect(resp.text).toContain("<a href=\"#public_register_name\">Name of register and jurisdiction must be 159 characters or less in total</a>");
+      expect(resp.text).toContain("  <p id=\"public_register_name-error\" class=\"govuk-error-message\">\n    <span class=\"govuk-visually-hidden\">Error:</span> Name of register and jurisdiction must be 159 characters or less in total\n  </p>");
+      expect(resp.text).toContain("  <p id=\"public_register_jurisdiction-error\" class=\"govuk-error-message\">\n    <span class=\"govuk-visually-hidden\">Error:</span> Name of register and jurisdiction must be 159 characters or less in total\n  </p>");
     });
 
     test("redirect to the next page when public register name and jurisdiction is just on maxlength", async () => {
       const publicRegisterName79 = MAX_50 + MAX_20 + "abcdefghi";
       const publicRegisterJurisdiction80 = MAX_80;
-      const entity = { ...ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, [PublicRegisterNameKey]: publicRegisterName79, [PublicRegisterJurisdictionKey]: publicRegisterJurisdiction80 };
+      const entity = { ...REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, [PublicRegisterNameKey]: publicRegisterName79, [PublicRegisterJurisdictionKey]: publicRegisterJurisdiction80 };
       mockPrepareData.mockReturnValueOnce(entity);
       const resp = await request(app)
         .post(ENTITY_URL)
@@ -422,7 +424,7 @@ describe("ENTITY controller", () => {
       mockGetApplicationData.mockReturnValueOnce( { [EntityNameKey]: OVERSEAS_NAME_MOCK } );
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
+        .send(REGISTER_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ENTITY_PAGE_TITLE);
@@ -447,7 +449,7 @@ describe("ENTITY controller", () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(ENTITY_URL)
-        .send(ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(REGISTER_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

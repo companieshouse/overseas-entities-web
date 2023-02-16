@@ -1,6 +1,7 @@
 import { BeneficialOwnerTypeChoice } from './beneficial.owner.type.model';
 import { TrusteeType } from './trustee.type.model';
 import { RoleWithinTrustType } from './role.within.trust.type.model';
+import { yesNoResponse } from './data.types.model';
 
 type TrustDetailsForm = {
   trustId: string;
@@ -43,28 +44,29 @@ type IndividualTrusteesFormCommon = {
   type: RoleWithinTrustType,
   forename: string,
   surname: string,
-  date_of_birth_day: string,
-  date_of_birth_month: string,
-  date_of_birth_year: string,
+  dateOfBirthDay: string,
+  dateOfBirthMonth: string,
+  dateOfBirthYear: string,
   nationality: string,
   second_nationality?: string,
-  property_name: string,
-  address_line1: string,
-  address_line2?: string,
-  city: string,
-  county?: string,
-  country: string,
-  postal_code?: string,
-  correspondence_property_name?: string,
-  correspondence_address_line1?: string,
-  correspondence_address_line2?: string,
-  correspondence_city?: string,
-  correspondence_county?: string,
-  correspondence_country?: string,
-  correspondence_postal_code?: string,
-  date_became_ip_day?: string,
-  date_became_ip_month?: string,
-  date_became_ip_year?: string,
+  usual_residential_address_property_name_number: string,
+  usual_residential_address_line_1: string,
+  usual_residential_address_line_2?: string,
+  usual_residential_address_town: string,
+  usual_residential_address_county?: string,
+  usual_residential_address_country: string,
+  usual_residential_address_postcode?: string,
+  service_address_property_name_number?: string,
+  service_address_line_1?: string,
+  service_address_line_2?: string,
+  service_address_town?: string,
+  service_address_county?: string,
+  service_address_country?: string,
+  service_address_postcode?: string,
+  is_service_address_same_as_usual_residential_address: yesNoResponse,
+  dateBecameIPDay?: string,
+  dateBecameIPMonth?: string,
+  dateBecameIPYear?: string,
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
@@ -90,28 +92,30 @@ type TrustLegalEntityForm = {
 legalEntityId?: string;
 legalEntityName: string;
 roleWithinTrust: string;
-interestedPersonStartDateDay?: string
-interestedPersonStartDateMonth?: string
-interestedPersonStartDateYear?: string
-principal_address_property_name_number: string
-principal_address_line_1: string
-principal_address_line_2?: string
-principal_address_town: string
-principal_address_county: string
-principal_address_country: string
-principal_address_postcode: string
-service_address_property_name_number?: string
-service_address_line_1?: string
-service_address_line_2?: string
-service_address_town?: string
-service_address_county?: string
-service_address_country?: string
-service_address_postcode?: string
-governingLaw: string
-legalForm: string
-public_register_name?: string
-public_register_jurisdiction?: string
-registration_number?: string
+interestedPersonStartDateDay?: string;
+interestedPersonStartDateMonth?: string;
+interestedPersonStartDateYear?: string;
+principal_address_property_name_number: string;
+principal_address_line_1: string;
+principal_address_line_2?: string;
+principal_address_town: string;
+principal_address_county: string;
+principal_address_country: string;
+principal_address_postcode: string;
+service_address_property_name_number?: string;
+service_address_line_1?: string;
+service_address_line_2?: string;
+service_address_town?: string;
+service_address_county?: string;
+service_address_country?: string;
+service_address_postcode?: string;
+governingLaw: string;
+legalForm: string;
+public_register_name?: string;
+public_register_jurisdiction?: string;
+registration_number?: string;
+is_service_address_same_as_principal_address: yesNoResponse;
+is_on_register_in_country_formed_in: yesNoResponse;
 };
 
 type TrusteeItem = {

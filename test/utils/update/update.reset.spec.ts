@@ -1,6 +1,7 @@
-import { ApplicationData, resetEntityUpdate } from "../../src/model";
+import { ApplicationData } from "../../../src/model";
+import { resetEntityUpdate } from "../../../src/utils/update/update.reset";
 import { describe, expect, test } from '@jest/globals';
-import { WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
+import { WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 
 describe("reset update model", () => {
 

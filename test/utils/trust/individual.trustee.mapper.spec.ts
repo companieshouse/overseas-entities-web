@@ -50,47 +50,45 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         is_service_address_same_as_usual_residential_address: yesNoResponse.Yes
       };
 
-      test.each(testParam)('map Individual trustees',
-                           (id: string, roleWithinTrust: Exclude<RoleWithinTrustType,
-        RoleWithinTrustType.INTERESTED_PERSON>) => {
-                             const mockFormData = {
-                               ...mockFormDataBasic,
-                               trusteeId: id,
-                               type: roleWithinTrust,
-                             };
+      test.each(testParam)('map Individual trustees', (id: string, roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
+        const mockFormData = {
+          ...mockFormDataBasic,
+          trusteeId: id,
+          type: roleWithinTrust,
+        };
 
-                             expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
-                               id: mockFormData.trusteeId,
-                               type: mockFormData.type,
-                               forename: mockFormData.forename,
-                               surname: mockFormData.surname,
-                               other_forenames: '',
-                               date_of_birth_day: mockFormData.dateOfBirthDay,
-                               date_of_birth_month: mockFormData.dateOfBirthMonth,
-                               date_of_birth_year: mockFormData.dateOfBirthYear,
-                               nationality: mockFormData.nationality,
-                               second_nationality: mockFormData.second_nationality,
-                               ura_address_premises: mockFormData.usual_residential_address_property_name_number,
-                               ura_address_line1: mockFormData.usual_residential_address_line_1,
-                               ura_address_line2: mockFormData.usual_residential_address_line_2,
-                               ura_address_locality: mockFormData.usual_residential_address_town,
-                               ura_address_region: mockFormData.usual_residential_address_county,
-                               ura_address_country: mockFormData.usual_residential_address_country,
-                               ura_address_postal_code: mockFormData.usual_residential_address_postcode,
-                               ura_address_care_of: '',
-                               ura_address_po_box: '',
-                               is_service_address_same_as_usual_residential_address: mockFormData.is_service_address_same_as_usual_residential_address,
-                               sa_address_premises: mockFormData.service_address_property_name_number,
-                               sa_address_line1: mockFormData.service_address_line_1,
-                               sa_address_line2: mockFormData.service_address_line_2,
-                               sa_address_locality: mockFormData.service_address_town,
-                               sa_address_region: mockFormData.service_address_county,
-                               sa_address_country: mockFormData.service_address_country,
-                               sa_address_postal_code: mockFormData.service_address_postcode,
-                               sa_address_care_of: '',
-                               sa_address_po_box: '',
-                             });
-                           });
+        expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
+          id: mockFormData.trusteeId,
+          type: mockFormData.type,
+          forename: mockFormData.forename,
+          surname: mockFormData.surname,
+          other_forenames: '',
+          date_of_birth_day: mockFormData.dateOfBirthDay,
+          date_of_birth_month: mockFormData.dateOfBirthMonth,
+          date_of_birth_year: mockFormData.dateOfBirthYear,
+          nationality: mockFormData.nationality,
+          second_nationality: mockFormData.second_nationality,
+          ura_address_premises: mockFormData.usual_residential_address_property_name_number,
+          ura_address_line1: mockFormData.usual_residential_address_line_1,
+          ura_address_line2: mockFormData.usual_residential_address_line_2,
+          ura_address_locality: mockFormData.usual_residential_address_town,
+          ura_address_region: mockFormData.usual_residential_address_county,
+          ura_address_country: mockFormData.usual_residential_address_country,
+          ura_address_postal_code: mockFormData.usual_residential_address_postcode,
+          ura_address_care_of: '',
+          ura_address_po_box: '',
+          is_service_address_same_as_usual_residential_address: mockFormData.is_service_address_same_as_usual_residential_address,
+          sa_address_premises: mockFormData.service_address_property_name_number,
+          sa_address_line1: mockFormData.service_address_line_1,
+          sa_address_line2: mockFormData.service_address_line_2,
+          sa_address_locality: mockFormData.service_address_town,
+          sa_address_region: mockFormData.service_address_county,
+          sa_address_country: mockFormData.service_address_country,
+          sa_address_postal_code: mockFormData.service_address_postcode,
+          sa_address_care_of: '',
+          sa_address_po_box: '',
+        });
+      });
 
       test('map Interested trustees', () => {
         const mockFormData = {

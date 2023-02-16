@@ -63,7 +63,6 @@ import {
   SERVICE_UNAVAILABLE,
   SOMEONE_ELSE_REGISTERING,
   TRUST_INFORMATION_LINK,
-  TRUSTS_URL
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -454,7 +453,7 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(TRUSTS_URL); // back button
+    expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
   });
 
@@ -474,7 +473,7 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(TRUSTS_URL); // back button
+    expect(resp.text).toContain(TRUST_INFORMATION_LINK); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);

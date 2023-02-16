@@ -28,7 +28,16 @@
     }) }}
 
     <form method="post">
-
+      {% if entity_number %}
+        {% set fieldParam = {
+          name: 'entity_name',
+          error: errors.entity_name if errors,
+          label: 'What is the name of the overseas entity?',
+          value: entityName
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+      {% endif %}
+      
       {% set countryField = incorporation_country if incorporation_country else '' %}
       {% set countryFieldNameId = "incorporation_country" %}
       {% set countryFieldText = "Which country was it formed in?" %}

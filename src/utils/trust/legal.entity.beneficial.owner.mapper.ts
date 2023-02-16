@@ -36,6 +36,8 @@ const mapLegalEntityToSession = (
     identification_place_registered: formData.public_register_name,
     identification_country_registration: formData.public_register_jurisdiction,
     identification_registration_number: formData.registration_number,
+    is_service_address_same_as_principal_address: formData.is_service_address_same_as_principal_address,
+    is_on_register_in_country_formed_in: formData.is_on_register_in_country_formed_in,
   };
 };
 

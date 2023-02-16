@@ -4,7 +4,7 @@
 
 {% set legalEntityFormattedResidentialAddressHtml %}
    {% set address = {
-      property_name_number: legalEntity.ura_address_premises,
+      property_name_number: legalEntity.ro_address_premises,
       line_1: legalEntity.ro_address_line1,
       line_2: legalEntity.ro_address_line2,
       town: legalEntity.ro_address_locality,
@@ -17,8 +17,8 @@
 
 {% set legalEntityChangeServiceAddressHtml = "" %}
 {% set legalEntityFormattedServiceAddressHtml %}
-  {% if legalEntity.is_correspondence_address_same_as_home_address %}
-    The correspondence address is the same as the home address
+  {% if legalEntity.is_service_address_same_as_principal_address == '1' %}
+    The correspondence address is the same as the entity’s principal or registered office address
     {% set legalEntityChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
   {% else %}
     {% set legalEntityChangeServiceAddressHtml = "#service_address_property_name_number" %}
@@ -32,6 +32,14 @@
       postcode: legalEntity.sa_address_postal_code
     } %}
     {% include "includes/display_address.html" %}
+  {% endif %}
+{% endset %}
+
+{% set formattedPublicRegister %}
+  {% if legalEntity.is_on_register_in_country_formed_in == '1' %}
+     {{ legalEntity.public_register_name | safe}} / {{ legalEntity.public_register_jurisdiction | safe }} / {{ legalEntity.registration_number | safe }}
+  {% else %}
+    No
   {% endif %}
 {% endset %}
 
@@ -56,7 +64,7 @@
 
 {% set rows = (rows.push({
   key: {
-    text: "Role within trust"
+    text: "Role within the trust"
   },
   value: {
     text: legalEntity.type
@@ -73,7 +81,7 @@
 {% if legalEntity.type ==  roleTypes.INTERESTED_PERSON %}
   {% set rows = (rows.push({
     key: {
-      text: "Date " + legalEntityFullName + " became an interested person"
+      text: "Date " + legalEntity.name + " became an interested person"
     },
     value: {
       text: interestedPersonDate
@@ -104,21 +112,23 @@
   }
 }), rows) %}
 
-{% set rows = (rows.push({
-  key: {
-    text: "Correspondence address"
-  },
-  value: {
-    html: legalEntityFormattedServiceAddressHtml
-  },
-  actions: {
-    items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangeServiceAddressHtml,
-      "Legal entity " + legalEntity.name + " - correspondence address",
-      "change-legal-entity-correspondence-address-button"
-    ) ]
-  }
-}), rows) %}
+{% if legalEntityFormattedServiceAddressHtml.length %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Correspondence address"
+    },
+    value: {
+      html: legalEntityFormattedServiceAddressHtml
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangeServiceAddressHtml,
+        "Legal entity " + legalEntity.name + " - correspondence address",
+        "change-legal-entity-correspondence-address-button"
+      ) ]
+    }
+  }), rows) %}
+{% endif %}
 
 {% set rows = (rows.push({
   key: {
@@ -173,7 +183,7 @@
     text: "Overseas public register"
   },
   value: {
-    text: legalEntity.identification_registration_number
+    text: formattedPublicRegister
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(

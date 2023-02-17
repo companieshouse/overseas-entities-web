@@ -58,7 +58,6 @@
       {% endif %}
 
       {% if (pageParams.isTrustFeatureEnabled == true) %}
-      <br><h2 class="govuk-heading-l">I appear</h2>
         {% for trust in appData.trusts %}
             {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
               {% for individualTrustee in trust.INDIVIDUALS  %}

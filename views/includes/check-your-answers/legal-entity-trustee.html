@@ -2,6 +2,8 @@
 
 {% set legalEntityDateOfBirth = dateMacros.formatDate(legalEntity.dateOfBirthDay, legalEntity.dateOfBirthMonth, legalEntity.dateOfBirthYear) %}
 
+{% set interestedPersonDate = dateMacros.formatDate(legalEntity.date_became_interested_person_day, legalEntity.date_became_interested_person_month, legalEntity.date_became_interested_person_year) %}
+
 {% set legalEntityFormattedResidentialAddressHtml %}
    {% set address = {
       property_name_number: legalEntity.ro_address_premises,
@@ -37,7 +39,7 @@
 
 {% set formattedPublicRegister %}
   {% if legalEntity.is_on_register_in_country_formed_in == '1' %}
-     {{ legalEntity.public_register_name | safe}} / {{ legalEntity.public_register_jurisdiction | safe }} / {{ legalEntity.registration_number | safe }}
+     {{ legalEntity.identification_place_registered | safe}} / {{ legalEntity.identification_country_registration | safe }} / {{ legalEntity.identification_registration_number | safe }}
   {% else %}
     No
   {% endif %}

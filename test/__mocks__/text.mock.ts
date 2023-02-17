@@ -167,3 +167,4 @@ export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application refer
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
 export const TRUSTS_URL = "trusts";
+

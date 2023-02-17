@@ -68,6 +68,11 @@
               {% include "includes/check-your-answers/legal-entity-trustee.html" %}
             {% endfor %}
           {% endif %}
+          {% if (trust.HISTORICAL_BO and trust.HISTORICAL_BO.length > 0) %}
+            {% for formerTrustee in trust.HISTORICAL_BO %}
+              {% include "includes/check-your-answers/historical-trustee.html" %}
+            {% endfor %}
+          {% endif %}
       {% endfor %}
 
       <br>

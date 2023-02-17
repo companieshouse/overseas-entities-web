@@ -3,7 +3,7 @@ import { beneficialOwnerIndividual } from "./beneficial.owner.individual.validat
 import { beneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
-import { beneficialOwnersType } from "./beneficial.owner.type.validation";
+import { beneficialOwnersType, updateBeneficialOwnerManagingOfficerType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
 import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
@@ -45,4 +45,5 @@ export const validator = {
   overseasName,
   startingNew,
   trustInvolved,
+  updateBeneficialOwnerManagingOfficerType
 };

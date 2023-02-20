@@ -21,7 +21,7 @@
 
 {% set individualTrusteeChangeServiceAddressHtml = "" %}
 {% set individualTrusteeFormattedServiceAddressHtml %}
-  {% if individualTrustee.is_service_address_same_as_principal_address == 1 %}
+  {% if individualTrustee.is_service_address_same_as_usual_residential_address == '1' %}
     The correspondence address is the same as the home address
     {% set individualTrusteeChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
   {% else %}
@@ -92,7 +92,7 @@
 
 {% set rows = (rows.push({
   key: {
-    text: "Role within trust"
+    text: "Role within the trust"
   },
   value: {
     text: individualTrustee.type
@@ -175,7 +175,7 @@
   }
 }), rows) %}
 
-{% if individualTrusteeChangeServiceAddressHtml.length %}
+{% if individualTrusteeFormattedServiceAddressHtml.length %}
   {% set rows = (rows.push({
     key: {
       text: "Correspondence address"

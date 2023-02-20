@@ -13,3 +13,4 @@ export * as trustType from "./trust.model";
 export * as dueDiligenceType from "./due.diligence.model";
 export * as overseasEntityDueDiligenceType from "./overseas.entity.due.diligence.model";
 export * as trusteeType from "./trustee.type.model";
+export * as updateType from "./update.type.model";

@@ -214,9 +214,19 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.UPDATE_MANAGING_OFFICER_URL]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
-  }
+  },
 };

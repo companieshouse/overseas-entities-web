@@ -1,0 +1,47 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% if formerTrustee.corporateName %}
+  {% set formerTrusteeName = formerTrustee.corporateName %}
+{% else %}
+  {% set formerTrusteeName = formerTrustee.forename + " " + formerTrustee.surname %}
+{% endif %}
+
+{% set formerTrusteeStartDate = dateMacros.formatDate(formerTrustee.notified_date_day, formerTrustee.notified_date_month, formerTrustee.notified_date_year) %}
+{% set formerTrusteeEndDate = dateMacros.formatDate(formerTrustee.ceased_date_day, formerTrustee.ceased_date_month, formerTrustee.ceased_date_year) %}
+
+
+{# Build and add each govukSummaryList row separately so that some rows can be optional #}
+{% set rows=[] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Former beneficial owner's name"
+  },
+  value: {
+    text: formerTrusteeName
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date they became a beneficial owner"
+  },
+  value: {
+    text: formerTrusteeStartDate
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date they stopped being a beneficial owner"
+  },
+  value: {
+    text: formerTrusteeEndDate
+  }
+}), rows) %}
+
+<h3 class="govuk-heading-m">Former beneficial owner for {{trust.trust_name}}</h3>
+
+{{ govukSummaryList({
+  rows: rows
+}) }}

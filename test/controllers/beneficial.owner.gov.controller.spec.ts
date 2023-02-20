@@ -29,7 +29,8 @@ import {
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER, UK_SANCTIONS_DETAILS
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  UK_SANCTIONS_DETAILS
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {

@@ -54,7 +54,8 @@ import {
   updateConfirmation,
   paymentFailed,
   updateBeneficialOwnerType,
-  updateBeneficialOwnerGov
+  updateBeneficialOwnerGov,
+  updateManagingOfficerIndividual
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -341,5 +342,13 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .get(updateBeneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerGov.remove);
+
+router.route(config.UPDATE_MANAGING_OFFICER_URL)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateManagingOfficerIndividual.get)
+  .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
 
 export default router;

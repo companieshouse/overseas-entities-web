@@ -166,3 +166,4 @@ export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
+export const UPDATE_MANAGING_OFFICER_PAGE_TITLE = "Tell us about the individual person";

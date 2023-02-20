@@ -213,5 +213,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_MANAGING_OFFICER_URL]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   }
 };

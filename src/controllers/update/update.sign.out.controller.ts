@@ -7,7 +7,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.UPDATE_SIGN_OUT_URL}`);
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
-      previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`
+      previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
+      url : config.UPDATE_AN_OVERSEAS_ENTITY_URL
     });
   } catch (error) {
     logger.errorRequest(req, error);

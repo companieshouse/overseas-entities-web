@@ -30,7 +30,7 @@ import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
 
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
-const notFoundOENumberError = "The Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
+const notFoundOENumberError = "An Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;

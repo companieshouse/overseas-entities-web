@@ -61,7 +61,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 function createEntityNumberError(entityNumber: string): any {
-  const msg = `The Overseas Entity with OE number "${entityNumber}" was not found.`;
+  const msg = `An Overseas Entity with OE number "${entityNumber}" was not found.`;
   const errors = { errorList: [] } as any;
   errors.errorList.push({ href: "#entity_number", text: msg });
   errors.entity_number = { text: msg };

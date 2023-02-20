@@ -9,7 +9,7 @@ import { hasOverseasName } from "./has.overseas.name.middleware";
 import { hasTrust } from "./has.trust.middleware";
 
 // UPDATE journey
-import { hasOverseasEntityNumber } from "./update/has.overseas.entity.middleware";
+import { hasOverseasEntityNumber, hasOverseasEntity } from "./update/has.overseas.entity.middleware";
 import { hasUpdatePresenter } from "./update/has.presenter.middleware";
 import { hasWhoIsMakingUpdate } from "./update/has.who.is.making.update.middleware";
 import { hasEntityUpdateDetails } from "./update/has.entity.update.middleware";
@@ -25,6 +25,7 @@ export const navigation = {
   hasOverseasName,
   hasTrust,
   hasOverseasEntityNumber,
+  hasOverseasEntity,
   hasUpdatePresenter,
   hasWhoIsMakingUpdate,
   hasEntityUpdateDetails

@@ -44,6 +44,27 @@
         ) %}
       {% endfor %}
 
+      {% set formerTrustees = [] %}
+      {% for trustee in pageData.formerTrusteeData %}
+        {% set type = pageData.trusteeTypeTitle[pageData.trusteeType.HISTORICAL] %}
+        {% if trustee.forename and trustee.surname%}
+          {% set name = trustee.forename + " " + trustee.surname %}
+        {% else %}
+          {% set name = trustee.corporateName %}
+        {% endif %}
+        {% set formerTrustees = (
+          formerTrustees.push({
+            key: {
+              text: type  
+            },
+            value: {
+              text: name
+            }
+          }),
+          formerTrustees
+        ) %}
+      {% endfor %}
+
       {% set individualTrustees = [] %}
       {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
@@ -61,11 +82,11 @@
         ) %}
       {% endfor %}
 
-      {% set trustees = [] %}
+      {% set legalEntityTrustees = [] %}
       {% for trustee in pageData.trustees %}
         {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
-        {% set trustees = (
-          trustees.push({
+        {% set legalEntityTrustees = (
+          legalEntityTrustees.push({
             key: {
               text: type
             },
@@ -73,11 +94,11 @@
               text: trustee.name
             }
           }),
-          trustees
+          legalEntityTrustees
         ) %}
       {% endfor %}
 
-      {% if boItems | length %}
+      {% if boItems | length or formerTrustees | length or individualTrustees | length or legalEntityTrustees | length %}
         <h1 class="govuk-heading-m">
           What <span class="govuk-visually-hidden">individuals or entities</span>
           you have added so far for this trust
@@ -85,16 +106,21 @@
         {{ govukSummaryList({
           rows: boItems
         }) }}
-        {{ govukSummaryList({
-          rows: trustees
-        }) }}
-      {% endif %}
 
-      {% if individualTrustees | length %}
+        {{ govukSummaryList({
+          rows: formerTrustees
+        }) }}
+
         {{ govukSummaryList({
           rows: individualTrustees
         }) }}
+
+        {{ govukSummaryList({
+          rows: legalEntityTrustees
+        }) }}
+        
       {% endif %}
+      
 
       <form class="form" method="post">
         {% set fieldParam = {

@@ -82,6 +82,7 @@ export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
 export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
+export const TRUSTS_URL = "trusts";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
 export const RADIO_BUTTON_AGENT_SELECTED = "value=\"agent\" checked";
@@ -168,4 +169,4 @@ export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confi
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
 export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial owners and managing officers involved in the overseas entity";
 export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
-export const TRUSTS_URL = "trusts";
+export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /update-an-overseas-entity/update-beneficial-owner-type";

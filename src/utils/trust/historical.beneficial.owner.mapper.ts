@@ -9,12 +9,12 @@ const mapBeneficialOwnerToSession = (
   const data = {
     id: formData.boId || generateBoId(),
     corporateIndicator: formData.type as TrusteeType,
-    ceased_date_day: formData.startDateDay,
-    ceased_date_month: formData.startDateMonth,
-    ceased_date_year: formData.startDateYear,
-    notified_date_day: formData.endDateDay,
-    notified_date_month: formData.endDateMonth,
-    notified_date_year: formData.endDateYear,
+    notified_date_day: formData.startDateDay,
+    notified_date_month: formData.startDateMonth,
+    notified_date_year: formData.startDateYear,
+    ceased_date_day: formData.endDateDay,
+    ceased_date_month: formData.endDateMonth,
+    ceased_date_year: formData.endDateYear,
   };
 
   if (formData.type === TrusteeType.LEGAL_ENTITY) {

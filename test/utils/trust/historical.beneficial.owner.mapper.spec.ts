@@ -39,12 +39,13 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           corporateIndicator: mockFormData.type,
           forename: mockFormData.firstName,
           surname: mockFormData.lastName,
-          ceased_date_day: mockFormData.startDateDay,
-          ceased_date_month: mockFormData.startDateMonth,
-          ceased_date_year: mockFormData.startDateYear,
-          notified_date_day: mockFormData.endDateDay,
-          notified_date_month: mockFormData.endDateMonth,
-          notified_date_year: mockFormData.endDateYear,
+          notified_date_day: mockFormData.startDateDay,
+          notified_date_month: mockFormData.startDateMonth,
+          notified_date_year: mockFormData.startDateYear,
+          ceased_date_day: mockFormData.endDateDay,
+          ceased_date_month: mockFormData.endDateMonth,
+          ceased_date_year: mockFormData.endDateYear,
+
         });
       });
 
@@ -62,12 +63,12 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           id: expectNewId,
           corporateIndicator: mockFormData.type,
           corporateName: mockFormData.corporateName,
-          ceased_date_day: mockFormData.startDateDay,
-          ceased_date_month: mockFormData.startDateMonth,
-          ceased_date_year: mockFormData.startDateYear,
-          notified_date_day: mockFormData.endDateDay,
-          notified_date_month: mockFormData.endDateMonth,
-          notified_date_year: mockFormData.endDateYear,
+          notified_date_day: mockFormData.startDateDay,
+          notified_date_month: mockFormData.startDateMonth,
+          notified_date_year: mockFormData.startDateYear,
+          ceased_date_day: mockFormData.endDateDay,
+          ceased_date_month: mockFormData.endDateMonth,
+          ceased_date_year: mockFormData.endDateYear,
         });
       });
     });

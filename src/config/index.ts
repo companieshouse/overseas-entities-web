@@ -51,7 +51,6 @@ export const BENEFICIAL_OWNER_OTHER_PAGE = "beneficial-owner-other";
 export const BENEFICIAL_OWNER_STATEMENTS_PAGE = "beneficial-owner-statements";
 export const BENEFICIAL_OWNER_TYPE_PAGE = "beneficial-owner-type";
 export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE = "update-beneficial-owner-type";
-export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "update-beneficial-owner-individual";
 export const UPDATE_BENEFICIAL_OWNER_OTHER_PAGE = "update-beneficial-owner-other";
 export const UPDATE_BENEFICIAL_OWNER_GOV_PAGE = "update-beneficial-owner-gov";
 export const BENEFICIAL_OWNER_DELETE_WARNING_PAGE = "beneficial-owner-delete-warning";
@@ -97,6 +96,7 @@ export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
 export const UPDATE_DUE_DILIGENCE_PAGE = "update-due-diligence";
 export const UPDATE_INTERRUPT_CARD_PAGE = "update-interrupt-card";
+export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "update-beneficial-owner-individual";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";

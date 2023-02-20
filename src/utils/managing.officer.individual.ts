@@ -18,7 +18,6 @@ import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, Usua
 import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
 
-
 export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -98,7 +97,7 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
 
 export const removeManagingOfficer = async (req: Request, res: Response, next: NextFunction, redirectUrl: string, registrationFlag: boolean): Promise<void> => {
   try {
-    logger.debugRequest(req, `REMOVE $${req.route.path}`);
+    logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
     const session = req.session as Session;

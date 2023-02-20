@@ -280,6 +280,9 @@ router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.ge
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
+router.get(config.UPDATE_SIGN_OUT_URL, signOut.get);
+router.post(config.UPDATE_SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+
 router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   .all(
     authentication,

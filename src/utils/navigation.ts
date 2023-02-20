@@ -223,5 +223,10 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_SIGN_OUT_URL]: {
+    currentPage: config.UPDATE_SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
   }
 };

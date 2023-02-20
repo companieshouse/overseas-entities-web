@@ -60,14 +60,14 @@
           value: formData.type,
           items: [
             {
-              value: 1,
+              value: pageData.trusteeType.LEGAL_ENTITY,
               text: "Legal Entity",
               conditional: {
                 html: legalEntityHtml
               }
             },
             {
-              value: 0,
+              value: pageData.trusteeType.INDIVIDUAL,
               text: "Individual",
               conditional: {
                 html: individualBoHtml

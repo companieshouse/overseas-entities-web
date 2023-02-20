@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
+import { TrusteeType } from '../model/trustee.type.model';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
 import { mapBeneficialOwnerToSession } from '../utils/trust/historical.beneficial.owner.mapper';
@@ -21,6 +22,7 @@ type TrustHistoricalBeneficialOwnerProperties = {
   },
   pageData: {
     trustData: CommonTrustData,
+    trusteeType: typeof TrusteeType;
   },
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
 };
@@ -39,6 +41,7 @@ const getPageProperties = (
     },
     pageData: {
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+      trusteeType: TrusteeType,
     },
     formData,
   };

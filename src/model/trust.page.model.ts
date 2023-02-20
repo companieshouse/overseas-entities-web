@@ -70,12 +70,12 @@ type IndividualTrusteesFormCommon = {
 };
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
-  type: BeneficialOwnerTypeChoice.otherLegal;
+  type: TrusteeType.LEGAL_ENTITY;
   corporateName: string;
 }
 
 interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon {
-  type: BeneficialOwnerTypeChoice.individual;
+  type: TrusteeType.INDIVIDUAL;
   firstName: string;
   lastName: string;
 }

@@ -38,7 +38,7 @@
           }
         },
         {
-          text: "" if appData.entity.registration_number === undefined else appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
+          text: "" if appData.entity_number === undefined else appData.entity.principal_address.property_name_number + " " + appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
           attributes: {
             "id": "oe_entity_address_value"
           }

@@ -21,7 +21,6 @@ mockIsSecureRegisterMiddleware.mockImplementation((req: Request, res: Response, 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-
 describe("INTERRUPT CARD controller", () => {
   describe("GET tests", () => {
     test(`renders the ${INTERRUPT_CARD_PAGE} page`, async () => {

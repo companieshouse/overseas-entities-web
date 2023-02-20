@@ -68,6 +68,7 @@ import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
+import { companyAuthentication } from "../middleware/company.authentication.middleware";
 
 const router = Router();
 
@@ -311,7 +312,7 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
     navigation.hasOverseasEntity
   )
   .get(confirmOverseasEntityDetails.get)
-  .post(confirmOverseasEntityDetails.post);
+  .post(companyAuthentication, confirmOverseasEntityDetails.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

@@ -168,5 +168,4 @@ export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confi
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
 export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial owners and managing officers involved in the overseas entity";
 export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
-export const SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add";
 export const TRUSTS_URL = "trusts";

@@ -1,6 +1,5 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-
     {% include "includes/list/errors.html" %}
 
     <span class="govuk-caption-xl">Beneficial owner</span>
@@ -8,7 +7,6 @@
     <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
     <form class="form" method="post">
-
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -49,8 +47,6 @@
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = name %}
       {% include "includes/remove-button.html" %}
-
     </form>
-
   </div>
 </div>

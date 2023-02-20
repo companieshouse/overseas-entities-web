@@ -9,21 +9,24 @@ import {
   checkDueDiligenceDetailsEntered,
   checkOverseasNameDetailsEntered,
   checkOverseasEntityNumberEntered,
+  checkHasOverseasEntity,
   checkUpdatePresenterEntered,
   checkWhoIsFilingEntered,
+  checkHasDateOfCreation,
   checkEntityUpdateDetailsEntered
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
-import { EntityNameKey, OeNumberKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
+import { EntityNameKey, EntityNumberKey, HasSoldLandKey, IsSecureRegisterKey } from '../../../src/model/data.types.model';
 import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { EntityKey } from '../../../src/model/entity.model';
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { OverseasEntityDueDiligenceKey } from '../../../src/model/overseas.entity.due.diligence.model';
 import { PresenterKey } from '../../../src/model/presenter.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 import { WhoIsRegisteringKey } from '../../../src/model/who.is.making.filing.model';
 import { DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/due.diligence.mock';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../../__mocks__/overseas.entity.due.diligence.mock';
@@ -171,7 +174,22 @@ describe("check condition navigation tests", () => {
   // UPDATE JOURNEY
 
   test("checkOverseasEntityNumberEntered should return false", () => {
-    const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [OeNumberKey]: undefined });
+    const data = checkOverseasEntityNumberEntered({ ...APPLICATION_DATA_MOCK, [EntityNumberKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkOverseasEntity should return false", () => {
+    const data = checkHasOverseasEntity({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDataOfCreation should return false", () => {
+    const data = checkHasDateOfCreation({ ...APPLICATION_DATA_MOCK, [UpdateKey]: {} });
+    expect(data).toEqual(false);
+  });
+
+  test("checkDataOfCreation should return false if not update", () => {
+    const data = checkHasDateOfCreation({ ...APPLICATION_DATA_MOCK, [UpdateKey]: undefined });
     expect(data).toEqual(false);
   });
 

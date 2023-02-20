@@ -26,7 +26,7 @@ import {
   SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE
 } from '../../__mocks__/text.mock';
 import { PresenterKey } from '../../../src/model/presenter.model';
-import { OeNumberKey } from '../../../src/model/data.types.model';
+import { EntityNumberKey } from '../../../src/model/data.types.model';
 import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
@@ -60,7 +60,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
   describe("GET tests", () => {
     test(`renders the presenter page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [OeNumberKey]: "OE123456" });
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123456" });
       const resp = await request(app).get(OVERSEAS_ENTITY_PRESENTER_URL);
 
       expect(resp.status).toEqual(200);

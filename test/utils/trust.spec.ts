@@ -11,6 +11,7 @@ import {
   saveTrustInApp,
   saveLegalEntityBoInTrust,
   getIndividualTrusteesFromTrust,
+  getFormerTrusteesFromTrust,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -315,6 +316,34 @@ describe('Trust Utils method tests', () => {
       } as ApplicationData;
 
       const result = getIndividualTrusteesFromTrust(appData);
+      expect(result.length).toEqual(6);
+      expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
+    });
+
+    test("test getFormerTrusteesFromTrust with application data and trust id", () => {
+      const test_trust_id = '353';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'HISTORICAL_BO': [{}, {}, {}] as TrustHistoricalBeneficialOwner[],
+        }]
+      } as ApplicationData;
+
+      const result = getFormerTrusteesFromTrust(appData, test_trust_id);
+      expect(result.length).toEqual(3);
+      expect(result).toEqual([{}, {}, {}]);
+    });
+
+    test("test getFormerTrusteesFromTrust with application data and no trust id", () => {
+      const appData = {
+        [TrustKey]: [{
+          'HISTORICAL_BO': [{}, {}, {}] as TrustHistoricalBeneficialOwner[],
+        }, {
+          'HISTORICAL_BO': [{}, {}, {}] as TrustHistoricalBeneficialOwner[],
+        }]
+      } as ApplicationData;
+
+      const result = getFormerTrusteesFromTrust(appData);
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });

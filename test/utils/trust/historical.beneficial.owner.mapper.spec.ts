@@ -3,12 +3,11 @@ jest.mock('uuid');
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import * as uuid from 'uuid';
 import * as Page from '../../../src/model/trust.page.model';
-import { TrustHistoricalBeneficialOwnerType } from '../../../src/model/trust.model';
 import {
   generateBoId,
   mapBeneficialOwnerToSession,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
-import { BeneficialOwnerTypeChoice } from "../../../src/model/beneficial.owner.type.model";
+import { TrusteeType } from "../../../src/model/trustee.type.model";
 
 describe('Historical Beneficial Owner page Mapper Service', () => {
   beforeEach(() => {
@@ -30,7 +29,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           boId: '9999',
-          type: BeneficialOwnerTypeChoice.individual as TrustHistoricalBeneficialOwnerType,
+          type: TrusteeType.INDIVIDUAL as TrusteeType,
           firstName: 'dummyFirstName',
           lastName: 'dummyLastName',
         };
@@ -40,19 +39,20 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           corporateIndicator: mockFormData.type,
           forename: mockFormData.firstName,
           surname: mockFormData.lastName,
-          ceased_date_day: mockFormData.startDateDay,
-          ceased_date_month: mockFormData.startDateMonth,
-          ceased_date_year: mockFormData.startDateYear,
-          notified_date_day: mockFormData.endDateDay,
-          notified_date_month: mockFormData.endDateMonth,
-          notified_date_year: mockFormData.endDateYear,
+          notified_date_day: mockFormData.startDateDay,
+          notified_date_month: mockFormData.startDateMonth,
+          notified_date_year: mockFormData.startDateYear,
+          ceased_date_day: mockFormData.endDateDay,
+          ceased_date_month: mockFormData.endDateMonth,
+          ceased_date_year: mockFormData.endDateYear,
+
         });
       });
 
       test('map corporate', () => {
         const mockFormData = {
           ...mockFormDataBasic,
-          type: BeneficialOwnerTypeChoice.otherLegal as TrustHistoricalBeneficialOwnerType,
+          type: TrusteeType.LEGAL_ENTITY as TrusteeType,
           corporateName: 'dummyCorporateName',
         };
 
@@ -63,12 +63,12 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           id: expectNewId,
           corporateIndicator: mockFormData.type,
           corporateName: mockFormData.corporateName,
-          ceased_date_day: mockFormData.startDateDay,
-          ceased_date_month: mockFormData.startDateMonth,
-          ceased_date_year: mockFormData.startDateYear,
-          notified_date_day: mockFormData.endDateDay,
-          notified_date_month: mockFormData.endDateMonth,
-          notified_date_year: mockFormData.endDateYear,
+          notified_date_day: mockFormData.startDateDay,
+          notified_date_month: mockFormData.startDateMonth,
+          notified_date_year: mockFormData.startDateYear,
+          ceased_date_day: mockFormData.endDateDay,
+          ceased_date_month: mockFormData.endDateMonth,
+          ceased_date_year: mockFormData.endDateYear,
         });
       });
     });

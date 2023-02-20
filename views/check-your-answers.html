@@ -57,18 +57,25 @@
         {% endfor %}
       {% endif %}
 
-      {% for trust in appData.trusts %}
-          {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
-            {% for individualTrustee in trust.INDIVIDUALS  %}
-              {% include "includes/check-your-answers/individual-trustee.html" %}
-            {% endfor %}
-          {% endif %}
-          {% if (trust.CORPORATES and trust.CORPORATES.length > 0) %}
-            {% for legalEntity in trust.CORPORATES %}
-              {% include "includes/check-your-answers/beneficial-owner-legal.html" %}
-            {% endfor %}
-          {% endif %}
-      {% endfor %}
+      {% if (pageParams.isTrustFeatureEnabled == true) %}
+        {% for trust in appData.trusts %}
+            {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
+              {% for individualTrustee in trust.INDIVIDUALS  %}
+                {% include "includes/check-your-answers/individual-trustee.html" %}
+              {% endfor %}
+            {% endif %}
+            {% if (trust.CORPORATES and trust.CORPORATES.length > 0) %}
+              {% for legalEntity in trust.CORPORATES %}
+                {% include "includes/check-your-answers/legal-entity-trustee.html" %}
+              {% endfor %}
+            {% endif %}
+            {% if (trust.HISTORICAL_BO and trust.HISTORICAL_BO.length > 0) %}
+              {% for formerTrustee in trust.HISTORICAL_BO %}
+                {% include "includes/check-your-answers/historical-trustee.html" %}
+              {% endfor %}
+            {% endif %}
+        {% endfor %}
+      {% endif %}
 
       <br>
       <form method="post">

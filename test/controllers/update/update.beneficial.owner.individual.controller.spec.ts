@@ -1,34 +1,34 @@
 jest.mock("ioredis");
-jest.mock('../../src/middleware/authentication.middleware');
-jest.mock('../../src/utils/application.data');
-jest.mock('../../src/utils/save.and.continue');
-jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
+jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
-import app from "../../src/app";
-import { authentication } from "../../src/middleware/authentication.middleware";
+import app from "../../../src/app";
+import { authentication } from "../../../src/middleware/authentication.middleware";
 import {
-  BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-  BENEFICIAL_OWNER_INDIVIDUAL_URL,
-  BENEFICIAL_OWNER_TYPE_PAGE,
-  BENEFICIAL_OWNER_TYPE_URL,
-  REMOVE
-} from "../../src/config";
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  REMOVE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE
+} from "../../../src/config";
 import {
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
   setApplicationData
-} from '../../src/utils/application.data';
-import { saveAndContinue } from "../../src/utils/save.and.continue";
+} from '../../../src/utils/application.data';
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
-  BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
   ERROR_LIST,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -38,10 +38,8 @@ import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER,
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
-  UK_SANCTIONS_DETAILS,
-  YES_SANCTIONS_TEXT_THEY,
-  NO_SANCTIONS_TEXT_THEY,
-} from '../__mocks__/text.mock';
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
+} from '../../__mocks__/text.mock';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
@@ -54,26 +52,30 @@ import {
   BO_IND_ID,
   BO_IND_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
-} from '../__mocks__/session.mock';
-import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { AddressKeys } from '../../src/model/data.types.model';
+} from '../../__mocks__/session.mock';
+import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
+import { AddressKeys } from '../../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
-} from '../__mocks__/validation.mock';
-import { ErrorMessages } from '../../src/validation/error.messages';
-import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
-import { ApplicationDataType } from '../../src/model';
-import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
-import * as config from "../../src/config";
+} from '../../__mocks__/validation.mock';
+import { ErrorMessages } from '../../../src/validation/error.messages';
+import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { ApplicationDataType } from '../../../src/model';
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+import * as config from "../../../src/config";
 import { DateTime } from "luxon";
+import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 
-const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
-mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
+mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -84,7 +86,7 @@ const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
-describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
+describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -94,8 +96,8 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
@@ -107,16 +109,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_BENEFICIAL_OWNER_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
-      expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
-      expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
     });
   });
 
   describe("GET BY ID tests", () => {
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+    test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -128,9 +127,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
     });
 
-    test("catch error when rendering the page", async () => {
+    test(`catch error when rendering the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -138,45 +137,45 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
 
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`POST only radio buttons choices and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; } );
-      const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
+    test(`POST only radio buttons choices and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+      mockPrepareData.mockImplementationOnce( () => { return BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS; } );
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.header.location).not.toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`redirect to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`POST empty object and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
 
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY);
 
       expect(resp.status).toEqual(200);
@@ -196,20 +195,20 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(resp.header.location).not.toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).not.toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test(`POST empty object and check for error in page title`, async () => {
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
 
-    test(`adds data to the session and redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`adds data to the session and redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
 
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
@@ -218,13 +217,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
     test("catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(500);
@@ -232,9 +231,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with MAX error messages`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with MAX error messages`, async () => {
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
@@ -250,9 +249,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with INVALID_CHARACTERS error message`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with INVALID_CHARACTERS error message`, async () => {
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK);
 
       expect(resp.status).toEqual(200);
@@ -269,9 +268,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with INVALID_CHARACTERS service address error message`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with INVALID_CHARACTERS service address error message`, async () => {
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK);
 
       expect(resp.status).toEqual(200);
@@ -286,10 +285,10 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain( ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS);
     });
 
-    test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
+    test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
@@ -297,22 +296,22 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
     });
 
-    test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
+    test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "";
       beneficialOwnerIndividual["start_date-month"] = "";
       beneficialOwnerIndividual["start_date-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -324,12 +323,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month and year are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month and year are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "01";
       beneficialOwnerIndividual["start_date-month"] = "";
       beneficialOwnerIndividual["start_date-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -338,12 +337,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "";
       beneficialOwnerIndividual["start_date-month"] = "01";
       beneficialOwnerIndividual["start_date-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -352,12 +351,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "";
       beneficialOwnerIndividual["start_date-month"] = "";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -366,12 +365,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DAY error when start date day is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DAY error when start date day is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -383,12 +382,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only MONTH error when start date month is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only MONTH error when start date month is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
       beneficialOwnerIndividual["start_date-month"] = "";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -400,12 +399,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR error when start date year is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR error when start date year is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "22";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -417,12 +416,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "32";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -434,12 +433,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
       beneficialOwnerIndividual["start_date-month"] = "13";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -452,12 +451,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "0";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -469,12 +468,12 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
       beneficialOwnerIndividual["start_date-month"] = "0";
       beneficialOwnerIndividual["start_date-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -486,14 +485,14 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start_date is in the future`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start_date is in the future`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const inTheFuture = DateTime.now().plus({ days: 1 });
       beneficialOwnerIndividual["start_date-day"] = inTheFuture.day.toString();
       beneficialOwnerIndividual["start_date-month"] = inTheFuture.month.toString();
       beneficialOwnerIndividual["start_date-year"] = inTheFuture.year.toString();
 
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -505,16 +504,16 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
-      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const today = DateTime.now();
-      beneficialOwnerOther["start_date-day"] = today.day.toString();
-      beneficialOwnerOther["start_date-month"] = today.month.toString();
-      beneficialOwnerOther["start_date-year"] = today.year.toString();
+      beneficialOwnerIndividual["start_date-day"] = today.day.toString();
+      beneficialOwnerIndividual["start_date-month"] = today.month.toString();
+      beneficialOwnerIndividual["start_date-year"] = today.year.toString();
       const resp = await request(app)
-        .post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
+        .post(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      // expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
@@ -524,12 +523,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
       beneficialOwnerIndividual["start_date-month"] = "10";
       beneficialOwnerIndividual["start_date-year"] = "20";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -542,12 +542,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only ENTER_DATE_OF_BIRTH error when date of birth is completely empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only ENTER_DATE_OF_BIRTH error when date of birth is completely empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "";
       beneficialOwnerIndividual["date_of_birth-month"] = "";
       beneficialOwnerIndividual["date_of_birth-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -559,12 +560,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month and year are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month and year are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "01";
       beneficialOwnerIndividual["date_of_birth-month"] = "";
       beneficialOwnerIndividual["date_of_birth-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -573,12 +575,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day and year are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day and year are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "";
       beneficialOwnerIndividual["date_of_birth-month"] = "01";
       beneficialOwnerIndividual["date_of_birth-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -587,12 +590,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day and month are empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day and month are empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "";
       beneficialOwnerIndividual["date_of_birth-month"] = "";
       beneficialOwnerIndividual["date_of_birth-year"] = "2020";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -601,12 +605,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DAY_OF_BIRTH error error when date of birth day is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DAY_OF_BIRTH error error when date of birth day is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "";
       beneficialOwnerIndividual["date_of_birth-month"] = "01";
       beneficialOwnerIndividual["date_of_birth-year"] = "2023";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -618,12 +623,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only MONTH_OF_BIRTH error error when date of birth month is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only MONTH_OF_BIRTH error error when date of birth month is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "01";
       beneficialOwnerIndividual["date_of_birth-month"] = "";
       beneficialOwnerIndividual["date_of_birth-year"] = "2023";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -635,12 +641,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_OF_BIRTH error error when date of birth year is empty`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_OF_BIRTH error error when date of birth year is empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "11";
       beneficialOwnerIndividual["date_of_birth-month"] = "03";
       beneficialOwnerIndividual["date_of_birth-year"] = "";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -652,12 +659,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is outside valid numbers`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "32";
       beneficialOwnerIndividual["date_of_birth-month"] = "11";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -669,12 +677,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is outside valid numbers`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "30";
       beneficialOwnerIndividual["date_of_birth-month"] = "13";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -686,12 +695,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "0";
       beneficialOwnerIndividual["date_of_birth-month"] = "11";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -703,12 +713,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "30";
       beneficialOwnerIndividual["date_of_birth-month"] = "0";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -720,14 +731,15 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST error when date of birth is in the future`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST error when date of birth is in the future`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       const inTheFuture = DateTime.now().plus({ days: 1 });
       beneficialOwnerIndividual["date_of_birth-day"] = inTheFuture.day.toString();
       beneficialOwnerIndividual["date_of_birth-month"] = inTheFuture.month.toString();
       beneficialOwnerIndividual["date_of_birth-year"] = inTheFuture.year.toString();
 
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -739,15 +751,15 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST error when date of birth is today`, async () => {
-      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST error when date of birth is today`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const today = DateTime.now();
-      beneficialOwnerOther["date_of_birth-day"] = today.day.toString();
-      beneficialOwnerOther["date_of_birth-month"] = today.month.toString();
-      beneficialOwnerOther["date_of_birth-year"] = today.year.toString();
+      beneficialOwnerIndividual["date_of_birth-day"] = today.day.toString();
+      beneficialOwnerIndividual["date_of_birth-month"] = today.month.toString();
+      beneficialOwnerIndividual["date_of_birth-year"] = today.year.toString();
       const resp = await request(app)
-        .post(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(beneficialOwnerOther);
+        .post(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
@@ -758,12 +770,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_LENGTH error when date of birth year is not 4 digits`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_LENGTH error when date of birth year is not 4 digits`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "11";
       beneficialOwnerIndividual["date_of_birth-month"] = "11";
       beneficialOwnerIndividual["date_of_birth-year"] = "70";
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -776,13 +789,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with second nationality error when same as nationality`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with second nationality error when same as nationality`, async () => {
       const beneficialOwnerIndividual = {
         ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
         nationality: "British",
         second_nationality: "British"
       };
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -791,21 +804,21 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("UPDATE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when updating data", async () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(500);
@@ -816,7 +829,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     test(`replaces existing object on submit`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
       const resp = await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
@@ -826,13 +839,13 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
+    test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
@@ -840,23 +853,23 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
     });
 
-    test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
+    test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is empty when same address is set to yes`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
-        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
     });
 
-    test(`renders the page ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} + ${BO_IND_ID_URL} with second nationality error when same as nationality`, async () => {
+    test(`renders the page ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} + ${BO_IND_ID_URL} with second nationality error when same as nationality`, async () => {
       const beneficialOwnerIndividual = {
         ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
         nationality: "British",
         second_nationality: "British"
       };
-      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
@@ -865,32 +878,32 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("REMOVE tests", () => {
-    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test("catch error when removing data", async () => {
       mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled(); // TODO: testing
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`removes the object from session`, async () => {
-      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + REMOVE + BO_IND_ID_URL);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 });

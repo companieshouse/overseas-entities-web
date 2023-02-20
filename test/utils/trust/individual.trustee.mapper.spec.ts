@@ -25,9 +25,9 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         forename: 'Joe',
         surname: 'Bloggs',
         other_forenames: "",
-        date_of_birth_day: '22',
-        date_of_birth_month: '11',
-        date_of_birth_year: '1946',
+        dateOfBirthDay: '22',
+        dateOfBirthMonth: '11',
+        dateOfBirthYear: '1946',
         nationality: 'Cameroon',
         second_nationality: 'Japan',
         usual_residential_address_property_name_number: 'Emerald House',
@@ -44,28 +44,28 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         service_address_county: 'Essex',
         service_address_country: 'United Kingdom',
         service_address_postcode: 'COXYDL',
-        date_became_ip_day: '4',
-        date_became_ip_month: '4',
-        date_became_ip_year: '1964',
-        is_service_address_same_as_principal_address: yesNoResponse.Yes
+        dateBecameIPDay: '4',
+        dateBecameIPMonth: '4',
+        dateBecameIPYear: '1964',
+        is_service_address_same_as_usual_residential_address: yesNoResponse.Yes
       };
 
       test.each(testParam)('map Individual trustees', (id: string, roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
         const mockFormData = {
           ...mockFormDataBasic,
-          trustee_id: id,
+          trusteeId: id,
           type: roleWithinTrust,
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
-          id: mockFormData.trustee_id,
+          id: mockFormData.trusteeId,
           type: mockFormData.type,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',
-          date_of_birth_day: mockFormData.date_of_birth_day,
-          date_of_birth_month: mockFormData.date_of_birth_month,
-          date_of_birth_year: mockFormData.date_of_birth_year,
+          date_of_birth_day: mockFormData.dateOfBirthDay,
+          date_of_birth_month: mockFormData.dateOfBirthMonth,
+          date_of_birth_year: mockFormData.dateOfBirthYear,
           nationality: mockFormData.nationality,
           second_nationality: mockFormData.second_nationality,
           ura_address_premises: mockFormData.usual_residential_address_property_name_number,
@@ -77,7 +77,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           ura_address_postal_code: mockFormData.usual_residential_address_postcode,
           ura_address_care_of: '',
           ura_address_po_box: '',
-          is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
+          is_service_address_same_as_usual_residential_address: mockFormData.is_service_address_same_as_usual_residential_address,
           sa_address_premises: mockFormData.service_address_property_name_number,
           sa_address_line1: mockFormData.service_address_line_1,
           sa_address_line2: mockFormData.service_address_line_2,
@@ -93,22 +93,22 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       test('map Interested trustees', () => {
         const mockFormData = {
           ...mockFormDataBasic,
-          trustee_id: '10002',
+          trusteeId: '10002',
           type: RoleWithinTrustType.INTERESTED_PERSON,
-          date_became_ip_day: '2',
-          date_became_ip_month: '11',
-          date_became_ip_year: '2022',
+          dateBecameIPDay: '2',
+          dateBecameIPMonth: '11',
+          dateBecameIPYear: '2022',
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
-          id: mockFormData.trustee_id,
+          id: mockFormData.trusteeId,
           type: mockFormData.type,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',
-          date_of_birth_day: mockFormData.date_of_birth_day,
-          date_of_birth_month: mockFormData.date_of_birth_month,
-          date_of_birth_year: mockFormData.date_of_birth_year,
+          date_of_birth_day: mockFormData.dateOfBirthDay,
+          date_of_birth_month: mockFormData.dateOfBirthMonth,
+          date_of_birth_year: mockFormData.dateOfBirthYear,
           nationality: mockFormData.nationality,
           second_nationality: mockFormData.second_nationality,
           ura_address_premises: mockFormData.usual_residential_address_property_name_number,
@@ -120,7 +120,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           ura_address_postal_code: mockFormData.usual_residential_address_postcode,
           ura_address_care_of: '',
           ura_address_po_box: '',
-          is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
+          is_service_address_same_as_usual_residential_address: mockFormData.is_service_address_same_as_usual_residential_address,
           sa_address_premises: mockFormData.service_address_property_name_number,
           sa_address_line1: mockFormData.service_address_line_1,
           sa_address_line2: mockFormData.service_address_line_2,
@@ -130,10 +130,23 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
           sa_address_postal_code: mockFormData.service_address_postcode,
           sa_address_care_of: '',
           sa_address_po_box: '',
-          date_became_interested_person_day: mockFormData.date_became_ip_day,
-          date_became_interested_person_month: mockFormData.date_became_ip_month,
-          date_became_interested_person_year: mockFormData.date_became_ip_year,
+          date_became_interested_person_day: mockFormData.dateBecameIPDay,
+          date_became_interested_person_month: mockFormData.dateBecameIPMonth,
+          date_became_interested_person_year: mockFormData.dateBecameIPYear,
         });
+      });
+
+      test('trustee Id should not be null after mapping', () => {
+        const mockFormData = {
+          ...mockFormDataBasic,
+          type: RoleWithinTrustType.INTERESTED_PERSON,
+          dateBecameIPDay: '2',
+          dateBecameIPMonth: '11',
+          dateBecameIPYear: '2022',
+        };
+        const mappedObj = mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData);
+
+        expect(mappedObj.id).not.toBeNull();
       });
     });
   });

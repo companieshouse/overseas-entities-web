@@ -31,14 +31,14 @@
 {% set entity_name = appData.entity_name %}
 {% set entity_number = appData.entity_number %}
 
-{% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
+<!-- {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)
   or (beneficial_owners_corporate and beneficial_owners_corporate.length > 0)
   or (beneficial_owners_government_or_public_authority and beneficial_owners_government_or_public_authority.length > 0)
 %}
 
 {% set hasManagingOfficers = (managing_officers_individual and managing_officers_individual.length > 0)
   or (managing_officers_corporate and managing_officers_corporate.length > 0)
-%}
+%} -->
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -54,6 +54,6 @@
   {% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
   {% set beneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
   {% set beneficialOwnerGovUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
-  <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+  <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} {{ entity_number }}</span>
   {% include "includes/page-templates/beneficial-owner.html" %}
 {% endblock %}

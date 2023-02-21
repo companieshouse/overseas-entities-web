@@ -4,7 +4,7 @@ import { BeneficialOwnerTypeKey } from "../model/beneficial.owner.type.model";
 import { ErrorMessages } from "./error.messages";
 
 export const beneficialOwnersType = [
-  body("beneficial_owner_type")
+  body(BeneficialOwnerTypeKey)
     .custom((value, { req }) => checkBeneficialOwnerType(req.body.beneficial_owners_statement, value))
 ];
 

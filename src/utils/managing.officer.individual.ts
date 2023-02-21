@@ -4,7 +4,14 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, setApplicationData, removeFromApplicationData } from "../utils/application.data";
+import {
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  setApplicationData,
+  removeFromApplicationData
+} from "../utils/application.data";
 
 import {
   AddressKeys,

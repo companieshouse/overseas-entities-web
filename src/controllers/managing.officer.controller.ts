@@ -1,5 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { getManagingOfficer, getManagingOfficerById, postManagingOfficer, updateManagingOfficer, removeManagingOfficer } from "../utils/managing.officer.individual";
+import {
+  getManagingOfficer,
+  getManagingOfficerById,
+  postManagingOfficer,
+  updateManagingOfficer,
+  removeManagingOfficer
+} from "../utils/managing.officer.individual";
 
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE } from "../config";
 

@@ -11,13 +11,13 @@ import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.pr
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-      [EntityNumberKey]: appData[EntityNumberKey],
+      [EntityNumberKey]: appData[EntityNumberKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -27,7 +27,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_QUERY_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);

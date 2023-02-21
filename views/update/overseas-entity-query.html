@@ -1,39 +1,55 @@
 {% extends "layout.html" %}
 
-{% set title = "What is the OE number? (NOT LIVE)" %}
+{% set title = "What is the Overseas Entity ID?" %}
 
 {% block pageTitle %}
-    {% include "includes/page-title.html" %}
+  {% include "includes/page-title.html" %}
 {% endblock %}
 
-{% block beforeContent %}
-  {% include "includes/phase_banner.html" %}
-  {% include "includes/no-back-link.html" %}
+{% block backLink %}
+  {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
-
-<div class="govuk-grid-row">
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
+      {% include "includes/list/errors.html" %}
+      <form method="post">
+        {{ govukInput
+          ({
+            label: {
+                text: title,
+                isPageHeading: false,
+                classes: "govuk-visually-hidden"
+            },
+            hint: {
+              text: "The Overseas Entity ID will be in the format OE123456."
+            },
+            errorMessage: errors.entity_number if errors,
+            id: "entity_number",
+            name: "entity_number",
+            value: entity_number
+          })
+        }}
+        {% include "includes/continue-button.html" %}
+      </form>
 
-        <h1 class="govuk-heading-xl">{{title}}</h1>
-        {% include "includes/list/errors.html" %}
-        <form method="post">
-            {{ govukInput
-              ({
-                label: {
-                    text: title,
-                    isPageHeading: false,
-                    classes: "govuk-visually-hidden"
-                },
-                errorMessage: errors.entity_number if errors,
-                id: "entity_number",
-                name: "entity_number",
-                value: entity_number
-              })
-            }}
-            {% include "includes/continue-button.html" %}
-        </form>
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            Help with the Overseas Entity ID
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p class="govuk-body">This is given to an overseas entity when it registers with Companies House. You can find it:</p>
+          <ul class="govuk-list govuk-list--bullet">
+            <li>by searching for the entity on the <a class="govuk-link" href="#">Companies House register (opens in a new tab)</a></li>
+            <li>in the Notice of Registration email that was sent to the overseas entity</li>
+            <li>in the acceptance email that was sent to the person who registered the overseas entity</li>
+          </ul>
+        </div>
+      </details>
     </div>
-</div>
+  </div>
 {% endblock %}

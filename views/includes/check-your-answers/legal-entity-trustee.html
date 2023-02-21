@@ -41,7 +41,7 @@
   {% if legalEntity.is_on_register_in_country_formed_in == '1' %}
      {{ legalEntity.identification_place_registered | safe}} / {{ legalEntity.identification_country_registration | safe }} / {{ legalEntity.identification_registration_number | safe }}
   {% else %}
-    No
+    {{ legalEntity.identification_place_registered | safe}} /  {{ legalEntity.identification_registration_number | safe }}
   {% endif %}
 {% endset %}
 
@@ -132,21 +132,23 @@
   }), rows) %}
 {% endif %}
 
-{% set rows = (rows.push({
-  key: {
-    text: "Country it was formed in"
-  },
-  value: {
-    text: legalEntity.identification_place_registered
-  },
-  actions: {
-    items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
-      "Legal entity " + legalEntity.name + " - country formed in",
-      "change-legal-entity-country-formed-in-button"
-    ) ]
-  }
-}), rows) %}
+{% if legalEntity.is_on_register_in_country_formed_in == '1' %}
+  {% set rows = (rows.push({
+    key: {
+      text: "On a public register in the country it was formed in"
+    },
+    value: {
+      text: legalEntity.identification_place_registered
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+        "Legal entity " + legalEntity.name + " - country formed in",
+        "change-legal-entity-country-formed-in-button"
+      ) ]
+    }
+  }), rows) %}
+{% endif %}
 
 {% set rows = (rows.push({
   key: {

@@ -19,7 +19,8 @@ import app from "../../../src/app";
 import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
+  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -67,6 +68,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });

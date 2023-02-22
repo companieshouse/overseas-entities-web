@@ -53,6 +53,3 @@ export const updateModelMock = {
     date_of_creation: testDateOfCreation
   }
 };
-
-
-

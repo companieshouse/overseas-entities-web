@@ -330,7 +330,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only MONTH error when start date month is empty`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "06";
@@ -348,7 +347,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
-
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR error when start date year is empty`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };

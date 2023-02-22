@@ -21,7 +21,3 @@ export const DATE_OF_BIRTH = {
     const now = DateTime.now();
     return DateTime.utc(now.year, now.month, now.day).minus({ months: 2 });
   };
-
-
-
-

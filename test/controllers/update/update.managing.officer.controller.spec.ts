@@ -90,7 +90,6 @@ describe("UPDATE MANAGING_OFFICER controller", () => {
   });
 
   describe("GET tests", () => {
-
     test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
 
@@ -108,7 +107,6 @@ describe("UPDATE MANAGING_OFFICER controller", () => {
   });
 
   describe("POST tests", () => {
-
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${UPDATE_MANAGING_OFFICER_PAGE} have been populated`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 

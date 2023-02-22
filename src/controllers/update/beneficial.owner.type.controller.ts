@@ -39,16 +39,17 @@ export const postSubmit = (req: Request, res: Response) => {
   return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
-const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice): string => {
-  if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
-    return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
-  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
-    return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
-  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
-    return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
-  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.individual) {
-    return config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL;
-  } else {
-    return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
+const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
+  switch (beneficialOwnerTypeChoices) {
+      case BeneficialOwnerTypeChoice.government:
+        return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
+      case BeneficialOwnerTypeChoice.otherLegal:
+        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
+      case BeneficialOwnerTypeChoice.individual:
+        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+      case ManagingOfficerTypeChoice.individual:
+        return config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL;
+      default:
+        return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
   }
 };

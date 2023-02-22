@@ -6,9 +6,10 @@ import * as config from "../../config";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.UPDATE_SIGN_OUT_URL}`);
+
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
       previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url : config.UPDATE_AN_OVERSEAS_ENTITY_URL
+      url: config.UPDATE_AN_OVERSEAS_ENTITY_URL
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -26,8 +27,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (req.body["sign_out"] === 'yes') {
-    //This url may change depending on decision made on ticket UAR-267
-      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
+    // This url may change depending on decision made on ticket UAR-267
+      return res.redirect(config.UPDATE_ACCOUNTS_SIGN_OUT_URL);
     }
 
     return res.redirect(previousPage);

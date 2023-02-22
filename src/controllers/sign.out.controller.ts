@@ -6,10 +6,10 @@ import * as config from "../config";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
-  
+
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url : config.REGISTER_AN_OVERSEAS_ENTITY_URL
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -27,7 +27,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (req.body["sign_out"] === 'yes') {
-      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
+      return res.redirect(config.UPDATE_ACCOUNTS_SIGN_OUT_URL);
     }
 
     return res.redirect(previousPage);

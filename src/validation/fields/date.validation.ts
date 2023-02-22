@@ -4,7 +4,7 @@ import {
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
-  checkIdentityDate,
+  checkIdentityDate, checkMoreThanOneDateFieldIsNotMissing,
   checkStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
@@ -43,13 +43,13 @@ export const date_of_birth_validations = [
 // This means that the year check is checked before some others
 export const identity_check_date_validations = [
   body("identity_date-day")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-year")
+    .if((value, { req }) => checkMoreThanOneDateFieldIsNotMissing( req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])).not()
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date")
+    .if((value, { req }) => checkMoreThanOneDateFieldIsNotMissing( req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])).not()
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];

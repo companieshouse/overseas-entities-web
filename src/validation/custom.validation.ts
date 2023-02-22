@@ -130,20 +130,29 @@ export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearS
       }
     }
   }
+  console.log("ALL");
   return true;
 };
 
 export const checkDateFieldDay = (dayMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" && monthStr !== "" && yearStr !== "") {
     throw new Error(dayMissingMessage);
+  } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR);
   }
+  console.log("DAY");
   return true;
 };
 
 export const checkDateFieldMonth = (monthMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (monthStr === "" && dayStr !== "" && yearStr !== "") {
     throw new Error(monthMissingMessage);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR);
   }
+  console.log("MONTH");
   return true;
 };
 
@@ -154,6 +163,7 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   if (!isYearEitherMissingOrCorrectLength(yearStr)) {
     throw new Error(yearLengthMessage);
   }
+  console.log("YEAR");
   return true;
 };
 
@@ -164,20 +174,19 @@ export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: stri
     return false;
   } else if (yearStr === "" && dayStr !== "" && monthStr !== "") {
     return false;
-  } else {
-    checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr);
   }
   return true;
 };
 
 export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" && monthStr === "" && yearStr !== "") {
-    throw new Error(ErrorMessages.DAY_AND_MONTH);
+    return false;
   } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-    throw new Error(ErrorMessages.MONTH_AND_YEAR);
+    return false;
   } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
-    throw new Error(ErrorMessages.DAY_AND_YEAR);
+    return false;
   }
+  return true;
 };
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {

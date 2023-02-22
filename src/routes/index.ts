@@ -317,19 +317,21 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasOverseasEntityNumber
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
-router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
-router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);
+router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.get);
+router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.post);
 
-router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, overseasEntityPayment.get);
+router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
 
 router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasOverseasEntityNumber
   )
   .get(overseasEntityUpdateDetails.get)
@@ -338,6 +340,7 @@ router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
 router.route(config.WHO_IS_MAKING_UPDATE_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(whoIsMakingUpdate.get)
@@ -346,6 +349,7 @@ router.route(config.WHO_IS_MAKING_UPDATE_URL)
 router.route(config.UPDATE_DUE_DILIGENCE_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasWhoIsMakingUpdate
   )
   .get(updateDueDiligence.get)
@@ -354,24 +358,32 @@ router.route(config.UPDATE_DUE_DILIGENCE_URL)
 router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasWhoIsMakingUpdate
   )
   .get(updateDueDiligenceOverseasEntity.get)
   .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
 
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    companyAuthentication
+  )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    companyAuthentication
+  )
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerType.get)
@@ -382,6 +394,7 @@ router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navi
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerGov.get)
@@ -390,6 +403,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerGov.getById)
@@ -399,6 +413,7 @@ router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, a
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerIndividual.get)
@@ -407,6 +422,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerIndividual.getById)
@@ -416,6 +432,7 @@ router.get(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + confi
 router.route(config.UPDATE_MANAGING_OFFICER_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateManagingOfficerIndividual.get)
@@ -424,6 +441,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerOther.get)
@@ -432,6 +450,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .all(
     authentication,
+    companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerOther.getById)
@@ -439,7 +458,11 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
 router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
 
 router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-  .all(authentication, navigation.hasUpdatePresenter)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
 

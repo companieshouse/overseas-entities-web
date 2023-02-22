@@ -39,7 +39,7 @@
 
 {% set formattedPublicRegister %}
   {% if legalEntity.is_on_register_in_country_formed_in == '1' %}
-     {{ legalEntity.identification_place_registered | safe}} / {{ legalEntity.identification_country_registration | safe }} / {{ legalEntity.identification_registration_number | safe }}
+     {{ legalEntity.identification_place_registered | safe}} / {{ legalEntity.identification_registration_number | safe }}
   {% else %}
     No
   {% endif %}
@@ -138,7 +138,7 @@
       text: "On a public register in the country it was formed in"
     },
     value: {
-      text: legalEntity.identification_place_registered
+      text: legalEntity.identification_country_registration
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(

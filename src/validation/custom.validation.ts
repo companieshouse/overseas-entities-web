@@ -97,7 +97,7 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)) {
     if (isYearEitherMissingOrCorrectLength(yearStr)) {
       const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);

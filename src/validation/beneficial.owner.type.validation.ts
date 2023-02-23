@@ -8,7 +8,7 @@ export const beneficialOwnersType = [
     .custom((value, { req }) => checkBeneficialOwnerType(req.body.beneficial_owners_statement, value))
 ];
 
-export const updateBeneficialOwnerManagingOfficerType = [
+export const updateBeneficialOwnerAndManagingOfficerType = [
   body(BeneficialOwnerTypeKey).not().isEmpty().withMessage(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD)
 ];
 

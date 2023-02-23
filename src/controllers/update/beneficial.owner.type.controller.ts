@@ -45,11 +45,11 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
         return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
       case BeneficialOwnerTypeChoice.otherLegal:
         return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
-      case BeneficialOwnerTypeChoice.individual:
-        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+      case ManagingOfficerTypeChoice.corporate:
+        return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
       case ManagingOfficerTypeChoice.individual:
         return config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL;
       default:
-        return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
+        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
 };

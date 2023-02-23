@@ -223,5 +223,24 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   }
+};
+
+export const getAllNavigationInfo = (routePath: string) => {
+  return {
+    currentPage: NAVIGATION[routePath].currentPage,
+    previousPage: NAVIGATION[routePath].previousPage(),
+    // We can add a simple function for nextPage similar to previousPage on Navigation util
+    nextPage: NAVIGATION[routePath].nextPage[0]
+  };
 };

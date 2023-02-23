@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { logger } from "../utils/logger";
 import { Session } from "@companieshouse/node-session-handler";
-import { saveAndContinue } from "../utils/save.and.continue";
+
+import { v4 as uuidv4 } from 'uuid';
+
+import { logger } from "../utils/logger";
 import { ApplicationDataType } from "../model";
+import { saveAndContinue } from "../utils/save.and.continue";
 import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
@@ -18,21 +21,22 @@ import {
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { StartDateKey, StartDateKeys } from "../model/date.model";
-import { v4 as uuidv4 } from 'uuid';
-import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
+import { getAllNavigationInfo } from "../utils/navigation";
 
 export const get = (req: Request, res: Response) => {
-  logger.debugRequest(req, `GET ${BENEFICIAL_OWNER_OTHER_PAGE}`);
+  const { currentPage, previousPage } = getAllNavigationInfo(req.route.path);
+  logger.debugRequest(req, `${req.method} ${currentPage}`);
 
-  return res.render(BENEFICIAL_OWNER_OTHER_PAGE, {
-    backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
-    templateName: BENEFICIAL_OWNER_OTHER_PAGE
+  return res.render(currentPage, {
+    backLinkUrl: previousPage,
+    templateName: currentPage
   });
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET BY ID ${BENEFICIAL_OWNER_OTHER_PAGE}`);
+    const { currentPage, previousPage } = getAllNavigationInfo(req.route.path);
+    logger.debugRequest(req, `GET BY ID ${currentPage}`);
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
@@ -41,9 +45,9 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    return res.render(BENEFICIAL_OWNER_OTHER_PAGE, {
-      backLinkUrl: BENEFICIAL_OWNER_TYPE_URL,
-      templateName: `${BENEFICIAL_OWNER_OTHER_PAGE}/${id}`,
+    return res.render(currentPage, {
+      backLinkUrl: previousPage,
+      templateName: `${currentPage}/${id}`,
       id,
       ...data,
       ...principalAddress,
@@ -57,17 +61,17 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = async(req: Request, res: Response, next: NextFunction) => {
-
   try {
-    logger.debugRequest(req, `POST ${BENEFICIAL_OWNER_OTHER_PAGE}`);
+    const { currentPage, nextPage } = getAllNavigationInfo(req.route.path);
+    logger.debugRequest(req, `POST ${currentPage}`);
 
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerOtherKey);
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, res.locals.isUpdatePath);
 
-    return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -76,7 +80,8 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 
 export const update = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `UPDATE ${BENEFICIAL_OWNER_OTHER_PAGE}`);
+    const { currentPage, nextPage } = getAllNavigationInfo(req.route.path);
+    logger.debugRequest(req, `UPDATE ${currentPage}`);
 
     // Remove old Beneficial Owner
     removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
@@ -87,9 +92,9 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
     // Save new Beneficial Owner
     const session = req.session as Session;
     setApplicationData(session, data, BeneficialOwnerOtherKey);
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, res.locals.isUpdatePath);
 
-    return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -98,13 +103,14 @@ export const update = async (req: Request, res: Response, next: NextFunction) =>
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `REMOVE ${BENEFICIAL_OWNER_OTHER_PAGE}`);
+    const { currentPage, nextPage } = getAllNavigationInfo(req.route.path);
+    logger.debugRequest(req, `REMOVE ${currentPage}`);
 
     removeFromApplicationData(req, BeneficialOwnerOtherKey, req.params[ID]);
     const session = req.session as Session;
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, res.locals.isUpdatePath);
 
-    return res.redirect(BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

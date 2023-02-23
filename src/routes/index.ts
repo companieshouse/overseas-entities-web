@@ -387,4 +387,21 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerIndividual.remove);
 
+router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(beneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(beneficialOwnerOther.getById)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
+
 export default router;

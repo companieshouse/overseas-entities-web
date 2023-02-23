@@ -22,9 +22,12 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
     return res.render(SERVICE_OFFLINE_PAGE);
   }
 
-  if (!isActiveFeature(FEATURE_FLAG_ENABLE_ROE_UPDATE) && req.path.startsWith(UPDATE_LANDING_URL)) {
-    logger.infoRequest(req, "Feature update is disabled - displaying service offline page");
-    return res.render(SERVICE_OFFLINE_PAGE);
+  if (req.path.startsWith(UPDATE_LANDING_URL)){
+    res.locals.isUpdatePath = true;
+    if (!isActiveFeature(FEATURE_FLAG_ENABLE_ROE_UPDATE)) {
+      logger.infoRequest(req, "Feature update is disabled - displaying service offline page");
+      return res.render(SERVICE_OFFLINE_PAGE);
+    }
   }
 
   if (

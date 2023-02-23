@@ -102,20 +102,24 @@ export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", ye
     if (isYearEitherMissingOrCorrectLength(yearStr)) {
       const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
       if (isDatePresent) {
-        const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
-        if (areAllDateFieldsPresent) {
-          const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-          if (isDateValid) {
-            const isDatePastOrToday = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-            if (isDatePastOrToday) {
-              checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
-            }
-          }
-        }
+        checkIdentityDateFields(dayStr, monthStr, yearStr);
       }
     }
   }
   return true;
+};
+
+const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
+  if (areAllDateFieldsPresent) {
+    const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+    if (isDateValid) {
+      const isDatePastOrToday = checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+      if (isDatePastOrToday) {
+        checkDateIsWithinLast3Months(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS, dayStr, monthStr, yearStr);
+      }
+    }
+  }
 };
 
 export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -179,11 +183,9 @@ export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: stri
 };
 
 export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (dayStr === "" && monthStr === "" && yearStr !== "") {
-    return false;
-  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-    return false;
-  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+  if ((dayStr === "" && monthStr === "" && yearStr !== "") ||
+     (dayStr !== "" && monthStr === "" && yearStr === "") ||
+     (dayStr === "" && monthStr !== "" && yearStr === "")) {
     return false;
   }
   return true;

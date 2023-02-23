@@ -295,6 +295,43 @@ describe("DUE_DILIGENCE controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with only year length error when identity date day is empty and year is too short`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-month"] = "11";
+      dueDiligenceData["identity_date-year"] = "20";
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${DUE_DILIGENCE_PAGE} page with year length error when day and month are empty`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-year"] = "20";
+      const resp = await request(app).post(DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test(`renders the ${DUE_DILIGENCE_PAGE} page with only MONTH error when identity date month is empty`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] = "11";

@@ -10,6 +10,8 @@ import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
+import { saveAndContinue } from '../utils/save.and.continue';
+import { Session } from '@companieshouse/node-session-handler';
 
 const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -65,6 +67,8 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+    logger.debugRequest(req, `DEBUG in gte controller`);
+
     const appData: ApplicationData = getApplicationData(req.session);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
@@ -82,7 +86,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -138,7 +142,10 @@ const post = (
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
 
     //  save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(`${config.TRUST_ENTRY_URL}/${details.trust_id}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

@@ -156,8 +156,8 @@ describe('Trust Utils method tests', () => {
 
       expect(actual).toEqual(expect.objectContaining({
         trusts: [
-          mockTrust2Data,
           updatedTrust,
+          mockTrust2Data,
         ],
       }));
     });

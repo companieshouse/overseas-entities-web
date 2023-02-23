@@ -1,0 +1,22 @@
+{% include "includes/inputs/date/start-date-input.html" %}
+
+{% call govukFieldset({
+  legend: {
+    text: "What is its nature of control?",
+    classes: "govuk-fieldset__legend--m",
+    isPageHeading: false
+  }
+}) %}
+
+{% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
+{% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
+
+{% if isBeneficialOwnerOther %}
+  {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+  {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
+{% endif %}
+
+{% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+{% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+
+{% endcall %}

@@ -179,6 +179,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID]: {
+    currentPage: config.BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.BENEFICIAL_OWNER_GOV_URL + config.ID]: {
     currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
@@ -230,6 +235,11 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]

@@ -346,7 +346,7 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .all(
     authentication,
-    navigation.hasEntityUpdateDetails
+    navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerType.get)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);

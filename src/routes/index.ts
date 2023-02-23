@@ -402,6 +402,6 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   )
   .get(beneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
-router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
+router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, beneficialOwnerOther.remove);
 
 export default router;

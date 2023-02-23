@@ -349,7 +349,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
     navigation.hasEntityUpdateDetails
   )
   .get(updateBeneficialOwnerType.get)
-  .post(...validator.updateBeneficialOwnerManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
+  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateBeneficialOwnerType.postSubmit);
 

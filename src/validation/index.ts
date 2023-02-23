@@ -45,5 +45,5 @@ export const validator = {
   overseasName,
   startingNew,
   trustInvolved,
-  updateBeneficialOwnerManagingOfficerType: updateBeneficialOwnerAndManagingOfficerType
+  updateBeneficialOwnerAndManagingOfficerType: updateBeneficialOwnerAndManagingOfficerType
 };

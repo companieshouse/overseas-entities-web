@@ -115,13 +115,13 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_GOV_URL);
     });
 
-    test(`redirects to the ${config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL} page`, async () => {
+    test(`redirects to the ${config.UPDATE_MANAGING_OFFICER_URL} page`, async () => {
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
         .send({ [BeneficialOwnerTypeKey]: ManagingOfficerTypeChoice.individual });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_MANAGING_OFFICER_INDIVIDUAL_URL);
+      expect(resp.header.location).toEqual(config.UPDATE_MANAGING_OFFICER_URL);
     });
 
     test(`redirects to the ${config.UPDATE_MANAGING_OFFICER_CORPORATE_URL} page`, async () => {

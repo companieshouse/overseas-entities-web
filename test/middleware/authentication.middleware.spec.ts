@@ -1,11 +1,13 @@
 jest.mock("ioredis");
+jest.mock('../../src/middleware/service.availability.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from "express";
 import request from "supertest";
 
 import app from "../../src/app";
 
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import {
   getSessionRequestWithPermission,
   RESUME_SUBMISSION_URL,
@@ -22,20 +24,19 @@ import {
 } from '../../src/config';
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
-import { isActiveFeature } from "../../src/utils/feature.flag";
 
-jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/utils/logger', () => {
   return {
     logger: { info: jest.fn(), infoRequest: jest.fn(), errorRequest: jest.fn() }
   };
 });
 
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const req = {} as Request;
 const res = { locals: {}, redirect: jest.fn() as any } as Response;
 const next = jest.fn();
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe('Authentication middleware', () => {
   beforeEach(() => {
@@ -148,8 +149,6 @@ describe('Authentication middleware', () => {
   });
 
   test("should redirect to signin page", async () => {
-    mockIsActiveFeature.mockReturnValueOnce(false);
-    mockIsActiveFeature.mockReturnValueOnce(false);
     const resp = await request(app).get(SOLD_LAND_FILTER_URL);
 
     expect(resp.status).toEqual(302);
@@ -161,8 +160,6 @@ describe('Authentication middleware', () => {
   test("should redirect to signin page for update", async () => {
     const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
 
-    mockIsActiveFeature.mockReturnValueOnce(false);
-    mockIsActiveFeature.mockReturnValueOnce(true);
     const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
 
     expect(resp.status).toEqual(302);

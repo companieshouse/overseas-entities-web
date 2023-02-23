@@ -49,7 +49,6 @@ describe("service availability middleware tests", () => {
   test(`should return service offline page when req.path is equal ${STARTING_NEW_URL} and save and resume flag disabled `, async () => {
     mockIsActiveFeature
       .mockReturnValueOnce(false)
-      .mockReturnValueOnce(true)
       .mockReturnValueOnce(false);
     const response = await request(app).get(STARTING_NEW_URL);
 
@@ -59,7 +58,6 @@ describe("service availability middleware tests", () => {
   test(`should redirect to signin page after next middleware (authentication) when req.path is equal ${STARTING_NEW_URL} and save and resume flag enabled `, async () => {
     mockIsActiveFeature
       .mockReturnValueOnce(false)
-      .mockReturnValueOnce(true)
       .mockReturnValueOnce(true);
     const response = await request(app).get(STARTING_NEW_URL);
 
@@ -71,7 +69,6 @@ describe("service availability middleware tests", () => {
   test(`should return service offline page when req.path ends with '/${RESUME}' and save and resume flag disabled `, async () => {
     mockIsActiveFeature
       .mockReturnValueOnce(false)
-      .mockReturnValueOnce(true)
       .mockReturnValueOnce(false);
     const response = await request(app).get(RESUME_SUBMISSION_URL);
 
@@ -81,7 +78,6 @@ describe("service availability middleware tests", () => {
   test(`should redirect to signin page after next middleware (authentication) when req.path ends with '/${RESUME}' and save and resume flag enabled `, async () => {
     mockIsActiveFeature
       .mockReturnValueOnce(false)
-      .mockReturnValueOnce(true)
       .mockReturnValueOnce(true);
     const response = await request(app).get(RESUME_SUBMISSION_URL);
 

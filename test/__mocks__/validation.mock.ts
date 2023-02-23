@@ -155,7 +155,6 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK: 
   partner_name: "площадь"
 };
 
-
 export const BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK = {
   first_name: maxLengthMocks.MAX_50 + "1",
   last_name: maxLengthMocks.MAX_160 + "1",

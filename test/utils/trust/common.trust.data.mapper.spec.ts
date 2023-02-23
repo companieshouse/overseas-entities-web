@@ -19,7 +19,6 @@ describe('Common Trust Data Mapper to Page Service', () => {
     ],
   };
 
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

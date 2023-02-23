@@ -351,7 +351,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .get(updateBeneficialOwnerType.get)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
-router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateBeneficialOwnerType.postSubmit);
+router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
   .all(

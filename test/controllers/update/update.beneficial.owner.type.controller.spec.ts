@@ -2,7 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock('../../../src/middleware/navigation/update/has.entity.update.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -11,7 +11,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { hasEntityUpdateDetails } from "../../../src/middleware/navigation/update/has.entity.update.middleware";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
 import { getApplicationData } from '../../../src/utils/application.data';
 import {
@@ -40,8 +40,8 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockHasEntityUpdate = hasEntityUpdateDetails as jest.Mock;
-mockHasEntityUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
+mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 

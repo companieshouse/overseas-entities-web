@@ -33,8 +33,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl = config.TRUST_INFO_PAGE;
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
-        const lastIdInTrustArray = getTrustArray(appData).length;
-        backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + lastIdInTrustArray + config.ADD_TRUST_URL}`;
+        const trustArray = getTrustArray(appData);
+        const lastTrustId = trustArray[trustArray.length - 1].trust_id;
+        backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + lastTrustId + config.ADD_TRUST_URL}`;
       }
     }
 

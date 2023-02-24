@@ -300,8 +300,12 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
-router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.get);
-router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, updateCheckYourAnswers.post);
+router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
+  .all(
+    authentication,
+  )
+  .get(updateCheckYourAnswers.get)
+  .post(updateCheckYourAnswers.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, overseasEntityPayment.get);
 

@@ -24,46 +24,47 @@ href: previousPage
         {% include "includes/list/errors.html" %}
 
         <form method="post">
-
             {{ govukRadios({
-            errorMessage: errors.sign_out if errors,
-            classes: "govuk-radios--inline",
-            idPrefix: "sign_out",
-            name: "sign_out",
+                errorMessage: errors.sign_out if errors,
+                classes: "govuk-radios--inline",
+                idPrefix: "sign_out",
+                name: "sign_out",
             fieldset: {
-            legend: {
-            text: "Are you sure you want to sign out?",
-            isPageHeading: true,
-            classes: "govuk-fieldset__legend--l"
-            }
+                legend: {
+                text: "Are you sure you want to sign out?",
+                isPageHeading: true,
+                classes: "govuk-fieldset__legend--l"
+                }
             },
-            hint: {
-            text: hintText
-            },
+                hint: {
+                text: hintText
+                },
             items: [
-            {
-            value: "yes",
-            text: "Yes",
+                {
+                value: "yes",
+                text: "Yes",
             attributes: {
             "data-event-id": "yes-sign-out"
-            }
+                }
             },
-            {
-            value: "no",
-            text: "No",
-            attributes: {
-            "data-event-id": "no-sign-out"
-            }
+                {
+                value: "no",
+                text: "No",
+                attributes: {
+                "data-event-id": "no-sign-out"
+                }
             }
             ]
-            }) }}
+                }) 
+            }}
 
             {{ govukInput({
-            value: previousPage,
-            name: "previousPage",
-            classes: "govuk-visually-hidden"
-            }) }}
-
+                value: previousPage,
+                name: "previousPage",
+                classes: "govuk-visually-hidden"
+                }) 
+            }}
+            
             {% include "includes/continue-button.html" %}
 
         </form>

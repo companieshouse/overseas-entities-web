@@ -4,7 +4,7 @@ import * as config from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.UPDATE_SIGN_OUT_URL}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
       previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
       url: config.UPDATE_AN_OVERSEAS_ENTITY_URL
@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.UPDATE_SIGN_OUT_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const previousPage = req.body["previousPage"];
     if (!previousPage.startsWith(config.UPDATE_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);

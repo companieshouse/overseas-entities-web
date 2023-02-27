@@ -21,11 +21,9 @@ import { NextFunction, Request, Response } from "express";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
-
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
 const previousPage = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("SIGN OUT controller", () => {
   beforeEach(() => {
@@ -35,7 +33,6 @@ describe("SIGN OUT controller", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
@@ -46,16 +43,14 @@ describe("SIGN OUT controller", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
-
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
     });
-
   });
-  // TO BE UPDATED WHEN UAR-267 STORY IS DEVELOPED
 
+  // TO BE UPDATED WHEN UAR-267 STORY IS DEVELOPED
   describe("POST tests", () => {
     test(`redirects to ${config.UPDATE_AN_OVERSEAS_ENTITY_URL}, Signs out of Update journey`, async () => {
       const resp = await request(app)
@@ -70,7 +65,6 @@ describe("SIGN OUT controller", () => {
       const resp = await request(app)
         .post(config.UPDATE_SIGN_OUT_URL)
         .send({ sign_out: 'no', previousPage });
-
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(previousPage);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
@@ -82,7 +76,6 @@ describe("SIGN OUT controller", () => {
       const resp = await request(app)
         .post(config.UPDATE_SIGN_OUT_URL)
         .send({ sign_out: 'yes', previousPage: mockPreviousPage });
-
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
@@ -94,6 +87,5 @@ describe("SIGN OUT controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);
     });
-
   });
 });

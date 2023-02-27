@@ -21,10 +21,7 @@ import {
  */
 const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   if (appData) {
-    const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
-      appData.beneficial_owners_individual,
-      appData.beneficial_owners_corporate,
-    ];
+    const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
 
     for (const benficialOwners of allBenficialOwnersToCheck) {
       if (benficialOwners) {
@@ -46,10 +43,7 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  */
 const getTrustLandingUrl = (appData: ApplicationData): string => {
 
-  const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
-    appData.beneficial_owners_individual,
-    appData.beneficial_owners_corporate,
-  ];
+  const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
 
   for (const benficialOwners of allBenficialOwnersToCheck) {
     if (benficialOwners) {
@@ -61,6 +55,13 @@ const getTrustLandingUrl = (appData: ApplicationData): string => {
   }
 
   return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+};
+
+const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {
+  return [
+    appData.beneficial_owners_individual,
+    appData.beneficial_owners_corporate,
+  ];
 };
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
@@ -284,3 +285,5 @@ export {
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
 };
+
+

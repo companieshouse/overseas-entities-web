@@ -14,7 +14,10 @@ import {
 
 /**
  * Checks whether any beneficial owners requires trust data due to at least one of them
- * having a trust "nature of control" of the overseas entity
+ * having a trustee "nature of control" of the overseas entity
+ *
+ * @param appData Application Data
+ * @returns 'true' if any BO has a trustee "nature of control"
  */
 const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   if (appData) {
@@ -25,7 +28,7 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
 
     for (const benficialOwners of allBenficialOwnersToCheck) {
       if (benficialOwners) {
-        if (containsTrusts(benficialOwners)) {
+        if (containsTrusteeNatureOfControl(benficialOwners)) {
           return true;
         }
       }
@@ -80,7 +83,7 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
   return bo_list;
 };
 
-const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
+const containsTrusteeNatureOfControl = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
 };
 

@@ -12,6 +12,7 @@ import {
   saveLegalEntityBoInTrust,
   getIndividualTrusteesFromTrust,
   getFormerTrusteesFromTrust,
+  checkEntityRequiresTrusts,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -346,6 +347,44 @@ describe('Trust Utils method tests', () => {
       const result = getFormerTrusteesFromTrust(appData);
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
+    });
+
+  });
+  describe('test if overseas entity requires trust data', () => {
+
+    test("test checkEntityRequiresTrusts with application data and trustee nature of control", () => {
+
+      const result = checkEntityRequiresTrusts(mockAppData);
+      expect(result).toEqual(true);
+    });
+
+    test("test checkEntityRequiresTrusts with application data and no trustee nature of control", () => {
+
+      const appData = {
+        [TrustKey]: [
+          mockTrust1Data,
+          mockTrust2Data,
+        ],
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividual2,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOle1,
+        ],
+      } as ApplicationData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
+    });
+
+    test("test checkEntityRequiresTrusts with no application data", () => {
+
+      let appData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
     });
   });
 });

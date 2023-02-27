@@ -20,13 +20,7 @@ type TrustInvolvedPageProperties = {
 const getPageProperties = (
   req: Request,
 ): TrustInvolvedPageProperties => {
-  // const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-
-
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-
-  console.log("ADD TRUST PULLED ID");
-  console.log(trustId);
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL + "/" + trustId + config.TRUST_INVOLVED_URL}`,

@@ -45,8 +45,6 @@ const getPageProperties = (
 
   let backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-  console.log("TRUST DETAILS PULLED ID");
-  console.log(trustId);
 
   if (trustId > "1") {
     const previousTrustId = Number(trustId) - 1;

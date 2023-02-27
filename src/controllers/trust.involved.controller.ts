@@ -104,7 +104,6 @@ const post = (
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     if (req.body.noMoreToAdd) {
-      // return res.redirect(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL + config.ADD_TRUST_URL}`);
       return res.redirect(`${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`);
     }
     //  check on errors

@@ -238,5 +238,15 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.TRUST_DETAILS_URL]: {
+    currentPage: config.TRUST_DETAILS_PAGE + config.TRUST_ID,
+    previousPage: () => config.TRUST_INTERRUPT_PAGE,
+    nextPage: [config.TRUST_ENTRY_URL, config.ID, config.TRUST_INVOLVED_URL]
+  },
+  [config.TRUST_DETAILS_URL]: {
+    currentPage: config.TRUST_DETAILS_PAGE,
+    previousPage: () => config.TRUST_DETAILS_PAGE,
+    nextPage: [config.TRUST_ENTRY_URL, config.ID, config.TRUST_INVOLVED_URL]
   }
 };

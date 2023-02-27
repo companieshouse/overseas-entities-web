@@ -10,6 +10,7 @@ import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
+import { safeRedirect } from '../utils/http.ext';
 
 const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -25,7 +26,6 @@ type TrustDetailPageProperties = {
   };
   pageData: {
     beneficialOwners: PageModel.TrustBeneficialOwnerListItem[];
-    errors?: any[];
   };
   formData: PageModel.TrustDetailsForm,
 };
@@ -148,7 +148,7 @@ const post = (
     //  save to session
     setExtraData(req.session, appData);
 
-    return res.redirect(`${config.TRUST_ENTRY_URL}/${details.trust_id}${config.TRUST_INVOLVED_URL}`);
+    return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${details.trust_id}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

@@ -43,13 +43,17 @@ export enum ErrorMessages {
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
   TRUST_NAME = "Enter the trust name",
+  TRUST_NAME_2 = "Enter the name of the trust",
   TRUST_CREATION_DATE = "Enter the trust creation date",
+  TRUST_CREATION_DATE_2 = "Enter the date the trust was created",
   TRUST_BO_CHECKBOX = "At least one listed beneficial owner must be selected",
   TRUST_INDIVIDUAL_HOME_ADDRESS_LENGTH = "Individual home address must be 50 characters or less",
   TRUST_INDIVIDUAL_CORRESPONDENCE_ADDRESS_LENGTH = "Individual correspondence address must be 50 characters or less",
   TRUST_CORPORATE_REGISTERED_OFFICE_ADDRESS_LENGTH = "Corporate registered office address must be 50 characters or less",
   TRUST_CORPORATE_CORRESPONDENCE_ADDRESS_LENGTH = "Corporate correspondence address must be 50 characters or less",
   TRUST_INVOLVED_INVALID = 'Select which type of individual or entity you want to add',
+  TRUST_HAS_ALL_INFO = 'Select yes if the entity has all the required information about the trust',
+  TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
 
   // Date
   DAY = "Date must include a day",

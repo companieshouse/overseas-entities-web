@@ -460,7 +460,7 @@ describe("GET tests", () => {
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
-    mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag
+    mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true twice
 
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
@@ -472,7 +472,6 @@ describe("GET tests", () => {
     mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
     const resp = await request(app).get(CHECK_YOUR_ANSWERS_URL);
-    console.log(resp.text);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button

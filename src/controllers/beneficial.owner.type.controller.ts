@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { logger } from "../utils/logger";
-import { checkEntityHasTrusts } from "../utils/trusts";
+import { checkEntityRequiresTrusts } from "../utils/trusts";
 import * as config from "../config";
 import {
   BeneficialOwnerTypeChoice,
@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    const hasTrusts: boolean = checkEntityHasTrusts(appData);
+    const hasTrusts: boolean = checkEntityRequiresTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} hasTrusts=${hasTrusts}`);
 
@@ -41,7 +41,7 @@ export const post = (req: Request, res: Response) => {
 
 export const postSubmit = (req: Request, res: Response) => {
   const appData: ApplicationData = getApplicationData(req.session);
-  const hasTrusts: boolean = checkEntityHasTrusts(appData);
+  const hasTrusts: boolean = checkEntityRequiresTrusts(appData);
   let nextPageUrl = config.CHECK_YOUR_ANSWERS_URL;
   if (hasTrusts) {
     nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)

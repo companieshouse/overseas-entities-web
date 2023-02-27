@@ -11,8 +11,11 @@ import {
   TrustCorporate,
 } from "../model/trust.model";
 
-// Checks whether any beneficial owners have trust data
-const checkEntityHasTrusts = (appData: ApplicationData): boolean => {
+/**
+ * Checks whether any beneficial owners requires trust data due to at least one of them
+ * having a trust "nature of control" of the overseas entity
+ */
+const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   if (appData) {
     const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
       appData.beneficial_owners_individual,
@@ -229,7 +232,7 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
 };
 
 export {
-  checkEntityHasTrusts,
+  checkEntityRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
   saveTrustInApp,

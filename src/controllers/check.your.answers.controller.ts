@@ -7,7 +7,7 @@ import { closeTransaction, postTransaction } from "../service/transaction.servic
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
-import { checkEntityHasTrusts } from "../utils/trusts";
+import { checkEntityRequiresTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const hasTrusts: boolean = checkEntityHasTrusts(appData);
+    const hasTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = "Overseas entity details";
 

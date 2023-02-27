@@ -47,7 +47,7 @@ import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.co
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
-import { checkEntityHasTrusts } from "../../src/utils/trusts";
+import { checkEntityRequiresTrusts } from "../../src/utils/trusts";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 
@@ -65,7 +65,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
-const mockCheckEntityHasTrusts = checkEntityHasTrusts as jest.Mock;
+const mockcheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
@@ -250,7 +250,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer with trusts`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockCheckEntityHasTrusts.mockReturnValueOnce(true);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
@@ -261,7 +261,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} with trusts and Feature Flag ON`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockCheckEntityHasTrusts.mockReturnValueOnce(true);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
@@ -271,7 +271,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has both beneficial owner and managing officer no trusts`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockCheckEntityHasTrusts.mockReturnValueOnce(false);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
       const resp = await request(app)
         .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 

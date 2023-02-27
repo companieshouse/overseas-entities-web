@@ -104,7 +104,7 @@ const post = (
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     if (req.body.noMoreToAdd) {
-      return res.redirect(`${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`);
+      return safeRedirect(res, `${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`);
     }
     //  check on errors
     const errorList = validationResult(req);

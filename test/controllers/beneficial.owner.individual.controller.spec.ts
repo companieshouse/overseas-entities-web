@@ -40,7 +40,7 @@ import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
   UK_SANCTIONS_DETAILS,
   YES_SANCTIONS_TEXT_THEY,
-  NO_SANCTIONS_TEXT_THEY,
+  NO_SANCTIONS_TEXT_THEY, SANCTIONS_HINT_TEXT_THEY,
 } from '../__mocks__/text.mock';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
@@ -110,6 +110,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
+      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
     });
   });
 

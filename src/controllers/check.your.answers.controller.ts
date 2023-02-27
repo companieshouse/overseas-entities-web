@@ -17,8 +17,6 @@ import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
-    console.log("CHECK YOUR ANSWERS");
-    logger.debugRequest(req, `${JSON.stringify(req.session)}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 

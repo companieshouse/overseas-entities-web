@@ -330,6 +330,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
@@ -344,6 +345,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
@@ -358,6 +360,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DAY error when start date day is empty`, async () => {

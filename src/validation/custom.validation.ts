@@ -141,7 +141,7 @@ export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearS
   return true;
 };
 
-export const checkStartDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkStartDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areAllDateFieldsPresent) {
     const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);

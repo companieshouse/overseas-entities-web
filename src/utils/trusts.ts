@@ -1,3 +1,4 @@
+import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -33,6 +34,32 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   return false;
 };
 
+/**
+ * Return the correct first Trust page in the trust journey depending
+ * on whether there is already any trust data.
+ *
+ * @param appData Application Data
+ * @returns string URL to go to when starting the trust journey
+ */
+const getTrustLandingUrl = (appData: ApplicationData): string => {
+
+  const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
+    appData.beneficial_owners_individual,
+    appData.beneficial_owners_corporate,
+  ];
+
+  for (const benficialOwners of allBenficialOwnersToCheck) {
+    if (benficialOwners) {
+      if (containsTrustData(benficialOwners)) {
+        // Once new "add trust" page is in then change below URL to that
+        return `${CHECK_YOUR_ANSWERS_URL}`;
+      }
+    }
+  }
+
+  return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+};
+
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
   const bo_list: BeneficialOwnerItem[] = [];
 
@@ -55,6 +82,10 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
 
 const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
+};
+
+const containsTrustData = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
+  return beneficialOwners.some(bo => bo.trust_ids?.length);
 };
 
 /**
@@ -248,4 +279,5 @@ export {
   getLegalEntityBosInTrust,
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
+  getTrustLandingUrl,
 };

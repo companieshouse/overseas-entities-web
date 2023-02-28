@@ -75,8 +75,6 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    logger.debugRequest(req, `DEBUG in gte controller`);
-
     const appData: ApplicationData = getApplicationData(req.session);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];

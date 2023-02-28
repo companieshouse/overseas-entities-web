@@ -80,7 +80,7 @@ const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
 };
 
 export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr) && isYearEitherMissingOrCorrectLength(yearStr)) {
     if ((dayStr !== "" || monthStr !== "" || yearStr !== "") && isYearEitherMissingOrCorrectLength(yearStr)) {
       checkOptionalDateDetails(dayStr, monthStr, yearStr);
@@ -129,7 +129,7 @@ const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yea
 };
 
 export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr) && isYearEitherMissingOrCorrectLength(yearStr)) {
     if (isYearEitherMissingOrCorrectLength(yearStr)) {
       const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);

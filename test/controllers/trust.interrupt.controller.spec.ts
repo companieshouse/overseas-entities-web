@@ -52,8 +52,9 @@ describe('Trust Interrupt controller', () => {
     test('continue button pushed', () => {
       post(mockReq, mockRes, mockNext);
 
+      const firstTrustId = "1";
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}`);
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + "/" + firstTrustId}`);
     });
 
     test('catch error when post data from page', () => {
@@ -88,8 +89,10 @@ describe('Trust Interrupt controller', () => {
     test('successfully access POST method', async () => {
       const resp = await request(app).post(pageUrl);
 
+      const firstTrustId = "1";
+
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}`);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL + "/" + firstTrustId}`);
 
       expect(authentication).toBeCalledTimes(1);
     });

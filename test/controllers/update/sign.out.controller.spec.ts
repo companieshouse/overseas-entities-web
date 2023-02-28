@@ -38,16 +38,13 @@ describe("SIGN OUT controller", () => {
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
-
     });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      const resp = await request(app)
-        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.UPDATE_SIGN_OUT_URL);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
@@ -79,14 +76,6 @@ describe("SIGN OUT controller", () => {
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
-    });
-
-    test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.SIGN_OUT_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
     test("catch error when posting the page with no selection", async () => {

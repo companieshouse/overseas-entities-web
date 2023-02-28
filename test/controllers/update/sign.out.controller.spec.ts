@@ -12,6 +12,7 @@ import app from "../../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
+  SERVICE_UNAVAILABLE,
   SIGN_OUT_HINT_TEXT,
   SIGN_OUT_PAGE_TITLE
 } from "../../__mocks__/text.mock";
@@ -50,7 +51,6 @@ describe("SIGN OUT controller", () => {
     });
   });
 
-  // TO BE UPDATED WHEN UAR-267 STORY IS DEVELOPED
   describe("POST tests", () => {
     test(`redirects to ${config.UPDATE_AN_OVERSEAS_ENTITY_URL}, Signs out of Update journey`, async () => {
       const resp = await request(app)
@@ -81,6 +81,15 @@ describe("SIGN OUT controller", () => {
       expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
     });
 
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.SIGN_OUT_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
     test("catch error when posting the page with no selection", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).post(config.UPDATE_SIGN_OUT_URL);
@@ -89,3 +98,4 @@ describe("SIGN OUT controller", () => {
     });
   });
 });
+

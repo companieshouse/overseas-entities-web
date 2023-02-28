@@ -23,7 +23,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
     if (req.body["sign_out"] === 'yes') {
-    // This url may change depending on decision made on ticket UAR-267
       return res.redirect(config.UPDATE_ACCOUNTS_SIGN_OUT_URL);
     }
     return res.redirect(previousPage);

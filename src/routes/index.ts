@@ -435,6 +435,5 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .get(updateBeneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
->>>>>>> main
 
 export default router;

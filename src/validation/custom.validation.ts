@@ -29,9 +29,16 @@ export const checkInvalidCharactersIfRadioButtonSelected = (selected: boolean, e
   return true;
 };
 
-export const checkDateIsNotCompletelyEmpty = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
+export const checkDateIsNotCompletelyEmptyWithErrorThrown = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
   if ( !day.trim() && !month.trim() && !year.trim() ) {
     throw new Error(errMsg);
+  }
+  return true;
+};
+
+export const checkDateIsNotCompletelyEmpty = (day: string = "", month: string = "", year: string = "") => {
+  if ( !day.trim() && !month.trim() && !year.trim() ) {
+    return false;
   }
   return true;
 };
@@ -104,13 +111,10 @@ const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", ye
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
-  if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr) && isYearEitherMissingOrCorrectLength(yearStr)) {
-    if (isYearEitherMissingOrCorrectLength(yearStr)) {
-      const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
-      if (isDatePresent) {
-        checkIdentityDateFields(dayStr, monthStr, yearStr);
-      }
-    }
+  if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
+  && isYearEitherMissingOrCorrectLength(yearStr)
+  && checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+    checkIdentityDateFields(dayStr, monthStr, yearStr);
   }
   return true;
 };
@@ -130,13 +134,10 @@ const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yea
 
 export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
-  if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr) && isYearEitherMissingOrCorrectLength(yearStr)) {
-    if (isYearEitherMissingOrCorrectLength(yearStr)) {
-      const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
-      if (isDatePresent) {
-        checkStartDateFields(dayStr, monthStr, yearStr);
-      }
-    }
+  if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
+  && isYearEitherMissingOrCorrectLength(yearStr)
+  && checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+    checkStartDateFields(dayStr, monthStr, yearStr);
   }
   return true;
 };
@@ -151,10 +152,40 @@ const checkStartDateFields = (dayStr: string = "", monthStr: string = "", yearSt
   }
 };
 
-export const checkDateFieldDay = (dayMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldDay = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (isYearEitherMissingOrCorrectLength(yearStr)) {
     if (dayStr === "" && monthStr !== "" && yearStr !== "") {
-      throw new Error(dayMissingMessage);
+      throw new Error(ErrorMessages.DAY);
+    } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+      throw new Error(ErrorMessages.DAY_AND_MONTH);
+    } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+      throw new Error(ErrorMessages.DAY_AND_YEAR);
+    } else {
+      checkDateIsNotCompletelyEmptyWithErrorThrown(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
+    }
+  }
+  return true;
+};
+
+export const checkDateFieldDayOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    if (dayStr === "" && monthStr !== "" && yearStr !== "") {
+      throw new Error(ErrorMessages.DAY_OF_BIRTH);
+    } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+      throw new Error(ErrorMessages.DAY_AND_MONTH_OF_BIRTH);
+    } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+      throw new Error(ErrorMessages.DAY_AND_YEAR_OF_BIRTH);
+    } else {
+      checkDateIsNotCompletelyEmptyWithErrorThrown(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+    }
+  }
+  return true;
+};
+
+export const checkDateFieldDayForOptionalDates = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    if (dayStr === "" && monthStr !== "" && yearStr !== "") {
+      throw new Error(ErrorMessages.DAY);
     } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
       throw new Error(ErrorMessages.DAY_AND_MONTH);
     } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
@@ -164,12 +195,12 @@ export const checkDateFieldDay = (dayMissingMessage: string, dayStr: string = ""
   return true;
 };
 
-export const checkDateFieldMonth = (monthMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldMonth = (monthMissingMessage: string, monthYearMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (isYearEitherMissingOrCorrectLength(yearStr)) {
     if (monthStr === "" && dayStr !== "" && yearStr !== "") {
       throw new Error(monthMissingMessage);
     } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-      throw new Error(ErrorMessages.MONTH_AND_YEAR);
+      throw new Error(monthYearMsg);
     }
   }
   return true;
@@ -208,15 +239,14 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
-  if (isYearEitherMissingOrCorrectLength(yearStr)) {
-    const isDatePresent = checkDateIsNotCompletelyEmpty(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
-    if (isDatePresent) {
-      const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
-      if (areDateOfBirthFieldsPresent) {
-        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
-        if (isDateValid) {
-          checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
-        }
+  if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
+  && isYearEitherMissingOrCorrectLength(yearStr)
+  && checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+    const areDateOfBirthFieldsPresent = checkDateOfBirthFieldsArePresent(dayStr, monthStr, yearStr);
+    if (areDateOfBirthFieldsPresent) {
+      const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+      if (isDateValid) {
+        checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
       }
     }
   }

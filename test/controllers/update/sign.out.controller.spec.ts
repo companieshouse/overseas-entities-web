@@ -88,7 +88,6 @@ describe("SIGN OUT controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
-  });
 
     test("catch error when posting the page with no selection", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -98,4 +97,3 @@ describe("SIGN OUT controller", () => {
     });
   });
 });
-

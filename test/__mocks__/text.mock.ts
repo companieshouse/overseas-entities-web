@@ -134,6 +134,13 @@ export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more infor
 export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
 export const PAYMENT_FAILED_PAGE_HEADING = "Payment failed";
+export const UK_SANCTIONS_DETAILS = "How to check if a beneficial owner is on the UK Sanctions List";
+export const YES_SANCTIONS_TEXT_THEY = "Yes, they are on the Sanctions List";
+export const NO_SANCTIONS_TEXT_THEY = "No, they are not on the Sanctions List";
+export const YES_SANCTIONS_TEXT_IT = "Yes, it is on the Sanctions List";
+export const NO_SANCTIONS_TEXT_IT = "No, it is not on the Sanctions List";
+export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018.";
+export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";

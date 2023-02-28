@@ -61,7 +61,7 @@ export const postManagingOfficerCorporate = async(req: Request, res: Response, n
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const data: ApplicationDataType = officerData(req.body, uuidv4());
+    const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
 
     const session = req.session as Session;
     setApplicationData(session, data, ManagingOfficerCorporateKey);
@@ -84,7 +84,7 @@ export const updateManagingOfficerCorporate = async(req: Request, res: Response,
     removeFromApplicationData(req, ManagingOfficerCorporateKey, req.params[ID]);
 
     // Set officer data
-    const data: ApplicationDataType = officerData(req.body, req.params[ID]);
+    const data: ApplicationDataType = setOfficerData(req.body, req.params[ID]);
 
     // Save new Managing Officer
     const session = req.session as Session;
@@ -119,7 +119,7 @@ export const removeManagingOfficerCorporate = async(req: Request, res: Response,
   }
 };
 
-const officerData = (reqBody: any, id: string): ApplicationDataType => {
+const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerCorporateKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);

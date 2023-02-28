@@ -150,7 +150,6 @@ describe("UPDATE_MANAGING_OFFICER_CORPORATE controller", () => {
         ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
         contact_email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
 
-
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
         .send(managingOfficerCorporate);

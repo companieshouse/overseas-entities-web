@@ -7,75 +7,86 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    {% include "includes/list/errors.html" %}
-    <h1 class="govuk-heading-xl">Confirm this is the registered overeseas entity (NOT LIVE)</h1>
-    
-  {{ govukTable({
-    captionClasses: "govuk-table__caption--m",
-    firstCellIsHeader: true,
-    rows: [
-      [
-        {
-          text: "Overseas Entity Name",
-          attributes: {
-            "id": "oe_entity_name"
-          }
-        },
-        {
-          text: appData.entity_name,
-          attributes: {
-            "id": "oe_entity_name_value"
-          }
-        }
-      ],
-      [
-        {
-          text: "Registered Office Address",
-          attributes: {
-            "id": "oe_entity_registered_address"
-          }
-        },
-        {
-          text: "" if appData.entity_number === undefined else appData.entity.principal_address.property_name_number + " " + appData.entity.principal_address.line_1 + " " + appData.entity.principal_address.country,
-          attributes: {
-            "id": "oe_entity_address_value"
-          }
-        }
-      ],
-      [
-        {
-          text: "Registered On",
-          attributes: {
-            "id": "oe_entity_registered_date"
-          }
-        },
-        {
-          text: registrationDate,
-          attributes: {
-            "id": "oe_entity_registered_date_value"
-          }
-        }
-      ]
-    ]
-    }) 
-  }}
-
-  <br>
-  <form method="post">
-    <div class="govuk-button-group">
-      {{ govukButton({
-        text: "Confirm and continue",
-        attributes: {
-          "id": "submit"
-        }
-      }) }}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+        <h1 class="govuk-heading-xl">Confirm this is the correct overseas entity</h1>
+        {{ govukTable({
+          captionClasses: "govuk-table__caption--m",
+          firstCellIsHeader: true,
+          rows: [
+            [
+              {
+                text: "Name",
+                attributes: {
+                  "id": "oe_entity_name"
+                }
+              },
+              {
+                text: appData.entity_name,
+                attributes: {
+                  "id": "oe_entity_name_value"
+                }
+              }
+            ],
+            [
+              {
+                text: "Overseas Entity ID",
+                attributes: {
+                  "id": "oe_entity_number"
+                }
+              },
+              {
+                text: appData.entity_number,
+                attributes: {
+                  "id": "oe_entity_number_value"
+                }
+              }
+            ],
+            [
+              {
+                text: "Formed in",
+                attributes: {
+                  "id": "oe_entity_incorporation_country"
+                }
+              },
+              {
+                text: "" if appData.entity === undefined else appData.entity.incorporation_country,
+                attributes: {
+                  "id": "oe_entity_incorporation_country_value"
+                }
+              }
+            ],
+            [
+              {
+                text: "Date registered on the Register of Overseas Entities",
+                attributes: {
+                  "id": "oe_entity_registered_date"
+                }
+              },
+              {
+                text: registrationDate,
+                attributes: {
+                  "id": "oe_entity_registered_date_value"
+                }
+              }
+            ]
+          ]
+          }) 
+        }}
+      <br>
+      <form method="post">
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Confirm and continue",
+            attributes: {
+              "id": "submit"
+            }
+          }) }}
+        </div>
+        <br>
+          <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>  
+      </form>
     </div>
-    <br>
-      <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Change company</a>  
-  </form>
   </div>
-</div>
-
 {% endblock %}

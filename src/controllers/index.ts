@@ -32,6 +32,7 @@ export * as trustHistoricalbeneficialOwner from "./trust.historical.beneficial.o
 export * as trustIndividualbeneficialOwner from "./trust.individual.beneficial.owner.controller";
 export * as trustLegalEntitybeneficialOwner from "./trust.legal.entity.beneficial.owner.controller";
 export * as trustInterrupt from "./trust.interrupt.controller";
+export * as addTrust from "./add.trust.controller";
 export * as overseasName from "./overseas.name.controller";
 export * as paymentFailed from "./payment.failed.controller";
 
@@ -55,3 +56,4 @@ export * as updateBeneficialOwnerType from "./update/beneficial.owner.type.contr
 export * as updateBeneficialOwnerGov from "./update/update.beneficial.owner.gov.controller";
 export * as updateBeneficialOwnerIndividual from "./update/update.beneficial.owner.individual.controller";
 export * as updateManagingOfficerCorporate from "./update/update.corporate.managing.officer.controller";
+export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";

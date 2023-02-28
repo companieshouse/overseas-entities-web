@@ -26,5 +26,3 @@ export const resetEntityUpdate = (appData: ApplicationData): Update => {
   // Don't reset has_sold_land as registration only.
   return appData.update;
 };
-
-

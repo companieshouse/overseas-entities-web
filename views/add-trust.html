@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+
+{% set title = "Do you want to add another trust?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+
+      <form method="post">
+
+
+        {% set fieldParam = {
+          name: 'addTrust',
+          error: errors.addTrust,
+          items: [
+            {
+              value: 1,
+              text: "Yes"
+            }, {
+              value: 0,
+              text: "No"
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {% include "includes/continue-button.html" %}
+
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -56,7 +56,6 @@ const generateId = (): string => {
   return uuidv4();
 };
 
-
 export {
   mapLegalEntityToSession,
   mapLegalEntityItemToPage,

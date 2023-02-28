@@ -1,6 +1,5 @@
 import { Address, yesNoResponse } from "./data.types.model";
 
-
 export const EntityKey = "entity";
 
 /*

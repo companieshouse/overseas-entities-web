@@ -25,7 +25,7 @@ import app from "../../src/app";
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import {
-  CHECK_YOUR_ANSWERS_URL,
+  ADD_TRUST_URL,
   TRUST_ENTRY_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
@@ -169,7 +169,7 @@ describe('Trust Involved controller', () => {
       post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(`${CHECK_YOUR_ANSWERS_URL}`);
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + "/" + trustId + ADD_TRUST_URL}`);
     });
 
     const dpPostTrustee = [

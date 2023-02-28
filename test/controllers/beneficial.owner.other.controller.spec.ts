@@ -46,6 +46,7 @@ import {
   NO_SANCTIONS_TEXT_IT,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
+  SANCTIONS_HINT_TEXT_IT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
@@ -112,6 +113,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
     });
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {
@@ -352,9 +354,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
-
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
@@ -369,6 +371,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -385,6 +388,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 

@@ -7,6 +7,7 @@ import {
   getTrustBoIndividuals,
   getTrustBoOthers,
   getTrustByIdFromApp,
+  getTrustArray,
   saveHistoricalBoInTrust,
   saveIndividualTrusteeInTrust,
   saveTrustInApp,
@@ -132,6 +133,10 @@ describe('Trust Utils method tests', () => {
     expect(getTrustByIdFromApp(mockAppData, mockTrust2Data.trust_id)).toEqual(mockTrust2Data);
   });
 
+  test('test getTrustArray', () => {
+    expect(getTrustArray(mockAppData)).toEqual([mockTrust1Data, mockTrust2Data]);
+  });
+
   describe('test Save Trust in Application data', () => {
     const newTrust = {
       trust_id: 'newTrust',
@@ -159,8 +164,8 @@ describe('Trust Utils method tests', () => {
 
       expect(actual).toEqual(expect.objectContaining({
         trusts: [
-          mockTrust2Data,
           updatedTrust,
+          mockTrust2Data,
         ],
       }));
     });
@@ -398,7 +403,6 @@ describe('Trust Utils method tests', () => {
       const result = getTrustLandingUrl(mockAppData);
       expect(result).toEqual(`${CHECK_YOUR_ANSWERS_URL}`);
     });
-
 
     test("test getTrustLandingUrl with bo having trust data", () => {
 

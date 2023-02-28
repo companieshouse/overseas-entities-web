@@ -48,7 +48,7 @@ const getTrustLandingUrl = (appData: ApplicationData): string => {
   for (const benficialOwners of allBenficialOwnersToCheck) {
     if (benficialOwners) {
       if (containsTrustData(benficialOwners)) {
-        // Once new "add trust" page is in then change below URL to that
+        // Once naviation changes are agreed the following will change
         return `${CHECK_YOUR_ANSWERS_URL}`;
       }
     }
@@ -103,6 +103,15 @@ const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust =
 };
 
 /**
+ * Get Trust array from application object in session
+ *
+ * @param appData Application Data in Session
+ */
+const getTrustArray = (appData: ApplicationData): Trust[] => {
+  return appData[TrustKey] ?? [];
+};
+
+/**
  * Update trust in application data
  *
  * @param appData Application Data in Session
@@ -115,17 +124,13 @@ const saveTrustInApp = (appData: ApplicationData, trustDetails: Trust): Applicat
   const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
 
   if (trustIndex >= 0) {
-    //  get updated trust and remove it from array of trusts
-    const updateTrust = trusts.splice(trustIndex, 1).shift() ?? {};
+    //  update existing trust in array
+    trusts[trustIndex] = trustDetails;
 
-    //  update trust with new details
-    trustDetails = {
-      ...updateTrust,
-      ...trustDetails,
-    };
+  } else {
+    // add new trust to array
+    trusts.push(trustDetails);
   }
-
-  trusts.push(trustDetails);
 
   return {
     ...appData,
@@ -270,6 +275,7 @@ export {
   checkEntityRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
+  getTrustArray,
   saveTrustInApp,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
@@ -285,5 +291,3 @@ export {
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
 };
-
-

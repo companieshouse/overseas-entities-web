@@ -41,6 +41,7 @@ import {
   trustIndividualbeneficialOwner,
   trustLegalEntitybeneficialOwner,
   trustInterrupt,
+  addTrust,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -212,6 +213,16 @@ router
     ...validator.trustInvolved,
     trustInvolved.post,
   );
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.ADD_TRUST_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(addTrust.get)
+  .post(addTrust.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')

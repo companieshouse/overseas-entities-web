@@ -133,18 +133,30 @@
               text: "Former beneficial owner",
               hint: {
                 text: "This is any individual or legal entity that was previously a registrable beneficial owner of the overseas entity, due to being a trustee of this trust."
+              },
+              checked: typeOfTrustee == pageData.trusteeType.HISTORICAL,
+              attributes: {
+                "data-event-id": "former-beneficial-owner-radio-option"
               }
             }, {
               value: pageData.trusteeType.INDIVIDUAL,
               text: "Individual",
               hint: {
                 text: "This is an individual who is currently a beneficiary, settlor, grantor or interested person for this trust."
+              },
+               checked: typeOfTrustee == pageData.trusteeType.INDIVIDUAL,
+              attributes: {
+                "data-event-id": "individual-radio-option"
               }
             }, {
               value: pageData.trusteeType.LEGAL_ENTITY,
               text: "Legal entity",
               hint: {
                 text: "This is a legal entity that is currently a beneficiary, settlor, grantor or interested person for this trust. You do not need to tell us about government or public authorities."
+              },
+              checked: typeOfTrustee == pageData.trusteeType.LEGAL_ENTITY,
+              attributes: {
+                "data-event-id": "legal-entity-radio-option"
               }
             }
           ]
@@ -153,7 +165,11 @@
 
         <div class="govuk-button-group">
           {{ govukButton({
-              text: "Add"
+              text: "Add",
+            attributes: {
+              "id": "add",
+              "data-event-id": "trust-involved-page-add-button"
+            }
             }) }}
 
           {{ govukButton({

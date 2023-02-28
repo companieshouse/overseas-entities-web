@@ -43,8 +43,16 @@ const getPageProperties = (
       .map(mapperBo.mapBoOtherToPage),
   ];
 
+  let backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
+  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+
+  if (trustId > "1") {
+    const previousTrustId = Number(trustId) - 1;
+    backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + String(previousTrustId) + config.ADD_TRUST_URL}`;
+  }
+
   return {
-    backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
+    backLinkUrl,
     templateName: config.TRUST_DETAILS_PAGE,
     pageParams: {
       title: TRUST_DETAILS_TEXTS.title,

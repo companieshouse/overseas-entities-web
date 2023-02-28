@@ -32,7 +32,8 @@ import {
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   UK_SANCTIONS_DETAILS,
-  YES_SANCTIONS_TEXT_IT
+  YES_SANCTIONS_TEXT_IT,
+  SANCTIONS_HINT_TEXT_IT
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -97,6 +98,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
     });
   });
 
@@ -283,6 +285,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -299,6 +302,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -315,6 +319,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
@@ -336,7 +341,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only MONTH error when start date month is empty`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "06";
@@ -354,7 +358,6 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
-
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR error when start date year is empty`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };

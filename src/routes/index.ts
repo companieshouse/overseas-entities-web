@@ -41,6 +41,7 @@ import {
   trustIndividualbeneficialOwner,
   trustLegalEntitybeneficialOwner,
   trustInterrupt,
+  addTrust,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -54,8 +55,9 @@ import {
   updateConfirmation,
   paymentFailed,
   updateBeneficialOwnerType,
-  updateBeneficialOwnerGov,
   updateBeneficialOwnerIndividual,
+  updateBeneficialOwnerGov,
+  updateBeneficialOwnerOther,
   updateManagingOfficerIndividual
 } from "../controllers";
 
@@ -140,10 +142,21 @@ router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
 
-router.get(config.BENEFICIAL_OWNER_OTHER_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.get);
-router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.getById);
-router.post(config.BENEFICIAL_OWNER_OTHER_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
-router.post(config.BENEFICIAL_OWNER_OTHER_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+router.route(config.BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+
+router.route(config.BENEFICIAL_OWNER_OTHER_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.getById)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
 router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
 
 router.route(config.BENEFICIAL_OWNER_GOV_URL)
@@ -213,6 +226,16 @@ router
     ...validator.trustInvolved,
     trustInvolved.post,
   );
+
+router
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.ADD_TRUST_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrust,
+  )
+  .get(addTrust.get)
+  .post(addTrust.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')
@@ -395,5 +418,23 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL)
   )
   .get(updateManagingOfficerIndividual.get)
   .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerOther.getById)
+  .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.update);
+router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
+>>>>>>> main
 
 export default router;

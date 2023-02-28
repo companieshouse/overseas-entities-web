@@ -24,7 +24,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
-      requiresTrusts, // is this used?
+      requiresTrusts,
       ...appData,
     });
   } catch (error) {

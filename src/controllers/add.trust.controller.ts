@@ -63,7 +63,7 @@ const post = (
       const newTrustId = generateTrustId(appData);
 
       return res.redirect(`${config.TRUST_DETAILS_URL}/${newTrustId}`);
-    } else if (addNewTrust === '0') {
+    } else {
       return res.redirect(config.CHECK_YOUR_ANSWERS_URL);
     }
   } catch (error) {

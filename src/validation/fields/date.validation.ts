@@ -8,6 +8,7 @@ import {
   checkStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
+import { dateContext, dateValidations } from "./helper/date.validation.helper";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -50,17 +51,24 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
-// to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that the year check is checked before some others
-export const createdDateValidations = [
-  body("createdDateDay")
-    .if(body("createdDateYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"])),
-  body("createdDateMonth")
-    .if(body("createdDateYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"])),
-  body("createdDateYear")
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"])),
-  body("createdDate")
-    .custom((value, { req }) => checkStartDate(req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"])),
-];
+
+const createdDateValidationsContext: dateContext = {
+  dateInput: {
+    name: "createdDate",
+    callBack: checkStartDate
+  },
+  day: {
+    name: "createdDateDay",
+    callBack: checkDateFieldDay
+  },
+  month: {
+    name: "createdDateMonth",
+    callBack: checkDateFieldMonth
+  },
+  year: {
+    name: "createdDateYear",
+    callBack: checkDateFieldYear
+  }
+};
+
+export const createdDateValidations = dateValidations(createdDateValidationsContext, 4, 4);

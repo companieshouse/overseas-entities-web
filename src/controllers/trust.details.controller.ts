@@ -11,6 +11,8 @@ import * as PageModel from '../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { safeRedirect } from '../utils/http.ext';
+import { validationResult } from 'express-validator/src/validation-result';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 
 const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -28,11 +30,13 @@ type TrustDetailPageProperties = {
     beneficialOwners: PageModel.TrustBeneficialOwnerListItem[];
   };
   formData: PageModel.TrustDetailsForm,
+  errors?: FormattedValidationErrors,
 };
 
 const getPageProperties = (
   req: Request,
   formData: PageModel.TrustDetailsForm,
+  errors?: FormattedValidationErrors,
 ): TrustDetailPageProperties => {
   const appData: ApplicationData = getApplicationData(req.session);
 
@@ -62,6 +66,7 @@ const getPageProperties = (
       beneficialOwners: boAvailableForTrust,
     },
     formData,
+    errors,
   };
 };
 
@@ -131,6 +136,25 @@ const post = (
 
     //  get trust data from session
     let appData: ApplicationData = getApplicationData(req.session);
+
+    // check for errors
+    const errorList = validationResult(req);
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
+      appData,
+      trustId,
+    );
+
+    // if no errors present rerender the page
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        formData,
+        formatValidationError(errorList.array()),
+      );
+
+      return res.render(pageProps.templateName, pageProps);
+    }
 
     //  map form data to session trust data
     const details = mapperDetails.mapDetailToSession(req.body);

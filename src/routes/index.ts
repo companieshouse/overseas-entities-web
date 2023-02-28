@@ -211,7 +211,7 @@ router
     navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
-  .post(...validator.trustDetails, checkValidations, trustDetails.post);
+  .post(...validator.trustDetails, trustDetails.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)

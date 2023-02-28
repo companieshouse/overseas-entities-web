@@ -70,7 +70,6 @@
             boItems
             ) %}
         {% endfor %}
-
         {% if boItems | length %}
           {% set fieldParam = {
             name: 'beneficialOwnersIds',
@@ -79,7 +78,7 @@
             error: errors.beneficialOwnersIds if errors,
             items: boItems
           } %}
-          {% include "includes/inputs/checkbox-input.html" %}
+        {% include "includes/inputs/checkbox-input.html" %}
         {% endif %}
 
         {{ govukInsetText({
@@ -90,7 +89,6 @@
         }) }}
 
         <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
-
         {% include "includes/continue-button.html" %}
       </form>
     </div>

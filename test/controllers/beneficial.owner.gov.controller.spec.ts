@@ -32,7 +32,8 @@ import {
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   UK_SANCTIONS_DETAILS,
-  YES_SANCTIONS_TEXT_IT
+  YES_SANCTIONS_TEXT_IT,
+  SANCTIONS_HINT_TEXT_IT
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -97,6 +98,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
     });
   });
 

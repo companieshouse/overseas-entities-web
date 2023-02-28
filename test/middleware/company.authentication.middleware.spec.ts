@@ -5,6 +5,7 @@ import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { Request, Response, NextFunction } from 'express';
 import {
   getSessionRequestWithExtraData,
+  getSessionRequestWithCompany,
   COMPANY_NUMBER
 } from '../__mocks__/session.mock';
 import { companyAuthentication } from "../../src/middleware/company.authentication.middleware";
@@ -43,6 +44,16 @@ describe('Company Authentication middleware', () => {
     expect(logger.infoRequest).toHaveBeenCalledTimes(1);
     expect(logger.infoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
     expect(mockCompanyAuthMiddleware).toBeCalled();
+    expect(next).toBeCalled();
+    expect(logger.errorRequest).not.toHaveBeenCalled();
+  });
+
+  test("should not call company authentication if already authenticated", () => {
+    req.session = getSessionRequestWithCompany();
+
+    companyAuthentication(req, res, next);
+
+    expect(next).toBeCalled();
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
@@ -51,6 +62,7 @@ describe('Company Authentication middleware', () => {
 
     companyAuthentication(req, res, next);
 
+    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalledTimes(1);
     expect(logger.errorRequest).toHaveBeenCalledTimes(2);
   });

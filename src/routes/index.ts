@@ -35,6 +35,7 @@ import {
   accessibilityStatement,
   confirmOverseasEntityDetails,
   signOut,
+  signedOut,
   trustDetails,
   trustInvolved,
   trustHistoricalbeneficialOwner,
@@ -78,6 +79,7 @@ router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+router.get(config.SIGNED_OUT_URL, signedOut.get);
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 

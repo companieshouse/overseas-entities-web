@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  You have signed out of the service
+  – {{ serviceName }} – GOV.UK
+{% endblock %}
+
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    <h1 class="govuk-heading-l">You have signed out</h1>
+
+    <p class="govuk-body">Your application will be saved in Your filings.</p>
+    <p class="govuk-body"><a href={{ signInUrl }} class="govuk-link">Sign in to return to your saved applications</a>. </p>
+
+  </div>
+</div>
+
+{% endblock %}

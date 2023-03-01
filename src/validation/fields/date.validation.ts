@@ -1,5 +1,5 @@
 import { body } from "express-validator";
-import { RoleWithinTrustType } from "model/role.within.trust.type.model";
+import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
   checkDateFieldDay,
   checkDateFieldMonth,

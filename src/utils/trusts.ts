@@ -1,3 +1,4 @@
+import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -11,23 +12,56 @@ import {
   TrustCorporate,
 } from "../model/trust.model";
 
-// Checks whether any beneficial owners have trust data
-const checkEntityHasTrusts = (appData: ApplicationData): boolean => {
+/**
+ * Checks whether any beneficial owners requires trust data due to at least one of them
+ * having a trustee "nature of control" of the overseas entity
+ *
+ * @param appData Application Data
+ * @returns 'true' if any BO has a trustee "nature of control"
+ */
+const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   if (appData) {
-    const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
-      appData.beneficial_owners_individual,
-      appData.beneficial_owners_corporate,
-    ];
+    const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
 
     for (const benficialOwners of allBenficialOwnersToCheck) {
       if (benficialOwners) {
-        if (containsTrusts(benficialOwners)) {
+        if (containsTrusteeNatureOfControl(benficialOwners)) {
           return true;
         }
       }
     }
   }
   return false;
+};
+
+/**
+ * Return the correct first Trust page in the trust journey depending
+ * on whether there is already any trust data.
+ *
+ * @param appData Application Data
+ * @returns string URL to go to when starting the trust journey
+ */
+const getTrustLandingUrl = (appData: ApplicationData): string => {
+
+  const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
+
+  for (const benficialOwners of allBenficialOwnersToCheck) {
+    if (benficialOwners) {
+      if (containsTrustData(benficialOwners)) {
+        // Once naviation changes are agreed the following will change
+        return `${CHECK_YOUR_ANSWERS_URL}`;
+      }
+    }
+  }
+
+  return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+};
+
+const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {
+  return [
+    appData.beneficial_owners_individual,
+    appData.beneficial_owners_corporate,
+  ];
 };
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
@@ -50,8 +84,12 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
   return bo_list;
 };
 
-const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
+const containsTrusteeNatureOfControl = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
+};
+
+const containsTrustData = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
+  return beneficialOwners.some(bo => bo.trust_ids?.length);
 };
 
 /**
@@ -234,7 +272,7 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
 };
 
 export {
-  checkEntityHasTrusts,
+  checkEntityRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
   getTrustArray,
@@ -251,4 +289,5 @@ export {
   getLegalEntityBosInTrust,
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
+  getTrustLandingUrl,
 };

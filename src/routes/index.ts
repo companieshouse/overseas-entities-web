@@ -58,6 +58,7 @@ import {
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
   updateBeneficialOwnerOther,
+  updateManagingOfficerIndividual,
   updateManagingOfficerCorporate
 } from "../controllers";
 
@@ -410,6 +411,14 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .get(updateBeneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerIndividual.remove);
+
+router.route(config.UPDATE_MANAGING_OFFICER_URL)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateManagingOfficerIndividual.get)
+  .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
   .all(

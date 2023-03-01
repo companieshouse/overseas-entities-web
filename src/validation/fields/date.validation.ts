@@ -51,7 +51,6 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
-
 const createdDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",

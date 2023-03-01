@@ -43,11 +43,14 @@ import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   JURISDICTION_FIELD_LABEL,
   MESSAGE_ERROR,
+  NO_SANCTIONS_TEXT_IT,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  UK_SANCTIONS_DETAILS,
+  YES_SANCTIONS_TEXT_IT
 } from "../__mocks__/text.mock";
 import {
   AddressKeys,
@@ -106,6 +109,9 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
+      expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
     });
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {
@@ -348,7 +354,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
-
 
     test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };

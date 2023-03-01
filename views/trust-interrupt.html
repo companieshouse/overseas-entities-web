@@ -34,7 +34,13 @@
         <p class="govuk-body">You can add information about multiple trusts if needed.</p>
 
       <form class="form" method="post">
-        {% include "includes/continue-button.html" %}
+        {{ govukButton({
+          text: "Continue",
+          attributes: {
+            "id": "submit",
+            "data-event-id": "trust-interrupt-continue-button"
+          }
+        }) }}
       </form>
     </div>
   </div>

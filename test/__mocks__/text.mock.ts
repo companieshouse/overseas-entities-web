@@ -134,6 +134,11 @@ export const USE_INFORMATION_NEED_MORE = "We’ll use this if we need more infor
 export const UPDATE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the update.";
 export const UK_REGULATED_AGENT = "Someone who works for the UK-regulated agent that carried out verification checks";
 export const PAYMENT_FAILED_PAGE_HEADING = "Payment failed";
+export const UK_SANCTIONS_DETAILS = "How to check if a beneficial owner is on the UK Sanctions List";
+export const YES_SANCTIONS_TEXT_THEY = "Yes, they are on the Sanctions List";
+export const NO_SANCTIONS_TEXT_THEY = "No, they are not on the Sanctions List";
+export const YES_SANCTIONS_TEXT_IT = "Yes, it is on the Sanctions List";
+export const NO_SANCTIONS_TEXT_IT = "No, it is not on the Sanctions List";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
@@ -148,7 +153,7 @@ export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO + "Ivan D
 export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - are they on the sanctions list?";
 
 // Update journey
-export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the OE number?";
+export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the Overseas Entity ID?";
 export const CONFIRM_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm this is the registered overeseas entity";
 export const UPDATE_OVERSEAS_ENTITY_PAGE_TITLE = "Confirm or update overseas entity details";
 export const CONFIRM_AND_CONTINUE_BUTTON_TEXT = "Confirm and continue";
@@ -163,6 +168,7 @@ export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email
 export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
 export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
+export const UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/update-beneficial-owner-type";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";

@@ -244,9 +244,4 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.TRUST_INTERRUPT_PAGE,
     nextPage: [config.TRUST_ENTRY_URL, config.ID, config.TRUST_INVOLVED_URL]
   },
-  // [config.TRUST_DETAILS_URL + config.TRUST_ID]: {
-  //   currentPage: config.TRUST_DETAILS_PAGE + "/" + config.TRUST_ID,
-  //   previousPage: () => config.TRUST_INTERRUPT_PAGE,
-  //   nextPage: [config.TRUST_ENTRY_URL, config.ID, config.TRUST_INVOLVED_URL]
-  // },
 };

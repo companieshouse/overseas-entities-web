@@ -63,13 +63,10 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
 export function checkTrustValidations(req: Request, res: Response, next: NextFunction) {
   try {
     const errorList = validationResult(req);
-
-    // Check errorList if trusts empty
-    const appData: ApplicationData = getApplicationData(req.session);
-
     if (!errorList.isEmpty()) {
       const errors = formatValidationError(errorList.array());
       const routePath = req.route.path;
+      const appData: ApplicationData = getApplicationData(req.session);
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),

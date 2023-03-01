@@ -1,5 +1,7 @@
 // Custom validation utils - For now checking is not empty
 
+import { Session } from '@companieshouse/node-session-handler';
+
 import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
@@ -286,7 +288,31 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-export const checkTrustFields = (trustsJson: string) => {
+const isSubmitTrustSelected = (action: string = "", session: Session) => {
+  const appData: ApplicationData = getApplicationData(session);
+  return action === "submit" && (appData.trusts || [] ).length > 0;
+};
+
+export const checkTrustBO = (req) => {
+  const bos = req.body.beneficialOwners || [];
+  if (!bos.length && isSubmitTrustSelected(req.body.submit, req.session)) {
+    return true;
+  }
+  return checkAtLeastOneFieldHasValue(ErrorMessages.TRUST_BO_CHECKBOX, bos);
+};
+
+export const checkTrustFields = (req) => {
+
+  const trustsJson = (req.body.trusts || "").trim();
+
+  if (!trustsJson && isSubmitTrustSelected(req.body.submit, req.session)) {
+    return true;
+  }
+
+  if (!trustsJson) {
+    throw new Error(ErrorMessages.TRUST_DATA_EMPTY);
+  }
+
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
   const addressMaxLength = 50;
 

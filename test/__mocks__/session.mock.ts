@@ -134,32 +134,10 @@ const SIGN_IN_INFO = {
   }
 };
 
-const SIGN_IN_INFO_WITH_COMPANY = {
-  [SignInInfoKeys.SignedIn]: 1,
-  [SignInInfoKeys.CompanyNumber]: "SA000392",
-  [SignInInfoKeys.UserProfile]: { [UserProfileKeys.Email]: userMail },
-  [SignInInfoKeys.AccessToken]: {
-    ...ACCESS_TOKEN_MOCK,
-    ...REFRESH_TOKEN_MOCK
-  }
-};
-
 export function getSessionRequestWithPermission(): Session {
   return new Session({
     [SessionKey.SignInInfo]: SIGN_IN_INFO as ISignInInfo
   });
-}
-
-export function getSessionRequestWithCompanyPermission(): Session {
-  return new Session({
-    [SessionKey.SignInInfo]: SIGN_IN_INFO_WITH_COMPANY as ISignInInfo
-  });
-}
-
-export function getSessionRequestWithCompany(): Session {
-  const session = getSessionRequestWithCompanyPermission();
-  session.setExtraData(APPLICATION_DATA_KEY, APPLICATION_DATA_MOCK);
-  return session;
 }
 
 export function getSessionRequestWithExtraData(): Session {

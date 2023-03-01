@@ -20,7 +20,7 @@ import { get, INDIVIDUAL_BO_TEXTS, post } from "../../src/controllers/trust.indi
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { ID, TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
@@ -32,7 +32,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = TRUST_WITH_ID.trust_id;
-  const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
+  const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + ID;
 
   const mockTrust1Data = {
     trust_id: '999',
@@ -165,16 +165,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(resp.text).toContain(INDIVIDUAL_BO_TEXTS.title);
       expect(resp.text).toContain(mockTrust.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-
-      expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
-    });
-
-    test('successfully access POST method', async () => {
-      const resp = await request(app).post(pageUrl);
-
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);

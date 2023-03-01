@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { RoleWithinTrustType } from "model/role.within.trust.type.model";
 import {
   checkDateFieldDay,
   checkDateFieldMonth,
@@ -48,4 +49,34 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date")
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
+];
+
+export const dateOfBirthValidations = [
+  body("dateOfBirthDay")
+    .if(body("dateOfBirthYear").isLength({ min: 4, max: 4 }))
+    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY_OF_BIRTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
+  body("dateOfBirthMonth")
+    .if(body("dateOfBirthYear").isLength({ min: 4, max: 4 }))
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH_OF_BIRTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
+  body("dateOfBirthYear")
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
+  body("dateOfBirth")
+    .custom((value, { req }) => checkDateOfBirth(req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
+];
+
+export const dateBecameIP = [
+  body("dateBecameIPDay")
+    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
+    .if(body("dateBecameIPYear").isLength({ min: 4, max: 4 }))
+    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
+  body("dateBecameIPMonth")
+    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
+    .if(body("dateBecameIPYear").isLength({ min: 4, max: 4 }))
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
+  body("dateBecameIPYear")
+    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
+  body("dateBecameIP")
+    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
+    .custom((value, { req }) => checkStartDate(req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
 ];

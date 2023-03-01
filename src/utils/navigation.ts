@@ -248,5 +248,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL]: {
+    currentPage: config.TRUST_INVOLVED_URL,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.TRUST_INVOLVED_URL]
   }
+
 };

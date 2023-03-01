@@ -1,10 +1,13 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+
     {% include "includes/list/errors.html" %}
 
     <span class="govuk-caption-xl">Beneficial owner</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
-    <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
+    <br>
+    <p class="govuk-body">You can add more later.</p>
+    <br>
 
     <form class="form" method="post">
       {% include "includes/inputs/fields/name-input.html" %}
@@ -17,9 +20,17 @@
       {% set hintText = "This is the law that the beneficial owner operates under" %}
       {% include "includes/inputs/governing-law-input.html" %}
 
+      {% set registerHintText = "Include its jurisdiction. For example, Hong Kong or State of Delaware." %}
+      {% set includeJurisdiction = false %}
+      {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was 
+      formed in?" %}
+      {% set registrationNumberText = "Entity's registration number" %}
+
+      {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
+
       {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
 
-      {% set isBeneficialOwnerOther = false %}
+      {% set isBeneficialOwnerOther = true %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
       {% set sanctionsPronoun = "it" %}

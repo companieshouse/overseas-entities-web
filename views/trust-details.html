@@ -83,14 +83,14 @@
 
         {{ govukInsetText({
           html: '
-            <h2 class="govuk-heading-m">Information shown on the public register</h2>
-            <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
           '
         }) }}
 
         <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
 
-        {% include "includes/continue-button.html" %}
+        {% include "includes/save-and-continue-button.html" %}
       </form>
     </div>
   </div>

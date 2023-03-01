@@ -139,6 +139,8 @@ export const YES_SANCTIONS_TEXT_THEY = "Yes, they are on the Sanctions List";
 export const NO_SANCTIONS_TEXT_THEY = "No, they are not on the Sanctions List";
 export const YES_SANCTIONS_TEXT_IT = "Yes, it is on the Sanctions List";
 export const NO_SANCTIONS_TEXT_IT = "No, it is not on the Sanctions List";
+export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018.";
+export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
 
 export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
@@ -173,6 +175,7 @@ export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
+export const UPDATE_MANAGING_OFFICER_PAGE_TITLE = "Tell us about the individual person";
 export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial owners and managing officers involved in the overseas entity";
 export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
 export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /update-an-overseas-entity/update-beneficial-owner-type";

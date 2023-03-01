@@ -13,10 +13,8 @@ import { ErrorMessages } from "../error.messages";
 // This means that the year check is checked before some others
 export const start_date_validations = [
   body("start_date-day")
-    .if(body("start_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-month")
-    .if(body("start_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
@@ -43,10 +41,8 @@ export const date_of_birth_validations = [
 // This means that the year check is checked before some others
 export const identity_check_date_validations = [
   body("identity_date-day")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),

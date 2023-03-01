@@ -158,4 +158,39 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
   });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
 });

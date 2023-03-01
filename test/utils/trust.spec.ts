@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../../src/config";
 import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
@@ -6,12 +7,15 @@ import {
   getTrustBoIndividuals,
   getTrustBoOthers,
   getTrustByIdFromApp,
+  getTrustArray,
   saveHistoricalBoInTrust,
   saveIndividualTrusteeInTrust,
   saveTrustInApp,
   saveLegalEntityBoInTrust,
   getIndividualTrusteesFromTrust,
   getFormerTrusteesFromTrust,
+  checkEntityRequiresTrusts,
+  getTrustLandingUrl,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -129,6 +133,10 @@ describe('Trust Utils method tests', () => {
     expect(getTrustByIdFromApp(mockAppData, mockTrust2Data.trust_id)).toEqual(mockTrust2Data);
   });
 
+  test('test getTrustArray', () => {
+    expect(getTrustArray(mockAppData)).toEqual([mockTrust1Data, mockTrust2Data]);
+  });
+
   describe('test Save Trust in Application data', () => {
     const newTrust = {
       trust_id: 'newTrust',
@@ -156,8 +164,8 @@ describe('Trust Utils method tests', () => {
 
       expect(actual).toEqual(expect.objectContaining({
         trusts: [
-          mockTrust2Data,
           updatedTrust,
+          mockTrust2Data,
         ],
       }));
     });
@@ -347,5 +355,92 @@ describe('Trust Utils method tests', () => {
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });
+
   });
+
+  describe('test if overseas entity requires trust data', () => {
+
+    test("test checkEntityRequiresTrusts with application data and trustee nature of control", () => {
+
+      const result = checkEntityRequiresTrusts(mockAppData);
+      expect(result).toEqual(true);
+    });
+
+    test("test checkEntityRequiresTrusts with application data and no trustee nature of control", () => {
+
+      const appData = {
+        [TrustKey]: [
+          mockTrust1Data,
+          mockTrust2Data,
+        ],
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividual2,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOle1,
+        ],
+      } as ApplicationData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
+    });
+
+    test("test checkEntityRequiresTrusts with no application data", () => {
+
+      let appData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
+    });
+  });
+
+  describe('test if overseas entity contains any trust data', () => {
+
+    test("test getBeneficialOwnerList with application data and trustee nature of control", () => {
+
+      const result = getTrustLandingUrl(mockAppData);
+      expect(result).toEqual(`${CHECK_YOUR_ANSWERS_URL}`);
+    });
+
+    test("test getTrustLandingUrl with bo having trust data", () => {
+
+      const result = getTrustLandingUrl(mockAppData);
+      expect(result).toEqual(`${CHECK_YOUR_ANSWERS_URL}`);
+    });
+
+    test("test getTrustLandingUrl with bo having trust nature of control but no trust data", () => {
+
+      const mockBoIndividualNoTrustData = {
+        id: '9001',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerIndividual;
+
+      const mockBoOleNoTrustData = {
+        id: '8002',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerOther;
+
+      const appData = {
+        [TrustKey]: [
+          mockTrust1Data,
+          mockTrust2Data,
+        ],
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividualNoTrustData,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOleNoTrustData,
+        ],
+      } as ApplicationData;
+
+      const result = getTrustLandingUrl(appData);
+      expect(result).toEqual(`${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`);
+    });
+
+  });
+
 });

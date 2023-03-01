@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Tell us about the other legal entity" %}
+{% set title = "Tell us about the other legal entity (NOT LIVE)" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -10,7 +10,7 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
-{% block content %}
-  {% set removePathURL = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + OE_CONFIGS.REMOVE + "/" + id %}
+{% block content %}  
+  {% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL + OE_CONFIGS.REMOVE + "/" + id %}
   {% include "includes/page-templates/beneficial-owner-other.html" %}
 {% endblock %}

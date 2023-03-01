@@ -7,7 +7,7 @@ import { closeTransaction, postTransaction } from "../service/transaction.servic
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
-import { checkEntityHasTrusts } from "../utils/trusts";
+import { checkEntityRequiresTrusts, getTrustArray } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const hasTrusts: boolean = checkEntityHasTrusts(appData);
+    const hasTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = "Overseas entity details";
 
@@ -29,6 +29,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
     if (hasTrusts) {
       backLinkUrl = config.TRUST_INFO_PAGE;
+
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
+        const trustArray = getTrustArray(appData);
+        const lastTrustId = trustArray[trustArray.length - 1].trust_id;
+        backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + lastTrustId + config.ADD_TRUST_URL}`;
+      }
     }
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {

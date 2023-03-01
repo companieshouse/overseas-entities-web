@@ -38,7 +38,8 @@ const post = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return safeRedirect(res, `${config.TRUST_ENTRY_URL}`);
+    const firstTrustId = "1";
+    return safeRedirect(res, `${config.TRUST_ENTRY_URL + "/" + firstTrustId}`);
   } catch (error) {
     logger.errorRequest(req, error);
 

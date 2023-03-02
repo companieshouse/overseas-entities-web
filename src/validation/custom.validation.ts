@@ -294,23 +294,21 @@ const isSubmitTrustSelected = (action: string = "", session: Session): boolean =
 };
 
 export const checkTrustBO = (req) => {
-  // const bos = req.body.beneficialOwners || [];
-  if (isSubmitTrustSelected(req.body.submit, req.session)) { // && !bos.length
+  if (isSubmitTrustSelected(req.body.submit, req.session)) {
     return true;
   }
-  return checkAtLeastOneFieldHasValue(ErrorMessages.TRUST_BO_CHECKBOX, req.body.beneficialOwners); // bos);
+  return checkAtLeastOneFieldHasValue(ErrorMessages.TRUST_BO_CHECKBOX, req.body.beneficialOwners);
 };
 
 export const checkTrustFields = (req) => {
-
-  const trustsJson = (req.body.trusts || "").trim();
 
   if (isSubmitTrustSelected(req.body.submit, req.session)) {
     return true;
   }
 
+  const trustsJson = (req.body.trusts || "").trim();
+
   if (!trustsJson) {
-    // here
     throw new Error(ErrorMessages.TRUST_DATA_EMPTY);
   }
 
@@ -319,11 +317,8 @@ export const checkTrustFields = (req) => {
 
   for (const trust of trusts) {
     checkTrustCreationDate(trust);
-
     checkTrustName(trust);
-
     checkIndividualsAddress(trust, addressMaxLength);
-
     checkCorporatesAddress(trust, addressMaxLength);
   }
   return true;

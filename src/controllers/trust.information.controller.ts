@@ -37,7 +37,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
     }
 
-    // if (req.body.add || ( req.body.submit && req.body.trusts.trim() && req.body.beneficialOwners)){
     // If only one BO is selected, data is a string.
     // If multiple selected, data is an array.
     const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;

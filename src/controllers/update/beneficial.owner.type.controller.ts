@@ -19,7 +19,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      appData
+      ...appData,
+      noLists: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

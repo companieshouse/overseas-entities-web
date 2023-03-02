@@ -843,32 +843,32 @@ export const TRUST_DATA_LEADING_AND_TRAILING_SPACES: string = `[{
   "CORPORATES": []
 }]`;
 
-export const TRUSTS_SUBMIT = {
-  submit: "submit",
+export const TRUSTS_ADD = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
-  submit: "submit",
+export const TRUSTS_ADD_MULTIPLE_BENEFICIAL_OWNERS = {
+  add: "add",
   beneficialOwners: ["123", "456"],
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_NO_NAME = {
-  submit: "submit",
+export const TRUSTS_ADD_NO_NAME = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_NO_NAME
 };
 
-export const TRUSTS_SUBMIT_NO_CREATION_DATE = {
-  submit: "submit",
+export const TRUSTS_ADD_NO_CREATION_DATE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_NO_CREATION_DATE
 };
 
-export const TRUSTS_SUBMIT_PARTIAL_CREATION_DATE = {
-  submit: "submit",
+export const TRUSTS_ADD_PARTIAL_CREATION_DATE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_PARTIAL_CREATION_DATE
 };

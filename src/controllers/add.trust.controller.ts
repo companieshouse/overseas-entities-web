@@ -4,7 +4,6 @@ import { logger } from '../utils/logger';
 import { getApplicationData } from '../utils/application.data';
 import { generateTrustId } from '../utils/trust/details.mapper';
 
-
 const ADD_TRUST_TEXTS = {
   title: 'Do you need to add another trust?',
 };

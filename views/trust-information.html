@@ -14,6 +14,14 @@
   No more <span class="govuk-visually-hidden"> trust information</span> to add
 {% endset %}
 
+{% set noMoreToAddHtml %}
+  {% if trusts.length %}
+    <p>{{trusts.length}} Trust information added so far</p>
+  {% else %}
+    <p>No Trust information added so far</p>
+  {% endif %}
+{% endset %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -75,7 +83,7 @@
           '
         }) }}
         {{ govukButton({
-          text: "Add another trust",
+          text: "Add trust",
           attributes: {
             "id": "add",
             "name": "add",
@@ -83,7 +91,7 @@
           }
         }) }}
 
-        <p>
+        <div class="govuk-button-group">
           {{ govukButton({
             html: noMoreToAddHtml,
             attributes: {
@@ -92,8 +100,10 @@
               "value": "submit"
             },
             classes: "govuk-button--secondary"
-          }) }}
-        </p>
+          }) }}s
+        
+          
+        </div>
 
       </form>
 

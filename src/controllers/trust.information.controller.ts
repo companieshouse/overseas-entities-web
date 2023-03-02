@@ -33,43 +33,42 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
-    if (req.body.add || ( req.body.submit && req.body.trusts.trim() && req.body.beneficialOwners)){
-      // If only one BO is selected, data is a string.
-      // If multiple selected, data is an array.
-      const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
-
-      const trustData: trustType.Trust[] = JSON.parse(req.body.trusts, (key, value) => {
-        if (typeof value === "string") {
-          return value.trim();
-        } else {
-          return value;
-        }
-      });
-
-      const trustsReq: trustType.Trusts = {
-        trusts: trustData
-      };
-
-      const trustIds = generateTrustIds(req, trustData);
-
-      assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
-
-      const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
-      const session = req.session as Session;
-
-      for (const trust of data[TrustKey]) {
-        setApplicationData(session, trust, TrustKey);
-      }
-
-      await saveAndContinue(req, session);
-    }
-
-    if (req.body.add) {
-      return res.redirect(config.TRUST_INFO_URL);
-    }
     if (req.body.submit) {
       return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
     }
+
+    // if (req.body.add || ( req.body.submit && req.body.trusts.trim() && req.body.beneficialOwners)){
+    // If only one BO is selected, data is a string.
+    // If multiple selected, data is an array.
+    const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
+
+    const trustData: trustType.Trust[] = JSON.parse(req.body.trusts, (key, value) => {
+      if (typeof value === "string") {
+        return value.trim();
+      } else {
+        return value;
+      }
+    });
+
+    const trustsReq: trustType.Trusts = {
+      trusts: trustData
+    };
+
+    const trustIds = generateTrustIds(req, trustData);
+
+    assignTrustIdsToBeneficialOwners(req, beneficialOwnerIds, trustIds);
+
+    const data: ApplicationDataType = prepareData(trustsReq, TrustKeys);
+    const session = req.session as Session;
+
+    for (const trust of data[TrustKey]) {
+      setApplicationData(session, trust, TrustKey);
+    }
+
+    await saveAndContinue(req, session);
+
+    return res.redirect(config.TRUST_INFO_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

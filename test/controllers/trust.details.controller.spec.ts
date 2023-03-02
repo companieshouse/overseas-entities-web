@@ -283,7 +283,7 @@ describe('Trust Details controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('sucessful POST submission to same page', async () => {
+    test('successful POST submission to same page', async () => {
       mockGetApplicationData.mockReturnValue({});
 
       (mapDetailToSession as jest.Mock).mockReturnValue({

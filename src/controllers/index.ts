@@ -58,3 +58,4 @@ export * as updateManagingOfficerIndividual from "./update/update.managing.offic
 export * as updateBeneficialOwnerIndividual from "./update/update.beneficial.owner.individual.controller";
 export * as updateManagingOfficerCorporate from "./update/update.corporate.managing.officer.controller";
 export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";
+export * as updateFilingDate from "./update/update.filing.date.controller";

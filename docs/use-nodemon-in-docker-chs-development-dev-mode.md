@@ -2,9 +2,9 @@
 
 ## What is this about?
 
-For node applications, when you run them in "dev mode" and do a change then this application will be updated by coping over the changed files and  restarting the docker container (see file `Tiltfile.dev` for details)
+For node applications, when you run them in "dev mode" and do a change then this application will be updated by copying over the changed files and restarting the docker container (see file `Tiltfile.dev` for details)
 
-This is a relatively slow process and can be speeded up by creating a separate docker image that uses `nodemon` to restart the node application (within the docker container) when any files are changed as specified in the `nodemon.conf` file.
+This is a relatively slow process and can be sped up by creating a separate docker image that uses `nodemon` to restart the node application (within the docker container) when any files are changed as specified in the `nodemon.conf` file.
 
 Note that this is an *optional* enhancement. If you don't update the `Tiltfile` in  the `docker-chs-development` project then `nodemon` will not be used.
 
@@ -23,7 +23,7 @@ Then update in the `docker-chs-development` project the `Tiltfile`:
 
 ``` shell
 
-'repositories/overseas-entities-web/dev.docker-compose.yaml'
+add 'repositories/overseas-entities-web/dev.docker-compose.yaml'
 to docker_compose(configPaths = [
 
 and then:

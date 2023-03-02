@@ -843,6 +843,12 @@ export const TRUST_DATA_LEADING_AND_TRAILING_SPACES: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUSTS_SUBMIT = {
+  submit: "submit",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
 export const TRUSTS_ADD = {
   add: "add",
   beneficialOwners: "123",
@@ -889,8 +895,8 @@ export const TRUSTS_EMPTY_CHECKBOX = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE = {
-  submit: "submit",
+export const TRUSTS_ADD_LEADING_AND_TRAILING_WHITESPACE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_LEADING_AND_TRAILING_SPACES
 };

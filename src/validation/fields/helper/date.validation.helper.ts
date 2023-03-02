@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 import { ErrorMessages } from "../../../validation/error.messages";
 
+// NOSONAR
 export const dateValidations = (dateContext: dateContext, min: number, max: number) => {
   return [
     body(dateContext.day.name)

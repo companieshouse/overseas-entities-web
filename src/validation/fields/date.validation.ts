@@ -9,6 +9,7 @@ import {
   checkStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
+import { conditionalDateValidations, dateContext, dateValidations } from "./helper/date.validation.helper";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -51,32 +52,57 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
-export const dateOfBirthValidations = [
-  body("dateOfBirthDay")
-    .if(body("dateOfBirthYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY_OF_BIRTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
-  body("dateOfBirthMonth")
-    .if(body("dateOfBirthYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH_OF_BIRTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
-  body("dateOfBirthYear")
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH, req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
-  body("dateOfBirth")
-    .custom((value, { req }) => checkDateOfBirth(req.body["dateOfBirthDay"], req.body["dateOfBirthMonth"], req.body["dateOfBirthYear"])),
-];
+const dateOfBirthValidationsContext: dateContext = {
+  dateInput: {
+    name: "dateOfBirth",
+    callBack: checkDateOfBirth,
+    errMsg: [],
+  },
+  day: {
+    name: "dateOfBirthDay",
+    callBack: checkDateFieldDay,
+    errMsg: [ErrorMessages.DAY_OF_BIRTH],
+  },
+  month: {
+    name: "dateOfBirthMonth",
+    callBack: checkDateFieldMonth,
+    errMsg: [ErrorMessages.MONTH_OF_BIRTH],
+  },
+  year: {
+    name: "dateOfBirthYear",
+    callBack: checkDateFieldYear,
+    errMsg: [ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH],
+  }
+};
 
-export const dateBecameIP = [
-  body("dateBecameIPDay")
-    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
-    .if(body("dateBecameIPYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
-  body("dateBecameIPMonth")
-    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
-    .if(body("dateBecameIPYear").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
-  body("dateBecameIPYear")
-    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
-  body("dateBecameIP")
-    .custom((value, { req }) => req.body.type === RoleWithinTrustType.INTERESTED_PERSON)
-    .custom((value, { req }) => checkStartDate(req.body["dateBecameIPDay"], req.body["dateBecameIPMonth"], req.body["dateBecameIPYear"])),
-];
+const dateBecameIPContext: dateContext = {
+  dateInput: {
+    name: "dateBecameIP",
+    callBack: checkStartDate,
+    errMsg: [],
+    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+  },
+  day: {
+    name: "dateBecameIPDay",
+    callBack: checkDateFieldDay,
+    errMsg: [ErrorMessages.DAY],
+    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+  },
+  month: {
+    name: "dateBecameIPMonth",
+    callBack: checkDateFieldMonth,
+    errMsg: [ErrorMessages.MONTH],
+    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+  },
+  year: {
+    name: "dateBecameIPYear",
+    callBack: checkDateFieldYear,
+    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
+    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+  }
+};
+
+export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext, 4, 4);
+
+export const dateBecameIP = conditionalDateValidations(dateBecameIPContext, 4, 4);
+

@@ -122,7 +122,7 @@ describe('Trust Details page Mapper Service', () => {
         {
           ...mockBoIndividual1,
           trust_ids: [
-            ...mockBoIndividual1.trust_ids!,
+            ...mockBoIndividual1.trust_ids || [],
             newTrustId,
           ],
         },

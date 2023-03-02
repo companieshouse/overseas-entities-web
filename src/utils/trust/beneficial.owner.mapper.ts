@@ -18,7 +18,7 @@ const mapBoOtherToPage = (
 ): Page.TrustBeneficialOwnerListItem => {
   return {
     id: beneficialOwner.id,
-    name: beneficialOwner.name!,
+    name: beneficialOwner.name || "",
     type: BeneficialOwnerTypeChoice.otherLegal,
   };
 };

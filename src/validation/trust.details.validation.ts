@@ -1,0 +1,19 @@
+import { body } from "express-validator";
+import { ErrorMessages } from "./error.messages";
+import { createdDateValidations } from "./fields/date.validation";
+import { VALID_CHARACTERS } from "./regex/regex.validation";
+
+export const trustDetails = [
+  body("name")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.TRUST_NAME_2)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH),
+
+  ...createdDateValidations,
+
+  body("hasAllInfo")
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO),
+
+  body("beneficialOwnersIds")
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS)
+];

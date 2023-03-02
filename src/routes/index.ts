@@ -207,14 +207,14 @@ router
   .post(trustInterrupt.post);
 
 router
-  .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
+  .route(config.TRUST_DETAILS_URL + config.TRUST_ID + "?")
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
     navigation.hasBOsOrMOs,
   )
   .get(trustDetails.get)
-  .post(trustDetails.post);
+  .post(...validator.trustDetails, trustDetails.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
@@ -257,7 +257,7 @@ router
     navigation.hasTrust,
   )
   .get(trustIndividualbeneficialOwner.get)
-  .post(trustIndividualbeneficialOwner.post);
+  .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.ID + '?')

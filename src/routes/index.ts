@@ -371,12 +371,12 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
 router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .all(
     authentication,
-    navigation.hasEntityUpdateDetails
+    navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerType.get)
-  .post(...validator.beneficialOwnersType, checkValidations, updateBeneficialOwnerType.post);
+  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
-router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasEntityUpdateDetails, updateBeneficialOwnerType.postSubmit);
+router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
   .all(

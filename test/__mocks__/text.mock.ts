@@ -176,4 +176,6 @@ export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application refer
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";
 export const UPDATE_MANAGING_OFFICER_PAGE_TITLE = "Tell us about the individual person";
+export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial owners and managing officers involved in the overseas entity";
+export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
 export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /update-an-overseas-entity/update-beneficial-owner-type";

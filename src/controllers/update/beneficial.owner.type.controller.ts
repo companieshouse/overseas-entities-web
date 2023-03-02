@@ -6,6 +6,7 @@ import * as config from "../../config";
 import {
   BeneficialOwnerTypeChoice,
   BeneficialOwnerTypeKey,
+  ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
@@ -18,7 +19,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      ...appData
+      appData
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -38,13 +39,17 @@ export const postSubmit = (req: Request, res: Response) => {
   return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
-// With validation in place we will only have 3 choices
-const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice): string => {
-  if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
-    return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
-  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
-    return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
-  } else {
-    return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
+  switch (beneficialOwnerTypeChoices) {
+      case BeneficialOwnerTypeChoice.government:
+        return config.UPDATE_BENEFICIAL_OWNER_GOV_URL;
+      case BeneficialOwnerTypeChoice.otherLegal:
+        return config.UPDATE_BENEFICIAL_OWNER_OTHER_URL;
+      case ManagingOfficerTypeChoice.corporate:
+        return config.UPDATE_MANAGING_OFFICER_CORPORATE_URL;
+      case ManagingOfficerTypeChoice.individual:
+        return config.UPDATE_MANAGING_OFFICER_URL;
+      default:
+        return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
 };

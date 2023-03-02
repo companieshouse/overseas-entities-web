@@ -32,7 +32,7 @@
             },
             label: 'What date did they become an interested person?',
             classes: 'govuk-fieldset__legend--s',
-            error: errors.date
+            error: errors.dateBecameIP if errors
           } %}
           {% include "includes/inputs/date-input.html" %}
         {% endset -%}
@@ -42,7 +42,7 @@
           value: formData.forename,
           label: 'What is their first name?',
           hint: 'This is also known as their given name.',
-          error: errors.forename
+          error: errors.forename if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -51,7 +51,7 @@
           value: formData.surname,
           label: 'What is their last name?',
           hint: 'This is also known as their family name.',
-          error: errors.surname
+          error: errors.surname if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -63,7 +63,7 @@
             'Year': formData.dateOfBirthYear
           },
           label: 'What is their date of birth?',
-          error: errors.date
+          error: errors.dateOfBirth if errors
         } %}
         {% include "includes/inputs/date-input.html" %}
 
@@ -71,7 +71,7 @@
           name: 'type',
           label: 'What is their role within the trust?',
           value: formData.type,
-          error: errors.type,
+          error: errors.type if errors,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,

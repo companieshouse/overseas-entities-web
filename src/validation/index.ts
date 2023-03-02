@@ -20,6 +20,8 @@ import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
 import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
+import { trustDetails } from "./trust.details.validation";
+import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validator";
 
 export const validator = {
   soldLandFilter,
@@ -45,5 +47,7 @@ export const validator = {
   overseasName,
   startingNew,
   trustInvolved,
-  updateBeneficialOwnerAndManagingOfficerType
+  trustDetails,
+  updateBeneficialOwnerAndManagingOfficerType,
+  trustIndividualBeneficialOwner,
 };

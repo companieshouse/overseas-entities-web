@@ -173,9 +173,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
     test('successfully access POST method', async () => {
       const resp = await request(app).post(pageUrl);
 
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
-
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
     });

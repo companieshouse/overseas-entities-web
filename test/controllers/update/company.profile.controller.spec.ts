@@ -33,7 +33,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Confirm company data", () => {
-
   beforeEach(() => {
     jest.clearAllMocks();
   });

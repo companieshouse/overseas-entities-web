@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
@@ -13,6 +14,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import {
@@ -68,6 +70,9 @@ mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

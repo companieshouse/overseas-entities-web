@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/utils/application.data');
@@ -14,6 +15,7 @@ import { PaymentKey } from "../../../src/model/data.types.model";
 import { PAYMENT_OBJECT_MOCK, PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING, UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING, UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR, FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -21,6 +23,10 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;

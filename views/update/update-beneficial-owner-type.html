@@ -28,8 +28,8 @@
 {% set boTypes = bos %}
 {% set whatToAdd = "another beneficial owner or managing officer" %}
 {% set hiddenTextValue = "beneficial owners and managing officers" %}
-{% set entity_name = appData.entity_name %}
-{% set entity_number = appData.entity_number %}
+{% set entity_name = entity_name %}
+{% set entity_number = entity_number %}
 
 {% if not errors %}
   {% set hasBeneficialOwners = (beneficial_owners_individual and beneficial_owners_individual.length > 0)

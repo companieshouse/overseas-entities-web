@@ -59,13 +59,14 @@
         {% include "includes/inputs/radio-input.html" %}
 
         {% set boItems = [] %}
+        {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
         {% for bo in pageData.beneficialOwners %}
           {% set boItems = (
             boItems.push({
               id: bo.id,
               value: bo.id,
               text: bo.name,
-              checked: true if bo.id in formData.beneficialOwnersIds
+              checked: true if bo.id in beneficialOwnersIds
             }),
             boItems
             ) %}

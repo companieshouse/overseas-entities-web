@@ -141,11 +141,7 @@ const post = async (
 
     // check for errors
     const errorList = validationResult(req);
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
-      appData,
-      trustId,
-    );
+    const formData: PageModel.TrustDetailsForm = req.body as PageModel.TrustDetailsForm;
 
     if (!errorList.isEmpty()) {
       const pageProps = getPageProperties(

@@ -147,7 +147,6 @@ const post = async (
       trustId,
     );
 
-    // if no errors present rerender the page
     if (!errorList.isEmpty()) {
       const pageProps = getPageProperties(
         req,

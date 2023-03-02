@@ -36,7 +36,8 @@ describe('Test to validate trust details page', () => {
       }
     };
 
-    dateValidations(mockDateValidationsContext, 4, 4);
+    const sut = dateValidations(mockDateValidationsContext, 4, 4);
+    expect(sut.length).toEqual(4);
     expect(mockIsLength).toBeCalledTimes(2);
     expect(mockIf).toBeCalledTimes(2);
     expect(mockCustom).toBeCalledTimes(4);

@@ -282,5 +282,20 @@ describe('Trust Details controller', () => {
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
+
+    test('sucessful POST submission to same page', async () => {
+      mockGetApplicationData.mockReturnValue({});
+
+      (mapDetailToSession as jest.Mock).mockReturnValue({
+        trust_id: mockTrust2Data.trust_id,
+      });
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({});
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl);
+    });
   });
 });

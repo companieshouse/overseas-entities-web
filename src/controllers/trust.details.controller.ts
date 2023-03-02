@@ -13,6 +13,8 @@ import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { safeRedirect } from '../utils/http.ext';
 import { validationResult } from 'express-validator/src/validation-result';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { saveAndContinue } from '../utils/save.and.continue';
+import { Session } from '@companieshouse/node-session-handler';
 
 const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -95,7 +97,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -170,7 +172,10 @@ const post = (
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
 
     //  save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${details.trust_id}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

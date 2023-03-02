@@ -169,5 +169,13 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
     });
+
+    test('successfully access POST method', async () => {
+      const resp = await request(app).post(pageUrl);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrust).toBeCalledTimes(1);
+    });
   });
 });

@@ -123,7 +123,7 @@ describe('Trust Utils method tests', () => {
     expect(addTrustToBeneficialOwner(mockBo, newTrustId)).toEqual({
       ...mockBo,
       trust_ids: [
-        ...mockBo.trust_ids!,
+        ...mockBo.trust_ids || [],
         newTrustId,
       ],
     });

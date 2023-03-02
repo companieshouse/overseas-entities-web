@@ -256,7 +256,7 @@ router
     navigation.hasTrust,
   )
   .get(trustIndividualbeneficialOwner.get)
-  .post(trustIndividualbeneficialOwner.post);
+  .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.ID + '?')

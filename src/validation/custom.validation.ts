@@ -29,13 +29,6 @@ export const checkInvalidCharactersIfRadioButtonSelected = (selected: boolean, e
   return true;
 };
 
-export const checkDateIsNotCompletelyEmptyWithErrorThrown = (errMsg: string, day: string = "", month: string = "", year: string = "") => {
-  if ( !day.trim() && !month.trim() && !year.trim() ) {
-    throw new Error(errMsg);
-  }
-  return true;
-};
-
 export const checkDateIsNotCompletelyEmpty = (day: string = "", month: string = "", year: string = "") => {
   if ( !day.trim() && !month.trim() && !year.trim() ) {
     return false;
@@ -161,7 +154,9 @@ export const checkDateFieldDay = (dayStr: string = "", monthStr: string = "", ye
     } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
       throw new Error(ErrorMessages.DAY_AND_YEAR);
     } else {
-      checkDateIsNotCompletelyEmptyWithErrorThrown(ErrorMessages.ENTER_DATE, dayStr, monthStr, yearStr);
+      if (!checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+        throw new Error(ErrorMessages.ENTER_DATE);
+      }
     }
   }
   return true;
@@ -176,7 +171,9 @@ export const checkDateFieldDayOfBirth = (dayStr: string = "", monthStr: string =
     } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
       throw new Error(ErrorMessages.DAY_AND_YEAR_OF_BIRTH);
     } else {
-      checkDateIsNotCompletelyEmptyWithErrorThrown(ErrorMessages.ENTER_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+      if (!checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
+        throw new Error(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      }
     }
   }
   return true;
@@ -195,12 +192,12 @@ export const checkDateFieldDayForOptionalDates = (dayStr: string = "", monthStr:
   return true;
 };
 
-export const checkDateFieldMonth = (monthMissingMessage: string, monthYearMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldMonth = (monthMissingMessage: string, monthYearMissingMessage: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (isYearEitherMissingOrCorrectLength(yearStr)) {
     if (monthStr === "" && dayStr !== "" && yearStr !== "") {
       throw new Error(monthMissingMessage);
     } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-      throw new Error(monthYearMsg);
+      throw new Error(monthYearMissingMessage);
     }
   }
   return true;

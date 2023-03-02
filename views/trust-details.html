@@ -22,7 +22,7 @@
           name: 'name',
           label: 'What is the name of the trust?',
           hint: 'If the trust does not have a name, give a description that it can be identified by.',
-          value: formData.name,
+          value: formData.name | truncate(160),
           error: errors.name if errors
         } %}
         {% include "includes/inputs/text-input.html" %}

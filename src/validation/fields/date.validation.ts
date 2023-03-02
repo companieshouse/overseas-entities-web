@@ -9,7 +9,7 @@ import {
   checkStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
-import { conditionalDateValidations, dateContext, dateValidations } from "./helper/date.validation.helper";
+import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -75,31 +75,28 @@ const dateOfBirthValidationsContext: dateContext = {
   }
 };
 
-const dateBecameIPContext: dateContext = {
+const dateBecameIPContext: dateContextWithCondition = {
   dateInput: {
     name: "dateBecameIP",
     callBack: checkStartDate,
     errMsg: [],
-    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
   },
   day: {
     name: "dateBecameIPDay",
     callBack: checkDateFieldDay,
     errMsg: [ErrorMessages.DAY],
-    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
   },
   month: {
     name: "dateBecameIPMonth",
     callBack: checkDateFieldMonth,
     errMsg: [ErrorMessages.MONTH],
-    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
   },
   year: {
     name: "dateBecameIPYear",
     callBack: checkDateFieldYear,
     errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-    condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
-  }
+  },
+  condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
 };
 
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext, 4, 4);

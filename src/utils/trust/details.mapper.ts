@@ -18,7 +18,7 @@ const mapDetailToPage = (
       ...appData[BeneficialOwnerOtherKey] ?? [],
     ]
       .filter((bo: TrustBeneficialOwner) => bo.trust_ids?.includes(trustId))
-      .map(bo => bo.id!);
+      .map(bo => bo.id || "");
 
   return {
     trustId: trustData.trust_id,

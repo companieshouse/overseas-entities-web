@@ -1,7 +1,7 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
 import { checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
-import { dateValidations, dateContext, conditionalDateValidations } from '../../src/validation/fields/helper/date.validation.helper';
+import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
 const mockIsLength = jest.fn();
 const mockIf = jest.fn();
@@ -59,31 +59,28 @@ describe('Test to validate date validator', () => {
   });
   test('should test conditionalDateValidations', () => {
     const fieldNames = ["createdDateDay", "createdDateMonth", "createdDateYear", "createdDate"];
-    const mockDateValidationsContext: dateContext = {
+    const mockDateValidationsContext: dateContextWithCondition = {
       dateInput: {
         name: fieldNames[3],
         callBack: checkStartDate,
         errMsg: [],
-        condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
       },
       day: {
         name: fieldNames[0],
         callBack: checkDateFieldDay,
         errMsg: [ErrorMessages.DAY],
-        condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
       },
       month: {
         name: fieldNames[1],
         callBack: checkDateFieldMonth,
         errMsg: [ErrorMessages.MONTH],
-        condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
       },
       year: {
         name: fieldNames[2],
         callBack: checkDateFieldYear,
         errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-        condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
-      }
+      },
+      condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
     };
 
     const sut = conditionalDateValidations(mockDateValidationsContext, 4, 4);

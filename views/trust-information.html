@@ -14,11 +14,11 @@
   No more <span class="govuk-visually-hidden"> trust information</span> to add
 {% endset %}
 
-{% set noMoreToAddHtml %}
+{% set trustAdded %}
   {% if trusts.length %}
-    <p>{{trusts.length}} Trust information added so far</p>
+    ({{trusts.length}} Trust information added so far)
   {% else %}
-    <p>No Trust information added so far</p>
+    (No Trust information added so far)
   {% endif %}
 {% endset %}
 
@@ -100,9 +100,9 @@
               "value": "submit"
             },
             classes: "govuk-button--secondary"
-          }) }}s
+          }) }}
         
-          
+          {{trustAdded}}
         </div>
 
       </form>

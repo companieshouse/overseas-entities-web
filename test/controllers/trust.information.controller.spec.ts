@@ -157,7 +157,7 @@ describe("TRUST INFORMATION controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test.only("catch error when rendering the page", async () => {
+    test("catch error when rendering the page", async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_ADD );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;

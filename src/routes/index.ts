@@ -211,7 +211,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    // navigation.hasTrust,
+    navigation.hasTrust,
   )
   .get(addTrust.get)
   .post(addTrust.post);

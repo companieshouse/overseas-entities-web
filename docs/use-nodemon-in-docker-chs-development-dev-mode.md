@@ -30,7 +30,7 @@ and then:
 Remove the  include(path = 'repositories/overseas-entities-web/Tiltfile.dev')
 ```
 
-*WARNING* Whenever you change the 'dev mode' settings in  `docker-chs-development` (using `./bin/chs-dev development disable/enable`) the `Tilefile` is regenerated and you need to re-apply the above changes.
+*WARNING* Whenever you change the 'dev mode' settings in  `docker-chs-development` (using `./bin/chs-dev development disable/enable`) the `Tiltfile` is regenerated and you need to re-apply the above changes.
 
 ## Who thought of this?
 

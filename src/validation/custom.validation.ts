@@ -215,11 +215,7 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
 };
 
 export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (dayStr === "" && monthStr !== "" && yearStr !== "") {
-    return false;
-  } else if (monthStr === "" && dayStr !== "" && yearStr !== "") {
-    return false;
-  } else if (yearStr === "" && dayStr !== "" && monthStr !== "") {
+  if (dayStr === "" || monthStr === "" || yearStr === "") {
     return false;
   }
   return true;
@@ -244,6 +240,31 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
       const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
       if (isDateValid) {
         checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
+      }
+    }
+  }
+  return true;
+};
+
+export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
+  if (isYearEitherMissingOrCorrectLength(yearStr)) {
+    const isDatePresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
+    if (isDatePresent) {
+      const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
+      if (areDateFieldsPresent) {
+        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+        if (isDateValid) {
+          checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+        }
+      } else {
+        if (dayStr === "" && monthStr === "" && yearStr !== "") {
+          throw new Error(ErrorMessages.DAY_AND_MONTH);
+        } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+          throw new Error(ErrorMessages.MONTH_AND_YEAR);
+        } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+          throw new Error(ErrorMessages.DAY_AND_YEAR);
+        }
       }
     }
   }

@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
+  checkDate,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
@@ -101,7 +102,7 @@ const dateBecameIPContext: dateContextWithCondition = {
 const createdDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
-    callBack: checkStartDate,
+    callBack: checkDate,
     errMsg: [],
   },
   day: {

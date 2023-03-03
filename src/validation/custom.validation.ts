@@ -288,13 +288,13 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-const isSubmitTrustSelected = (action: string = "", session: Session): boolean => {
+const isSubmitTrustSelected = (session: Session, action: string = ""): boolean => {
   const appData: ApplicationData = getApplicationData(session);
   return action === "submit" && (appData.trusts || [] ).length > 0;
 };
 
 export const checkTrustBO = (req) => {
-  if (isSubmitTrustSelected(req.body.submit, req.session)) {
+  if (isSubmitTrustSelected(req.session, req.body.submit)) {
     return true;
   }
   return checkAtLeastOneFieldHasValue(ErrorMessages.TRUST_BO_CHECKBOX, req.body.beneficialOwners);
@@ -302,7 +302,7 @@ export const checkTrustBO = (req) => {
 
 export const checkTrustFields = (req) => {
 
-  if (isSubmitTrustSelected(req.body.submit, req.session)) {
+  if (isSubmitTrustSelected(req.session, req.body.submit)) {
     return true;
   }
 

@@ -423,10 +423,6 @@ describe('Trust Utils method tests', () => {
       } as BeneficialOwnerOther;
 
       const appData = {
-        [TrustKey]: [
-          mockTrust1Data,
-          mockTrust2Data,
-        ],
         [BeneficialOwnerIndividualKey]: [
           {} as BeneficialOwnerIndividual,
           mockBoIndividualNoTrustData,

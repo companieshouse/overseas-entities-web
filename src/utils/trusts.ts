@@ -43,15 +43,9 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  */
 const getTrustLandingUrl = (appData: ApplicationData): string => {
 
-  const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
-
-  for (const benficialOwners of allBenficialOwnersToCheck) {
-    if (benficialOwners) {
-      if (containsTrustData(benficialOwners)) {
-        // Once naviation changes are agreed the following will change
-        return `${CHECK_YOUR_ANSWERS_URL}`;
-      }
-    }
+  if (containsTrustData(getTrustArray(appData))) {
+    // Once naviation changes are agreed the following will change
+    return `${CHECK_YOUR_ANSWERS_URL}`;
   }
 
   return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
@@ -88,8 +82,8 @@ const containsTrusteeNatureOfControl = (beneficialOwners: BeneficialOwnerIndivid
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
 };
 
-const containsTrustData = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
-  return beneficialOwners.some(bo => bo.trust_ids?.length);
+const containsTrustData = (trusts: Trust[]): boolean => {
+  return (trusts.length > 0);
 };
 
 /**

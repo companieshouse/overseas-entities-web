@@ -18,7 +18,6 @@ import {
   APPLICATION_DATA_PARTIAL_TRUST_DATE_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  // ERROR,
   TRUSTS_SUBMIT,
   TRUSTS_ADD_NO_NAME,
   TRUSTS_ADD_NO_CREATION_DATE,
@@ -164,11 +163,8 @@ describe("TRUST INFORMATION controller", () => {
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       bo.trust_ids = undefined;
       mockGetFromApplicationData.mockReturnValueOnce(bo);
-      const resp = await request(app).post(config.TRUST_INFO_URL).send(
-        {
-          ...TRUSTS_ADD,
-          [trustType.TrustKey]: "Trust info"
-        });
+      mockSaveAndContinue.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -244,7 +240,7 @@ describe("TRUST INFORMATION controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`does not display error message when address premises fields are not submitted`, async () => {
+    test(`does not display error message when address premises fields are not added`, async () => {
       mockPrepareData.mockImplementationOnce( () => TRUSTS_ADD_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES );
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const bo = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;

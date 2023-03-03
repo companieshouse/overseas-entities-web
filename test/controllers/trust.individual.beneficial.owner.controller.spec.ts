@@ -1,4 +1,5 @@
 jest.mock("ioredis");
+jest.mock('express-validator/src/validation-result');
 jest.mock("../../src/utils/application.data");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
@@ -14,6 +15,7 @@ import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import { Params } from 'express-serve-static-core';
+import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
@@ -115,6 +117,10 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
       post(mockReq, mockRes, mockNext);
 
       expect(mapIndividualTrusteeToSession).toBeCalledTimes(1);
@@ -133,9 +139,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
         mockReq.session,
         mockUpdatedAppData,
       );
-
-      expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${trustId}${TRUST_INVOLVED_URL}`));
     });
 
     test('catch error when renders the page', () => {
@@ -176,9 +179,16 @@ describe('Trust Individual Beneficial Owner Controller', () => {
     });
 
     test('successfully access POST method', async () => {
+
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
       const resp = await request(app).post(pageUrl).send({});
 
-      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

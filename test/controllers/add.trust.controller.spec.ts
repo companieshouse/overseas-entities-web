@@ -25,7 +25,7 @@ import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.cont
 describe("Add Trust Controller Tests", () => {
 
   const trustId = "939";
-  const pageUrl = `${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`;
+  const pageUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
 
   const mockTrust1Data = {
     trust_id: "999",

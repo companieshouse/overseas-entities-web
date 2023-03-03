@@ -169,7 +169,7 @@ describe('Trust Involved controller', () => {
       post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + "/" + trustId + ADD_TRUST_URL}`);
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     const dpPostTrustee = [

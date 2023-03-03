@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../../src/config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../../src/config";
 import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
@@ -401,13 +401,13 @@ describe('Trust Utils method tests', () => {
     test("test getBeneficialOwnerList with application data and trustee nature of control", () => {
 
       const result = getTrustLandingUrl(mockAppData);
-      expect(result).toEqual(`${CHECK_YOUR_ANSWERS_URL}`);
+      expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     test("test getTrustLandingUrl with bo having trust data", () => {
 
       const result = getTrustLandingUrl(mockAppData);
-      expect(result).toEqual(`${CHECK_YOUR_ANSWERS_URL}`);
+      expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     test("test getTrustLandingUrl with bo having trust nature of control but no trust data", () => {

@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/application.data");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
@@ -27,6 +28,10 @@ import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model'
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapIndividualTrusteeToSession } from '../../src/utils/trust/individual.trustee.mapper';
 import { getTrustByIdFromApp, saveIndividualTrusteeInTrust, saveTrustInApp } from '../../src/utils/trusts';
+
+import { saveAndContinue } from '../../src/utils/save.and.continue';
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Trust Individual Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -171,11 +176,12 @@ describe('Trust Individual Beneficial Owner Controller', () => {
     });
 
     test('successfully access POST method', async () => {
-      const resp = await request(app).post(pageUrl);
+      const resp = await request(app).post(pageUrl).send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

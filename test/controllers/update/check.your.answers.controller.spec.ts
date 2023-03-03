@@ -3,6 +3,7 @@ jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/service/payment.service');
 jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 
@@ -19,7 +20,8 @@ import app from "../../../src/app";
 import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
+  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -31,6 +33,7 @@ import {
 } from "../../__mocks__/session.mock";
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
@@ -39,6 +42,9 @@ import { getApplicationData } from "../../../src/utils/application.data";
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -67,6 +73,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });

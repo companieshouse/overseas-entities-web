@@ -9,7 +9,7 @@ import { startPaymentsSession } from "../../service/payment.service";
 
 import {
   CHS_URL,
-  OVERSEAS_ENTITY_REVIEW_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE
 } from "../../config";
@@ -19,7 +19,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
-      backLinkUrl: OVERSEAS_ENTITY_REVIEW_URL,
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE
     });
   } catch (error) {

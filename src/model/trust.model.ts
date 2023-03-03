@@ -139,7 +139,6 @@ export type TrustCorporate = {
   is_on_register_in_country_formed_in: yesNoResponse;
 };
 
-
 export interface BeneficialOwnerItem {
   id: string
   name: string

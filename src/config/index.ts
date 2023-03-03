@@ -90,13 +90,16 @@ export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE = "trust-individual-benefici
 export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE = "trust-legal-entity-beneficial-owner";
 export const TRUST_BENEFICIAL_OWNER_DETACH_PAGE = "trust-bo-detach";
 export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
+export const ADD_TRUST_PAGE = 'add-trust';
 export const WHO_IS_MAKING_UPDATE_PAGE = "who-is-making-update";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
 export const UPDATE_DUE_DILIGENCE_PAGE = "update-due-diligence";
 export const UPDATE_INTERRUPT_CARD_PAGE = "update-interrupt-card";
+export const UPDATE_MANAGING_OFFICER_PAGE = "update-managing-officer";
 export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE = "update-beneficial-owner-individual";
+export const UPDATE_MANAGING_OFFICER_CORPORATE_PAGE = "update-managing-officer-corporate";
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -139,6 +142,7 @@ export const TRUSTS_URL = "trusts";
 export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUSTS_URL;
 export const TRUST_DETAILS_URL = TRUST_ENTRY_URL;
 export const TRUST_INVOLVED_URL = '/' + TRUST_INVOLVED_PAGE;
+export const ADD_TRUST_URL = '/' + ADD_TRUST_PAGE;
 export const TRUST_BENEFICIAL_OWNER_DETACH_URL = '/' + TRUST_BENEFICIAL_OWNER_DETACH_PAGE;
 export const TRUST_HISTORICAL_BENEFICIAL_OWNER_URL = '/' + TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE;
 export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL = '/' + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE;
@@ -174,6 +178,8 @@ export const UPDATE_BENEFICIAL_OWNER_GOV_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + U
 export const UPDATE_CHECK_YOUR_ANSWERS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CHECK_YOUR_ANSWERS_PAGE;
 export const UPDATE_INTERRUPT_CARD_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_INTERRUPT_CARD_PAGE;
 export const UPDATE_SIGN_OUT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_SIGN_OUT_PAGE;
+export const UPDATE_MANAGING_OFFICER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_MANAGING_OFFICER_PAGE;
+export const UPDATE_MANAGING_OFFICER_CORPORATE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_MANAGING_OFFICER_CORPORATE_PAGE;
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";

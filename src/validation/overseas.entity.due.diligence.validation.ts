@@ -4,7 +4,7 @@ import { ErrorMessages } from "./error.messages";
 import { identity_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import {
-  checkDateFieldDay,
+  checkDateFieldDayForOptionalDates,
   checkDateFieldMonth,
   checkDateFieldYear,
   checkOptionalDate
@@ -16,11 +16,9 @@ export const overseasEntityDueDiligence = [
   // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
   // This means that the year check is checked before some others
   body("identity_date-day")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldDay(ErrorMessages.DAY, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
+    .custom((value, { req }) => checkDateFieldDayForOptionalDates(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
-    .if(body("identity_date-year").isLength({ min: 4, max: 4 }))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date")

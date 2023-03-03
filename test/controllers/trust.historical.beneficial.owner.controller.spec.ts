@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../src/utils/application.data");
 jest.mock('../../src/utils/trust/historical.beneficial.owner.mapper');
 jest.mock('../../src/middleware/authentication.middleware');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
 jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
@@ -26,6 +27,9 @@ import { getApplicationData, setExtraData } from '../../src/utils/application.da
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
 import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
+import { saveAndContinue } from '../../src/utils/save.and.continue';
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Trust Historical Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -127,9 +131,6 @@ describe('Trust Historical Beneficial Owner Controller', () => {
         mockReq.session,
         mockUpdatedAppData,
       );
-
-      expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${trustId}${TRUST_INVOLVED_URL}`));
     });
 
     test('catch error when renders the page', () => {
@@ -171,13 +172,14 @@ describe('Trust Historical Beneficial Owner Controller', () => {
     });
 
     test('successfully access POST method', async () => {
-      const resp = await request(app).post(pageUrl);
+      const resp = await request(app).post(pageUrl).send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

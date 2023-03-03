@@ -16,11 +16,13 @@ import { NextFunction } from "express";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import {
   testDateOfCreation,
+  testEntityNumber,
   testEntityName,
   entityModelMock,
   entityProfileModelMock,
   updateModelMock,
-  missingDateOfCreationMock
+  missingDateOfCreationMock,
+  testIncorporationCountry
 } from "../../__mocks__/update.entity.mocks";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -31,7 +33,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Confirm company data", () => {
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -44,7 +45,8 @@ describe("Confirm company data", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(testEntityName);
       expect(resp.text).toContain(testDateOfCreation);
-      expect(resp.text).toContain("123456 abcxyz UK");
+      expect(resp.text).toContain(testEntityNumber);
+      expect(resp.text).toContain(testIncorporationCountry);
     });
 
     test(`redirects if no update data`, async () => {

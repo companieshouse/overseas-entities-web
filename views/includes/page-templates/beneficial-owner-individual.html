@@ -3,8 +3,8 @@
     {% include "includes/list/errors.html" %}
 
     <span class="govuk-caption-xl">Beneficial owner</span>
-    
-    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1> 
+
+    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
     <form method="post">
@@ -43,8 +43,7 @@
 
       {% endcall %}
 
-      {% set sanctionsListText = "Are they on the sanctions list?" %}
-      {% set sanctionsListHintText = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018." %}
+      {% set sanctionsPronoun = "they" %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray } from '../utils/trusts';
+import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
@@ -51,7 +51,7 @@ const getPageProperties = (
 
   let backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
 
-  if (getTrustArray(appData).length >= 1) {
+  if (containsTrustData(getTrustArray(appData))) {
     backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
   }
 

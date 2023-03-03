@@ -3,6 +3,9 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/service/transaction.service');
+jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
 import * as config from "../../../src/config";
@@ -13,11 +16,23 @@ import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { postTransaction } from "../../../src/service/transaction.service";
+import { getApplicationData } from "../../../src/utils/application.data";
+import { EntityNumberKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+
+import {
+  APPLICATION_DATA_MOCK,
+  OVERSEAS_ENTITY_ID,
+  COMPANY_NAME,
+  TRANSACTION_ID
+} from '../../__mocks__/session.mock';
 
 import {
   ANY_MESSAGE_ERROR,
   BACK_LINK_FOR_UPDATE_FILING_DATE,
+  FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
@@ -26,6 +41,17 @@ import { NextFunction } from "express";
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockHasOverseasEntityNumber = hasOverseasEntityNumber as jest.Mock;
 mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockTransactionService = postTransaction as jest.Mock;
+mockTransactionService.mockReturnValue( TRANSACTION_ID );
+
+const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
+mockCreateOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -64,12 +90,44 @@ describe("Update Filing Date controller", () => {
     test(`redirects to ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful post from ${config.UPDATE_FILING_DATE_PAGE}`, async () => {
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({});
+        .send({ [EntityNumberKey]: COMPANY_NAME });
 
       expect(resp.status).toEqual(302);
     });
 
-    test('catch error when rendering the page', async () => {
+    test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page with transaction and overseas entity already created`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send({ [EntityNumberKey]: COMPANY_NAME });
+
+      expect(resp.status).toEqual(302);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockTransactionService).not.toHaveBeenCalled();
+      expect(mockCreateOverseasEntity).not.toHaveBeenCalled();
+
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
+    });
+
+    test(`redirect to the ${config.OVERSEAS_ENTITY_PRESENTER_URL} page after a successful creation of transaction and overseas entity`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send({ [EntityNumberKey]: COMPANY_NAME });
+
+      expect(resp.status).toEqual(302);
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+      expect(mockTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
+    });
+
+    test(`catch error on POST action for ${config.UPDATE_FILING_DATE_URL} page`, async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)

@@ -3,7 +3,11 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../utils/logger";
 import { Session } from "@companieshouse/node-session-handler";
 
-import { createOverseasEntity } from "../../service/overseas.entities.service";
+import { ApplicationData } from "../../model";
+import { getApplicationData } from "../../utils/application.data";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
+import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import { closeTransaction, postTransaction } from "../../service/transaction.service";
 import { startPaymentsSession } from "../../service/payment.service";
 
@@ -11,7 +15,8 @@ import {
   CHS_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_PAGE
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+  FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -33,9 +38,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
+    const appData: ApplicationData = getApplicationData(session);
 
-    const transactionID = await postTransaction(req, session);
-    const overseasEntityID = await createOverseasEntity(req, session, transactionID);
+    let transactionID, overseasEntityID;
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+      transactionID = appData[Transactionkey] as string;
+      overseasEntityID = appData[OverseasEntityKey] as string;
+      await updateOverseasEntity(req, session);
+    } else {
+      transactionID = await postTransaction(req, session);
+      overseasEntityID = await createOverseasEntity(req, session, transactionID);
+    }
 
     const transactionClosedResponse = await closeTransaction(req, session, transactionID, overseasEntityID);
     logger.infoRequest(req, `Transaction Closed, ID: ${transactionID}`);

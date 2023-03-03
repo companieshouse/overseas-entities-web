@@ -1,4 +1,4 @@
-import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -45,7 +45,7 @@ const getTrustLandingUrl = (appData: ApplicationData): string => {
 
   if (containsTrustData(getTrustArray(appData))) {
     // Once naviation changes are agreed the following will change
-    return `${CHECK_YOUR_ANSWERS_URL}`;
+    return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
   }
 
   return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
@@ -284,4 +284,5 @@ export {
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
+  containsTrustData,
 };

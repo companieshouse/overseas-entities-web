@@ -15,7 +15,9 @@
 {% endset %}
 
 {% set trustAdded %}
-  {% if trusts.length %}
+  {% if errors and trustsAddedSoFar %}
+    ({{trustsAddedSoFar.length}} Trust information added so far)
+  {% elif trusts.length %}
     ({{trusts.length}} Trust information added so far)
   {% else %}
     (No Trust information added so far)

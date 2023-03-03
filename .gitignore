@@ -106,3 +106,8 @@ dist
 # IDE
 .idea/
 .vscode/
+
+# Nodemon Related
+dev.dockerfile
+dev.docker-compose.yaml
+nodemon.json

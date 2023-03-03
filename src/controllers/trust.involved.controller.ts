@@ -101,10 +101,12 @@ const post = (
 ) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, `${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`);
+      console.log("HERE TRUST");
+      console.log(`${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`);
+
+      return safeRedirect(res, `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`);
     }
     //  check on errors
     const errorList = validationResult(req);

@@ -19,10 +19,9 @@ type TrustInvolvedPageProperties = {
 const getPageProperties = (
   req: Request,
 ): TrustInvolvedPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL + "/" + trustId + config.TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.BENEFICIAL_OWNER_TYPE_URL}`,
     templateName: config.ADD_TRUST_PAGE,
     pageParams: {
       title: ADD_TRUST_TEXTS.title,
@@ -40,6 +39,8 @@ const get = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const pageProps = getPageProperties(req);
+    console.log("HERE DETAILS");
+    
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {

@@ -7,7 +7,7 @@ import { closeTransaction, postTransaction } from "../service/transaction.servic
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
-import { checkEntityRequiresTrusts, getTrustArray } from "../utils/trusts";
+import { checkEntityRequiresTrusts } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
@@ -31,9 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl = config.TRUST_INFO_PAGE;
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
-        const trustArray = getTrustArray(appData);
-        const lastTrustId = trustArray[trustArray.length - 1].trust_id;
-        backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + lastTrustId + config.ADD_TRUST_URL}`;
+        backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
       }
     }
 

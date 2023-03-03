@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '../utils/trusts';
+import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
@@ -50,11 +50,9 @@ const getPageProperties = (
   ];
 
   let backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
-  if (trustId > "1") {
-    const previousTrustId = Number(trustId) - 1;
-    backLinkUrl = `${config.TRUST_ENTRY_URL + "/" + String(previousTrustId) + config.ADD_TRUST_URL}`;
+  if (getTrustArray(appData).length >= 1) {
+    backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
   }
 
   return {
@@ -79,6 +77,7 @@ const get = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    console.log("RENDERING TRUST DETAILS");
 
     const appData: ApplicationData = getApplicationData(req.session);
 

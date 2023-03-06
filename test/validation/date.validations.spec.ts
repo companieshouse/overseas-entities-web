@@ -1,5 +1,5 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
-import { checkAllBirthDateFieldsPresent, checkDateFieldsForErrors, checkBirthDate, checkDate, checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate } from '../../src/validation/custom.validation';
+import { checkAllBirthDateFieldsForErrors, checkDateFieldsForErrors, checkBirthDate, checkDate, checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
@@ -172,7 +172,7 @@ describe("test date method", () => {
   });
 
   test.each(testDateFieldCheck(errMsgcheckAllBirthDateFieldsPresent))("should throw appropriate date errors for checkAllBirthDateFieldsPresent", (_day, _month, _year, _err ) => {
-    expect(() => checkAllBirthDateFieldsPresent(_day, _month, _year)).toThrow(_err);
+    expect(() => checkAllBirthDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
   });
 
   test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {

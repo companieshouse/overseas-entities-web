@@ -75,17 +75,33 @@
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
-              text: "Beneficiary"
+              text: "Beneficiary",
+              checked: type == pageData.roleWithinTrustType.BENEFICIARY,
+              attributes: {
+                "data-event-id": "beneficiary-type-radio-option"
+              }
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
-              text: "Settlor"
+              text: "Settlor",
+              checked: type == pageData.roleWithinTrustType.SETTLOR,
+              attributes: {
+                "data-event-id": "settlor-type-radio-option"
+              }
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
-              text: "Grantor"
+              text: "Grantor",
+              checked: type == pageData.roleWithinTrustType.GRANTOR,
+              attributes: {
+                "data-event-id": "grantor-type-radio-option"
+              }
             }, 
             {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
+              checked: type == pageData.roleWithinTrustType.INTERESTED_PERSON,
+              attributes: {
+                "data-event-id": "interested-person-type-radio-option"
+              },
               conditional: {
                 html: interestedPersonDateHtml
               }

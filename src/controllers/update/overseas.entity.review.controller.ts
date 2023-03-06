@@ -4,10 +4,11 @@ import * as config from "../../config";
 import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
 import { Session } from "@companieshouse/node-session-handler";
+import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
@@ -31,9 +32,19 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    const session = req.session as Session;
+    const appData: ApplicationData = getApplicationData(session);
+    // call getCompanyPsc service, temporary location
+    if (appData.entity_number) {
+      // response unused for now until mapping in UAR-337 done
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const pscData = await getCompanyPsc(req, appData.entity_number);
+    }
+
     return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
   } catch (errors) {
     logger.errorRequest(req, errors);

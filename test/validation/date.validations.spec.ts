@@ -100,6 +100,10 @@ describe('Test to validate date validator', () => {
 });
 
 describe("test date method", () => {
+  const today = new Date();
+  const day = today.getDate().toString();
+  const month = (today.getMonth() + 1).toString();
+  const year = today.getFullYear().toString();
   test("should throw appropriate date errors for checkAllDateFieldsPresent", () => {
     expect(() => checkAllDateFieldsPresent("", "", "")).toThrow(ErrorMessages.ENTER_DATE);
     expect(() => checkAllDateFieldsPresent("02", "", "")).toThrow(ErrorMessages.MONTH_AND_YEAR);
@@ -126,6 +130,7 @@ describe("test date method", () => {
     expect(() => checkDate("10", "10", "209")).toThrow(ErrorMessages.YEAR_LENGTH);
     expect(() => checkDate("10", "a", "2009")).toThrow(ErrorMessages.INVALID_DATE);
     expect(() => checkDate("10", "10", "9999")).toThrow(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(() => checkDate(day, month, year)).toThrow(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
   });
   test("should throw appropriate date errors for checkBirthDate", () => {
     expect(() => checkBirthDate("", "", "")).toThrow(ErrorMessages.ENTER_DATE_OF_BIRTH);
@@ -137,5 +142,6 @@ describe("test date method", () => {
     expect(() => checkBirthDate("10", "10", "209")).toThrow(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
     expect(() => checkBirthDate("10", "a", "2009")).toThrow(ErrorMessages.INVALID_DATE_OF_BIRTH);
     expect(() => checkBirthDate("10", "10", "9999")).toThrow(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+    expect(() => checkBirthDate(day, month, year)).toThrow(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
   });
 });

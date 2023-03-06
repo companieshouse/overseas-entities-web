@@ -114,7 +114,7 @@ describe("test date method", () => {
 
   const errMsgcheckAllBirthDateFieldsPresent: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_BIRTH,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
-    ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
+    ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
     ErrorMessages.DAY_OF_BIRTH,
     ErrorMessages.MONTH_OF_BIRTH];

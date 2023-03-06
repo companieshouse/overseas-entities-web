@@ -271,7 +271,7 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
 };
 
 export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (dayStr === "" || monthStr === "" || yearStr === "") {
+  if (!checkAllDateFieldsArePresent(dayStr, monthStr, yearStr)) {
     return false;
   } else {
     checkMoreThanOneDateOfBirthFieldIsNotMissing(dayStr, monthStr, yearStr);

@@ -247,7 +247,7 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
 };
 
 export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  checkAllDateFieldsPresent(dayStr, monthStr, yearStr);
+  checkDateFieldsForErrors(dayStr, monthStr, yearStr);
   const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
   if (isYearEitherMissingOrCorrectLength(yearStr) && areSomeDateFieldsPresent) {
     checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr) &&
@@ -279,7 +279,7 @@ export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: 
   return true;
 };
 
-export const checkAllDateFieldsPresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" && monthStr === "" && yearStr === "") {
     throw new Error(ErrorMessages.ENTER_DATE);
   } else if (dayStr === "" && monthStr === "" && yearStr !== "") {

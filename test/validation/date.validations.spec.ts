@@ -117,10 +117,10 @@ describe("test date method", () => {
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
     ErrorMessages.DAY_OF_BIRTH,
-    ErrorMessages.MONTH_OF_BIRTH]
+    ErrorMessages.MONTH_OF_BIRTH];
 
   const testDateFieldCheck = (err: ErrorMessages[]) => [
-    ["", "", "", err[0]], 
+    ["", "", "", err[0]],
     ["02", "", "", err[1]],
     ["", "02", "", err[2]],
     ["", "", "2009", err[3]],
@@ -139,7 +139,7 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE,
     ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY,
     ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY
-  ]
+  ];
 
   const errMsgcheckBirthDate: ErrorMessages[] = [
     ErrorMessages.ENTER_DATE_OF_BIRTH,
@@ -152,34 +152,33 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE_OF_BIRTH,
     ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST,
     ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST
-  ]
+  ];
 
   const testDateCheck = (err: ErrorMessages[]) => [
-    ["", "", "", err[0]], 
+    ["", "", "", err[0]],
     ["02", "", "", err[1]],
     ["", "02", "", err[2]],
     ["", "", "2009", err[3]],
     ["0", "10", "2009", err[4]],
     ["10", "0", "2009", err[5]],
-    ["10", "10", "209", err[6]], 
+    ["10", "10", "209", err[6]],
     ["10", "a", "2009", err[7]],
     ["10", "10", "9999", err[8]],
     [day, month, year, err[9]]
-  ]; 
+  ];
 
-  test.each(testDateFieldCheck(errMsgCheckAllDateFieldsPresent))("should throw appropriate date errors for checkAllDateFieldsPresent", ( _day, _month , _year, _err ) => {
+  test.each(testDateFieldCheck(errMsgCheckAllDateFieldsPresent))("should throw appropriate date errors for checkAllDateFieldsPresent", ( _day, _month, _year, _err ) => {
     expect(() => checkAllDateFieldsPresent(_day, _month, _year)).toThrow(_err);
   });
 
-  test.each(testDateFieldCheck(errMsgcheckAllBirthDateFieldsPresent))("should throw appropriate date errors for checkAllBirthDateFieldsPresent", (_day, _month , _year, _err ) => {
+  test.each(testDateFieldCheck(errMsgcheckAllBirthDateFieldsPresent))("should throw appropriate date errors for checkAllBirthDateFieldsPresent", (_day, _month, _year, _err ) => {
     expect(() => checkAllBirthDateFieldsPresent(_day, _month, _year)).toThrow(_err);
   });
-
 
   test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {
     expect(() => checkDate(_day, _month, _year)).toThrow(_err);
   });
-  
+
   test.each(testDateCheck(errMsgcheckBirthDate))("should throw appropriate date errors for checkBirthDate", (_day, _month, _year, _err) => {
     expect(() => checkBirthDate(_day, _month, _year)).toThrow(_err);
   });

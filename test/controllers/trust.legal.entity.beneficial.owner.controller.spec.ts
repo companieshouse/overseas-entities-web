@@ -1,7 +1,9 @@
 jest.mock("ioredis");
+jest.mock('express-validator/src/validation-result');
 jest.mock(".../../../src/utils/application.data");
 jest.mock("../../src/middleware/authentication.middleware");
 jest.mock("../../src/middleware/navigation/has.trust.middleware");
+jest.mock('../../src/utils/save.and.continue');
 jest.mock("../../src/middleware/is.feature.enabled.middleware");
 jest.mock("../../src/middleware/is.feature.enabled.middleware", () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
@@ -14,6 +16,7 @@ import { constants } from "http2";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import { Params } from "express-serve-static-core";
+import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from "@companieshouse/node-session-handler";
 import request from "supertest";
 import app from "../../src/app";
@@ -42,6 +45,9 @@ import {
 } from "../../src/utils/trusts";
 import { mapCommonTrustDataToPage } from "../../src/utils/trust/common.trust.data.mapper";
 import { mapLegalEntityToSession } from "../../src/utils/trust/legal.entity.beneficial.owner.mapper";
+import { saveAndContinue } from '../../src/utils/save.and.continue';
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("Trust Legal Entity Beneficial Owner Controller", () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -122,6 +128,10 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
       post(mockReq, mockRes, mockNext);
 
       expect(mapLegalEntityToSession).toBeCalledTimes(1);
@@ -172,6 +182,10 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       };
       (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust);
 
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
@@ -193,6 +207,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrust).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

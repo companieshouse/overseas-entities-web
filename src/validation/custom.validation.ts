@@ -247,41 +247,68 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
 };
 
 export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
-  if (isYearEitherMissingOrCorrectLength(yearStr)) {
-    const isDatePresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
-    if (isDatePresent) {
-      const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
-      if (areDateFieldsPresent) {
-        const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-        if (isDateValid) {
-          checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-        }
-      } else {
-        if (dayStr === "" && monthStr === "" && yearStr !== "") {
-          throw new Error(ErrorMessages.DAY_AND_MONTH);
-        } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-          throw new Error(ErrorMessages.MONTH_AND_YEAR);
-        } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
-          throw new Error(ErrorMessages.DAY_AND_YEAR);
-        }
-      }
-    }
+  checkAllDateFieldsPresent(dayStr, monthStr, yearStr);
+  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
+  if (isYearEitherMissingOrCorrectLength(yearStr) && areSomeDateFieldsPresent) {
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr) &&
+      checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
+    throw new Error(ErrorMessages.YEAR_LENGTH);
+  }
+  return true;
+};
+
+export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  checkAllBirthDateFieldsPresent(dayStr, monthStr, yearStr);
+  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
+  if (isYearEitherMissingOrCorrectLength(yearStr) && areSomeDateFieldsPresent) {
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr) &&
+      checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
+  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
+    throw new Error(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
   }
   return true;
 };
 
 export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  if (dayStr === "" && monthStr !== "" && yearStr !== "") {
-    return false;
-  } else if (monthStr === "" && dayStr !== "" && yearStr !== "") {
-    return false;
-  } else if (yearStr === "" && dayStr !== "" && monthStr !== "") {
+  if (dayStr === "" || monthStr === "" || yearStr === "") {
     return false;
   } else {
     checkMoreThanOneDateOfBirthFieldIsNotMissing(dayStr, monthStr, yearStr);
   }
   return true;
+};
+
+export const checkAllDateFieldsPresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.ENTER_DATE);
+  } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR);
+  } else if (dayStr === "") {
+    throw new Error(ErrorMessages.DAY);
+  } else if (monthStr === "") {
+    throw new Error(ErrorMessages.MONTH);
+  }
+};
+
+export const checkAllBirthDateFieldsPresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.ENTER_DATE_OF_BIRTH);
+  } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH_OF_BIRTH);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR_OF_BIRTH);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR_OF_BIRTH);
+  } else if (dayStr === "") {
+    throw new Error(ErrorMessages.DAY_OF_BIRTH);
+  } else if (monthStr === "") {
+    throw new Error(ErrorMessages.MONTH_OF_BIRTH);
+  }
 };
 
 export const checkMoreThanOneDateOfBirthFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {

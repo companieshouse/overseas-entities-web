@@ -61,6 +61,8 @@ export enum ErrorMessages {
   MONTH = "Date must include a month",
   YEAR = "Date must include a year",
   YEAR_LENGTH = "Year must include 4 numbers",
+  DAY_LENGTH = "Day must include 2 numbers",
+  MONTH_LENGTH = "Month must include 2 numbers",
   DAY_OF_BIRTH = "Date of birth must include a day",
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",

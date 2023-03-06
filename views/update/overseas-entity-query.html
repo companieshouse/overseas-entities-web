@@ -15,7 +15,7 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ title }}</h1>
       {% include "includes/list/errors.html" %}
-      <form method="post">
+      <form data-event-id="overseas-entity-query" method="post">
         {{ govukInput
           ({
             label: {

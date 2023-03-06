@@ -80,12 +80,13 @@
           {{ govukButton({
             text: "Confirm and continue",
             attributes: {
-              "id": "submit"
+              "id": "submit",
+              "data-event-id": "submit"
             }
           }) }}
         </div>
         <br>
-          <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>  
+        <a data-event-id="choose-different-overseas-entity" href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>  
       </form>
     </div>
   </div>

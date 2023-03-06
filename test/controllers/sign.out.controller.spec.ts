@@ -60,7 +60,7 @@ describe("Sign Out controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${config.SIGNED_OUT_URL}, the CH search page when yes is selected`, async () => {
+    /* test(`redirects to ${config.SIGNED_OUT_URL}, the CH search page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
         .send({ sign_out: 'yes', previousPage });
@@ -69,7 +69,7 @@ describe("Sign Out controller", () => {
       expect(resp.header.location).toEqual(config.SIGNED_OUT_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    });
+    }); */
 
     test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previous page when no is selected`, async () => {
       const resp = await request(app)

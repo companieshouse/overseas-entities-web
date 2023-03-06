@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
-import { signOutUser } from "../service/sign.out.service";
-import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,9 +25,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (req.body["sign_out"] === 'yes') {
-      const session = req.session as Session;
-      signOutUser(req, session);
-      return res.redirect(config.SIGNED_OUT_URL);
+      // const session = req.session as Session;
+      // signOutUser(req, session);
+      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
     }
 
     return res.redirect(previousPage);

@@ -60,7 +60,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setApplicationData(session, trust, TrustKey);
     }
 
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, true);
 
     if (req.body.add) {
       return res.redirect(config.TRUST_INFO_URL);

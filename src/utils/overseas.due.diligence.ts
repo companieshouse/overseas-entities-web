@@ -52,9 +52,7 @@ export const postDueDiligence = async (req: Request, res: Response, next: NextFu
     // Empty DueDiligence object
     setApplicationData(session, {}, DueDiligenceKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
 
     return res.redirect(redirectUrl);
   } catch (error) {

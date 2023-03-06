@@ -20,7 +20,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../../../src/service
 import { postTransaction } from "../../../src/service/transaction.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { EntityNumberKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
-import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -39,8 +39,8 @@ import {
 import { NextFunction } from "express";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockHasOverseasEntityNumber = hasOverseasEntityNumber as jest.Mock;
-mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
+mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );

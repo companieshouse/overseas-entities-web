@@ -471,7 +471,7 @@ router.route(config.UPDATE_FILING_DATE_URL)
   .all(
     authentication,
     companyAuthentication,
-    navigation.hasOverseasEntityNumber
+    navigation.hasOverseasEntity
   )
   .get(updateFilingDate.get)
   .post(updateFilingDate.post);

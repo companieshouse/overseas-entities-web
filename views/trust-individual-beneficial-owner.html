@@ -70,22 +70,25 @@
         {% set fieldParam = {
           name: 'type',
           label: 'What is their role within the trust?',
-          value: formData.type,
           error: errors.type if errors,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
-              text: "Beneficiary"
+              text: "Beneficiary",
+              checked: formData.type == pageData.roleWithinTrustType.BENEFICIARY
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
-              text: "Settlor"
+              text: "Settlor",
+              checked: formData.type == pageData.roleWithinTrustType.SETTLOR
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
-              text: "Grantor"
+              text: "Grantor",
+              checked: formData.type == pageData.roleWithinTrustType.GRANTOR
             }, 
             {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
+              checked: formData.type == pageData.roleWithinTrustType.INTERESTED_PERSON,
               conditional: {
                 html: interestedPersonDateHtml
               }
@@ -97,6 +100,20 @@
         {% include "includes/inputs/nationality/nationality.html" %}
         {% include "includes/inputs/nationality/second-nationality.html" %}
 
+        {% set usual_residential_address_property_name_number = formData.usual_residential_address_property_name_number %}
+        {% set usual_residential_address_line_1 = formData.usual_residential_address_line_1 %}
+        {% set usual_residential_address_line_2 = formData.usual_residential_address_line_2 %}
+        {% set usual_residential_address_town = formData.usual_residential_address_town %}
+        {% set usual_residential_address_county = formData.usual_residential_address_county %}
+        {% set usual_residential_address_postcode = formData.usual_residential_address_postcode %}
+        {% set is_service_address_same_as_usual_residential_address = formData.is_service_address_same_as_usual_residential_address %}
+
+        {% set service_address_property_name_number = formData.service_address_property_name_number %}
+        {% set service_address_line_1 = formData.service_address_line_1 %}
+        {% set service_address_line_2 = formData.service_address_line_2 %}
+        {% set service_address_town = formData.service_address_town %}
+        {% set service_address_county = formData.service_address_county %}
+        {% set service_address_postcode = formData.service_address_postcode %}
         {% include "includes/inputs/address/residential-address-input.html" %}
 
         {{ govukInsetText({

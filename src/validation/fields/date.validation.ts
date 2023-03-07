@@ -9,7 +9,8 @@ import {
   checkDateFieldYear,
   checkDateOfBirth,
   checkIdentityDate,
-  checkStartDate
+  checkStartDate,
+  checkTrustDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -100,26 +101,26 @@ const dateBecameIPContext: dateContextWithCondition = {
   condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
 };
 
-const createdDateValidationsContext: dateContext = {
+const trustCreatedDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
-    callBack: checkDate,
+    callBack: checkTrustDate,
     errMsg: [],
   },
   day: {
     name: "createdDateDay",
     callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY],
+    errMsg: [ErrorMessages.DAY_OF_TRUST, ErrorMessages.DAY_LENGTH_OF_TRUST],
   },
   month: {
     name: "createdDateMonth",
     callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH],
+    errMsg: [ErrorMessages.MONTH_OF_TRUST, ErrorMessages.MONTH_LENGTH_OF_TRUST],
   },
   year: {
     name: "createdDateYear",
     callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
+    errMsg: [ErrorMessages.YEAR_OF_TRUST, ErrorMessages.YEAR_LENGTH_OF_TRUST],
   }
 };
 
@@ -127,4 +128,4 @@ export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsCont
 
 export const dateBecameIP = conditionalDateValidations(dateBecameIPContext, 4, 4);
 
-export const createdDateValidations = dateValidations(createdDateValidationsContext, 4, 4);
+export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext, 4, 4);

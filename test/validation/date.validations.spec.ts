@@ -1,5 +1,7 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
-import { checkAllBirthDateFieldsForErrors, checkDateFieldsForErrors, checkBirthDate, checkDate, checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate } from '../../src/validation/custom.validation';
+import { checkAllBirthDateFieldsForErrors, checkDateFieldsForErrors, checkBirthDate,
+  checkDate, checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate,
+  checkTrustDateFieldsForErrors, checkTrustDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
@@ -100,19 +102,26 @@ describe('Test to validate date validator', () => {
 });
 
 describe("test date method", () => {
-  const errMsgCheckAllDateFieldsPresent: ErrorMessages[] = [ErrorMessages.ENTER_DATE,
+  const errMsgCheckAllDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE,
     ErrorMessages.MONTH_AND_YEAR,
     ErrorMessages.DAY_AND_YEAR,
     ErrorMessages.DAY_AND_MONTH,
     ErrorMessages.DAY,
     ErrorMessages.MONTH];
 
-  const errMsgcheckAllBirthDateFieldsPresent: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_BIRTH,
+  const errMsgcheckAllBirthDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_BIRTH,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
     ErrorMessages.DAY_OF_BIRTH,
     ErrorMessages.MONTH_OF_BIRTH];
+
+  const errMsgcheckTrustDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_TRUST,
+    ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
+    ErrorMessages.DAY_AND_YEAR_OF_TRUST,
+    ErrorMessages.DAY_AND_MONTH_OF_TRUST,
+    ErrorMessages.DAY_OF_TRUST,
+    ErrorMessages.MONTH_OF_TRUST];
 
   const testDateFieldCheck = (err: ErrorMessages[]) => [
     ["", "", "", err[0]],
@@ -148,6 +157,18 @@ describe("test date method", () => {
     ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST
   ];
 
+  const errMsgcheckTrustDate: ErrorMessages[] = [
+    ErrorMessages.ENTER_DATE_OF_TRUST,
+    ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
+    ErrorMessages.DAY_AND_YEAR_OF_TRUST,
+    ErrorMessages.DAY_AND_MONTH_OF_TRUST,
+    ErrorMessages.INVALID_DATE_OF_TRUST,
+    ErrorMessages.INVALID_DATE_OF_TRUST,
+    ErrorMessages.YEAR_LENGTH_OF_TRUST,
+    ErrorMessages.INVALID_DATE_OF_TRUST,
+    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST
+  ];
+
   const testDateCheck = (err: ErrorMessages[]) => [
     ["", "", "", err[0]],
     ["02", "", "", err[1]],
@@ -160,12 +181,16 @@ describe("test date method", () => {
     ["10", "10", "9999", err[8]]
   ];
 
-  test.each(testDateFieldCheck(errMsgCheckAllDateFieldsPresent))("should throw appropriate date errors for checkAllDateFieldsPresent", ( _day, _month, _year, _err ) => {
+  test.each(testDateFieldCheck(errMsgCheckAllDateFields))("should throw appropriate date errors for checkDateFieldsForErrors", ( _day, _month, _year, _err ) => {
     expect(() => checkDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
   });
 
-  test.each(testDateFieldCheck(errMsgcheckAllBirthDateFieldsPresent))("should throw appropriate date errors for checkAllBirthDateFieldsPresent", (_day, _month, _year, _err ) => {
+  test.each(testDateFieldCheck(errMsgcheckAllBirthDateFields))("should throw appropriate date errors for checkAllBirthDateFieldsForErrors", (_day, _month, _year, _err ) => {
     expect(() => checkAllBirthDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateFieldCheck(errMsgcheckTrustDateFields))("should throw appropriate date errors for checkTrustDateFieldsForErrors", (_day, _month, _year, _err ) => {
+    expect(() => checkTrustDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
   });
 
   test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {
@@ -174,5 +199,9 @@ describe("test date method", () => {
 
   test.each(testDateCheck(errMsgcheckBirthDate))("should throw appropriate date errors for checkBirthDate", (_day, _month, _year, _err) => {
     expect(() => checkBirthDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgcheckTrustDate))("should throw appropriate date errors for checkTrustDate", (_day, _month, _year, _err) => {
+    expect(() => checkTrustDate(_day, _month, _year)).toThrow(_err);
   });
 });

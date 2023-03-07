@@ -274,8 +274,8 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
   checkTrustDateFieldsForErrors(dayStr, monthStr, yearStr);
   const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
   if (yearStr.length === 4 && areSomeDateFieldsPresent) {
-    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr) && checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr) &&
-      checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr) &&
+    checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
   } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
     throw new Error(ErrorMessages.YEAR_LENGTH_OF_TRUST);
   }

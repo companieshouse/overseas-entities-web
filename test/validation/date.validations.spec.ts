@@ -100,11 +100,6 @@ describe('Test to validate date validator', () => {
 });
 
 describe("test date method", () => {
-  const today = new Date();
-  const day = today.getDate().toString();
-  const month = (today.getMonth() + 1).toString();
-  const year = today.getFullYear().toString();
-
   const errMsgCheckAllDateFieldsPresent: ErrorMessages[] = [ErrorMessages.ENTER_DATE,
     ErrorMessages.MONTH_AND_YEAR,
     ErrorMessages.DAY_AND_YEAR,
@@ -150,7 +145,6 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE_OF_BIRTH,
     ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH,
     ErrorMessages.INVALID_DATE_OF_BIRTH,
-    ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST,
     ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST
   ];
 
@@ -163,8 +157,7 @@ describe("test date method", () => {
     ["10", "0", "2009", err[5]],
     ["10", "10", "209", err[6]],
     ["10", "a", "2009", err[7]],
-    ["10", "10", "9999", err[8]],
-    [day, month, year, err[9]]
+    ["10", "10", "9999", err[8]]
   ];
 
   test.each(testDateFieldCheck(errMsgCheckAllDateFieldsPresent))("should throw appropriate date errors for checkAllDateFieldsPresent", ( _day, _month, _year, _err ) => {

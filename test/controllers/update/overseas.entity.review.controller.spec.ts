@@ -3,14 +3,12 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -44,8 +42,6 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-
-const mockGetCompanyPsc = getCompanyPsc as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -101,7 +97,6 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(mockGetCompanyPsc).toHaveBeenCalled();
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
     });

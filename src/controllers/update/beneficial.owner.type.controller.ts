@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 
 import * as config from "../../config";
@@ -8,13 +8,27 @@ import {
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
-import { getApplicationData } from "../../utils/application.data";
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
+import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
+import { EntityNumberKey } from "../../model/data.types.model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
+
+    if (appData[BeneficialOwnerIndividualKey] === undefined && appData[EntityNumberKey]) {
+      const pscData = await getCompanyPsc(req, appData[EntityNumberKey]);
+
+      if (pscData) {
+        // set beneficial_owners_individual to {} to prevent re-run
+        // UAR-337 to update and map response to model
+        const session = req.session as Session;
+        setApplicationData(session, {}, BeneficialOwnerIndividualKey);
+      }
+    }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,

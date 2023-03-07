@@ -16,6 +16,6 @@ export const getCompanyPsc = async (
     companyNumber
   );
 
-  logger.debugRequest(req, `Received company PSC data ${JSON.stringify(response)}`);
+  logger.debugRequest(req, `Received company PSC data for ${companyNumber}`);
   return response.resource;
 };

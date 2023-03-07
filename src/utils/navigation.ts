@@ -229,6 +229,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_SIGN_OUT_URL]: {
+    currentPage: config.UPDATE_SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
+  },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,

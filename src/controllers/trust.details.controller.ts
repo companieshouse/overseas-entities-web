@@ -1,11 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData } from '../utils/trusts';
+import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
-import { saveTrustInApp } from '../utils/trusts';
 import { ApplicationData } from '../model/application.model';
 import * as PageModel from '../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
@@ -77,7 +76,6 @@ const get = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    console.log("RENDERING TRUST DETAILS");
 
     const appData: ApplicationData = getApplicationData(req.session);
 

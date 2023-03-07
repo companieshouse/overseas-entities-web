@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
@@ -9,6 +10,7 @@ import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData } from "../../../src/utils/application.data";
 import request from "supertest";
@@ -24,11 +26,17 @@ import {
   missingDateOfCreationMock,
   testIncorporationCountry
 } from "../../__mocks__/update.entity.mocks";
+import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -94,6 +102,14 @@ describe("Confirm company data", () => {
       expect(resp.statusCode).toEqual(302);
       expect(resp.redirect).toEqual(true);
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+    });
+
+    test(`redirect to ${config.UPDATE_FILING_DATE_PAGE}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
     test('catch error when posting to the page', async () => {

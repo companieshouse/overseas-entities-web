@@ -60,7 +60,8 @@ import {
   updateSignOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
-  updateManagingOfficerCorporate
+  updateManagingOfficerCorporate,
+  updateFilingDate
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -476,5 +477,14 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   )
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
+
+router.route(config.UPDATE_FILING_DATE_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateFilingDate.get)
+  .post(updateFilingDate.post);
 
 export default router;

@@ -39,12 +39,18 @@
       conditional: {
         html: entityPublicRegisterHtml
       },
-      checked: is_on_register_in_country_formed_in == 1
+      checked: is_on_register_in_country_formed_in == 1,
+      attributes: {
+        "data-event-id": "is-on-register-in-country-formed-in-yes-radio-option"
+      }
     },
     {
       value: 0,
       text: "No",
-      checked: is_on_register_in_country_formed_in == 0
+      checked: is_on_register_in_country_formed_in == 0,
+      attributes: {
+        "data-event-id": "is-on-register-in-country-formed-in-no-radio-option"
+      }
     }
   ]
 }) }}

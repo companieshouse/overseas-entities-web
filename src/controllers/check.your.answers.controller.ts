@@ -7,7 +7,7 @@ import { closeTransaction, postTransaction } from "../service/transaction.servic
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { logger } from "../utils/logger";
-import { checkEntityRequiresTrusts } from "../utils/trusts";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../utils/trusts";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { startPaymentsSession } from "../service/payment.service";
@@ -20,26 +20,24 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const hasTrusts: boolean = checkEntityRequiresTrusts(appData);
+    const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = "Overseas entity details";
 
-    logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${hasTrusts}`);
+    logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${requiresTrusts}`);
 
     let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
-    if (hasTrusts) {
-      backLinkUrl = config.TRUST_INFO_PAGE;
-
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
-        backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
-      }
+    if (requiresTrusts) {
+      backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
+        ? getTrustLandingUrl(appData)
+        : config.TRUST_INFO_PAGE;
     }
 
     return res.render(config.CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl,
       templateName: config.CHECK_YOUR_ANSWERS_PAGE,
       roleTypes: RoleWithinTrustType,
-      hasTrusts,
+      requiresTrusts,
       appData,
       changeLinkUrl,
       overseasEntityHeading,

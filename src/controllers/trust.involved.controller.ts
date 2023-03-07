@@ -103,9 +103,6 @@ const post = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      console.log("HERE TRUST");
-      console.log(`${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`);
-
       return safeRedirect(res, `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`);
     }
     //  check on errors

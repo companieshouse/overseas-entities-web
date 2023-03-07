@@ -17,7 +17,6 @@ type TrustInvolvedPageProperties = {
 };
 
 const getPageProperties = (
-  // req: Request,
 ): TrustInvolvedPageProperties => {
 
   return {
@@ -38,7 +37,6 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // const pageProps = getPageProperties(req);
     const pageProps = getPageProperties();
 
     return res.render(pageProps.templateName, pageProps);

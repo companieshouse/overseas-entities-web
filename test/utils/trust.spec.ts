@@ -211,7 +211,7 @@ describe('Trust Utils method tests', () => {
     test('test update', () => {
       const updatedBo = {
         ...expectBo1,
-        corporateName: 'dummy',
+        corporate_name: 'dummy',
       };
 
       const actual = saveHistoricalBoInTrust(mockTrust, updatedBo);

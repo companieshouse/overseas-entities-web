@@ -50,7 +50,7 @@
         {% if trustee.forename and trustee.surname%}
           {% set name = trustee.forename + " " + trustee.surname %}
         {% else %}
-          {% set name = trustee.corporateName %}
+          {% set name = trustee.corporate_name %}
         {% endif %}
         {% set formerTrustees = (
           formerTrustees.push({

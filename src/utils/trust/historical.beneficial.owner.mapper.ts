@@ -20,7 +20,7 @@ const mapBeneficialOwnerToSession = (
   if (formData.type === TrusteeType.LEGAL_ENTITY) {
     return {
       ...data,
-      corporateName: formData.corporateName,
+      corporate_name: formData.corporate_name,
     };
   }
 

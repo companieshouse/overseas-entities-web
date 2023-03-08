@@ -92,7 +92,7 @@ interface InterestedIndividualPersonTrustee extends TrustIndividual{
 }
 
 interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {
-  corporateName: string;
+  corporate_name: string;
 }
 
 interface TrustHistoricalBeneficialOwnerIndividual extends TrustHistoricalBeneficialOwnerCommon {

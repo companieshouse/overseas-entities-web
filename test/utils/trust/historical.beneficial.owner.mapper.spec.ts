@@ -53,7 +53,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           type: TrusteeType.LEGAL_ENTITY as TrusteeType,
-          corporateName: 'dummyCorporateName',
+          corporate_name: 'dummycorporate_name',
         };
 
         const expectNewId = '9999';
@@ -62,7 +62,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
         expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
           id: expectNewId,
           corporate_indicator: mockFormData.type,
-          corporateName: mockFormData.corporateName,
+          corporate_name: mockFormData.corporate_name,
           notified_date_day: mockFormData.startDateDay,
           notified_date_month: mockFormData.startDateMonth,
           notified_date_year: mockFormData.startDateYear,

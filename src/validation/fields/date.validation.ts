@@ -110,22 +110,22 @@ const trustCreatedDateValidationsContext: dateContext = {
   day: {
     name: "createdDateDay",
     callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY_OF_TRUST, ErrorMessages.DAY_LENGTH_OF_TRUST],
+    errMsg: [ErrorMessages.DAY_OF_TRUST],
   },
   month: {
     name: "createdDateMonth",
     callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH_OF_TRUST, ErrorMessages.MONTH_LENGTH_OF_TRUST],
+    errMsg: [ErrorMessages.MONTH_OF_TRUST],
   },
   year: {
     name: "createdDateYear",
     callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR_OF_TRUST, ErrorMessages.YEAR_LENGTH_OF_TRUST],
+    errMsg: [ErrorMessages.YEAR_OF_TRUST],
   }
 };
 
-export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext, 4, 4);
+export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
 
-export const dateBecameIP = conditionalDateValidations(dateBecameIPContext, 4, 4);
+export const dateBecameIP = conditionalDateValidations(dateBecameIPContext);
 
-export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext, 4, 4);
+export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);

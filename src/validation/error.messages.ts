@@ -72,6 +72,8 @@ export enum ErrorMessages {
   MONTH_OF_BIRTH = "Date of birth must include a month",
   YEAR_OF_BIRTH = "Date of birth must include a year",
   DATE_OF_BIRTH_YEAR_LENGTH = "Date of birth year must include 4 numbers",
+  DATE_OF_BIRTH_DAY_LENGTH = "Date of birth day must include 1 or 2 numbers",
+  DATE_OF_BIRTH_MONTH_LENGTH = "Date of birth month must include 1 or 2 numbers",
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
   ENTER_DATE = "Enter the date",
   ENTER_DATE_OF_TRUST = "Enter the date the trust was created",

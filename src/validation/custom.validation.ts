@@ -248,37 +248,22 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
 
 export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors(dayStr, monthStr, yearStr);
-  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
-  if (isYearEitherMissingOrCorrectLength(yearStr) && areSomeDateFieldsPresent) {
-    checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr) &&
-      checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
-  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
-    throw new Error(ErrorMessages.YEAR_LENGTH);
-  }
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+  checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
   return true;
 };
 
 export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkAllBirthDateFieldsForErrors(dayStr, monthStr, yearStr);
-  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
-  if (isYearEitherMissingOrCorrectLength(yearStr) && areSomeDateFieldsPresent) {
-    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr) &&
-      checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
-  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
-    throw new Error(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
-  }
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+  checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
   return true;
 };
 
 export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkTrustDateFieldsForErrors(dayStr, monthStr, yearStr);
-  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
-  if (yearStr.length === 4 && areSomeDateFieldsPresent) {
-    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr) &&
-    checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
-  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
-    throw new Error(ErrorMessages.YEAR_LENGTH_OF_TRUST);
-  }
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
   return true;
 };
 
@@ -304,6 +289,18 @@ export const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string =
     throw new Error(ErrorMessages.DAY);
   } else if (monthStr === "") {
     throw new Error(ErrorMessages.MONTH);
+  } else if (yearStr === "") {
+    throw new Error(ErrorMessages.YEAR);
+  } else {
+    if (dayStr.length > 2) {
+      throw new Error(ErrorMessages.DAY_LENGTH);
+    }
+    if (monthStr.length > 2) {
+      throw new Error(ErrorMessages.MONTH_LENGTH);
+    }
+    if (yearStr.length !== 4) {
+      throw new Error(ErrorMessages.YEAR_LENGTH);
+    }
   }
 };
 
@@ -320,6 +317,18 @@ export const checkTrustDateFieldsForErrors = (dayStr: string = "", monthStr: str
     throw new Error(ErrorMessages.DAY_OF_TRUST);
   } else if (monthStr === "") {
     throw new Error(ErrorMessages.MONTH_OF_TRUST);
+  } else if (yearStr === "") {
+    throw new Error(ErrorMessages.YEAR_OF_TRUST);
+  } else {
+    if (dayStr.length > 2) {
+      throw new Error(ErrorMessages.DAY_LENGTH_OF_TRUST);
+    }
+    if (monthStr.length > 2) {
+      throw new Error(ErrorMessages.MONTH_LENGTH_OF_TRUST);
+    }
+    if (yearStr.length !== 4) {
+      throw new Error(ErrorMessages.YEAR_LENGTH_OF_TRUST);
+    }
   }
 };
 
@@ -336,6 +345,18 @@ export const checkAllBirthDateFieldsForErrors = (dayStr: string = "", monthStr: 
     throw new Error(ErrorMessages.DAY_OF_BIRTH);
   } else if (monthStr === "") {
     throw new Error(ErrorMessages.MONTH_OF_BIRTH);
+  } else if (yearStr === "") {
+    throw new Error(ErrorMessages.YEAR_OF_BIRTH);
+  } else {
+    if (dayStr.length > 2) {
+      throw new Error(ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH);
+    }
+    if (monthStr.length > 2) {
+      throw new Error(ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH);
+    }
+    if (yearStr.length !== 4) {
+      throw new Error(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
+    }
   }
 };
 

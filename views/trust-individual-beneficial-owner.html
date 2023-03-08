@@ -70,29 +70,34 @@
         {% set fieldParam = {
           name: 'type',
           label: 'What is their role within the trust?',
+          value: formData.type,
           error: errors.type if errors,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
               text: "Beneficiary",
+              checked: formData.type == pageData.roleWithinTrustType.BENEFICIARY,
               attributes: {
                 "data-event-id": "beneficiary-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
               text: "Settlor",
+              checked: formData.type == pageData.roleWithinTrustType.SETTLOR,
               attributes: {
                 "data-event-id": "settlor-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
               text: "Grantor",
+              checked: formData.type == pageData.roleWithinTrustType.GRANTOR,
               attributes: {
                 "data-event-id": "grantor-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
+              checked: formData.type == pageData.roleWithinTrustType.INTERESTED_PERSON,
               attributes: {
                 "data-event-id": "interested-person-type-radio-option"
               },
@@ -104,6 +109,7 @@
         } %}
         {% include "includes/inputs/radio-input.html" %}
 
+        {% set nationality = formData.nationality %}
         {% include "includes/inputs/nationality/nationality.html" %}
         {% include "includes/inputs/nationality/second-nationality.html" %}
 
@@ -112,6 +118,7 @@
         {% set usual_residential_address_line_2 = formData.usual_residential_address_line_2 %}
         {% set usual_residential_address_town = formData.usual_residential_address_town %}
         {% set usual_residential_address_county = formData.usual_residential_address_county %}
+        {% usual_residential_address_country = formData.usual_residential_address_country %}
         {% set usual_residential_address_postcode = formData.usual_residential_address_postcode %}
         {% set is_service_address_same_as_usual_residential_address = formData.is_service_address_same_as_usual_residential_address %}
 
@@ -120,6 +127,7 @@
         {% set service_address_line_2 = formData.service_address_line_2 %}
         {% set service_address_town = formData.service_address_town %}
         {% set service_address_county = formData.service_address_county %}
+        {% set service_address_country = formData.service_address_country %}
         {% set service_address_postcode = formData.service_address_postcode %}
         {% include "includes/inputs/address/residential-address-input.html" %}
 

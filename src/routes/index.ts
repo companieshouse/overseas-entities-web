@@ -209,7 +209,17 @@ router
   .post(trustInterrupt.post);
 
 router
-  .route(config.TRUST_DETAILS_URL + config.TRUST_ID + "?")
+  .route(config.TRUST_ENTRY_URL + config.ADD_TRUST_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrustData,
+  )
+  .get(addTrust.get)
+  .post(addTrust.post);
+
+router
+  .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
@@ -223,7 +233,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustInvolved.get)
   .post(
@@ -232,21 +242,11 @@ router
   );
 
 router
-  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.ADD_TRUST_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
-    authentication,
-    navigation.hasTrust,
-  )
-  .get(addTrust.get)
-  .post(addTrust.post);
-
-router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.BO_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
@@ -256,7 +256,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustIndividualbeneficialOwner.get)
   .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
@@ -266,7 +266,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustLegalEntitybeneficialOwner.get)
   .post(trustLegalEntitybeneficialOwner.post);

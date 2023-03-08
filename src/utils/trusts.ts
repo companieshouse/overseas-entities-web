@@ -90,7 +90,7 @@ const containsTrustData = (trusts: Trust[]): boolean => {
  * Get Trust object from application object in session
  *
  * @param appData Application Data in Session
- * @param trustId Trust details to save
+ * @param trustId Trust ID find (returns empty object if not found)
  */
 const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
   return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
@@ -109,21 +109,21 @@ const getTrustArray = (appData: ApplicationData): Trust[] => {
  * Update trust in application data
  *
  * @param appData Application Data in Session
- * @param trustDetails Trust details to save
+ * @param trustToSave Trust (with any trustees) to save
  */
-const saveTrustInApp = (appData: ApplicationData, trustDetails: Trust): ApplicationData => {
+const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
   const trusts: Trust[] = appData[TrustKey] ?? [];
 
   //  get index of trust in trusts array, if exists
-  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
 
   if (trustIndex >= 0) {
     //  update existing trust in array
-    trusts[trustIndex] = trustDetails;
+    trusts[trustIndex] = trustToSave;
 
   } else {
     // add new trust to array
-    trusts.push(trustDetails);
+    trusts.push(trustToSave);
   }
 
   return {

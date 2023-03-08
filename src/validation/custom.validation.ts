@@ -276,6 +276,18 @@ export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: 
   return true;
 };
 
+const checkDateFieldLengthForErrors = (day: string, month: string, year: string, errors: ErrorMessages[]) => {
+  if (day.length > 2) {
+    throw new Error(errors[0]);
+  }
+  if (month.length > 2) {
+    throw new Error(errors[1]);
+  }
+  if (year.length !== 4) {
+    throw new Error(errors[2]);
+  }
+};
+
 export const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" && monthStr === "" && yearStr === "") {
     throw new Error(ErrorMessages.ENTER_DATE);
@@ -292,15 +304,7 @@ export const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string =
   } else if (yearStr === "") {
     throw new Error(ErrorMessages.YEAR);
   } else {
-    if (dayStr.length > 2) {
-      throw new Error(ErrorMessages.DAY_LENGTH);
-    }
-    if (monthStr.length > 2) {
-      throw new Error(ErrorMessages.MONTH_LENGTH);
-    }
-    if (yearStr.length !== 4) {
-      throw new Error(ErrorMessages.YEAR_LENGTH);
-    }
+    checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [ErrorMessages.DAY_LENGTH, ErrorMessages.MONTH_LENGTH, ErrorMessages.YEAR_LENGTH]);
   }
 };
 
@@ -320,15 +324,7 @@ export const checkTrustDateFieldsForErrors = (dayStr: string = "", monthStr: str
   } else if (yearStr === "") {
     throw new Error(ErrorMessages.YEAR_OF_TRUST);
   } else {
-    if (dayStr.length > 2) {
-      throw new Error(ErrorMessages.DAY_LENGTH_OF_TRUST);
-    }
-    if (monthStr.length > 2) {
-      throw new Error(ErrorMessages.MONTH_LENGTH_OF_TRUST);
-    }
-    if (yearStr.length !== 4) {
-      throw new Error(ErrorMessages.YEAR_LENGTH_OF_TRUST);
-    }
+    checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [ErrorMessages.DAY_LENGTH_OF_TRUST, ErrorMessages.MONTH_LENGTH_OF_TRUST, ErrorMessages.YEAR_LENGTH_OF_TRUST]);
   }
 };
 
@@ -348,15 +344,7 @@ export const checkAllBirthDateFieldsForErrors = (dayStr: string = "", monthStr: 
   } else if (yearStr === "") {
     throw new Error(ErrorMessages.YEAR_OF_BIRTH);
   } else {
-    if (dayStr.length > 2) {
-      throw new Error(ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH);
-    }
-    if (monthStr.length > 2) {
-      throw new Error(ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH);
-    }
-    if (yearStr.length !== 4) {
-      throw new Error(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
-    }
+    checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH, ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH]);
   }
 };
 

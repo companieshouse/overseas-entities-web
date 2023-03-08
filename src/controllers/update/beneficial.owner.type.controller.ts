@@ -19,8 +19,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
-    if (appData[BeneficialOwnerIndividualKey] === undefined && appData[EntityNumberKey]) {
-      const pscData = await getCompanyPsc(req, appData[EntityNumberKey]);
+    if (appData[BeneficialOwnerIndividualKey] === undefined) {
+      const pscData = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
       if (pscData) {
         // set beneficial_owners_individual to {} to prevent re-run

@@ -97,12 +97,18 @@ describe("test date method", () => {
     ErrorMessages.DAY_AND_YEAR,
     ErrorMessages.DAY_AND_MONTH,
     ErrorMessages.DAY,
-    ErrorMessages.MONTH];
+    ErrorMessages.MONTH,
+    ErrorMessages.YEAR,
+    ErrorMessages.DAY_LENGTH,
+    ErrorMessages.MONTH_LENGTH];
 
   const errMsgcheckAllBirthDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_BIRTH,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
+    ErrorMessages.DAY_OF_BIRTH,
+    ErrorMessages.MONTH_OF_BIRTH,
+    ErrorMessages.YEAR_OF_BIRTH,
     ErrorMessages.DAY_OF_BIRTH,
     ErrorMessages.MONTH_OF_BIRTH];
 
@@ -110,6 +116,9 @@ describe("test date method", () => {
     ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
     ErrorMessages.DAY_AND_YEAR_OF_TRUST,
     ErrorMessages.DAY_AND_MONTH_OF_TRUST,
+    ErrorMessages.DAY_OF_TRUST,
+    ErrorMessages.MONTH_OF_TRUST,
+    ErrorMessages.YEAR_OF_TRUST,
     ErrorMessages.DAY_OF_TRUST,
     ErrorMessages.MONTH_OF_TRUST];
 
@@ -119,7 +128,10 @@ describe("test date method", () => {
     ["", "02", "", err[2]],
     ["", "", "2009", err[3]],
     ["", "10", "2009", err[4]],
-    ["10", "", "2009", err[5]]
+    ["10", "", "2009", err[5]],
+    ["10", "10", "", err[6]],
+    ["", "10", "9999", err[7]],
+    ["10", "", "9999", err[8]],
   ];
 
   const errMsgcheckDate: ErrorMessages[] = [
@@ -132,7 +144,10 @@ describe("test date method", () => {
     ErrorMessages.YEAR_LENGTH,
     ErrorMessages.INVALID_DATE,
     ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY,
-    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY
+    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY,
+    ErrorMessages.YEAR,
+    ErrorMessages.DAY_LENGTH,
+    ErrorMessages.MONTH_LENGTH
   ];
 
   const errMsgcheckBirthDate: ErrorMessages[] = [
@@ -144,7 +159,10 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE_OF_BIRTH,
     ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH,
     ErrorMessages.INVALID_DATE_OF_BIRTH,
-    ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST
+    ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST,
+    ErrorMessages.YEAR_OF_BIRTH,
+    ErrorMessages.DAY_OF_BIRTH,
+    ErrorMessages.MONTH_OF_BIRTH
   ];
 
   const errMsgcheckTrustDate: ErrorMessages[] = [
@@ -156,7 +174,10 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE_OF_TRUST,
     ErrorMessages.YEAR_LENGTH_OF_TRUST,
     ErrorMessages.INVALID_DATE_OF_TRUST,
-    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST
+    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST,
+    ErrorMessages.YEAR_OF_TRUST,
+    ErrorMessages.DAY_OF_TRUST,
+    ErrorMessages.MONTH_OF_TRUST
   ];
 
   const testDateCheck = (err: ErrorMessages[]) => [
@@ -168,7 +189,10 @@ describe("test date method", () => {
     ["10", "0", "2009", err[5]],
     ["10", "10", "209", err[6]],
     ["10", "a", "2009", err[7]],
-    ["10", "10", "9999", err[8]]
+    ["10", "10", "9999", err[8]],
+    ["10", "10", "", err[9]],
+    ["", "10", "9999", err[10]],
+    ["10", "", "9999", err[11]],
   ];
 
   test.each(testDateFieldCheck(errMsgCheckAllDateFields))("should throw appropriate date errors for checkDateFieldsForErrors", ( _day, _month, _year, _err ) => {

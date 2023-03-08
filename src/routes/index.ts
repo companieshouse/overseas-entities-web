@@ -211,7 +211,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustData,
   )
   .get(addTrust.get)
   .post(addTrust.post);
@@ -231,7 +231,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustInvolved.get)
   .post(
@@ -244,7 +244,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(trustHistoricalbeneficialOwner.post);
@@ -254,7 +254,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustIndividualbeneficialOwner.get)
   .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
@@ -264,7 +264,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrust,
+    navigation.hasTrustWithId,
   )
   .get(trustLegalEntitybeneficialOwner.get)
   .post(trustLegalEntitybeneficialOwner.post);

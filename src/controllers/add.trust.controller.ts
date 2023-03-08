@@ -7,7 +7,8 @@ import { getTrustArray } from '../utils/trusts';
 import { Trust } from '../model/trust.model';
 
 const ADD_TRUST_TEXTS = {
-  title: 'Do you need to add another trust?',
+  title: 'Trusts associated with the overseas entity',
+  subtitle: 'Do you need to add another trust?',
 };
 
 type TrustInvolvedPageProperties = {
@@ -15,6 +16,7 @@ type TrustInvolvedPageProperties = {
   templateName: string;
   pageParams: {
     title: string;
+    subtitle: string;
   },
   pageData: {
     trustData: Trust[]
@@ -32,6 +34,7 @@ const getPageProperties = (
     templateName: config.ADD_TRUST_PAGE,
     pageParams: {
       title: ADD_TRUST_TEXTS.title,
+      subtitle: ADD_TRUST_TEXTS.subtitle,
     },
     pageData: {
       trustData: getTrustArray(appData)

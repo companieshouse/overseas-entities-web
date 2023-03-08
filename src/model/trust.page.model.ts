@@ -71,7 +71,7 @@ type IndividualTrusteesFormCommon = {
 
 interface TrustHistoricalBeneficialOwnerFormLegal extends TrustHistoricalBeneficialOwnerFormCommon {
   type: TrusteeType.LEGAL_ENTITY;
-  corporateName: string;
+  corporate_name: string;
 }
 
 interface TrustHistoricalBeneficialOwnerFormIndividual extends TrustHistoricalBeneficialOwnerFormCommon {

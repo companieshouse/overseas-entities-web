@@ -1,3 +1,4 @@
+
 import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
@@ -44,15 +45,20 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_INTERRUPT_CARD_URL,
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
+  [config.UPDATE_FILING_DATE_URL]: {
+    currentPage: config.UPDATE_FILING_DATE_PAGE,
+    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    nextPage: [config.UPDATE_PRESENTER_PAGE]
+  },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    previousPage: () => config.UPDATE_FILING_DATE_URL,
     nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_PAGE,
-    nextPage: [config.UPDATE_PRESENTER_PAGE]
+    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
+    nextPage: [config.UPDATE_FILING_DATE_PAGE]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,

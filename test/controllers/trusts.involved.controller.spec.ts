@@ -6,9 +6,6 @@ jest.mock('../../src/middleware/navigation/has.trust.middleware');
 jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
-jest.mock('../../src/validation/trust.involved.validation', () => ({
-  trustInvolved: [],
-}));
 jest.mock('../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../src/utils/trust/who.is.involved.mapper');
 jest.mock('../../src/utils/trust/who.is.involved.mapper');
@@ -35,7 +32,7 @@ import {
 } from '../../src/config';
 import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
+import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { TrusteeType } from '../../src/model/trustee.type.model';
 import { getApplicationData } from '../../src/utils/application.data';
@@ -169,7 +166,7 @@ describe('Trust Involved controller', () => {
       post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + "/" + trustId + ADD_TRUST_URL}`);
+      expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
     });
 
     const dpPostTrustee = [
@@ -292,7 +289,7 @@ describe('Trust Involved controller', () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -307,7 +304,16 @@ describe('Trust Involved controller', () => {
       expect(resp.text).toContain(TRUST_INVOLVED_TEXTS.title);
       expect(resp.text).toContain(mockTrustData.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
+    });
+
+    test(`successfully access POST method`, async () => {
+
+      const resp = await request(app).post(pageUrl).send({ noMoreToAdd: 'noMoreToAdd' });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.text).toContain(ADD_TRUST_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 });

@@ -1,7 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% if formerTrustee.corporateName %}
-  {% set formerTrusteeName = formerTrustee.corporateName %}
+{% if formerTrustee.corporate_name %}
+  {% set formerTrusteeName = formerTrustee.corporate_name %}
 {% else %}
   {% set formerTrusteeName = formerTrustee.forename + " " + formerTrustee.surname %}
 {% endif %}

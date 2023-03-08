@@ -270,6 +270,18 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
   return true;
 };
 
+export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  checkTrustDateFieldsForErrors(dayStr, monthStr, yearStr);
+  const areSomeDateFieldsPresent = checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr);
+  if (yearStr.length === 4 && areSomeDateFieldsPresent) {
+    checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr) &&
+    checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
+  } else if (!isYearEitherMissingOrCorrectLength(yearStr)){
+    throw new Error(ErrorMessages.YEAR_LENGTH_OF_TRUST);
+  }
+  return true;
+};
+
 export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (!checkAllDateFieldsArePresent(dayStr, monthStr, yearStr)) {
     return false;
@@ -292,6 +304,22 @@ export const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string =
     throw new Error(ErrorMessages.DAY);
   } else if (monthStr === "") {
     throw new Error(ErrorMessages.MONTH);
+  }
+};
+
+export const checkTrustDateFieldsForErrors = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  if (dayStr === "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.ENTER_DATE_OF_TRUST);
+  } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
+    throw new Error(ErrorMessages.DAY_AND_MONTH_OF_TRUST);
+  } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
+    throw new Error(ErrorMessages.MONTH_AND_YEAR_OF_TRUST);
+  } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
+    throw new Error(ErrorMessages.DAY_AND_YEAR_OF_TRUST);
+  } else if (dayStr === "") {
+    throw new Error(ErrorMessages.DAY_OF_TRUST);
+  } else if (monthStr === "") {
+    throw new Error(ErrorMessages.MONTH_OF_TRUST);
   }
 };
 

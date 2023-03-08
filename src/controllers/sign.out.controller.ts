@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,7 +10,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
+      saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
+      journey: "register"
     });
   } catch (error) {
     logger.errorRequest(req, error);

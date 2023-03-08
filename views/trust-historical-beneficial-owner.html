@@ -23,11 +23,11 @@
         {% set legalEntityHtml %}
         <br>
         {% set fieldParam = {
-          name: 'corporateName',
+          name: 'corporate_name',
           label: 'Name',
-          value: formData.corporateName,
+          value: formData.corporate_name,
           classes: 'govuk-!-width-two-thirds',
-          error: errors.corporateName
+          error: errors.corporate_name
         } %}
         {% include "includes/inputs/text-input.html" %}
         {% endset -%}

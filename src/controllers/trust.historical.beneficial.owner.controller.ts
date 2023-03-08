@@ -36,7 +36,7 @@ const getPageProperties = (
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${config.TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
     templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE,
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,

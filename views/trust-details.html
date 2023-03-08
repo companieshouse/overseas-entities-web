@@ -39,25 +39,6 @@
         } %}
         {% include "includes/inputs/date-input.html" %}
 
-        {% set fieldParam = {
-          name: 'hasAllInfo',
-          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
-          error: errors.hasAllInfo if errors,
-          items: [
-            {
-              value: 1,
-              text: 'Yes',
-              checked: formData.hasAllInfo == 1
-            },
-            {
-              value: 0,
-              text: 'No',
-              checked: formData.hasAllInfo == 0
-            }
-          ]
-        } %}
-        {% include "includes/inputs/radio-input.html" %}
-
         {% set boItems = [] %}
         {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
         {% for bo in pageData.beneficialOwners %}
@@ -81,6 +62,25 @@
           } %}
         {% include "includes/inputs/checkbox-input.html" %}
         {% endif %}
+
+        {% set fieldParam = {
+          name: 'hasAllInfo',
+          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
+          error: errors.hasAllInfo if errors,
+          items: [
+            {
+              value: 1,
+              text: 'Yes',
+              checked: formData.hasAllInfo == 1
+            },
+            {
+              value: 0,
+              text: 'No',
+              checked: formData.hasAllInfo == 0
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
 
         {{ govukInsetText({
           html: '

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp } from '../utils/trusts';
+import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp, getTrustByIdFromApp } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
@@ -156,8 +156,12 @@ const post = async (
       details.trust_id = mapperDetails.generateTrustId(appData);
     }
 
-    //  update trust details in application data at session
-    appData = saveTrustInApp(appData, details);
+    //  if present, get existing trust from session (as it might have attached trustees)
+    const trust = getTrustByIdFromApp(appData, details.trust_id);
+    Object.keys(details).forEach(key => trust[key] = details[key]);
+
+    //  update trust  in application data at session
+    appData = saveTrustInApp(appData, trust);
 
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];

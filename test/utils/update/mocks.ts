@@ -80,4 +80,10 @@ export const pscMock: CompanyPersonWithSignificantControl = {
     placeRegistered: "",
     registrationNumber: ""
   },
+  naturesOfControl: [
+    'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
+    'voting-rights-more-than-25-percent-registered-overseas-entity',
+    'right-to-appoint-and-remove-directors-registered-overseas-entity',
+    'significant-influence-or-control-registered-overseas-entity'
+  ]
 };

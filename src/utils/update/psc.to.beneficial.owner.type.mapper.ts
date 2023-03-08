@@ -3,7 +3,7 @@ import { AddressResource } from "@companieshouse/api-sdk-node/dist/services/conf
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
-import { Address, InputDate, yesNoResponse } from "../../model/data.types.model";
+import { Address, InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   return {
@@ -16,9 +16,9 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     is_service_address_same_as_usual_residential_address: isSameAddress(psc?.address) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: mapAddress(psc),
     service_address: mapAddress(psc),
-    beneficial_owner_nature_of_control_types: undefined,
-    trustees_nature_of_control_types: undefined,
-    non_legal_firm_members_nature_of_control_types: undefined,
+    beneficial_owner_nature_of_control_types: mapNatureOfControl(psc),
+    trustees_nature_of_control_types: mapNatureOfControl(psc),
+    non_legal_firm_members_nature_of_control_types: mapNatureOfControl(psc),
     start_date: psc.notifiedOn as any, // any type not correct but to confirm
     // is_on_sanctions_list: psc.is_sanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
@@ -37,9 +37,9 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     registration_number: psc.identification?.registrationNumber,
     is_on_register_in_country_formed_in: undefined,
     start_date: psc.notifiedOn as any, // any type not correct but to confirm
-    beneficial_owner_nature_of_control_types: undefined,
-    trustees_nature_of_control_types: undefined,
-    non_legal_firm_members_nature_of_control_types: undefined,
+    beneficial_owner_nature_of_control_types: mapNatureOfControl(psc),
+    trustees_nature_of_control_types: mapNatureOfControl(psc),
+    non_legal_firm_members_nature_of_control_types: mapNatureOfControl(psc),
     // is_on_sanctions_list: raw.is_sanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
 };
@@ -54,10 +54,14 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
     start_date: psc.notifiedOn as any, // any type not correct but to confirm
-    beneficial_owner_nature_of_control_types: undefined,
-    non_legal_firm_members_nature_of_control_types: undefined,
+    beneficial_owner_nature_of_control_types: mapNatureOfControl(psc),
+    non_legal_firm_members_nature_of_control_types: mapNatureOfControl(psc),
     // is_on_sanctions_list: raw.is_sanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
+};
+
+const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl): NatureOfControlType[] => {
+  return psc.naturesOfControl?.map(key => key) as NatureOfControlType[];
 };
 
 const mapDateOfBirth = (psc: CompanyPersonWithSignificantControl) => {

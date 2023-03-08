@@ -18,15 +18,15 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     expect(mapPscToBeneficialOwnerGov(PSC_BENEFICIAL_OWNER_MOCK_DATA)).resolves;
   });
 
-  test(`error is thrown when undefined data is parsed to data mapper`, () => {
+  test(`error is thrown when undefined data is parsed to beneficial owner individual data mapper`, () => {
     expect(mapPscToBeneficialOwnerTypeIndividual({} as CompanyPersonWithSignificantControl)).toThrowError;
   });
 
-  test(`error is thrown when undefined data is parsed to data mapper`, () => {
+  test(`error is thrown when undefined data is parsed to beneficial owner coperate data mapper`, () => {
     expect(mapPscToBeneficialOwnerGov({} as CompanyPersonWithSignificantControl)).toThrowError;
   });
 
-  test(`error is thrown when undefined data is parsed to data mapper`, () => {
+  test(`error is thrown when undefined data is parsed to beneficial owner other data mapper`, () => {
     expect(mapPscToBeneficialOwnerOther({} as CompanyPersonWithSignificantControl)).toThrowError;
   });
 
@@ -41,10 +41,10 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       first_name: pscMock.nameElements.forename,
       last_name: pscMock.nameElements.surname,
       nationality: pscMock.nationality,
-      non_legal_firm_members_nature_of_control_types: undefined,
       second_nationality: undefined,
       start_date: pscMock.notifiedOn,
-      trustees_nature_of_control_types: undefined,
+      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
+      trustees_nature_of_control_types: pscMock.naturesOfControl,
       beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
       is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
@@ -72,10 +72,10 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     expect(mapPscToBeneficialOwnerOther(pscMock)).toEqual({
       id: "",
       name: pscMock.name,
-      non_legal_firm_members_nature_of_control_types: undefined,
+      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
       start_date: pscMock.notifiedOn,
-      trustees_nature_of_control_types: undefined,
-      beneficial_owner_nature_of_control_types: undefined,
+      trustees_nature_of_control_types: pscMock.naturesOfControl,
+      beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
       is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.address_line_1,
@@ -108,9 +108,9 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     expect(mapPscToBeneficialOwnerGov(pscMock)).toEqual({
       id: "",
       name: pscMock.name,
-      non_legal_firm_members_nature_of_control_types: undefined,
+      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
       start_date: pscMock.notifiedOn,
-      beneficial_owner_nature_of_control_types: undefined,
+      beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
       is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.address_line_1,

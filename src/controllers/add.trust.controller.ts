@@ -3,6 +3,8 @@ import * as config from '../config';
 import { logger } from '../utils/logger';
 import { getApplicationData } from '../utils/application.data';
 import { generateTrustId } from '../utils/trust/details.mapper';
+import { getTrustArray } from '../utils/trusts';
+import { Trust } from '../model/trust.model';
 
 const ADD_TRUST_TEXTS = {
   title: 'Do you need to add another trust?',
@@ -14,10 +16,16 @@ type TrustInvolvedPageProperties = {
   pageParams: {
     title: string;
   },
+  pageData: {
+    trustData: Trust[]
+  },
 };
 
 const getPageProperties = (
+  req: Request,
 ): TrustInvolvedPageProperties => {
+
+  const appData = getApplicationData(req.session);
 
   return {
     backLinkUrl: `${config.BENEFICIAL_OWNER_TYPE_URL}`,
@@ -25,6 +33,9 @@ const getPageProperties = (
     pageParams: {
       title: ADD_TRUST_TEXTS.title,
     },
+    pageData: {
+      trustData: getTrustArray(appData)
+    }
   };
 };
 
@@ -37,7 +48,7 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties();
+    const pageProps = getPageProperties(req);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {

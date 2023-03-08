@@ -24,7 +24,7 @@ import {
 } from "../../src/controllers/trust.legal.entity.beneficial.owner.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrust } from "../../src/middleware/navigation/has.trust.middleware";
+import { hasTrustWithId } from "../../src/middleware/navigation/has.trust.middleware";
 import {
   TRUST_ENTRY_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
@@ -161,7 +161,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       (authentication as jest.Mock).mockImplementation(
         (_, __, next: NextFunction) => next()
       );
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) =>
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) =>
         next()
       );
     });
@@ -180,7 +180,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
 
     test("successfully access POST method", async () => {
@@ -192,7 +192,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       );
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
   });
 });

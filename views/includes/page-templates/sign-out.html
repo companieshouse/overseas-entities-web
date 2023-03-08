@@ -14,7 +14,7 @@
 {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 == "true" %}
   {% set hintText = "We will save your application." %}
 {% else %}
-  {% set hintText = "Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners." %}
+  {% set hintText = "Your answers will not be saved. You will need to start again if you want to "+journey+" an overseas entity and tell us about its beneficial owners." %}
 {% endif %}
 
 {% block content %}

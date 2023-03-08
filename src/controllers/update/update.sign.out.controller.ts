@@ -7,7 +7,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
       previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url: config.UPDATE_AN_OVERSEAS_ENTITY_URL
+      url: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
+      journey: "update"
     });
   } catch (error) {
     logger.errorRequest(req, error);

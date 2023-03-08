@@ -9,7 +9,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
+      journey: "register"
     });
   } catch (error) {
     logger.errorRequest(req, error);

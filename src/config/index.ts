@@ -152,7 +152,7 @@ export const TRUST_INTERRUPT_URL = '/' + TRUST_INTERRUPT_PAGE;
 
 // UPDATE templates
 export const UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE = "due-diligence-overseas-entity";
-export const UPDATE_SIGN_OUT_PAGE = "update-sign-out";
+export const UPDATE_SIGN_OUT_PAGE = "sign-out";
 export const UPDATE_ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 
 // UPDATE overseas entity routes

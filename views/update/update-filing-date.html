@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% set title = "Date (NOT LIVE)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
+    <form method="post">
+      {% include "includes/save-and-continue-button.html" %}
+    </form>
+  </div>
+</div>
+{% endblock %}

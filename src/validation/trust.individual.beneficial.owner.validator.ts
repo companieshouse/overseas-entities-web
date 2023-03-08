@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import {
-  usual_residential_address_validations,
+  trust_individual_form_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
@@ -35,7 +35,7 @@ export const trustIndividualBeneficialOwner = [
   body("is_service_address_same_as_usual_residential_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
-  ...usual_residential_address_validations,
+  ...trust_individual_form_validations,
   ...usual_residential_service_address_validations,
 
 ];

@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+  Are you sure you want to sign out? - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {{ govukBackLink({
+    text: "Back",
+    href: previousPage
+  }) }}
+{% endblock %}
+
+{% if OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 == "true" %}
+  {% set hintText = "We will save your application." %}
+{% else %}
+  {% set hintText = "Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners." %}
+{% endif %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+
+    {% include "includes/list/errors.html" %}
+
+    <form method="post">
+
+      {{ govukRadios({
+        errorMessage: errors.sign_out if errors,
+        classes: "govuk-radios--inline",
+        idPrefix: "sign_out",
+        name: "sign_out",
+        fieldset: {
+          legend: {
+            text: "Are you sure you want to sign out?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          }
+        },
+        hint: {
+            text: hintText
+        },
+        items: [
+          {
+            value: "yes",
+            text: "Yes",
+            attributes: {
+              "data-event-id": "yes-sign-out"
+            }
+          },
+          {
+            value: "no",
+            text: "No",
+            attributes: {
+              "data-event-id": "no-sign-out"
+            }
+          }
+        ]
+      }) }}
+
+      {{ govukInput({
+        value: previousPage,
+        name: "previousPage",
+        classes: "govuk-visually-hidden"
+      }) }}
+
+      {% include "includes/continue-button.html" %}
+
+    </form>
+  </div>
+</div>
+
+{% endblock %}

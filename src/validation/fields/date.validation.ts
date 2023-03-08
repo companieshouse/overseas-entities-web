@@ -1,13 +1,16 @@
 import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
+  checkBirthDate,
+  checkDate,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
   checkIdentityDate,
-  checkStartDate
+  checkStartDate,
+  checkTrustDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -54,12 +57,12 @@ export const identity_check_date_validations = [
 const dateOfBirthValidationsContext: dateContext = {
   dateInput: {
     name: "dateOfBirth",
-    callBack: checkDateOfBirth,
+    callBack: checkBirthDate,
     errMsg: [],
   },
   day: {
     name: "dateOfBirthDay",
-    callBack: checkDateFieldDay,
+    callBack: checkDateFieldDayOfBirth,
     errMsg: [ErrorMessages.DAY_OF_BIRTH],
   },
   month: {
@@ -77,7 +80,7 @@ const dateOfBirthValidationsContext: dateContext = {
 const dateBecameIPContext: dateContextWithCondition = {
   dateInput: {
     name: "dateBecameIP",
-    callBack: checkStartDate,
+    callBack: checkDate,
     errMsg: [],
   },
   day: {
@@ -98,26 +101,26 @@ const dateBecameIPContext: dateContextWithCondition = {
   condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
 };
 
-const createdDateValidationsContext: dateContext = {
+const trustCreatedDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
-    callBack: checkStartDate,
+    callBack: checkTrustDate,
     errMsg: [],
   },
   day: {
     name: "createdDateDay",
     callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY],
+    errMsg: [ErrorMessages.DAY_OF_TRUST, ErrorMessages.DAY_LENGTH_OF_TRUST],
   },
   month: {
     name: "createdDateMonth",
     callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH],
+    errMsg: [ErrorMessages.MONTH_OF_TRUST, ErrorMessages.MONTH_LENGTH_OF_TRUST],
   },
   year: {
     name: "createdDateYear",
     callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
+    errMsg: [ErrorMessages.YEAR_OF_TRUST, ErrorMessages.YEAR_LENGTH_OF_TRUST],
   }
 };
 
@@ -125,4 +128,4 @@ export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsCont
 
 export const dateBecameIP = conditionalDateValidations(dateBecameIPContext, 4, 4);
 
-export const createdDateValidations = dateValidations(createdDateValidationsContext, 4, 4);
+export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext, 4, 4);

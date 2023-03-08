@@ -36,7 +36,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
 
         expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
           id: mockFormData.boId,
-          corporateIndicator: mockFormData.type,
+          corporate_indicator: mockFormData.type,
           forename: mockFormData.firstName,
           surname: mockFormData.lastName,
           notified_date_day: mockFormData.startDateDay,
@@ -61,7 +61,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
 
         expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
           id: expectNewId,
-          corporateIndicator: mockFormData.type,
+          corporate_indicator: mockFormData.type,
           corporateName: mockFormData.corporateName,
           notified_date_day: mockFormData.startDateDay,
           notified_date_month: mockFormData.startDateMonth,

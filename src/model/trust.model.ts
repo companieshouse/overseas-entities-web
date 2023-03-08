@@ -69,7 +69,7 @@ interface TrustIndividual {
 
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
-  corporateIndicator: TrusteeType;
+  corporate_indicator: TrusteeType;
   ceased_date_day: string;
   ceased_date_month: string;
   ceased_date_year: string;

@@ -20,14 +20,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     if (appData[BeneficialOwnerIndividualKey] === undefined) {
-      const pscData = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-
-      if (pscData) {
-        // set beneficial_owners_individual to {} to prevent re-run
-        // UAR-337 to update and map response to model
-        const session = req.session as Session;
-        setApplicationData(session, {}, BeneficialOwnerIndividualKey);
-      }
+      await getBeneficialOwnerAndManagingOfficerData(req, appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -66,5 +59,16 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
         return config.UPDATE_MANAGING_OFFICER_URL;
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
+  }
+};
+
+const getBeneficialOwnerAndManagingOfficerData = async (req: Request, appData: ApplicationData) => {
+  const pscData = await getCompanyPsc(req, appData[EntityNumberKey] as string);
+
+  if (pscData) {
+    // set beneficial_owners_individual to {} to prevent re-run
+    // UAR-337 to update and map response to model
+    const session = req.session as Session;
+    setApplicationData(session, {}, BeneficialOwnerIndividualKey);
   }
 };

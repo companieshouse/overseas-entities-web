@@ -5,30 +5,24 @@ import { checkAllBirthDateFieldsForErrors, checkDateFieldsForErrors, checkBirthD
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
-const mockIsLength = jest.fn();
 const mockIf = jest.fn();
 const mockCustom = jest.fn();
 const mockEquals = jest.fn();
-const mockWithMessage = jest.fn().mockReturnValue("Hello World");
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
-    isLength: mockIsLength.mockReturnThis(),
     if: mockIf.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),
     equals: mockEquals.mockReturnThis(),
-    withMessage: mockWithMessage,
   })),
 }));
 
 describe('Test to validate date validator', () => {
 
   beforeEach(() => {
-    mockIsLength.mockRestore();
     mockIf.mockRestore();
     mockCustom.mockRestore();
     mockEquals.mockRestore();
-    mockWithMessage.mockRestore();
   });
 
   test('should test dateValidations', () => {
@@ -56,12 +50,10 @@ describe('Test to validate date validator', () => {
       }
     };
 
-    const sut = dateValidations(mockDateValidationsContext, 4, 4);
+    const sut = dateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIsLength).toBeCalledTimes(4);
-    expect(mockIf).toBeCalledTimes(2);
+    expect(mockIf).toBeCalledTimes(0);
     expect(mockCustom).toBeCalledTimes(4);
-    expect(mockWithMessage).toBeCalledTimes(2);
     expect(mockEquals).toBeCalledTimes(0);
   });
 
@@ -91,12 +83,10 @@ describe('Test to validate date validator', () => {
       condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
     };
 
-    const sut = conditionalDateValidations(mockDateValidationsContext, 4, 4);
+    const sut = conditionalDateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIsLength).toBeCalledTimes(4);
-    expect(mockIf).toBeCalledTimes(6);
+    expect(mockIf).toBeCalledTimes(4);
     expect(mockCustom).toBeCalledTimes(4);
-    expect(mockWithMessage).toBeCalledTimes(2);
     expect(mockEquals).toBeCalledTimes(4);
   });
 });

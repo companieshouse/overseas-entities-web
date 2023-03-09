@@ -16,7 +16,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
+  FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -41,7 +41,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
 
     let transactionID, overseasEntityID;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
       transactionID = appData[Transactionkey] as string;
       overseasEntityID = appData[OverseasEntityKey] as string;
       await updateOverseasEntity(req, session);

@@ -6,12 +6,15 @@ export enum ErrorMessages {
   LAW_GOVERNED = "Enter the governing law",
   FULL_NAME = "Enter a full name",
   FIRST_NAME = "Enter the individual person’s first name",
+  FIRST_NAME_INDIVIDUAL_BO = "Enter their first name",
+  LAST_NAME_INDIVIDUAL_BO = "Enter their last name",
   LAST_NAME = "Enter the individual person’s last name",
   FORMER_NAME = "Enter the individual person’s former name or names",
   ROLE = "Enter a description of the individual person’s role and responsibilities",
   ROLE_AND_RESPONSIBILITIES_CORPORATE = "Enter a description of the corporate managing officer’s role and responsibilities",
   ROLE_AND_RESPONSIBILITIES_INDIVIDUAL = "Enter a description of the individual managing officer’s role and responsibilities",
   NATIONALITY = "Enter the individual person’s nationality",
+  NATIONALITY_INDIVIDUAL_BO = "Start typing, then select a nationality from the list",
   SECOND_NATIONALITY_IS_SAME = "Second nationality must be different to their first nationality",
   NATIONALITIES_TOO_LONG = "The nationalities you have chosen are longer than 50 characters in total, please choose fewer nationalities",
   OCCUPATION = "Enter an occupation",
@@ -23,6 +26,10 @@ export enum ErrorMessages {
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
   BENEFICIAL_OWNER_OTHER_NAME="Enter the other legal entity’s name",
   BO_GOV_NAME = "Enter the name of the government or public authority",
+  HISTORICAL_BENEFICIAL_OWNER_ROLE = "Select if the former beneficial owner is an individual or a legal entity",
+  HISTORICAL_BO_CORPORATE_NAME = "Enter the beneficial owner's corporate name",
+  HISTORICAL_BO_FIRST_NAME = "Enter the beneficial owner's first name",
+  HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
@@ -33,10 +40,14 @@ export enum ErrorMessages {
 
   // Address
   PROPERTY_NAME_OR_NUMBER = "Enter a property name or number",
+  PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO = "Enter the property name or number",
   ADDRESS_LINE1 = "Enter an address",
+  ADDRESS_LINE1_INDIVIDUAL_BO = "Enter address line 1",
   CITY_OR_TOWN = "Enter a city or town",
+  CITY_OR_TOWN_INDIVIDUAL_BO = "Enter the city or town",
   COUNTY = "Enter a county",
   COUNTRY = "Select a country from the list",
+  COUNTRY_INDIVIDUAL_BO = "Start typing, then select a country from the list",
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
 
@@ -54,6 +65,7 @@ export enum ErrorMessages {
   TRUST_HAS_ALL_INFO = 'Select yes if the entity has all the required information about the trust',
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
+  TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
 
   // Date
   DAY = "Date must include a day",
@@ -75,6 +87,7 @@ export enum ErrorMessages {
   DATE_OF_BIRTH_DAY_LENGTH = "Date of birth day must include 1 or 2 numbers",
   DATE_OF_BIRTH_MONTH_LENGTH = "Date of birth month must include 1 or 2 numbers",
   ENTER_DATE_OF_BIRTH = "Enter the individual person’s date of birth",
+  ENTER_DATE_OF_BIRTH_INDIVIDUAL_BO = "Enter their date of birth",
   ENTER_DATE = "Enter the date",
   ENTER_DATE_OF_TRUST = "Enter the date the trust was created",
   INVALID_DATE = "Date must be a real date",
@@ -93,6 +106,8 @@ export enum ErrorMessages {
   DAY_AND_MONTH_OF_BIRTH = "Date of birth must include a day and month",
   MONTH_AND_YEAR_OF_BIRTH = "Date of birth must include a month and year",
   DAY_AND_YEAR_OF_BIRTH = "Date of birth must include a day and year",
+  ENTER_HISTORICAL_BO_DATE = "Enter the date they became a beneficial owner",
+  ENTER_HISTORICAL_BO_END_DATE = "Enter the date they stopped being a beneficial owner",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
@@ -103,6 +118,7 @@ export enum ErrorMessages {
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the correspondence address is the same as the principal or registered office address",
   SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS = "Select yes if the corporate managing officer’s correspondence address is the same as the principal or registered office address",
   SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS = "Select yes if the correspondence address is the same as their home address",
+  SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO = "Select yes if their correspondence address is the same as their home address",
   SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED = "Select if any beneficial owners have been identified",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD = "Select the type of beneficial owner or managing officer you want to add",
   SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD = "Select the type of beneficial owner you want to add",
@@ -119,9 +135,11 @@ export enum ErrorMessages {
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
+  MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO = MAX_FIRST_NAME_LENGTH,
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
   MAX_FORMER_NAME_LENGTH = "Former names must be 260 characters or less",
   MAX_NAME_LENGTH = "Name must be 160 characters or less",
+  MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO = MAX_NAME_LENGTH,
   MAX_NAME_LENGTH_TRUST = "Name of the trust must be 160 characters or less",
   MAX_NAME_LENGTH_DUE_DILIGENCE = "Name must be 256 characters or less",
   MAX_FULL_NAME_LENGTH = "Full name must be 256 characters or less",
@@ -147,12 +165,18 @@ export enum ErrorMessages {
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",
+  MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH = "Corporate name must be 50 characters or less",
+  MAX_HISTORICAL_BO_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
+  MAX_HISTORICAL_BO_LAST_NAME_LENGTH = "Last name must be 50 characters or less",
 
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  FIRST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO = FIRST_NAME_INVALID_CHARACTERS,
   LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  LAST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO =LAST_NAME_INVALID_CHARACTERS,
   NATIONALITY_INVALID_CHARACTERS = "Nationality must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  NATIONALITY_INVALID_CHARACTERS_INDIVIDUAL_BO = NATIONALITY_INVALID_CHARACTERS,
   SECOND_NATIONALITY_INVALID_CHARACTERS = "Second Nationality must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS = "Property name or number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ADDRESS_LINE_1_INVALID_CHARACTERS = "Address line 1 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
@@ -174,4 +198,7 @@ export enum ErrorMessages {
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
   INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
+  HISTORICAL_BO_CORPORATE_NAME_INVALID_CHARACTERS = "Corporate name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  HISTORICAL_BO_FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  HISTORICAL_BO_LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
 }

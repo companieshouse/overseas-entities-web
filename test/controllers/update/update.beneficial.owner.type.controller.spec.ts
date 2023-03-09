@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/service/company.managing.officer.service');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -15,7 +16,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-import { getApplicationData } from '../../../src/utils/application.data';
+import { getApplicationData, setApplicationData } from '../../../src/utils/application.data';
 import {
   SERVICE_UNAVAILABLE,
   BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT,
@@ -35,6 +36,8 @@ import {
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerTypeChoice, ManagingOfficerTypeChoice, BeneficialOwnerTypeKey } from '../../../src/model/beneficial.owner.type.model';
+import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
+import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -49,6 +52,8 @@ const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
@@ -60,8 +65,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
-        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerKey]: undefined
       });
+
+      mockGetCompanyOfficers.mockReturnValueOnce({});
+
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
@@ -71,6 +80,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(mockSetApplicationData).toHaveBeenCalled();
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners with just the BOs options`, async () => {
@@ -90,6 +101,26 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page but does not re-make API call for managing officers`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerKey]: []
+      });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
+    });
+
   });
 
   describe("POST tests", () => {

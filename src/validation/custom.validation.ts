@@ -320,8 +320,8 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
     wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
     wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
   });
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
-  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_END_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);
   return true;
 };
 

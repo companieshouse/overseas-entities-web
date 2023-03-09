@@ -52,6 +52,11 @@ export const MOCK_GET_COMPANY_PSC_RESPONSE: ApiResponse<CompanyPersonsWithSignif
   resource: MOCK_GET_COMPANY_PSC_RESOURCE
 };
 
+export const MOCK_GET_COMPANY_PSC_UNAUTHORISED_RESPONSE: ApiErrorResponse = {
+  httpStatusCode: 401,
+  errors: [ { error: ANY_MESSAGE_ERROR }]
+};
+
 export const MOCK_GET_COMPANY_PSC_NOT_FOUND_RESPONSE: ApiErrorResponse = {
   httpStatusCode: 404,
   errors: [ { error: ANY_MESSAGE_ERROR }]

@@ -83,7 +83,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}, doesn't call getCopmanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCopmanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,

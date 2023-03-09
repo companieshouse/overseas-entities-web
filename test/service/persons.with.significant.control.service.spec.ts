@@ -17,7 +17,8 @@ import {
 import {
   MOCK_GET_COMPANY_PSC_NOT_FOUND_RESPONSE,
   MOCK_GET_COMPANY_PSC_RESOURCE,
-  MOCK_GET_COMPANY_PSC_RESPONSE
+  MOCK_GET_COMPANY_PSC_RESPONSE,
+  MOCK_GET_COMPANY_PSC_UNAUTHORISED_RESPONSE
 } from "../__mocks__/get.company.psc.mock";
 import { getCompanyPsc } from "../../src/service/persons.with.signficant.control.service";
 
@@ -44,6 +45,15 @@ describe('Get persons with significant control service that calls API for given 
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockDebugRequestLog).toHaveBeenCalled();
     expect(resource).toEqual(MOCK_GET_COMPANY_PSC_RESOURCE);
+  });
+
+  test('responds with 401 and logs error', async () => {
+    mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_PSC_UNAUTHORISED_RESPONSE);
+
+    await expect(getCompanyPsc(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);
+
+    expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+    expect(mockDebugRequestLog).not.toHaveBeenCalled();
   });
 
   test('responds with 404 and returns undefined if no PSC data found', async () => {

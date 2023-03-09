@@ -58,6 +58,8 @@ describe('Trust Details page Mapper Service', () => {
     ],
   };
 
+  const unknownTrustId = '3838373838';
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -89,6 +91,10 @@ describe('Trust Details page Mapper Service', () => {
         ],
         hasAllInfo: '0',
       });
+    });
+    test('mapDetailToPage should return object (verify napping of hasAllInfo for new trust)', () => {
+      const initialFormDetails = mapDetailToPage(mockAppData, unknownTrustId);
+      expect(initialFormDetails.hasAllInfo).toBe("");
     });
   });
 

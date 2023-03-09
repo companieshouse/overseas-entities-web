@@ -8,6 +8,8 @@ import {
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
+  checkHistoricalBOEndDate,
+  checkHistoricalBOStartDate,
   checkIdentityDate,
   checkStartDate,
   checkTrustDate
@@ -85,14 +87,24 @@ const trustCreatedDateValidationsContext: dateContext = {
   yearInputName: "createdDateYear",
 };
 
-const historicalBOContext: dateContext = {
+const historicalBOStartDateContext: dateContext = {
   dateInput: {
     name: "startDate",
-    callBack: checkTrustDate,
+    callBack: checkHistoricalBOStartDate,
   },
   dayInputName: "startDateDay",
   monthInputName: "startDateMonth",
   yearInputName: "startDateYear",
+};
+
+const historicalBOEndDateContext: dateContext = {
+  dateInput: {
+    name: "endDate",
+    callBack: checkHistoricalBOEndDate,
+  },
+  dayInputName: "endDateDay",
+  monthInputName: "endDateMonth",
+  yearInputName: "endDateYear",
 };
 
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
@@ -101,4 +113,7 @@ export const dateBecameIP = conditionalDateValidations(dateBecameIPContext);
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
 
-export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOContext);
+export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
+
+export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+

@@ -1,6 +1,6 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
 import { checkBirthDate,
-  checkDate, checkStartDate,
+  checkDate, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkStartDate,
   checkTrustDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
@@ -86,7 +86,7 @@ describe("test date method", () => {
   ];
 
   const errMsgcheckBirthDate: ErrorMessages[] = [
-    ErrorMessages.ENTER_DATE_OF_BIRTH,
+    ErrorMessages.ENTER_DATE_OF_BIRTH_INDIVIDUAL_BO,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
@@ -115,6 +115,36 @@ describe("test date method", () => {
     ErrorMessages.MONTH_OF_TRUST
   ];
 
+  const errMsgHistoricalBOStartDate: ErrorMessages[] = [
+    ErrorMessages.ENTER_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_MONTH_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_AND_MONTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_YEAR_LENGTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO,
+    ErrorMessages.START_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_HISTORICAL_BO,
+    ErrorMessages.START_MONTH_HISTORICAL_BO
+  ];
+
+  const errMsgHistoricalBOEndDate: ErrorMessages[] = [
+    ErrorMessages.ENTER_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_MONTH_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_AND_MONTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO,
+    ErrorMessages.END_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_HISTORICAL_BO,
+    ErrorMessages.END_MONTH_HISTORICAL_BO
+  ];
+
   const testDateCheck = (err: ErrorMessages[]) => [
     ["", "", "", err[0]],
     ["02", "", "", err[1]],
@@ -140,5 +170,17 @@ describe("test date method", () => {
 
   test.each(testDateCheck(errMsgcheckTrustDate))("should throw appropriate date errors for checkTrustDate", (_day, _month, _year, _err) => {
     expect(() => checkTrustDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOStartDate))("should throw appropriate date errors for checkHistoricalBOStartDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOStartDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOStartDate))("should throw appropriate date errors for checkHistoricalBOStartDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOStartDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOEndDate))("should throw appropriate date errors for checkHistoricalBOEndDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOEndDate(_day, _month, _year)).toThrow(_err);
   });
 });

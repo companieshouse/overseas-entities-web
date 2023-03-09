@@ -87,7 +87,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-        [BeneficialOwnerIndividualKey]: {}
+        [BeneficialOwnerIndividualKey]: []
       });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 

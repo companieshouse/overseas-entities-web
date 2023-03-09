@@ -7,7 +7,7 @@ import { CompanyPersonsWithSignificantControlResource } from "@companieshouse/ap
 export const getCompanyPsc = async (
   req: Request,
   companyNumber: string,
-): Promise<CompanyPersonsWithSignificantControlResource> => {
+): Promise<CompanyPersonsWithSignificantControlResource | undefined> => {
   const response = await makeApiCallWithRetry(
     "companyPsc",
     "getCompanyPsc",
@@ -16,10 +16,13 @@ export const getCompanyPsc = async (
     companyNumber
   );
 
-  if (response.httpStatusCode >= 400) {
+  if (response.httpStatusCode === 404) {
+    logger.debugRequest(req, `No company PSC data found for ${companyNumber}`);
+  } else if (response.httpStatusCode >= 400) {
     throw createAndLogErrorRequest(req, `getCompanyPsc API request returned HTTP status code ${response.httpStatusCode}`);
+  } else {
+    logger.debugRequest(req, `Received company PSC data for ${companyNumber}`);
   }
 
-  logger.debugRequest(req, `Received company PSC data for ${companyNumber}`);
-  return response.resource;
+  return response?.resource;
 };

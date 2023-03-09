@@ -13,7 +13,6 @@ import request from "supertest";
 import * as config from "../../src/config";
 import app from "../../src/app";
 import { Session } from '@companieshouse/node-session-handler';
-import { Params } from 'express-serve-static-core';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { getApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -49,9 +48,6 @@ describe("Add Trust Controller Tests", () => {
     };
 
     mockReq = {
-      params: {
-        trustId: trustId,
-      } as Params,
       session: {} as Session,
       route: '',
       method: '',
@@ -61,11 +57,21 @@ describe("Add Trust Controller Tests", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.ADD_TRUST_PAGE} page`, () => {
+
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
-
       expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledWith(
+        config.ADD_TRUST_PAGE,
+        expect.objectContaining({
+          pageData: expect.objectContaining({
+            trustData: [ mockTrust1Data ],
+          }),
+        }),
+      );
     });
 
     test('catch error when renders the page', () => {

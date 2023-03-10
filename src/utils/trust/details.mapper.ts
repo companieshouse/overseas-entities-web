@@ -20,13 +20,26 @@ const mapDetailToPage = (
       .filter((bo: TrustBeneficialOwner) => bo.trust_ids?.includes(trustId))
       .map(bo => bo.id || "");
 
+  let unableToObtainAllTrustInfo: string;
+  switch (trustData.unable_to_obtain_all_trust_info) {
+      case "Yes":
+        unableToObtainAllTrustInfo = "1";
+        break;
+      case "No":
+        unableToObtainAllTrustInfo = "0";
+        break;
+      default:
+        unableToObtainAllTrustInfo = ""; // forces user to enter a value on new trust
+        break;
+  }
+
   return {
     trustId: trustData.trust_id,
     name: trustData.trust_name,
     createdDateDay: trustData.creation_date_day,
     createdDateMonth: trustData.creation_date_month,
     createdDateYear: trustData.creation_date_year,
-    hasAllInfo: trustData.unable_to_obtain_all_trust_info,
+    hasAllInfo: unableToObtainAllTrustInfo,
     beneficialOwnersIds: trustBoIds,
   };
 };
@@ -43,7 +56,7 @@ const mapDetailToSession = (
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,
     creation_date_year: data.createdDateYear,
-    unable_to_obtain_all_trust_info: data.hasAllInfo,
+    unable_to_obtain_all_trust_info: (data.hasAllInfo === "1") ? "Yes" : "No",
   };
 };
 

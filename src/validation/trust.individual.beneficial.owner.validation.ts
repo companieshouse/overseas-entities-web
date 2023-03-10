@@ -44,6 +44,6 @@ export const trustIndividualBeneficialOwner = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO),
 
   ...usual_residential_address_validations(addressErrorMessages),
-  ...usual_residential_service_address_validations(addressErrorMessages),
+  ...usual_residential_service_address_validations(addressErrorMessages as Required<ErrorMessagesForURSaddress>),
 
 ];

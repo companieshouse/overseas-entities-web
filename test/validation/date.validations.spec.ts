@@ -1,6 +1,6 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
 import { checkBirthDate,
-  checkDate, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkStartDate,
+  checkDate, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkStartDate,
   checkTrustDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
@@ -182,5 +182,13 @@ describe("test date method", () => {
 
   test.each(testDateCheck(errMsgHistoricalBOEndDate))("should throw appropriate date errors for checkHistoricalBOEndDate", (_day, _month, _year, _err) => {
     expect(() => checkHistoricalBOEndDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each([
+    [["", "", "2020"], ErrorMessages.DAY_AND_MONTH_OF_BIRTH],
+    [["02", "", ""], ErrorMessages.MONTH_AND_YEAR_OF_BIRTH],
+    [["", "02", ""], ErrorMessages.DAY_AND_YEAR_OF_BIRTH]
+  ])("test more than one date of birth field not missing", (date, err) => {
+    expect (() => checkMoreThanOneDateOfBirthFieldIsNotMissing(...date)).toThrow(err);
   });
 });

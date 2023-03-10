@@ -21,6 +21,7 @@ import {
   MOCK_GET_COMPANY_OFFICERS_UNAUTHORISED_RESPONSE
 } from "../__mocks__/get.company.officers.mock";
 import { getCompanyOfficers } from "../../src/service/company.managing.officer.service";
+import { GET_COMPANY_OFFICERS_PAGE_SIZE } from '../../src/config';
 
 const mockDebugRequestLog = logger.debugRequest as jest.Mock;
 
@@ -32,8 +33,6 @@ const mockMakeApiCallWithRetry = makeApiCallWithRetry as jest.Mock;
 const session = getSessionRequestWithExtraData();
 const req: Request = { session } as Request;
 
-const maxResults = 50;
-
 describe('Get company officers for given company number', () => {
   beforeEach (() => {
     jest.clearAllMocks();
@@ -44,7 +43,7 @@ describe('Get company officers for given company number', () => {
 
     const resource = await getCompanyOfficers(req, COMPANY_NUMBER);
 
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameCompanyOfficers, fnNameGetCompanyOfficers, req, session, COMPANY_NUMBER, maxResults);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameCompanyOfficers, fnNameGetCompanyOfficers, req, session, COMPANY_NUMBER, GET_COMPANY_OFFICERS_PAGE_SIZE);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockDebugRequestLog).toHaveBeenCalled();
     expect(resource).toEqual(MOCK_GET_COMPANY_OFFICERS_RESOURCE);

@@ -190,6 +190,7 @@ export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
 export const ID = "/:id"; // Same param name as the ID in the data model
 export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
 export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
+export const GET_COMPANY_OFFICERS_PAGE_SIZE = 100;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

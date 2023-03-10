@@ -65,6 +65,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 };
 
 const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+  // Mapping of returned data will be done as part of UAR-128
   await getCompanyOfficers(req, appData[EntityNumberKey] as string);
   setApplicationData(req.session, [], ManagingOfficerKey);
 };

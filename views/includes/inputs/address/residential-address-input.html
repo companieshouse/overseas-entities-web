@@ -107,12 +107,18 @@
       hint: {
         text: hintResidentialAddress
       },
-      checked: is_service_address_same_as_usual_residential_address == 1
+      checked: is_service_address_same_as_usual_residential_address == 1,
+      attributes: {
+        "data-event-id": "is_correspondence_address_same_as_usual_residential_address-yes-radio-option"
+      }
     },
     {
       value: 0,
       text: "No",
       checked: is_service_address_same_as_usual_residential_address == 0,
+      attributes: {
+        "data-event-id": "is_correspondence_address_same_as_usual_residential_address-no-radio-option"
+      },
       conditional: {
         html: serviceAddressHtml
       }

@@ -11,6 +11,8 @@ import { mapIndividualTrusteeToSession } from '../utils/trust/individual.trustee
 import { safeRedirect } from '../utils/http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
+import { Session } from '@companieshouse/node-session-handler';
+import { saveAndContinue } from '../utils/save.and.continue';
 
 const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -69,7 +71,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -108,7 +110,10 @@ const post = (
     appData = saveTrustInApp(appData, trustUpdate);
 
     // save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     return safeRedirect(res, url);
   } catch (error) {

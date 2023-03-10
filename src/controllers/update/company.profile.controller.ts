@@ -27,8 +27,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}`);
-    return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

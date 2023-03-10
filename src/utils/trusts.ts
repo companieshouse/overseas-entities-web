@@ -1,4 +1,4 @@
-import { CHECK_YOUR_ANSWERS_URL, TRUST_DETAILS_URL, TRUST_INTERRUPT_URL } from "../config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -43,15 +43,9 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  */
 const getTrustLandingUrl = (appData: ApplicationData): string => {
 
-  const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
-
-  for (const benficialOwners of allBenficialOwnersToCheck) {
-    if (benficialOwners) {
-      if (containsTrustData(benficialOwners)) {
-        // Once naviation changes are agreed the following will change
-        return `${CHECK_YOUR_ANSWERS_URL}`;
-      }
-    }
+  if (containsTrustData(getTrustArray(appData))) {
+    // Once naviation changes are agreed the following will change
+    return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
   }
 
   return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
@@ -88,15 +82,15 @@ const containsTrusteeNatureOfControl = (beneficialOwners: BeneficialOwnerIndivid
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
 };
 
-const containsTrustData = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
-  return beneficialOwners.some(bo => bo.trust_ids?.length);
+const containsTrustData = (trusts: Trust[]): boolean => {
+  return (trusts.length > 0);
 };
 
 /**
  * Get Trust object from application object in session
  *
  * @param appData Application Data in Session
- * @param trustId Trust details to save
+ * @param trustId Trust ID find (returns empty object if not found)
  */
 const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
   return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
@@ -115,21 +109,21 @@ const getTrustArray = (appData: ApplicationData): Trust[] => {
  * Update trust in application data
  *
  * @param appData Application Data in Session
- * @param trustDetails Trust details to save
+ * @param trustToSave Trust (with any trustees) to save
  */
-const saveTrustInApp = (appData: ApplicationData, trustDetails: Trust): ApplicationData => {
+const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
   const trusts: Trust[] = appData[TrustKey] ?? [];
 
   //  get index of trust in trusts array, if exists
-  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
 
   if (trustIndex >= 0) {
     //  update existing trust in array
-    trusts[trustIndex] = trustDetails;
+    trusts[trustIndex] = trustToSave;
 
   } else {
     // add new trust to array
-    trusts.push(trustDetails);
+    trusts.push(trustToSave);
   }
 
   return {
@@ -290,4 +284,5 @@ export {
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
+  containsTrustData,
 };

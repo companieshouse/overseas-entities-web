@@ -30,7 +30,7 @@ export interface Trust {
   creation_date_day: string;
   creation_date_month: string;
   creation_date_year: string;
-  unable_to_obtain_all_trust_info: string;
+  unable_to_obtain_all_trust_info: string; // "Yes" or "No" required on the spreadsheet solution so we can NOT use yesNoResponse
   INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
@@ -69,7 +69,7 @@ interface TrustIndividual {
 
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
-  corporateIndicator: TrusteeType;
+  corporate_indicator: TrusteeType;
   ceased_date_day: string;
   ceased_date_month: string;
   ceased_date_year: string;
@@ -92,7 +92,7 @@ interface InterestedIndividualPersonTrustee extends TrustIndividual{
 }
 
 interface TrustHistoricalBeneficialOwnerLegal extends TrustHistoricalBeneficialOwnerCommon {
-  corporateName: string;
+  corporate_name: string;
 }
 
 interface TrustHistoricalBeneficialOwnerIndividual extends TrustHistoricalBeneficialOwnerCommon {

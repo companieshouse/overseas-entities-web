@@ -23,11 +23,19 @@ describe('Trust Details page Mapper Service', () => {
     creation_date_day: '99',
     creation_date_month: '88',
     creation_date_year: '2077',
-    unable_to_obtain_all_trust_info: '1',
+    unable_to_obtain_all_trust_info: 'Yes',
+  };
+  const mockTrust2 = {
+    trust_id: '2000',
+    trust_name: 'dummyName2',
+    creation_date_day: '10',
+    creation_date_month: '11',
+    creation_date_year: '2077',
+    unable_to_obtain_all_trust_info: 'No',
   };
   const mockBoIndividual1 = {
     id: '9001',
-    trust_ids: ['901', mockTrust1.trust_id],
+    trust_ids: ['901', mockTrust1.trust_id, mockTrust2.trust_id],
   } as BeneficialOwnerIndividual;
 
   const mockBoOle1 = {
@@ -38,6 +46,7 @@ describe('Trust Details page Mapper Service', () => {
   const mockAppData = {
     [TrustKey]: [
       mockTrust1,
+      mockTrust2,
     ],
     [BeneficialOwnerIndividualKey]: [
       mockBoIndividual1,
@@ -49,12 +58,14 @@ describe('Trust Details page Mapper Service', () => {
     ],
   };
 
+  const unknownTrustId = '3838373838';
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   describe('To Page mapper methods tests', () => {
-    test('mapDetailToPage should return object', () => {
+    test('mapDetailToPage should return object (verify napping of hasAllInfo when true)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust1.trust_id)).toEqual({
         trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
@@ -65,8 +76,25 @@ describe('Trust Details page Mapper Service', () => {
           mockBoIndividual1.id,
           mockBoOle1.id,
         ],
-        hasAllInfo: mockTrust1.unable_to_obtain_all_trust_info,
+        hasAllInfo: '1',
       });
+    });
+    test('mapDetailToPage should return object (verify napping of hasAllInfo when false)', () => {
+      expect(mapDetailToPage(mockAppData, mockTrust2.trust_id)).toEqual({
+        trustId: mockTrust2.trust_id,
+        name: mockTrust2.trust_name,
+        createdDateDay: mockTrust2.creation_date_day,
+        createdDateMonth: mockTrust2.creation_date_month,
+        createdDateYear: mockTrust2.creation_date_year,
+        beneficialOwnersIds: [
+          mockBoIndividual1.id,
+        ],
+        hasAllInfo: '0',
+      });
+    });
+    test('mapDetailToPage should return object (verify napping of hasAllInfo for new trust)', () => {
+      const initialFormDetails = mapDetailToPage(mockAppData, unknownTrustId);
+      expect(initialFormDetails.hasAllInfo).toBe("");
     });
   });
 
@@ -80,14 +108,34 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '1',
     } as Page.TrustDetailsForm;
 
-    test('mapDetailToSession should return object', () => {
+    const mockFormData2 = {
+      trustId: '999',
+      name: 'dummyName',
+      createdDateDay: '99',
+      createdDateMonth: '88',
+      createdDateYear: '2077',
+      hasAllInfo: '0',
+    } as Page.TrustDetailsForm;
+
+    test('mapDetailToSession should return object (verify napping of unable_to_obtain_all_trust_info when true)', () => {
       expect(mapDetailToSession(mockFormData)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,
         creation_date_year: mockFormData.createdDateYear,
-        unable_to_obtain_all_trust_info: mockFormData.hasAllInfo,
+        unable_to_obtain_all_trust_info: "Yes",
+      });
+    });
+
+    test('mapDetailToSession should return object (verify napping of unable_to_obtain_all_trust_info when false)', () => {
+      expect(mapDetailToSession(mockFormData2)).toEqual({
+        trust_id: mockFormData.trustId,
+        trust_name: mockFormData.name,
+        creation_date_day: mockFormData.createdDateDay,
+        creation_date_month: mockFormData.createdDateMonth,
+        creation_date_year: mockFormData.createdDateYear,
+        unable_to_obtain_all_trust_info: "No",
       });
     });
 
@@ -101,7 +149,7 @@ describe('Trust Details page Mapper Service', () => {
       expect(actual).toEqual([
         {
           ...mockBoIndividual1,
-          trust_ids: ['901'],
+          trust_ids: ['901', mockTrust2.trust_id],
         },
         {
           trust_ids: [],
@@ -133,7 +181,7 @@ describe('Trust Details page Mapper Service', () => {
     });
   });
 
-  test('mapDetailToSession should return object', () => {
-    expect(generateTrustId(mockAppData)).toBe('2');
+  test('mapDetailToSession should return next trust id', () => {
+    expect(generateTrustId(mockAppData)).toBe('3');
   });
 });

@@ -9,6 +9,8 @@ import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper'
 import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
 import { CommonTrustData } from '../model/trust.page.model';
+import { saveAndContinue } from '../utils/save.and.continue';
+import { Session } from '@companieshouse/node-session-handler';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -34,7 +36,7 @@ const getPageProperties = (
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${config.TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
     templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE,
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,
@@ -65,7 +67,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -91,7 +93,10 @@ const post = (
     appData = saveTrustInApp(appData, updatedTrust);
 
     //  save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

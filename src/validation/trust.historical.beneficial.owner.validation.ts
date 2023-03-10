@@ -1,4 +1,4 @@
-import { body, check } from "express-validator";
+import { body } from "express-validator";
 import { TrusteeType } from "../model/trustee.type.model";
 import { ErrorMessages } from "./error.messages";
 import { historicalBeneficialOwnerEndDate, historicalBeneficialOwnerStartDate } from "./fields/date.validation";
@@ -24,11 +24,4 @@ export const trustHistoricalBeneficialOwner = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.HISTORICAL_BO_LAST_NAME_INVALID_CHARACTERS),
   ...historicalBeneficialOwnerStartDate,
   ...historicalBeneficialOwnerEndDate,
-  check("endDate")
-    .custom((value, { req }) => {
-      if (new Date(value) <= new Date(req.body.startDate)) {
-        throw new Error(ErrorMessages.START_END_DATE_HISTORICAL_BO);
-      }
-      return true;
-    })
 ];

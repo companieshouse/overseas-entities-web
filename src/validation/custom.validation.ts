@@ -361,24 +361,24 @@ export type DateFieldErrors = {
 
 const checkDateFieldsForErrors = (dayStr: string = "", monthStr: string = "", yearStr: string = "", dateErrors: DateFieldErrors) => {
   if (dayStr === "" && monthStr === "" && yearStr === "") {
-    throw new Error(dateErrors.completelyEmptyDateError || ErrorMessages.ENTER_DATE);
+    throw new Error(dateErrors.completelyEmptyDateError ?? ErrorMessages.ENTER_DATE);
   } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
-    throw new Error(dateErrors.noDayAndMonthError || ErrorMessages.DAY_AND_MONTH);
+    throw new Error(dateErrors.noDayAndMonthError ?? ErrorMessages.DAY_AND_MONTH);
   } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-    throw new Error(dateErrors.noMonthAndYearError || ErrorMessages.MONTH_AND_YEAR);
+    throw new Error(dateErrors.noMonthAndYearError ?? ErrorMessages.MONTH_AND_YEAR);
   } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
-    throw new Error(dateErrors.noDayAndYearError || ErrorMessages.DAY_AND_YEAR);
+    throw new Error(dateErrors.noDayAndYearError ?? ErrorMessages.DAY_AND_YEAR);
   } else if (dayStr === "") {
-    throw new Error(dateErrors.noDayError || ErrorMessages.DAY);
+    throw new Error(dateErrors.noDayError ?? ErrorMessages.DAY);
   } else if (monthStr === "") {
-    throw new Error(dateErrors.noMonthError || ErrorMessages.MONTH);
+    throw new Error(dateErrors.noMonthError ?? ErrorMessages.MONTH);
   } else if (yearStr === "") {
-    throw new Error(dateErrors.noYear || ErrorMessages.YEAR);
+    throw new Error(dateErrors.noYear ?? ErrorMessages.YEAR);
   } else {
     checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [
-      dateErrors.wrongDayLength || ErrorMessages.DAY_LENGTH,
-      dateErrors.wrongMonthLength || ErrorMessages.MONTH_LENGTH,
-      dateErrors.wrongYearLength || ErrorMessages.YEAR_LENGTH]);
+      dateErrors.wrongDayLength ?? ErrorMessages.DAY_LENGTH,
+      dateErrors.wrongMonthLength ?? ErrorMessages.MONTH_LENGTH,
+      dateErrors.wrongYearLength ?? ErrorMessages.YEAR_LENGTH]);
   }
 };
 

@@ -1,6 +1,5 @@
 import { body } from "express-validator";
 
-// NOSONAR
 export const dateValidations = (dateContext: dateContext) => {
   return [
 
@@ -9,7 +8,6 @@ export const dateValidations = (dateContext: dateContext) => {
   ];
 };
 
-// NOSONAR
 export const conditionalDateValidations = (dateContextWithCondition: dateContextWithCondition) => {
   return [
     body(dateContextWithCondition.dateInput.name)

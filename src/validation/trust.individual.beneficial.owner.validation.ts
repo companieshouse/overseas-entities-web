@@ -3,14 +3,14 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import {
-  errorMessagesForURSaddress,
+  ErrorMessagesForURSaddress,
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { dateBecameIP, dateOfBirthValidations } from "./fields/date.validation";
 
-const addressErrorMessages: errorMessagesForURSaddress = {
+const addressErrorMessages: ErrorMessagesForURSaddress = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_INDIVIDUAL_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO,

@@ -65,9 +65,6 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 };
 
 const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  const managingOfficerData = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-
-  if (managingOfficerData || managingOfficerData === undefined) {
-    setApplicationData(req.session, [], ManagingOfficerKey);
-  }
+  await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+  setApplicationData(req.session, [], ManagingOfficerKey);
 };

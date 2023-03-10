@@ -63,12 +63,10 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 };
 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const pscData = await getCompanyPsc(req, appData[EntityNumberKey] as string);
+  await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const session = req.session as Session;
 
   // setting key to [] for all scenarios right now
   // UAR-337 to update
-  if (pscData || pscData === undefined ) {
-    setApplicationData(session, [], BeneficialOwnerIndividualKey);
-  }
+  setApplicationData(session, [], BeneficialOwnerIndividualKey);
 };

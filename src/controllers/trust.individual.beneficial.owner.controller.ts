@@ -7,7 +7,7 @@ import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from '../utils/trusts';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
-import { mapIndividualTrusteeToSession } from '../utils/trust/individual.trustee.mapper';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 import { safeRedirect } from '../utils/http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
@@ -34,10 +34,10 @@ type TrustIndividualBeneificalOwnerPageProperties = {
 
 const getPageProperties = (
   req: Request,
+  trustId: string,
   formData?: PageModel.IndividualTrusteesFormCommon,
   errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
@@ -61,8 +61,16 @@ const get = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
+    const appData: ApplicationData = getApplicationData(req.session);
 
-    const pageProps = getPageProperties(req);
+    const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeFromSessionToPage(
+      appData,
+      trustId,
+      trusteeId
+    );
+    const pageProps = getPageProperties(req, trustId, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -95,6 +103,7 @@ const post = async (
     if (!errorList.isEmpty()) {
       const pageProps = getPageProperties(
         req,
+        trustId,
         formData,
         formatValidationError(errorList.array()),
       );

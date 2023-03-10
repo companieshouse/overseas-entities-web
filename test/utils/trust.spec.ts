@@ -13,6 +13,7 @@ import {
   saveTrustInApp,
   saveLegalEntityBoInTrust,
   getIndividualTrusteesFromTrust,
+  getIndividualTrustee,
   getFormerTrusteesFromTrust,
   checkEntityRequiresTrusts,
   getTrustLandingUrl,
@@ -326,6 +327,49 @@ describe('Trust Utils method tests', () => {
       const result = getIndividualTrusteesFromTrust(appData);
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
+    });
+
+    test("test getIndividualTrusteeFromTrust successfully", () => {
+      const test_trust_id = '342';
+      const individualTrustee1 = { id: "999" } as IndividualTrustee;
+      const individualTrustee2 = { id: "901" } as IndividualTrustee;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual(individualTrustee1);
+    });
+
+    test("test getIndividualTrusteeFromTrust with application data with no trusteeId", () => {
+      const test_trust_id = '342';
+      const individualTrustee1 = { id: "999" } as IndividualTrustee;
+      const individualTrustee2 = { id: "901" } as IndividualTrustee;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, undefined);
+      expect(result).toEqual({});
+    });
+
+    test("test getIndividualTrusteeFromTrust with application data and INDIVIDUALS array is empty", () => {
+      const test_trust_id = '342';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual({});
     });
 
     test("test getFormerTrusteesFromTrust with application data and trust id", () => {

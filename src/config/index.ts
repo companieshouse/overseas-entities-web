@@ -187,9 +187,11 @@ export const UPDATE_MANAGING_OFFICER_CORPORATE_URL = UPDATE_AN_OVERSEAS_ENTITY_U
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
 export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
+export const ROUTE_PARAM_TRUSTEE_ID = "trusteeId";
 export const ID = "/:id"; // Same param name as the ID in the data model
 export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
 export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
+export const TRUSTEE_ID = `/:${ROUTE_PARAM_TRUSTEE_ID}`;
 export const GET_COMPANY_OFFICERS_PAGE_SIZE = 100;
 
 // PAYMENT CONFIGs
@@ -240,7 +242,11 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
-export const ROLE_WITHIN_TRUST = "#role_within_trust";
+export const ROLE_WITHIN_TRUST = "#type";
+export const FORENAME = "#forename";
+export const SURNAME = "#surname";
+export const TRUST_DATE_OF_BIRTH = "#dateOfBirth-dateOfBirthDay";
+export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

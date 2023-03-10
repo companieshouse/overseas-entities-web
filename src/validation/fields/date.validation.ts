@@ -8,6 +8,8 @@ import {
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
+  checkHistoricalBOEndDate,
+  checkHistoricalBOStartDate,
   checkIdentityDate,
   checkStartDate,
   checkTrustDate
@@ -58,46 +60,20 @@ const dateOfBirthValidationsContext: dateContext = {
   dateInput: {
     name: "dateOfBirth",
     callBack: checkBirthDate,
-    errMsg: [],
   },
-  day: {
-    name: "dateOfBirthDay",
-    callBack: checkDateFieldDayOfBirth,
-    errMsg: [ErrorMessages.DAY_OF_BIRTH],
-  },
-  month: {
-    name: "dateOfBirthMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH_OF_BIRTH],
-  },
-  year: {
-    name: "dateOfBirthYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH],
-  }
+  dayInputName: "dateOfBirthDay",
+  monthInputName: "dateOfBirthMonth",
+  yearInputName: "dateOfBirthYear",
 };
 
 const dateBecameIPContext: dateContextWithCondition = {
   dateInput: {
     name: "dateBecameIP",
     callBack: checkDate,
-    errMsg: [],
   },
-  day: {
-    name: "dateBecameIPDay",
-    callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY],
-  },
-  month: {
-    name: "dateBecameIPMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH],
-  },
-  year: {
-    name: "dateBecameIPYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-  },
+  dayInputName: "dateBecameIPDay",
+  monthInputName: "dateBecameIPMonth",
+  yearInputName: "dateBecameIPYear",
   condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
 };
 
@@ -105,23 +81,30 @@ const trustCreatedDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
     callBack: checkTrustDate,
-    errMsg: [],
   },
-  day: {
-    name: "createdDateDay",
-    callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY_OF_TRUST],
+  dayInputName: "createdDateDay",
+  monthInputName: "createdDateMonth",
+  yearInputName: "createdDateYear",
+};
+
+const historicalBOStartDateContext: dateContext = {
+  dateInput: {
+    name: "startDate",
+    callBack: checkHistoricalBOStartDate,
   },
-  month: {
-    name: "createdDateMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH_OF_TRUST],
+  dayInputName: "startDateDay",
+  monthInputName: "startDateMonth",
+  yearInputName: "startDateYear",
+};
+
+const historicalBOEndDateContext: dateContext = {
+  dateInput: {
+    name: "endDate",
+    callBack: checkHistoricalBOEndDate,
   },
-  year: {
-    name: "createdDateYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR_OF_TRUST],
-  }
+  dayInputName: "endDateDay",
+  monthInputName: "endDateMonth",
+  yearInputName: "endDateYear",
 };
 
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
@@ -129,3 +112,8 @@ export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsCont
 export const dateBecameIP = conditionalDateValidations(dateBecameIPContext);
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
+
+export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
+
+export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+

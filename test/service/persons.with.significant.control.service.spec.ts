@@ -36,7 +36,7 @@ describe('Get persons with significant control service that calls API for given 
     jest.clearAllMocks();
   });
 
-  test('responds with 200 and returns data in resource', async () => {
+  test('data returned on 200 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_PSC_RESPONSE);
 
     const resource = await getCompanyPsc(req, COMPANY_NUMBER);
@@ -47,7 +47,7 @@ describe('Get persons with significant control service that calls API for given 
     expect(resource).toEqual(MOCK_GET_COMPANY_PSC_RESOURCE);
   });
 
-  test('responds with 401 and logs error', async () => {
+  test('logs error on 401 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_PSC_UNAUTHORISED_RESPONSE);
 
     await expect(getCompanyPsc(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);
@@ -56,7 +56,7 @@ describe('Get persons with significant control service that calls API for given 
     expect(mockDebugRequestLog).not.toHaveBeenCalled();
   });
 
-  test('responds with 404 and returns undefined if no PSC data found', async () => {
+  test('undefined returned on 404 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_PSC_NOT_FOUND_RESPONSE);
 
     const resource = await getCompanyPsc(req, COMPANY_NUMBER);

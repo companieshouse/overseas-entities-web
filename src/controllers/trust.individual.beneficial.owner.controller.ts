@@ -62,7 +62,7 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    const trusteeId = req.params[config.ROUTE_PARAM_BENEFICIAL_OWNER_ID];
+    const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
 
     const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeFromSessionToPage(

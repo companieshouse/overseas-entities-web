@@ -187,9 +187,11 @@ export const UPDATE_MANAGING_OFFICER_CORPORATE_URL = UPDATE_AN_OVERSEAS_ENTITY_U
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
 export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
+export const ROUTE_PARAM_TRUSTEE_ID = "trusteeID";
 export const ID = "/:id"; // Same param name as the ID in the data model
 export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
 export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
+export const TRUSTEE_ID = `/:${ROUTE_PARAM_TRUSTEE_ID}`;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

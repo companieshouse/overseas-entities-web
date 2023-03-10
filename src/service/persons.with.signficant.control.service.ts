@@ -16,12 +16,12 @@ export const getCompanyPsc = async (
     companyNumber
   );
 
-  if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No company PSC data found for ${companyNumber}`);
-  } else if (response.httpStatusCode >= 400) {
-    throw createAndLogErrorRequest(req, `getCompanyPsc API request returned HTTP status code ${response.httpStatusCode}`);
-  } else {
+  if (response.httpStatusCode === 200) {
     logger.debugRequest(req, `Received company PSC data for ${companyNumber}`);
+  } else if (response.httpStatusCode === 404) {
+    logger.debugRequest(req, `No company PSC data found for ${companyNumber}`);
+  } else {
+    throw createAndLogErrorRequest(req, `getCompanyPsc API request returned HTTP status code ${response.httpStatusCode}`);
   }
 
   return response?.resource;

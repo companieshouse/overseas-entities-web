@@ -39,7 +39,7 @@ describe('Get company officers for given company number', () => {
     jest.clearAllMocks();
   });
 
-  test('responds with 200 and returns data', async () => {
+  test('data returned on 200 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_OFFICERS_RESPONSE);
 
     const resource = await getCompanyOfficers(req, COMPANY_NUMBER);
@@ -50,7 +50,7 @@ describe('Get company officers for given company number', () => {
     expect(resource).toEqual(MOCK_GET_COMPANY_OFFICERS_RESOURCE);
   });
 
-  test('responds with 404 and returns undefined', async () => {
+  test('undefined returned on 404 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_OFFICERS_NOT_FOUND_RESPONSE);
 
     const resource = await getCompanyOfficers(req, COMPANY_NUMBER);
@@ -59,7 +59,7 @@ describe('Get company officers for given company number', () => {
     expect(mockDebugRequestLog).toHaveBeenCalled();
   });
 
-  test('responds with 401 and logs error', async () => {
+  test('logs error on 401 response from API', async () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce(MOCK_GET_COMPANY_OFFICERS_UNAUTHORISED_RESPONSE);
 
     await expect(getCompanyOfficers(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);

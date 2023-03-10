@@ -60,7 +60,7 @@ export const principal_service_address_validations = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value) ),
 ];
 
-export type ErrorMessagesForURSaddress = Partial<{
+export type ErrorMessagesForURaddress = Partial<{
   propertyValueError: ErrorMessages,
   maxPropertyValueLengthError: ErrorMessages,
   propertyNameInvalidError: ErrorMessages,
@@ -79,7 +79,26 @@ export type ErrorMessagesForURSaddress = Partial<{
   postcodeInvalidCharacterError: ErrorMessages,
 }>;
 
-const defaultErrorMessagesForURSAddresses = {
+export type ErrorMessagesForURSaddress = {
+  propertyValueError: ErrorMessages,
+  maxPropertyValueLengthError: ErrorMessages,
+  propertyNameInvalidError: ErrorMessages,
+  addressLine1Error: ErrorMessages,
+  addressLine1LengthError: ErrorMessages,
+  addressLine1InvalidCharacterError: ErrorMessages,
+  addressLine2LengthError: ErrorMessages,
+  addressLine2InvalidCharacterError: ErrorMessages,
+  townValueError: ErrorMessages,
+  maxTownValueLengthError: ErrorMessages,
+  townInvalidCharacterError: ErrorMessages,
+  maxCountyValueLengthError: ErrorMessages,
+  countyInvalidCharacterError: ErrorMessages,
+  countryValueError: ErrorMessages,
+  postcodeLengthError: ErrorMessages,
+  postcodeInvalidCharacterError: ErrorMessages,
+};
+
+const defaultErrorMessagesForURAddresses: ErrorMessagesForURaddress = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER,
   maxPropertyValueLengthError: ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH,
   propertyNameInvalidError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS,
@@ -98,8 +117,10 @@ const defaultErrorMessagesForURSAddresses = {
   postcodeInvalidCharacterError: ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS,
 };
 
-export const usual_residential_address_validations = (errors: ErrorMessagesForURSaddress) => {
-  errors = { ...defaultErrorMessagesForURSAddresses, ...errors };
+const defaultErrorMessagesForURSAddresses: ErrorMessagesForURSaddress = defaultErrorMessagesForURAddresses as ErrorMessagesForURSaddress;
+
+export const usual_residential_address_validations = (errors: ErrorMessagesForURaddress = defaultErrorMessagesForURAddresses) => {
+  errors = { ...defaultErrorMessagesForURAddresses, ...errors };
   return [
     body("usual_residential_address_property_name_number")
       .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.propertyValueError)
@@ -127,7 +148,7 @@ export const usual_residential_address_validations = (errors: ErrorMessagesForUR
   ];
 };
 
-export const usual_residential_service_address_validations = (errors: Required<ErrorMessagesForURSaddress>) => {
+export const usual_residential_service_address_validations = (errors: ErrorMessagesForURSaddress = defaultErrorMessagesForURSAddresses) => {
   errors = { ...defaultErrorMessagesForURSAddresses, ...errors };
   return [
     body("service_address_property_name_number")

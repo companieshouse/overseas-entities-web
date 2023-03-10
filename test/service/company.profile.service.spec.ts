@@ -1,12 +1,12 @@
-jest.mock("../../../src/utils/logger");
-jest.mock("../../../src/utils/application.data");
-jest.mock("../../../src/service/retry.handler.service");
+jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/application.data");
+jest.mock("../../src/service/retry.handler.service");
 
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { Request } from "express";
 
-import { createAndLogErrorRequest } from "../../../src/utils/logger";
-import { makeApiCallWithRetry } from "../../../src/service/retry.handler.service";
+import { createAndLogErrorRequest } from "../../src/utils/logger";
+import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import {
   APPLICATION_DATA_MOCK,
   companyServiceNameOE,
@@ -14,8 +14,8 @@ import {
   ERROR,
   fnGetCompanyNameGetOE,
   getSessionRequestWithExtraData,
-} from "../../__mocks__/session.mock";
-import { getCompanyProfile } from "../../../src/service/company.profile";
+} from "../__mocks__/session.mock";
+import { getCompanyProfile } from "../../src/service/company.profile.service";
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);

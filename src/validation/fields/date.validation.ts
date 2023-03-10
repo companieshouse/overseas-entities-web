@@ -1,6 +1,8 @@
 import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
+  checkBirthDate,
+  checkDate,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
@@ -54,12 +56,12 @@ export const identity_check_date_validations = [
 const dateOfBirthValidationsContext: dateContext = {
   dateInput: {
     name: "dateOfBirth",
-    callBack: checkDateOfBirth,
+    callBack: checkBirthDate,
     errMsg: [],
   },
   day: {
     name: "dateOfBirthDay",
-    callBack: checkDateFieldDay,
+    callBack: checkDateFieldDayOfBirth,
     errMsg: [ErrorMessages.DAY_OF_BIRTH],
   },
   month: {
@@ -77,7 +79,7 @@ const dateOfBirthValidationsContext: dateContext = {
 const dateBecameIPContext: dateContextWithCondition = {
   dateInput: {
     name: "dateBecameIP",
-    callBack: checkStartDate,
+    callBack: checkDate,
     errMsg: [],
   },
   day: {
@@ -101,7 +103,7 @@ const dateBecameIPContext: dateContextWithCondition = {
 const createdDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
-    callBack: checkStartDate,
+    callBack: checkDate,
     errMsg: [],
   },
   day: {

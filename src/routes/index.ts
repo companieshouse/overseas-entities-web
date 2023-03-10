@@ -57,6 +57,7 @@ import {
   updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
+  updateSignOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate
@@ -306,6 +307,10 @@ router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.ge
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
 
+router.route(config.UPDATE_SIGN_OUT_URL)
+  .get(updateSignOut.get)
+  .post(...validator.signOut, checkValidations, updateSignOut.post);
+
 router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
   .all(
     authentication,
@@ -323,6 +328,12 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
+router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
+  .all(
+    authentication,
+  )
+  .get(updateCheckYourAnswers.get)
+  .post(updateCheckYourAnswers.post);
 router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.get);
 router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.post);
 

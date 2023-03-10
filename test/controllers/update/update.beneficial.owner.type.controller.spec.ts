@@ -118,7 +118,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
-      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
   });

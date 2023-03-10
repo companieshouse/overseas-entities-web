@@ -27,7 +27,7 @@ export enum ErrorMessages {
   BENEFICIAL_OWNER_OTHER_NAME="Enter the other legal entity’s name",
   BO_GOV_NAME = "Enter the name of the government or public authority",
   HISTORICAL_BENEFICIAL_OWNER_ROLE = "Select if the former beneficial owner is an individual or a legal entity",
-  HISTORICAL_BO_CORPORATE_NAME = "Enter the beneficial owner's corporate name",
+  HISTORICAL_BO_CORPORATE_NAME = "Enter the beneficial owner's name",
   HISTORICAL_BO_FIRST_NAME = "Enter the beneficial owner's first name",
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
 
@@ -188,7 +188,7 @@ export enum ErrorMessages {
   MAX_ROLE_LENGTH = "Role and responsibilities must be 256 characters or less",
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",
-  MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH = "Corporate name must be 50 characters or less",
+  MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH = "Legal entity’s name must be 160 characters or less",
   MAX_HISTORICAL_BO_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_HISTORICAL_BO_LAST_NAME_LENGTH = "Last name must be 50 characters or less",
 
@@ -221,7 +221,7 @@ export enum ErrorMessages {
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
   INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
-  HISTORICAL_BO_CORPORATE_NAME_INVALID_CHARACTERS = "Corporate name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  HISTORICAL_BO_CORPORATE_NAME_INVALID_CHARACTERS = "Legal entity's name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   HISTORICAL_BO_FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   HISTORICAL_BO_LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
 }

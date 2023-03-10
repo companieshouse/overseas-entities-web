@@ -176,12 +176,28 @@ const getIndividualTrusteesFromTrust = (
   if (trustId) {
     individuals = appData[TrustKey]?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+    if (individuals === undefined){
+      individuals = [] as IndividualTrustee[];
+    }
   } else {
     appData[TrustKey]?.map(trust => trust.INDIVIDUALS?.map(individual => {
       individuals.push(individual as IndividualTrustee);
     }));
   }
   return individuals;
+};
+
+const getIndividualTrustee = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId?: string,
+): IndividualTrustee => {
+  const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId);
+
+  if (individualTrustees.length === 0 || trusteeId === undefined) {
+    return {} as IndividualTrustee;
+  }
+  return individualTrustees.find(trustee => trustee.id === trusteeId) ?? {} as IndividualTrustee;
 };
 
 const getFormerTrusteesFromTrust = (
@@ -285,4 +301,5 @@ export {
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
   containsTrustData,
+  getIndividualTrustee,
 };

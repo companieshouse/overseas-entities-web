@@ -1,7 +1,7 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
-import { checkAllBirthDateFieldsForErrors, checkDateFieldsForErrors, checkBirthDate,
-  checkDate, checkDateFieldDay, checkDateFieldMonth, checkDateFieldYear, checkStartDate,
-  checkTrustDateFieldsForErrors, checkTrustDate } from '../../src/validation/custom.validation';
+import { checkBirthDate,
+  checkDate, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkStartDate,
+  checkTrustDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
@@ -31,23 +31,10 @@ describe('Test to validate date validator', () => {
       dateInput: {
         name: fieldNames[3],
         callBack: checkStartDate,
-        errMsg: []
       },
-      day: {
-        name: fieldNames[0],
-        callBack: checkDateFieldDay,
-        errMsg: [ErrorMessages.DAY]
-      },
-      month: {
-        name: fieldNames[1],
-        callBack: checkDateFieldMonth,
-        errMsg: [ErrorMessages.MONTH]
-      },
-      year: {
-        name: fieldNames[2],
-        callBack: checkDateFieldYear,
-        errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH]
-      }
+      dayInputName: fieldNames[0],
+      monthInputName: fieldNames[1],
+      yearInputName: fieldNames[2],
     };
 
     const sut = dateValidations(mockDateValidationsContext);
@@ -63,24 +50,14 @@ describe('Test to validate date validator', () => {
       dateInput: {
         name: fieldNames[3],
         callBack: checkStartDate,
-        errMsg: [],
       },
-      day: {
-        name: fieldNames[0],
-        callBack: checkDateFieldDay,
-        errMsg: [ErrorMessages.DAY],
-      },
-      month: {
-        name: fieldNames[1],
-        callBack: checkDateFieldMonth,
-        errMsg: [ErrorMessages.MONTH],
-      },
-      year: {
-        name: fieldNames[2],
-        callBack: checkDateFieldYear,
-        errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-      },
-      condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+      dayInputName: fieldNames[0],
+      monthInputName: fieldNames[1],
+      yearInputName: fieldNames[2],
+      condition: {
+        elementName: "type",
+        expectedValue: RoleWithinTrustType.INTERESTED_PERSON
+      }
     };
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
@@ -92,47 +69,6 @@ describe('Test to validate date validator', () => {
 });
 
 describe("test date method", () => {
-  const errMsgCheckAllDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE,
-    ErrorMessages.MONTH_AND_YEAR,
-    ErrorMessages.DAY_AND_YEAR,
-    ErrorMessages.DAY_AND_MONTH,
-    ErrorMessages.DAY,
-    ErrorMessages.MONTH,
-    ErrorMessages.YEAR,
-    ErrorMessages.DAY_LENGTH,
-    ErrorMessages.MONTH_LENGTH];
-
-  const errMsgcheckAllBirthDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_BIRTH,
-    ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
-    ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
-    ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
-    ErrorMessages.DAY_OF_BIRTH,
-    ErrorMessages.MONTH_OF_BIRTH,
-    ErrorMessages.YEAR_OF_BIRTH,
-    ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
-    ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH];
-
-  const errMsgcheckTrustDateFields: ErrorMessages[] = [ErrorMessages.ENTER_DATE_OF_TRUST,
-    ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
-    ErrorMessages.DAY_AND_YEAR_OF_TRUST,
-    ErrorMessages.DAY_AND_MONTH_OF_TRUST,
-    ErrorMessages.DAY_OF_TRUST,
-    ErrorMessages.MONTH_OF_TRUST,
-    ErrorMessages.YEAR_OF_TRUST,
-    ErrorMessages.DAY_LENGTH_OF_TRUST,
-    ErrorMessages.MONTH_LENGTH_OF_TRUST];
-
-  const testDateFieldCheck = (err: ErrorMessages[]) => [
-    ["", "", "", err[0]],
-    ["02", "", "", err[1]],
-    ["", "02", "", err[2]],
-    ["", "", "2009", err[3]],
-    ["", "10", "2009", err[4]],
-    ["10", "", "2009", err[5]],
-    ["10", "10", "", err[6]],
-    ["321", "10", "9999", err[7]],
-    ["10", "123", "9999", err[8]],
-  ];
 
   const errMsgcheckDate: ErrorMessages[] = [
     ErrorMessages.ENTER_DATE,
@@ -150,7 +86,7 @@ describe("test date method", () => {
   ];
 
   const errMsgcheckBirthDate: ErrorMessages[] = [
-    ErrorMessages.ENTER_DATE_OF_BIRTH,
+    ErrorMessages.ENTER_DATE_OF_BIRTH_INDIVIDUAL_BO,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
     ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
@@ -179,6 +115,36 @@ describe("test date method", () => {
     ErrorMessages.MONTH_OF_TRUST
   ];
 
+  const errMsgHistoricalBOStartDate: ErrorMessages[] = [
+    ErrorMessages.ENTER_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_MONTH_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_AND_MONTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_YEAR_LENGTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_START_DATE_HISTORICAL_BO,
+    ErrorMessages.START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO,
+    ErrorMessages.START_YEAR_HISTORICAL_BO,
+    ErrorMessages.START_DAY_HISTORICAL_BO,
+    ErrorMessages.START_MONTH_HISTORICAL_BO
+  ];
+
+  const errMsgHistoricalBOEndDate: ErrorMessages[] = [
+    ErrorMessages.ENTER_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_MONTH_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_AND_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_AND_MONTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO,
+    ErrorMessages.INVALID_END_DATE_HISTORICAL_BO,
+    ErrorMessages.END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO,
+    ErrorMessages.END_YEAR_HISTORICAL_BO,
+    ErrorMessages.END_DAY_HISTORICAL_BO,
+    ErrorMessages.END_MONTH_HISTORICAL_BO
+  ];
+
   const testDateCheck = (err: ErrorMessages[]) => [
     ["", "", "", err[0]],
     ["02", "", "", err[1]],
@@ -194,18 +160,6 @@ describe("test date method", () => {
     ["10", "", "9999", err[11]],
   ];
 
-  test.each(testDateFieldCheck(errMsgCheckAllDateFields))("should throw appropriate date errors for checkDateFieldsForErrors", ( _day, _month, _year, _err ) => {
-    expect(() => checkDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
-  });
-
-  test.each(testDateFieldCheck(errMsgcheckAllBirthDateFields))("should throw appropriate date errors for checkAllBirthDateFieldsForErrors", (_day, _month, _year, _err ) => {
-    expect(() => checkAllBirthDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
-  });
-
-  test.each(testDateFieldCheck(errMsgcheckTrustDateFields))("should throw appropriate date errors for checkTrustDateFieldsForErrors", (_day, _month, _year, _err ) => {
-    expect(() => checkTrustDateFieldsForErrors(_day, _month, _year)).toThrow(_err);
-  });
-
   test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {
     expect(() => checkDate(_day, _month, _year)).toThrow(_err);
   });
@@ -216,5 +170,25 @@ describe("test date method", () => {
 
   test.each(testDateCheck(errMsgcheckTrustDate))("should throw appropriate date errors for checkTrustDate", (_day, _month, _year, _err) => {
     expect(() => checkTrustDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOStartDate))("should throw appropriate date errors for checkHistoricalBOStartDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOStartDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOStartDate))("should throw appropriate date errors for checkHistoricalBOStartDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOStartDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each(testDateCheck(errMsgHistoricalBOEndDate))("should throw appropriate date errors for checkHistoricalBOEndDate", (_day, _month, _year, _err) => {
+    expect(() => checkHistoricalBOEndDate(_day, _month, _year)).toThrow(_err);
+  });
+
+  test.each([
+    [["", "", "2020"], ErrorMessages.DAY_AND_MONTH_OF_BIRTH],
+    [["02", "", ""], ErrorMessages.MONTH_AND_YEAR_OF_BIRTH],
+    [["", "02", ""], ErrorMessages.DAY_AND_YEAR_OF_BIRTH]
+  ])("test more than one date of birth field not missing", (date, err) => {
+    expect (() => checkMoreThanOneDateOfBirthFieldIsNotMissing(...date)).toThrow(err);
   });
 });

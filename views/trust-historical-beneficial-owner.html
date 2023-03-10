@@ -27,7 +27,7 @@
           label: 'Name',
           value: formData.corporate_name,
           classes: 'govuk-!-width-two-thirds',
-          error: errors.corporate_name
+          error: errors.corporate_name if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
         {% endset -%}
@@ -39,7 +39,7 @@
           label: 'First Name',
           value: formData.firstName,
           classes: 'govuk-!-width-two-thirds',
-          error: errors.firstName
+          error: errors.firstName if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -48,7 +48,7 @@
           label: 'Last Name',
           classes: 'govuk-!-width-two-thirds',
           value: formData.lastName,
-          error: errors.lastName
+          error: errors.lastName if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
         {% endset -%}
@@ -56,12 +56,13 @@
         {% set fieldParam = {
           name: 'type',
           label: 'Is the former beneficial owner an individual or a legal entity?',
-          error: errors.type,
+          error: errors.type if errors,
           value: formData.type,
           items: [
             {
               value: pageData.trusteeType.LEGAL_ENTITY,
               text: "Legal Entity",
+              checked: formData.type == pageData.trusteeType.LEGAL_ENTITY,
               conditional: {
                 html: legalEntityHtml
               }
@@ -69,6 +70,7 @@
             {
               value: pageData.trusteeType.INDIVIDUAL,
               text: "Individual",
+              checked: formData.type == pageData.trusteeType.INDIVIDUAL,
               conditional: {
                 html: individualBoHtml
               }
@@ -86,7 +88,7 @@
             'Year': formData.startDateYear
           },
           hint: 'For example, 27 3 2007',
-          error: errors.startDate
+          error: errors.startDate if errors
         } %}
         {% include "includes/inputs/date-input.html" %}
 
@@ -99,7 +101,7 @@
             'Year': formData.endDateYear
           },
           hint: 'For example, 28 5 2011',
-          error: errors.endDate
+          error: errors.endDate if errors
         } %}
         {% include "includes/inputs/date-input.html" %}
 

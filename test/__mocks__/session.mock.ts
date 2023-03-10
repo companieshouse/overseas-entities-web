@@ -1,3 +1,4 @@
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
@@ -997,6 +998,46 @@ export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl
     placeRegistered: "place",
     registrationNumber: "0000"
   }
+};
+
+export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
+  address: {
+    premises: "1 Acme Road",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
+    locality: "locality",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
+    region: "region",
+    country: "country"
+  },
+  appointedOn: "appointed",
+  countryOfResidence: "country1",
+  dateOfBirth: {
+    day: "1",
+    month: "2",
+    year: "1900"
+  },
+  ...DATE_OF_BIRTH,
+  formerNames: [],
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  },
+  links: {
+    officer: {
+      appointments: ""
+    }
+  },
+  name: "Jimmy Wabb",
+  nationality: "country1",
+  occupation: "occupation",
+  officerRole: "role",
+  resignedOn: "resigned"
 };
 
 export const TRUST_WITH_ID: Trust = {

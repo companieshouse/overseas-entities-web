@@ -352,7 +352,7 @@ const checkDateFieldLengthForErrors = (day: string, month: string, year: string,
   }
 };
 
-export type DateFieldErrors = {
+export type DateFieldErrors = Partial<{
   completelyEmptyDateError: ErrorMessages,
   noDayAndMonthError: ErrorMessages,
   noMonthAndYearError: ErrorMessages,
@@ -363,23 +363,37 @@ export type DateFieldErrors = {
   wrongDayLength: ErrorMessages,
   wrongMonthLength: ErrorMessages,
   wrongYearLength: ErrorMessages,
+}>;
+
+const defaultDateFieldErrors: DateFieldErrors = {
+  completelyEmptyDateError: ErrorMessages.ENTER_DATE,
+  noDayAndMonthError: ErrorMessages.DAY_AND_MONTH,
+  noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR,
+  noDayAndYearError: ErrorMessages.DAY_AND_YEAR,
+  noDayError: ErrorMessages.DAY,
+  noMonthError: ErrorMessages.MONTH,
+  noYear: ErrorMessages.YEAR,
+  wrongDayLength: ErrorMessages.DAY_LENGTH,
+  wrongMonthLength: ErrorMessages.MONTH_LENGTH,
+  wrongYearLength: ErrorMessages.YEAR_LENGTH,
 };
 
 const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  dateErrors = { ...defaultDateFieldErrors, ...dateErrors };
   if (dayStr === "" && monthStr === "" && yearStr === "") {
-    throw new Error(dateErrors.completelyEmptyDateError ?? ErrorMessages.ENTER_DATE);
+    throw new Error(dateErrors.completelyEmptyDateError);
   } else if (dayStr === "" && monthStr === "" && yearStr !== "") {
-    throw new Error(dateErrors.noDayAndMonthError ?? ErrorMessages.DAY_AND_MONTH);
+    throw new Error(dateErrors.noDayAndMonthError);
   } else if (dayStr !== "" && monthStr === "" && yearStr === "") {
-    throw new Error(dateErrors.noMonthAndYearError ?? ErrorMessages.MONTH_AND_YEAR);
+    throw new Error(dateErrors.noMonthAndYearError);
   } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
-    throw new Error(dateErrors.noDayAndYearError ?? ErrorMessages.DAY_AND_YEAR);
+    throw new Error(dateErrors.noDayAndYearError);
   } else if (dayStr === "") {
-    throw new Error(dateErrors.noDayError ?? ErrorMessages.DAY);
+    throw new Error(dateErrors.noDayError);
   } else if (monthStr === "") {
-    throw new Error(dateErrors.noMonthError ?? ErrorMessages.MONTH);
+    throw new Error(dateErrors.noMonthError);
   } else if (yearStr === "") {
-    throw new Error(dateErrors.noYear ?? ErrorMessages.YEAR);
+    throw new Error(dateErrors.noYear);
   } else {
     checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [
       dateErrors.wrongDayLength ?? ErrorMessages.DAY_LENGTH,

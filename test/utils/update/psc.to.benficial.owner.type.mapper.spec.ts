@@ -1,5 +1,5 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
-import { yesNoResponse } from '../../../src/model/data.types.model';
+import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
 import { pscMock } from './mocks';
@@ -33,6 +33,9 @@ describe("Test Mapping person of significant control to beneficial owner type", 
   test('map person of significant control to beneficial owner individual should return object', () => {
     expect(mapPscToBeneficialOwnerTypeIndividual(pscMock)).toEqual({
       id: "",
+      link: {
+        self: pscMock.links.self
+      },
       date_of_birth: {
         day: pscMock.dateOfBirth.day,
         month: pscMock.dateOfBirth.month,
@@ -43,9 +46,9 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       nationality: pscMock.nationality,
       second_nationality: undefined,
       start_date: pscMock.notifiedOn,
-      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
-      trustees_nature_of_control_types: pscMock.naturesOfControl,
-      beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
+      non_legal_firm_members_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      trustees_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      beneficial_owner_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
       is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.address_line_1,
@@ -56,27 +59,22 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         country: pscMock.address.region,
         county: pscMock.address.county,
       },
-      usual_residential_address: {
-        country: pscMock.address.region,
-        county: pscMock.address.county,
-        line_1: pscMock.address.address_line_1,
-        line_2: pscMock.address.address_line_2,
-        postcode: pscMock.address.postal_code,
-        property_name_number: pscMock.address.premises,
-        town: pscMock.address.locality,
-      },
+      usual_residential_address: {},
     });
   });
 
   test('map person of significant control to beneficial owner other  should return object', () => {
     expect(mapPscToBeneficialOwnerOther(pscMock)).toEqual({
       id: "",
+      link: {
+        self: pscMock.links.self
+      },
       name: pscMock.name,
-      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
       start_date: pscMock.notifiedOn,
-      trustees_nature_of_control_types: pscMock.naturesOfControl,
-      beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
-      is_service_address_same_as_principal_address: yesNoResponse.No,
+      non_legal_firm_members_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      trustees_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      beneficial_owner_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      is_service_address_same_as_principal_address: yesNoResponse.Yes,
       service_address: {
         line_1: pscMock.address.address_line_1,
         line_2: pscMock.address.address_line_2,
@@ -87,13 +85,13 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         county: pscMock.address.county,
       },
       principal_address: {
-        country: pscMock.address.region,
-        county: pscMock.address.county,
         line_1: pscMock.address.address_line_1,
         line_2: pscMock.address.address_line_2,
         postcode: pscMock.address.postal_code,
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
+        country: pscMock.address.region,
+        county: pscMock.address.county,
       },
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
@@ -107,11 +105,14 @@ describe("Test Mapping person of significant control to beneficial owner type", 
   test('map person of significant control to beneficial owner coperate (gov) should return object', () => {
     expect(mapPscToBeneficialOwnerGov(pscMock)).toEqual({
       id: "",
+      link: {
+        self: pscMock.links.self
+      },
       name: pscMock.name,
-      non_legal_firm_members_nature_of_control_types: pscMock.naturesOfControl,
       start_date: pscMock.notifiedOn,
-      beneficial_owner_nature_of_control_types: pscMock.naturesOfControl,
-      is_service_address_same_as_principal_address: yesNoResponse.No,
+      non_legal_firm_members_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      beneficial_owner_nature_of_control_types: NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+      is_service_address_same_as_principal_address: yesNoResponse.Yes,
       service_address: {
         line_1: pscMock.address.address_line_1,
         line_2: pscMock.address.address_line_2,

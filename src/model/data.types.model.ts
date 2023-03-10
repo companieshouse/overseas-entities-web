@@ -8,6 +8,10 @@ export interface Address {
   postcode?: string;
 }
 
+export interface Links {
+  self?: string;
+}
+
 export enum yesNoResponse {
   No = 0,
   Yes = 1

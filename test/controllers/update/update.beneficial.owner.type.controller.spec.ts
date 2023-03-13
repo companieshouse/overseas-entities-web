@@ -39,6 +39,8 @@ import { BeneficialOwnerTypeChoice, ManagingOfficerTypeChoice, BeneficialOwnerTy
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
+import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
+import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -83,6 +85,20 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetCompanyPscService).toHaveBeenCalled();
     });
 
+    test(`test that getCompanyPsc is not called again if it returns undefined`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        [BeneficialOwnerIndividualKey]: undefined,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      mockGetCompanyPscService.mockReturnValueOnce(undefined);
+
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalled();
+      expect([BeneficialOwnerIndividualKey]).toEqual(["beneficial_owners_individual"]);
+      expect([BeneficialOwnerOtherKey]).toEqual(["beneficial_owners_corporate"]);
+      expect([BeneficialOwnerGovKey]).toEqual(["beneficial_owners_government_or_public_authority"]);
+    });
+
     test(`test that undefined is returned if getCompanyPsc owner data is called without entity number`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -90,7 +106,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      expect(mockSetApplicationData).not.toHaveBeenCalled();
+      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test(`test individual benefical owner data returned when getCompanyPsc data kind is individual person with significant control`, async () => {

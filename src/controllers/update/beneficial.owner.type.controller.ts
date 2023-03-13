@@ -22,7 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
-    if (appData[BeneficialOwnerIndividualKey] === undefined) {
+    if (appData[BeneficialOwnerIndividualKey] === undefined && appData[BeneficialOwnerGovKey] === undefined && appData[BeneficialOwnerOtherKey] === undefined) {
       await retrieveBeneficialOwners(req, appData);
     }
 
@@ -83,5 +83,10 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
         setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
       }
     }
+  } else {
+    // preventing api call for
+    setApplicationData(session, [], BeneficialOwnerIndividualKey);
+    setApplicationData(session, [], BeneficialOwnerOtherKey);
+    setApplicationData(session, [], BeneficialOwnerGovKey);
   }
 };

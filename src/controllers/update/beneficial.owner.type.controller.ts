@@ -14,7 +14,6 @@ import { ApplicationData } from "../../model";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 
@@ -71,15 +70,15 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const raw = pscs as any;
   if (pscs !== undefined) {
-    for (const item of (pscs.items || [])) {
-      const psc: CompanyPersonWithSignificantControl = item;
-      if (raw.kind === "individual-person-with-significant-control"){
+    for (const item of (raw.items || [])) { //  kind does not exist on getCompanyPsc return type
+      const psc = item;
+      if (item.kind === "individual-person-with-significant-control"){
         const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
         setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
-      } else if (raw.kind === "corporate-entity-beneficial-owner") {
+      } else if (item.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
-      } else {
+      } else if (item.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
       }

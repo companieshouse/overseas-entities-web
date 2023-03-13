@@ -98,7 +98,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
-      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.kind = 'individual-person-with-significant-control');
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-person-with-significant-control');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
@@ -110,7 +110,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
-      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.kind = '');
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-with-significant-control');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
@@ -121,7 +121,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
-      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.kind = 'corporate-entity-beneficial-owner');
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'corporate-entity-beneficial-owner');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);

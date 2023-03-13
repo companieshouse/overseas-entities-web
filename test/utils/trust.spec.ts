@@ -487,33 +487,64 @@ describe('Trust Utils method tests', () => {
   describe('test generating id for trustees', () => {
 
     const test_trust_id = '342';
+    const second_test_trust_id = '546';
     const individualTrustee1 = { forename: "Fred", surname: "Bloggs" } as IndividualTrustee;
     const individualTrustee2 = { forename: "John", surname: "Doe" } as IndividualTrustee;
+    const corporateTrustee1 = { name: "Orange" } as TrustCorporate;
+    const corporateTrustee2 = { name: "Apple" } as TrustCorporate;
+    const historicBoTrustee1 = { ceased_date_day: "1", ceased_date_month: "2" } as TrustHistoricalBeneficialOwner;
+    const historicBoTrustee2 = { ceased_date_day: "2", ceased_date_month: "4" } as TrustHistoricalBeneficialOwner;
+
     const appData = {
       [TrustKey]: [{
         'trust_id': test_trust_id,
         'CORPORATES': [] as TrustCorporate[],
         'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
         'HISTORICAL_BO': [] as TrustHistoricalBeneficialOwner[],
-      }]
+      }, {
+        'trust_id': second_test_trust_id,
+        'CORPORATES': [ corporateTrustee1, corporateTrustee2 ] as TrustCorporate[],
+        'INDIVIDUALS': [] as TrustIndividual[],
+        'HISTORICAL_BO': [ historicBoTrustee1, historicBoTrustee2 ] as TrustHistoricalBeneficialOwner[],
+      }
+      ]
     } as ApplicationData;
 
-    test("test ids are added for simple app data with one trust and just individual trusees", () => {
+    test("test ids are added for multi-trust app data all trusees types", () => {
+
       const trusts = appData.trusts ?? [];
+
       const trust = trusts[0];
       let individualTrustees = trust.INDIVIDUALS ?? [];
       expect(individualTrustees[0]).not.toHaveProperty('id');
       expect(individualTrustees[1]).not.toHaveProperty('id');
 
+      const trust2 = trusts[1];
+      let corporateTrustees2 = trust2.CORPORATES ?? [];
+      expect(corporateTrustees2[0]).not.toHaveProperty('id');
+      expect(corporateTrustees2[1]).not.toHaveProperty('id');
+      let historicTrustees2 = trust2.HISTORICAL_BO ?? [];
+      expect(historicTrustees2[0]).not.toHaveProperty('id');
+      expect(historicTrustees2[1]).not.toHaveProperty('id');
+
       generateTrusteeIds(appData);
 
-      // the references are updated in the trustee arrays for these changes
+      // the trustee array references are updated in generateTrusteeIds
       individualTrustees = trust.INDIVIDUALS ?? [];
       expect(individualTrustees[0]).toHaveProperty('id');
       expect(individualTrustees[1]).toHaveProperty('id');
 
+      corporateTrustees2 = trust2.CORPORATES ?? [];
+      expect(corporateTrustees2[0]).toHaveProperty('id');
+      expect(corporateTrustees2[1]).toHaveProperty('id');
+      historicTrustees2 = trust2.HISTORICAL_BO ?? [];
+      expect(historicTrustees2[0]).toHaveProperty('id');
+      expect(historicTrustees2[1]).toHaveProperty('id');
     });
 
+  });
+  test("no trust data so nothing happens in generate trust ids", () => {
+    generateTrusteeIds({});
   });
 
 });

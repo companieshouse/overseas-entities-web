@@ -780,6 +780,8 @@ export const TRUST_DATA: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUST_DATA_INVALID: string = "abc";
+
 export const TRUST_DATA_NO_NAME: string = `[{
   "creation_date_day": "31",
   "creation_date_month": "12",
@@ -859,6 +861,12 @@ export const TRUSTS_ADD_MULTIPLE_BENEFICIAL_OWNERS = {
   add: "add",
   beneficialOwners: ["123", "456"],
   [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_ADD_INVALID = {
+  add: "add",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_INVALID
 };
 
 export const TRUSTS_ADD_NO_NAME = {

@@ -26,7 +26,7 @@ import {
   TRUSTS_EMPTY_TRUST_DATA,
   TRUSTS_EMPTY_CHECKBOX,
   TRUSTS_ADD_LEADING_AND_TRAILING_WHITESPACE,
-  TRUSTS_ADD
+  TRUSTS_ADD, TRUSTS_ADD_INVALID
 } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -103,6 +103,20 @@ describe("TRUST INFORMATION controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.TRUST_INFO_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`trust information not in valid json format`, async () => {
+      mockPrepareData.mockImplementationOnce( () => TRUSTS_ADD_INVALID );
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_NO_TRUST_NAME_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(undefined);
+      const bo = BENEFICIAL_OWNER_OTHER_OBJECT_MOCK;
+      bo.trust_ids = undefined;
+      mockGetFromApplicationData.mockReturnValue(bo);
+      const resp = await request(app).post(config.TRUST_INFO_URL).send(TRUSTS_ADD_INVALID);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.TRUST_DATA_INVALID_FORMAT);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`mandatory field missing: trust name`, async () => {

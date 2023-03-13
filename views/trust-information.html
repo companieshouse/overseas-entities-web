@@ -16,7 +16,11 @@
 
 {% set trustAdded %}
   {% if errors and trustsAddedSoFar %}
-    ({{trustsAddedSoFar.length}} Trust information added so far)
+    {% if trustsAddedSoFar.length > 0 %}
+        ({{trustsAddedSoFar.length}} Trust information added so far)
+    {% else %}
+        (No Trust information added so far)
+    {% endif %}
   {% elif trusts.length %}
     ({{trusts.length}} Trust information added so far)
   {% else %}
@@ -103,7 +107,7 @@
             },
             classes: "govuk-button--secondary"
           }) }}
-        
+
           {{trustAdded}}
         </div>
 

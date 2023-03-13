@@ -312,6 +312,10 @@ export const checkTrustFields = (req) => {
     throw new Error(ErrorMessages.TRUST_DATA_EMPTY);
   }
 
+  if (!isValidJson(trustsJson)) {
+    throw new Error(ErrorMessages.TRUST_DATA_INVALID_FORMAT);
+  }
+
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
   const addressMaxLength = 50;
 
@@ -320,6 +324,15 @@ export const checkTrustFields = (req) => {
     checkTrustName(trust);
     checkIndividualsAddress(trust, addressMaxLength);
     checkCorporatesAddress(trust, addressMaxLength);
+  }
+  return true;
+};
+
+const isValidJson = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
   }
   return true;
 };

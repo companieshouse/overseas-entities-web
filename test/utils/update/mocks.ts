@@ -1,5 +1,4 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
-import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 
 export const companyDetailsMock: CompanyProfile = {
@@ -45,42 +44,6 @@ export const companyDetailsMock: CompanyProfile = {
     overdue: false
   },
   links: {}
-};
-
-export const pscMock: CompanyPersonWithSignificantControl = {
-  nameElements: {
-    forename: "Random",
-    surname: "Person"
-  },
-  name: "Mr Random Notreal Person",
-  notifiedOn: "2016-04-06",
-  nationality: "British",
-  address: {
-    region: "country1",
-    county: undefined,
-    postal_code: "CF14 3UZ",
-    premises: "Companies House",
-    locality: "Limavady",
-    address_line_1: "",
-    address_line_2: "",
-  },
-  countryOfResidence: "Wales",
-  dateOfBirth: {
-    day: "1",
-    month: "2",
-    year: "1900"
-  },
-  etag: '',
-  links: {
-    self: "",
-    statement: ""
-  },
-  identification: {
-    legalAuthority: "",
-    legalForm: "",
-    placeRegistered: "",
-    registrationNumber: ""
-  },
 };
 
 export const managingOfficerMock: CompanyOfficer = {

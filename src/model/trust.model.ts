@@ -35,7 +35,7 @@ export interface Trust {
   CORPORATES?: TrustCorporate[];
 }
 
-interface TrustIndividual {
+export interface TrustIndividual {
   id?: string;
   type: RoleWithinTrustType;
   forename: string;

@@ -78,7 +78,7 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE,
     ErrorMessages.YEAR_LENGTH,
     ErrorMessages.INVALID_DATE,
-    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY,
+    ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON,
     ErrorMessages.YEAR,
     ErrorMessages.DAY,
     ErrorMessages.MONTH

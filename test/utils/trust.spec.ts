@@ -17,6 +17,7 @@ import {
   getFormerTrusteesFromTrust,
   checkEntityRequiresTrusts,
   getTrustLandingUrl,
+  generateTrusteeIds,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -479,6 +480,38 @@ describe('Trust Utils method tests', () => {
 
       const result = getTrustLandingUrl(appData);
       expect(result).toEqual(`${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`);
+    });
+
+  });
+
+  describe('test generating id for trustees', () => {
+
+    const test_trust_id = '342';
+    const individualTrustee1 = { forename: "Fred", surname: "Bloggs" } as IndividualTrustee;
+    const individualTrustee2 = { forename: "John", surname: "Doe" } as IndividualTrustee;
+    const appData = {
+      [TrustKey]: [{
+        'trust_id': test_trust_id,
+        'CORPORATES': [] as TrustCorporate[],
+        'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        'HISTORICAL_BO': [] as TrustHistoricalBeneficialOwner[],
+      }]
+    } as ApplicationData;
+
+    test("test ids are added for simple app data with one trust and just individual trusees", () => {
+      const trusts = appData.trusts ?? [];
+      const trust = trusts[0];
+      let individualTrustees = trust.INDIVIDUALS ?? [];
+      expect(individualTrustees[0]).not.toHaveProperty('id');
+      expect(individualTrustees[1]).not.toHaveProperty('id');
+
+      generateTrusteeIds(appData);
+
+      // the references are updated in the trustee arrays for these changes
+      individualTrustees = trust.INDIVIDUALS ?? [];
+      expect(individualTrustees[0]).toHaveProperty('id');
+      expect(individualTrustees[1]).toHaveProperty('id');
+
     });
 
   });

@@ -23,7 +23,8 @@ import {
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -71,7 +72,6 @@ describe("Sign Out controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.SIGN_OUT_URL);
 

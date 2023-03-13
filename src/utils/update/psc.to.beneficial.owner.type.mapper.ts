@@ -95,7 +95,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
             }
             break;
           default:
-            throw new Error("INVALID TYPE");
+            throw new Error("INVALID NATURE OF CONTROL TYPE");
       }
     }
   });
@@ -107,7 +107,7 @@ enum BoTypes {
   NON_LEGAL_NATURE_OF_CONTROL = "NonLegalNatureOfControl",
 }
 
-enum controlMap {
+export enum controlMap {
   OWNERSHIP_MORE_THAN_25_PERCENT_SHARE_ENTITY = 'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
   VOTING_RIGHT_MORE_THAN_25_PERCENT_SHARE_ENTITY = 'voting-rights-more-than-25-percent-registered-overseas-entity',
   RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS = 'right-to-appoint-and-remove-directors-registered-overseas-entity',

@@ -31,13 +31,14 @@ import {
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
-  ERROR
+  ERROR,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerTypeChoice, ManagingOfficerTypeChoice, BeneficialOwnerTypeKey } from '../../../src/model/beneficial.owner.type.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
+import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -63,7 +64,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
+    test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
@@ -80,7 +81,26 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).toHaveBeenCalled();
-      expect(mockSetApplicationData).toHaveBeenCalled();
+    });
+
+    test(`test data returned for retrieved getCompanyPsc owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        [BeneficialOwnerIndividualKey]: undefined
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(1);
+    });
+
+    test(`test that undefined is returned if getCompanyPsc owner data is called without entity number`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerIndividualKey]: undefined
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetApplicationData).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCopmanyPsc if BeneficialOwnerIndividualKey exists`, async () => {

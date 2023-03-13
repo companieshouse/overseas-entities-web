@@ -8,11 +8,15 @@ import {
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { EntityNumberKey } from "../../model/data.types.model";
+import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
+import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,10 +67,22 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 };
 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const session = req.session as Session;
-
-  // setting key to [] for all scenarios right now
-  // UAR-337 to update
-  setApplicationData(session, [], BeneficialOwnerIndividualKey);
+  const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
+  const raw = pscs as any;
+  if (pscs !== undefined) {
+    for (const item of (pscs.items || [])) {
+      const psc: CompanyPersonWithSignificantControl = item;
+      if (raw.kind === "individual-person-with-significant-control"){
+        const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
+        setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
+      } else if (raw.kind === "corporate-entity-beneficial-owner") {
+        const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+        setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
+      } else {
+        const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+        setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
+      }
+    }
+  }
 };

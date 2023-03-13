@@ -102,7 +102,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     });
   });
 
-  test('map person of significant control to beneficial owner coperate (gov) should return object', () => {
+  test('map person of significant control to beneficial owner corporate (gov) should return object', () => {
     expect(mapPscToBeneficialOwnerGov(pscMock)).toEqual({
       id: "",
       link: {

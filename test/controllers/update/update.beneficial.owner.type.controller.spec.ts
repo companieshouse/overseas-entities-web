@@ -70,7 +70,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-        [BeneficialOwnerIndividualKey]: undefined
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce({});
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -88,6 +90,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`test that getCompanyPsc is not called again if it returns undefined`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       mockGetCompanyPscService.mockReturnValueOnce(undefined);
@@ -102,7 +106,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`test that undefined is returned if getCompanyPsc owner data is called without entity number`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
-        [BeneficialOwnerIndividualKey]: undefined
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
@@ -111,7 +117,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`test individual benefical owner data returned when getCompanyPsc data kind is individual person with significant control`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
-        [BeneficialOwnerIndividualKey]: undefined
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-person-with-significant-control');
@@ -123,7 +132,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`test Other benefical owner data returned when getCompanyPsc data kind is other`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
-        [BeneficialOwnerIndividualKey]: undefined
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-with-significant-control');
@@ -134,7 +146,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`test corporate benefical owner data returned when getCompanyPsc data kind is corporate entity beneficial owner`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
-        [BeneficialOwnerIndividualKey]: undefined
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'corporate-entity-beneficial-owner');

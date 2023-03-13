@@ -34,7 +34,13 @@
          Et harum quidem rerum facilis est et expedita distinctio.
       </p>
       <form method="post">
-        {% include "includes/continue-button.html" %}
+        {{ govukButton({
+          text: "Continue",
+           attributes: {
+             "id": "submit",
+              "onclick": "_paq.push(['trackGoal', '3'])"
+            }
+         }) }}
       </form>
     </div>
   </div>

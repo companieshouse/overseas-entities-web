@@ -246,10 +246,10 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
   return true;
 };
 
-export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
-  checkDateFieldsForErrors({} as DateFieldErrors, dayStr, monthStr, yearStr);
+export const checkDateInterestedPerson = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON } as DateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-  checkDateIsInPast(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY, dayStr, monthStr, yearStr);
+  checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
 

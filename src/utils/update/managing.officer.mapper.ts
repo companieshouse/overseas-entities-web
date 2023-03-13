@@ -1,5 +1,5 @@
 import { mapAddress, isSameAddress } from "./mapper.utils";
-import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { CompanyOfficer, FormerName } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
 import { InputDate, yesNoResponse } from "../../model/data.types.model";
@@ -10,19 +10,16 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
   const service_address = mapAddress(officer.address);
   const address = mapAddress(officer.address);
   const names = splitNames(officer.name);
+  const formernames = getFormerNames(officer.formerNames);
 
   return {
     id: raw.links?.self,
-    links: {
-      self: raw.links?.self
-    },
     first_name: names[0],
     last_name: names[1],
     has_former_names: raw.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
-    former_names: undefined,
+    former_names: formernames,
     date_of_birth: mapDateOfBirth(officer),
     nationality: officer.nationality,
-    second_nationality: undefined,
     // appointed_on: officer.appointedOn,
     usual_residential_address: address,
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
@@ -40,9 +37,6 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
 
   return {
     id: raw.links?.self,
-    links: {
-      self: raw.links?.self
-    },
     name: officer.name,
     principal_address: address,
     is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
@@ -53,8 +47,6 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     public_register_name: officer.identification?.placeRegistered,
     registration_number: officer.identification?.registrationNumber,
     role_and_responsibilities: officer.officerRole,
-    contact_full_name: undefined,
-    contact_email: undefined
   };
 };
 
@@ -66,12 +58,38 @@ const mapDateOfBirth = (officer: CompanyOfficer) => {
   } as InputDate;
 };
 
-const splitNames = (officerName: string) => {
+export const splitNames = (officerName: string) => {
   if (officerName === undefined) {
     const names = ["", ""];
     return names;
   } else {
     const names = officerName.split(" ");
-    return names;
+    if (names.length > 2) {
+      const firstAndMiddleName = names[0].concat(" " + names[1]);
+      names.shift;
+      names[0] = firstAndMiddleName;
+      return names;
+    } else {
+      return names;
+    }
+  }
+};
+
+export const getFormerNames = (formerNames?: FormerName[]) => {
+
+  let allFormerNames;
+
+  if (formerNames !== undefined) {
+    for (let loop = 0; loop < formerNames.length; loop++) {
+      const forenames = formerNames[loop].forenames;
+      const surname = formerNames[loop].surname;
+      const holder = forenames?.concat(" " + surname);
+      if (loop === 0) {
+        allFormerNames = holder;
+      } else {
+        allFormerNames += ", " + holder;
+      }
+    }
+    return allFormerNames;
   }
 };

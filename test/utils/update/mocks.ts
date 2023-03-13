@@ -95,14 +95,14 @@ export const managingOfficerMock: CompanyOfficer = {
     region: "region",
     country: "country"
   },
-  // appointedOn: "appointed",
+  appointedOn: "appointed",
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
     month: "2",
     year: "1900"
   },
-  formerNames: [],
+  formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
   identification: {
     legalForm: "all forms",
     legalAuthority: "country2",
@@ -115,7 +115,7 @@ export const managingOfficerMock: CompanyOfficer = {
       appointments: ""
     }
   },
-  name: "Jimmy Wabb",
+  name: "Jimmy John Wabb",
   nationality: "country1",
   occupation: "occupation",
   officerRole: "role",

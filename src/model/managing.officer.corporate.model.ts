@@ -1,4 +1,4 @@
-import { Address, yesNoResponse, Links } from "./data.types.model";
+import { Address, yesNoResponse } from "./data.types.model";
 
 export const ManagingOfficerCorporateKey: string = "managing_officers_corporate";
 export const ManagingOfficerCorporateKeys: string[] = [
@@ -19,7 +19,6 @@ export const ManagingOfficerCorporateKeys: string[] = [
 
 export interface ManagingOfficerCorporate {
   id: string;
-  links?: Links;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

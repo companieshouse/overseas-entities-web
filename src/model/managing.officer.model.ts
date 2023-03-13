@@ -1,4 +1,4 @@
-import { Address, InputDate, yesNoResponse, Links } from "./data.types.model";
+import { Address, InputDate, yesNoResponse } from "./data.types.model";
 
 export const ManagingOfficerKey = "managing_officers_individual";
 
@@ -24,7 +24,6 @@ export const ManagingOfficerKeys: string[] = [
 
 export interface ManagingOfficerIndividual {
   id: string
-  links?: Links
   first_name?: string
   last_name?: string
   has_former_names?: yesNoResponse

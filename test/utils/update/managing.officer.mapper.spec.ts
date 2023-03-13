@@ -1,10 +1,8 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { mapToManagingOfficer, mapToManagingOfficerCorporate } from '../../../src/utils/update/managing.officer.mapper';
+import { mapToManagingOfficer, mapToManagingOfficerCorporate, splitNames, getFormerNames } from '../../../src/utils/update/managing.officer.mapper';
 import { MANAGING_OFFICER_MOCK_MAP_DATA } from '../../__mocks__/session.mock';
 import { managingOfficerMock } from './mocks';
-
-const names = managingOfficerMock.name.split(" ");
 
 describe("Test mapping to managing officer", () => {
 
@@ -27,20 +25,16 @@ describe("Test mapping to managing officer", () => {
   test('map officer data to managing officer should return object', () => {
     expect(mapToManagingOfficer(managingOfficerMock)).toEqual({
       id: undefined,
-      links: {
-        self: undefined
-      },
-      first_name: names[0],
-      last_name: names[1],
+      first_name: splitNames(managingOfficerMock.name)[0],
+      last_name: splitNames(managingOfficerMock.name)[1],
       has_former_names: yesNoResponse.Yes,
-      former_names: undefined,
+      former_names: getFormerNames(managingOfficerMock.formerNames),
       date_of_birth: {
         day: managingOfficerMock.dateOfBirth?.day,
         month: managingOfficerMock.dateOfBirth?.month,
         year: managingOfficerMock.dateOfBirth?.year
       },
       nationality: managingOfficerMock.nationality,
-      second_nationality: undefined,
       // appointed_on: managingOfficerMock.appointedOn,
       usual_residential_address: {
         property_name_number: managingOfficerMock.address.premises,
@@ -69,9 +63,6 @@ describe("Test mapping to managing officer", () => {
   test('map officer data to managing officer corporate should return object', () => {
     expect(mapToManagingOfficerCorporate(managingOfficerMock)).toEqual({
       id: undefined,
-      links: {
-        self: undefined
-      },
       name: managingOfficerMock.name,
       principal_address: {
         property_name_number: managingOfficerMock.address.premises,
@@ -98,8 +89,6 @@ describe("Test mapping to managing officer", () => {
       public_register_name: managingOfficerMock.identification?.placeRegistered,
       registration_number: managingOfficerMock.identification?.registrationNumber,
       role_and_responsibilities: managingOfficerMock.officerRole,
-      contact_full_name: undefined,
-      contact_email: undefined
     });
   });
 });

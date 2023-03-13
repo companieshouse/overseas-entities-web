@@ -7,7 +7,7 @@ import { CompanyPersonsWithSignificantControlResource } from "@companieshouse/ap
 export const getCompanyPsc = async (
   req: Request,
   companyNumber: string,
-): Promise<CompanyPersonsWithSignificantControlResource | undefined> => {
+): Promise<CompanyPersonsWithSignificantControlResource> => {
   const response = await makeApiCallWithRetry(
     "companyPsc",
     "getCompanyPsc",

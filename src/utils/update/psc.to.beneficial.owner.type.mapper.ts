@@ -186,6 +186,6 @@ type AddressMatches = {
   (address1: OfficeAddress, address2?: OfficeAddress): boolean;
 };
 
-const isSameAddress: AddressMatches = (address1?: any, address2?: any) => {
-  return !address2 || Object.keys(address1).every(key => (address1 as any)[key] === (address2 as any)[key]);
+export const isSameAddress: AddressMatches = (address1: any, address2?: any) => {
+  return !address2 || Object.keys(address1).every(key => address1[key] === address2[key]);
 };

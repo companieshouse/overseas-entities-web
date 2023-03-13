@@ -5,6 +5,7 @@ import { ANY_MESSAGE_ERROR } from "./text.mock";
 export const MOCK_GET_COMPANY_PSC_RESOURCE = {
   "active_count": '1',
   "ceased_count": '',
+  "kind": "individual-person-with-significant-control",
   "items": [
     {
       "natures_of_control": [

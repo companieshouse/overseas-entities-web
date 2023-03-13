@@ -7,6 +7,7 @@ jest.mock('../../src/service/payment.service');
 jest.mock('../../src/utils/application.data');
 jest.mock("../../src/utils/feature.flag" );
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/trusts");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -44,6 +45,7 @@ import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey 
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
+import { generateTrusteeIds } from '../../src/utils/trusts';
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -66,6 +68,8 @@ mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockGenerateTrusteeIds = generateTrusteeIds as jest.Mock;
 
 describe("Resume submission controller", () => {
 
@@ -107,6 +111,7 @@ describe("Resume submission controller", () => {
     expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    expect(mockGenerateTrusteeIds).toHaveBeenCalledTimes(1);
   });
 
   test(`Redirect to ${SOLD_LAND_FILTER_PAGE} page after Resuming the OverseasEntity with Overseas Entity DueDiligence object`, async () => {
@@ -161,6 +166,7 @@ describe("Resume submission controller", () => {
     expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    expect(mockGenerateTrusteeIds).toHaveBeenCalledTimes(1);
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {

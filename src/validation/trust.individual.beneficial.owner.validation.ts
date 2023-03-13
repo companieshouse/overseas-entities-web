@@ -25,7 +25,7 @@ export const trustIndividualBeneficialOwner = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
   body("surname")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAST_NAME_INDIVIDUAL_BO)
-    .isLength({ max: 160 })
+    .isLength({ max: 50 })
     .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
 

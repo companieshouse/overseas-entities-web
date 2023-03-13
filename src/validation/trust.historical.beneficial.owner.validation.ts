@@ -10,7 +10,7 @@ export const trustHistoricalBeneficialOwner = [
   body("corporate_name")
     .if(body("type").equals(TrusteeType.LEGAL_ENTITY))
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.HISTORICAL_BO_CORPORATE_NAME)
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.HISTORICAL_BO_CORPORATE_NAME_INVALID_CHARACTERS),
   body("firstName")
     .if(body("type").equals(TrusteeType.INDIVIDUAL))

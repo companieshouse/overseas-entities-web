@@ -11,6 +11,7 @@
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
+
       {% include "includes/list/errors.html" %}
 
       <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
@@ -21,15 +22,15 @@
           name: 'name',
           label: 'What is the name of the trust?',
           hint: 'If the trust does not have a name, give a description that it can be identified by.',
-          value: formData.name,
-          error: errors.name
+          value: formData.name | truncate(160),
+          error: errors.name if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
           name: 'createdDate',
           label: 'When was the trust created?',
-          error: errors.createdDate,
+          error: errors.createdDate if errors,
           value: {
             'Day': formData.createdDateDay,
             'Month': formData.createdDateMonth,
@@ -38,59 +39,58 @@
         } %}
         {% include "includes/inputs/date-input.html" %}
 
-        {% set fieldParam = {
-          name: 'hasAllInfo',
-          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
-          error: errors.hasAllInfo,
-          items: [
-            {
-              value: 1,
-              text: 'Yes',
-              checked: formData.hasAllInfo == 1
-            },
-            {
-              value: 0,
-              text: 'No',
-              checked: formData.hasAllInfo == 0
-            }
-          ]
-        } %}
-        {% include "includes/inputs/radio-input.html" %}
-
         {% set boItems = [] %}
+        {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
         {% for bo in pageData.beneficialOwners %}
           {% set boItems = (
             boItems.push({
               id: bo.id,
               value: bo.id,
               text: bo.name,
-              checked: true if bo.id in formData.beneficialOwnersIds
+              checked: true if bo.id in beneficialOwnersIds
             }),
             boItems
             ) %}
         {% endfor %}
-
         {% if boItems | length %}
           {% set fieldParam = {
             name: 'beneficialOwnersIds',
             label: 'Which of the overseas entity’s beneficial owners are trustees of this trust?',
             hint: 'Select all that apply. You can add more later.',
-            error: errors.beneficialOwner,
+            error: errors.beneficialOwnersIds if errors,
             items: boItems
           } %}
-          {% include "includes/inputs/checkbox-input.html" %}
+        {% include "includes/inputs/checkbox-input.html" %}
         {% endif %}
+
+        {% set fieldParam = {
+          name: 'hasAllInfo',
+          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
+          error: errors.hasAllInfo if errors,
+          items: [
+            {
+              value: '1',
+              text: 'Yes',
+              checked: formData.hasAllInfo == '1'
+            },
+            {
+              value: '0',
+              text: 'No',
+              checked: formData.hasAllInfo == '0'
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
 
         {{ govukInsetText({
           html: '
-            <h2 class="govuk-heading-m">Information shown on the public register</h2>
-            <p>None of the information you provide about the trust will be shown on the public Register of Overseas Entities. However, it may be shared with HMRC.</p>
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
           '
         }) }}
 
         <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
-
-        {% include "includes/continue-button.html" %}
+        {% include "includes/save-and-continue-button.html" %}
       </form>
     </div>
   </div>

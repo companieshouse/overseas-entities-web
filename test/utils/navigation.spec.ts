@@ -154,8 +154,58 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
   });
 
+  test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_FILING_DATE_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage();
+    expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 });

@@ -1,3 +1,4 @@
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -11,23 +12,50 @@ import {
   TrustCorporate,
 } from "../model/trust.model";
 
-// Checks whether any beneficial owners have trust data
-const checkEntityHasTrusts = (appData: ApplicationData): boolean => {
+/**
+ * Checks whether any beneficial owners requires trust data due to at least one of them
+ * having a trustee "nature of control" of the overseas entity
+ *
+ * @param appData Application Data
+ * @returns 'true' if any BO has a trustee "nature of control"
+ */
+const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
   if (appData) {
-    const allBenficialOwnersToCheck: (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] = [
-      appData.beneficial_owners_individual,
-      appData.beneficial_owners_corporate,
-    ];
+    const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
 
     for (const benficialOwners of allBenficialOwnersToCheck) {
       if (benficialOwners) {
-        if (containsTrusts(benficialOwners)) {
+        if (containsTrusteeNatureOfControl(benficialOwners)) {
           return true;
         }
       }
     }
   }
   return false;
+};
+
+/**
+ * Return the correct first Trust page in the trust journey depending
+ * on whether there is already any trust data.
+ *
+ * @param appData Application Data
+ * @returns string URL to go to when starting the trust journey
+ */
+const getTrustLandingUrl = (appData: ApplicationData): string => {
+
+  if (containsTrustData(getTrustArray(appData))) {
+    // Once naviation changes are agreed the following will change
+    return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
+  }
+
+  return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+};
+
+const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {
+  return [
+    appData.beneficial_owners_individual,
+    appData.beneficial_owners_corporate,
+  ];
 };
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
@@ -50,15 +78,19 @@ const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[]
   return bo_list;
 };
 
-const containsTrusts = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
+const containsTrusteeNatureOfControl = (beneficialOwners: BeneficialOwnerIndividual[] | BeneficialOwnerOther[]): boolean => {
   return beneficialOwners.some(bo => bo.trustees_nature_of_control_types?.length);
+};
+
+const containsTrustData = (trusts: Trust[]): boolean => {
+  return (trusts.length > 0);
 };
 
 /**
  * Get Trust object from application object in session
  *
  * @param appData Application Data in Session
- * @param trustId Trust details to save
+ * @param trustId Trust ID find (returns empty object if not found)
  */
 const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
   return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
@@ -77,21 +109,21 @@ const getTrustArray = (appData: ApplicationData): Trust[] => {
  * Update trust in application data
  *
  * @param appData Application Data in Session
- * @param trustDetails Trust details to save
+ * @param trustToSave Trust (with any trustees) to save
  */
-const saveTrustInApp = (appData: ApplicationData, trustDetails: Trust): ApplicationData => {
+const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
   const trusts: Trust[] = appData[TrustKey] ?? [];
 
   //  get index of trust in trusts array, if exists
-  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustDetails.trust_id);
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
 
   if (trustIndex >= 0) {
     //  update existing trust in array
-    trusts[trustIndex] = trustDetails;
+    trusts[trustIndex] = trustToSave;
 
   } else {
     // add new trust to array
-    trusts.push(trustDetails);
+    trusts.push(trustToSave);
   }
 
   return {
@@ -144,12 +176,28 @@ const getIndividualTrusteesFromTrust = (
   if (trustId) {
     individuals = appData[TrustKey]?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+    if (individuals === undefined){
+      individuals = [] as IndividualTrustee[];
+    }
   } else {
     appData[TrustKey]?.map(trust => trust.INDIVIDUALS?.map(individual => {
       individuals.push(individual as IndividualTrustee);
     }));
   }
   return individuals;
+};
+
+const getIndividualTrustee = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId?: string,
+): IndividualTrustee => {
+  const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId);
+
+  if (individualTrustees.length === 0 || trusteeId === undefined) {
+    return {} as IndividualTrustee;
+  }
+  return individualTrustees.find(trustee => trustee.id === trusteeId) ?? {} as IndividualTrustee;
 };
 
 const getFormerTrusteesFromTrust = (
@@ -234,7 +282,7 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
 };
 
 export {
-  checkEntityHasTrusts,
+  checkEntityRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
   getTrustArray,
@@ -251,4 +299,7 @@ export {
   getLegalEntityBosInTrust,
   saveLegalEntityBoInTrust,
   saveIndividualTrusteeInTrust,
+  getTrustLandingUrl,
+  containsTrustData,
+  getIndividualTrustee,
 };

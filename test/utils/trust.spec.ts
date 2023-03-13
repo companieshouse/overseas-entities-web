@@ -1,4 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../../src/config";
 import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
@@ -12,7 +13,10 @@ import {
   saveTrustInApp,
   saveLegalEntityBoInTrust,
   getIndividualTrusteesFromTrust,
+  getIndividualTrustee,
   getFormerTrusteesFromTrust,
+  checkEntityRequiresTrusts,
+  getTrustLandingUrl,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -120,7 +124,7 @@ describe('Trust Utils method tests', () => {
     expect(addTrustToBeneficialOwner(mockBo, newTrustId)).toEqual({
       ...mockBo,
       trust_ids: [
-        ...mockBo.trust_ids!,
+        ...mockBo.trust_ids || [],
         newTrustId,
       ],
     });
@@ -208,7 +212,7 @@ describe('Trust Utils method tests', () => {
     test('test update', () => {
       const updatedBo = {
         ...expectBo1,
-        corporateName: 'dummy',
+        corporate_name: 'dummy',
       };
 
       const actual = saveHistoricalBoInTrust(mockTrust, updatedBo);
@@ -325,6 +329,49 @@ describe('Trust Utils method tests', () => {
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });
 
+    test("test getIndividualTrusteeFromTrust successfully", () => {
+      const test_trust_id = '342';
+      const individualTrustee1 = { id: "999" } as IndividualTrustee;
+      const individualTrustee2 = { id: "901" } as IndividualTrustee;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual(individualTrustee1);
+    });
+
+    test("test getIndividualTrusteeFromTrust with application data with no trusteeId", () => {
+      const test_trust_id = '342';
+      const individualTrustee1 = { id: "999" } as IndividualTrustee;
+      const individualTrustee2 = { id: "901" } as IndividualTrustee;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, undefined);
+      expect(result).toEqual({});
+    });
+
+    test("test getIndividualTrusteeFromTrust with application data and INDIVIDUALS array is empty", () => {
+      const test_trust_id = '342';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'INDIVIDUALS': [] as TrustIndividual[],
+        }]
+      } as ApplicationData;
+
+      const result = getIndividualTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual({});
+    });
+
     test("test getFormerTrusteesFromTrust with application data and trust id", () => {
       const test_trust_id = '353';
       const appData = {
@@ -352,5 +399,88 @@ describe('Trust Utils method tests', () => {
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
     });
+
   });
+
+  describe('test if overseas entity requires trust data', () => {
+
+    test("test checkEntityRequiresTrusts with application data and trustee nature of control", () => {
+
+      const result = checkEntityRequiresTrusts(mockAppData);
+      expect(result).toEqual(true);
+    });
+
+    test("test checkEntityRequiresTrusts with application data and no trustee nature of control", () => {
+
+      const appData = {
+        [TrustKey]: [
+          mockTrust1Data,
+          mockTrust2Data,
+        ],
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividual2,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOle1,
+        ],
+      } as ApplicationData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
+    });
+
+    test("test checkEntityRequiresTrusts with no application data", () => {
+
+      let appData;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toEqual(false);
+    });
+  });
+
+  describe('test if overseas entity contains any trust data', () => {
+
+    test("test getBeneficialOwnerList with application data and trustee nature of control", () => {
+
+      const result = getTrustLandingUrl(mockAppData);
+      expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
+    });
+
+    test("test getTrustLandingUrl with bo having trust data", () => {
+
+      const result = getTrustLandingUrl(mockAppData);
+      expect(result).toEqual(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
+    });
+
+    test("test getTrustLandingUrl with bo having trust nature of control but no trust data", () => {
+
+      const mockBoIndividualNoTrustData = {
+        id: '9001',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerIndividual;
+
+      const mockBoOleNoTrustData = {
+        id: '8002',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerOther;
+
+      const appData = {
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividualNoTrustData,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOleNoTrustData,
+        ],
+      } as ApplicationData;
+
+      const result = getTrustLandingUrl(appData);
+      expect(result).toEqual(`${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`);
+    });
+
+  });
+
 });

@@ -18,23 +18,9 @@
       {% include "includes/inputs/governing-law-input.html" %}
 
       {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
-      {% include "includes/inputs/date/start-date-input.html" %}
 
-      {% call govukFieldset({
-          legend: {
-            text: "What is its nature of control?",
-            classes: "govuk-fieldset__legend--m",
-            isPageHeading: false
-          }
-      }) %}
-
-      {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
-      {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
-
-      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
-
-      {% endcall %}
+      {% set isBeneficialOwnerOther = false %}
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
       {% set sanctionsPronoun = "it" %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}

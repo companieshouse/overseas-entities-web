@@ -7,8 +7,12 @@ import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from '../utils/trusts';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
-import { mapIndividualTrusteeToSession } from '../utils/trust/individual.trustee.mapper';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 import { safeRedirect } from '../utils/http.ext';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { validationResult } from 'express-validator';
+import { Session } from '@companieshouse/node-session-handler';
+import { saveAndContinue } from '../utils/save.and.continue';
 
 const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -25,13 +29,15 @@ type TrustIndividualBeneificalOwnerPageProperties = {
     title: string;
   },
   formData?: PageModel.IndividualTrusteesFormCommon,
+  errors?: FormattedValidationErrors,
 };
 
 const getPageProperties = (
   req: Request,
+  trustId: string,
   formData?: PageModel.IndividualTrusteesFormCommon,
+  errors?: FormattedValidationErrors,
 ): TrustIndividualBeneificalOwnerPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
@@ -44,6 +50,7 @@ const getPageProperties = (
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
+    errors,
   };
 };
 
@@ -54,8 +61,16 @@ const get = (
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
+    const appData: ApplicationData = getApplicationData(req.session);
 
-    const pageProps = getPageProperties(req);
+    const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeFromSessionToPage(
+      appData,
+      trustId,
+      trusteeId
+    );
+    const pageProps = getPageProperties(req, trustId, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -64,7 +79,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -81,6 +96,20 @@ const post = (
     // get trust data from session
     let appData: ApplicationData = getApplicationData(req.session);
 
+    // check for errors
+    const errorList = validationResult(req);
+    const formData: PageModel.IndividualTrusteesFormCommon = req.body as PageModel.IndividualTrusteesFormCommon;
+    // if no errors present rerender the page
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        trustId,
+        formData,
+        formatValidationError(errorList.array()),
+      );
+      return res.render(pageProps.templateName, pageProps);
+    }
+
     const trustUpdate = saveIndividualTrusteeInTrust(
       getTrustByIdFromApp(appData, trustId),
       individualTrusteeData
@@ -90,7 +119,10 @@ const post = (
     appData = saveTrustInApp(appData, trustUpdate);
 
     // save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     return safeRedirect(res, url);
   } catch (error) {

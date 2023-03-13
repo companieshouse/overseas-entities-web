@@ -1,5 +1,6 @@
 jest.mock("ioredis");
 jest.mock("../../../src/middleware/authentication.middleware");
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock("../../../src/utils/application.data");
 jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
@@ -13,6 +14,7 @@ import { OverseasEntityDueDiligenceKey } from "../../../src/model/overseas.entit
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, setApplicationData, prepareData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { ApplicationDataType } from '../../../src/model';
 import { EMAIL_ADDRESS } from "../../__mocks__/session.mock";
 import { EMPTY_IDENTITY_DATE_REQ_BODY_MOCK, getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
@@ -56,6 +58,9 @@ import {
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockHasWhoIsMakingUpdate = hasWhoIsMakingUpdate as jest.Mock;
 mockHasWhoIsMakingUpdate.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

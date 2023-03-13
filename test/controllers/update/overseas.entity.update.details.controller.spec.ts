@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
+jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
@@ -17,6 +18,7 @@ import { APPLICATION_DATA_MOCK, UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENT
 
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
+import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import {
   ANY_MESSAGE_ERROR,
   ENTITY_PAGE_TITLE,
@@ -38,8 +40,13 @@ import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/upda
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const mockHasOverseasEntityNumber = hasOverseasEntityNumber as jest.Mock;
 mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 

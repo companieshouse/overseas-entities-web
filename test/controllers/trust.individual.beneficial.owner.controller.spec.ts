@@ -1,7 +1,9 @@
 jest.mock("ioredis");
+jest.mock('express-validator/src/validation-result');
 jest.mock("../../src/utils/application.data");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/middleware/navigation/has.trust.middleware');
+jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
@@ -13,20 +15,25 @@ import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import { Params } from 'express-serve-static-core';
+import { validationResult } from 'express-validator/src/validation-result';
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
 import { get, INDIVIDUAL_BO_TEXTS, post } from "../../src/controllers/trust.individual.beneficial.owner.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
+import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
-import { mapIndividualTrusteeToSession } from '../../src/utils/trust/individual.trustee.mapper';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeFromSessionToPage } from '../../src/utils/trust/individual.trustee.mapper';
 import { getTrustByIdFromApp, saveIndividualTrusteeInTrust, saveTrustInApp } from '../../src/utils/trusts';
+
+import { saveAndContinue } from '../../src/utils/save.and.continue';
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Trust Individual Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -81,6 +88,27 @@ describe('Trust Individual Beneficial Owner Controller', () => {
   });
 
   describe('GET unit tests', () => {
+
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page`, () => {
+
+      const expectMapResult = { dummyKey: 'EXPECT-MAP-RESULT' };
+      (mapIndividualTrusteeFromSessionToPage as jest.Mock).mockReturnValueOnce(expectMapResult);
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust1Data);
+
+      get(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).not.toBeCalled();
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledWith(
+        TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE,
+        expect.objectContaining({
+          pageData: expect.objectContaining({
+            trustData: mockTrust1Data,
+          }),
+          formData: expectMapResult
+        }),
+      );
+    });
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
@@ -110,6 +138,10 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
       post(mockReq, mockRes, mockNext);
 
       expect(mapIndividualTrusteeToSession).toBeCalledTimes(1);
@@ -128,9 +160,6 @@ describe('Trust Individual Beneficial Owner Controller', () => {
         mockReq.session,
         mockUpdatedAppData,
       );
-
-      expect(mockRes.redirect).toBeCalledTimes(1);
-      expect(mockRes.redirect).toBeCalledWith(expect.stringContaining(`${trustId}${TRUST_INVOLVED_URL}`));
     });
 
     test('catch error when renders the page', () => {
@@ -150,7 +179,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -167,17 +196,23 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
 
     test('successfully access POST method', async () => {
-      const resp = await request(app).post(pageUrl);
+
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      const resp = await request(app).post(pageUrl).send({});
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
       expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -240,7 +240,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test("Renders the current page with INVALID_CHARACTERS error message", async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with INVALID_CHARACTERS error message`, async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_MOCK);
@@ -264,7 +264,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test("Renders the current page with INVALID_CHARACTERS service address error message", async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with INVALID_CHARACTERS service address error message`, async () => {
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK);
@@ -282,7 +282,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} is present when same address is set to no`, async () => {
+    test(`Service address from the ${BENEFICIAL_OWNER_OTHER_PAGE} page is present when same address is set to no`, async () => {
       mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO });
       await request(app).post(BENEFICIAL_OWNER_OTHER_URL)
         .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
@@ -322,7 +322,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "";
@@ -341,7 +341,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month and year are empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "02";
       beneficialOwnerOther["start_date-month"] = "";
@@ -358,7 +358,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and year are empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "02";
@@ -375,7 +375,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day and month are empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "";
@@ -392,7 +392,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE}  page with only DAY error when start date day is empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only DAY error when start date day is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -411,7 +411,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only MONTH error when start date month is empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only MONTH error when start date month is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "23";
       beneficialOwnerOther["start_date-month"] = "";
@@ -430,7 +430,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR error when start date year is empty`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR error when start date year is empty`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "11";
       beneficialOwnerOther["start_date-month"] = "4";
@@ -449,7 +449,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "32";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -468,7 +468,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -488,7 +488,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "13";
@@ -507,7 +507,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date day is zero`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "0";
       beneficialOwnerOther["start_date-month"] = "11";
@@ -526,7 +526,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only INVALID_DATE error when start date month is zero`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "0";
@@ -545,7 +545,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`Renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} with only DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const inTheFuture = DateTime.now().plus({ days: 1 });
       beneficialOwnerOther["start_date-day"] = inTheFuture.day.toString();
@@ -565,7 +565,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${BENEFICIAL_OWNER_OTHER_PAGE} without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const today = DateTime.now();
       beneficialOwnerOther["start_date-day"] = today.day.toString();

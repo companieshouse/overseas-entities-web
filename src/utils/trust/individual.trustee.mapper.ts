@@ -2,6 +2,8 @@ import * as Trust from '../../model/trust.model';
 import * as Page from '../../model/trust.page.model';
 import { v4 as uuidv4 } from 'uuid';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
+import { getIndividualTrustee } from '../../utils/trusts';
+import { ApplicationData } from 'model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
@@ -48,5 +50,52 @@ export const mapIndividualTrusteeToSession = (
   }
   return {
     ...data as Trust.IndividualTrustee
+  };
+};
+
+export const mapIndividualTrusteeFromSessionToPage = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId: string,
+): Page.IndividualTrusteesFormCommon => {
+  const trustee = getIndividualTrustee(appData, trustId, trusteeId);
+
+  const data = {
+    trusteeId: trustee.id,
+    type: trustee.type,
+    forename: trustee.forename,
+    surname: trustee.surname,
+    dateOfBirthDay: trustee.date_of_birth_day,
+    dateOfBirthMonth: trustee.date_of_birth_month,
+    dateOfBirthYear: trustee.date_of_birth_year,
+    nationality: trustee.nationality,
+    second_nationality: trustee.second_nationality,
+    usual_residential_address_property_name_number: trustee.ura_address_premises,
+    usual_residential_address_line_1: trustee.ura_address_line1,
+    usual_residential_address_line_2: trustee.ura_address_line2,
+    usual_residential_address_town: trustee.ura_address_locality,
+    usual_residential_address_county: trustee.ura_address_region,
+    usual_residential_address_country: trustee.ura_address_country,
+    usual_residential_address_postcode: trustee.ura_address_postal_code,
+    is_service_address_same_as_usual_residential_address: trustee.is_service_address_same_as_usual_residential_address,
+    service_address_property_name_number: trustee.sa_address_premises,
+    service_address_line_1: trustee.sa_address_line1,
+    service_address_line_2: trustee.sa_address_line2,
+    service_address_town: trustee.sa_address_locality,
+    service_address_county: trustee.sa_address_region,
+    service_address_country: trustee.sa_address_country,
+    service_address_postcode: trustee.sa_address_postal_code,
+  };
+
+  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
+    return {
+      ...data,
+      dateBecameIPDay: trustee.date_became_interested_person_day,
+      dateBecameIPMonth: trustee.date_became_interested_person_month,
+      dateBecameIPYear: trustee.date_became_interested_person_year,
+    } as Page.IndividualTrusteesFormCommon;
+  }
+  return {
+    ...data as Page.IndividualTrusteesFormCommon
   };
 };

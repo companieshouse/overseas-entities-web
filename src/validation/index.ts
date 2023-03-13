@@ -3,7 +3,7 @@ import { beneficialOwnerIndividual } from "./beneficial.owner.individual.validat
 import { beneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
-import { beneficialOwnersType } from "./beneficial.owner.type.validation";
+import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
 import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
@@ -20,6 +20,9 @@ import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
 import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
+import { trustDetails } from "./trust.details.validation";
+import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
+import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
 
 export const validator = {
   soldLandFilter,
@@ -45,4 +48,8 @@ export const validator = {
   overseasName,
   startingNew,
   trustInvolved,
+  trustDetails,
+  updateBeneficialOwnerAndManagingOfficerType,
+  trustIndividualBeneficialOwner,
+  trustHistoricalBeneficialOwner,
 };

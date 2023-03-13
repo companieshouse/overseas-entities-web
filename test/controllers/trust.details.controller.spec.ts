@@ -21,7 +21,7 @@ import request from "supertest";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
 import app from "../../src/app";
-import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL, TRUST_ENTRY_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL } from '../../src/config';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasBOsOrMOs } from '../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
 import { get, post, TRUST_DETAILS_TEXTS } from '../../src/controllers/trust.details.controller';
@@ -40,6 +40,7 @@ import {
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
   saveTrustInApp,
+  getTrustByIdFromApp,
 } from '../../src/utils/trusts';
 import { Trust, TrustKey } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -61,6 +62,11 @@ describe('Trust Details controller', () => {
   const mockTrust2Data = {
     trust_id: '802',
     trust_name: 'dummyTrustName2',
+    creation_date_day: '5',
+    creation_date_month: '6',
+    creation_date_year: '2000',
+    unable_to_obtain_all_trust_info: '1'
+
   } as Trust;
 
   const mockTrust3Data = {
@@ -192,6 +198,8 @@ describe('Trust Details controller', () => {
 
       (saveTrustInApp as jest.Mock).mockReturnValue(mockAppData);
 
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue({});
+
       const expectBo = ['dummyBo'];
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(expectBo);
 
@@ -228,7 +236,7 @@ describe('Trust Details controller', () => {
       expect(mockNext).not.toBeCalled();
     });
 
-    test('update trust in session', () => {
+    test('update existing trust in session', () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
       const expectTrustResult = {
@@ -239,11 +247,16 @@ describe('Trust Details controller', () => {
 
       (saveTrustInApp as jest.Mock).mockReturnValue(mockAppData);
 
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust2Data);
+
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue([]);
 
       post(mockReq, mockRes, mockNext);
 
       expect((generateTrustId as jest.Mock)).not.toBeCalled();
+
+      expect(saveTrustInApp).toBeCalledTimes(1);
+      expect(saveTrustInApp).toBeCalledWith(mockAppData, expect.objectContaining(expectTrustResult));
 
       expect(mapBeneficialOwnerToSession).toBeCalledTimes(2);
 
@@ -278,7 +291,7 @@ describe('Trust Details controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('successfully access POST method', async () => {
+    test('successful POST submission to same page', async () => {
       mockGetApplicationData.mockReturnValue({});
 
       (mapDetailToSession as jest.Mock).mockReturnValue({
@@ -289,8 +302,8 @@ describe('Trust Details controller', () => {
         .post(pageUrl)
         .send({});
 
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${mockTrust2Data.trust_id}${TRUST_INVOLVED_URL}`);
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl);
     });
   });
 });

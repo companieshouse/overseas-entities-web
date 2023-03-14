@@ -18,7 +18,7 @@ import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/manag
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
-import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "utils/update/managing.officer.mapper";
+import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -72,8 +72,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  await getCompanyPsc(req, appData[EntityNumberKey] as string);
+export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const session = req.session as Session;
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const raw = pscs as any;
@@ -99,8 +98,7 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   }
 };
 
-const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
   const session = req.session as Session;
   const officerResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
   const raw = officerResource as any;
@@ -110,7 +108,7 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
       if (item.officer_role === "secretary"){
         const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
         setApplicationData(session, managingOfficer, ManagingOfficerKey);
-      } else if (item.officer_role === "") {
+      } else if (item.officer_role === "director") {
         const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
         setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
       }

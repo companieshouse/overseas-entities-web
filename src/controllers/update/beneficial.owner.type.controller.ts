@@ -16,6 +16,7 @@ import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { hasFetchedBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,13 +24,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    // ManagingOfficerKey set when officer list is retrieved to prevent re-calling the API
-    if (appData[ManagingOfficerKey] === undefined) {
-      await retrieveManagingOfficers(req, appData);
-    }
-
-    if (appData[BeneficialOwnerIndividualKey] === undefined) {
+    if (!hasFetchedBoAndMoData(appData)) {
       await retrieveBeneficialOwners(req, appData);
+      await retrieveManagingOfficers(req, appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {

@@ -3,11 +3,11 @@ import { DayFieldErrors, MonthFieldErrors, YearFieldErrors, checkDayFieldForErro
 
 export const dateValidations = (dateContext: dateContext) => {
   return [
-    body(dateContext.dayInput.name)
+    body(`${dateContext.dateInput.name}-${dateContext.dayInput.name}`)
       .custom((value, { req }) => checkDayFieldForErrors(dateContext.dayInput.errors, req.body[dateContext.dayInput.name])),
-    body(dateContext.monthInput.name)
+    body(`${dateContext.dateInput.name}-${dateContext.monthInput.name}`)
       .custom((value, { req }) => checkMonthFieldForErrors(dateContext.monthInput.errors, req.body[dateContext.monthInput.name])),
-    body(dateContext.yearInput.name)
+    body(`${dateContext.dateInput.name}-${dateContext.yearInput.name}`)
       .custom((value, { req }) => checkYearFieldForErrors(dateContext.yearInput.errors, req.body[dateContext.yearInput.name])),
     body(dateContext.dateInput.name)
       .custom((value, { req }) => dateContext.dateInput.callBack(req.body[dateContext.dayInput.name], req.body[dateContext.monthInput.name], req.body[dateContext.yearInput.name])),
@@ -16,13 +16,13 @@ export const dateValidations = (dateContext: dateContext) => {
 
 export const conditionalDateValidations = (dateContextWithCondition: dateContextWithCondition) => {
   return [
-    body(dateContextWithCondition.dayInput.name)
+    body(`${dateContextWithCondition.dateInput.name}-${dateContextWithCondition.dayInput.name}`)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .custom((value, { req }) => checkDayFieldForErrors(dateContextWithCondition.dayInput.errors, req.body[dateContextWithCondition.dayInput.name])),
-    body(dateContextWithCondition.monthInput.name)
+    body(`${dateContextWithCondition.dateInput.name}-${dateContextWithCondition.monthInput.name}`)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .custom((value, { req }) => checkMonthFieldForErrors(dateContextWithCondition.monthInput.errors, req.body[dateContextWithCondition.monthInput.name])),
-    body(dateContextWithCondition.yearInput.name)
+    body(`${dateContextWithCondition.dateInput.name}-${dateContextWithCondition.yearInput.name}`)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .custom((value, { req }) => checkYearFieldForErrors(dateContextWithCondition.yearInput.errors, req.body[dateContextWithCondition.yearInput.name])),
     body(dateContextWithCondition.dateInput.name)

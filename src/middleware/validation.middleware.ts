@@ -74,7 +74,7 @@ export function checkTrustValidations(req: Request, res: Response, next: NextFun
         ...req.body,
         beneficialOwners: getBeneficialOwnerList(appData),
         trusts_input: req.body.trusts?.toString(),
-        trustsAddedSoFar: (appData.trusts) ? appData.trusts : [],
+        trustsAddedSoFar: (appData.trusts) ? appData.trusts.length : 0,
         errors
       });
     }

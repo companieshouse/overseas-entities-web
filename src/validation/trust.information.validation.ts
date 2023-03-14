@@ -1,7 +1,7 @@
 import { body } from "express-validator";
-import { checkTrustBO, checkTrustFields } from "./custom.validation";
+import { checkTrustBOs, checkTrustFields } from "./custom.validation";
 
 export const trustInformation = [
-  body("beneficialOwners").custom((_, { req }) => checkTrustBO(req)),
+  body("beneficialOwners").custom((_, { req }) => checkTrustBOs(req)),
   body("trusts").custom((_, { req }) => checkTrustFields(req))
 ];

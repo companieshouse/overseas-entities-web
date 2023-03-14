@@ -15,11 +15,11 @@
 {% endset %}
 
 {% set trustAdded %}
-  {% if errors and trustsAddedSoFar %}
-    {% if trustsAddedSoFar.length > 0 %}
-        ({{trustsAddedSoFar.length}} Trust information added so far)
+  {% if errors %}
+    {% if trustsAddedSoFar > 0 %}
+        ({{trustsAddedSoFar}} Trust information added so far)
     {% else %}
-        (No Trust information added so far)
+      (No Trust information added so far)
     {% endif %}
   {% elif trusts.length %}
     ({{trusts.length}} Trust information added so far)
@@ -97,19 +97,21 @@
           }
         }) }}
 
-        <div class="govuk-button-group">
-          {{ govukButton({
-            html: noMoreToAddHtml,
-            attributes: {
-              "id": "submit",
-              "name": "submit",
-              "value": "submit"
-            },
-            classes: "govuk-button--secondary"
-          }) }}
+        {% if trustsAddedSoFar > 0 or trusts.length > 0 %}
+          <div class="govuk-button-group">
+             {{ govukButton({
+              html: noMoreToAddHtml,
+              attributes: {
+                "id": "submit",
+                "name": "submit",
+                "value": "submit"
+              },
+              classes: "govuk-button--secondary"
+            }) }}
+          </div>
+        {% endif %}
 
-          {{trustAdded}}
-        </div>
+        {{trustAdded}}
 
       </form>
 

@@ -459,7 +459,7 @@ const isSubmitTrustSelected = (session: Session, action: string = ""): boolean =
   return action === "submit" && (appData.trusts || [] ).length > 0;
 };
 
-export const checkTrustBO = (req) => {
+export const checkTrustBOs = (req) => {
   if (isSubmitTrustSelected(req.session, req.body.submit)) {
     return true;
   }

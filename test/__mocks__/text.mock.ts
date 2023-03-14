@@ -48,6 +48,7 @@ export const MANAGING_OFFICER_CORPORATE_PAGE_TITLE = "Tell us about the corporat
 export const SIGN_OUT_PAGE_TITLE = "Are you sure you want to sign out?";
 export const SIGN_OUT_HINT_TEXT = "We will save your application.";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
+export const TRUST_INFO_NO_MORE_TO_ADD_BUTTON = "No more";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const VERIFICATION_CHECKS = "Verification checks";
 export const VERIFICATION_CHECKS_DATE = "Date the verification checks were completed";

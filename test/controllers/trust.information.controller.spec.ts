@@ -10,7 +10,13 @@ import request from "supertest";
 
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, SERVICE_UNAVAILABLE, TRUST_INFO_PAGE_TITLE } from "../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  SERVICE_UNAVAILABLE,
+  TRUST_INFO_NO_MORE_TO_ADD_BUTTON,
+  TRUST_INFO_PAGE_TITLE
+} from "../__mocks__/text.mock";
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_NO_TRUST_NAME_MOCK,
@@ -26,7 +32,8 @@ import {
   TRUSTS_EMPTY_TRUST_DATA,
   TRUSTS_EMPTY_CHECKBOX,
   TRUSTS_ADD_LEADING_AND_TRAILING_WHITESPACE,
-  TRUSTS_ADD, TRUSTS_ADD_INVALID
+  TRUSTS_ADD,
+  TRUSTS_ADD_INVALID
 } from '../__mocks__/session.mock';
 import * as config from "../../src/config";
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -60,13 +67,26 @@ describe("TRUST INFORMATION controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.TRUST_INFO_PAGE} page`, async () => {
+    test(`renders the ${config.TRUST_INFO_PAGE} page with 1 trust added`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.TRUST_INFO_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(TRUST_INFO_NO_MORE_TO_ADD_BUTTON);
+    });
+
+    test(`renders the ${config.TRUST_INFO_PAGE} page with 0 trusts added`, async () => {
+      const appData = { ...APPLICATION_DATA_MOCK };
+      appData.trusts = [];
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      const resp = await request(app).get(config.TRUST_INFO_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(TRUST_INFO_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_INFO_NO_MORE_TO_ADD_BUTTON);
     });
 
     test("catch error when rendering the page", async () => {

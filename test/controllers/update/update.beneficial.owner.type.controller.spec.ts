@@ -41,6 +41,9 @@ import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
+import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
+import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
+import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -70,8 +73,11 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-        [ManagingOfficerKey]: undefined,
-        [BeneficialOwnerIndividualKey]: undefined
+        [BeneficialOwnerIndividualKey]: undefined,
+        [BeneficialOwnerGovKey]: undefined,
+        [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined
       });
       mockGetCompanyPscService.mockReturnValueOnce({});
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

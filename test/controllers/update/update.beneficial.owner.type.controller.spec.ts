@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
@@ -36,11 +37,14 @@ import {
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerTypeChoice, ManagingOfficerTypeChoice, BeneficialOwnerTypeKey } from '../../../src/model/beneficial.owner.type.model';
+import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
+import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
+import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -56,7 +60,7 @@ mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
-
+const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
@@ -73,6 +77,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce({});
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -92,6 +98,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       mockGetCompanyPscService.mockReturnValueOnce(undefined);
@@ -109,9 +117,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
       expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
@@ -121,13 +132,15 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-person-with-significant-control');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      expect(mockSetApplicationData).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(2);
     });
 
     test(`test Other benefical owner data returned when getCompanyPsc data kind is other`, async () => {
@@ -136,6 +149,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-with-significant-control');
@@ -150,13 +165,15 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerIndividualKey]: undefined,
         [BeneficialOwnerGovKey]: undefined,
         [BeneficialOwnerOtherKey]: undefined,
+        [ManagingOfficerCorporateKey]: undefined,
+        [ManagingOfficerKey]: undefined,
       });
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'corporate-entity-beneficial-owner');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      expect(mockSetApplicationData).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(2);
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCompanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
@@ -165,6 +182,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
         [BeneficialOwnerIndividualKey]: []
       });
+
+      mockGetCompanyOfficers.mockReturnValueOnce({});
+
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
@@ -175,7 +195,24 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).not.toHaveBeenCalled();
-      expect(mockSetApplicationData).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page but does not re-make API call for managing officers`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        [ManagingOfficerKey]: []
+      });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners with just the BOs options`, async () => {
@@ -195,6 +232,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
   });
 
   describe("POST tests", () => {

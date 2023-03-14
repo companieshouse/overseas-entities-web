@@ -1093,6 +1093,9 @@ export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
 export const fnNameGetTransaction = "getTransaction";
 
+export const serviceNameCompanyOfficers = "companyOfficers";
+export const fnNameGetCompanyOfficers = "getCompanyOfficers";
+
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";
 export const fnGetCompanyNameGetOE = "getCompanyProfile";

@@ -59,3 +59,4 @@ export * as updateBeneficialOwnerIndividual from "./update/update.beneficial.own
 export * as updateSignOut from "./update/update.sign.out.controller";
 export * as updateManagingOfficerCorporate from "./update/update.corporate.managing.officer.controller";
 export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";
+export * as updateFilingDate from "./update/update.filing.date.controller";

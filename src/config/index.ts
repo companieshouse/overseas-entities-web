@@ -41,6 +41,7 @@ export const SHOW_SERVICE_OFFLINE_PAGE = getEnvironmentValue("SHOW_SERVICE_OFFLI
 export const FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 = getEnvironmentValue("FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "false");
 export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022', 'false');
 export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'false');
+export const FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME = getEnvironmentValue('FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME_07032023', 'false');
 export const FEATURE_FLAG_ENABLE_ROE_REMOVE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022', 'false');
 
 // TEMPLATES
@@ -93,6 +94,7 @@ export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
 export const ADD_TRUST_PAGE = 'add-trust';
 export const WHO_IS_MAKING_UPDATE_PAGE = "who-is-making-update";
 export const CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE = "confirm-overseas-entity-details";
+export const UPDATE_FILING_DATE_PAGE = "update-filing-date";
 export const OVERSEAS_ENTITY_REVIEW_PAGE = "overseas-entity-review";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE = "update-check-your-answers";
 export const UPDATE_DUE_DILIGENCE_PAGE = "update-due-diligence";
@@ -163,6 +165,7 @@ export const SECURE_UPDATE_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + SECURE_U
 export const UPDATE_USE_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
 export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;
 export const UPDATE_OVERSEAS_ENTITY_CONFIRM_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE;
+export const UPDATE_FILING_DATE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_FILING_DATE_PAGE;
 export const OVERSEAS_ENTITY_PRESENTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_PRESENTER_PAGE;
 export const UPDATE_CONFIRMATION_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_CONFIRMATION_PAGE;
 export const OVERSEAS_ENTITY_UPDATE_DETAILS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ENTITY_PAGE;
@@ -184,9 +187,11 @@ export const UPDATE_MANAGING_OFFICER_CORPORATE_URL = UPDATE_AN_OVERSEAS_ENTITY_U
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
 export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
+export const ROUTE_PARAM_TRUSTEE_ID = "trusteeId";
 export const ID = "/:id"; // Same param name as the ID in the data model
 export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
 export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
+export const TRUSTEE_ID = `/:${ROUTE_PARAM_TRUSTEE_ID}`;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";
@@ -236,7 +241,11 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
-export const ROLE_WITHIN_TRUST = "#role_within_trust";
+export const ROLE_WITHIN_TRUST = "#type";
+export const FORENAME = "#forename";
+export const SURNAME = "#surname";
+export const TRUST_DATE_OF_BIRTH = "#dateOfBirth-dateOfBirthDay";
+export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

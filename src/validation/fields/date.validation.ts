@@ -2,14 +2,17 @@ import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
   checkBirthDate,
-  checkDate,
+  checkDateInterestedPerson,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
+  checkHistoricalBOEndDate,
+  checkHistoricalBOStartDate,
   checkIdentityDate,
-  checkStartDate
+  checkStartDate,
+  checkTrustDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -57,74 +60,60 @@ const dateOfBirthValidationsContext: dateContext = {
   dateInput: {
     name: "dateOfBirth",
     callBack: checkBirthDate,
-    errMsg: [],
   },
-  day: {
-    name: "dateOfBirthDay",
-    callBack: checkDateFieldDayOfBirth,
-    errMsg: [ErrorMessages.DAY_OF_BIRTH],
-  },
-  month: {
-    name: "dateOfBirthMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH_OF_BIRTH],
-  },
-  year: {
-    name: "dateOfBirthYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH],
-  }
+  dayInputName: "dateOfBirthDay",
+  monthInputName: "dateOfBirthMonth",
+  yearInputName: "dateOfBirthYear",
 };
 
 const dateBecameIPContext: dateContextWithCondition = {
   dateInput: {
     name: "dateBecameIP",
-    callBack: checkDate,
-    errMsg: [],
+    callBack: checkDateInterestedPerson,
   },
-  day: {
-    name: "dateBecameIPDay",
-    callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY],
-  },
-  month: {
-    name: "dateBecameIPMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH],
-  },
-  year: {
-    name: "dateBecameIPYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-  },
+  dayInputName: "dateBecameIPDay",
+  monthInputName: "dateBecameIPMonth",
+  yearInputName: "dateBecameIPYear",
   condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
 };
 
-const createdDateValidationsContext: dateContext = {
+const trustCreatedDateValidationsContext: dateContext = {
   dateInput: {
     name: "createdDate",
-    callBack: checkDate,
-    errMsg: [],
+    callBack: checkTrustDate,
   },
-  day: {
-    name: "createdDateDay",
-    callBack: checkDateFieldDay,
-    errMsg: [ErrorMessages.DAY],
-  },
-  month: {
-    name: "createdDateMonth",
-    callBack: checkDateFieldMonth,
-    errMsg: [ErrorMessages.MONTH],
-  },
-  year: {
-    name: "createdDateYear",
-    callBack: checkDateFieldYear,
-    errMsg: [ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH],
-  }
+  dayInputName: "createdDateDay",
+  monthInputName: "createdDateMonth",
+  yearInputName: "createdDateYear",
 };
 
-export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext, 4, 4);
+const historicalBOStartDateContext: dateContext = {
+  dateInput: {
+    name: "startDate",
+    callBack: checkHistoricalBOStartDate,
+  },
+  dayInputName: "startDateDay",
+  monthInputName: "startDateMonth",
+  yearInputName: "startDateYear",
+};
 
-export const dateBecameIP = conditionalDateValidations(dateBecameIPContext, 4, 4);
+const historicalBOEndDateContext: dateContext = {
+  dateInput: {
+    name: "endDate",
+    callBack: checkHistoricalBOEndDate,
+  },
+  dayInputName: "endDateDay",
+  monthInputName: "endDateMonth",
+  yearInputName: "endDateYear",
+};
 
-export const createdDateValidations = dateValidations(createdDateValidationsContext, 4, 4);
+export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
+
+export const dateBecameIP = conditionalDateValidations(dateBecameIPContext);
+
+export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
+
+export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
+
+export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+

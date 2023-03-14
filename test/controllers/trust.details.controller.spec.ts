@@ -40,6 +40,7 @@ import {
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
   saveTrustInApp,
+  getTrustByIdFromApp,
 } from '../../src/utils/trusts';
 import { Trust, TrustKey } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -197,6 +198,8 @@ describe('Trust Details controller', () => {
 
       (saveTrustInApp as jest.Mock).mockReturnValue(mockAppData);
 
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue({});
+
       const expectBo = ['dummyBo'];
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue(expectBo);
 
@@ -233,7 +236,7 @@ describe('Trust Details controller', () => {
       expect(mockNext).not.toBeCalled();
     });
 
-    test('update trust in session', () => {
+    test('update existing trust in session', () => {
       mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
       const expectTrustResult = {
@@ -244,11 +247,16 @@ describe('Trust Details controller', () => {
 
       (saveTrustInApp as jest.Mock).mockReturnValue(mockAppData);
 
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust2Data);
+
       (mapBeneficialOwnerToSession as jest.Mock).mockReturnValue([]);
 
       post(mockReq, mockRes, mockNext);
 
       expect((generateTrustId as jest.Mock)).not.toBeCalled();
+
+      expect(saveTrustInApp).toBeCalledTimes(1);
+      expect(saveTrustInApp).toBeCalledWith(mockAppData, expect.objectContaining(expectTrustResult));
 
       expect(mapBeneficialOwnerToSession).toBeCalledTimes(2);
 

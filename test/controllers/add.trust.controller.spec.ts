@@ -13,11 +13,10 @@ import request from "supertest";
 import * as config from "../../src/config";
 import app from "../../src/app";
 import { Session } from '@companieshouse/node-session-handler';
-import { Params } from 'express-serve-static-core';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { getApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrust } from "../../src/middleware/navigation/has.trust.middleware";
+import { hasTrustData } from "../../src/middleware/navigation/has.trust.middleware";
 import { Trust, TrustKey } from "../../src/model/trust.model";
 import { generateTrustId } from "../../src/utils/trust/details.mapper";
 import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.controller";
@@ -25,7 +24,7 @@ import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.cont
 describe("Add Trust Controller Tests", () => {
 
   const trustId = "939";
-  const pageUrl = `${config.TRUST_ENTRY_URL + "/" + trustId + config.ADD_TRUST_URL}`;
+  const pageUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
 
   const mockTrust1Data = {
     trust_id: "999",
@@ -49,9 +48,6 @@ describe("Add Trust Controller Tests", () => {
     };
 
     mockReq = {
-      params: {
-        trustId: trustId,
-      } as Params,
       session: {} as Session,
       route: '',
       method: '',
@@ -61,11 +57,21 @@ describe("Add Trust Controller Tests", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.ADD_TRUST_PAGE} page`, () => {
+
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
-
       expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledWith(
+        config.ADD_TRUST_PAGE,
+        expect.objectContaining({
+          pageData: expect.objectContaining({
+            trustData: [ mockTrust1Data ],
+          }),
+        }),
+      );
     });
 
     test('catch error when renders the page', () => {
@@ -112,7 +118,7 @@ describe("Add Trust Controller Tests", () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustData as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -124,7 +130,16 @@ describe("Add Trust Controller Tests", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustData).toBeCalledTimes(1);
+    });
+
+    test(`successfully access POST method`, async () => {
+
+      const resp = await request(app).post(pageUrl).send({ addTrust: '0' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.CHECK_YOUR_ANSWERS_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 });

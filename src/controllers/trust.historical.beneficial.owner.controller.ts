@@ -11,6 +11,8 @@ import * as PageModel from '../model/trust.page.model';
 import { CommonTrustData } from '../model/trust.page.model';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { validationResult } from 'express-validator';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -27,16 +29,18 @@ type TrustHistoricalBeneficialOwnerProperties = {
     trusteeType: typeof TrusteeType;
   },
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
+  errors?: FormattedValidationErrors,
 };
 
 const getPageProperties = (
   req: Request,
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
+  errors?: FormattedValidationErrors,
 ): TrustHistoricalBeneficialOwnerProperties => {
   const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
-    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}/${config.TRUST_INVOLVED_URL}`,
+    backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
     templateName: config.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE,
     pageParams: {
       title: HISTORICAL_BO_TEXTS.title,
@@ -46,6 +50,7 @@ const getPageProperties = (
       trusteeType: TrusteeType,
     },
     formData,
+    errors,
   };
 };
 
@@ -82,6 +87,19 @@ const post = async (
 
     //  get trust data from session
     let appData: ApplicationData = getApplicationData(req.session);
+
+    // check for errors
+    const errorList = validationResult(req);
+    const formData: PageModel.TrustHistoricalBeneficialOwnerForm = req.body as PageModel.TrustHistoricalBeneficialOwnerForm;
+    // if no errors present rerender the page
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        formData,
+        formatValidationError(errorList.array()),
+      );
+      return res.render(pageProps.templateName, pageProps);
+    }
 
     //  save (add/update) bo to trust
     const updatedTrust = saveHistoricalBoInTrust(

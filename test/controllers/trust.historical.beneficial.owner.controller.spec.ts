@@ -20,16 +20,13 @@ import app from "../../src/app";
 import { get, HISTORICAL_BO_TEXTS, post } from "../../src/controllers/trust.historical.beneficial.owner.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrust } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
+import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
 import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
-import { saveAndContinue } from '../../src/utils/save.and.continue';
-
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Trust Historical Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -150,7 +147,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   describe('Endpoint Access tests', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrust as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test('successfully access GET method and render', async () => {
@@ -168,18 +165,18 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
 
     test('successfully access POST method', async () => {
       const resp = await request(app).post(pageUrl).send({});
 
-      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
-      expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrust).toBeCalledTimes(1);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
   });
 });

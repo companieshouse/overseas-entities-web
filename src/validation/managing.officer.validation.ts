@@ -31,12 +31,12 @@ export const managingOfficerIndividual = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
   ...second_nationality_validations,
-  ...usual_residential_address_validations,
+  ...usual_residential_address_validations(),
 
   body("is_service_address_same_as_usual_residential_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS),
 
-  ...usual_residential_service_address_validations,
+  ...usual_residential_service_address_validations(),
 
   body("occupation")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.OCCUPATION)

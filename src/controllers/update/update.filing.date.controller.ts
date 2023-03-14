@@ -30,7 +30,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
 
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
       const appData: ApplicationData = getApplicationData(session);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);

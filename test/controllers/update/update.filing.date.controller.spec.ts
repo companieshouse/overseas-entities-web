@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/service/transaction.service');
 jest.mock('../../../src/service/overseas.entities.service');
+jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
 import * as config from "../../../src/config";
@@ -20,6 +21,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../../../src/service
 import { postTransaction } from "../../../src/service/transaction.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { EntityNumberKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 
 import {
@@ -61,6 +63,9 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(true);
 
 describe("Update Filing Date controller", () => {
 

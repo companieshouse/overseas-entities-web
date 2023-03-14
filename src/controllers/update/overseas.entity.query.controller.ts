@@ -6,7 +6,7 @@ import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { resetEntityUpdate } from "../../utils/update/update.reset";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { getCompanyProfile } from "../../service/company.profile";
+import { getCompanyProfile } from "../../service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.oversea.entity";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {

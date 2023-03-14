@@ -14,12 +14,12 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     first_name: psc.nameElements?.forename,
     last_name: psc.nameElements?.surname,
     nationality: psc.nationality,
-    second_nationality: undefined,
+    // second_nationality: undefined,
     date_of_birth: mapDateOfBirth(psc),
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,
     service_address: service_address,
-    start_date: psc.notifiedOn as any as InputDate,
+    start_date: undefined,
     // is_on_sanctions_list: psc.isSanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -41,7 +41,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     public_register_name: psc.identification?.placeRegistered,
     registration_number: psc.identification?.registrationNumber,
     is_on_register_in_country_formed_in: undefined,
-    start_date: psc.notifiedOn as any as InputDate,
+    start_date: undefined,
     // is_on_sanctions_list: psc.isSanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -61,7 +61,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
     is_service_address_same_as_principal_address: isSameAddress(service_address, principal_address) ? yesNoResponse.Yes : yesNoResponse.No,
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
-    start_date: psc.notifiedOn as any as InputDate,
+    start_date: undefined,
     // is_on_sanctions_list: psc.isSanctioned === "true" ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, true);

@@ -1,4 +1,4 @@
-import { Address, InputDate, Links, NatureOfControlType, yesNoResponse } from "./data.types.model";
+import { Address, InputDate, NatureOfControlType, yesNoResponse } from "./data.types.model";
 
 export const BeneficialOwnerIndividualKey = "beneficial_owners_individual";
 
@@ -26,7 +26,6 @@ export const BeneficialOwnerIndividualKeys: string[] = [
 
 export interface BeneficialOwnerIndividual {
   id: string;
-  link?: Links,
   first_name?: string;
   last_name?: string;
   date_of_birth?: InputDate;

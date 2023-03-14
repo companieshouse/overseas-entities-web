@@ -45,7 +45,7 @@ import {
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { controlMap } from "../../src/utils/update/psc.to.beneficial.owner.type.mapper";
+import { natureOfControlMap } from "../../src/utils/update/psc.to.beneficial.owner.type.mapper";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
@@ -355,9 +355,9 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
   start_date: { day: "1", month: "3", year: "1999" },
-  beneficial_owner_nature_of_control_types: [controlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM] as unknown as NatureOfControlType[],
-  trustees_nature_of_control_types: [controlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_TRUST] as unknown as NatureOfControlType[],
-  non_legal_firm_members_nature_of_control_types: [controlMap.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM] as unknown as NatureOfControlType[],
+  beneficial_owner_nature_of_control_types: [natureOfControlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM] as unknown as NatureOfControlType[],
+  trustees_nature_of_control_types: [natureOfControlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_TRUST] as unknown as NatureOfControlType[],
+  non_legal_firm_members_nature_of_control_types: [natureOfControlMap.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM] as unknown as NatureOfControlType[],
   is_on_sanctions_list: 1,
   trust_ids: []
 };

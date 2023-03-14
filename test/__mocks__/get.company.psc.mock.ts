@@ -9,7 +9,9 @@ export const MOCK_GET_COMPANY_PSC_RESOURCE = {
     {
       "natures_of_control": [
         "ownership-of-shares-75-to-100-percent",
-        "voting-rights-75-to-100-percent-as-trust"
+        "voting-rights-75-to-100-percent-as-trust",
+        'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
+        'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
       ],
       "kind": "individual-person-with-significant-control",
       "name_elements": {

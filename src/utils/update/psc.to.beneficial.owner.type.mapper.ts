@@ -7,7 +7,6 @@ import { Address, InputDate, NatureOfControlType, yesNoResponse } from "../../mo
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapAddress(psc.address);
-  // const address = mapAddress(undefined);
 
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
@@ -84,7 +83,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
           }
           break;
         default:
-          throw new Error("INVALID NATURE OF CONTROL TYPE");
+          throw new Error('INVALID NATURE OF CONTROL TYPE');
     }
   });
 };

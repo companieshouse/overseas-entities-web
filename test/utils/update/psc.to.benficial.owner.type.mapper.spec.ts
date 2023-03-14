@@ -118,4 +118,19 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       legal_form: pscMock.identification?.legalForm,
     });
   });
+
+  test(`that address is mapped correctly`, () => {
+    pscMock.address = {},
+    expect(mapPscToBeneficialOwnerOther(pscMock).principal_address).toBeUndefined;
+  });
+
+  test('that error is thrown if nature of control type does not match', () => {
+    pscMock.naturesOfControl = ['Some unknown 25% share'];
+    expect(() => mapPscToBeneficialOwnerOther(pscMock)).toThrowError('INVALID NATURE OF CONTROL TYPE');
+  });
+
+  test('that error is empty pcsc nature of control', () => {
+    pscMock.naturesOfControl = [];
+    expect(mapPscToBeneficialOwnerOther(pscMock)).toBeUndefined;
+  });
 });

@@ -11,9 +11,6 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
 
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
-    link: {
-      self: psc.links?.self
-    },
     first_name: psc.nameElements?.forename,
     last_name: psc.nameElements?.surname,
     nationality: psc.nationality,
@@ -35,9 +32,6 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
 
   const result: BeneficialOwnerOther = {
     id: psc.links?.self,
-    link: {
-      self: psc.links?.self
-    },
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,
@@ -61,9 +55,6 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 
   const result: BeneficialOwnerGov = {
     id: psc.links?.self,
-    link: {
-      self: psc.links?.self
-    },
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,

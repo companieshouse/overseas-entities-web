@@ -100,7 +100,7 @@
           }
         }) }}
 
-        {% if trustsAddedSoFar > 0 or trusts.length > 0 %}
+        {% if trustsAddedSoFar > 0 or (not errors and trusts.length) %}
           <div class="govuk-button-group">
              {{ govukButton({
               html: noMoreToAddHtml,

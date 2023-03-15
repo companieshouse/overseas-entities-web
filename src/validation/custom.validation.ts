@@ -214,14 +214,14 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   return true;
 };
 
-export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" || monthStr === "" || yearStr === "") {
     return false;
   }
   return true;
 };
 
-export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if ((dayStr === "" && monthStr === "" && yearStr !== "") ||
      (dayStr !== "" && monthStr === "" && yearStr === "") ||
      (dayStr === "" && monthStr !== "" && yearStr === "")) {
@@ -260,6 +260,7 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
     noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
   };
+
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
@@ -273,6 +274,7 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
     noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
     noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_TRUST,
   };
+
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
@@ -286,6 +288,7 @@ export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string
     noMonthAndYearError: ErrorMessages.START_MONTH_AND_YEAR_HISTORICAL_BO,
     noDayAndYearError: ErrorMessages.START_DAY_AND_YEAR_HISTORICAL_BO,
   };
+
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_START_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);

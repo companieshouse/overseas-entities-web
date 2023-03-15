@@ -7,18 +7,15 @@ import {
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+
 import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
-import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
+import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
-import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { hasFetchedBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -26,10 +23,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    if (appData[BeneficialOwnerIndividualKey] === undefined && appData[BeneficialOwnerGovKey] === undefined && appData[BeneficialOwnerOtherKey] === undefined) {
+    if (!hasFetchedBoAndMoData(appData)) {
       await retrieveBeneficialOwners(req, appData);
-    }
-    if (appData[ManagingOfficerKey] === undefined && appData[ManagingOfficerCorporateKey] === undefined) {
       await retrieveManagingOfficers(req, appData);
     }
 
@@ -72,7 +67,8 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
+const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
+  await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const session = req.session as Session;
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   const raw = pscs as any;

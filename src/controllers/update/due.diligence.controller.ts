@@ -6,7 +6,7 @@ import {
   OVERSEAS_ENTITY_REVIEW_URL
 } from "../../config";
 
-import { getDueDiligencePage, postDueDiligencePage } from "../../utils/due-diligence";
+import { getDueDiligencePage, postDueDiligencePage } from "../../utils/due.diligence";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   getDueDiligencePage(req, res, next, UPDATE_DUE_DILIGENCE_PAGE, WHO_IS_MAKING_UPDATE_URL);

@@ -398,6 +398,10 @@ describe("should chek date functions for custom validation", () => {
     expect(checkDateIsNotCompletelyEmpty(_day, _month, _year)).toBe(true);
   });
 
+  test("should test checkDateIsNotCompletelyEmpty no params returns false", () => {
+    expect(checkDateIsNotCompletelyEmpty()).toBe(false);
+  });
+
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
   ])("should test checkDateIsInPast returns true", (_day, _month, _year) => {
@@ -409,6 +413,11 @@ describe("should chek date functions for custom validation", () => {
     [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
   ])("should test checkDateIsInPast throws error", (_day, _month, _year) => {
     expect(() => checkDateIsInPast(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  });
+
+  // TODO: empty strings should not be returning true
+  test("should test checkDateIsInPast returns true for no param", () => {
+    expect(checkDateIsInPast(errorMsg)).toBe(true);
   });
 
   test.each([
@@ -424,6 +433,11 @@ describe("should chek date functions for custom validation", () => {
     expect(() => checkDateIsInPastOrToday(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
   });
 
+  // TODO: empty strings should not be returning true
+  test("should test checkDateIsInPastOrToday returns true for no param", () => {
+    expect(checkDateIsInPastOrToday(errorMsg)).toBe(true);
+  });
+
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
     [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
@@ -437,6 +451,11 @@ describe("should chek date functions for custom validation", () => {
     [threeMonthsBackPlus.day.toString(), threeMonthsBackPlus.month.toString(), threeMonthsBackPlus.year.toString()]
   ])("should test checkDateIsWithinLast3Months throws error", (_day, _month, _year) => {
     expect(() => checkDateIsWithinLast3Months(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  });
+
+  // TODO: empty strings should not be returning true
+  test("should test checkDateIsWithinLast3Months returns true for no param", () => {
+    expect(checkDateIsWithinLast3Months(errorMsg)).toBe(true);
   });
 
   test.each([

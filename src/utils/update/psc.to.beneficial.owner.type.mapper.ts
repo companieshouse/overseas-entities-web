@@ -66,7 +66,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
   return result;
 };
 
-const mapNatureOfControl = (psc: CompanyPersonWithSignificantControlResource, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther, isBeneficialGov: boolean) => {
+const mapNatureOfControl = (psc: CompanyPersonWithSignificantControlResource, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.natures_of_control?.forEach(natureType => {
     const controlKind = natureTypeMap.get(natureType);
     switch (controlKind) {
@@ -78,7 +78,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControlResource, be
           break;
         case "TrustNatureOfControl":
           if (!isBeneficialGov){
-            beneficialOwner.trustees_nature_of_control_types = natureOfControlTypeMap.get(natureType) as unknown as NatureOfControlType[];
+            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlTypeMap.get(natureType) as unknown as NatureOfControlType[];
           }
           break;
         default:

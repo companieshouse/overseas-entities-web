@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 
 import * as config from "../../config";
@@ -9,13 +8,12 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { getApplicationData, setApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
-import { hasFetchedBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
@@ -27,8 +25,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     if (!hasFetchedBoAndMoData(appData)) {
-      await retrieveBeneficialOwners(req, appData);
-      await retrieveManagingOfficers(req, appData);
+      await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+      await getCompanyPsc(req, appData[EntityNumberKey] as string);
+      setFetchedBoMoData(appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {

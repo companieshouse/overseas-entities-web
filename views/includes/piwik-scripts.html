@@ -1,6 +1,14 @@
 <script src="{{MATOMO_ASSET_PATH}}/javascripts/app/piwik-enable.js"></script>
 <script type="application/javascript">
-    window.SERVICE_NAME = 'Register of overseas entities'
+    const journeyTypes = {
+        "register-an-overseas-entity": "Register",
+        "update-an-overseas-entity": "Update"
+    };
+    
+    const uri = window.location.href;
+    const journeyFromUri = journeyTypes[uri.replace(/^(https?:\/\/)?/, '').split('/')[1]];
+
+    window.SERVICE_NAME = `${journeyFromUri} an overseas entity`;
     window.PIWIK_URL = '{{ PIWIK_URL }}'
     window.PIWIK_SITE_ID = '{{ PIWIK_SITE_ID }}'
 </script>

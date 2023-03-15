@@ -390,7 +390,10 @@ describe("should chek date functions for custom validation", () => {
   test.each([
     ["12", "", ""],
     ["", "12", ""],
-    ["", "", "12"],
+    ["", "", "2000"],
+    ["12", "12", ""],
+    ["", "12", "2000"],
+    ["12", "", "2000"],
   ])("should test checkDateIsNotCompletelyEmpty returns true", (_day, _month, _year) => {
     expect(checkDateIsNotCompletelyEmpty(_day, _month, _year)).toBe(true);
   });

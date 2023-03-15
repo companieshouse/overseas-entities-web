@@ -11,6 +11,7 @@ export default () => {
   process.env.PIWIK_URL = "test";
   process.env.PIWIK_SITE_ID = "test";
   process.env.PIWIK_START_GOAL_ID = "test";
+  process.env.PIWIK_UPDATE_START_GOAL_ID = "test";
   process.env.PAYMENT_FEE = "100";
   process.env.UPDATE_PAYMENT_FEE = "200";
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";

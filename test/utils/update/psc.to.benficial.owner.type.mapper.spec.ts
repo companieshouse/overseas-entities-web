@@ -1,4 +1,4 @@
-import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
+import { CompanyPersonWithSignificantControlResource } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
@@ -19,27 +19,27 @@ describe("Test Mapping person of significant control to beneficial owner type", 
   });
 
   test(`error is thrown when undefined data is parsed to beneficial owner individual data mapper`, () => {
-    expect(mapPscToBeneficialOwnerTypeIndividual({} as CompanyPersonWithSignificantControl)).toThrowError;
+    expect(mapPscToBeneficialOwnerTypeIndividual({} as CompanyPersonWithSignificantControlResource)).toThrowError;
   });
 
   test(`error is thrown when undefined data is parsed to beneficial owner coperate data mapper`, () => {
-    expect(mapPscToBeneficialOwnerGov({} as CompanyPersonWithSignificantControl)).toThrowError;
+    expect(mapPscToBeneficialOwnerGov({} as CompanyPersonWithSignificantControlResource)).toThrowError;
   });
 
   test(`error is thrown when undefined data is parsed to beneficial owner other data mapper`, () => {
-    expect(mapPscToBeneficialOwnerOther({} as CompanyPersonWithSignificantControl)).toThrowError;
+    expect(mapPscToBeneficialOwnerOther({} as CompanyPersonWithSignificantControlResource)).toThrowError;
   });
 
   test('map person of significant control to beneficial owner individual should return object', () => {
     expect(mapPscToBeneficialOwnerTypeIndividual(pscMock)).toEqual({
       id: "",
       date_of_birth: {
-        day: pscMock.dateOfBirth.day,
-        month: pscMock.dateOfBirth.month,
-        year: pscMock.dateOfBirth.year
+        day: pscMock.date_of_birth.day,
+        month: pscMock.date_of_birth.month,
+        year: pscMock.date_of_birth.year
       },
-      first_name: pscMock.nameElements.forename,
-      last_name: pscMock.nameElements.surname,
+      first_name: pscMock.name_elements.forename,
+      last_name: pscMock.name_elements.surname,
       nationality: pscMock.nationality,
       second_nationality: undefined,
       start_date: undefined,
@@ -54,7 +54,6 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.region,
-        county: pscMock.address.county,
       },
       usual_residential_address: undefined,
     });
@@ -76,7 +75,6 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.region,
-        county: pscMock.address.county,
       },
       principal_address: {
         line_1: pscMock.address.address_line_1,
@@ -85,12 +83,11 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.region,
-        county: pscMock.address.county,
       },
-      law_governed: pscMock.identification?.legalAuthority,
-      legal_form: pscMock.identification?.legalForm,
-      public_register_name: pscMock.identification?.placeRegistered,
-      registration_number: pscMock.identification?.registrationNumber,
+      law_governed: pscMock.identification?.legal_authority,
+      legal_form: pscMock.identification?.legal_form,
+      public_register_name: pscMock.identification?.place_registered,
+      registration_number: pscMock.identification?.registration_number,
       is_on_register_in_country_formed_in: undefined,
 
     });
@@ -111,26 +108,20 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.region,
-        county: pscMock.address.county,
       },
       principal_address: {},
-      law_governed: pscMock.identification?.legalAuthority,
-      legal_form: pscMock.identification?.legalForm,
+      law_governed: pscMock.identification?.legal_authority,
+      legal_form: pscMock.identification?.legal_form,
     });
   });
 
-  test(`that address is mapped correctly`, () => {
-    pscMock.address = {},
-    expect(mapPscToBeneficialOwnerOther(pscMock).principal_address).toBeUndefined;
-  });
-
   test('that error is thrown if nature of control type does not match', () => {
-    pscMock.naturesOfControl = ['Some unknown 25% share'];
+    pscMock.natures_of_control = ['Some unknown 25% share'];
     expect(() => mapPscToBeneficialOwnerOther(pscMock)).toThrowError('INVALID NATURE OF CONTROL TYPE');
   });
 
   test('that error is empty pcsc nature of control', () => {
-    pscMock.naturesOfControl = [];
+    pscMock.natures_of_control = [];
     expect(mapPscToBeneficialOwnerOther(pscMock)).toBeUndefined;
   });
 });

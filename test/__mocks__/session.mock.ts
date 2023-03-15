@@ -1,5 +1,5 @@
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyPersonWithSignificantControlResource } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -46,7 +46,7 @@ import {
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { natureOfControlMap } from "../../src/utils/update/psc.to.beneficial.owner.type.mapper";
+import { natureOfControl } from "../../src/utils/update/psc.to.beneficial.owner.type.mapper";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
@@ -356,9 +356,9 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
   start_date: { day: "1", month: "3", year: "1999" },
-  beneficial_owner_nature_of_control_types: [natureOfControlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM] as unknown as NatureOfControlType[],
-  trustees_nature_of_control_types: [natureOfControlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_TRUST] as unknown as NatureOfControlType[],
-  non_legal_firm_members_nature_of_control_types: [natureOfControlMap.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM] as unknown as NatureOfControlType[],
+  beneficial_owner_nature_of_control_types: [natureOfControl.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM] as unknown as NatureOfControlType[],
+  trustees_nature_of_control_types: [natureOfControl.OWNERSHIP_MORE_THAN_25_PERCENT_AS_TRUST] as unknown as NatureOfControlType[],
+  non_legal_firm_members_nature_of_control_types: [natureOfControl.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM] as unknown as NatureOfControlType[],
   is_on_sanctions_list: 1,
   trust_ids: []
 };
@@ -977,7 +977,7 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   links: {} as Links
 };
 
-export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl = {
+export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControlResource = {
   address: {
     premises: "1 Acme Road",
     address_line_1: "addressLine1",
@@ -988,33 +988,32 @@ export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl
     postal_code: "BY 2",
     region: "region"
   },
-  dateOfBirth: {
+  date_of_birth: {
     day: "1",
     month: "2",
     year: "1900"
   },
-  countryOfResidence: "country1",
-  ...DATE_OF_BIRTH,
+  country_of_residence: "country1",
   etag: "",
   links: {
     self: "",
     statement: ""
   },
   name: "acme",
-  nameElements: {
+  name_elements: {
     forename: "acme",
     surname: "doe",
   },
   nationality: "country1",
-  naturesOfControl: [],
-  notifiedOn: '01/01/1900',
+  natures_of_control: [],
+  notified_on: '01/01/1900',
   identification: {
-    legalForm: "all forms",
-    legalAuthority: "country2",
-    countryRegistered: "country1",
-    identificationType: "identification type",
-    placeRegistered: "place",
-    registrationNumber: "0000"
+    legal_form: "all forms",
+    legal_authority: "country2",
+    country_registered: "country1",
+    identification_type: "identification type",
+    place_registered: "place",
+    registration_number: "0000"
   }
 };
 

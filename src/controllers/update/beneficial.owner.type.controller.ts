@@ -79,17 +79,16 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const session = req.session as Session;
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const raw = pscs as any;
   if (pscs !== undefined) {
-    for (const item of (raw.items || [])) { //  kind does not exist on getCompanyPsc return type
-      const psc = item;
-      if (item.kind === "individual-person-with-significant-control"){
+    for (const psc of (pscs.items || [])) {
+      const raw = psc as any;
+      if (raw.kind === "individual-person-with-significant-control"){
         const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
         setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
-      } else if (item.kind === "corporate-entity-beneficial-owner") {
+      } else if (raw.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
-      } else if (item.kind === "legal-person-with-significant-control") {
+      } else if (raw.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
       }

@@ -8,26 +8,23 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-
     if (!hasFetchedBoAndMoData(appData)) {
-      await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-      await getCompanyPsc(req, appData[EntityNumberKey] as string);
-      setFetchedBoMoData(appData);
+      await retrieveBeneficialOwners(req, appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -69,12 +66,6 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  // Mapping of returned data will be done as part of UAR-128
-  await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  setApplicationData(req.session, [], ManagingOfficerKey);
-};
-
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const session = req.session as Session;
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
@@ -93,9 +84,6 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
       }
     }
   } else {
-    // preventing api call for
-    setApplicationData(session, [], BeneficialOwnerIndividualKey);
-    setApplicationData(session, [], BeneficialOwnerOtherKey);
-    setApplicationData(session, [], BeneficialOwnerGovKey);
+    setFetchedBoMoData(appData);
   }
 };

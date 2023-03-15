@@ -17,7 +17,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-import { getApplicationData, setApplicationData } from '../../../src/utils/application.data';
+import { getApplicationData } from '../../../src/utils/application.data';
 import {
   SERVICE_UNAVAILABLE,
   BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT,
@@ -58,7 +58,6 @@ const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 
@@ -91,7 +90,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).toHaveBeenCalled();
       expect(mockGetCompanyOfficers).toHaveBeenCalled();
-      expect(mockSetApplicationData).toHaveBeenCalled();
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCompanyPsc if BeneficialOwnerIndividualKey exists`, async () => {

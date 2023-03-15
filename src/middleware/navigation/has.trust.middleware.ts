@@ -5,8 +5,9 @@ import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from '../../model/application.model';
 import { TrustKey } from '../../model/trust.model';
 import { NavigationErrorMessage } from './check.condition';
+import { containsTrustData, getTrustArray } from '../../utils/trusts';
 
-export const hasTrust = (req: Request, res: Response, next: NextFunction): void => {
+export const hasTrustWithId = (req: Request, res: Response, next: NextFunction): void => {
   try {
     const trustId = req.params[ROUTE_PARAM_TRUST_ID];
     const appData: ApplicationData = getApplicationData(req.session);
@@ -22,6 +23,21 @@ export const hasTrust = (req: Request, res: Response, next: NextFunction): void 
     }
 
     return next();
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const hasTrustData = (req: Request, res: Response, next: NextFunction): void => {
+  try {
+
+    const appData: ApplicationData = getApplicationData(req.session);
+    if (containsTrustData(getTrustArray(appData))) {
+      return next();
+    }
+
+    logger.infoRequest(req, NavigationErrorMessage);
+    return res.redirect(SOLD_LAND_FILTER_URL);
   } catch (err) {
     next(err);
   }

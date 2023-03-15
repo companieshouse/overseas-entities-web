@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Tell us about an individual (Trusts)" %}
+{% set title = "Tell us about the legal entity (Trusts)" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -53,17 +53,28 @@
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
-              text: "Beneficiary"
+              text: "Beneficiary",
+              attributes: {
+                "data-event-id": "beneficiaries-type-radio-option"
+              }
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
-              text: "Settlor"
+              text: "Settlor",
+              attributes: {
+                "data-event-id": "settlors-type-radio-option"
+              }
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
-              text: "Grantor"
-            }, 
-            {
+              text: "Grantor",
+              attributes: {
+                "data-event-id": "grantors-type-radio-option"
+              }
+            }, {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
+              attributes: {
+                "data-event-id": "interested-persons-type-radio-option"
+              },
               conditional: {
                 html: interestedPersonDateHtml
               }

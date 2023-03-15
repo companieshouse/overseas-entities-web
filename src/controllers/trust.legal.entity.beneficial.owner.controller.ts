@@ -9,6 +9,8 @@ import { mapLegalEntityToSession } from '../utils/trust/legal.entity.beneficial.
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { ApplicationData } from '../model';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
+import { Session } from '@companieshouse/node-session-handler';
+import { saveAndContinue } from '../utils/save.and.continue';
 
 const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -62,7 +64,7 @@ const get = (
   }
 };
 
-const post = (
+const post = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -88,7 +90,10 @@ const post = (
     appData = saveTrustInApp(appData, updatedTrust);
 
     //  save to session
-    setExtraData(req.session, appData);
+    const session = req.session as Session;
+    setExtraData(session, appData);
+
+    await saveAndContinue(req, session);
 
     logger.debugRequest(req, "requestHere");
 

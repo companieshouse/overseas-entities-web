@@ -30,6 +30,7 @@ import {
   presenterType,
   trustType,
   dueDiligenceType,
+  updateType,
 } from "../../src/model";
 import {
   EntityNameKey,
@@ -762,6 +763,10 @@ export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SP
   email: " " + EMAIL_ADDRESS + " "
 };
 
+export const UPDATE_OBJECT_MOCK: updateType.Update = {
+  date_of_creation: "27/10/2022"
+};
+
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
@@ -980,6 +985,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST],
   [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
@@ -1026,6 +1032,9 @@ export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
 export const fnNameGetTransaction = "getTransaction";
 
+export const serviceNameCompanyOfficers = "companyOfficers";
+export const fnNameGetCompanyOfficers = "getCompanyOfficers";
+
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";
 export const fnGetCompanyNameGetOE = "getCompanyProfile";
@@ -1035,3 +1044,6 @@ export const UPDATE_PAYMENT_WITH_TRANSACTION_URL = `${UPDATE_AN_OVERSEAS_ENTITY_
 export const UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 
+// get company psc mocks
+export const serviceNameGetCompanyPsc = "companyPsc";
+export const fnNameGetCompanyPsc = "getCompanyPsc";

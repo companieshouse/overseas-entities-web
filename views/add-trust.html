@@ -17,21 +17,58 @@
 
       {% include "includes/list/errors.html" %}
 
-      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <h1 class="govuk-heading-xl govuk-!-margin-10">{{ pageParams.title }}</h1>
+
+      {% set trusts = [] %}
+      {% for trust in pageData.trustData %}
+        {% set trusts = (
+          trusts.push(
+            [
+              {
+                text: trust.trust_name
+              }
+            ]
+          ),
+          trusts
+        ) %}
+      {% endfor %}
+
+      {{ govukTable({
+        caption: "What you have added so far",
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: true,
+        head: [
+        {
+          text: "Trust",
+          classes: "govuk-visually-hidden"
+        },
+          {
+            text: "Change or remove",
+            classes: "govuk-visually-hidden"
+          }
+        ],
+        rows: trusts
+      }) }}
 
       <form method="post">
 
-
         {% set fieldParam = {
+          label: pageParams.subtitle,
           name: 'addTrust',
           error: errors.addTrust,
           items: [
             {
               value: 1,
-              text: "Yes"
+              text: "Yes",
+              attributes: {
+                "data-event-id": "add-trust-yes-radio-option"
+              }
             }, {
               value: 0,
-              text: "No"
+              text: "No",
+              attributes: {
+                "data-event-id": "add-trust-no-radio-option"
+              }
             }
           ]
         } %}

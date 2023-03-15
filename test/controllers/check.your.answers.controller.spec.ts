@@ -475,7 +475,7 @@ describe("GET tests", () => {
 
     expect(resp.status).toEqual(200);
     expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_LINK); // back button
-    expect(resp.text).toContain(`${TRUST_ENTRY_URL + "/" + TRUST_WITH_ID.trust_id + ADD_TRUST_URL}`); // back button
+    expect(resp.text).toContain(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`); // back button
     expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE);
     expect(resp.text).toContain(`${TRUST_DETAILS_URL}/${TRUST_WITH_ID.trust_id}`);
     expect(resp.text).toContain(TRUST_WITH_ID.trust_name);

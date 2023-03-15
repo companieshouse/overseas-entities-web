@@ -1,3 +1,5 @@
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/middleware/service.availability.middleware');
 import { ErrorMessages } from "../../src/validation/error.messages";
 
 jest.mock("ioredis");
@@ -5,6 +7,9 @@ jest.mock("../../src/utils/logger");
 
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { NextFunction, Request, Response } from "express";
 
 import * as config from "../../src/config";
 import app from "../../src/app";
@@ -17,6 +22,9 @@ import {
 } from "../__mocks__/text.mock";
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
@@ -30,7 +38,8 @@ describe("Sign Out controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
@@ -40,7 +49,19 @@ describe("Sign Out controller", () => {
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
+    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
+      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    });
+
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -102,3 +123,4 @@ describe("Sign Out controller", () => {
     });
   });
 });
+

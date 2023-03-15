@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import {
@@ -8,13 +7,15 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData, setApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { ManagingOfficerKey, ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
+import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
+import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -22,7 +23,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    await retrieveManagingOfficers(req, appData);
+    if (!hasFetchedBoAndMoData(appData)) {
+      await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+      await getCompanyPsc(req, appData[EntityNumberKey] as string);
+      setFetchedBoMoData(appData);
+    }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
@@ -63,23 +68,23 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  const officerResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  const session = Session as any;
-  const raw = officerResource as any;
-  if (officerResource !== undefined) {
-    for (const item of (raw.items || [])) {
-      const officer = item;
-      if (item.officer_role === "secretary"){
-        const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
-        setApplicationData(session, managingOfficer, ManagingOfficerKey);
-      } else if (item.officer_role === "director") {
-        const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
-      }
-    }
-  } else {
-    setApplicationData(session, [], ManagingOfficerKey);
-    setApplicationData(session, [], ManagingOfficerCorporateKey);
-  }
-};
+// export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+//   const officerResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+//   const session = Session as any;
+//   const raw = officerResource as any;
+//   if (officerResource !== undefined) {
+//     for (const item of (raw.items || [])) {
+//       const officer = item;
+//       if (item.officer_role === "secretary"){
+//         const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
+//         setApplicationData(session, managingOfficer, ManagingOfficerKey);
+//       } else if (item.officer_role === "director") {
+//         const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+//         setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
+//       }
+//     }
+//   } else {
+//     setApplicationData(session, [], ManagingOfficerKey);
+//     setApplicationData(session, [], ManagingOfficerCorporateKey);
+//   }
+// };

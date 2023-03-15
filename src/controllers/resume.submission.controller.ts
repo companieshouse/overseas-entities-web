@@ -20,6 +20,7 @@ import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../model/
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../model/managing.officer.model";
 import { startPaymentsSession } from "../service/payment.service";
 import { getTransaction } from "../service/transaction.service";
+import { generateTrusteeIds } from "../utils/trusts";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -96,6 +97,8 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   } else if (Object.keys(appData[DueDiligenceKey] as DueDiligence).length){
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
+
+  generateTrusteeIds(appData);
 
   setExtraData(session, appData);
 };

@@ -1032,6 +1032,9 @@ export const fnNamePostTransaction = "postTransaction";
 export const fnNamePutTransaction = "putTransaction";
 export const fnNameGetTransaction = "getTransaction";
 
+export const serviceNameCompanyOfficers = "companyOfficers";
+export const fnNameGetCompanyOfficers = "getCompanyOfficers";
+
 // update overseas entity mocks
 export const companyServiceNameOE = "companyProfile";
 export const fnGetCompanyNameGetOE = "getCompanyProfile";
@@ -1041,3 +1044,6 @@ export const UPDATE_PAYMENT_WITH_TRANSACTION_URL = `${UPDATE_AN_OVERSEAS_ENTITY_
 export const UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 
+// get company psc mocks
+export const serviceNameGetCompanyPsc = "companyPsc";
+export const fnNameGetCompanyPsc = "getCompanyPsc";

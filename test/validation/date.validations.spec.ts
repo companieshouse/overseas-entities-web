@@ -1,6 +1,5 @@
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
-import { checkBirthDate,
-  checkDate, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkStartDate,
+import { checkBirthDate, checkDateInterestedPerson, checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkStartDate,
   checkTrustDate } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
@@ -70,8 +69,8 @@ describe('Test to validate date validator', () => {
 
 describe("test date method", () => {
 
-  const errMsgcheckDate: ErrorMessages[] = [
-    ErrorMessages.ENTER_DATE,
+  const errMsgCheckDateInterestedPerson: ErrorMessages[] = [
+    ErrorMessages.ENTER_DATE_INTERESTED_PERSON,
     ErrorMessages.MONTH_AND_YEAR,
     ErrorMessages.DAY_AND_YEAR,
     ErrorMessages.DAY_AND_MONTH,
@@ -79,7 +78,7 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE,
     ErrorMessages.YEAR_LENGTH,
     ErrorMessages.INVALID_DATE,
-    ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY,
+    ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON,
     ErrorMessages.YEAR,
     ErrorMessages.DAY,
     ErrorMessages.MONTH
@@ -160,8 +159,8 @@ describe("test date method", () => {
     ["10", "", "9999", err[11]],
   ];
 
-  test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {
-    expect(() => checkDate(_day, _month, _year)).toThrow(_err);
+  test.each(testDateCheck(errMsgCheckDateInterestedPerson))("should throw appropriate date errors for checkDate", (_day, _month, _year, _err) => {
+    expect(() => checkDateInterestedPerson(_day, _month, _year)).toThrow(_err);
   });
 
   test.each(testDateCheck(errMsgcheckBirthDate))("should throw appropriate date errors for checkBirthDate", (_day, _month, _year, _err) => {

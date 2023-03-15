@@ -8,6 +8,7 @@ import {
   mapBeneficialOwnerToSession,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
 import { TrusteeType } from "../../../src/model/trustee.type.model";
+import { yesNoResponse } from "../../../src/model/data.types.model";
 
 describe('Historical Beneficial Owner page Mapper Service', () => {
   beforeEach(() => {
@@ -36,7 +37,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
 
         expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
           id: mockFormData.boId,
-          corporate_indicator: mockFormData.type,
+          corporate_indicator: yesNoResponse.No,
           forename: mockFormData.firstName,
           surname: mockFormData.lastName,
           notified_date_day: mockFormData.startDateDay,
@@ -61,7 +62,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
 
         expect(mapBeneficialOwnerToSession(mockFormData as Page.TrustHistoricalBeneficialOwnerForm)).toEqual({
           id: expectNewId,
-          corporate_indicator: mockFormData.type,
+          corporate_indicator: yesNoResponse.Yes,
           corporate_name: mockFormData.corporate_name,
           notified_date_day: mockFormData.startDateDay,
           notified_date_month: mockFormData.startDateMonth,

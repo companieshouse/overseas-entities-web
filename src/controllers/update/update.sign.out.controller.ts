@@ -1,13 +1,16 @@
 import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
       previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
-      url: config.UPDATE_AN_OVERSEAS_ENTITY_URL
+      url: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
+      saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME),
+      journey: "update"
     });
   } catch (error) {
     logger.errorRequest(req, error);

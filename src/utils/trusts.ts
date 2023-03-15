@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from "uuid";
 import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
@@ -10,6 +11,7 @@ import {
   IndividualTrustee,
   TrustKey,
   TrustCorporate,
+  TrustIndividual,
 } from "../model/trust.model";
 
 /**
@@ -176,12 +178,28 @@ const getIndividualTrusteesFromTrust = (
   if (trustId) {
     individuals = appData[TrustKey]?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
+    if (individuals === undefined){
+      individuals = [] as IndividualTrustee[];
+    }
   } else {
     appData[TrustKey]?.map(trust => trust.INDIVIDUALS?.map(individual => {
       individuals.push(individual as IndividualTrustee);
     }));
   }
   return individuals;
+};
+
+const getIndividualTrustee = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId?: string,
+): IndividualTrustee => {
+  const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId);
+
+  if (individualTrustees.length === 0 || trusteeId === undefined) {
+    return {} as IndividualTrustee;
+  }
+  return individualTrustees.find(trustee => trustee.id === trusteeId) ?? {} as IndividualTrustee;
 };
 
 const getFormerTrusteesFromTrust = (
@@ -265,6 +283,26 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
   return trust;
 };
 
+/**
+ * The Trustee Ids are NOT part of the OE API data model nor part of the SDK mapper object. They need
+ * to be generated when the Trust Data is got from the API (e.g. for a "Save and Resume" journey)
+ * @param appData - application data
+ * @returns void
+ */
+const generateTrusteeIds = (appData: ApplicationData) => {
+
+  if (containsTrustData(getTrustArray(appData))) {
+
+    for (const trust of appData.trusts ?? []) {
+
+      trust.CORPORATES = (trust.CORPORATES as TrustCorporate[]).map( te => {return { ...te, id: uuidv4() }; } );
+      trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map( te => {return { ...te, id: uuidv4() }; } );
+      trust.INDIVIDUALS = (trust.INDIVIDUALS as TrustIndividual[]).map( te => {return { ...te, id: uuidv4() }; } );
+
+    }
+  }
+};
+
 export {
   checkEntityRequiresTrusts,
   getBeneficialOwnerList,
@@ -285,4 +323,6 @@ export {
   saveIndividualTrusteeInTrust,
   getTrustLandingUrl,
   containsTrustData,
+  getIndividualTrustee,
+  generateTrusteeIds,
 };

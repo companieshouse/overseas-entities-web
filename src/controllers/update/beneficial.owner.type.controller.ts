@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 
 import * as config from "../../config";
@@ -8,13 +8,26 @@ import {
   BeneficialOwnerTypeKey,
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
-import { getApplicationData } from "../../utils/application.data";
-import { ApplicationData } from "../../model";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+import { getApplicationData, setApplicationData } from "../../utils/application.data";
+import { ApplicationData } from "../../model";
+import { EntityNumberKey } from "../../model/data.types.model";
+import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { getCompanyOfficers } from "../../service/company.managing.officer.service";
+import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { hasFetchedBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const appData: ApplicationData = getApplicationData(req.session);
+
+    if (!hasFetchedBoAndMoData(appData)) {
+      await retrieveBeneficialOwners(req, appData);
+      await retrieveManagingOfficers(req, appData);
+    }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
@@ -53,4 +66,19 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
       default:
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
+};
+
+const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+  // Mapping of returned data will be done as part of UAR-128
+  await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+  setApplicationData(req.session, [], ManagingOfficerKey);
+};
+
+const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
+  await getCompanyPsc(req, appData[EntityNumberKey] as string);
+  const session = req.session as Session;
+
+  // setting key to [] for all scenarios right now
+  // UAR-337 to update
+  setApplicationData(session, [], BeneficialOwnerIndividualKey);
 };

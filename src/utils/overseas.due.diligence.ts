@@ -16,7 +16,7 @@ import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { OverseasEntityDueDiligenceKey, OverseasEntityDueDiligenceKeys } from "../model/overseas.entity.due.diligence.model";
 import { saveAndContinue } from "./save.and.continue";
 
-export const getDueDiligence = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
+export const getDueDiligence = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 

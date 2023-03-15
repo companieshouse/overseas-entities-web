@@ -1,4 +1,4 @@
-import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
+import { CompanyOfficerResource } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { mapToManagingOfficer, mapToManagingOfficerCorporate, splitNames, getFormerNames } from '../../../src/utils/update/managing.officer.mapper';
 import { MANAGING_OFFICER_MOCK_MAP_DATA } from '../../__mocks__/session.mock';
@@ -15,11 +15,11 @@ describe("Test mapping to managing officer", () => {
   });
 
   test(`error is thrown when undefined data is parsed to data mapper`, () => {
-    expect(mapToManagingOfficer({} as CompanyOfficer)).toThrowError;
+    expect(mapToManagingOfficer({} as CompanyOfficerResource)).toThrowError;
   });
 
   test(`error is thrown when undefined data is parsed to data mapper (corporate)`, () => {
-    expect(mapToManagingOfficerCorporate({} as CompanyOfficer)).toThrowError;
+    expect(mapToManagingOfficerCorporate({} as CompanyOfficerResource)).toThrowError;
   });
 
   test('map officer data to managing officer should return object', () => {
@@ -28,35 +28,35 @@ describe("Test mapping to managing officer", () => {
       first_name: splitNames(managingOfficerMock.name)[0],
       last_name: splitNames(managingOfficerMock.name)[1],
       has_former_names: yesNoResponse.Yes,
-      former_names: getFormerNames(managingOfficerMock.formerNames),
+      former_names: getFormerNames(managingOfficerMock.former_names),
       date_of_birth: {
-        day: managingOfficerMock.dateOfBirth?.day,
-        month: managingOfficerMock.dateOfBirth?.month,
-        year: managingOfficerMock.dateOfBirth?.year
+        day: managingOfficerMock.date_of_birth?.day,
+        month: managingOfficerMock.date_of_birth?.month,
+        year: managingOfficerMock.date_of_birth?.year
       },
       nationality: managingOfficerMock.nationality,
       // appointed_on: managingOfficerMock.appointedOn,
       usual_residential_address: {
         property_name_number: managingOfficerMock.address.premises,
-        line_1: managingOfficerMock.address.addressLine1,
-        line_2: managingOfficerMock.address.addressLine2,
+        line_1: managingOfficerMock.address.address_line_1,
+        line_2: managingOfficerMock.address.address_line_2,
         town: managingOfficerMock.address.locality,
         county: managingOfficerMock.address.region,
         country: managingOfficerMock.address.country,
-        postcode: managingOfficerMock.address.postalCode,
+        postcode: managingOfficerMock.address.postal_code,
       },
       is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
       service_address: {
         property_name_number: managingOfficerMock.address.premises,
-        line_1: managingOfficerMock.address.addressLine1,
-        line_2: managingOfficerMock.address.addressLine2,
+        line_1: managingOfficerMock.address.address_line_1,
+        line_2: managingOfficerMock.address.address_line_2,
         town: managingOfficerMock.address.locality,
         county: managingOfficerMock.address.region,
         country: managingOfficerMock.address.country,
-        postcode: managingOfficerMock.address.postalCode,
+        postcode: managingOfficerMock.address.postal_code,
       },
       occupation: managingOfficerMock.occupation,
-      role_and_responsibilities: managingOfficerMock.officerRole
+      role_and_responsibilities: managingOfficerMock.officer_role
     });
   });
 
@@ -66,29 +66,29 @@ describe("Test mapping to managing officer", () => {
       name: managingOfficerMock.name,
       principal_address: {
         property_name_number: managingOfficerMock.address.premises,
-        line_1: managingOfficerMock.address.addressLine1,
-        line_2: managingOfficerMock.address.addressLine2,
+        line_1: managingOfficerMock.address.address_line_1,
+        line_2: managingOfficerMock.address.address_line_2,
         town: managingOfficerMock.address.locality,
         county: managingOfficerMock.address.region,
         country: managingOfficerMock.address.country,
-        postcode: managingOfficerMock.address.postalCode,
+        postcode: managingOfficerMock.address.postal_code,
       },
       is_service_address_same_as_principal_address: yesNoResponse.Yes,
       service_address: {
         property_name_number: managingOfficerMock.address.premises,
-        line_1: managingOfficerMock.address.addressLine1,
-        line_2: managingOfficerMock.address.addressLine2,
+        line_1: managingOfficerMock.address.address_line_1,
+        line_2: managingOfficerMock.address.address_line_2,
         town: managingOfficerMock.address.locality,
         county: managingOfficerMock.address.region,
         country: managingOfficerMock.address.country,
-        postcode: managingOfficerMock.address.postalCode,
+        postcode: managingOfficerMock.address.postal_code,
       },
-      legal_form: managingOfficerMock.identification?.legalForm,
-      law_governed: managingOfficerMock.identification?.legalAuthority,
+      legal_form: managingOfficerMock.identification?.legal_form,
+      law_governed: managingOfficerMock.identification?.legal_authority,
       is_on_register_in_country_formed_in: undefined,
-      public_register_name: managingOfficerMock.identification?.placeRegistered,
-      registration_number: managingOfficerMock.identification?.registrationNumber,
-      role_and_responsibilities: managingOfficerMock.officerRole,
+      public_register_name: managingOfficerMock.identification?.place_registered,
+      registration_number: managingOfficerMock.identification?.registration_number,
+      role_and_responsibilities: managingOfficerMock.officer_role,
     });
   });
 });

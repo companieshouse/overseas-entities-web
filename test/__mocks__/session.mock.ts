@@ -1,4 +1,4 @@
-import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { CompanyOfficerResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
@@ -977,33 +977,33 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   links: {} as Links
 };
 
-export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
+export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficerResource = {
   address: {
     premises: "1 Acme Road",
-    addressLine1: "addressLine1",
-    addressLine2: "addressLine2",
+    address_line_1: "addressLine1",
+    address_line_2: "addressLine2",
     locality: "locality",
-    careOf: "careOf",
-    poBox: "pobox",
-    postalCode: "BY 2",
+    care_of: "careOf",
+    po_box: "pobox",
+    postal_code: "BY 2",
     region: "region",
     country: "country"
   },
-  appointedOn: "appointed",
-  countryOfResidence: "country1",
-  dateOfBirth: {
+  appointed_on: "appointed",
+  country_of_residence: "country1",
+  date_of_birth: {
     day: "1",
     month: "2",
     year: "1900"
   },
   ...DATE_OF_BIRTH,
-  formerNames: [],
+  former_names: [],
   identification: {
-    legalForm: "all forms",
-    legalAuthority: "country2",
-    identificationType: "identification type",
-    placeRegistered: "place",
-    registrationNumber: "0000"
+    legal_form: "all forms",
+    legal_authority: "country2",
+    identification_type: "identification type",
+    place_registered: "place",
+    registration_number: "0000"
   },
   links: {
     officer: {
@@ -1013,8 +1013,8 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
   name: "Jimmy Wabb",
   nationality: "country1",
   occupation: "occupation",
-  officerRole: "role",
-  resignedOn: "resigned"
+  officer_role: "role",
+  resigned_on: "resigned"
 };
 
 export const TRUST_WITH_ID: Trust = {

@@ -11,11 +11,10 @@ import {
 import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { ManagingOfficerKey, ManagingOfficerIndividual } from "../../model/managing.officer.model";
+import { ManagingOfficerCorporateKey, ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
+import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
-import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { hasFetchedBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -23,10 +22,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    if (!hasFetchedBoAndMoData(appData)) {
-      await retrieveBeneficialOwners(req, appData);
-      await retrieveManagingOfficers(req, appData);
-    }
+    await retrieveManagingOfficers(req, appData);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
@@ -67,36 +63,9 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const session = req.session as Session;
-  const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const raw = pscs as any;
-  if (pscs !== undefined) {
-    for (const item of (raw.items || [])) { //  kind does not exist on getCompanyPsc return type
-      const psc = item;
-      if (item.kind === "individual-person-with-significant-control"){
-        const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
-        setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
-      } else if (item.kind === "corporate-entity-beneficial-owner") {
-        const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
-      } else if (item.kind === "legal-person-with-significant-control") {
-        const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
-      }
-    }
-  } else {
-    // preventing api call for
-    setApplicationData(session, [], BeneficialOwnerIndividualKey);
-    setApplicationData(session, [], BeneficialOwnerOtherKey);
-    setApplicationData(session, [], BeneficialOwnerGovKey);
-  }
-};
-
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  const session = req.session as Session;
   const officerResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+  const session = Session as any;
   const raw = officerResource as any;
   if (officerResource !== undefined) {
     for (const item of (raw.items || [])) {

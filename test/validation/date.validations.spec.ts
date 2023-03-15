@@ -9,9 +9,10 @@ import { checkBirthDate,
   checkDateOfBirthFieldsArePresent,
   checkDateValueIsValid,
   checkDayFieldForErrors,
-  checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkStartDate,
+  checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkStartDate,
   checkTrustDate,
-  checkYearFieldForErrors } from '../../src/validation/custom.validation';
+  checkYearFieldForErrors,
+  isYearEitherMissingOrCorrectLength } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
 
@@ -497,6 +498,27 @@ describe("should chek date functions for custom validation", () => {
     ["2004", "12", "2004"],
   ])("should test checkDateValueIsValid throws error", (_day, _month, _year) => {
     expect(() => checkDateValueIsValid(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  });
+
+  test("should test checkDateValueIsValid throws error for no param", () => {
+    expect(() => checkDateValueIsValid(errorMsg)).toThrow(errorMsg);
+  });
+
+  test("should test isYearEitherMissingOrCorrectLength returns true for no param", () => {
+    expect(isYearEitherMissingOrCorrectLength()).toBe(true);
+  });
+
+  test("should test isYearEitherMissingOrCorrectLength returns true for 4 digit year param", () => {
+    expect(isYearEitherMissingOrCorrectLength("2004")).toBe(true);
+  });
+
+  test("should test checkOptionalDateDetails returns false for no param", () => {
+    expect(checkOptionalDateDetails()).toBe(false);
+  });
+
+  // TODO: Needs some rework
+  test("should test checkIdentityDate returns true for no param", () => {
+    expect(checkIdentityDate()).toBe(true);
   });
 
 });

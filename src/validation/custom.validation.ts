@@ -75,7 +75,7 @@ export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string 
   return true;
 };
 
-const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
+export const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
   return (yearStr.length === 0 || yearStr.length === 4);
 };
 
@@ -89,7 +89,7 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areDateFieldsPresent) {
     const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
@@ -100,6 +100,7 @@ const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", ye
       }
     }
   }
+  return false;
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {

@@ -20,13 +20,11 @@ export const mapToManagingOfficer = (officer: CompanyOfficerResource): ManagingO
     former_names: formernames,
     date_of_birth: mapDateOfBirth(officer),
     nationality: officer.nationality,
-    // appointed_on: officer.appointed_on,
     usual_residential_address: address,
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
     service_address: service_address,
     occupation: officer.occupation,
     role_and_responsibilities: officer.officer_role,
-    // resigned_on = officer.resigned_on
   };
   return result;
 };
@@ -68,10 +66,17 @@ export const splitNames = (officerName: string) => {
   } else {
     const names = officerName.split(" ");
     if (names.length > 2) {
-      const firstName = names.shift();
-      const firstAndMiddleName = (firstName || "").concat(" " + names[1]);
-      names[0] = firstAndMiddleName;
-      return names;
+      let firstNames = "";
+      for (let loop = 0; loop < names.length; loop++) {
+        if (loop !== names.length - 1) {
+          firstNames += names[loop];
+          if (loop !== names.length - 2) {
+            firstNames += " ";
+          }
+        }
+      }
+      const multipleFirstNames = [firstNames, names[names.length - 1]];
+      return multipleFirstNames;
     } else {
       return names;
     }

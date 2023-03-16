@@ -26,6 +26,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     if (!hasFetchedBoAndMoData(appData)) {
       await getCompanyPsc(req, appData[EntityNumberKey] as string);
+      // TO-DO: remove first call to setFetchedBoMoData in either retrieveManagingOfficers or retrieveBeneficialOwners, whatever one is called first
       await retrieveManagingOfficers(req, appData);
     }
 

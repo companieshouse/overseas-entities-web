@@ -79,7 +79,6 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
         setApplicationData(session, managingOfficer, ManagingOfficerKey);
       } else if (raw.officer_role === "director") {
         const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        console.log(`raw.officer_role ${raw.officer_role}`);
         setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
       }
     }

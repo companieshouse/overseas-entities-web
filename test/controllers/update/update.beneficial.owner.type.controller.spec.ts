@@ -68,10 +68,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockSetApplicationData.mockReturnValue([]);
   });
 
   describe("GET tests", () => {
+
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -92,15 +92,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetCompanyPscService).toHaveBeenCalled();
     });
 
-    test(`test that undefined is returned if getCompanyOfficers is called without entity number`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-      });
-      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockGetCompanyOfficers).toHaveBeenCalled();
-      expect(mockSetBoMoData).toBeTruthy;
-    });
-
     test(`test corporate managing officer data returned when getCompanyOfficers data officer role is director`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -113,6 +104,15 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetApplicationData).toBeCalledTimes(1);
     });
 
+    test(`test that undefined is returned if getCompanyOfficers is called without entity number`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
     test(`test individual managing officer data returned when getCompanyOfficers data officer role is secretary`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -122,7 +122,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);
-      // expect(mockSetApplicationData).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(1);
     });
 
     test(`test that getCompanyOfficers is not called again if it returns undefined`, async () => {

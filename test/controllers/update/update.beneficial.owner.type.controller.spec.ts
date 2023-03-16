@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
+jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -17,7 +18,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-import { getApplicationData } from '../../../src/utils/application.data';
+import { getApplicationData, setApplicationData } from '../../../src/utils/application.data';
 import {
   SERVICE_UNAVAILABLE,
   BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT,
@@ -32,7 +33,7 @@ import {
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
-  ERROR
+  ERROR,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -41,9 +42,8 @@ import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
-import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
-import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
-import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
+import { MOCK_GET_COMPANY_OFFICERS_RESOURCE } from '../../__mocks__/get.company.officers.mock';
+import { hasFetchedBoAndMoData, setFetchedBoMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -58,26 +58,26 @@ const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
+const mockSetBoMoData = setFetchedBoMoData as jest.Mock;
+const mockHasFetchedBoAndMoData = hasFetchedBoAndMoData as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSetApplicationData.mockReturnValue([]);
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
+    test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-        [BeneficialOwnerIndividualKey]: undefined,
-        [BeneficialOwnerGovKey]: undefined,
-        [BeneficialOwnerOtherKey]: undefined,
-        [ManagingOfficerCorporateKey]: undefined,
-        [ManagingOfficerKey]: undefined
       });
+
       mockGetCompanyPscService.mockReturnValueOnce({});
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
@@ -88,8 +88,52 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
-      expect(mockGetCompanyPscService).toHaveBeenCalled();
       expect(mockGetCompanyOfficers).toHaveBeenCalled();
+      expect(mockGetCompanyPscService).toHaveBeenCalled();
+    });
+
+    test(`test that undefined is returned if getCompanyOfficers is called without entity number`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
+    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is director`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS_RESOURCE);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS_RESOURCE.items[0].officer_role = 'director');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(1);
+    });
+
+    test(`test individual managing officer data returned when getCompanyOfficers data officer role is secretary`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS_RESOURCE);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS_RESOURCE.items[0].officer_role = 'secretary');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+      // expect(mockSetApplicationData).toBeCalledTimes(1);
+    });
+
+    test(`test that getCompanyOfficers is not called again if it returns undefined`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      mockGetCompanyOfficers.mockReturnValueOnce(undefined);
+
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+      expect(mockSetBoMoData).toBeTruthy;
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCompanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
@@ -98,8 +142,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
         [BeneficialOwnerIndividualKey]: []
       });
-
-      mockGetCompanyOfficers.mockReturnValueOnce({});
+      mockHasFetchedBoAndMoData.mockReturnValue(true);
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 

@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import {
@@ -7,7 +8,7 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, setApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { ManagingOfficerKey, ManagingOfficerIndividual } from "../../model/managing.officer.model";
@@ -24,9 +25,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     if (!hasFetchedBoAndMoData(appData)) {
-      await getCompanyOfficers(req, appData[EntityNumberKey] as string);
       await getCompanyPsc(req, appData[EntityNumberKey] as string);
-      setFetchedBoMoData(appData);
+      await retrieveManagingOfficers(req, appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -68,23 +68,22 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-// export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-//   const officerResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-//   const session = Session as any;
-//   const raw = officerResource as any;
-//   if (officerResource !== undefined) {
-//     for (const item of (raw.items || [])) {
-//       const officer = item;
-//       if (item.officer_role === "secretary"){
-//         const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
-//         setApplicationData(session, managingOfficer, ManagingOfficerKey);
-//       } else if (item.officer_role === "director") {
-//         const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-//         setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
-//       }
-//     }
-//   } else {
-//     setApplicationData(session, [], ManagingOfficerKey);
-//     setApplicationData(session, [], ManagingOfficerCorporateKey);
-//   }
-// };
+export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+  const companyOfficersResource = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+  const session = req.session as Session;
+  if (companyOfficersResource !== undefined) {
+    for (const officer of (companyOfficersResource.items || [])) {
+      const raw = officer as any;
+      if (raw.officer_role === "secretary"){
+        const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
+        setApplicationData(session, managingOfficer, ManagingOfficerKey);
+      } else if (raw.officer_role === "director") {
+        const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+        console.log(`raw.officer_role ${raw.officer_role}`);
+        setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
+      }
+    }
+  } else {
+    setFetchedBoMoData(appData);
+  }
+};

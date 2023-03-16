@@ -304,7 +304,7 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .get(updateInterruptCard.get)
   .post(updateInterruptCard.post);
 
-router.get(config.UPDATE_CONFIRMATION_URL, authentication, updateConfirmation.get);
+router.get(config.UPDATE_CONFIRMATION_URL, authentication, navigation.hasOverseasEntity, updateConfirmation.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
@@ -329,15 +329,6 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
-
-router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
-  .all(
-    authentication,
-  )
-  .get(updateCheckYourAnswers.get)
-  .post(updateCheckYourAnswers.post);
-router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.get);
-router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
 
@@ -380,7 +371,8 @@ router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
 router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   .all(
     authentication,
-    companyAuthentication
+    companyAuthentication,
+    navigation.hasOverseasEntity
   )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
@@ -388,7 +380,8 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(
     authentication,
-    companyAuthentication
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate
   )
   .get(updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);

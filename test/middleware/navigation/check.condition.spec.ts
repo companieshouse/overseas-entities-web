@@ -13,7 +13,8 @@ import {
   checkUpdatePresenterEntered,
   checkWhoIsFilingEntered,
   checkHasDateOfCreation,
-  checkEntityUpdateDetailsEntered
+  checkEntityUpdateDetailsEntered,
+  checkBOsOrMOsDetailsEnteredUpdate
 } from "../../../src/middleware/navigation/check.condition";
 import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
@@ -206,5 +207,64 @@ describe("check condition navigation tests", () => {
   test("checkEntityUpdateDetailsEntered should return false", () => {
     const data = checkEntityUpdateDetailsEntered({ ...APPLICATION_DATA_MOCK, [EntityKey]: undefined });
     expect(data).toEqual(false);
+  });
+
+  test("checkBOsOrMOsDetailsEnteredUpdate should return false, object empty", () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({});
+    expect(data).toEqual(false);
+  });
+
+  test("checkBOsOrMOsDetailsEnteredUpdate should return false if BOs and MOs objects are undefined", () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: undefined,
+      [BeneficialOwnerOtherKey]: undefined,
+      [BeneficialOwnerGovKey]: undefined,
+      [ManagingOfficerKey]: undefined,
+      [ManagingOfficerCorporateKey]: undefined
+    });
+    expect(data).toEqual(false);
+  });
+
+  test("checkBOsOrMOsDetailsEnteredUpdate should return true if just one MOs is present", () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({
+      ...APPLICATION_DATA_MOCK,
+      [BeneficialOwnerIndividualKey]: undefined,
+      [BeneficialOwnerOtherKey]: [],
+      [BeneficialOwnerGovKey]: undefined,
+      [ManagingOfficerKey]: [],
+      [ManagingOfficerCorporateKey]: APPLICATION_DATA_MOCK[ManagingOfficerCorporateKey]
+    });
+    expect(data).toEqual(true);
+  });
+
+  test(`checkBOsOrMOsDetailsEnteredUpdate should return true even with ${BeneficialOwnerIndividualKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerIndividualKey]: undefined });
+    expect(data).toEqual(true);
+  });
+
+  test(`checkBOsOrMOsDetailsEnteredUpdate should return true even with ${BeneficialOwnerOtherKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerOtherKey]: undefined });
+    expect(data).toEqual(true);
+  });
+
+  test(`checkBOsOrMOsDetailsEnteredUpdate should return true even with ${BeneficialOwnerGovKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({ ...APPLICATION_DATA_MOCK, [BeneficialOwnerGovKey]: undefined });
+    expect(data).toEqual(true);
+  });
+
+  test(`checkBOsOrMOsDetailsEnteredUpdate should return true even with ${ManagingOfficerKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({ ...APPLICATION_DATA_MOCK, [ManagingOfficerKey]: undefined });
+    expect(data).toEqual(true);
+  });
+
+  test(`checkBOsOrMOsDetailsEnteredUpdate should return true even with ${ManagingOfficerCorporateKey} object missing`, () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate({ ...APPLICATION_DATA_MOCK, [ManagingOfficerCorporateKey]: undefined });
+    expect(data).toEqual(true);
+  });
+
+  test("checkBOsOrMOsDetailsEnteredUpdate should return true when all BO and MO objects present", () => {
+    const data = checkBOsOrMOsDetailsEnteredUpdate(APPLICATION_DATA_MOCK);
+    expect(data).toEqual(true);
   });
 });

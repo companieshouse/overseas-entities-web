@@ -124,6 +124,10 @@ type TrusteeItem = {
     trusteeItemType: TrusteeType;
 };
 
+type AddTrust = {
+  addTrust: yesNoResponse;
+};
+
 export {
   TrustDetailsForm,
   TrustBeneficialOwnerListItem,
@@ -134,4 +138,5 @@ export {
   TrustLegalEntityForm,
   IndividualTrusteesFormCommon,
   TrusteeItem,
+  AddTrust,
 };

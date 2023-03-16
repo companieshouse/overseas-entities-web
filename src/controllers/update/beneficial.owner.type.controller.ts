@@ -17,6 +17,7 @@ import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBenef
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { Session } from "@companieshouse/node-session-handler";
+import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -68,7 +69,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const session = req.session as Session;
-  const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
+  const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs !== undefined) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){

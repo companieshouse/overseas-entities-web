@@ -1,5 +1,5 @@
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { CompanyPersonWithSignificantControlResource } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -958,7 +958,7 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   links: {} as Links
 };
 
-export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControlResource = {
+export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl = {
   address: {
     premises: "1 Acme Road",
     address_line_1: "addressLine1",
@@ -969,32 +969,32 @@ export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl
     postal_code: "BY 2",
     region: "region"
   },
-  date_of_birth: {
+  dateOfBirth: {
     day: "1",
     month: "2",
     year: "1900"
   },
-  country_of_residence: "country1",
+  countryOfResidence: "country1",
   etag: "",
   links: {
     self: "",
     statement: ""
   },
   name: "acme",
-  name_elements: {
+  nameElements: {
     forename: "acme",
     surname: "doe",
   },
   nationality: "country1",
-  natures_of_control: [],
-  notified_on: '01/01/1900',
+  naturesOfControl: [],
+  notifiedOn: '01/01/1900',
   identification: {
-    legal_form: "all forms",
-    legal_authority: "country2",
-    country_registered: "country1",
-    identification_type: "identification type",
-    place_registered: "place",
-    registration_number: "0000"
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    countryRegistered: "country1",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
   }
 };
 

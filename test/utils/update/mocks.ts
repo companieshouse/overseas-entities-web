@@ -1,5 +1,5 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
-import { CompanyPersonWithSignificantControlResource } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
+import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -55,13 +55,13 @@ export const companyDetailsMock: CompanyProfile = {
   links: {}
 };
 
-export const pscMock: CompanyPersonWithSignificantControlResource = {
-  name_elements: {
+export const pscMock: CompanyPersonWithSignificantControl = {
+  nameElements: {
     forename: "Random",
     surname: "Person"
   },
   name: "Mr Random Notreal Person",
-  notified_on: "2016-04-06",
+  notifiedOn: "2016-04-06",
   nationality: "British",
   address: {
     region: "country1",
@@ -71,8 +71,8 @@ export const pscMock: CompanyPersonWithSignificantControlResource = {
     address_line_1: "",
     address_line_2: "",
   },
-  country_of_residence: "Wales",
-  date_of_birth: {
+  countryOfResidence: "Wales",
+  dateOfBirth: {
     day: "1",
     month: "2",
     year: "1900"
@@ -83,15 +83,15 @@ export const pscMock: CompanyPersonWithSignificantControlResource = {
     statement: ""
   },
   identification: {
-    legal_authority: "",
-    legal_form: "",
-    place_registered: "",
-    registration_number: ""
+    legalAuthority: "",
+    legalForm: "",
+    placeRegistered: "",
+    registrationNumber: ""
   },
-  natures_of_control: [
+  naturesOfControl: [
     'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
     'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
     'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
   ],
-  is_sanctioned: true
+  isSanctioned: true
 };

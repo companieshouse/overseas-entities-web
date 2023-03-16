@@ -68,8 +68,8 @@ export const splitNames = (officerName: string) => {
   } else {
     const names = officerName.split(" ");
     if (names.length > 2) {
-      const firstAndMiddleName = names[0].concat(" " + names[1]);
-      names.shift;
+      const firstName = names.shift();
+      const firstAndMiddleName = (firstName || "").concat(" " + names[1]);
       names[0] = firstAndMiddleName;
       return names;
     } else {
@@ -79,7 +79,6 @@ export const splitNames = (officerName: string) => {
 };
 
 export const getFormerNames = (formerNames?: FormerNameResource[]) => {
-
   let allFormerNames;
 
   if (formerNames !== undefined) {

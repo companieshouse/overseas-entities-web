@@ -46,7 +46,6 @@ import {
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
-import { controlMap } from "../../src/utils/update/psc.to.beneficial.owner.type.mapper";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
@@ -341,24 +340,6 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
-  is_on_sanctions_list: 1,
-  trust_ids: []
-};
-
-export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
-  id: BO_IND_ID,
-  first_name: "Ivan",
-  last_name: "Drago",
-  date_of_birth: { day: "21", month: "3", year: "1947" },
-  nationality: "Russian",
-  second_nationality: "",
-  usual_residential_address: ADDRESS,
-  is_service_address_same_as_usual_residential_address: 1,
-  service_address: ADDRESS,
-  start_date: { day: "1", month: "3", year: "1999" },
-  beneficial_owner_nature_of_control_types: [controlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM] as unknown as NatureOfControlType[],
-  trustees_nature_of_control_types: [controlMap.OWNERSHIP_MORE_THAN_25_PERCENT_AS_TRUST] as unknown as NatureOfControlType[],
-  non_legal_firm_members_nature_of_control_types: [controlMap.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM] as unknown as NatureOfControlType[],
   is_on_sanctions_list: 1,
   trust_ids: []
 };

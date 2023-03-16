@@ -91,16 +91,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-    });
-
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with OE section`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);

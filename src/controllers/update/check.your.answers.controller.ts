@@ -17,7 +17,8 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
   FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME,
-  OVERSEAS_ENTITY_UPDATE_DETAILS_URL
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  OVERSEAS_ENTITY_SECTION_HEADING
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -28,7 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
 
     const changeLinkUrl: string = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const overseasEntityHeading: string = "Overseas entity details";
+    const overseasEntityHeading: string = OVERSEAS_ENTITY_SECTION_HEADING;
 
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,

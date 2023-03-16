@@ -106,8 +106,6 @@ const post = async (
 
     await saveAndContinue(req, session);
 
-    logger.debugRequest(req, "requestHere");
-
     return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {
     logger.errorRequest(req, error);

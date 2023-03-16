@@ -13,6 +13,15 @@ export const companyDetailsMock: CompanyProfile = {
   type: 'Ltd',
   hasCharges: false,
   hasInsolvencyHistory: false,
+  foreignCompanyDetails: {
+    registrationNumber: "1234567890",
+    governedBy: "Sheriff",
+    legalForm: "The Wild West",
+    originatingRegistry: {
+      name: "Sheriff Office",
+      country: "US"
+    }
+  },
   registeredOfficeAddress: {
     addressLineOne: "1",
     addressLineTwo: "Victoria Park",

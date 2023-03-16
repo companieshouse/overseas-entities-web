@@ -75,7 +75,7 @@ export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string 
   return true;
 };
 
-const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
+export const isYearEitherMissingOrCorrectLength = (yearStr: string = ""): boolean => {
   return (yearStr.length === 0 || yearStr.length === 4);
 };
 
@@ -89,7 +89,7 @@ export const checkOptionalDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areDateFieldsPresent) {
     const isOptionalDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
@@ -100,6 +100,7 @@ const checkOptionalDateDetails = (dayStr: string = "", monthStr: string = "", ye
       }
     }
   }
+  return false;
 };
 
 export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -214,14 +215,14 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   return true;
 };
 
-export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" || monthStr === "" || yearStr === "") {
     return false;
   }
   return true;
 };
 
-export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if ((dayStr === "" && monthStr === "" && yearStr !== "") ||
      (dayStr !== "" && monthStr === "" && yearStr === "") ||
      (dayStr === "" && monthStr !== "" && yearStr === "")) {
@@ -246,7 +247,7 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
   return true;
 };
 
-export const checkDateInterestedPerson = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateIP = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON } as DateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
@@ -259,13 +260,8 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
     noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_BIRTH,
     noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
     noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_BIRTH,
-    noDayError: ErrorMessages.DAY_OF_BIRTH,
-    noMonthError: ErrorMessages.MONTH_OF_BIRTH,
-    noYear: ErrorMessages.YEAR_OF_BIRTH,
-    wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
-    wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
-    wrongYearLength: ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH
   };
+
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
@@ -278,13 +274,8 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
     noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_TRUST,
     noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_TRUST,
     noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_TRUST,
-    noDayError: ErrorMessages.DAY_OF_TRUST,
-    noMonthError: ErrorMessages.MONTH_OF_TRUST,
-    noYear: ErrorMessages.YEAR_OF_TRUST,
-    wrongDayLength: ErrorMessages.DAY_LENGTH_OF_TRUST,
-    wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST,
-    wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_TRUST
   };
+
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
   checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
@@ -297,12 +288,6 @@ export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string
     noDayAndMonthError: ErrorMessages.START_DAY_AND_MONTH_HISTORICAL_BO,
     noMonthAndYearError: ErrorMessages.START_MONTH_AND_YEAR_HISTORICAL_BO,
     noDayAndYearError: ErrorMessages.START_DAY_AND_YEAR_HISTORICAL_BO,
-    noDayError: ErrorMessages.START_DAY_HISTORICAL_BO,
-    noMonthError: ErrorMessages.START_MONTH_HISTORICAL_BO,
-    noYear: ErrorMessages.START_YEAR_HISTORICAL_BO,
-    wrongDayLength: ErrorMessages.START_DAY_LENGTH_HISTORICAL_BO,
-    wrongMonthLength: ErrorMessages.START_MONTH_LENGTH_HISTORICAL_BO,
-    wrongYearLength: ErrorMessages.START_YEAR_LENGTH_HISTORICAL_BO
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
@@ -317,12 +302,6 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
     noDayAndMonthError: ErrorMessages.END_DAY_AND_MONTH_HISTORICAL_BO,
     noMonthAndYearError: ErrorMessages.END_MONTH_AND_YEAR_HISTORICAL_BO,
     noDayAndYearError: ErrorMessages.END_DAY_AND_YEAR_HISTORICAL_BO,
-    noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
-    noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
-    noYear: ErrorMessages.END_YEAR_HISTORICAL_BO,
-    wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
-    wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
-    wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
@@ -340,29 +319,11 @@ export const checkDateOfBirthFieldsArePresent = (dayStr: string = "", monthStr: 
   return true;
 };
 
-const checkDateFieldLengthForErrors = (day: string, month: string, year: string, errors: ErrorMessages[]) => {
-  if (day.length > 2) {
-    throw new Error(errors[0]);
-  }
-  if (month.length > 2) {
-    throw new Error(errors[1]);
-  }
-  if (year.length !== 4) {
-    throw new Error(errors[2]);
-  }
-};
-
 export type DateFieldErrors = Partial<{
   completelyEmptyDateError: ErrorMessages,
   noDayAndMonthError: ErrorMessages,
   noMonthAndYearError: ErrorMessages,
   noDayAndYearError: ErrorMessages,
-  noDayError: ErrorMessages,
-  noMonthError: ErrorMessages,
-  noYear: ErrorMessages,
-  wrongDayLength: ErrorMessages,
-  wrongMonthLength: ErrorMessages,
-  wrongYearLength: ErrorMessages,
 }>;
 
 const defaultDateFieldErrors: DateFieldErrors = {
@@ -370,12 +331,21 @@ const defaultDateFieldErrors: DateFieldErrors = {
   noDayAndMonthError: ErrorMessages.DAY_AND_MONTH,
   noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR,
   noDayAndYearError: ErrorMessages.DAY_AND_YEAR,
-  noDayError: ErrorMessages.DAY,
-  noMonthError: ErrorMessages.MONTH,
-  noYear: ErrorMessages.YEAR,
-  wrongDayLength: ErrorMessages.DAY_LENGTH,
-  wrongMonthLength: ErrorMessages.MONTH_LENGTH,
-  wrongYearLength: ErrorMessages.YEAR_LENGTH,
+};
+
+export type DayFieldErrors = {
+  noDayError: ErrorMessages,
+  wrongDayLength: ErrorMessages,
+};
+
+export type MonthFieldErrors = {
+  noMonthError: ErrorMessages,
+  wrongMonthLength: ErrorMessages,
+};
+
+export type YearFieldErrors = {
+  noYearError: ErrorMessages,
+  wrongYearLength: ErrorMessages,
 };
 
 const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
@@ -388,18 +358,35 @@ const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = 
     throw new Error(dateErrors.noMonthAndYearError);
   } else if (dayStr === "" && monthStr !== "" && yearStr === "") {
     throw new Error(dateErrors.noDayAndYearError);
-  } else if (dayStr === "") {
-    throw new Error(dateErrors.noDayError);
-  } else if (monthStr === "") {
-    throw new Error(dateErrors.noMonthError);
-  } else if (yearStr === "") {
-    throw new Error(dateErrors.noYear);
-  } else {
-    checkDateFieldLengthForErrors(dayStr, monthStr, yearStr, [
-      dateErrors.wrongDayLength ?? ErrorMessages.DAY_LENGTH,
-      dateErrors.wrongMonthLength ?? ErrorMessages.MONTH_LENGTH,
-      dateErrors.wrongYearLength ?? ErrorMessages.YEAR_LENGTH]);
   }
+  return true;
+};
+
+export const checkDayFieldForErrors = (dateErrors: DayFieldErrors, dayStr: string) => {
+  if (dayStr === "") {
+    throw new Error(dateErrors.noDayError);
+  } else if (dayStr.length > 2){
+    throw new Error(dateErrors.wrongDayLength);
+  }
+  return true;
+};
+
+export const checkMonthFieldForErrors = (dateErrors: MonthFieldErrors, monthStr: string) => {
+  if (monthStr === "") {
+    throw new Error(dateErrors.noMonthError);
+  } else if (monthStr.length > 2){
+    throw new Error(dateErrors.wrongMonthLength);
+  }
+  return true;
+};
+
+export const checkYearFieldForErrors = (dateErrors: YearFieldErrors, yearStr: string) => {
+  if (yearStr === "") {
+    throw new Error(dateErrors.noYearError);
+  } else if (yearStr.length !== 4){
+    throw new Error(dateErrors.wrongYearLength);
+  }
+  return true;
 };
 
 export const checkMoreThanOneDateOfBirthFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {

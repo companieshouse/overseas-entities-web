@@ -32,9 +32,31 @@ describe(`Get overseas entity profile details service suite`, () => {
   test(`getCompanyRequest should respond with successful status code`, async () => {
     const mockResponse = { httpStatusCode: 200, resource: APPLICATION_DATA_MOCK };
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
+
     const response = await getCompanyProfile(req, COMPANY_NUMBER);
+
     expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(APPLICATION_DATA_MOCK);
+  });
+
+  test(`getCompanyRequest should respond with no data found on 404`, async () => {
+    const mockResponse = { httpStatusCode: 404, resource: {} };
+    mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
+
+    const response = await getCompanyProfile(req, COMPANY_NUMBER);
+
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    expect(response).toEqual({});
+  });
+
+  test(`getCompanyRequest should throw with 500 status code`, async () => {
+    const mockResponse = { httpStatusCode: 500, resource: {} };
+    mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
+
+    await expect(getCompanyProfile(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);
+
+    expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });
 });

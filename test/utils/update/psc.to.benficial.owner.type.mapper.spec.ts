@@ -56,6 +56,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         country: pscMock.address.region,
       },
       usual_residential_address: undefined,
+      is_on_sanctions_list: pscMock.is_sanctioned ? 1 : 0
     });
   });
 
@@ -89,7 +90,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       public_register_name: pscMock.identification?.place_registered,
       registration_number: pscMock.identification?.registration_number,
       is_on_register_in_country_formed_in: undefined,
-
+      is_on_sanctions_list: pscMock.is_sanctioned ? 1 : 0
     });
   });
 
@@ -112,6 +113,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       principal_address: {},
       law_governed: pscMock.identification?.legal_authority,
       legal_form: pscMock.identification?.legal_form,
+      is_on_sanctions_list: pscMock.is_sanctioned ? 1 : 0
     });
   });
 

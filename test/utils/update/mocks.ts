@@ -93,5 +93,5 @@ export const pscMock: CompanyPersonWithSignificantControlResource = {
     'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
     'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
   ],
-  // isSanctioned: yesNoResponse.No
+  is_sanctioned: true
 };

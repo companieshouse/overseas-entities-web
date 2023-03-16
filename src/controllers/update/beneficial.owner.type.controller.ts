@@ -71,14 +71,13 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   const pscs = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs !== undefined) {
     for (const psc of (pscs.items || [])) {
-      const raw = psc as any;
-      if (raw.kind === "individual-person-with-significant-control"){
+      if (psc.kind === "individual-person-with-significant-control"){
         const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
         setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
-      } else if (raw.kind === "corporate-entity-beneficial-owner") {
+      } else if (psc.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
-      } else if (raw.kind === "legal-person-with-significant-control") {
+      } else if (psc.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
       }

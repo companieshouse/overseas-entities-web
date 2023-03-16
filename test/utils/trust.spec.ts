@@ -18,6 +18,8 @@ import {
   checkEntityRequiresTrusts,
   getTrustLandingUrl,
   generateTrusteeIds,
+  getLegalEntityBosInTrust,
+  getLegalEntityTrustee,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -302,7 +304,7 @@ describe('Trust Utils method tests', () => {
       });
     });
 
-    test("test getTrusteeFromTrust with application data and trust id", () => {
+    test("test getIndividualTrusteesFromTrust with application data and trust id", () => {
       const test_trust_id = '247';
       const appData = {
         [TrustKey]: [{
@@ -316,7 +318,7 @@ describe('Trust Utils method tests', () => {
       expect(result).toEqual([{}, {}, {}]);
     });
 
-    test("test getTrusteeFromTrust with application data and no trust id", () => {
+    test("test getIndividualTrusteesFromTrust with application data and no trust id", () => {
       const appData = {
         [TrustKey]: [{
           'INDIVIDUALS': [{}, {}, {}] as TrustIndividual[],
@@ -347,6 +349,7 @@ describe('Trust Utils method tests', () => {
 
     test("test getIndividualTrusteeFromTrust with application data with no trusteeId", () => {
       const test_trust_id = '342';
+      const empty_trustee_id = '';
       const individualTrustee1 = { id: "999" } as IndividualTrustee;
       const individualTrustee2 = { id: "901" } as IndividualTrustee;
       const appData = {
@@ -356,7 +359,7 @@ describe('Trust Utils method tests', () => {
         }]
       } as ApplicationData;
 
-      const result = getIndividualTrustee(appData, test_trust_id, undefined);
+      const result = getIndividualTrustee(appData, test_trust_id, empty_trustee_id);
       expect(result).toEqual({});
     });
 
@@ -399,6 +402,78 @@ describe('Trust Utils method tests', () => {
       const result = getFormerTrusteesFromTrust(appData);
       expect(result.length).toEqual(6);
       expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
+    });
+
+    test("test getLegalEntityBosInTrust with application data and trust id", () => {
+      const test_trust_id = '353';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'CORPORATES': [{}, {}, {}] as TrustCorporate[],
+        }]
+      } as ApplicationData;
+
+      const result = getLegalEntityBosInTrust(appData, test_trust_id);
+      expect(result.length).toEqual(3);
+      expect(result).toEqual([{}, {}, {}]);
+    });
+
+    test("test getLegalEntityBosInTrust with application data and no trust id", () => {
+      const empty_test_trust_id = '';
+      const appData = {
+        [TrustKey]: [{
+          'CORPORATES': [{}, {}, {}] as TrustCorporate[],
+        }, {
+          'CORPORATES': [{}, {}, {}] as TrustCorporate[],
+        }]
+      } as ApplicationData;
+
+      const result = getLegalEntityBosInTrust(appData, empty_test_trust_id);
+      expect(result).toEqual([]);
+    });
+
+    test("test getLegalEntityTrustee from trust successfully", () => {
+      const test_trust_id = '342';
+      const legalEntityTrustee1 = { id: "999" } as TrustCorporate;
+      const legalEntityTrustee2 = { id: "901" } as TrustCorporate;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'CORPORATES': [ legalEntityTrustee1, legalEntityTrustee2 ] as TrustCorporate[],
+        }]
+      } as ApplicationData;
+
+      const result = getLegalEntityTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual(legalEntityTrustee1);
+    });
+
+    test("test getLegalEntityTrustee from trust with application data with no trusteeId", () => {
+      const test_trust_id = '342';
+      const empty_trustee_id = '';
+      const legalEntityTrustee1 = { id: "999" } as TrustCorporate;
+      const legalEntityTrustee2 = { id: "901" } as TrustCorporate;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'CORPORATES': [ legalEntityTrustee1, legalEntityTrustee2 ] as TrustCorporate[],
+        }]
+      } as ApplicationData;
+
+      const result = getLegalEntityTrustee(appData, test_trust_id, empty_trustee_id);
+      expect(result).toEqual({});
+    });
+
+    test("test getLegalEntityTrustee from trust with application data and INDIVIDUALS array is empty", () => {
+      const test_trust_id = '342';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'CORPORATES': [] as TrustCorporate[],
+        }]
+      } as ApplicationData;
+
+      const result = getLegalEntityTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual({});
     });
 
   });

@@ -68,36 +68,36 @@
         {% include "includes/inputs/date-input.html" %}
 
         {% set fieldParam = {
-          name: 'type',
+          name: 'roleWithinTrust',
           label: 'What is their role within the trust?',
-          value: formData.type,
-          error: errors.type if errors,
+          value: formData.roleWithinTrust,
+          error: errors.roleWithinTrust if errors,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
               text: "Beneficiary",
-              checked: formData.type == pageData.roleWithinTrustType.BENEFICIARY,
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
               attributes: {
                 "data-event-id": "beneficiary-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
               text: "Settlor",
-              checked: formData.type == pageData.roleWithinTrustType.SETTLOR,
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
               attributes: {
                 "data-event-id": "settlor-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
               text: "Grantor",
-              checked: formData.type == pageData.roleWithinTrustType.GRANTOR,
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
               attributes: {
                 "data-event-id": "grantor-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
-              checked: formData.type == pageData.roleWithinTrustType.INTERESTED_PERSON,
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
               attributes: {
                 "data-event-id": "interested-person-type-radio-option"
               },

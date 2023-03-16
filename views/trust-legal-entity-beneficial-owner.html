@@ -54,24 +54,28 @@
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
               text: "Beneficiary",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
               attributes: {
                 "data-event-id": "beneficiaries-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.SETTLOR,
               text: "Settlor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
               attributes: {
                 "data-event-id": "settlors-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.GRANTOR,
               text: "Grantor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
               attributes: {
                 "data-event-id": "grantors-type-radio-option"
               }
             }, {
               value: pageData.roleWithinTrustType.INTERESTED_PERSON,
               text: "Interested Person",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
               attributes: {
                 "data-event-id": "interested-persons-type-radio-option"
               },
@@ -83,11 +87,27 @@
         } %}
         {% include "includes/inputs/radio-input.html" %}
 
+        {% set principal_address_property_name_number = formData.principal_address_property_name_number %}
+        {% set principal_address_line_1 = formData.principal_address_line_1 %}
+        {% set principal_address_line_2 = formData.principal_address_line_2 %}
+        {% set principal_address_town = formData.principal_address_town %}
+        {% set principal_address_county = formData.principal_address_county %}
+        {% set principal_address_country = formData.principal_address_country %}
+        {% set principal_address_postcode = formData.principal_address_postcode %}
+        {% set is_service_address_same_as_principal_address = formData.is_service_address_same_as_principal_address %}
 
+        {% set service_address_property_name_number = formData.service_address_property_name_number %}
+        {% set service_address_line_1 = formData.service_address_line_1 %}
+        {% set service_address_line_2 = formData.service_address_line_2 %}
+        {% set service_address_town = formData.service_address_town %}
+        {% set service_address_county = formData.service_address_county %}
+        {% set service_address_country = formData.service_address_country %}
+        {% set service_address_postcode = formData.service_address_postcode %}
         {% include "includes/inputs/address/principal-address-input.html" %}
 
         {% set fieldParam = {
           name: 'legalForm',
+          id: 'legal_form',
           label: 'What is its legal form?',
           value: formData.legalForm,
           hint: 'For example, limited company',
@@ -97,6 +117,7 @@
 
         {% set fieldParam = {
           name: 'governingLaw',
+          id: 'law_governed',
           label: 'What is the governing law?',
           value: formData.governingLaw,
           hint: 'This is the law that the entity operates under.',
@@ -108,7 +129,10 @@
         {% set registerHintText = "Include the full name. For example, Jersey Financial Services Commission." %}
         {% set includeJurisdiction = true %}
         {% set registrationNumberText = "Entity’s registration number" %}
-  
+        {% set is_on_register_in_country_formed_in = formData.is_on_register_in_country_formed_in %}
+        {% set public_register_name = formData.public_register_name %}
+        {% set public_register_jurisdiction = formData.public_register_jurisdiction %}
+        {% set registration_number = formData.registration_number %}
         {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
         {{ govukInsetText({
@@ -118,7 +142,7 @@
           '
         }) }}
 
-        <input type="hidden" name="id" value="{{ pageData.id }}"/>
+        <input type="hidden" name="legalEntityId" value="{{ formData.legalEntityId }}"/>
 
         {% include "includes/save-and-continue-button.html" %}
       </form>

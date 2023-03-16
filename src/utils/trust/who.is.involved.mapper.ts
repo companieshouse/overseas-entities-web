@@ -1,5 +1,5 @@
 import { TrustWhoIsInvolved } from '../../model/trust.page.model';
-import { getTrustBoIndividuals, getTrustBoOthers, getLegalEntityBosInTrust, getTrustByIdFromApp } from '../../utils/trusts';
+import { getTrustBoIndividuals, getTrustBoOthers, getLegalEntityBosInTrust } from '../../utils/trusts';
 import * as mapperBeneficialOwner from '../../utils/trust/beneficial.owner.mapper';
 import * as trustLegalEntityMapper from '../../utils/trust/legal.entity.beneficial.owner.mapper';
 import { ApplicationData } from '.../../model';
@@ -15,10 +15,8 @@ const mapTrustWhoIsInvolvedToPage = (
       .map(mapperBeneficialOwner.mapBoOtherToPage),
   ];
 
-  const trust = getTrustByIdFromApp(appData, trustId);
-
   const trustees = [
-    ...getLegalEntityBosInTrust(trust)
+    ...getLegalEntityBosInTrust(appData, trustId)
       .map(trustLegalEntityMapper.mapLegalEntityItemToPage)
   ];
 

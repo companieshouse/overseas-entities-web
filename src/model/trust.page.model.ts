@@ -41,7 +41,7 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
 
 type IndividualTrusteesFormCommon = {
   trusteeId?: string,
-  type: RoleWithinTrustType,
+  roleWithinTrust: RoleWithinTrustType,
   forename: string,
   surname: string,
   dateOfBirthDay: string,

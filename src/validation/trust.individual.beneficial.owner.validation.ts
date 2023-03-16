@@ -36,7 +36,7 @@ export const trustIndividualBeneficialOwner = [
 
   ...dateOfBirthValidations,
 
-  body("type").notEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO).if(body("type")),
+  body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO).if(body("roleWithinTrust")),
 
   ...dateBecameIP,
 

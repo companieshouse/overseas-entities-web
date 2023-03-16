@@ -12,13 +12,13 @@ jest.mock('express-validator', () => ({
   })),
 }));
 
-import { addTrust } from '../../src/validation/add.trust.validation';
+import { addTrustValidations } from '../../src/validation/add.trust.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 
 describe('Test addTrust validator', () => {
   test('catch error when renders the page', () => {
 
-    expect(addTrust).toEqual([expectResult]);
+    expect(addTrustValidations).toEqual([expectResult]);
 
     expect(mockNotEmpty).toBeCalledTimes(1);
 

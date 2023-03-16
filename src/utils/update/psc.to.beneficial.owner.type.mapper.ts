@@ -14,7 +14,7 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     nationality: psc.nationality,
     // second_nationality: undefined,
     date_of_birth: mapDateOfBirth(psc),
-    is_service_address_same_as_usual_residential_address: isSameAddress(service_address) ? yesNoResponse.Yes : yesNoResponse.No,
+    is_service_address_same_as_usual_residential_address: isSameAddress(service_address, undefined) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,
     service_address: service_address,
     start_date: undefined,
@@ -81,7 +81,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
           }
           break;
         default:
-          throw new Error('INVALID NATURE OF CONTROL TYPE');
+          throw new Error('Invalid nature of control type');
     }
   });
 };

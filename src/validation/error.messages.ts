@@ -16,6 +16,7 @@ export enum ErrorMessages {
   NATIONALITY = "Enter the individual person’s nationality",
   NATIONALITY_INDIVIDUAL_BO = "Start typing, then select a nationality from the list",
   SECOND_NATIONALITY_IS_SAME = "Second nationality must be different to their first nationality",
+  SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO = "Second nationality should not be the same as the nationality given",
   NATIONALITIES_TOO_LONG = "The nationalities you have chosen are longer than 50 characters in total, please choose fewer nationalities",
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",

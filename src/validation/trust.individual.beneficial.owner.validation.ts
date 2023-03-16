@@ -10,12 +10,17 @@ import {
 } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { dateBecameIP, dateOfBirthValidations } from "./fields/date.validation";
+import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 
 const addressErrorMessages: ErrorMessagesForURaddress = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_INDIVIDUAL_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO,
   countryValueError: ErrorMessages.COUNTRY_INDIVIDUAL_BO,
+};
+
+const seconNationalityErrors: DefaultErrorsSecondNationality = {
+  sameError: ErrorMessages.SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO,
 };
 
 export const trustIndividualBeneficialOwner = [
@@ -39,7 +44,7 @@ export const trustIndividualBeneficialOwner = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY_INDIVIDUAL_BO)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS_INDIVIDUAL_BO),
 
-  ...second_nationality_validations,
+  ...second_nationality_validations(seconNationalityErrors),
 
   body("is_service_address_same_as_usual_residential_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO),

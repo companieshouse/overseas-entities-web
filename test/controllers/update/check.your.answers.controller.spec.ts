@@ -25,7 +25,15 @@ import {
   SERVICE_UNAVAILABLE,
   ANY_MESSAGE_ERROR,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE,
-  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK
+  UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK,
+  CHANGE_LINK,
+  CHANGE_LINK_ENTITY_NAME,
+  CHANGE_LINK_ENTITY_EMAIL,
+  CHANGE_LINK_ENTITY_GOVERNING_LAW,
+  CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
+  CHANGE_LINK_ENTITY_LEGAL_FORM,
+  CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS,
+  CHANGE_LINK_ENTITY_SERVICE_ADDRESS
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -83,6 +91,24 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} with OE section`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
+      expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
     });
 
     test('catch error when rendering the page', async () => {

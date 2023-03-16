@@ -19,7 +19,6 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     service_address: service_address,
     start_date: undefined,
     is_on_sanctions_list: psc.is_sanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
-
   };
   mapNatureOfControl(psc, result, false);
   return result;
@@ -45,7 +44,6 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
   };
   mapNatureOfControl(psc, result, false);
   return result;
-
 };
 
 export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControlResource): BeneficialOwnerGov => {

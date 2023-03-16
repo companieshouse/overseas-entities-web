@@ -8,6 +8,7 @@ import { ApplicationData } from 'model';
 const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm
 ): Trust.TrustCorporate => {
+
   return {
     id: formData.legalEntityId || generateId(),
     type: formData.roleWithinTrust,
@@ -77,7 +78,7 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     public_register_jurisdiction: trustee.identification_country_registration,
     registration_number: trustee.identification_registration_number,
     is_service_address_same_as_principal_address: trustee.is_service_address_same_as_principal_address,
-    is_on_register_in_country_formed_in: trustee.is_service_address_same_as_principal_address,
+    is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
   };
 };
 

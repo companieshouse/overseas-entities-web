@@ -67,6 +67,7 @@ export enum ErrorMessages {
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
+  ADD_TRUST = "Select yes if you need to add another trust",
 
   // Date
   DAY = "Date must include a day",

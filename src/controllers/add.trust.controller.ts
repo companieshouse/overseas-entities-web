@@ -5,6 +5,9 @@ import { getApplicationData } from '../utils/application.data';
 import { generateTrustId } from '../utils/trust/details.mapper';
 import { getTrustArray } from '../utils/trusts';
 import { Trust } from '../model/trust.model';
+import * as PageModel from '../model/trust.page.model';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { validationResult } from 'express-validator';
 
 const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -21,10 +24,14 @@ type TrustInvolvedPageProperties = {
   pageData: {
     trustData: Trust[]
   },
+  formData?: PageModel.AddTrust,
+  errors?: FormattedValidationErrors,
 };
 
 const getPageProperties = (
   req: Request,
+  formData?: PageModel.AddTrust,
+  errors?: FormattedValidationErrors,
 ): TrustInvolvedPageProperties => {
 
   const appData = getApplicationData(req.session);
@@ -38,7 +45,9 @@ const getPageProperties = (
     },
     pageData: {
       trustData: getTrustArray(appData)
-    }
+    },
+    formData,
+    errors,
   };
 };
 
@@ -69,8 +78,21 @@ const post = (
     logger.debugRequest(req, `POST ${config.ADD_TRUST_PAGE}`);
     const addNewTrust = req.body["addTrust"];
 
+    // check for errors
+    const errorList = validationResult(req);
+    const formData: PageModel.AddTrust = req.body as PageModel.AddTrust;
+    const appData = getApplicationData(req.session);
+
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        formData,
+        formatValidationError(errorList.array()),
+      );
+      return res.render(pageProps.templateName, pageProps);
+    }
+
     if (addNewTrust === '1') {
-      const appData = getApplicationData(req.session);
       const newTrustId = generateTrustId(appData);
 
       return res.redirect(`${config.TRUST_DETAILS_URL}/${newTrustId}`);

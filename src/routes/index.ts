@@ -216,7 +216,7 @@ router
     navigation.hasTrustData,
   )
   .get(addTrust.get)
-  .post(addTrust.post);
+  .post(...validator.addTrust, addTrust.post);
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')

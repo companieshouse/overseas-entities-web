@@ -23,6 +23,7 @@ import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validati
 import { trustDetails } from "./trust.details.validation";
 import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
 import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
+import { addTrustValidations } from "./add.trust.validation";
 
 export const validator = {
   soldLandFilter,
@@ -52,4 +53,5 @@ export const validator = {
   updateBeneficialOwnerAndManagingOfficerType,
   trustIndividualBeneficialOwner,
   trustHistoricalBeneficialOwner,
+  addTrust: addTrustValidations,
 };

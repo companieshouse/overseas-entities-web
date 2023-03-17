@@ -53,9 +53,7 @@ export const postDueDiligencePage = async (req: Request, res: Response, next: Ne
     // Empty OverseasEntityDueDiligence object
     setApplicationData(session, {}, OverseasEntityDueDiligenceKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
 
     return res.redirect(redirectUrl);
   } catch (error) {

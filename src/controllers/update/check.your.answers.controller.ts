@@ -6,7 +6,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
+import { createOverseasEntity } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../../model/data.types.model";
 import { closeTransaction, postTransaction } from "../../service/transaction.service";
 import { startPaymentsSession } from "../../service/payment.service";
@@ -44,7 +44,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
       transactionID = appData[Transactionkey] as string;
       overseasEntityID = appData[OverseasEntityKey] as string;
-      await updateOverseasEntity(req, session);
     } else {
       transactionID = await postTransaction(req, session);
       overseasEntityID = await createOverseasEntity(req, session, transactionID);

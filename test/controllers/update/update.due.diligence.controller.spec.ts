@@ -1,10 +1,11 @@
 jest.mock("ioredis");
-jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
-jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
+jest.mock("../../../src/utils/logger");
+jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -55,6 +56,7 @@ import { DueDiligenceKey } from '../../../src/model/due.diligence.model';
 import { getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
 import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
 import { DateTime } from "luxon";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -72,6 +74,7 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("Update due diligence controller tests", () => {
 
@@ -139,6 +142,7 @@ describe("Update due diligence controller tests", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -161,6 +165,7 @@ describe("Update due diligence controller tests", () => {
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
       expect(data["email"]).toEqual(EMAIL_ADDRESS);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} with error messages when sending no data`, async () => {

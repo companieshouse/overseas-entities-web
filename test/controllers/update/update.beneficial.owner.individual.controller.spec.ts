@@ -151,7 +151,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
@@ -173,7 +173,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST empty object and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
@@ -817,7 +817,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
@@ -889,7 +889,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when removing data", async () => {

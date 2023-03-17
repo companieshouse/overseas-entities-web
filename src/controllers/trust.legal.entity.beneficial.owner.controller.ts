@@ -5,7 +5,7 @@ import { safeRedirect } from '../utils/http.ext';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveLegalEntityBoInTrust, saveTrustInApp } from '../utils/trusts';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
-import { mapLegalEntityToSession } from '../utils/trust/legal.entity.beneficial.owner.mapper';
+import { mapLegalEntityTrusteeFromSessionToPage, mapLegalEntityToSession } from '../utils/trust/legal.entity.beneficial.owner.mapper';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { ApplicationData } from '../model';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
@@ -31,8 +31,9 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
 
 const getPageProperties = (
   req: Request,
+  trustId: string,
+  formData?: TrustLegalEntityForm,
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
@@ -44,18 +45,24 @@ const getPageProperties = (
       trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
       roleWithinTrustType: RoleWithinTrustType
     },
+    formData,
   };
 };
 
-const get = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+const get = (req: Request, res: Response, next: NextFunction): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req);
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    const formData: TrustLegalEntityForm = mapLegalEntityTrusteeFromSessionToPage(
+      appData,
+      trustId,
+      trusteeId
+    );
+    const pageProps = getPageProperties(req, trustId, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -64,11 +71,7 @@ const get = (
   }
 };
 
-const post = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -93,9 +96,7 @@ const post = async (
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
-
-    logger.debugRequest(req, "requestHere");
+    await saveAndContinue(req, session, true);
 
     return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

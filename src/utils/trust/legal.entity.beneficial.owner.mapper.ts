@@ -2,10 +2,13 @@ import { v4 as uuidv4 } from "uuid";
 import * as Trust from "../../model/trust.model";
 import * as Page from "../../model/trust.page.model";
 import { TrusteeType } from '../../model/trustee.type.model';
+import { getLegalEntityTrustee } from '../../utils/trusts';
+import { ApplicationData } from 'model';
 
 const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm
 ): Trust.TrustCorporate => {
+
   return {
     id: formData.legalEntityId || generateId(),
     type: formData.roleWithinTrust,
@@ -41,6 +44,44 @@ const mapLegalEntityToSession = (
   };
 };
 
+const mapLegalEntityTrusteeFromSessionToPage = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId: string,
+): Page.TrustLegalEntityForm => {
+  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId);
+
+  return {
+    legalEntityId: trustee.id,
+    roleWithinTrust: trustee.type,
+    legalEntityName: trustee.name,
+    interestedPersonStartDateDay: trustee.date_became_interested_person_day,
+    interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
+    interestedPersonStartDateYear: trustee.date_became_interested_person_year,
+    principal_address_property_name_number: trustee.ro_address_premises,
+    principal_address_line_1: trustee.ro_address_line1,
+    principal_address_line_2: trustee.ro_address_line2,
+    principal_address_town: trustee.ro_address_locality,
+    principal_address_county: trustee.ro_address_region,
+    principal_address_country: trustee.ro_address_country,
+    principal_address_postcode: trustee.ro_address_postal_code,
+    service_address_property_name_number: trustee.sa_address_premises,
+    service_address_line_1: trustee.sa_address_line1,
+    service_address_line_2: trustee.sa_address_line2,
+    service_address_town: trustee.sa_address_locality,
+    service_address_county: trustee.sa_address_region,
+    service_address_country: trustee.sa_address_country,
+    service_address_postcode: trustee.sa_address_postal_code,
+    governingLaw: trustee.identification_legal_authority,
+    legalForm: trustee.identification_legal_form,
+    public_register_name: trustee.identification_place_registered,
+    public_register_jurisdiction: trustee.identification_country_registration,
+    registration_number: trustee.identification_registration_number,
+    is_service_address_same_as_principal_address: trustee.is_service_address_same_as_principal_address,
+    is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
+  };
+};
+
 const mapLegalEntityItemToPage = (
   legalEntity: Trust.TrustCorporate,
 ): Page.TrusteeItem => {
@@ -58,6 +99,7 @@ const generateId = (): string => {
 
 export {
   mapLegalEntityToSession,
+  mapLegalEntityTrusteeFromSessionToPage,
   mapLegalEntityItemToPage,
   generateId,
 };

@@ -252,10 +252,31 @@ const saveHistoricalBoInTrust = (
 };
 
 const getLegalEntityBosInTrust = (
-  trust: Trust,
+  appData: ApplicationData,
+  trustId?: string,
 ): TrustCorporate[] => {
+  let legalEntities: TrustCorporate[] = [];
+  if (trustId) {
+    legalEntities = appData[TrustKey]?.find(trust =>
+      trust?.trust_id === trustId)?.CORPORATES as TrustCorporate[];
+    if (legalEntities === undefined) {
+      legalEntities = [] as TrustCorporate[];
+    }
+  }
+  return legalEntities;
+};
 
-  return trust.CORPORATES ?? [];
+const getLegalEntityTrustee = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId?: string,
+): TrustCorporate => {
+  const legalEntityTrustees = getLegalEntityBosInTrust(appData, trustId);
+
+  if (legalEntityTrustees.length === 0 || trusteeId === undefined) {
+    return {} as TrustCorporate;
+  }
+  return legalEntityTrustees.find(trustee => trustee.id === trusteeId) ?? {} as TrustCorporate;
 };
 
 const saveLegalEntityBoInTrust = (
@@ -325,4 +346,5 @@ export {
   containsTrustData,
   getIndividualTrustee,
   generateTrusteeIds,
+  getLegalEntityTrustee,
 };

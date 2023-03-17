@@ -38,7 +38,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     law_governed: psc.identification?.legalAuthority,
     public_register_name: psc.identification?.placeRegistered,
     registration_number: psc.identification?.registrationNumber,
-    is_on_register_in_country_formed_in: undefined,
+    is_on_register_in_country_formed_in: psc.identification !== undefined && psc.identification?.registrationNumber ? yesNoResponse.Yes : yesNoResponse.No,
     start_date: undefined,
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
@@ -68,16 +68,17 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.naturesOfControl?.forEach(natureType => {
     const controlKind = natureTypeMap.get(natureType);
+    const natureOfControlType = natureOfControlTypeMap.get(natureType);
     switch (controlKind) {
         case 'BoNatureOfControl':
-          beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlTypeMap.get(natureType) as unknown as NatureOfControlType[];
+          beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
           break;
         case "NonLegalNatureOfControl":
-          beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlTypeMap.get(natureType) as unknown as NatureOfControlType[];
+          beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
           break;
         case "TrustNatureOfControl":
           if (!isBeneficialGov){
-            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlTypeMap.get(natureType) as unknown as NatureOfControlType[];
+            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
           }
           break;
         default:
@@ -107,7 +108,7 @@ export enum natureOfControl {
   OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM = 'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
 }
 
-const natureTypeMap = new Map<string, string>([
+const natureTypeMap = new Map<string, BoTypes>([
   [natureOfControl.OWNERSHIP_MORE_THAN_25_PERCENT_SHARE_ENTITY, BoTypes.BO_NATURE_OF_CONTROL],
   [natureOfControl.VOTING_RIGHT_MORE_THAN_25_PERCENT_SHARE_ENTITY, BoTypes.BO_NATURE_OF_CONTROL],
   [natureOfControl.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS, BoTypes.BO_NATURE_OF_CONTROL],
@@ -122,7 +123,7 @@ const natureTypeMap = new Map<string, string>([
   [natureOfControl.OWNERSHIP_MORE_THAN_25_PERCENT_AS_FIRM, BoTypes.NON_LEGAL_NATURE_OF_CONTROL]
 ]);
 
-const natureOfControlTypeMap = new Map<string, string>([
+const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.OWNERSHIP_MORE_THAN_25_PERCENT_SHARE_ENTITY, NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   [natureOfControl.VOTING_RIGHT_MORE_THAN_25_PERCENT_SHARE_ENTITY, NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   [natureOfControl.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS, NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],

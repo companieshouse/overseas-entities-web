@@ -65,4 +65,3 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
         return config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL;
   }
 };
-

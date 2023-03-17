@@ -175,7 +175,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(beneficialOwnerOther[IsOnSanctionsListKey]).toEqual(yesNoResponse.No);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerOtherKey);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and do not redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
@@ -288,7 +288,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockMapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when same address is set to yes`, async () => {
@@ -298,7 +298,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is present when is on register set to yes`, async () => {
@@ -308,7 +308,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("ThisRegister");
       expect(data[RegistrationNumberKey]).toEqual("123456789");
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when is on register set to no`, async () => {
@@ -318,7 +318,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
@@ -623,7 +623,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("Catch error when updating data", async () => {
@@ -650,7 +650,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is present when same address is set to no`, async () => {
@@ -661,7 +661,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockMapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when same address is set to yes`, async () => {
@@ -672,7 +672,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockMapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is present when is on register set to yes`, async () => {
@@ -682,7 +682,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("ThisRegister");
       expect(data[RegistrationNumberKey]).toEqual("123456789");
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when is on register set to no`, async () => {
@@ -692,7 +692,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -703,7 +703,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("Catch error when removing data", async () => {

@@ -49,11 +49,7 @@ const getPageProperties = (
   };
 };
 
-const get = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): void => {
+const get = (req: Request, res: Response, next: NextFunction): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -75,11 +71,7 @@ const get = (
   }
 };
 
-const post = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -104,7 +96,7 @@ const post = async (
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, true);
 
     return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

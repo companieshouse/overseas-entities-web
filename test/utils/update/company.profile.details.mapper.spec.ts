@@ -1,6 +1,6 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
 import { describe, expect, test } from '@jest/globals';
-import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.oversea.entity';
+import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.overseas.entity';
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';

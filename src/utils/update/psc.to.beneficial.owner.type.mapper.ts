@@ -4,6 +4,7 @@ import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { Address, InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
+import { logger } from "../../utils/logger";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapAddress(psc.address);
@@ -67,22 +68,25 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.naturesOfControl?.forEach(natureType => {
-    const controlKind = natureTypeMap.get(natureType);
+    const controlKind = natureTypeMap.get(natureType) || undefined;
     const natureOfControlType = natureOfControlTypeMap.get(natureType);
-    switch (controlKind) {
-        case 'BoNatureOfControl':
-          beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-          break;
-        case "NonLegalNatureOfControl":
-          beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-          break;
-        case "TrustNatureOfControl":
-          if (!isBeneficialGov){
-            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
-          }
-          break;
-        default:
-          return "No valid nature of control found";
+    if (controlKind) {
+      switch (controlKind) {
+          case 'BoNatureOfControl':
+            beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
+            break;
+          case "NonLegalNatureOfControl":
+            beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
+            break;
+          case "TrustNatureOfControl":
+            if (!isBeneficialGov){
+              beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
+            }
+            break;
+          default:
+            logger.trace('No valid nature of control found');
+            return;
+      }
     }
   });
 };

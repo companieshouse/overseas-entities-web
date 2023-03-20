@@ -82,7 +82,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
           }
           break;
         default:
-          throw new Error('Invalid nature of control type');
+          return "No valid nature of control found";
     }
   });
 };

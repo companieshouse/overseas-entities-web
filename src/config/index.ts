@@ -152,6 +152,7 @@ export const TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL = '/' + TRUST_INDIVIDUAL_BENE
 export const TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL = '/' + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE;
 export const TRUST_TRUSTEE_LEGAL_ENTITY_URL = '/trustee-other-legal';
 export const TRUST_INTERRUPT_URL = '/' + TRUST_INTERRUPT_PAGE;
+export const SIGN_OUT_URL_TRUSTS = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUSTS_URL + '/' + SIGN_OUT_PAGE;
 
 // UPDATE templates
 export const UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE = "due-diligence-overseas-entity";
@@ -250,6 +251,7 @@ export const TRUST_DATE_OF_BIRTH = "#dateOfBirth-dateOfBirthDay";
 export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
 export const PUBLIC_REGISTER_JURISDICTION = "#public_register_jurisdiction";
 export const LEGAL_ENTITY_NAME = "#legalEntityName";
+export const TRUST_BENEFICIAL_OWNERS = "#trustBeneficialOwners";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

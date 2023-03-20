@@ -2,12 +2,12 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { CompanyPersonsWithSignificantControlResource } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 
 export const getCompanyPsc = async (
   req: Request,
   companyNumber: string,
-): Promise<CompanyPersonsWithSignificantControlResource> => {
+): Promise<CompanyPersonsWithSignificantControl> => {
   const response = await makeApiCallWithRetry(
     "companyPsc",
     "getCompanyPsc",

@@ -72,6 +72,16 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   describe("GET tests", () => {
 
+    test(`that update feature is true if no data is returned for getCompanyPsc`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(undefined);
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetBoMoData).toBeCalledTimes(1);
+    });
+
     test(`test other benefical owner data returned when getCompanyPsc data kind is other`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -168,16 +178,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetCompanyPscService).not.toHaveBeenCalled();
     });
 
-    test(`that update feature is true if no data is returned for getCompanyPsc`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-      });
-      mockGetCompanyPscService.mockReturnValueOnce(undefined);
-      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      expect(mockSetBoMoData).toBeCalledTimes(1);
-    });
-    
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page but does not re-make API call for managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,

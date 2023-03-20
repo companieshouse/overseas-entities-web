@@ -1,6 +1,6 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
 import { describe, expect, test } from '@jest/globals';
-import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.oversea.entity';
+import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/company.profile.mapper.to.overseas.entity';
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';
@@ -18,9 +18,9 @@ describe("Test company profile details mapping", () => {
   test('map company details to overseas entity should return object', () => {
     expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
       email: "",
-      registration_number: companyDetailsMock.companyNumber,
       law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
       legal_form: companyDetailsMock.foreignCompanyDetails?.legalForm,
+      registration_number: companyDetailsMock.foreignCompanyDetails?.registrationNumber,
       incorporation_country: companyDetailsMock.jurisdiction,
       principal_address: {
         country: companyDetailsMock.registeredOfficeAddress.country,
@@ -41,7 +41,7 @@ describe("Test company profile details mapping", () => {
         town: companyDetailsMock.serviceAddress?.locality,
       },
       public_register_jurisdiction: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
-      public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.name,
       is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
       is_service_address_same_as_principal_address: yesNoResponse.No
     });

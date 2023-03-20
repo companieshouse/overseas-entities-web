@@ -46,7 +46,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     appData[BeneficialOwnerStatementKey] = boStatement;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, true);
 
     return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {

@@ -30,7 +30,7 @@ export const managingOfficerIndividual = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
-  ...second_nationality_validations,
+  ...second_nationality_validations(),
   ...usual_residential_address_validations(),
 
   body("is_service_address_same_as_usual_residential_address")

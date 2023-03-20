@@ -10,7 +10,7 @@ export const mapIndividualTrusteeToSession = (
 ): Trust.IndividualTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
-    type: formData.type,
+    type: formData.roleWithinTrust,
     forename: formData.forename,
     other_forenames: '',
     surname: formData.surname,
@@ -40,7 +40,7 @@ export const mapIndividualTrusteeToSession = (
     sa_address_po_box: '',
   };
 
-  if (formData.type === RoleWithinTrustType.INTERESTED_PERSON){
+  if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
     return {
       ...data,
       date_became_interested_person_day: formData.dateBecameIPDay,
@@ -62,7 +62,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
 
   const data = {
     trusteeId: trustee.id,
-    type: trustee.type,
+    roleWithinTrust: trustee.type,
     forename: trustee.forename,
     surname: trustee.surname,
     dateOfBirthDay: trustee.date_of_birth_day,

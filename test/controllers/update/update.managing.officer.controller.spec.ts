@@ -2,9 +2,10 @@ jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
-jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -13,6 +14,7 @@ import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/addres
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
@@ -82,10 +84,11 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
-describe("UPDATE MANAGING_OFFICER controller", () => {
+describe("UPDATE MANAGING OFFICER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -121,6 +124,7 @@ describe("UPDATE MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${UPDATE_MANAGING_OFFICER_PAGE} have been populated`, async () => {
@@ -139,6 +143,7 @@ describe("UPDATE MANAGING_OFFICER controller", () => {
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
@@ -150,6 +155,7 @@ describe("UPDATE MANAGING_OFFICER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when posting data", async () => {

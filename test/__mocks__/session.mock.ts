@@ -1,5 +1,6 @@
-import { CompanyOfficerResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -958,33 +959,33 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   links: {} as Links
 };
 
-export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficerResource = {
+export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
   address: {
     premises: "1 Acme Road",
-    address_line_1: "addressLine1",
-    address_line_2: "addressLine2",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
     locality: "locality",
-    care_of: "careOf",
-    po_box: "pobox",
-    postal_code: "BY 2",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
     region: "region",
     country: "country"
   },
-  appointed_on: "appointed",
-  country_of_residence: "country1",
-  date_of_birth: {
+  appointedOn: "appointed",
+  countryOfResidence: "country1",
+  dateOfBirth: {
     day: "1",
     month: "2",
     year: "1900"
   },
   ...DATE_OF_BIRTH,
-  former_names: [],
+  formerNames: [],
   identification: {
-    legal_form: "all forms",
-    legal_authority: "country2",
-    identification_type: "identification type",
-    place_registered: "place",
-    registration_number: "0000"
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
   },
   links: {
     officer: {
@@ -994,8 +995,48 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficerResource = {
   name: "Jimmy Wabb",
   nationality: "country1",
   occupation: "occupation",
-  officer_role: "role",
-  resigned_on: "resigned"
+  officerRole: "role",
+  resignedOn: "resigned"
+};
+
+export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl = {
+  address: {
+    premises: "1 Acme Road",
+    address_line_1: "addressLine1",
+    address_line_2: "addressLine2",
+    locality: "locality",
+    careOf: "careOf",
+    poBox: "pobox",
+    postal_code: "BY 2",
+    region: "region"
+  },
+  dateOfBirth: {
+    day: "1",
+    month: "2",
+    year: "1900"
+  },
+  countryOfResidence: "country1",
+  etag: "",
+  links: {
+    self: "",
+    statement: ""
+  },
+  name: "acme",
+  nameElements: {
+    forename: "acme",
+    surname: "doe",
+  },
+  nationality: "country1",
+  naturesOfControl: [],
+  notifiedOn: '01/01/1900',
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    countryRegistered: "country1",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  }
 };
 
 export const TRUST_WITH_ID: Trust = {

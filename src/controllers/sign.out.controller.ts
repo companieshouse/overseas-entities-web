@@ -8,8 +8,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
+    const pageUrl = req.originalUrl;
+    const isTrustPage = /\/trusts\//i.test(pageUrl);
+    const previousPageUrl = isTrustPage ? `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.TRUSTS_URL}/${req.query["page"]}` :
+      `${req.body["previousPage"]}`;
+
     return res.render(config.SIGN_OUT_PAGE, {
-      previousPage: `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
+      previousPage: previousPageUrl,
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
       journey: "register"

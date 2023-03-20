@@ -84,6 +84,9 @@ router.get(config.LANDING_URL, landing.get);
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
 
+router.get(config.SIGN_OUT_URL_TRUSTS, signOut.get);
+router.post(config.SIGN_OUT_URL_TRUSTS, ...validator.signOut, checkValidations, signOut.post);
+
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
 router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
@@ -216,7 +219,7 @@ router
     navigation.hasTrustData,
   )
   .get(addTrust.get)
-  .post(addTrust.post);
+  .post(...validator.addTrust, addTrust.post);
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
@@ -262,7 +265,7 @@ router
   .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
 
 router
-  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,

@@ -69,9 +69,7 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
     const session = req.session as Session;
     setApplicationData(session, officerData, ManagingOfficerKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
 
     return res.redirect(redirectUrl);
   } catch (error) {
@@ -91,9 +89,7 @@ export const updateManagingOfficer = async (req: Request, res: Response, next: N
     const session = req.session as Session;
     setApplicationData(session, officerData, ManagingOfficerKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
 
     return res.redirect(redirectUrl);
   } catch (error) {
@@ -109,9 +105,7 @@ export const removeManagingOfficer = async (req: Request, res: Response, next: N
     removeFromApplicationData(req, ManagingOfficerKey, req.params.id);
     const session = req.session as Session;
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
 
     return res.redirect(redirectUrl);
   } catch (error) {

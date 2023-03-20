@@ -84,9 +84,6 @@ router.get(config.LANDING_URL, landing.get);
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
 
-router.get(config.SIGN_OUT_URL_TRUSTS, signOut.get);
-router.post(config.SIGN_OUT_URL_TRUSTS, ...validator.signOut, checkValidations, signOut.post);
-
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
 router.get(config.STARTING_NEW_URL, authentication, startingNew.get);
@@ -131,6 +128,11 @@ router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigati
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+
+router.route(config.REGISTER_AN_OVERSEAS_ENTITY_URL + config.TRUSTS_URL + config.TRUST_ID + '?' + '/' + config.SIGN_OUT_PAGE )
+  .all(authentication)
+  .get(signOut.get)
+  .post(...validator.signOut, checkValidations, signOut.post);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(

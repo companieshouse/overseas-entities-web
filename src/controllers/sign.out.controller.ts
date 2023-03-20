@@ -8,10 +8,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const pageUrl = req.originalUrl;
-    const isTrustPage = /\/trusts\//i.test(pageUrl);
-    const previousPageUrl = isTrustPage ? `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.TRUSTS_URL}/${req.query["page"]}` :
-      `${req.body["previousPage"]}`;
+    const isTrustPage = /\/trusts/i.test(pageUrl);
+    const trustUrl = trustId ? `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.TRUSTS_URL}/${trustId}/${req.query["page"]}` :
+      `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.TRUSTS_URL}/${req.query["page"]}`;
+    const previousPageUrl = isTrustPage ? trustUrl :
+      `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`;
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl,

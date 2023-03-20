@@ -145,7 +145,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when posting data", async () => {
@@ -226,7 +226,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} is empty when same address is set to yes`, async () => {
@@ -239,7 +239,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with error messages`, async () => {
@@ -545,7 +545,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when updating data", async () => {
@@ -576,7 +576,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page is present when same address is set to no`, async () => {
@@ -589,7 +589,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`Service address from the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page is empty when same address is set to yes`, async () => {
@@ -602,7 +602,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -614,7 +614,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("catch error when removing data", async () => {
@@ -634,7 +634,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

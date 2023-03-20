@@ -114,7 +114,7 @@ const post = async (
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, true);
 
     return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
   } catch (error) {

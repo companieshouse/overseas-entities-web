@@ -5,9 +5,7 @@ import { CompanyOfficersResource } from "@companieshouse/api-sdk-node/dist/servi
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { GET_COMPANY_OFFICERS_PAGE_SIZE } from '../config';
 
-export const getCompanyOfficers = async (req: Request, companyNumber: string): Promise<CompanyOfficersResource | undefined> => {
-  logger.debugRequest(req, `Retrieving list of officers for company: ${companyNumber}`);
-
+export const getCompanyOfficers = async (req: Request, companyNumber: string): Promise<CompanyOfficersResource> => {
   const response = await makeApiCallWithRetry(
     "companyOfficers",
     "getCompanyOfficers",
@@ -24,7 +22,5 @@ export const getCompanyOfficers = async (req: Request, companyNumber: string): P
   } else {
     throw createAndLogErrorRequest(req, `getCompanyOfficers returned with status code: ${response.httpStatusCode}`);
   }
-
   return response?.resource;
-
 };

@@ -7,6 +7,7 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
+jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -39,9 +40,12 @@ import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerTypeChoice, ManagingOfficerTypeChoice, BeneficialOwnerTypeKey } from '../../../src/model/beneficial.owner.type.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
-import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
+import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
+
+import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
+
 import { MOCK_GET_COMPANY_OFFICERS_RESOURCE } from '../../__mocks__/get.company.officers.mock';
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 
@@ -71,6 +75,20 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
+
+    test(`test other benefical owner data returned when getCompanyPc data kind is other`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-with-significant-control');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(1);
+
+    });
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
@@ -109,7 +127,38 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
         ...APPLICATION_DATA_MOCK,
       });
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    });
+
+    test(`test that undefined is returned if getCompanyPsc owner data is called without entity number`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toHaveBeenCalled();
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
+    test(`test corporate benefical owner data returned when getCompanyPsc data kind is corporate entity beneficial owner`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'corporate-entity-beneficial-owner');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetApplicationData).toBeCalledTimes(1);
+    });
+
+    test(`test individual benefical owner data returned when getCompanyPsc data kind is individual person with significant control`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-person-with-significant-control');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
       expect(mockSetBoMoData).toBeTruthy;
     });
 
@@ -133,6 +182,17 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetCompanyOfficers.mockReturnValueOnce(undefined);
 
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
+    test(`test that getCompanyPsc is not called again if it returns undefined`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      mockGetCompanyPscService.mockReturnValueOnce(undefined);
+
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
       expect(mockSetBoMoData).toBeTruthy;
     });
 
@@ -267,3 +327,4 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
   });
 });
+

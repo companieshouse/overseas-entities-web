@@ -5,7 +5,6 @@ import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate
 import { InputDate, yesNoResponse } from "../../model/data.types.model";
 
 export const mapToManagingOfficer = (officer: CompanyOfficerResource): ManagingOfficerIndividual => {
-  console.log(officer);
   const raw = officer as any;
   const service_address = mapAddress(officer.address);
   const address = mapAddress(officer.address);
@@ -30,7 +29,6 @@ export const mapToManagingOfficer = (officer: CompanyOfficerResource): ManagingO
 };
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficerResource): ManagingOfficerCorporate => {
-  console.log(officer);
   const raw = officer as any;
   const service_address = mapAddress(officer.address);
   const address = mapAddress(officer.address);
@@ -67,7 +65,7 @@ export const splitNames = (officerName: string) => {
     const names = officerName.split(" ");
     if (names.length > 2) {
       let firstNames = "";
-      for (let loop = 0; loop < names.length; loop++) {
+      for (let loop = 0; loop < names.length - 1; loop++) {
         if (loop !== names.length - 1) {
           firstNames += names[loop];
           if (loop !== names.length - 2) {

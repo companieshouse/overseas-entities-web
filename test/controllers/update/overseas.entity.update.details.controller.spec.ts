@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -19,6 +20,7 @@ import { APPLICATION_DATA_MOCK, UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENT
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   ANY_MESSAGE_ERROR,
   ENTITY_PAGE_TITLE,
@@ -53,6 +55,7 @@ mockHasOverseasEntityNumber.mockImplementation((req: Request, res: Response, nex
 const mockPrepareData = prepareData as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
@@ -61,9 +64,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   });
 
   describe("GET tests", () => {
-
     test(`renders the OVERSEAS ENTITY UPDATE DETAILS page`, async () => {
-
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -99,15 +100,15 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   });
 
   describe("POST tests", () => {
-
     test("redirect to OVERSEAS ENTITY REVIEW page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
-      mockPrepareData.mockReturnValueOnce( ENTITY_OBJECT_MOCK );
+      mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
         .send(UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with INVALID CHARACTERS error messages", async () => {

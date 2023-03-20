@@ -2,7 +2,7 @@ import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
   checkBirthDate,
-  checkDateInterestedPerson,
+  checkDateIP,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
@@ -12,7 +12,10 @@ import {
   checkHistoricalBOStartDate,
   checkIdentityDate,
   checkStartDate,
-  checkTrustDate
+  checkTrustDate,
+  DayFieldErrors,
+  MonthFieldErrors,
+  YearFieldErrors
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -57,54 +60,144 @@ export const identity_check_date_validations = [
 ];
 
 const dateOfBirthValidationsContext: dateContext = {
+  dayInput: {
+    name: "dateOfBirthDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_BIRTH,
+      wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "dateOfBirthMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_BIRTH,
+      wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "dateOfBirthYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_BIRTH,
+      wrongYearLength: ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH
+    } as YearFieldErrors,
+  },
   dateInput: {
     name: "dateOfBirth",
     callBack: checkBirthDate,
   },
-  dayInputName: "dateOfBirthDay",
-  monthInputName: "dateOfBirthMonth",
-  yearInputName: "dateOfBirthYear",
 };
 
 const dateBecameIPContext: dateContextWithCondition = {
+  dayInput: {
+    name: "dateBecameIPDay",
+    errors: {
+      noDayError: ErrorMessages.DAY,
+      wrongDayLength: ErrorMessages.DAY_LENGTH,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "dateBecameIPMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "dateBecameIPYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH
+    } as YearFieldErrors,
+  },
   dateInput: {
     name: "dateBecameIP",
-    callBack: checkDateInterestedPerson,
+    callBack: checkDateIP,
   },
-  dayInputName: "dateBecameIPDay",
-  monthInputName: "dateBecameIPMonth",
-  yearInputName: "dateBecameIPYear",
-  condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON }
+  condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
 };
 
 const trustCreatedDateValidationsContext: dateContext = {
+  dayInput: {
+    name: "createdDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_TRUST,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_TRUST,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "createdDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_TRUST,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "createdDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_TRUST,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_TRUST
+    } as YearFieldErrors,
+  },
   dateInput: {
     name: "createdDate",
     callBack: checkTrustDate,
   },
-  dayInputName: "createdDateDay",
-  monthInputName: "createdDateMonth",
-  yearInputName: "createdDateYear",
 };
 
 const historicalBOStartDateContext: dateContext = {
+  dayInput: {
+    name: "startDateDay",
+    errors: {
+      noDayError: ErrorMessages.START_DAY_HISTORICAL_BO,
+      wrongDayLength: ErrorMessages.START_DAY_LENGTH_HISTORICAL_BO,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "startDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.START_MONTH_HISTORICAL_BO,
+      wrongMonthLength: ErrorMessages.START_MONTH_LENGTH_HISTORICAL_BO,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "startDateYear",
+    errors: {
+      noYearError: ErrorMessages.START_YEAR_HISTORICAL_BO,
+      wrongYearLength: ErrorMessages.START_YEAR_LENGTH_HISTORICAL_BO
+    } as YearFieldErrors,
+  },
   dateInput: {
     name: "startDate",
     callBack: checkHistoricalBOStartDate,
   },
-  dayInputName: "startDateDay",
-  monthInputName: "startDateMonth",
-  yearInputName: "startDateYear",
 };
 
 const historicalBOEndDateContext: dateContext = {
+  dayInput: {
+    name: "endDateDay",
+    errors: {
+      noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
+      wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "endDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
+      wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "endDateYear",
+    errors: {
+      noYearError: ErrorMessages.END_YEAR_HISTORICAL_BO,
+      wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
+    } as YearFieldErrors,
+  },
   dateInput: {
     name: "endDate",
     callBack: checkHistoricalBOEndDate,
   },
-  dayInputName: "endDateDay",
-  monthInputName: "endDateMonth",
-  yearInputName: "endDateYear",
 };
 
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);

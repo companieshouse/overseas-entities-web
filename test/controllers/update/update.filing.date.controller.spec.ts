@@ -127,7 +127,7 @@ describe("Update Filing Date controller", () => {
       expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
-      expect(mockUpdateOverseasEntity).not.toHaveBeenCalled();
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
     });

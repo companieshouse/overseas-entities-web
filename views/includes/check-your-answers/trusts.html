@@ -4,6 +4,7 @@
 {% set trustBeneficialOwnersHtml %}
   {% include "includes/check-your-answers/trust-beneficial-owners.html" %}
 {% endset %}
+
 {% if pageParams.isTrustFeatureEnabled %}
   {% set trustCreationDate = dateMacros.formatDate(trust.creation_date_day, trust.creation_date_month, trust.creation_date_year) %}
   {{ govukSummaryList({
@@ -47,7 +48,7 @@
         },  
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id,
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.TRUST_BENEFICIAL_OWNERS,
             "Trust " + trust.trust_name + " -  Beneficial Owner",
             "change-beneficial-owner-button"
           ) ]

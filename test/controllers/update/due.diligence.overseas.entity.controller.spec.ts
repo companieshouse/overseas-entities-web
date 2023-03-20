@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock("../../../src/utils/application.data");
 jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";

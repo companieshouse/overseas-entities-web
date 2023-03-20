@@ -16,6 +16,7 @@ export enum ErrorMessages {
   NATIONALITY = "Enter the individual person’s nationality",
   NATIONALITY_INDIVIDUAL_BO = "Start typing, then select a nationality from the list",
   SECOND_NATIONALITY_IS_SAME = "Second nationality must be different to their first nationality",
+  SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO = "Second nationality should not be the same as the nationality given",
   NATIONALITIES_TOO_LONG = "The nationalities you have chosen are longer than 50 characters in total, please choose fewer nationalities",
   OCCUPATION = "Enter an occupation",
   DUE_DILIGENCE_NAME = "Enter the name of the agent that carried out identity checks",
@@ -66,6 +67,7 @@ export enum ErrorMessages {
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
+  ADD_TRUST = "Select yes if you need to add another trust",
 
   // Date
   DAY = "Date must include a day",
@@ -113,8 +115,8 @@ export enum ErrorMessages {
   START_DAY_HISTORICAL_BO = "The date they became a beneficial owner must include a day",
   START_MONTH_HISTORICAL_BO = "The date they became a beneficial owner must include a month",
   START_YEAR_HISTORICAL_BO = "The date they became a beneficial owner must include a year",
-  INVALID_START_DATE_HISTORICAL_BO = "The date they became a benefical owner must be a real date",
-  INVALID_END_DATE_HISTORICAL_BO = "The date they stopped being a benefical owner must be a real date",
+  INVALID_START_DATE_HISTORICAL_BO = "The date they became a beneficial owner must be a real date",
+  INVALID_END_DATE_HISTORICAL_BO = "The date they stopped being a beneficial owner must be a real date",
   START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO = "The date they became a beneficial owner must be today or in the past",
   END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO = "The date they stopped being a beneficial owner must be today or in the past",
   START_DAY_AND_MONTH_HISTORICAL_BO = "The date they became a beneficial owner must include a day and month",

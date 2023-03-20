@@ -7,6 +7,7 @@ import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 import { CONCATENATED_VALUES_SEPARATOR } from "../config";
 import { getApplicationData } from "../utils/application.data";
+import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -411,12 +412,12 @@ export const checkOverseasName = (value: string = "") => {
   return true;
 };
 
-export const checkSecondNationality = (nationality: string = "", secondNationality: string = "") => {
+export const checkSecondNationality = (nationality: string = "", secondNationality: string = "", errors?: DefaultErrorsSecondNationality) => {
 
   if ( nationality && nationality === secondNationality ) {
-    throw new Error(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+    throw new Error(errors?.sameError ?? ErrorMessages.SECOND_NATIONALITY_IS_SAME);
   } else if ( nationality && secondNationality && `${nationality}${CONCATENATED_VALUES_SEPARATOR}${secondNationality}`.length > 50) {
-    throw new Error(ErrorMessages.NATIONALITIES_TOO_LONG);
+    throw new Error(errors?.lengthError ?? ErrorMessages.NATIONALITIES_TOO_LONG);
   }
 
   return true;

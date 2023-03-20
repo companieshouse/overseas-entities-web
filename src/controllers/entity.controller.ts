@@ -55,7 +55,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     setApplicationData(session, data, EntityKey);
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, true);
 
     return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
   } catch (error) {

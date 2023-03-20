@@ -41,7 +41,7 @@ interface TrustHistoricalBeneficialOwnerFormCommon {
 
 type IndividualTrusteesFormCommon = {
   trusteeId?: string,
-  type: RoleWithinTrustType,
+  roleWithinTrust: RoleWithinTrustType,
   forename: string,
   surname: string,
   dateOfBirthDay: string,
@@ -124,6 +124,10 @@ type TrusteeItem = {
     trusteeItemType: TrusteeType;
 };
 
+type AddTrust = {
+  addTrust: yesNoResponse;
+};
+
 export {
   TrustDetailsForm,
   TrustBeneficialOwnerListItem,
@@ -134,4 +138,5 @@ export {
   TrustLegalEntityForm,
   IndividualTrusteesFormCommon,
   TrusteeItem,
+  AddTrust,
 };

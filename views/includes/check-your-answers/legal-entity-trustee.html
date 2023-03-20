@@ -21,9 +21,9 @@
 {% set legalEntityFormattedServiceAddressHtml %}
   {% if legalEntity.is_service_address_same_as_principal_address == '1' %}
     The correspondence address is the same as the entity’s principal or registered office address
-    {% set legalEntityChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
+    {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS %}
   {% else %}
-    {% set legalEntityChangeServiceAddressHtml = "#service_address_property_name_number" %}
+    {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
       property_name_number: legalEntity.sa_address_premises,
       line_1: legalEntity.sa_address_line1,
@@ -57,7 +57,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalEntityName",
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
       "Legal entity " + legalEntity.name + " - name",
       "change-legal-entity-name-button"
    ) ]
@@ -73,7 +73,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.ROLE_WITHIN_TRUST,
       "Legal entity " + legalEntity.name + " - type",
       "change-legal-entity-type-button"
     ) ]
@@ -90,7 +90,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#conditional-type-4",
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE.CONFIGS.INTERESTED_PERSON_START_DATE,
         "Individual beneficial owner " + legalEntity.name + " - date of birth",
         "change-individual-beneficial-owner-interested-person-date-button"
       ) ]
@@ -142,7 +142,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.PUBLIC_REGISTER_JURISDICTION,
         "Legal entity " + legalEntity.name + " - country formed in",
         "change-legal-entity-country-formed-in-button"
       ) ]
@@ -159,7 +159,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalForm",
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_FORM,
       "Legal entity " + legalEntity.name + " - legal form",
       "change-legal-entity-legal-form-button"
     ) ]
@@ -175,7 +175,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LAW_GOVERNED,
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-governing-law-button"
     ) ]
@@ -191,7 +191,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.TYPE,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.PUBLIC_REGISTER_NAME,
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-identification-registration-number-button"
     ) ]

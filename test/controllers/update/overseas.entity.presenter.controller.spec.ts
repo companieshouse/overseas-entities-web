@@ -3,6 +3,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -12,6 +13,7 @@ import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   OVERSEAS_ENTITY_PRESENTER_URL,
   WHO_IS_MAKING_UPDATE_URL
@@ -56,6 +58,7 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockPrepareData = prepareData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
@@ -92,6 +95,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_UPDATE_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_UPDATE_URL} page after a successful post from overseas entity presenter page with special characters`, async () => {
@@ -99,6 +103,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_UPDATE_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {

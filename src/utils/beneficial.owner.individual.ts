@@ -86,9 +86,8 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
 
     setApplicationData(session, data, BeneficialOwnerIndividualKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
+
     return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -110,9 +109,8 @@ export const updateBeneficialOwnerIndividual = async (req: Request, res: Respons
     // Save new Beneficial Owner
     setApplicationData(session, data, BeneficialOwnerIndividualKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
+
     return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -125,10 +123,10 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
     logger.debugRequest(req, `REMOVE ${req.route.path}`);
 
     removeFromApplicationData(req, BeneficialOwnerIndividualKey, req.params[ID]);
+    const session = req.session as Session;
 
-    if (registrationFlag) {
-      await saveAndContinue(req, req.session as Session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
+
     return res.redirect(nextPage);
   } catch (error) {
     logger.errorRequest(req, error);

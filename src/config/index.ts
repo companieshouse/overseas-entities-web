@@ -243,11 +243,13 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
-export const ROLE_WITHIN_TRUST = "#type";
+export const ROLE_WITHIN_TRUST = "#roleWithinTrust";
 export const FORENAME = "#forename";
 export const SURNAME = "#surname";
 export const TRUST_DATE_OF_BIRTH = "#dateOfBirth-dateOfBirthDay";
 export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
+export const PUBLIC_REGISTER_JURISDICTION = "#public_register_jurisdiction";
+export const LEGAL_ENTITY_NAME = "#legalEntityName";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";

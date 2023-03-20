@@ -1,11 +1,11 @@
 jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
-jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
-jest.mock('../../../src/middleware/service.availability.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -17,6 +17,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { ApplicationDataType, managingOfficerCorporateType } from "../../../src/model";
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   AddressKeys,
   HasSamePrincipalAddressKey,
@@ -81,10 +82,11 @@ const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
-describe("UPDATE_MANAGING_OFFICER_CORPORATE controller", () => {
+describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -136,6 +138,7 @@ describe("UPDATE_MANAGING_OFFICER_CORPORATE controller", () => {
       expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`POST only radio buttons choices and redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
@@ -147,6 +150,7 @@ describe("UPDATE_MANAGING_OFFICER_CORPORATE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("Test email is valid with long email address", async () => {

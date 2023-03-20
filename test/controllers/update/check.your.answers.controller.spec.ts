@@ -133,7 +133,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
     test(`catch error on POST action for ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockOverseasEntity.mockImplementation(() => {
+      mockCloseTransaction.mockImplementation(() => {
         throw ERROR;
       });
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);

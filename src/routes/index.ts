@@ -216,7 +216,7 @@ router
     navigation.hasTrustData,
   )
   .get(addTrust.get)
-  .post(addTrust.post);
+  .post(...validator.addTrust, addTrust.post);
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
@@ -262,7 +262,7 @@ router
   .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
 
 router
-  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.ID + '?')
+  .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,

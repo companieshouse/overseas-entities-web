@@ -16,7 +16,7 @@ import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
-  SERVICE_UNAVAILABLE,
+  SERVICE_UNAVAILABLE, SIGN_OUT_HELP_DETAILS_TEXT,
   SIGN_OUT_HINT_TEXT,
   SIGN_OUT_PAGE_TITLE
 } from "../__mocks__/text.mock";
@@ -46,6 +46,7 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
@@ -57,6 +58,7 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
@@ -68,6 +70,7 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 

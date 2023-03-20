@@ -34,13 +34,7 @@
          Et harum quidem rerum facilis est et expedita distinctio.
       </p>
       <form method="post">
-        {{ govukButton({
-          text: "Continue",
-           attributes: {
-             "id": "submit",
-              "onclick": "_paq.push(['trackGoal', '" + PIWIK_UPDATE_START_GOAL_ID + "'])"
-            }
-         }) }}
+        {% include "includes/update-start-goal-button.html" %}
       </form>
     </div>
   </div>

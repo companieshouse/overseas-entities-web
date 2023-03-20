@@ -204,6 +204,15 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
+    test(`that update feature is true if no data is returned for getCompanyPsc`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyPscService.mockReturnValueOnce(undefined);
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyPscService).toBeCalledTimes(1);
+      expect(mockSetBoMoData).toBeCalledTimes(1);
+    });
   });
 
   describe("POST tests", () => {

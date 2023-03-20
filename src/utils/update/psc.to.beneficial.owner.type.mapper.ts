@@ -68,27 +68,27 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.naturesOfControl?.forEach(natureType => {
-    const controlKind = natureTypeMap.get(natureType) || undefined;
+    const controlKind = natureTypeMap.get(natureType);
     const natureOfControlType = natureOfControlTypeMap.get(natureType);
-    if (controlKind) {
-      switch (controlKind) {
-          case 'BoNatureOfControl':
-            beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-            break;
-          case "NonLegalNatureOfControl":
-            beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-            break;
-          case "TrustNatureOfControl":
-            if (!isBeneficialGov){
-              beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
-            }
-            break;
-          default:
-            logger.trace('No valid nature of control found');
-            return;
-      }
+    if (!controlKind) {return;}
+    switch (controlKind) {
+        case 'BoNatureOfControl':
+          beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
+          break;
+        case "NonLegalNatureOfControl":
+          beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
+          break;
+        case "TrustNatureOfControl":
+          if (!isBeneficialGov){
+            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
+          }
+          break;
+        default:
+          logger.trace('No valid nature of control found');
+          return;
     }
-  });
+  }
+  );
 };
 
 enum BoTypes {

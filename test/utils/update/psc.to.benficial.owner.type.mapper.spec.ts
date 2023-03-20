@@ -2,7 +2,7 @@ import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-nod
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
-import { pscMock } from './mocks';
+import { pscMock, pscMockNegativeScenario } from './mocks';
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
 
@@ -117,6 +117,40 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     });
   });
 
+  test(`test random data mapper for beneficial owner other`, () => {
+    expect(mapPscToBeneficialOwnerOther(pscMockNegativeScenario)).toEqual({
+      id: "",
+      name: pscMockNegativeScenario.name,
+      start_date: undefined,
+      non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      is_service_address_same_as_principal_address: yesNoResponse.Yes,
+      service_address: {
+        line_1: pscMockNegativeScenario.address.address_line_1,
+        line_2: pscMockNegativeScenario.address.address_line_2,
+        postcode: pscMockNegativeScenario.address.postal_code,
+        property_name_number: pscMockNegativeScenario.address.premises,
+        town: pscMockNegativeScenario.address.locality,
+        country: pscMockNegativeScenario.address.region,
+      },
+      principal_address: {
+        line_1: pscMockNegativeScenario.address.address_line_1,
+        line_2: pscMockNegativeScenario.address.address_line_2,
+        postcode: pscMockNegativeScenario.address.postal_code,
+        property_name_number: pscMockNegativeScenario.address.premises,
+        town: pscMockNegativeScenario.address.locality,
+        country: pscMockNegativeScenario.address.region,
+      },
+      law_governed: pscMockNegativeScenario.identification?.legalAuthority,
+      legal_form: pscMockNegativeScenario.identification?.legalForm,
+      public_register_name: pscMockNegativeScenario.identification?.placeRegistered,
+      registration_number: pscMockNegativeScenario.identification?.registrationNumber,
+      is_on_register_in_country_formed_in: 0,
+      is_on_sanctions_list: 0
+    });
+  });
+
   test('that undefined is returned if nature of control type does not match', () => {
     pscMock.naturesOfControl = ['Some unknown 25% share'];
     expect(() => mapPscToBeneficialOwnerOther(pscMock)).toBeUndefined;
@@ -132,4 +166,3 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     expect(mapPscToBeneficialOwnerOther(pscMock)).toBeUndefined;
   });
 });
-

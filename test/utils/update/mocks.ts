@@ -95,3 +95,17 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   ],
   isSanctioned: true,
 };
+
+export const pscMockNegativeScenario: CompanyPersonWithSignificantControl = {
+  ...pscMock,
+  address: {
+    region: undefined,
+    postal_code: "DF12 3UZ",
+    premises: "No Place",
+    locality: "Ant town",
+    address_line_1: "1 New Street",
+    address_line_2: "Undeclared zone",
+  },
+  identification: undefined,
+  isSanctioned: false
+};

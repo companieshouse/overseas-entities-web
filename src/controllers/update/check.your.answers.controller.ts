@@ -16,16 +16,30 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME
+  FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME,
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+  OVERSEAS_ENTITY_SECTION_HEADING
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+    const session = req.session as Session;
+    const appData: ApplicationData = getApplicationData(session);
+
+    const changeLinkUrl: string = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+    const overseasEntityHeading: string = OVERSEAS_ENTITY_SECTION_HEADING;
+
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-      templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE
+      templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+      changeLinkUrl,
+      overseasEntityHeading,
+      appData,
+      pageParams: {
+        isRegistration: false
+      },
     });
   } catch (error) {
     logger.errorRequest(req, error);

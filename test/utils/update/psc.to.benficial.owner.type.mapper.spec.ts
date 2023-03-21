@@ -114,7 +114,10 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 
   test('that no error is thrown if nature of control type does not match', () => {
     pscMock.naturesOfControl = ['Some unknown 25% share'];
-    expect(mapPscToBeneficialOwnerOther(pscMock));
+    const bo = mapPscToBeneficialOwnerOther(pscMock);
+    expect(bo.trustees_nature_of_control_types).toEqual(undefined);
+    expect(bo.beneficial_owner_nature_of_control_types).toEqual(undefined);
+    expect(bo.non_legal_firm_members_nature_of_control_types).toEqual(undefined);
   });
 
   test('that error is empty pcsc nature of control', () => {

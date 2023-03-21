@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import {
@@ -8,20 +7,14 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData, setApplicationData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { ManagingOfficerKey, ManagingOfficerIndividual } from "../../model/managing.officer.model";
-import { ManagingOfficerCorporateKey, ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
-
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
-import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 
@@ -77,34 +70,27 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  const session = req.session as Session;
   if (companyOfficers !== undefined) {
     for (const officer of (companyOfficers.items || [])) {
-      if (officer.officerRole === "secretary"){
-        const managingOfficer: ManagingOfficerIndividual = mapToManagingOfficer(officer);
-        setApplicationData(session, managingOfficer, ManagingOfficerKey);
+      if (officer.officerRole === "secretary") {
+        mapToManagingOfficer(officer);
       } else if (officer.officerRole === "director") {
-        const managingOfficerCorporate: ManagingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        setApplicationData(session, managingOfficerCorporate, ManagingOfficerCorporateKey);
+        mapToManagingOfficerCorporate(officer);
       }
     }
   }
 };
 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const session = req.session as Session;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs !== undefined) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
-        const beneficialOwnerI: BeneficialOwnerIndividual = mapPscToBeneficialOwnerTypeIndividual(psc);
-        setApplicationData(session, beneficialOwnerI, BeneficialOwnerIndividualKey);
+        mapPscToBeneficialOwnerTypeIndividual(psc);
       } else if (psc.kind === "corporate-entity-beneficial-owner") {
-        const beneficialOwnerOther: BeneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        setApplicationData(session, beneficialOwnerOther, BeneficialOwnerOtherKey);
+        mapPscToBeneficialOwnerOther(psc);
       } else if (psc.kind === "legal-person-with-significant-control") {
-        const beneficialOwnerGov: BeneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        setApplicationData(session, beneficialOwnerGov, BeneficialOwnerGovKey);
+        mapPscToBeneficialOwnerGov(psc);
       }
     }
   }

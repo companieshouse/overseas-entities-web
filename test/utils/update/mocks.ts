@@ -65,12 +65,12 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   notifiedOn: "2016-04-06",
   nationality: "British",
   address: {
-    region: "country1",
-    postal_code: "CF14 3UZ",
+    country: "country1",
+    postalCode: "CF14 3UZ",
     premises: "Companies House",
     locality: "Limavady",
-    address_line_1: "",
-    address_line_2: "",
+    addressLine1: "",
+    addressLine2: "",
   },
   countryOfResidence: "Wales",
   dateOfBirth: {

@@ -112,3 +112,4 @@ export const mapAddress = (address: any) => {
     postcode: address.postalCode
   };
 };
+

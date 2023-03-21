@@ -16,6 +16,21 @@ export const mapAddress = (address: any): Address => {
   };
 };
 
+export const mapBOMOAddress = (address: any) => {
+  if (!address) {
+    return {};
+  }
+  return {
+    property_name_number: address.premises,
+    line_1: address.addressLine1,
+    line_2: address.addressLine2,
+    town: address.locality,
+    county: address.region,
+    country: address.country,
+    postcode: address.postalCode
+  };
+};
+
 type AddressMatches = {
   (address1: Address, address2?: Address): boolean;
   (address1: OfficeAddress, address2?: OfficeAddress): boolean;

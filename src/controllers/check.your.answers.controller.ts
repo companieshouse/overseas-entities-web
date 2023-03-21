@@ -22,7 +22,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
-    const overseasEntityHeading: string = "Overseas entity details";
+    const overseasEntityHeading: string = config.OVERSEAS_ENTITY_SECTION_HEADING;
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${requiresTrusts}`);
 

@@ -4,7 +4,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/service/company.profile.service");
-jest.mock("../../../src/utils/update/company.profile.mapper.to.oversea.entity");
+jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -24,7 +24,7 @@ import {
 } from "../../__mocks__/text.mock";
 import { NextFunction } from "express";
 import { getCompanyProfile } from "../../../src/service/company.profile.service";
-import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.oversea.entity";
+import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
 
 import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
 

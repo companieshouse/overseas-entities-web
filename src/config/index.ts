@@ -245,11 +245,14 @@ export const CONTACT_EMAIL = "#contact_email";
 export const CREATED_DATE = "#createdDate-createdDateDay";
 export const INCORPORATION_COUNTRY = "#incorporation_country";
 export const ENTITY_NAME = "#entity_name";
-export const ROLE_WITHIN_TRUST = "#type";
+export const ROLE_WITHIN_TRUST = "#roleWithinTrust";
 export const FORENAME = "#forename";
 export const SURNAME = "#surname";
 export const TRUST_DATE_OF_BIRTH = "#dateOfBirth-dateOfBirthDay";
 export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
+export const PUBLIC_REGISTER_JURISDICTION = "#public_register_jurisdiction";
+export const LEGAL_ENTITY_NAME = "#legalEntityName";
+export const TRUST_BENEFICIAL_OWNERS = "#trustBeneficialOwners";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
@@ -280,3 +283,6 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL = OVERSEAS_ENTITY_DUE_DI
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + SUPERVISORY_NAME;
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + AML_NUMBER;
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME = OVERSEAS_ENTITY_DUE_DILIGENCE_URL + PARTNER_NAME;
+
+// page sub-headings
+export const OVERSEAS_ENTITY_SECTION_HEADING = "Overseas entity details";

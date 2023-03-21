@@ -32,9 +32,8 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
     const data = prepareData(req.body, PresenterKeys);
     setApplicationData(session, data, PresenterKey);
 
-    if (registrationFlag) {
-      await saveAndContinue(req, session);
-    }
+    await saveAndContinue(req, session, registrationFlag);
+
     return res.redirect(redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);

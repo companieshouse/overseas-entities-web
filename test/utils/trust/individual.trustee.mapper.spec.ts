@@ -58,12 +58,12 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           trusteeId: id,
-          type: roleWithinTrust,
+          roleWithinTrust,
         };
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
           id: mockFormData.trusteeId,
-          type: mockFormData.type,
+          type: mockFormData.roleWithinTrust,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',
@@ -98,7 +98,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           trusteeId: '10002',
-          type: RoleWithinTrustType.INTERESTED_PERSON,
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
           dateBecameIPDay: '2',
           dateBecameIPMonth: '11',
           dateBecameIPYear: '2022',
@@ -106,7 +106,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
 
         expect(mapIndividualTrusteeToSession(<Page.IndividualTrusteesFormCommon>mockFormData)).toEqual({
           id: mockFormData.trusteeId,
-          type: mockFormData.type,
+          type: mockFormData.roleWithinTrust,
           forename: mockFormData.forename,
           surname: mockFormData.surname,
           other_forenames: '',
@@ -143,7 +143,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       test('trustee Id should not be null after mapping', () => {
         const mockFormData = {
           ...mockFormDataBasic,
-          type: RoleWithinTrustType.INTERESTED_PERSON,
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
           dateBecameIPDay: '2',
           dateBecameIPMonth: '11',
           dateBecameIPYear: '2022',
@@ -207,7 +207,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         trusteeId: mockSessionData.id,
         forename: mockSessionData.forename,
         surname: mockSessionData.surname,
-        type: mockSessionData.type,
+        roleWithinTrust: mockSessionData.type,
         dateOfBirthDay: mockSessionData.date_of_birth_day,
         dateOfBirthMonth: mockSessionData.date_of_birth_month,
         dateOfBirthYear: mockSessionData.date_of_birth_year,
@@ -251,7 +251,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         trusteeId: mockSessionData.id,
         forename: mockSessionData.forename,
         surname: mockSessionData.surname,
-        type: mockSessionData.type,
+        roleWithinTrust: mockSessionData.type,
         dateOfBirthDay: mockSessionData.date_of_birth_day,
         dateOfBirthMonth: mockSessionData.date_of_birth_month,
         dateOfBirthYear: mockSessionData.date_of_birth_year,

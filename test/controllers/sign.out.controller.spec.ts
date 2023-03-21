@@ -16,7 +16,7 @@ import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
-  SERVICE_UNAVAILABLE,
+  SERVICE_UNAVAILABLE, SIGN_OUT_HELP_DETAILS_TEXT,
   SIGN_OUT_HINT_TEXT,
   SIGN_OUT_PAGE_TITLE
 } from "../__mocks__/text.mock";
@@ -46,6 +46,7 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
@@ -57,6 +58,7 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
@@ -68,7 +70,18 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    });
+
+    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
     });
 
     test("catch error when rendering the page", async () => {

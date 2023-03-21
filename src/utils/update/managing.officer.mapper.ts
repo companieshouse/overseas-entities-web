@@ -11,7 +11,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
   const names = splitNames(officer.name);
   const formernames = getFormerNames(officer.formerNames);
 
-  const result: ManagingOfficerIndividual = {
+  return {
     id: raw.links?.self,
     first_name: names[0],
     last_name: names[1],
@@ -25,7 +25,6 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     occupation: officer.occupation,
     role_and_responsibilities: officer.officerRole,
   };
-  return result;
 };
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): ManagingOfficerCorporate => {
@@ -33,7 +32,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
   const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
 
-  const result: ManagingOfficerCorporate = {
+  return {
     id: raw.links?.self,
     name: officer.name,
     principal_address: address,
@@ -46,7 +45,6 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     registration_number: officer.identification?.registrationNumber,
     role_and_responsibilities: officer.officerRole,
   };
-  return result;
 };
 
 const mapDateOfBirth = (dateOfBirth: DateOfBirth | undefined) => {
@@ -59,8 +57,7 @@ const mapDateOfBirth = (dateOfBirth: DateOfBirth | undefined) => {
 
 export const splitNames = (officerName: string) => {
   if (officerName === undefined) {
-    const names = ["", ""];
-    return names;
+    return ["", ""];
   } else {
     const names = officerName.split(" ");
     if (names.length > 2) {
@@ -71,8 +68,7 @@ export const splitNames = (officerName: string) => {
           firstNames += " ";
         }
       }
-      const multipleFirstNames = [firstNames, names[names.length - 1]];
-      return multipleFirstNames;
+      return [firstNames, names[names.length - 1]];
     } else {
       return names;
     }

@@ -70,7 +70,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  if (companyOfficers !== undefined) {
+  if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
       if (officer.officerRole === "secretary") {
         mapToManagingOfficer(officer);
@@ -83,7 +83,7 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
 
 const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  if (pscs !== undefined) {
+  if (pscs) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
         mapPscToBeneficialOwnerTypeIndividual(psc);

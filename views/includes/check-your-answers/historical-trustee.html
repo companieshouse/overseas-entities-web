@@ -19,6 +19,13 @@
   },
   value: {
     text: formerTrusteeName
+  },
+    actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + '#corporate_name',
+      "Former Trustee" + formerTrustee.name + " - name",
+      "change-former-trustee-name-button"
+   ) ]
   }
 }), rows) %}
 

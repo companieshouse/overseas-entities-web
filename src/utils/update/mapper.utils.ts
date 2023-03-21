@@ -1,9 +1,22 @@
-import { Address } from "../../model/data.types.model";
-import { OfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { Address as PSCAddress } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { Address as OfficerAddress } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { Address, InputDate } from "../../model/data.types.model";
+import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 
-export const mapAddress = (address: any): Address => {
+type DateOfBirthTypes = {
+  (dateOfBirth: PSCDateOfBirth | undefined): InputDate;
+  (dateOfBirth: OfficerDateOfBirth | undefined): InputDate;
+};
+
+export const mapDateOfBirth : DateOfBirthTypes = (dateOfBirth) => {
+  return {
+    day: dateOfBirth?.day,
+    month: dateOfBirth?.month,
+    year: dateOfBirth?.year
+  } as InputDate;
+};
+
+export const mapAddress = (address: ServiceAddress | undefined): Address => {
   if (!address) {
     return {};
   }

@@ -1,8 +1,8 @@
-import { isSameAddress, mapBOMOAddress } from "./mapper.utils";
-import { CompanyOfficer, FormerNameResource, DateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth } from "./mapper.utils";
+import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
-import { InputDate, yesNoResponse } from "../../model/data.types.model";
+import { yesNoResponse } from "../../model/data.types.model";
 
 export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIndividual => {
   const raw = officer as any;
@@ -47,15 +47,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
   };
 };
 
-const mapDateOfBirth = (dateOfBirth: DateOfBirth | undefined) => {
-  return {
-    day: dateOfBirth?.day,
-    month: dateOfBirth?.month,
-    year: dateOfBirth?.year
-  } as InputDate;
-};
-
-export const splitNames = (officerName: string) => {
+export const splitNames = (officerName: string): string[] => {
   if (officerName === undefined) {
     return ["", ""];
   } else {
@@ -75,20 +67,19 @@ export const splitNames = (officerName: string) => {
   }
 };
 
-export const getFormerNames = (formerNames?: FormerNameResource[]) => {
-  let allFormerNames;
-
+export const getFormerNames = (formerNames?: FormerNameResource[]): string => {
+  let allFormerNames = "";
   if (formerNames !== undefined) {
     for (let loop = 0; loop < formerNames.length; loop++) {
       const forenames = formerNames[loop].forenames;
       const surname = formerNames[loop].surname;
-      const holder = forenames?.concat(" " + surname);
+      const holder = forenames ? forenames.concat(" " + surname) : surname;
       if (loop === 0) {
-        allFormerNames = holder;
+        allFormerNames = holder ?? "";
       } else {
         allFormerNames += ", " + holder;
       }
     }
-    return allFormerNames;
   }
+  return allFormerNames;
 };

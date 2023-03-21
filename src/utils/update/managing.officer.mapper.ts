@@ -1,4 +1,4 @@
-import { isSameAddress } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource, DateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
@@ -6,7 +6,7 @@ import { InputDate, yesNoResponse } from "../../model/data.types.model";
 
 export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIndividual => {
   const raw = officer as any;
-  const service_address = mapAddress(officer.address);
+  const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
   const names = splitNames(officer.name);
   const formernames = getFormerNames(officer.formerNames);
@@ -30,7 +30,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): ManagingOfficerCorporate => {
   const raw = officer as any;
-  const service_address = mapAddress(officer.address);
+  const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
 
   const result: ManagingOfficerCorporate = {
@@ -95,19 +95,4 @@ export const getFormerNames = (formerNames?: FormerNameResource[]) => {
     }
     return allFormerNames;
   }
-};
-
-export const mapAddress = (address: any) => {
-  if (!address) {
-    return {};
-  }
-  return {
-    property_name_number: address.premises,
-    line_1: address.addressLine1,
-    line_2: address.addressLine2,
-    town: address.locality,
-    county: address.region,
-    country: address.country,
-    postcode: address.postalCode
-  };
 };

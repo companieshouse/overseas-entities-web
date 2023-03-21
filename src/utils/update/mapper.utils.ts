@@ -8,7 +8,7 @@ type DateOfBirthTypes = {
   (dateOfBirth: OfficerDateOfBirth | undefined): InputDate;
 };
 
-export const mapDateOfBirth : DateOfBirthTypes = (dateOfBirth) => {
+export const mapDateOfBirth: DateOfBirthTypes = (dateOfBirth) => {
   return {
     day: dateOfBirth?.day,
     month: dateOfBirth?.month,

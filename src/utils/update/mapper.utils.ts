@@ -1,5 +1,7 @@
 import { Address } from "../../model/data.types.model";
 import { OfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { Address as PSCAddress } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { Address as OfficerAddress } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 
 export const mapAddress = (address: any): Address => {
   if (!address) {
@@ -16,7 +18,12 @@ export const mapAddress = (address: any): Address => {
   };
 };
 
-export const mapBOMOAddress = (address: any) => {
+type BOMOAddressMapTypes = {
+  (address: PSCAddress | undefined): Address;
+  (address: OfficerAddress | undefined): Address;
+};
+
+export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
   if (!address) {
     return {};
   }

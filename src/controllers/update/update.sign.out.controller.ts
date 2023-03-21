@@ -26,7 +26,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
     if (req.body["sign_out"] === 'yes') {
-      return res.redirect(config.UPDATE_ACCOUNTS_SIGN_OUT_URL);
+      return res.redirect(config.UPDATE_SIGNED_OUT_URL);
     }
     return res.redirect(previousPage);
   } catch (error) {

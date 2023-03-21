@@ -58,6 +58,7 @@ import {
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
   updateSignOut,
+  updateSignedOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate,
@@ -486,5 +487,11 @@ router.route(config.UPDATE_FILING_DATE_URL)
   )
   .get(updateFilingDate.get)
   .post(updateFilingDate.post);
+
+router.route(config.UPDATE_SIGNED_OUT_URL)
+  .all(
+    authentication
+  )
+  .get(updateSignedOut.get);
 
 export default router;

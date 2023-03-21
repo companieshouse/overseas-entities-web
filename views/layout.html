@@ -42,12 +42,15 @@
 {% endblock %}
 
 {% block beforeContent %}
+{% if signedOut %}
+{% else %}
   {% include "includes/phase_banner.html" %}
   {% block backLink %}
   {% endblock %}
   {% block signOutBanner %}
-    {% include "includes/sign-out-user-banner.html" %}
+  {% include "includes/sign-out-user-banner.html" %}
   {% endblock %}
+{% endif %}
 {% endblock %}
 
 {% block header %}

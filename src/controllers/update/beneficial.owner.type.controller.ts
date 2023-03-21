@@ -88,13 +88,13 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
-        const individualBenifitialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-        logger.info("Loaded individual Benefitial Owner " + individualBenifitialOwner.id + " is " + individualBenifitialOwner.first_name + ", " + individualBenifitialOwner.last_name);
-        const benifitialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        logger.info("Loaded Benifitial Owner Other " + benifitialOwnerOther.id + " is " + benifitialOwnerOther.name);
+        const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
+        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBenicitialOwner.first_name + ", " + individualBenifitialOwner.last_name);
+        const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + benicitialOwnerOther.name);
       } else if (psc.kind === "legal-person-with-significant-control") {
-        const benifitialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        logger.info("Loaded Benifitial Owner Gov " + benifitialOwnerGov.id + " is " + benifitialOwnerGov.name);
+        const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+        logger.info("Loaded Beneficialicial Owner Gov " + beneficialOwnerGov.id + " is " + benicitialOwnerGov.name);
       }
     }
   }

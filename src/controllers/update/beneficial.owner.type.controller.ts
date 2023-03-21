@@ -89,12 +89,12 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBenicitialOwner.first_name + ", " + individualBenifitialOwner.last_name);
+        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + benicitialOwnerOther.name);
+        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
       } else if (psc.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        logger.info("Loaded Beneficialicial Owner Gov " + beneficialOwnerGov.id + " is " + benicitialOwnerGov.name);
+        logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
       }
     }
   }

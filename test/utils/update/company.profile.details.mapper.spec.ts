@@ -4,6 +4,7 @@ import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/com
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';
+import { mapAddress } from '../../../src/utils/update/mapper.utils';
 
 describe("Test company profile details mapping", () => {
 
@@ -46,4 +47,21 @@ describe("Test company profile details mapping", () => {
       is_service_address_same_as_principal_address: yesNoResponse.No
     });
   });
+
+  test(`A null OE address should map to be empty`, () => {
+    expect(mapAddress(undefined)).toEqual({});
+  });
+
+  test(`A OE address should be mapped`, () => {
+    expect(mapAddress(companyDetailsMock.serviceAddress)).toEqual({
+      country: companyDetailsMock.serviceAddress?.country,
+      county: companyDetailsMock.serviceAddress?.region,
+      line_1: companyDetailsMock.serviceAddress?.addressLineOne,
+      line_2: companyDetailsMock.serviceAddress?.addressLineTwo,
+      postcode: companyDetailsMock.serviceAddress?.postalCode,
+      property_name_number: companyDetailsMock.serviceAddress?.premises,
+      town: companyDetailsMock.serviceAddress?.locality
+    });
+  });
+
 });

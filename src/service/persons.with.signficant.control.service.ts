@@ -23,6 +23,5 @@ export const getCompanyPsc = async (
   } else {
     throw createAndLogErrorRequest(req, `getCompanyPsc API request returned HTTP status code ${response.httpStatusCode}`);
   }
-
   return response?.resource;
 };

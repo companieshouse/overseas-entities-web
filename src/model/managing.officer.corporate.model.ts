@@ -28,7 +28,7 @@ export interface ManagingOfficerCorporate {
   is_on_register_in_country_formed_in?: yesNoResponse;
   public_register_name?: string;
   registration_number?: string;
-  role_and_responsibilities: string;
-  contact_full_name: string;
-  contact_email: string;
+  role_and_responsibilities?: string;
+  contact_full_name?: string;
+  contact_email?: string;
 }

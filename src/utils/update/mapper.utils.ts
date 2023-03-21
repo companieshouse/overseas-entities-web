@@ -7,12 +7,12 @@ export const mapAddress = (address: any): Address => {
   }
   return {
     property_name_number: address.premises,
-    line_1: address.address_line_1,
-    line_2: address.address_line_2,
+    line_1: address.addressLineOne,
+    line_2: address.addressLineTwo,
     town: address.locality,
     county: address.region,
     country: address.country,
-    postcode: address.postal_code
+    postcode: address.postalCode
   };
 };
 

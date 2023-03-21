@@ -8,13 +8,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
-    const pageUrl = req.originalUrl;
-    const isTrustPage = /\/trusts\//i.test(pageUrl);
-    const previousPageUrl = isTrustPage ? `${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.TRUSTS_URL}/${req.query["page"]}` :
-      `${req.body["previousPage"]}`;
+    // Get the trust link for the previous page from the raw header
+    const headers = req.rawHeaders;
+    const previousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL));
 
     return res.render(config.SIGN_OUT_PAGE, {
-      previousPage: previousPageUrl,
+      previousPage: previousPageUrl[0],
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
       journey: "register"
@@ -30,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
     const previousPage = req.body["previousPage"];
 
-    if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
 

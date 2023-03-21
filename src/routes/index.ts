@@ -84,9 +84,6 @@ router.get(config.LANDING_URL, landing.get);
 router.get(config.SIGN_OUT_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
 
-router.get(config.SIGN_OUT_URL_TRUSTS, signOut.get);
-router.post(config.SIGN_OUT_URL_TRUSTS, ...validator.signOut, checkValidations, signOut.post);
-
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
 router.get(config.STARTING_NEW_URL, authentication, startingNew.get);

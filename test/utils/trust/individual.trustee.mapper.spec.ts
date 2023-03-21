@@ -94,7 +94,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         });
       });
 
-      test('map Individual trustees', () => {
+      test('map Individual trustee with same service address as residential address', () => {
         const mockFormData = {
           ...mockFormDataBasic,
           trusteeId: '198',

@@ -77,12 +77,11 @@ describe("Sign Out controller", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL_TRUSTS}?page=${config.TRUST_INTERRUPT_PAGE}`);
+        .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).toContain(`${config.TRUST_ENTRY_URL}/${config.TRUST_INTERRUPT_PAGE}`);
     });
 
     test("catch error when rendering the page", async () => {

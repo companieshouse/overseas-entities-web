@@ -5,7 +5,6 @@ import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate
 import { InputDate, yesNoResponse } from "../../model/data.types.model";
 
 export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIndividual => {
-  console.log(officer);
   const raw = officer as any;
   const service_address = mapAddress(officer.address);
   const address = undefined;

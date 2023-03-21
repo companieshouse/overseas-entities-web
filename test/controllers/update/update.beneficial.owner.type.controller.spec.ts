@@ -81,7 +81,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      // expect(mockSetApplicationData).toBeCalledTimes(1);
 
     });
 
@@ -122,7 +121,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      // expect(mockSetApplicationData).toBeCalledTimes(1);
     });
 
     test(`test individual benefical owner data returned when getCompanyPsc data kind is individual person with significant control`, async () => {
@@ -133,7 +131,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
-      // expect(mockSetApplicationData).toBeCalledTimes(1);
     });
 
     test(`test that getCompanyPsc is not called again if it returns undefined`, async () => {

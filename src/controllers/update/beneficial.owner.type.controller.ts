@@ -73,9 +73,11 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
       if (officer.officerRole === "secretary") {
-        mapToManagingOfficer(officer);
+        const managingOfficer = mapToManagingOfficer(officer);
+        logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
       } else if (officer.officerRole === "director") {
-        mapToManagingOfficerCorporate(officer);
+        const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+        logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
       }
     }
   }
@@ -86,11 +88,13 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
-        mapPscToBeneficialOwnerTypeIndividual(psc);
-      } else if (psc.kind === "corporate-entity-beneficial-owner") {
-        mapPscToBeneficialOwnerOther(psc);
+        const individualBenifitialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
+        logger.info("Loaded individual Benefitial Owner " + individualBenifitialOwner.id + " is " + individualBenifitialOwner.first_name + ", " + individualBenifitialOwner.last_name);
+        const benifitialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+        logger.info("Loaded Benifitial Owner Other " + benifitialOwnerOther.id + " is " + benifitialOwnerOther.name);
       } else if (psc.kind === "legal-person-with-significant-control") {
-        mapPscToBeneficialOwnerGov(psc);
+        const benifitialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+        logger.info("Loaded Benifitial Owner Gov " + benifitialOwnerGov.id + " is " + benifitialOwnerGov.name);
       }
     }
   }

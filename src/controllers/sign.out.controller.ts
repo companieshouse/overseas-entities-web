@@ -10,8 +10,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     // Get the trust link for the previous page from the raw header
     const headers = req.rawHeaders;
-    const previousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL));
+    console.log(`register headers filter is ${headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL))}`);
+    console.log(`update filter is ${headers.filter(item => item.includes(config.UPDATE_AN_OVERSEAS_ENTITY_URL))}`);
 
+    const previousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL) || item.includes(config.UPDATE_AN_OVERSEAS_ENTITY_URL));
+    console.log(`previous page ${previousPageUrl}`);
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl[0],
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -27,9 +30,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
+    console.log(`request body is ${JSON.stringify(req.body)}`);
     const previousPage = req.body["previousPage"];
-
-    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    console.log(`previous page is ${previousPage}`);
+    console.log(`does previous page include ${previousPage.includes(config.UPDATE_AN_OVERSEAS_ENTITY_URL)}`);
+    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL) && !previousPage.includes(config.UPDATE_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
 

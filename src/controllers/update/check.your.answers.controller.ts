@@ -30,7 +30,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const changeLinkUrl: string = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
     const overseasEntityHeading: string = OVERSEAS_ENTITY_SECTION_HEADING;
-
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,

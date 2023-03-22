@@ -1,5 +1,6 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
+import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -64,12 +65,12 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   notifiedOn: "2016-04-06",
   nationality: "British",
   address: {
-    region: "country1",
-    postal_code: "CF14 3UZ",
+    country: "country1",
+    postalCode: "CF14 3UZ",
     premises: "Companies House",
     locality: "Limavady",
-    address_line_1: "",
-    address_line_2: "",
+    addressLine1: "",
+    addressLine2: "",
   },
   countryOfResidence: "Wales",
   dateOfBirth: {
@@ -94,4 +95,43 @@ export const pscMock: CompanyPersonWithSignificantControl = {
     'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
   ],
   isSanctioned: true,
+};
+
+export const managingOfficerMock: CompanyOfficer = {
+  address: {
+    premises: "1 Acme Road",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
+    locality: "locality",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
+    region: "region",
+    country: "country"
+  },
+  appointedOn: "appointed",
+  countryOfResidence: "country1",
+  dateOfBirth: {
+    day: "1",
+    month: "2",
+    year: "1900"
+  },
+  formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  },
+  links: {
+    officer: {
+      appointments: ""
+    }
+  },
+  name: "Jimmy John Wabb",
+  nationality: "country1",
+  occupation: "occupation",
+  officerRole: "role",
+  resignedOn: "resigned"
 };

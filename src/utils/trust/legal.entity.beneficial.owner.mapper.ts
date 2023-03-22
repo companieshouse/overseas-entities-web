@@ -9,7 +9,7 @@ const mapLegalEntityToSession = (
   formData: Page.TrustLegalEntityForm
 ): Trust.TrustCorporate => {
 
-  return {
+  const data = {
     id: formData.legalEntityId || generateId(),
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
@@ -25,23 +25,54 @@ const mapLegalEntityToSession = (
     ro_address_postal_code: formData.principal_address_postcode,
     ro_address_care_of: "",
     ro_address_po_box: "",
-    sa_address_premises: formData.service_address_property_name_number,
-    sa_address_line1: formData.service_address_line_1,
-    sa_address_line2: formData.service_address_line_2,
-    sa_address_locality: formData.service_address_town,
-    sa_address_region: formData.service_address_county,
-    sa_address_country: formData.service_address_country,
-    sa_address_postal_code: formData.service_address_postcode,
     sa_address_care_of: "",
     sa_address_po_box: "",
     identification_legal_authority: formData.governingLaw,
     identification_legal_form: formData.legalForm,
-    identification_place_registered: formData.public_register_name,
-    identification_country_registration: formData.public_register_jurisdiction,
-    identification_registration_number: formData.registration_number,
     is_service_address_same_as_principal_address: formData.is_service_address_same_as_principal_address,
     is_on_register_in_country_formed_in: formData.is_on_register_in_country_formed_in,
   };
+
+  let publicRegisterData = {};
+  if (formData.is_on_register_in_country_formed_in.toString() === "1"){
+    publicRegisterData = {
+      identification_place_registered: formData.public_register_name,
+      identification_country_registration: formData.public_register_jurisdiction,
+      identification_registration_number: formData.registration_number,
+    };
+  } else {
+    publicRegisterData = {
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+    };
+  }
+
+  if (formData.is_service_address_same_as_principal_address.toString() === "0") {
+    return {
+      ...data,
+      ...publicRegisterData,
+      sa_address_premises: formData.service_address_property_name_number,
+      sa_address_line1: formData.service_address_line_1,
+      sa_address_line2: formData.service_address_line_2,
+      sa_address_locality: formData.service_address_town,
+      sa_address_region: formData.service_address_county,
+      sa_address_country: formData.service_address_country,
+      sa_address_postal_code: formData.service_address_postcode,
+    } as Trust.TrustCorporate;
+  } else {
+    return {
+      ...data,
+      ...publicRegisterData,
+      sa_address_premises: "",
+      sa_address_line1: "",
+      sa_address_line2: "",
+      sa_address_locality: "",
+      sa_address_region: "",
+      sa_address_country: "",
+      sa_address_postal_code: "",
+    } as Trust.TrustCorporate;
+  }
 };
 
 const mapLegalEntityTrusteeFromSessionToPage = (

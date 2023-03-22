@@ -29,28 +29,45 @@ export const mapIndividualTrusteeToSession = (
     ura_address_care_of: '',
     ura_address_po_box: '',
     is_service_address_same_as_usual_residential_address: formData.is_service_address_same_as_usual_residential_address,
-    sa_address_premises: formData.service_address_property_name_number,
-    sa_address_line1: formData.service_address_line_1,
-    sa_address_line2: formData.service_address_line_2,
-    sa_address_locality: formData.service_address_town,
-    sa_address_region: formData.service_address_county,
-    sa_address_country: formData.service_address_country,
-    sa_address_postal_code: formData.service_address_postcode,
     sa_address_care_of: '',
     sa_address_po_box: '',
   };
 
+  let interestedPersonData = {};
+
   if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
-    return {
-      ...data,
+    interestedPersonData = {
       date_became_interested_person_day: formData.dateBecameIPDay,
       date_became_interested_person_month: formData.dateBecameIPMonth,
       date_became_interested_person_year: formData.dateBecameIPYear,
+    };
+  }
+
+  if (formData.is_service_address_same_as_usual_residential_address.toString() === "0") {
+    return {
+      ...data,
+      ...interestedPersonData,
+      sa_address_premises: formData.service_address_property_name_number,
+      sa_address_line1: formData.service_address_line_1,
+      sa_address_line2: formData.service_address_line_2,
+      sa_address_locality: formData.service_address_town,
+      sa_address_region: formData.service_address_county,
+      sa_address_country: formData.service_address_country,
+      sa_address_postal_code: formData.service_address_postcode,
+    } as Trust.IndividualTrustee;
+  } else {
+    return {
+      ...data,
+      ...interestedPersonData,
+      sa_address_premises: "",
+      sa_address_line1: "",
+      sa_address_line2: "",
+      sa_address_locality: "",
+      sa_address_region: "",
+      sa_address_country: "",
+      sa_address_postal_code: "",
     } as Trust.IndividualTrustee;
   }
-  return {
-    ...data as Trust.IndividualTrustee
-  };
 };
 
 export const mapIndividualTrusteeFromSessionToPage = (

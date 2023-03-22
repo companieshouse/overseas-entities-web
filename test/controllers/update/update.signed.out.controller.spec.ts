@@ -28,7 +28,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
-describe("SIGNED OUT PAGE controller", () => {
+describe("SIGNED OUT controller", () => {
   describe("GET tests", () => {
     test(`renders the ${UPDATE_SIGNED_OUT_PAGE} page`, async () => {
       const resp = await request(app).get(UPDATE_SIGNED_OUT_URL);

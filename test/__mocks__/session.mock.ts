@@ -1,5 +1,6 @@
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -956,6 +957,46 @@ export const OVER_SEAS_ENTITY_MOCK_DATA: CompanyProfile = {
   registeredOfficeAddress: {} as RegisteredOfficeAddress,
   accounts: {} as Accounts,
   links: {} as Links
+};
+
+export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
+  address: {
+    premises: "1 Acme Road",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
+    locality: "locality",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
+    region: "region",
+    country: "country"
+  },
+  appointedOn: "appointed",
+  countryOfResidence: "country1",
+  dateOfBirth: {
+    day: "1",
+    month: "2",
+    year: "1900"
+  },
+  ...DATE_OF_BIRTH,
+  formerNames: [],
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  },
+  links: {
+    officer: {
+      appointments: ""
+    }
+  },
+  name: "Jimmy Wabb",
+  nationality: "country1",
+  occupation: "occupation",
+  officerRole: "role",
+  resignedOn: "resigned"
 };
 
 export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl = {

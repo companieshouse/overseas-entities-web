@@ -166,7 +166,7 @@ export enum ErrorMessages {
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
   MAX_FORMER_NAME_LENGTH = "Former names must be 260 characters or less",
   MAX_NAME_LENGTH = "Name must be 160 characters or less",
-  MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO = MAX_NAME_LENGTH,
+  MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO = "Last name must be 50 characters or less",
   MAX_NAME_LENGTH_TRUST = "Name of the trust must be 160 characters or less",
   MAX_NAME_LENGTH_DUE_DILIGENCE = "Name must be 256 characters or less",
   MAX_FULL_NAME_LENGTH = "Full name must be 256 characters or less",

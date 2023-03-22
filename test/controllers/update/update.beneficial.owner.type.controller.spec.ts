@@ -43,6 +43,7 @@ import { getCompanyOfficers } from "../../../src/service/company.managing.office
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
+import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -100,6 +101,49 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).toHaveBeenCalled();
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    });
+
+    test(`test that getCompanyOfficers is not called again if it returns undefined`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      mockGetCompanyOfficers.mockReturnValueOnce(undefined);
+
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
+    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is director`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'director');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
+    });
+
+    test(`test that undefined is returned if getCompanyOfficers is called without entity number`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toHaveBeenCalled();
+      expect(mockSetBoMoData).toBeTruthy;
+    });
+
+    test(`test individual managing officer data returned when getCompanyOfficers data officer role is secretary`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'secretary');
+
+      await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockGetCompanyOfficers).toBeCalledTimes(1);
     });
 
     test(`test that undefined is returned if getCompanyPsc owner data is called without entity number`, async () => {

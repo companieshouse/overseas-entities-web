@@ -275,4 +275,9 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
   },
+  [config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL]: {
+    currentPage: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_PAGE,
+    nextPage: [config.YOUR_FILINGS_PATH]
+  },
 };

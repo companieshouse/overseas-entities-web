@@ -174,6 +174,7 @@ export enum ErrorMessages {
   SELECT_IF_CONTINUE_SAVED_APPLICATION = "Select yes if you want to continue with a saved application",
   SELECT_IF_ON_PUBLIC_REGISTER_IN_COUNTRY_FORMED_IN = "Select yes if it is already on a public register in the country it was formed in",
   SELECT_IF_REGISTRABLE_BENEFICIAL_OWNER = "Select if anyone has become or ceased to be a registrable beneficial owner during the update period",
+  UPDATE_SELECT_IF_CONTINUE_SAVED_FILING = "Select yes if you want to continue with a saved filing",
 
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

@@ -23,9 +23,9 @@
 {% set individualTrusteeFormattedServiceAddressHtml %}
   {% if individualTrustee.is_service_address_same_as_usual_residential_address == '1' %}
     The correspondence address is the same as the home address
-    {% set individualTrusteeChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
+    {% set individualTrusteeChangeServiceAddressHtml = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS %}
   {% else %}
-    {% set individualTrusteeChangeServiceAddressHtml = "#service_address_property_name_number" %}
+    {% set individualTrusteeChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
       property_name_number: individualTrustee.sa_address_premises,
       line_1: individualTrustee.sa_address_line1,
@@ -38,6 +38,7 @@
     {% include "includes/display_address.html" %}
   {% endif %}
 {% endset %}
+
 
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
@@ -185,7 +186,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
+        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + individualTrusteeChangeServiceAddressHtml,
         "Individual beneficial owner " + individualTrusteeFullName + " - correspondence address",
         "change-individual-beneficial-owner-correspondence-address-button"
       ) ]

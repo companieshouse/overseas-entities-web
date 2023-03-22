@@ -1,12 +1,12 @@
-import { OfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
-import { Address, InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
+import { InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
+import { mapBOMOAddress, isSameAddress } from "./mapper.utils";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
-  const service_address = mapAddress(psc.address);
+  const service_address = mapBOMOAddress(psc.address);
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
     first_name: psc.nameElements?.forename,
@@ -25,8 +25,8 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
 };
 
 export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerOther => {
-  const service_address = mapAddress(psc.address);
-  const principal_address = mapAddress(psc.address);
+  const service_address = mapBOMOAddress(psc.address);
+  const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerOther = {
     id: psc.links?.self,
@@ -47,8 +47,8 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
 };
 
 export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerGov => {
-  const service_address = mapAddress(psc.address);
-  const principal_address = mapAddress(undefined);
+  const service_address = mapBOMOAddress(psc.address);
+  const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerGov = {
     id: psc.links?.self,
@@ -68,6 +68,9 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.naturesOfControl?.forEach(natureType => {
     const controlKind = natureTypeMap.get(natureType);
+    if (!controlKind) {
+      return;
+    }
     const natureOfControlType = natureOfControlTypeMap.get(natureType);
     switch (controlKind) {
         case 'BoNatureOfControl':
@@ -82,7 +85,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
           }
           break;
         default:
-          throw new Error('Invalid nature of control type');
+          break;
     }
   });
 };
@@ -146,26 +149,3 @@ const mapDateOfBirth = (psc: CompanyPersonWithSignificantControl) => {
   } as InputDate;
 };
 
-const mapAddress = (address: any): Address => {
-  if (!address) {
-    return {};
-  }
-  return {
-    property_name_number: address?.premises,
-    line_1: address?.address_line_1,
-    line_2: address?.address_line_2,
-    country: address?.region,
-    town: address?.locality,
-    county: undefined, // psc.address?.county,
-    postcode: address?.postal_code
-  };
-};
-
-type AddressMatches = {
-  (address1: Address, address2?: Address): boolean;
-  (address1: OfficeAddress, address2?: OfficeAddress): boolean;
-};
-
-export const isSameAddress: AddressMatches = (address1: any, address2?: any) => {
-  return !address2 || Object.keys(address1).every(key => address1[key] === address2[key]);
-};

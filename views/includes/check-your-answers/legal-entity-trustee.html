@@ -21,7 +21,7 @@
 {% set legalEntityFormattedServiceAddressHtml %}
   {% if legalEntity.is_service_address_same_as_principal_address == '1' %}
     The correspondence address is the same as the entity’s principal or registered office address
-    {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS %}
+    {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS %}
   {% else %}
     {% set legalEntityChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
@@ -39,8 +39,12 @@
 
 {% set formattedPublicRegister %}
   {% if legalEntity.is_on_register_in_country_formed_in == '1' %}
+     {% set legalEntityChangePublicRegisterName = OE_CONFIGS.PUBLIC_REGISTER_NAME %}
+     {% set legalEntityChangePublicRegisterJurisdiction = OE_CONFIGS.PUBLIC_REGISTER_JURISDICTION %}
      {{ legalEntity.identification_place_registered | safe}} / {{ legalEntity.identification_registration_number | safe }}
   {% else %}
+     {% set legalEntityChangePublicRegisterName = OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN %}
+     {% set legalEntityChangePublicRegisterJurisdiction = OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN %}
     No
   {% endif %}
 {% endset %}
@@ -191,7 +195,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.PUBLIC_REGISTER_NAME,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangePublicRegisterName,
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-identification-registration-number-button"
     ) ]

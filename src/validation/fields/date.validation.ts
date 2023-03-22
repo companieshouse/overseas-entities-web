@@ -113,7 +113,7 @@ const dateBecameIPContext: dateContextWithCondition = {
     name: "dateBecameIP",
     callBack: checkDateIP,
   },
-  condition: { elementName: "type", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
+  condition: { elementName: "roleWithinTrust", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
 };
 
 const trustCreatedDateValidationsContext: dateContext = {

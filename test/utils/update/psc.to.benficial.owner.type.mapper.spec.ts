@@ -48,12 +48,12 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
       service_address: {
-        line_1: pscMock.address.address_line_1,
-        line_2: pscMock.address.address_line_2,
-        postcode: pscMock.address.postal_code,
+        line_1: pscMock.address.addressLine1,
+        line_2: pscMock.address.addressLine2,
+        postcode: pscMock.address.postalCode,
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
-        country: pscMock.address.region,
+        country: pscMock.address.country,
       },
       usual_residential_address: undefined,
       is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0
@@ -68,22 +68,17 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      is_service_address_same_as_principal_address: yesNoResponse.Yes,
+      is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
-        line_1: pscMock.address.address_line_1,
-        line_2: pscMock.address.address_line_2,
-        postcode: pscMock.address.postal_code,
+        line_1: pscMock.address.addressLine1,
+        line_2: pscMock.address.addressLine2,
+        postcode: pscMock.address.postalCode,
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
-        country: pscMock.address.region,
+        country: pscMock.address.country,
+        county: undefined
       },
       principal_address: {
-        line_1: pscMock.address.address_line_1,
-        line_2: pscMock.address.address_line_2,
-        postcode: pscMock.address.postal_code,
-        property_name_number: pscMock.address.premises,
-        town: pscMock.address.locality,
-        country: pscMock.address.region,
       },
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
@@ -103,12 +98,12 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
-        line_1: pscMock.address.address_line_1,
-        line_2: pscMock.address.address_line_2,
-        postcode: pscMock.address.postal_code,
+        line_1: pscMock.address.addressLine1,
+        line_2: pscMock.address.addressLine2,
+        postcode: pscMock.address.postalCode,
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
-        country: pscMock.address.region,
+        country: pscMock.address.country,
       },
       principal_address: {},
       law_governed: pscMock.identification?.legalAuthority,
@@ -117,9 +112,12 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     });
   });
 
-  test('that error is thrown if nature of control type does not match', () => {
+  test('that no error is thrown if nature of control type does not match', () => {
     pscMock.naturesOfControl = ['Some unknown 25% share'];
-    expect(() => mapPscToBeneficialOwnerOther(pscMock)).toThrowError('Invalid nature of control type');
+    const bo = mapPscToBeneficialOwnerOther(pscMock);
+    expect(bo.trustees_nature_of_control_types).toEqual(undefined);
+    expect(bo.beneficial_owner_nature_of_control_types).toEqual(undefined);
+    expect(bo.non_legal_firm_members_nature_of_control_types).toEqual(undefined);
   });
 
   test('that error is empty pcsc nature of control', () => {

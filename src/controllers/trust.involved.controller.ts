@@ -44,6 +44,7 @@ type TrustInvolvedPageProperties = {
   } & TrustWhoIsInvolved,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
+  url: string,
 };
 
 const getPageProperties = (
@@ -74,6 +75,7 @@ const getPageProperties = (
     },
     formData,
     errors,
+    url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
   };
 };
 

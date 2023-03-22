@@ -21,6 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: config.TRUST_INFO_PAGE,
       beneficialOwners: getBeneficialOwnerList(appData),
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       ...appData
     });
   } catch (error) {

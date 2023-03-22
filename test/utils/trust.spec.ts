@@ -20,6 +20,7 @@ import {
   generateTrusteeIds,
   getLegalEntityBosInTrust,
   getLegalEntityTrustee,
+  getFormerTrustee,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -391,6 +392,7 @@ describe('Trust Utils method tests', () => {
     });
 
     test("test getFormerTrusteesFromTrust with application data and no trust id", () => {
+      const empty_test_trust_id = '';
       const appData = {
         [TrustKey]: [{
           'HISTORICAL_BO': [{}, {}, {}] as TrustHistoricalBeneficialOwner[],
@@ -399,9 +401,52 @@ describe('Trust Utils method tests', () => {
         }]
       } as ApplicationData;
 
-      const result = getFormerTrusteesFromTrust(appData);
-      expect(result.length).toEqual(6);
-      expect(result).toEqual([{}, {}, {}, {}, {}, {}]);
+      const result = getFormerTrusteesFromTrust(appData, empty_test_trust_id );
+      expect(result).toEqual([]);
+    });
+
+    test("test getFormerTrustee from trust successfully", () => {
+      const test_trust_id = '342';
+      const formerEntityTrustee1 = { id: "999" } as TrustHistoricalBeneficialOwner;
+      const formerEntityTrustee2 = { id: "901" } as TrustHistoricalBeneficialOwner;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'HISTORICAL_BO': [ formerEntityTrustee1, formerEntityTrustee2 ] as TrustHistoricalBeneficialOwner[],
+        }]
+      } as ApplicationData;
+
+      const result = getFormerTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual(formerEntityTrustee1);
+    });
+
+    test("test getFormerTrustee from trust with application data with no trusteeId", () => {
+      const test_trust_id = '342';
+      const empty_trustee_id = '';
+      const formerEntityTrustee1 = { id: "999" } as TrustHistoricalBeneficialOwner;
+      const formerEntityTrustee2 = { id: "901" } as TrustHistoricalBeneficialOwner;
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'HISTORICAL_BO': [ formerEntityTrustee1, formerEntityTrustee2 ] as TrustHistoricalBeneficialOwner[],
+        }]
+      } as ApplicationData;
+
+      const result = getFormerTrustee(appData, test_trust_id, empty_trustee_id);
+      expect(result).toEqual({});
+    });
+
+    test("test getFormerTrustee from trust with application data and HISTORICAL_BO array is empty", () => {
+      const test_trust_id = '342';
+      const appData = {
+        [TrustKey]: [{
+          'trust_id': test_trust_id,
+          'HISTORICAL_BO': [] as TrustHistoricalBeneficialOwner[],
+        }]
+      } as ApplicationData;
+
+      const result = getFormerTrustee(appData, test_trust_id, "999");
+      expect(result).toEqual({});
     });
 
     test("test getLegalEntityBosInTrust with application data and trust id", () => {
@@ -463,7 +508,7 @@ describe('Trust Utils method tests', () => {
       expect(result).toEqual({});
     });
 
-    test("test getLegalEntityTrustee from trust with application data and INDIVIDUALS array is empty", () => {
+    test("test getLegalEntityTrustee from trust with application data and CORPORATES array is empty", () => {
       const test_trust_id = '342';
       const appData = {
         [TrustKey]: [{

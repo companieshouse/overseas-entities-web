@@ -26,6 +26,7 @@ type TrustInvolvedPageProperties = {
   },
   formData?: PageModel.AddTrust,
   errors?: FormattedValidationErrors,
+  url: string,
 };
 
 const getPageProperties = (
@@ -48,6 +49,7 @@ const getPageProperties = (
     },
     formData,
     errors,
+    url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
   };
 };
 

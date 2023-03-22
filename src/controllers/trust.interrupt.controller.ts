@@ -21,6 +21,7 @@ const get = (
       pageParams: {
         title: TRUST_INTERRUPT_TEXTS.title,
       },
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
     };
 
     return res.render(pageProps.templateName, pageProps);

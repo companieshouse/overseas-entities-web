@@ -64,8 +64,6 @@ const get = (
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
-    console.log(`ID FROM THE CONTROLLER ${trusteeId}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
 
     const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeFromSessionToPage(

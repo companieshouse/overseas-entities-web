@@ -51,7 +51,6 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateMonth: trustee.ceased_date_month,
     endDateYear: trustee.ceased_date_year,
   };
-  console.log(trustee.corporate_indicator);
   if (trustee.corporate_indicator === yesNoResponse.Yes && 'corporate_name' in trustee) {
     return {
       ...data,

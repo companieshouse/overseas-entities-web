@@ -2,8 +2,10 @@
 
 {% if formerTrustee.corporate_name %}
   {% set formerTrusteeName = formerTrustee.corporate_name %}
+  {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
 {% else %}
   {% set formerTrusteeName = formerTrustee.forename + " " + formerTrustee.surname %}
+  {% set formerTrusteeChangeName = OE_CONFIGS.INDIVIDUAL_NAME %}
 {% endif %}
 
 {% set formerTrusteeStartDate = dateMacros.formatDate(formerTrustee.notified_date_day, formerTrustee.notified_date_month, formerTrustee.notified_date_year) %}
@@ -22,7 +24,7 @@
   },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + '#corporate_name',
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + formerTrusteeChangeName,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
@@ -35,6 +37,13 @@
   },
   value: {
     text: formerTrusteeStartDate
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_START_DATE,
+      "Former Trustee" + formerTrustee.name + " - name",
+      "change-former-trustee-name-button"
+   ) ]
   }
 }), rows) %}
 
@@ -44,6 +53,13 @@
   },
   value: {
     text: formerTrusteeEndDate
+  },
+  actions: {
+    items: [ CREATE_CHANGE_LINK(
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_END_DATE,
+      "Former Trustee" + formerTrustee.name + " - name",
+      "change-former-trustee-name-button"
+   ) ]
   }
 }), rows) %}
 

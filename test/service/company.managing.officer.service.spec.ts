@@ -16,7 +16,7 @@ import {
 } from "../__mocks__/session.mock";
 import {
   MOCK_GET_COMPANY_OFFICERS_NOT_FOUND_RESPONSE,
-  MOCK_GET_COMPANY_OFFICERS_RESOURCE,
+  MOCK_GET_COMPANY_OFFICERS,
   MOCK_GET_COMPANY_OFFICERS_RESPONSE,
   MOCK_GET_COMPANY_OFFICERS_UNAUTHORISED_RESPONSE
 } from "../__mocks__/get.company.officers.mock";
@@ -46,7 +46,7 @@ describe('Get company officers for given company number', () => {
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameCompanyOfficers, fnNameGetCompanyOfficers, req, session, COMPANY_NUMBER, GET_COMPANY_OFFICERS_PAGE_SIZE);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockDebugRequestLog).toHaveBeenCalled();
-    expect(resource).toEqual(MOCK_GET_COMPANY_OFFICERS_RESOURCE);
+    expect(resource).toEqual(MOCK_GET_COMPANY_OFFICERS);
   });
 
   test('undefined returned on 404 response from API', async () => {

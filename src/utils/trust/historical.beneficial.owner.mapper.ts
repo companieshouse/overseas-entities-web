@@ -41,9 +41,6 @@ const mapFormerTrusteeFromSessionToPage = (
   trusteeId: string,
 ): Page.TrustHistoricalBeneficialOwnerForm => {
   const trustee = getFormerTrustee(appData, trustId, trusteeId);
-  // const ff = trustee as Trust.TrustHistoricalBeneficialOwnerLegal;
-  // console.log(trustee.surname);
-  // if(trustee instanceof Trust.TrustHistoricalBeneficialOwner)
 
   const data = {
     boId: trustee.id,
@@ -56,9 +53,6 @@ const mapFormerTrusteeFromSessionToPage = (
   };
   console.log(trustee.corporate_indicator);
   if (trustee.corporate_indicator === yesNoResponse.Yes && 'corporate_name' in trustee) {
-    console.log("here");
-    console.log(trustee.corporate_name);
-
     return {
       ...data,
       type: TrusteeType.LEGAL_ENTITY,
@@ -78,17 +72,10 @@ const mapFormerTrusteeFromSessionToPage = (
   return data as Page.TrustHistoricalBeneficialOwnerForm;
 };
 
-// function isFish(TrustHistoricalBeneficialOwner: Trust.TrustHistoricalBeneficialOwnerLegal | Bird): pet is Fish {
-//   return (pet as Fish).swim !== undefined;
-
 //  other
 const generateBoId = (): string => {
   return uuidv4();
 };
-
-// const isNecklace = (b: Trust.TrustHistoricalBeneficialOwner): b is Trust.TrustHistoricalBeneficialOwnerIndividual => {
-//   return (b as Trust.TrustHistoricalBeneficialOwnerIndividual).forename !== undefined;
-// }
 
 export {
   mapBeneficialOwnerToSession,

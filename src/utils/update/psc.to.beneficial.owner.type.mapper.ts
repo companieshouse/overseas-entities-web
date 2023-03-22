@@ -2,8 +2,9 @@ import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-nod
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
-import { InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress } from "./mapper.utils";
+import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
+import { mapBOMOAddress, isSameAddress, mapDateOfBirth } from "./mapper.utils";
+import { logger } from "../../utils/logger";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
@@ -12,8 +13,7 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     first_name: psc.nameElements?.forename,
     last_name: psc.nameElements?.surname,
     nationality: psc.nationality,
-    // second_nationality: undefined,
-    date_of_birth: mapDateOfBirth(psc),
+    date_of_birth: mapDateOfBirth(psc.dateOfBirth),
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, undefined) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,
     service_address: service_address,
@@ -85,6 +85,7 @@ const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficial
           }
           break;
         default:
+          logger.error("Unexpected nature of control for BO: " + controlKind);
           break;
     }
   });
@@ -140,12 +141,4 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM, NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
-
-const mapDateOfBirth = (psc: CompanyPersonWithSignificantControl) => {
-  return {
-    day: psc.dateOfBirth?.day,
-    month: psc.dateOfBirth?.month,
-    year: psc.dateOfBirth?.year
-  } as InputDate;
-};
 

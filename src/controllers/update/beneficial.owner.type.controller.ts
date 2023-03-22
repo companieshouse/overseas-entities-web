@@ -68,7 +68,7 @@ const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | Man
   }
 };
 
-export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {

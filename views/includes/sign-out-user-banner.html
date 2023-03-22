@@ -2,8 +2,12 @@
   <ul id="navigation">
     <li class="content-email">{{ userEmail }}</li>
     <li>
-      <a href="{{ OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL }}sign-out?page={{ templateName }}" data-event-id="signout">Sign out</a>
+      <a href="{{ url }}sign-out?page={{ templateName }}" data-event-id="signout">Sign out</a>
     </li>
   </ul>
   <hr class="govuk-section-break govuk-section-break--visible">
 {% endif %}
+<h1>Where are we?</h1> 
+<p>{{ backLinkUrl }} for {{ templateName }}</p>
+<p>{{ "Update?" if '/update-an-overseas-entity' in backLinkUrl else "Registration?"}}</p>
+<h2>All Happy?</h2>

@@ -9,8 +9,8 @@
 {% set individualTrusteeFormattedResidentialAddressHtml %}
    {% set address = {
       property_name_number: individualTrustee.ura_address_premises,
-      line_1: individualTrustee.ura_address_line1,
-      line_2: individualTrustee.ura_address_line2,
+      line_1: individualTrustee.ura_address_line_1,
+      line_2: individualTrustee.ura_address_line_2,
       town: individualTrustee.ura_address_locality,
       county: individualTrustee.ura_address_region,
       country: individualTrustee.ura_address_country,
@@ -28,8 +28,8 @@
     {% set individualTrusteeChangeServiceAddressHtml = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
     {% set address = {
       property_name_number: individualTrustee.sa_address_premises,
-      line_1: individualTrustee.sa_address_line1,
-      line_2: individualTrustee.sa_address_line2,
+      line_1: individualTrustee.sa_address_line_1,
+      line_2: individualTrustee.sa_address_line_2,
       town: individualTrustee.sa_address_locality,
       county: individualTrustee.sa_address_region,
       country: individualTrustee.sa_address_country,

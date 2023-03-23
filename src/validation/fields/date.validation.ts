@@ -90,9 +90,9 @@ const dateOfBirthValidationsContext: dateContext = {
   },
 };
 
-const dateBecameIPIndividualBeneficialOwnerContext: dateContextWithCondition = {
+const defaultIPBOContext = (dayField, monthField, yearField, dateField, callBack) => ({
   dayInput: {
-    name: "dateBecameIPDay",
+    name: dayField,
     errors: {
       noDayError: ErrorMessages.DAY,
       wrongDayLength: ErrorMessages.DAY_LENGTH,
@@ -100,7 +100,7 @@ const dateBecameIPIndividualBeneficialOwnerContext: dateContextWithCondition = {
     } as DayFieldErrors,
   },
   monthInput: {
-    name: "dateBecameIPMonth",
+    name: monthField,
     errors: {
       noMonthError: ErrorMessages.MONTH,
       wrongMonthLength: ErrorMessages.MONTH_LENGTH,
@@ -108,49 +108,22 @@ const dateBecameIPIndividualBeneficialOwnerContext: dateContextWithCondition = {
     } as MonthFieldErrors,
   },
   yearInput: {
-    name: "dateBecameIPYear",
+    name: yearField,
     errors: {
       noYearError: ErrorMessages.YEAR,
       wrongYearLength: ErrorMessages.YEAR_LENGTH
     } as YearFieldErrors,
   },
   dateInput: {
-    name: "dateBecameIP",
-    callBack: checkDateIPIndividualBO,
+    name: dateField,
+    callBack,
   },
   condition: { elementName: "roleWithinTrust", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
-};
+}) as dateContextWithCondition;
 
-const dateBecameIPLegalEntityBeneficialOwnerContext: dateContextWithCondition = {
-  dayInput: {
-    name: "interestedPersonStartDateDay",
-    errors: {
-      noDayError: ErrorMessages.DAY,
-      wrongDayLength: ErrorMessages.DAY_LENGTH,
-      noRealDay: ErrorMessages.INVALID_DAY,
-    } as DayFieldErrors,
-  },
-  monthInput: {
-    name: "interestedPersonStartDateMonth",
-    errors: {
-      noMonthError: ErrorMessages.MONTH,
-      wrongMonthLength: ErrorMessages.MONTH_LENGTH,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
-    } as MonthFieldErrors,
-  },
-  yearInput: {
-    name: "interestedPersonStartDateYear",
-    errors: {
-      noYearError: ErrorMessages.YEAR,
-      wrongYearLength: ErrorMessages.YEAR_LENGTH
-    } as YearFieldErrors,
-  },
-  dateInput: {
-    name: "interestedPersonStartDate",
-    callBack: checkDateIPLegalEntityBO,
-  },
-  condition: { elementName: "roleWithinTrust", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
-};
+const dateBecameIPIndividualBeneficialOwnerContext: dateContextWithCondition = defaultIPBOContext("dateBecameIPDay", "dateBecameIPMonth", "dateBecameIPYear", "dateBecameIP", checkDateIPIndividualBO);
+
+const dateBecameIPLegalEntityBeneficialOwnerContext: dateContextWithCondition = defaultIPBOContext("interestedPersonStartDateDay", "interestedPersonStartDateMonth", "interestedPersonStartDateYear", "interestedPersonStartDate", checkDateIPLegalEntityBO);
 
 const trustCreatedDateValidationsContext: dateContext = {
   dayInput: {

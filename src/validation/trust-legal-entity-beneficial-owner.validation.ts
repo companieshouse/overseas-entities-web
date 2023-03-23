@@ -59,16 +59,18 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     .if(body("public_register_jurisdiction").notEmpty())
     .if(body("registration_number").notEmpty())
     .custom( (value, { req }) => {
-      if ((parseInt(req.body.registration_number.length) + parseInt(req.body.public_register_jurisdiction.length)) > 160){
-        throw RangeError(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
-      }
+      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
   check("registration_number")
     .if(body("registration_number").notEmpty())
     .if(body("public_register_jurisdiction").notEmpty())
     .custom( (value, { req }) => {
-      if ((parseInt(req.body.registration_number.length) + parseInt(req.body.public_register_jurisdiction.length)) > 160){
-        throw RangeError(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
-      }
+      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
 ];
+
+const checkIfLessThanTargetValue = (value1: number, value2: number, target: number) => {
+  if ((value1 + value2) > target){
+    throw RangeError(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
+  }
+};

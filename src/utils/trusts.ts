@@ -337,6 +337,74 @@ const generateTrusteeIds = (appData: ApplicationData) => {
   }
 };
 
+/*
+"usual_residential_address\":{\"property_name_number\":\"3\",\"line_1\":\"Haupt Strasse\",\"line_2\":\"Zeite Linie\",\"county\":\"\",\"locality\":\"Neustadt\",\"country\":\"Afghanistan\",\"po_box\":\"\",\"care_of\":\"\",\"postcode\":\"12345\"
+
+"service_address\":{\"property_name_number\":\"1\",\"line_1\":\"Correspondence Road\",\"line_2\":\"line 2\",\"county\":\"county \",\"locality\":\"Testville\",\"country\":\"Afghanistan\",\"po_box\":\"\",\"care_of\":\"\",\"postcode\":\"CpX3wyAyWr\"}
+
+        if (apiData.hasOwnProperty("usual_residential_address"))
+
+        )
+
+*/
+
+/**
+ * The API sends trustee address data in address objects but the web needs it in flat fields. This needs to be called
+ * when the Trust Data is got from the API (e.g. for a "Save and Resume" journey)
+ *
+ * @param appData  - application data
+ * @returns void
+ */
+const mapTrusteeAddressesFromApiToWebModel = (appData: ApplicationData) => {
+
+  if (containsTrustData(getTrustArray(appData))) {
+
+    for (const trust of appData.trusts ?? []) {
+
+      trust.INDIVIDUALS = (trust.INDIVIDUALS || []).map(trustIndividual => {
+
+        const apiData: any = trustIndividual;
+
+        return {
+          id: apiData.id,
+          type: apiData.RoleWithinTrustType,
+          forename: apiData.forename,
+          other_forenames: apiData.other_forenames,
+          surname: apiData.surname,
+          date_of_birth_day: apiData.date_of_birth_day,
+          date_of_birth_month: apiData.date_of_birth_month,
+          date_of_birth_year: apiData.date_of_birth_year,
+          nationality: apiData.nationality,
+          ura_address_premises: apiData.usual_residential_address?.property_name_number,
+          ura_address_line_1: apiData.usual_residential_address?.line_1,
+          ura_address_line_2: apiData.usual_residential_address?.line_2,
+          ura_address_locality: apiData.usual_residential_address?.locality,
+          ura_address_region: apiData.usual_residential_address?.county,
+          ura_address_country: apiData.usual_residential_address?.country,
+          ura_address_postal_code: apiData.usual_residential_address?.postcode,
+          is_service_address_same_as_usual_residential_address: apiData.is_service_address_same_as_usual_residential_address,
+          sa_address_premises: apiData.service_address?.property_name_number,
+          sa_address_line_1: apiData.service_address?.line_1,
+          sa_address_line_2: apiData.service_address?.line_2,
+          sa_address_locality: apiData.service_address?.locality,
+          sa_address_region: apiData.service_address?.county,
+          sa_address_country: apiData.service_address?.country,
+          sa_address_postal_code: apiData.service_address?.postcode,
+          date_became_interested_person_day: apiData?.date_became_interested_person_day,
+          date_became_interested_person_month: apiData?.date_became_interested_person_month,
+          date_became_interested_person_year: apiData?.date_became_interested_person_year,
+        };
+      });
+
+      trust.CORPORATES = (trust.CORPORATES as TrustCorporate[]).map( te => {return { ...te, id: uuidv4() }; } );
+
+      // trust.INDIVIDUALS = (trust.INDIVIDUALS as TrustIndividual[]).map( te => {return { ...te, id: uuidv4() }; } );
+
+    }
+
+  }
+};
+
 export {
   checkEntityRequiresTrusts,
   getBeneficialOwnerList,
@@ -361,4 +429,5 @@ export {
   getIndividualTrustee,
   generateTrusteeIds,
   getLegalEntityTrustee,
+  mapTrusteeAddressesFromApiToWebModel,
 };

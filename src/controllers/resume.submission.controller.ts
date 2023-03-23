@@ -20,7 +20,7 @@ import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from "../model/
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../model/managing.officer.model";
 import { startPaymentsSession } from "../service/payment.service";
 import { getTransaction } from "../service/transaction.service";
-import { generateTrusteeIds } from "../utils/trusts";
+import { generateTrusteeIds, mapTrusteeAddressesFromApiToWebModel } from "../utils/trusts";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -98,7 +98,13 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.AGENT;
   }
 
-  generateTrusteeIds(appData);
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)) {
+
+    generateTrusteeIds(appData);
+    mapTrusteeAddressesFromApiToWebModel(appData);
+  }
 
   setExtraData(session, appData);
+
+  logger.debug(`resume app data ${JSON.stringify(appData)}`);
 };

@@ -766,7 +766,8 @@ export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SP
 };
 
 export const UPDATE_OBJECT_MOCK: updateType.Update = {
-  date_of_creation: "27/10/2022"
+  date_of_creation: "27/10/2022",
+  registrable_beneficial_owner: undefined
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {

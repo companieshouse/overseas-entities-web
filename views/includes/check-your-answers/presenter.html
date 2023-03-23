@@ -1,8 +1,6 @@
 <h2 class="govuk-heading-l">Contact details</h2>
 <h3 class="govuk-heading-m">Who can we contact about this application?</h3>
 
-{% set presenterNameLink = "" %}
-{% set presenterEmailLink = "" %}
 {% if pageParams.isRegistration %}
   {% set presenterNameLink = OE_CONFIGS.PRESENTER_CHANGE_FULL_NAME %} 
   {% set presenterEmailLink = OE_CONFIGS.PRESENTER_CHANGE_EMAIL %}

@@ -88,7 +88,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
   describe("GET tests", () => {
 
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 

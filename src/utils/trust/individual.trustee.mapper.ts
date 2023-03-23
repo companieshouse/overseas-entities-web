@@ -43,7 +43,7 @@ export const mapIndividualTrusteeToSession = (
     };
   }
 
-  if (formData.is_service_address_same_as_usual_residential_address.toString() === "0") {
+  if (formData.is_service_address_same_as_usual_residential_address?.toString() === "0") {
     return {
       ...data,
       ...interestedPersonData,

@@ -269,7 +269,7 @@ router
     navigation.hasTrustWithId,
   )
   .get(trustLegalEntitybeneficialOwner.get)
-  .post(trustLegalEntitybeneficialOwner.post);
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, trustLegalEntitybeneficialOwner.post);
 
 router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)

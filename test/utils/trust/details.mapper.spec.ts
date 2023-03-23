@@ -15,7 +15,7 @@ import {
   BeneficialOwnerOther,
   BeneficialOwnerOtherKey,
 } from '../../../src/model/beneficial.owner.other.model';
--
+
 describe('Trust Details page Mapper Service', () => {
   const mockTrust1 = {
     trust_id: '999',
@@ -65,7 +65,7 @@ describe('Trust Details page Mapper Service', () => {
   });
 
   describe('To Page mapper methods tests', () => {
-    test('mapDetailToPage should return object (verify napping of hasAllInfo when true)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo when false)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust1.trust_id)).toEqual({
         trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
@@ -76,10 +76,10 @@ describe('Trust Details page Mapper Service', () => {
           mockBoIndividual1.id,
           mockBoOle1.id,
         ],
-        hasAllInfo: '1',
+        hasAllInfo: '0',
       });
     });
-    test('mapDetailToPage should return object (verify napping of hasAllInfo when false)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo when true)', () => {
       expect(mapDetailToPage(mockAppData, mockTrust2.trust_id)).toEqual({
         trustId: mockTrust2.trust_id,
         name: mockTrust2.trust_name,
@@ -89,10 +89,10 @@ describe('Trust Details page Mapper Service', () => {
         beneficialOwnersIds: [
           mockBoIndividual1.id,
         ],
-        hasAllInfo: '0',
+        hasAllInfo: '1',
       });
     });
-    test('mapDetailToPage should return object (verify napping of hasAllInfo for new trust)', () => {
+    test('mapDetailToPage should return object (verify mapping of hasAllInfo for new trust)', () => {
       const initialFormDetails = mapDetailToPage(mockAppData, unknownTrustId);
       expect(initialFormDetails.hasAllInfo).toBe("");
     });
@@ -117,25 +117,25 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
-    test('mapDetailToSession should return object (verify napping of unable_to_obtain_all_trust_info when true)', () => {
+    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when false)', () => {
       expect(mapDetailToSession(mockFormData)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,
         creation_date_year: mockFormData.createdDateYear,
-        unable_to_obtain_all_trust_info: "Yes",
+        unable_to_obtain_all_trust_info: "No",
       });
     });
 
-    test('mapDetailToSession should return object (verify napping of unable_to_obtain_all_trust_info when false)', () => {
+    test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when true)', () => {
       expect(mapDetailToSession(mockFormData2)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,
         creation_date_year: mockFormData.createdDateYear,
-        unable_to_obtain_all_trust_info: "No",
+        unable_to_obtain_all_trust_info: "Yes",
       });
     });
 

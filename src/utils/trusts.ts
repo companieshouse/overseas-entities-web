@@ -210,12 +210,25 @@ const getFormerTrusteesFromTrust = (
   if (trustId) {
     formerTrustees = appData[TrustKey]?.find(trust =>
       trust?.trust_id === trustId)?.HISTORICAL_BO as TrustHistoricalBeneficialOwner[];
-  } else {
-    appData[TrustKey]?.map(trust => trust.HISTORICAL_BO?.map(formerTrustee => {
-      formerTrustees.push(formerTrustee as TrustHistoricalBeneficialOwner);
-    }));
+    if (formerTrustees === undefined) {
+      formerTrustees = [] as TrustHistoricalBeneficialOwner[];
+    }
   }
   return formerTrustees;
+};
+
+const getFormerTrustee = (
+  appData: ApplicationData,
+  trustId: string,
+  trusteeId?: string,
+): TrustHistoricalBeneficialOwner => {
+  const formerTrustees = getFormerTrusteesFromTrust(appData, trustId);
+
+  if (formerTrustees.length === 0 || trusteeId === undefined) {
+    return {} as TrustHistoricalBeneficialOwner;
+  }
+
+  return formerTrustees.find(trustee => trustee.id === trusteeId) ?? {} as TrustHistoricalBeneficialOwner;
 };
 
 const addTrustToBeneficialOwner = (
@@ -336,6 +349,7 @@ export {
   getTrustBoOthers,
   getIndividualTrusteesFromTrust,
   getFormerTrusteesFromTrust,
+  getFormerTrustee,
   addTrustToBeneficialOwner,
   removeTrustFromBeneficialOwner,
   saveHistoricalBoInTrust,

@@ -63,7 +63,8 @@ import {
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate,
-  updateFilingDate
+  updateFilingDate,
+  updateRegistrableBeneficialOwner
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -506,5 +507,14 @@ router.route(config.UPDATE_FILING_DATE_URL)
   )
   .get(updateFilingDate.get)
   .post(updateFilingDate.post);
+
+router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateRegistrableBeneficialOwner.get)
+  .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
 
 export default router;

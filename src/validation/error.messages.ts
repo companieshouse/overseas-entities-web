@@ -172,6 +172,8 @@ export enum ErrorMessages {
   SELECT_IF_SIGN_OUT = "Select yes if you are sure you want to sign out",
   SELECT_IF_CONTINUE_SAVED_APPLICATION = "Select yes if you want to continue with a saved application",
   SELECT_IF_ON_PUBLIC_REGISTER_IN_COUNTRY_FORMED_IN = "Select yes if it is already on a public register in the country it was formed in",
+  SELECT_IF_REGISTRABLE_BENEFICIAL_OWNER = "Select if anyone has become or ceased to be a registrable beneficial owner during the update period",
+
 // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO = MAX_FIRST_NAME_LENGTH,

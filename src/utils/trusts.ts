@@ -367,7 +367,7 @@ const mapTrusteeAddressesFromApiToWebModel = (appData: ApplicationData) => {
 
         return {
           id: apiData.id,
-          type: apiData.RoleWithinTrustType,
+          type: apiData.type,
           forename: apiData.forename,
           other_forenames: apiData.other_forenames,
           surname: apiData.surname,

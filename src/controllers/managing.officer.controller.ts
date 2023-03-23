@@ -10,11 +10,11 @@ import {
 import { BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE } from "../config";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficer(req, res, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE);
+  getManagingOfficer(req, res, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE, true);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getManagingOfficerById(req, res, next, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE);
+  getManagingOfficerById(req, res, next, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_PAGE, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

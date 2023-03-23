@@ -5,7 +5,7 @@ import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE } from "
 import { getManagingOfficer, postManagingOfficer } from "../../utils/managing.officer.individual";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficer(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE);
+  getManagingOfficer(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_PAGE, false);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

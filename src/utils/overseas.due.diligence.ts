@@ -16,7 +16,7 @@ import { IdentityDateKey, IdentityDateKeys } from "../model/date.model";
 import { OverseasEntityDueDiligenceKey, OverseasEntityDueDiligenceKeys } from "../model/overseas.entity.due.diligence.model";
 import { saveAndContinue } from "./save.and.continue";
 
-export const getDueDiligence = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getDueDiligence = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -31,7 +31,8 @@ export const getDueDiligence = (req: Request, res: Response, next: NextFunction,
       templateName: templateName,
       ...data,
       ...identityAddress,
-      [IdentityDateKey]: identityDate
+      [IdentityDateKey]: identityDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     next(error);

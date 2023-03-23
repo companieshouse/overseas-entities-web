@@ -18,16 +18,17 @@ import { StartDateKey, StartDateKeys } from "../model/date.model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 import { v4 as uuidv4 } from "uuid";
 
-export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    isSaveAndContinue: registrationFlag === false ? true : undefined
   });
 };
 
-export const getBeneficialOwnerGovById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerGovById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
@@ -45,7 +46,8 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -10,7 +10,7 @@ import {
 import { getDueDiligencePage, postDueDiligencePage } from "../utils/due.diligence";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getDueDiligencePage(req, res, next, DUE_DILIGENCE_PAGE, WHO_IS_MAKING_FILING_URL);
+  getDueDiligencePage(req, res, next, DUE_DILIGENCE_PAGE, WHO_IS_MAKING_FILING_URL, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

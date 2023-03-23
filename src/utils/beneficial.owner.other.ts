@@ -20,16 +20,17 @@ import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAd
 import { StartDateKey, StartDateKeys } from "../model/date.model";
 import { v4 as uuidv4 } from 'uuid';
 
-export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    isSaveAndContinue: registrationFlag === false ? true : undefined
   });
 };
 
-export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
@@ -47,7 +48,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...data,
       ...principalAddress,
       ...serviceAddress,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

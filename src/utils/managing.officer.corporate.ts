@@ -24,16 +24,17 @@ import {
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 
-export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
+export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string, registrationFlag: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    isSaveAndContinue: registrationFlag === false ? true : undefined
   });
 };
 
-export const getManagingOfficerCorporateById = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
+export const getManagingOfficerCorporateById = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} BY ID ${req.route.path}`);
 
@@ -49,7 +50,8 @@ export const getManagingOfficerCorporateById = (req: Request, res: Response, nex
       id,
       ...data,
       ...principalAddress,
-      ...serviceAddress
+      ...serviceAddress,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

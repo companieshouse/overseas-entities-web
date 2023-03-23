@@ -25,16 +25,17 @@ import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, Usua
 import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
 
-export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
+export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string, registrationFlag: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    isSaveAndContinue: registrationFlag === false ? true : undefined
   });
 };
 
-export const getManagingOfficerById = (req: Request, res: Response, next: NextFunction, backlinkUrl: string, templateName: string) => {
+export const getManagingOfficerById = (req: Request, res: Response, next: NextFunction, backlinkUrl: string, templateName: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
@@ -52,7 +53,8 @@ export const getManagingOfficerById = (req: Request, res: Response, next: NextFu
       ...officerData,
       ...usualResidentialAddress,
       ...serviceAddress,
-      [DateOfBirthKey]: dobDate
+      [DateOfBirthKey]: dobDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -17,7 +17,7 @@ import { IdentityAddressKey, IdentityAddressKeys } from "../model/address.model"
 import { AddressKeys, InputDateKeys } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const getDueDiligencePage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getDueDiligencePage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -32,7 +32,8 @@ export const getDueDiligencePage = (req: Request, res: Response, next: NextFunct
       templateName: templateName,
       ...agentData,
       ...identityAddress,
-      [IdentityDateKey]: identityDate
+      [IdentityDateKey]: identityDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     next(error);

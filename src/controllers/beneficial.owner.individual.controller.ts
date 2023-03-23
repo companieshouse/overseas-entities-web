@@ -11,11 +11,11 @@ import {
 import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerIndividual(req, res, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerIndividual(req, res, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerIndividualById(req, res, next, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerIndividualById(req, res, next, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

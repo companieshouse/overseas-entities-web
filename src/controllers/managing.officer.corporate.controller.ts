@@ -9,11 +9,11 @@ import {
 } from "../utils/managing.officer.corporate";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficerCorporate(req, res, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE);
+  getManagingOfficerCorporate(req, res, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, true);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getManagingOfficerCorporateById(req, res, next, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE);
+  getManagingOfficerCorporateById(req, res, next, BENEFICIAL_OWNER_TYPE_URL, MANAGING_OFFICER_CORPORATE_PAGE, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

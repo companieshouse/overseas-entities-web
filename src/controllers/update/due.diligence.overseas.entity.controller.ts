@@ -8,7 +8,7 @@ import {
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getDueDiligence(req, res, next, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE, WHO_IS_MAKING_UPDATE_URL);
+  getDueDiligence(req, res, next, UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE, WHO_IS_MAKING_UPDATE_URL, false);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

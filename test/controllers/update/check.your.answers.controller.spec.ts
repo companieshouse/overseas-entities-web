@@ -17,7 +17,9 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 
 import {
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  UPDATE_CHECK_YOUR_ANSWERS_URL
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_PRESENTER_CHANGE_FULL_NAME,
+  UPDATE_PRESENTER_CHANGE_EMAIL
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -45,7 +47,6 @@ import {
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID
 } from "../../__mocks__/session.mock";
-import * as CHANGE_LINKS from "../../../src/config";
 
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -98,8 +99,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
-      expect(resp.text).toContain(CHANGE_LINKS.UPDATE_PRESENTER_CHANGE_FULL_NAME);
-      expect(resp.text).toContain(CHANGE_LINKS.UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {

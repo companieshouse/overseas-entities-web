@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 import { TrusteeType } from '../model/trustee.type.model';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
-import { mapBeneficialOwnerToSession } from '../utils/trust/historical.beneficial.owner.mapper';
+import { mapBeneficialOwnerToSession, mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
@@ -35,10 +35,10 @@ type TrustHistoricalBeneficialOwnerProperties = {
 
 const getPageProperties = (
   req: Request,
+  trustId: string,
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
   errors?: FormattedValidationErrors,
 ): TrustHistoricalBeneficialOwnerProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
   return {
     backLinkUrl: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`,
@@ -64,7 +64,16 @@ const get = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req);
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeFromSessionToPage(
+      appData,
+      trustId,
+      trusteeId
+    );
+    const pageProps = getPageProperties(req, trustId, formData);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -97,6 +106,7 @@ const post = async (
     if (!errorList.isEmpty()) {
       const pageProps = getPageProperties(
         req,
+        trustId,
         formData,
         formatValidationError(errorList.array()),
       );

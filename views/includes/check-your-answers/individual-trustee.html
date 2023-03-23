@@ -2,7 +2,7 @@
 
 {% set individualTrusteeFullName = individualTrustee.forename + " " + individualTrustee.surname %}
 
-{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.date_of_birth_day, individualTrustee.date_of_birth_month, individualTrustee.date_of_birth_year) %}
+{% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.dob_day, individualTrustee.dob_month, individualTrustee.dob_year) %}
 
 {% set interestedPersonDate = dateMacros.formatDate(individualTrustee.date_became_interested_person_day, individualTrustee.date_became_interested_person_month, individualTrustee.date_became_interested_person_year) %}
 

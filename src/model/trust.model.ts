@@ -41,9 +41,9 @@ export interface TrustIndividual {
   forename: string;
   other_forenames: string;
   surname: string;
-  date_of_birth_day: string;
-  date_of_birth_month: string;
-  date_of_birth_year: string;
+  dob_day: string;
+  dob_month: string;
+  dob_year: string;
   nationality: string;
   second_nationality?: string;
   ura_address_premises: string;

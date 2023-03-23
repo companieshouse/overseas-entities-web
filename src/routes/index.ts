@@ -57,6 +57,7 @@ import {
   updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
+  updateBeneficialOwnerStatements,
   updateSignOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
@@ -328,6 +329,14 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
+
+router.route(config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+  )
+  .get(updateBeneficialOwnerStatements.get)
+  .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(

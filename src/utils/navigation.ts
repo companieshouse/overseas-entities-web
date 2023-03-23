@@ -77,7 +77,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL,
     nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   },
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
@@ -89,6 +89,12 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: []
+  },
+  [config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+    // config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,

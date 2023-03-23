@@ -28,7 +28,7 @@ export const mapIndividualTrusteeToSession = (
     ura_address_postal_code: formData.usual_residential_address_postcode,
     ura_address_care_of: '',
     ura_address_po_box: '',
-    is_service_address_same_as_usual_residential_address: formData.is_service_address_same_as_usual_residential_address,
+    is_service_address_same_as_usual_residential_address: (formData.is_service_address_same_as_usual_residential_address) ? Number(formData.is_service_address_same_as_usual_residential_address) : 0,
     sa_address_care_of: '',
     sa_address_po_box: '',
   };

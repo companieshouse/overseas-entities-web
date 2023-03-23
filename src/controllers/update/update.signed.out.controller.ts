@@ -9,7 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.UPDATE_SIGNED_OUT_PAGE, {
       templateName: config.UPDATE_SIGNED_OUT_PAGE,
-      signedOut: true
+      hideBanners: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

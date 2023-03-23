@@ -140,6 +140,7 @@ export const STARTING_NEW_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + STARTING_NEW_P
 export const PAYMENT_FAILED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
 
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
+export const ACCOUNTS_SIGN_IN_URL = `${ACCOUNT_URL}/signin`;
 export const REMOVE = "/remove";
 
 export const TRUSTS_URL = "trusts";

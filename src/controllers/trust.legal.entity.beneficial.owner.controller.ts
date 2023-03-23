@@ -27,6 +27,7 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
     roleWithinTrustType: typeof RoleWithinTrustType;
   },
   formData?: TrustLegalEntityForm,
+  url: string,
 };
 
 const getPageProperties = (
@@ -46,6 +47,7 @@ const getPageProperties = (
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
+    url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
   };
 };
 

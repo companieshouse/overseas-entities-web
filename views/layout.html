@@ -42,7 +42,7 @@
 {% endblock %}
 
 {% block beforeContent %}
-{% if signedOut %}
+{% if hideBanners %}
 {% else %}
   {% include "includes/phase_banner.html" %}
   {% block backLink %}

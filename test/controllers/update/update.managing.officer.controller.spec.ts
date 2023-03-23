@@ -47,10 +47,10 @@ import {
   UPDATE_MANAGING_OFFICER_PAGE_TITLE,
   NOT_SHOW_MANAGING_OFFICER_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SECOND_NATIONALITY,
   SECOND_NATIONALITY_HINT,
-  SERVICE_UNAVAILABLE
+  SERVICE_UNAVAILABLE,
+  CONTINUE_BUTTON_TEXT
 } from '../../__mocks__/text.mock';
 import { ApplicationDataType, managingOfficerType } from '../../../src/model';
 import { ErrorMessages } from '../../../src/validation/error.messages';
@@ -105,7 +105,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);

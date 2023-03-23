@@ -37,6 +37,7 @@ import {
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
+  CONTINUE_BUTTON_TEXT
 } from "../../__mocks__/text.mock";
 import { NextFunction } from "express";
 
@@ -80,6 +81,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date (NOT LIVE)");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

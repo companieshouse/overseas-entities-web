@@ -5,6 +5,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
@@ -48,7 +49,7 @@ import {
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
+  CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../../__mocks__/text.mock";
@@ -112,7 +113,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
@@ -125,7 +126,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
       expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
     });
   });
 
@@ -142,7 +143,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain("town");
       expect(resp.text).toContain("country");
       expect(resp.text).toContain("BY 2");
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
     });
 
     test("Should render the error page", async () => {

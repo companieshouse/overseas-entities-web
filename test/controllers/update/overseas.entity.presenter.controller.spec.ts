@@ -22,6 +22,7 @@ import { getApplicationData, prepareData, setApplicationData } from "../../../sr
 import { ApplicationDataType } from '../../../src/model';
 import {
   ANY_MESSAGE_ERROR,
+  CONTINUE_BUTTON_TEXT,
   FOUND_REDIRECT_TO,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
@@ -76,6 +77,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_USE_INFORMATION_NEED_MORE);
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });

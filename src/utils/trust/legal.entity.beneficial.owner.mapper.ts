@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as Trust from "../../model/trust.model";
 import * as Page from "../../model/trust.page.model";
 import { TrusteeType } from '../../model/trustee.type.model';
+import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { getLegalEntityTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
 
@@ -41,11 +42,14 @@ const mapLegalEntityToSession = (
       identification_country_registration: formData.public_register_jurisdiction,
       identification_registration_number: formData.registration_number,
     };
-  } else {
-    publicRegisterData = {
-      identification_place_registered: "",
-      identification_country_registration: "",
-      identification_registration_number: "",
+  }
+
+  let interestedPersonData = {};
+  if (formData.roleWithinTrust === RoleWithinTrustType.INTERESTED_PERSON){
+    interestedPersonData = {
+      date_became_interested_person_day: formData.interestedPersonStartDateDay,
+      date_became_interested_person_month: formData.interestedPersonStartDateMonth,
+      date_became_interested_person_year: formData.interestedPersonStartDateYear,
     };
   }
 
@@ -53,6 +57,7 @@ const mapLegalEntityToSession = (
     return {
       ...data,
       ...publicRegisterData,
+      ...interestedPersonData,
       sa_address_premises: formData.service_address_property_name_number,
       sa_address_line1: formData.service_address_line_1,
       sa_address_line2: formData.service_address_line_2,
@@ -65,6 +70,7 @@ const mapLegalEntityToSession = (
     return {
       ...data,
       ...publicRegisterData,
+      ...interestedPersonData,
       sa_address_premises: "",
       sa_address_line1: "",
       sa_address_line2: "",
@@ -83,13 +89,10 @@ const mapLegalEntityTrusteeFromSessionToPage = (
 ): Page.TrustLegalEntityForm => {
   const trustee = getLegalEntityTrustee(appData, trustId, trusteeId);
 
-  return {
+  const data = {
     legalEntityId: trustee.id,
     roleWithinTrust: trustee.type,
     legalEntityName: trustee.name,
-    interestedPersonStartDateDay: trustee.date_became_interested_person_day,
-    interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
-    interestedPersonStartDateYear: trustee.date_became_interested_person_year,
     principal_address_property_name_number: trustee.ro_address_premises,
     principal_address_line_1: trustee.ro_address_line1,
     principal_address_line_2: trustee.ro_address_line2,
@@ -111,7 +114,18 @@ const mapLegalEntityTrusteeFromSessionToPage = (
     registration_number: trustee.identification_registration_number,
     is_service_address_same_as_principal_address: trustee.is_service_address_same_as_principal_address,
     is_on_register_in_country_formed_in: trustee.is_on_register_in_country_formed_in,
-  };
+  } as Page.TrustLegalEntityForm;
+
+  if (trustee.type === RoleWithinTrustType.INTERESTED_PERSON){
+    return {
+      ...data,
+      interestedPersonStartDateDay: trustee.date_became_interested_person_day,
+      interestedPersonStartDateMonth: trustee.date_became_interested_person_month,
+      interestedPersonStartDateYear: trustee.date_became_interested_person_year,
+      principal_address_property_name_number: trustee.ro_address_premises,
+    } as Page.TrustLegalEntityForm;
+  }
+  return data;
 };
 
 const mapLegalEntityItemToPage = (

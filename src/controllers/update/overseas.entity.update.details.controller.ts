@@ -40,7 +40,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...entity,
       ...principalAddress,
       ...serviceAddress,
-      ...appData
+      ...appData,
+      isSaveAndContinue: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

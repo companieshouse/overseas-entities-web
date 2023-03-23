@@ -9,11 +9,11 @@ import {
 } from "../utils/beneficial.owner.other";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

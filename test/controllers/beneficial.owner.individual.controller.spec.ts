@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
+jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 
@@ -29,6 +30,7 @@ import {
   ANY_MESSAGE_ERROR,
   BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING,
   BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
+  CONTINUE_BUTTON_TEXT,
   ERROR_LIST,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
@@ -69,12 +71,15 @@ import { ApplicationDataType } from '../../src/model';
 import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/has.beneficial.owners.statement.middleware";
 import * as config from "../../src/config";
 import { DateTime } from "luxon";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockHasBeneficialOwnersStatementMiddleware = hasBeneficialOwnersStatement as jest.Mock;
 mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -112,6 +117,18 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 off`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(CONTINUE_BUTTON_TEXT);
+      // expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
 

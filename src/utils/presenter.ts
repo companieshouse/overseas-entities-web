@@ -6,7 +6,7 @@ import { getApplicationData, prepareData, setApplicationData } from "./applicati
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
 
-export const getPresenterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string): void => {
+export const getPresenterPage = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -16,7 +16,8 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
-      ...presenter
+      ...presenter,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

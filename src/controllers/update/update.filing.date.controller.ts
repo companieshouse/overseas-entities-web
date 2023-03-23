@@ -16,7 +16,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-      templateName: config.UPDATE_FILING_DATE_PAGE
+      templateName: config.UPDATE_FILING_DATE_PAGE,
+      isSaveAndContinue: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

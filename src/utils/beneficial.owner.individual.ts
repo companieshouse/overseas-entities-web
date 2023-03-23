@@ -40,16 +40,17 @@ import {
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
 
-export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    isSaveAndContinue: registrationFlag === false ? true : undefined
   });
 };
 
-export const getBeneficialOwnerIndividualById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string) => {
+export const getBeneficialOwnerIndividualById = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, registrationFlag: boolean) => {
   try {
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
@@ -69,7 +70,8 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       ...usualResidentialAddress,
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
-      [StartDateKey]: startDate
+      [StartDateKey]: startDate,
+      isSaveAndContinue: registrationFlag === false ? true : undefined
     });
   } catch (error) {
     logger.errorRequest(req, error);

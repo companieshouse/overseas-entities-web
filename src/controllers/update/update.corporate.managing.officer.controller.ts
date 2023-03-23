@@ -3,7 +3,7 @@ import { getManagingOfficerCorporate, postManagingOfficerCorporate } from "../..
 import { UPDATE_MANAGING_OFFICER_CORPORATE_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL } from "../../config";
 
 export const get = (req: Request, res: Response) => {
-  getManagingOfficerCorporate(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_CORPORATE_PAGE);
+  getManagingOfficerCorporate(req, res, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGING_OFFICER_CORPORATE_PAGE, false);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

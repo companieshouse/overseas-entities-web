@@ -1,6 +1,6 @@
 {% set textContinueButton = "Continue" %}
 
-{% if OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 == "true" or OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME == "true" %}
+{% if (isSaveAndContinue === undefined and OE_CONFIGS.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 === "true") or isSaveAndContinue === true %}
   {% set textContinueButton = "Save and continue" %}
 {% endif %}
 

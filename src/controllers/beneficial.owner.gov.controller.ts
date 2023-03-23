@@ -3,11 +3,11 @@ import { BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config"
 import { getBeneficialOwnerGov, getBeneficialOwnerGovById, postBeneficialOwnerGov, removeBeneficialOwnerGov, updateBeneficialOwnerGov } from "../utils/beneficial.owner.gov";
 
 export const get = (req: Request, res: Response) => {
-  return getBeneficialOwnerGov(req, res, BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGov(req, res, BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  return getBeneficialOwnerGovById(req, res, next, BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGovById(req, res, next, BENEFICIAL_OWNER_GOV_PAGE, BENEFICIAL_OWNER_TYPE_URL, true);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

@@ -23,6 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
     const changeLinkUrl: string = config.ENTITY_URL;
     const overseasEntityHeading: string = config.OVERSEAS_ENTITY_SECTION_HEADING;
+    const whoIsCompletingChangeLink: string = config.WHO_IS_MAKING_FILING_URL;
 
     logger.infoRequest(req, `${config.CHECK_YOUR_ANSWERS_PAGE} hasTrusts=${requiresTrusts}`);
 
@@ -41,6 +42,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       appData,
       changeLinkUrl,
       overseasEntityHeading,
+      whoIsCompletingChangeLink,
       pageParams: {
         isTrustFeatureEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
         isRegistration: true

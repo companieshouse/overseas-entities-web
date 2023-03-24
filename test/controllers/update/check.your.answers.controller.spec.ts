@@ -33,7 +33,10 @@ import {
   CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
   CHANGE_LINK_ENTITY_LEGAL_FORM,
   CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS,
-  CHANGE_LINK_ENTITY_SERVICE_ADDRESS
+  CHANGE_LINK_ENTITY_SERVICE_ADDRESS,
+  VERIFICATION_CHECKS,
+  VERIFICATION_CHECKS_DATE,
+  VERIFICATION_CHECKS_PERSON
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -43,6 +46,25 @@ import {
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID
 } from "../../__mocks__/session.mock";
+import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
+import {
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_WHO,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE,
+  UPDATE_DUE_DILIGENCE_CHANGE_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS,
+  UPDATE_DUE_DILIGENCE_CHANGE_EMAIL,
+  UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME,
+  UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER,
+  UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME,
+} from "../../../src/config";
 
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -52,6 +74,8 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { dueDiligenceType, overseasEntityDueDiligenceType } from "../../../src/model";
+import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -99,6 +123,62 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(VERIFICATION_CHECKS);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.email);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.agent_code);
+      expect(resp.text).toContain(DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
+    });
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - OE (Someone else) selected`, async () => {
+      // mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_OE_DUE_DILIGENCE);
+
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [dueDiligenceType.DueDiligenceKey]: {},
+        [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
+        [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
+      });
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(VERIFICATION_CHECKS);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_DATE);
+      expect(resp.text).toContain(VERIFICATION_CHECKS_PERSON);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.name);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.email);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.supervisory_name);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.aml_number);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK.partner_name);
+
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_CHANGE_WHO);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER);
+      expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
     });
 
     test('catch error when rendering the page', async () => {

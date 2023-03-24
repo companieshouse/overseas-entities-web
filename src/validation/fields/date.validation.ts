@@ -2,7 +2,7 @@ import { body } from "express-validator";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import {
   checkBirthDate,
-  checkDateIP,
+  checkDateIPIndividualBO,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
   checkDateFieldMonth,
@@ -15,7 +15,8 @@ import {
   checkTrustDate,
   DayFieldErrors,
   MonthFieldErrors,
-  YearFieldErrors
+  YearFieldErrors,
+  checkDateIPLegalEntityBO
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -65,6 +66,7 @@ const dateOfBirthValidationsContext: dateContext = {
     errors: {
       noDayError: ErrorMessages.DAY_OF_BIRTH,
       wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
+      noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
@@ -72,6 +74,7 @@ const dateOfBirthValidationsContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.MONTH_OF_BIRTH,
       wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -87,34 +90,40 @@ const dateOfBirthValidationsContext: dateContext = {
   },
 };
 
-const dateBecameIPContext: dateContextWithCondition = {
+const defaultIPBOContext = (dayField, monthField, yearField, dateField, callBack) => ({
   dayInput: {
-    name: "dateBecameIPDay",
+    name: dayField,
     errors: {
       noDayError: ErrorMessages.DAY,
       wrongDayLength: ErrorMessages.DAY_LENGTH,
+      noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
-    name: "dateBecameIPMonth",
+    name: monthField,
     errors: {
       noMonthError: ErrorMessages.MONTH,
       wrongMonthLength: ErrorMessages.MONTH_LENGTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
-    name: "dateBecameIPYear",
+    name: yearField,
     errors: {
       noYearError: ErrorMessages.YEAR,
       wrongYearLength: ErrorMessages.YEAR_LENGTH
     } as YearFieldErrors,
   },
   dateInput: {
-    name: "dateBecameIP",
-    callBack: checkDateIP,
+    name: dateField,
+    callBack,
   },
   condition: { elementName: "roleWithinTrust", expectedValue: RoleWithinTrustType.INTERESTED_PERSON },
-};
+}) as dateContextWithCondition;
+
+const dateBecameIPIndividualBeneficialOwnerContext: dateContextWithCondition = defaultIPBOContext("dateBecameIPDay", "dateBecameIPMonth", "dateBecameIPYear", "dateBecameIP", checkDateIPIndividualBO);
+
+const dateBecameIPLegalEntityBeneficialOwnerContext: dateContextWithCondition = defaultIPBOContext("interestedPersonStartDateDay", "interestedPersonStartDateMonth", "interestedPersonStartDateYear", "interestedPersonStartDate", checkDateIPLegalEntityBO);
 
 const trustCreatedDateValidationsContext: dateContext = {
   dayInput: {
@@ -122,6 +131,7 @@ const trustCreatedDateValidationsContext: dateContext = {
     errors: {
       noDayError: ErrorMessages.DAY_OF_TRUST,
       wrongDayLength: ErrorMessages.DAY_LENGTH_OF_TRUST,
+      noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
@@ -129,6 +139,7 @@ const trustCreatedDateValidationsContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.MONTH_OF_TRUST,
       wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -150,6 +161,7 @@ const historicalBOStartDateContext: dateContext = {
     errors: {
       noDayError: ErrorMessages.START_DAY_HISTORICAL_BO,
       wrongDayLength: ErrorMessages.START_DAY_LENGTH_HISTORICAL_BO,
+      noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
@@ -157,6 +169,7 @@ const historicalBOStartDateContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.START_MONTH_HISTORICAL_BO,
       wrongMonthLength: ErrorMessages.START_MONTH_LENGTH_HISTORICAL_BO,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -178,6 +191,7 @@ const historicalBOEndDateContext: dateContext = {
     errors: {
       noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
       wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
+      noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
@@ -185,6 +199,7 @@ const historicalBOEndDateContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
       wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -202,11 +217,13 @@ const historicalBOEndDateContext: dateContext = {
 
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
 
-export const dateBecameIP = conditionalDateValidations(dateBecameIPContext);
+export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(dateBecameIPIndividualBeneficialOwnerContext);
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 
 export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+
+export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 

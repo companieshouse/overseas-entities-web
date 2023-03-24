@@ -12,7 +12,7 @@ export const managingOfficerCorporate = [
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS),
 
-  ...principal_address_validations,
+  ...principal_address_validations(),
 
   body("is_service_address_same_as_principal_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_MANAGING_OFFICER_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),

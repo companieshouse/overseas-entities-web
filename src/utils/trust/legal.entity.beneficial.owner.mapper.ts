@@ -36,7 +36,7 @@ const mapLegalEntityToSession = (
   };
 
   let publicRegisterData = {};
-  if (formData.is_on_register_in_country_formed_in.toString() === "1"){
+  if (formData.is_on_register_in_country_formed_in?.toString() === "1"){
     publicRegisterData = {
       identification_place_registered: formData.public_register_name,
       identification_country_registration: formData.public_register_jurisdiction,
@@ -53,7 +53,7 @@ const mapLegalEntityToSession = (
     };
   }
 
-  if (formData.is_service_address_same_as_principal_address.toString() === "0") {
+  if (formData.is_service_address_same_as_principal_address?.toString() === "0") {
     return {
       ...data,
       ...publicRegisterData,

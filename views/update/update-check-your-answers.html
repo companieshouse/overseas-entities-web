@@ -15,8 +15,10 @@
       <h1 class="govuk-heading-xl">Check your answers before sending your application (NOT LIVE)</h1>
 
       {% include "includes/check-your-answers/verification-checks.html" %}
+      {% include "includes/check-your-answers/presenter.html" %}
+      <br>
       {% include "includes/entity.html" %}
-
+      <br>
       <form method="post">
         <div class="govuk-button-group">
           {{ govukButton({

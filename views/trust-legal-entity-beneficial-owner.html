@@ -32,7 +32,7 @@
               'Year': formData.interestedPersonStartDateYear
             },
             classes: 'govuk-fieldset__legend--s',
-            error: errors.interestedPersonDate
+            error: errors.interestedPersonStartDate if errors
           } %}
           {% include "includes/inputs/date-input.html" %}
         {% endset -%}
@@ -41,7 +41,7 @@
           name: 'legalEntityName',
           label: 'What is its name?',
           value: formData.legalEntityName,
-          error: errors.legalEntityName
+          error: errors.legalEntityName if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -49,7 +49,7 @@
           name: 'roleWithinTrust',
           label: 'What is its role within the trust?',
           value: formData.roleWithinTrust,
-          error: errors.roleWithinTrust,
+          error: errors.roleWithinTrust if errors,
           items: [
             {
               value: pageData.roleWithinTrustType.BENEFICIARY,
@@ -111,7 +111,7 @@
           label: 'What is its legal form?',
           value: formData.legalForm,
           hint: 'For example, limited company',
-          error: errors.legalForm
+          error: errors.legalForm if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
@@ -121,7 +121,7 @@
           label: 'What is the governing law?',
           value: formData.governingLaw,
           hint: 'This is the law that the entity operates under.',
-          error: errors.governingLaw
+          error: errors.governingLaw if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 

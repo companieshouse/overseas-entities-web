@@ -3,16 +3,16 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import {
-  ErrorMessagesForURaddress,
-  ErrorMessagesForURSaddress,
+  ErrorMessagesOptional,
+  ErrorMessagesRequired,
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { dateBecameIP, dateOfBirthValidations } from "./fields/date.validation";
+import { dateBecameIPIndividualBeneficialOwner, dateOfBirthValidations } from "./fields/date.validation";
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 
-const addressErrorMessages: ErrorMessagesForURaddress = {
+const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_INDIVIDUAL_BO,
   townValueError: ErrorMessages.CITY_OR_TOWN_INDIVIDUAL_BO,
@@ -38,7 +38,7 @@ export const trustIndividualBeneficialOwner = [
 
   body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO).if(body("roleWithinTrust")),
 
-  ...dateBecameIP,
+  ...dateBecameIPIndividualBeneficialOwner,
 
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY_INDIVIDUAL_BO)
@@ -50,6 +50,6 @@ export const trustIndividualBeneficialOwner = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO),
 
   ...usual_residential_address_validations(addressErrorMessages),
-  ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesForURSaddress),
+  ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired),
 
 ];

@@ -15,7 +15,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData } from "../../../src/utils/application.data";
 import request from "supertest";
 import { NextFunction } from "express";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, BACK_LINK_FOR_UPDATE_OE_CONFIRM, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import {
   testDateOfCreation,
   testEntityNumber,
@@ -51,6 +51,7 @@ describe("Confirm company data", () => {
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_OE_CONFIRM);
       expect(resp.text).toContain(testEntityName);
       expect(resp.text).toContain(testDateOfCreation);
       expect(resp.text).toContain(testEntityNumber);

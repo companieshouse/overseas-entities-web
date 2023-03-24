@@ -164,6 +164,7 @@ export const UPDATE_OVERSEAS_ENTITY_TITLE = "Update overseas entity";
 export const OE_NUMBER_FIELD_POPULATED = "value=\"OE123456\"";
 export const OVERSEAS_ENTITY_UPDATE_TITLE = "Check the overseas entity details";
 export const BACK_LINK_FOR_UPDATE_FILING_DATE = "/update-an-overseas-entity/confirm-overseas-entity-details";
+export const BACK_LINK_FOR_UPDATE_OE_CONFIRM = "/update-an-overseas-entity/overseas-entity-query";
 export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#entity_name";
 export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
 export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
@@ -181,3 +182,5 @@ export const UPDATE_MANAGING_OFFICER_PAGE_TITLE = "Tell us about the individual 
 export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial owners and managing officers involved in the overseas entity";
 export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
 export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /update-an-overseas-entity/update-beneficial-owner-type";
+export const UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS = "Contact details";
+export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this application?";

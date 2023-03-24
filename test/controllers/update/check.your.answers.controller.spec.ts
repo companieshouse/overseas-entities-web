@@ -17,7 +17,9 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 
 import {
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-  UPDATE_CHECK_YOUR_ANSWERS_URL
+  UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_PRESENTER_CHANGE_FULL_NAME,
+  UPDATE_PRESENTER_CHANGE_EMAIL
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -33,7 +35,9 @@ import {
   CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
   CHANGE_LINK_ENTITY_LEGAL_FORM,
   CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS,
-  CHANGE_LINK_ENTITY_SERVICE_ADDRESS
+  CHANGE_LINK_ENTITY_SERVICE_ADDRESS,
+  UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
+  UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -83,6 +87,22 @@ describe("CHECK YOUR ANSWERS controller", () => {
   });
 
   describe("GET tests", () => {
+
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHANGE_LINK);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+    });
+
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);

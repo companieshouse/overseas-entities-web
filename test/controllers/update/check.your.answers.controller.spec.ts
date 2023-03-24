@@ -151,8 +151,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - OE (Someone else) selected`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_OE_DUE_DILIGENCE);
-
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [dueDiligenceType.DueDiligenceKey]: {},

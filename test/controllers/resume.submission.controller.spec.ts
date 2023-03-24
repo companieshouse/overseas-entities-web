@@ -45,7 +45,7 @@ import { HasSoldLandKey, IsSecureRegisterKey, OverseasEntityKey, Transactionkey 
 import { OverseasEntityDueDiligenceKey } from '../../src/model/overseas.entity.due.diligence.model';
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from '../__mocks__/overseas.entity.due.diligence.mock';
 import { MOCK_GET_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
-import { generateTrusteeIds, mapTrusteeAddressesFromApiToWebModel } from '../../src/utils/trusts';
+import { mapTrustApiReturnModelToWebModel } from '../../src/utils/trusts';
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -69,8 +69,7 @@ mockGetOverseasEntity.mockReturnValue( APPLICATION_DATA_MOCK );
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockGenerateTrusteeIds = generateTrusteeIds as jest.Mock;
-const mockMapTrusteeAddressesFromApiToWebModel = mapTrusteeAddressesFromApiToWebModel as jest.Mock;
+const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
 
 describe("Resume submission controller", () => {
 
@@ -194,8 +193,7 @@ describe("Resume submission controller", () => {
     expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
     expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    expect(mockGenerateTrusteeIds).toHaveBeenCalledTimes(1);
-    expect(mockMapTrusteeAddressesFromApiToWebModel).toHaveBeenCalledTimes(1);
+    expect(mockMapTrustApiReturnModelToWebModel).toHaveBeenCalledTimes(1);
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {

@@ -26,12 +26,12 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   body("is_service_address_same_as_principal_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),
 
-  body("legal_form")
+  body("legalForm")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM_LEGAL_ENTITY_BO)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS),
 
-  body("law_governed")
+  body("governingLaw")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAW_GOVERNED)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS),

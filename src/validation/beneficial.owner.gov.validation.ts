@@ -12,7 +12,7 @@ export const beneficialOwnerGov = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH),
 
-  ...principal_address_validations,
+  ...principal_address_validations(),
 
   body("is_service_address_same_as_principal_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS),

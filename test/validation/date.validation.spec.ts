@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
 import { checkBirthDate,
-  checkDateIP,
+  checkDateIPIndividualBO,
   checkDateIsInPast,
   checkDateIsInPastOrToday,
   checkDateIsNotCompletelyEmpty,
@@ -19,12 +19,14 @@ import { dateValidations, dateContext, conditionalDateValidations, dateContextWi
 const mockIf = jest.fn();
 const mockCustom = jest.fn();
 const mockEquals = jest.fn();
+const mockNotEmpty = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
     custom: mockCustom.mockReturnThis(),
     equals: mockEquals.mockReturnThis(),
     if: mockIf.mockReturnThis(),
+    notEmpty: mockNotEmpty.mockReturnThis(),
   })),
 }));
 
@@ -34,6 +36,7 @@ describe('Test to validate date validator', () => {
     mockIf.mockRestore();
     mockCustom.mockRestore();
     mockEquals.mockRestore();
+    mockNotEmpty.mockRestore();
   });
 
   test('should test dateValidations', () => {
@@ -48,6 +51,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noDayError: ErrorMessages.DAY_OF_BIRTH,
           wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
+          noRealDay: ErrorMessages.INVALID_DAY,
         }
       },
       monthInput: {
@@ -55,6 +59,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -68,7 +73,7 @@ describe('Test to validate date validator', () => {
 
     const sut = dateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIf).toBeCalledTimes(0);
+    expect(mockIf).toBeCalledTimes(6);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(0);
   });
@@ -85,6 +90,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noDayError: ErrorMessages.DAY_OF_BIRTH,
           wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
+          noRealDay: ErrorMessages.INVALID_DAY,
         }
       },
       monthInput: {
@@ -92,6 +98,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -109,7 +116,7 @@ describe('Test to validate date validator', () => {
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIf).toBeCalledTimes(4);
+    expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
   });
@@ -127,6 +134,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noDayError: ErrorMessages.DAY_OF_BIRTH,
           wrongDayLength: ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH,
+          noRealDay: ErrorMessages.INVALID_DAY,
         }
       },
       monthInput: {
@@ -134,6 +142,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -151,7 +160,7 @@ describe('Test to validate date validator', () => {
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIf).toBeCalledTimes(4);
+    expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
   });
@@ -160,7 +169,7 @@ describe('Test to validate date validator', () => {
 describe("test date method", () => {
 
   const errMsgcheckDate: ErrorMessages[] = [
-    ErrorMessages.ENTER_DATE_INTERESTED_PERSON,
+    ErrorMessages.ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO,
     ErrorMessages.MONTH_AND_YEAR,
     ErrorMessages.DAY_AND_YEAR,
     ErrorMessages.DAY_AND_MONTH,
@@ -234,25 +243,25 @@ describe("test date method", () => {
     ["02", "", "", err[1]],
     ["", "02", "", err[2]],
     ["", "", "2009", err[3]],
-    ["0", "10", "2009", err[4]],
-    ["10", "0", "2009", err[5]],
-    ["10", "a", "2009", err[6]],
+    ["31", "09", "2009", err[4]],
+    ["29", "02", "2009", err[5]],
+    ["31", "11", "2009", err[6]],
     ["10", "10", "9999", err[7]],
-    ["10", "", "2009", err[8]],
-    ["", "10", "2009", err[9]],
-    ["10", "10", "", err[10]],
+    ["31", "02", "2009", err[8]],
+    ["31", "06", "2009", err[9]],
+    ["31", "04", "2008", err[10]],
   ];
 
   test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDateIP", (_day, _month, _year, _err) => {
-    expect(() => checkDateIP(_day, _month, _year)).toThrow(_err);
+    expect(() => checkDateIPIndividualBO(_day, _month, _year)).toThrow(_err);
   });
 
   test("should throw no errors for checkDateIP", () => {
-    expect(checkDateIP("01", "01", "2000")).toBe(true);
+    expect(checkDateIPIndividualBO("01", "01", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkDateIP", () => {
-    expect(() => checkDateIP()).toThrowError(ErrorMessages.ENTER_DATE_INTERESTED_PERSON);
+    expect(() => checkDateIPIndividualBO()).toThrowError(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO);
   });
 
   test.each(testDateCheck(errMsgcheckBirthDate))("should throw appropriate date errors for checkBirthDate", (_day, _month, _year, _err) => {
@@ -320,40 +329,53 @@ describe("test day,month and year error checkers", () => {
     wrongDayLength: ErrorMessages.DAY_LENGTH,
     wrongMonthLength: ErrorMessages.MONTH_LENGTH,
     wrongYearLength: ErrorMessages.YEAR_LENGTH,
+    noRealDay: ErrorMessages.INVALID_DAY,
+    noRealMonth: ErrorMessages.INVALID_MONTH,
   };
   test("test day absent", () => {
     expect(() => checkDayFieldForErrors({
       noDayError: errors.noDayError,
-      wrongDayLength: errors.wrongDayLength }, "")).toThrowError(errors.noDayError);
+      wrongDayLength: errors.wrongDayLength,
+      noRealDay: errors.noRealDay,
+    }, "")).toThrowError(errors.noDayError);
 
     expect(() => checkDayFieldForErrors({
       noDayError: errors.noDayError,
-      wrongDayLength: errors.wrongDayLength }, "123")).toThrowError(errors.wrongDayLength);
+      wrongDayLength: errors.wrongDayLength,
+      noRealDay: errors.noRealDay,
+    }, "123")).toThrowError(errors.wrongDayLength);
 
     expect(() => checkDayFieldForErrors({
       noDayError: errors.noDayError,
-      wrongDayLength: errors.wrongDayLength }, "13")).toBeTruthy();
+      wrongDayLength: errors.wrongDayLength,
+      noRealDay: errors.noRealDay, }, "13")).toBeTruthy();
 
     expect(checkDayFieldForErrors({
       noDayError: errors.noDayError,
-      wrongDayLength: errors.wrongDayLength }, "3")).toBe(true);
+      wrongDayLength: errors.wrongDayLength,
+      noRealDay: errors.noRealDay, }, "3")).toBe(true);
   });
   test("test month absent", () => {
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
-      wrongMonthLength: errors.wrongMonthLength }, "")).toThrowError(errors.noMonthError);
+      wrongMonthLength: errors.wrongMonthLength,
+      noRealMonth: errors.noRealMonth,
+    }, "")).toThrowError(errors.noMonthError);
 
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
-      wrongMonthLength: errors.wrongMonthLength }, "321")).toThrowError(errors.wrongMonthLength);
+      wrongMonthLength: errors.wrongMonthLength,
+      noRealMonth: errors.noRealMonth, }, "321")).toThrowError(errors.wrongMonthLength);
 
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
-      wrongMonthLength: errors.wrongMonthLength }, "1")).toBeTruthy();
+      wrongMonthLength: errors.wrongMonthLength,
+      noRealMonth: errors.noRealMonth, }, "1")).toBeTruthy();
 
     expect(checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
-      wrongMonthLength: errors.wrongMonthLength }, "12")).toBe(true);
+      wrongMonthLength: errors.wrongMonthLength,
+      noRealMonth: errors.noRealMonth, }, "12")).toBe(true);
   });
   test("test year absent", () => {
     expect(() => checkYearFieldForErrors({

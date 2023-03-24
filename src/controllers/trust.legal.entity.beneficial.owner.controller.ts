@@ -11,6 +11,8 @@ import { ApplicationData } from '../model';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from '../utils/save.and.continue';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { validationResult } from 'express-validator';
 
 const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -27,6 +29,7 @@ type TrustLegalEntityBeneificalOwnerPageProperties = {
     roleWithinTrustType: typeof RoleWithinTrustType;
   },
   formData?: TrustLegalEntityForm,
+  errors?: FormattedValidationErrors,
   url: string,
 };
 
@@ -34,6 +37,7 @@ const getPageProperties = (
   req: Request,
   trustId: string,
   formData?: TrustLegalEntityForm,
+  errors?: FormattedValidationErrors,
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
   return {
@@ -47,6 +51,7 @@ const getPageProperties = (
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
+    errors,
     url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
   };
 };
@@ -84,6 +89,20 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
 
     //  get trust data from session
     let appData: ApplicationData = getApplicationData(req.session);
+
+    // validate request
+    const errorList = validationResult(req);
+    const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
+
+    if (!errorList.isEmpty()) {
+      const pageProps = getPageProperties(
+        req,
+        trustId,
+        formData,
+        formatValidationError(errorList.array()),
+      );
+      return res.render(pageProps.templateName, pageProps);
+    }
 
     //  save (add/update) bo to trust
     const updatedTrust = saveLegalEntityBoInTrust(

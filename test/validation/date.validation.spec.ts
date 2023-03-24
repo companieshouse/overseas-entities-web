@@ -59,7 +59,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
-          noReaMonth: ErrorMessages.INVALID_MONTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -98,7 +98,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
-          noReaMonth: ErrorMessages.INVALID_MONTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -142,7 +142,7 @@ describe('Test to validate date validator', () => {
         errors: {
           noMonthError: ErrorMessages.MONTH_OF_BIRTH,
           wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
-          noReaMonth: ErrorMessages.INVALID_MONTH,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
         }
       },
       yearInput: {
@@ -359,23 +359,23 @@ describe("test day,month and year error checkers", () => {
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
       wrongMonthLength: errors.wrongMonthLength,
-      noReaMonth: errors.noRealMonth,
+      noRealMonth: errors.noRealMonth,
     }, "")).toThrowError(errors.noMonthError);
 
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
       wrongMonthLength: errors.wrongMonthLength,
-      noReaMonth: errors.noRealMonth, }, "321")).toThrowError(errors.wrongMonthLength);
+      noRealMonth: errors.noRealMonth, }, "321")).toThrowError(errors.wrongMonthLength);
 
     expect(() => checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
       wrongMonthLength: errors.wrongMonthLength,
-      noReaMonth: errors.noRealMonth, }, "1")).toBeTruthy();
+      noRealMonth: errors.noRealMonth, }, "1")).toBeTruthy();
 
     expect(checkMonthFieldForErrors({
       noMonthError: errors.noMonthError,
       wrongMonthLength: errors.wrongMonthLength,
-      noReaMonth: errors.noRealMonth, }, "12")).toBe(true);
+      noRealMonth: errors.noRealMonth, }, "12")).toBe(true);
   });
   test("test year absent", () => {
     expect(() => checkYearFieldForErrors({

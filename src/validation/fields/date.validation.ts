@@ -74,7 +74,7 @@ const dateOfBirthValidationsContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.MONTH_OF_BIRTH,
       wrongMonthLength: ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -104,7 +104,7 @@ const defaultIPBOContext = (dayField, monthField, yearField, dateField, callBack
     errors: {
       noMonthError: ErrorMessages.MONTH,
       wrongMonthLength: ErrorMessages.MONTH_LENGTH,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -139,7 +139,7 @@ const trustCreatedDateValidationsContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.MONTH_OF_TRUST,
       wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -169,7 +169,7 @@ const historicalBOStartDateContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.START_MONTH_HISTORICAL_BO,
       wrongMonthLength: ErrorMessages.START_MONTH_LENGTH_HISTORICAL_BO,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
@@ -199,7 +199,7 @@ const historicalBOEndDateContext: dateContext = {
     errors: {
       noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
       wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
-      noReaMonth: ErrorMessages.INVALID_MONTH,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {

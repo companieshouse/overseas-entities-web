@@ -349,7 +349,7 @@ export type DayFieldErrors = {
 export type MonthFieldErrors = {
   noMonthError: ErrorMessages,
   wrongMonthLength: ErrorMessages,
-  noReaMonth: ErrorMessages,
+  noRealMonth: ErrorMessages,
 };
 
 export type YearFieldErrors = {

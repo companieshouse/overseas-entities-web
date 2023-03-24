@@ -1,6 +1,6 @@
 import { body, check } from "express-validator";
 import { ErrorMessages } from "./error.messages";
-import { ErrorMessagesOptional, principal_address_validations } from "./fields/address.validation";
+import { ErrorMessagesOptional, ErrorMessagesRequired, principal_address_validations, usual_residential_service_address_validations } from "./fields/address.validation";
 import { dateBecameIPLegalEntityBeneficialOwner } from "./fields/date.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
@@ -21,10 +21,11 @@ export const trustLegalEntityBeneficialOwnerValidator = [
 
   ...dateBecameIPLegalEntityBeneficialOwner,
 
-  ...principal_address_validations(addressErrorMessages),
-
   body("is_service_address_same_as_principal_address")
-    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),
+    .notEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),
+
+  ...principal_address_validations(addressErrorMessages),
+  ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired, 'is_service_address_same_as_principal_address'),
 
   body("legalForm")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM_LEGAL_ENTITY_BO)

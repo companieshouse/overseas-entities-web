@@ -27,12 +27,12 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   ...principal_address_validations(addressErrorMessages),
   ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired, 'is_service_address_same_as_principal_address'),
 
-  body("legal_form")
+  body("legalForm")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM_LEGAL_ENTITY_BO)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS),
 
-  body("law_governed")
+  body("governingLaw")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAW_GOVERNED)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS),
@@ -54,19 +54,20 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   body("registration_number")
     .if(body("is_on_register_in_country_formed_in").equals("1"))
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ENTITY_REGISTRATION_NUMBER)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_ENTITY_REGISTRATION_NUMBER),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_ENTITY_REGISTRATION_NUMBER)
+  ,
 
   check("public_register_jurisdiction")
     .if(body("public_register_jurisdiction").notEmpty())
     .if(body("registration_number").notEmpty())
-    .custom( (value, { req }) => {
-      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom( async (value, { req }) => {
+      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
   check("registration_number")
     .if(body("registration_number").notEmpty())
     .if(body("public_register_jurisdiction").notEmpty())
-    .custom( (value, { req }) => {
-      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom( async (value, { req }) => {
+      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
 ];
 

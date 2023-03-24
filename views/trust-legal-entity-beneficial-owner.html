@@ -106,22 +106,20 @@
         {% include "includes/inputs/address/principal-address-input.html" %}
 
         {% set fieldParam = {
-          name: 'legal_form',
-          id: 'legal_form',
+          name: 'legalForm',
           label: 'What is its legal form?',
           value: formData.legalForm,
           hint: 'For example, limited company',
-          error: errors.legal_form if errors
+          error: errors.legalForm if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 
         {% set fieldParam = {
-          name: 'law_governed',
-          id: 'law_governed',
+          name: 'governingLaw',
           label: 'What is the governing law?',
           value: formData.governingLaw,
           hint: 'This is the law that the entity operates under.',
-          error: errors.law_governed if errors
+          error: errors.governingLaw if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
 

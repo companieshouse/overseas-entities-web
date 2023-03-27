@@ -335,6 +335,7 @@ router.route(config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL)
   .all(
     authentication,
     companyAuthentication,
+    navigation.hasOverseasEntity
   )
   .get(updateBeneficialOwnerStatements.get)
   .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);

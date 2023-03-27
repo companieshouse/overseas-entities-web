@@ -11,8 +11,10 @@
   }) }}
 {% endblock %}
 
-{% if saveAndResume %}
+{% if saveAndResume and (journey == "register") %}
   {% set hintText = "We will save your application." %}
+{% elif saveAndResume and (journey == "update") %}
+  {% set hintText = "We will save your filing." %}
 {% else %}
   {% set hintText = "Your answers will not be saved. You will need to start again if you want to "+journey+" an overseas entity and tell us about its beneficial owners." %}
 {% endif %}

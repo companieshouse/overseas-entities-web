@@ -23,10 +23,10 @@ const mapDetailToPage = (
   let unableToObtainAllTrustInfo: string;
   switch (trustData.unable_to_obtain_all_trust_info) {
       case "Yes":
-        unableToObtainAllTrustInfo = "1";
+        unableToObtainAllTrustInfo = "0";
         break;
       case "No":
-        unableToObtainAllTrustInfo = "0";
+        unableToObtainAllTrustInfo = "1";
         break;
       default:
         unableToObtainAllTrustInfo = ""; // forces user to enter a value on new trust
@@ -56,7 +56,7 @@ const mapDetailToSession = (
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,
     creation_date_year: data.createdDateYear,
-    unable_to_obtain_all_trust_info: (data.hasAllInfo === "1") ? "Yes" : "No",
+    unable_to_obtain_all_trust_info: (data.hasAllInfo === "0") ? "Yes" : "No",
   };
 };
 

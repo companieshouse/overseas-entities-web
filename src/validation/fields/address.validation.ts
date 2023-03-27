@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { defaultRequiredErrorMessages, defaultOptionalErrorMessages, ErrorMessagesOptional, ErrorMessagesRequired } from "../models/address.error.model";
 
 import {
   checkFieldIfRadioButtonSelected,
@@ -8,31 +9,34 @@ import {
 import { ErrorMessages } from "../error.messages";
 import { VALID_CHARACTERS } from "../regex/regex.validation";
 
-export const principal_address_validations = [
-  body("principal_address_property_name_number")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER)
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS),
-  body("principal_address_line_1")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ADDRESS_LINE1)
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS),
-  body("principal_address_line_2")
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS),
-  body("principal_address_town")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.CITY_OR_TOWN)
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS),
-  body("principal_address_county")
-    .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_COUNTY_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS),
-  body("principal_address_country")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.COUNTRY),
-  body("principal_address_postcode")
-    .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
-];
+export const principal_address_validations = (errors: ErrorMessagesOptional = defaultOptionalErrorMessages) => {
+  errors = { ...defaultOptionalErrorMessages, ...errors };
+  return [
+    body("principal_address_property_name_number")
+      .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.propertyValueError)
+      .isLength({ max: 50 }).withMessage(errors.maxPropertyValueLengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.propertyNameInvalidError),
+    body("principal_address_line_1")
+      .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.addressLine1Error)
+      .isLength({ max: 50 }).withMessage(errors.addressLine1LengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.addressLine1InvalidCharacterError),
+    body("principal_address_line_2")
+      .isLength({ max: 50 }).withMessage(errors.addressLine2LengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.addressLine2InvalidCharacterError),
+    body("principal_address_town")
+      .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.townValueError)
+      .isLength({ max: 50 }).withMessage(errors.maxTownValueLengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.townInvalidCharacterError),
+    body("principal_address_county")
+      .isLength({ max: 50 }).withMessage(errors.maxCountyValueLengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.countyInvalidCharacterError),
+    body("principal_address_country")
+      .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.countryValueError),
+    body("principal_address_postcode")
+      .isLength({ max: 15 }).withMessage(errors.postcodeLengthError)
+      .matches(VALID_CHARACTERS).withMessage(errors.postcodeInvalidCharacterError)
+  ];
+};
 
 export const principal_service_address_validations = [
   body("service_address_property_name_number")
@@ -60,67 +64,8 @@ export const principal_service_address_validations = [
     .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body.is_service_address_same_as_principal_address === '0', ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS, value) ),
 ];
 
-export type ErrorMessagesForURaddress = Partial<{
-  propertyValueError: ErrorMessages,
-  maxPropertyValueLengthError: ErrorMessages,
-  propertyNameInvalidError: ErrorMessages,
-  addressLine1Error: ErrorMessages,
-  addressLine1LengthError: ErrorMessages,
-  addressLine1InvalidCharacterError: ErrorMessages,
-  addressLine2LengthError: ErrorMessages,
-  addressLine2InvalidCharacterError: ErrorMessages,
-  townValueError: ErrorMessages,
-  maxTownValueLengthError: ErrorMessages,
-  townInvalidCharacterError: ErrorMessages,
-  maxCountyValueLengthError: ErrorMessages,
-  countyInvalidCharacterError: ErrorMessages,
-  countryValueError: ErrorMessages,
-  postcodeLengthError: ErrorMessages,
-  postcodeInvalidCharacterError: ErrorMessages,
-}>;
-
-export type ErrorMessagesForURSaddress = {
-  propertyValueError: ErrorMessages,
-  maxPropertyValueLengthError: ErrorMessages,
-  propertyNameInvalidError: ErrorMessages,
-  addressLine1Error: ErrorMessages,
-  addressLine1LengthError: ErrorMessages,
-  addressLine1InvalidCharacterError: ErrorMessages,
-  addressLine2LengthError: ErrorMessages,
-  addressLine2InvalidCharacterError: ErrorMessages,
-  townValueError: ErrorMessages,
-  maxTownValueLengthError: ErrorMessages,
-  townInvalidCharacterError: ErrorMessages,
-  maxCountyValueLengthError: ErrorMessages,
-  countyInvalidCharacterError: ErrorMessages,
-  countryValueError: ErrorMessages,
-  postcodeLengthError: ErrorMessages,
-  postcodeInvalidCharacterError: ErrorMessages,
-};
-
-const defaultErrorMessagesForURAddresses: ErrorMessagesForURaddress = {
-  propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER,
-  maxPropertyValueLengthError: ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH,
-  propertyNameInvalidError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS,
-  addressLine1Error: ErrorMessages.ADDRESS_LINE1,
-  addressLine1LengthError: ErrorMessages.MAX_ADDRESS_LINE1_LENGTH,
-  addressLine1InvalidCharacterError: ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS,
-  addressLine2LengthError: ErrorMessages.MAX_ADDRESS_LINE2_LENGTH,
-  addressLine2InvalidCharacterError: ErrorMessages.ADDRESS_LINE_2_INVALID_CHARACTERS,
-  townValueError: ErrorMessages.CITY_OR_TOWN,
-  maxTownValueLengthError: ErrorMessages.MAX_CITY_OR_TOWN_LENGTH,
-  townInvalidCharacterError: ErrorMessages.CITY_OR_TOWN_INVALID_CHARACTERS,
-  maxCountyValueLengthError: ErrorMessages.MAX_COUNTY_LENGTH,
-  countyInvalidCharacterError: ErrorMessages.COUNTY_STATE_PROVINCE_REGION_INVALID_CHARACTERS,
-  countryValueError: ErrorMessages.COUNTRY,
-  postcodeLengthError: ErrorMessages.MAX_POSTCODE_LENGTH,
-  postcodeInvalidCharacterError: ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS,
-};
-
-const defaultErrorMessagesForURSAddresses: ErrorMessagesForURSaddress = defaultErrorMessagesForURAddresses as ErrorMessagesForURSaddress;
-
-export const usual_residential_address_validations = (errors: ErrorMessagesForURaddress = defaultErrorMessagesForURAddresses) => {
-  errors = { ...defaultErrorMessagesForURAddresses, ...errors };
+export const usual_residential_address_validations = (errors: ErrorMessagesOptional = defaultOptionalErrorMessages) => {
+  errors = { ...defaultOptionalErrorMessages, ...errors };
   return [
     body("usual_residential_address_property_name_number")
       .not().isEmpty({ ignore_whitespace: true }).withMessage(errors.propertyValueError)
@@ -148,8 +93,8 @@ export const usual_residential_address_validations = (errors: ErrorMessagesForUR
   ];
 };
 
-export const usual_residential_service_address_validations = (errors: ErrorMessagesForURSaddress = defaultErrorMessagesForURSAddresses) => {
-  errors = { ...defaultErrorMessagesForURSAddresses, ...errors };
+export const usual_residential_service_address_validations = (errors: ErrorMessagesRequired = defaultRequiredErrorMessages) => {
+  errors = { ...defaultRequiredErrorMessages, ...errors };
   return [
     body("service_address_property_name_number")
       .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body.is_service_address_same_as_usual_residential_address === '0', errors.propertyValueError, value) )
@@ -202,3 +147,5 @@ export const identity_address_validations = [
     .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
+export { ErrorMessagesOptional, ErrorMessagesRequired };
+

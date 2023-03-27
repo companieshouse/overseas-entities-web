@@ -82,7 +82,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    const url = `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    const pageUrl = `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
 
     // convert from data to application (session) object
     const individualTrusteeData = mapIndividualTrusteeToSession(req.body);
@@ -118,7 +118,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, url);
+    return safeRedirect(res, pageUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);

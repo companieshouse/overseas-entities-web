@@ -6,6 +6,7 @@ import * as uuid from 'uuid';
 import { TrustLegalEntityForm } from '../../../src/model/trust.page.model';
 import { TrustCorporate, TrustKey } from "../../../src/model/trust.model";
 import { TrusteeType } from "../../../src/model/trustee.type.model";
+import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 import {
   generateId,
   mapLegalEntityItemToPage,
@@ -24,10 +25,6 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
       const mockFormDataBasic = {
         legalEntityId: "9999",
         legalEntityName: "My Legal Entity",
-        roleWithinTrust: "Interest Person",
-        interestedPersonStartDateDay: "01",
-        interestedPersonStartDateMonth: "01",
-        interestedPersonStartDateYear: "2020",
         principal_address_property_name_number: "99",
         principal_address_line_1: "Reg Office First Line",
         principal_address_line_2: "Reg Office Second Line",
@@ -53,6 +50,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const mockFormData = {
           ...mockFormDataBasic,
+          roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
           is_service_address_same_as_principal_address: yesNoResponse.No,
           is_on_register_in_country_formed_in: yesNoResponse.No
         };
@@ -61,12 +59,9 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           id: mockFormData.legalEntityId,
           type: mockFormData.roleWithinTrust,
           name: mockFormData.legalEntityName,
-          date_became_interested_person_day: mockFormData.interestedPersonStartDateDay,
-          date_became_interested_person_month: mockFormData.interestedPersonStartDateMonth,
-          date_became_interested_person_year: mockFormData.interestedPersonStartDateYear,
           ro_address_premises: mockFormData.principal_address_property_name_number,
-          ro_address_line1: mockFormData.principal_address_line_1,
-          ro_address_line2: mockFormData.principal_address_line_2,
+          ro_address_line_1: mockFormData.principal_address_line_1,
+          ro_address_line_2: mockFormData.principal_address_line_2,
           ro_address_locality: mockFormData.principal_address_town,
           ro_address_region: mockFormData.principal_address_county,
           ro_address_country: mockFormData.principal_address_country,
@@ -74,8 +69,8 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ro_address_care_of: "",
           ro_address_po_box: "",
           sa_address_premises: mockFormData.service_address_property_name_number,
-          sa_address_line1: mockFormData.service_address_line_1,
-          sa_address_line2: mockFormData.service_address_line_2,
+          sa_address_line_1: mockFormData.service_address_line_1,
+          sa_address_line_2: mockFormData.service_address_line_2,
           sa_address_locality: mockFormData.service_address_town,
           sa_address_region: mockFormData.service_address_county,
           sa_address_country: mockFormData.service_address_country,
@@ -84,18 +79,19 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           sa_address_po_box: "",
           identification_legal_authority: mockFormData.governingLaw,
           identification_legal_form: mockFormData.legalForm,
-          identification_place_registered: "",
-          identification_country_registration: "",
-          identification_registration_number: "",
           is_service_address_same_as_principal_address: mockFormData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockFormData.is_on_register_in_country_formed_in,
         });
       });
 
-      test('Map legal entity trustee to session without public register infomation and same service address', () => {
+      test('Map legal entity trustee(INTERESTED_PERSON) to session without public register infomation and same service address', () => {
 
         const mockFormData = {
           ...mockFormDataBasic,
+          roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
+          interestedPersonStartDateDay: "01",
+          interestedPersonStartDateMonth: "01",
+          interestedPersonStartDateYear: "2020",
           is_service_address_same_as_principal_address: yesNoResponse.Yes,
           is_on_register_in_country_formed_in: yesNoResponse.Yes
         };
@@ -108,8 +104,8 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           date_became_interested_person_month: mockFormData.interestedPersonStartDateMonth,
           date_became_interested_person_year: mockFormData.interestedPersonStartDateYear,
           ro_address_premises: mockFormData.principal_address_property_name_number,
-          ro_address_line1: mockFormData.principal_address_line_1,
-          ro_address_line2: mockFormData.principal_address_line_2,
+          ro_address_line_1: mockFormData.principal_address_line_1,
+          ro_address_line_2: mockFormData.principal_address_line_2,
           ro_address_locality: mockFormData.principal_address_town,
           ro_address_region: mockFormData.principal_address_county,
           ro_address_country: mockFormData.principal_address_country,
@@ -117,8 +113,8 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           ro_address_care_of: "",
           ro_address_po_box: "",
           sa_address_premises: "",
-          sa_address_line1: "",
-          sa_address_line2: "",
+          sa_address_line_1: "",
+          sa_address_line_2: "",
           sa_address_locality: "",
           sa_address_region: "",
           sa_address_country: "",
@@ -145,16 +141,12 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
     describe('Test trust legal session to page mapping', () => {
 
-      const mockSessionData = {
+      const mockSessionDataBasic = {
         id: "9998",
         name: "My Legal Entity in Session",
-        type: "Interest Person",
-        date_became_interested_person_day: "01",
-        date_became_interested_person_month: "01",
-        date_became_interested_person_year: "2020",
         ro_address_premises: "99",
-        ro_address_line1: "Reg Office First Line",
-        ro_address_line2: "Reg Office Second Line",
+        ro_address_line_1: "Reg Office First Line",
+        ro_address_line_2: "Reg Office Second Line",
         ro_address_locality: "Reg Office Town",
         ro_address_region: "Reg Office County",
         ro_address_country: "Reg Office Country",
@@ -162,8 +154,8 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
         ro_address_care_of: "",
         ro_address_po_box: "",
         sa_address_premises: "100",
-        sa_address_line1: "Serv First Line",
-        sa_address_line2: "Serv Second Line",
+        sa_address_line_1: "Serv First Line",
+        sa_address_line_2: "Serv Second Line",
         sa_address_locality: "Serv Town",
         sa_address_region: "Serv County",
         sa_address_country: "Serv Country",
@@ -182,6 +174,59 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
 
         const trustId = '987';
         const trusteeId = '9998';
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          type: RoleWithinTrustType.BENEFICIARY
+        };
+
+        const appData = {
+          [TrustKey]: [{
+            'trust_id': trustId,
+            'CORPORATES': [ mockSessionData ] as TrustCorporate[],
+          }]
+        } as ApplicationData;
+        expect(
+          mapLegalEntityTrusteeFromSessionToPage(appData, trustId, trusteeId)
+        ).toEqual({
+          legalEntityId: mockSessionData.id,
+          roleWithinTrust: mockSessionData.type,
+          legalEntityName: mockSessionData.name,
+          principal_address_property_name_number: mockSessionData.ro_address_premises,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
+          principal_address_town: mockSessionData.ro_address_locality,
+          principal_address_county: mockSessionData.ro_address_region,
+          principal_address_country: mockSessionData.ro_address_country,
+          principal_address_postcode: mockSessionData.ro_address_postal_code,
+          service_address_property_name_number: mockSessionData.sa_address_premises,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
+          service_address_town: mockSessionData.sa_address_locality,
+          service_address_county: mockSessionData.sa_address_region,
+          service_address_country: mockSessionData.sa_address_country,
+          service_address_postcode: mockSessionData.sa_address_postal_code,
+          governingLaw: mockSessionData.identification_legal_authority,
+          legalForm: mockSessionData.identification_legal_form,
+          public_register_name: mockSessionData.identification_place_registered,
+          public_register_jurisdiction: mockSessionData.identification_country_registration,
+          registration_number: mockSessionData.identification_registration_number,
+          is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
+          is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+        });
+      });
+
+      test("Map legal entity trustee session data to page(INTERESTED_PERSON)", () => {
+
+        const trustId = '987';
+        const trusteeId = '9998';
+
+        const mockSessionData = {
+          ...mockSessionDataBasic,
+          type: RoleWithinTrustType.INTERESTED_PERSON,
+          date_became_interested_person_day: "01",
+          date_became_interested_person_month: "01",
+          date_became_interested_person_year: "2020",
+        };
 
         const appData = {
           [TrustKey]: [{
@@ -199,15 +244,15 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           interestedPersonStartDateMonth: mockSessionData.date_became_interested_person_month,
           interestedPersonStartDateYear: mockSessionData.date_became_interested_person_year,
           principal_address_property_name_number: mockSessionData.ro_address_premises,
-          principal_address_line_1: mockSessionData.ro_address_line1,
-          principal_address_line_2: mockSessionData.ro_address_line2,
+          principal_address_line_1: mockSessionData.ro_address_line_1,
+          principal_address_line_2: mockSessionData.ro_address_line_2,
           principal_address_town: mockSessionData.ro_address_locality,
           principal_address_county: mockSessionData.ro_address_region,
           principal_address_country: mockSessionData.ro_address_country,
           principal_address_postcode: mockSessionData.ro_address_postal_code,
           service_address_property_name_number: mockSessionData.sa_address_premises,
-          service_address_line_1: mockSessionData.sa_address_line1,
-          service_address_line_2: mockSessionData.sa_address_line2,
+          service_address_line_1: mockSessionData.sa_address_line_1,
+          service_address_line_2: mockSessionData.sa_address_line_2,
           service_address_town: mockSessionData.sa_address_locality,
           service_address_county: mockSessionData.sa_address_region,
           service_address_country: mockSessionData.sa_address_country,
@@ -221,13 +266,12 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
         });
       });
-
       test("Map legal entity trustee session data to page trustee item", () => {
         expect(
-          mapLegalEntityItemToPage(mockSessionData as TrustCorporate)
+          mapLegalEntityItemToPage(mockSessionDataBasic as TrustCorporate)
         ).toEqual({
-          id: mockSessionData.id,
-          name: mockSessionData.name,
+          id: mockSessionDataBasic.id,
+          name: mockSessionDataBasic.name,
           trusteeItemType: TrusteeType.LEGAL_ENTITY,
         });
       });

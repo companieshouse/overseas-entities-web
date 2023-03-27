@@ -251,6 +251,10 @@ export const INTERESTED_PERSON_START_DATE = "#dateBecameIP-dateBecameIPDay";
 export const PUBLIC_REGISTER_JURISDICTION = "#public_register_jurisdiction";
 export const LEGAL_ENTITY_NAME = "#legalEntityName";
 export const TRUST_BENEFICIAL_OWNERS = "#trustBeneficialOwners";
+export const TRUSTEE_START_DATE = "#startDate-startDateDay";
+export const TRUSTEE_END_DATE = "#endDate-endDateDay";
+export const CORPORATE_NAME = "#corporate_name";
+export const INDIVIDUAL_NAME = "#firstName";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
@@ -284,3 +288,5 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME = OVERSEAS_ENTITY
 
 // page sub-headings
 export const OVERSEAS_ENTITY_SECTION_HEADING = "Overseas entity details";
+export const UPDATE_PRESENTER_CHANGE_FULL_NAME = OVERSEAS_ENTITY_PRESENTER_URL + "#full_name";
+export const UPDATE_PRESENTER_CHANGE_EMAIL = OVERSEAS_ENTITY_PRESENTER_URL + "#email";

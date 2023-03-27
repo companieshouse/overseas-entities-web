@@ -163,7 +163,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_FORM,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalForm",
       "Legal entity " + legalEntity.name + " - legal form",
       "change-legal-entity-legal-form-button"
     ) ]
@@ -179,7 +179,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LAW_GOVERNED,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#governingLaw",
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-governing-law-button"
     ) ]

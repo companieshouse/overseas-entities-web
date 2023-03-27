@@ -348,7 +348,7 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
 
         return {
           id: uuidv4(),
-          type: apiData.type as RoleWithinTrustType,
+          type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
           name: apiData.name,
           date_became_interested_person_day: apiData?.date_became_interested_person_day,
           date_became_interested_person_month: apiData?.date_became_interested_person_month,
@@ -387,7 +387,7 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
 
         return {
           id: uuidv4(),
-          type: apiData.type as RoleWithinTrustType,
+          type: getRoleWithinTrustType(apiData.type) as RoleWithinTrustType,
           forename: apiData.forename,
           other_forenames: apiData.other_forenames,
           surname: apiData.surname,
@@ -428,6 +428,23 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
 
   }
 };
+
+function getRoleWithinTrustType(type: any): RoleWithinTrustType | undefined {
+
+  switch (type) {
+      case "BENEFICIARY":
+        return RoleWithinTrustType.BENEFICIARY;
+      case "SETTLOR":
+        return RoleWithinTrustType.SETTLOR;
+      case "GRANTOR":
+        return RoleWithinTrustType.GRANTOR;
+      case "INTERESTED_PERSON":
+        return RoleWithinTrustType.INTERESTED_PERSON;
+      default:
+        break;
+  }
+  return undefined;
+}
 
 export {
   checkEntityRequiresTrusts,

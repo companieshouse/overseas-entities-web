@@ -773,7 +773,7 @@ describe('Trust Utils method tests', () => {
       const trust = trusts[0];
       const individualTrusteesWebModel = trust.INDIVIDUALS ?? [] as TrustIndividual[];
       expect(individualTrusteesWebModel[0]).toHaveProperty('id');
-      expect(individualTrusteesWebModel[0]["type"]).toEqual("INTERESTED_PERSON");
+      expect(individualTrusteesWebModel[0]["type"]).toEqual("Interested Person");
       expect(individualTrusteesWebModel[0]["forename"]).toEqual("Fred");
       expect(individualTrusteesWebModel[0]["other_forenames"]).toEqual("");
       expect(individualTrusteesWebModel[0]["surname"]).toEqual("Bloggs");
@@ -806,7 +806,7 @@ describe('Trust Utils method tests', () => {
       expect(individualTrusteesWebModel[0]["date_became_interested_person_year"]).toEqual("2014");
 
       expect(individualTrusteesWebModel[1]).toHaveProperty('id');
-      expect(individualTrusteesWebModel[1]["type"]).toEqual("GRANTOR");
+      expect(individualTrusteesWebModel[1]["type"]).toEqual("Grantor");
       expect(individualTrusteesWebModel[1]["forename"]).toEqual("Jane");
       expect(individualTrusteesWebModel[1]["other_forenames"]).toEqual("");
       expect(individualTrusteesWebModel[1]["surname"]).toEqual("Smith");
@@ -842,7 +842,7 @@ describe('Trust Utils method tests', () => {
 
       const corporatelTrusteesWebModel = trust2.CORPORATES ?? [] as TrustCorporate[];
       expect(corporatelTrusteesWebModel[0]).toHaveProperty('id');
-      expect(corporatelTrusteesWebModel[0]["type"]).toEqual("INTERESTED_PERSON");
+      expect(corporatelTrusteesWebModel[0]["type"]).toEqual("Interested Person");
       expect(corporatelTrusteesWebModel[0]["name"]).toEqual("Orange");
       expect(corporatelTrusteesWebModel[0]["ro_address_premises"]).toEqual("1");
       expect(corporatelTrusteesWebModel[0]["ro_address_line_1"]).toEqual("Main Street");
@@ -874,7 +874,7 @@ describe('Trust Utils method tests', () => {
       expect(corporatelTrusteesWebModel[0]["is_on_register_in_country_formed_in"]).toEqual(true);
 
       expect(corporatelTrusteesWebModel[1]).toHaveProperty('id');
-      expect(corporatelTrusteesWebModel[1]["type"]).toEqual("GRANTOR");
+      expect(corporatelTrusteesWebModel[1]["type"]).toEqual("Grantor");
       expect(corporatelTrusteesWebModel[1]["name"]).toEqual("Apple");
       expect(corporatelTrusteesWebModel[1]["ro_address_premises"]).toEqual("1");
       expect(corporatelTrusteesWebModel[1]["ro_address_line_1"]).toEqual("Main Street");

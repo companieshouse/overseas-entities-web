@@ -72,7 +72,8 @@ export const trustLegalEntityBeneficialOwnerValidator = [
 ];
 
 const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {
-  if ((value1 + value2) > target){
+  const condition = Promise.resolve((value1 + value2) > target);
+  if (await condition){
     throw RangeError(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
   }
 };

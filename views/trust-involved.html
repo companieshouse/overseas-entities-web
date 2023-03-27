@@ -30,14 +30,6 @@
             },
             value: {
               text: bo.name
-            },
-            actions: {
-              items: [SUMMARY_LIST_LINK(
-                'remove',
-                pageData.beneficialOwnerUrlDetach + '/' + bo.id,
-                [type, bo.name, "detach from trust button"] | join(' '),
-                "detach-beneficial-owner-from-trust-button"
-              )]
             }
           }),
           boItems

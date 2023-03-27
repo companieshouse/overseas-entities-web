@@ -12,7 +12,6 @@ import {
   IndividualTrustee,
   TrustKey,
   TrustCorporate,
-  TrustIndividual,
 } from "../model/trust.model";
 
 /**
@@ -319,26 +318,6 @@ const saveIndividualTrusteeInTrust = (trust: Trust, trusteeData: IndividualTrust
 };
 
 /**
- * The Trustee Ids are NOT part of the OE API data model nor part of the SDK mapper object. They need
- * to be generated when the Trust Data is got from the API (e.g. for a "Save and Resume" journey)
- * @param appData - application data
- * @returns void
- */
-const generateTrusteeIds = (appData: ApplicationData) => {
-
-  if (containsTrustData(getTrustArray(appData))) {
-
-    for (const trust of appData.trusts ?? []) {
-
-      trust.CORPORATES = (trust.CORPORATES as TrustCorporate[]).map( te => {return { ...te, id: uuidv4() }; } );
-      trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map( te => {return { ...te, id: uuidv4() }; } );
-      trust.INDIVIDUALS = (trust.INDIVIDUALS as TrustIndividual[]).map( te => {return { ...te, id: uuidv4() }; } );
-
-    }
-  }
-};
-
-/**
  * The API returns data in a different type of resource as is sent up to it! This is hard coded in the API
  * with the Node SDK just doing some date mapping.
  *
@@ -380,7 +359,7 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
           ro_address_locality: apiData.registered_office_address.locality,
           ro_address_region: apiData.registered_office_address.county,
           ro_address_country: apiData.registered_office_address.country,
-          ro_address_postal_code: apiData.registered_office_address.postal_code,
+          ro_address_postal_code: apiData.registered_office_address.postcode,
           ro_address_care_of: apiData?.registered_office_address.care_of,
           ro_address_po_box: apiData?.registered_office_address.po_box,
           sa_address_premises: apiData?.service_address.property_name_number,
@@ -424,6 +403,8 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
           ura_address_region: apiData.usual_residential_address?.county,
           ura_address_country: apiData.usual_residential_address?.country,
           ura_address_postal_code: apiData.usual_residential_address?.postcode,
+          ura_address_care_of: apiData?.usual_residential_address.care_of,
+          ura_address_po_box: apiData?.usual_residential_address.po_box,
           is_service_address_same_as_usual_residential_address: apiData.is_service_address_same_as_usual_residential_address,
           sa_address_premises: apiData.service_address?.property_name_number,
           sa_address_line_1: apiData.service_address?.line_1,
@@ -470,7 +451,6 @@ export {
   getTrustLandingUrl,
   containsTrustData,
   getIndividualTrustee,
-  generateTrusteeIds,
   getLegalEntityTrustee,
   mapTrustApiReturnModelToWebModel,
 };

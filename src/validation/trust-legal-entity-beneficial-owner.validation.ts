@@ -1,6 +1,6 @@
 import { body, check } from "express-validator";
 import { ErrorMessages } from "./error.messages";
-import { ErrorMessagesOptional, principal_address_validations } from "./fields/address.validation";
+import { ErrorMessagesOptional, ErrorMessagesRequired, principal_address_validations, usual_residential_service_address_validations } from "./fields/address.validation";
 import { dateBecameIPLegalEntityBeneficialOwner } from "./fields/date.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
@@ -21,10 +21,11 @@ export const trustLegalEntityBeneficialOwnerValidator = [
 
   ...dateBecameIPLegalEntityBeneficialOwner,
 
-  ...principal_address_validations(addressErrorMessages),
-
   body("is_service_address_same_as_principal_address")
-    .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),
+    .notEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_LEGAL_ENTITY_BO),
+
+  ...principal_address_validations(addressErrorMessages),
+  ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired, 'is_service_address_same_as_principal_address'),
 
   body("legalForm")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM_LEGAL_ENTITY_BO)
@@ -53,23 +54,24 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   body("registration_number")
     .if(body("is_on_register_in_country_formed_in").equals("1"))
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.ENTITY_REGISTRATION_NUMBER)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_ENTITY_REGISTRATION_NUMBER),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_ENTITY_REGISTRATION_NUMBER)
+  ,
 
   check("public_register_jurisdiction")
     .if(body("public_register_jurisdiction").notEmpty())
     .if(body("registration_number").notEmpty())
-    .custom( (value, { req }) => {
-      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom( async (value, { req }) => {
+      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
   check("registration_number")
     .if(body("registration_number").notEmpty())
     .if(body("public_register_jurisdiction").notEmpty())
-    .custom( (value, { req }) => {
-      checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom( async (value, { req }) => {
+      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
 ];
 
-const checkIfLessThanTargetValue = (value1: number, value2: number, target: number) => {
+const checkIfLessThanTargetValue = async (value1: number, value2: number, target: number) => {
   if ((value1 + value2) > target){
     throw RangeError(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
   }

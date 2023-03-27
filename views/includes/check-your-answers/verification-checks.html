@@ -1,5 +1,52 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set ukAgent = "The UK agent" %}
+{% set someoneElse = "Someone from the overseas entity" %}
+
+{% if pageParams.isRegistration %}
+  {% if appData.who_is_registering == "agent" %}
+    {% set whoIsCompletingTheRegistration = ukAgent %}
+    {% set agentChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE %}
+    {% set dateChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
+    {% set nameChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME%}
+    {% set addressChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS%}
+    {% set emailChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_EMAIL%}
+    {% set supervisoryChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME%}
+    {% set amlChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER%}
+    {% set partnerChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME%}
+  {% else %}
+    {% set whoIsCompletingTheRegistration = someoneElse %}
+    {% set dateChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
+    {% set nameChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME %}
+    {% set addressChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS %}
+    {% set emailChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL %}
+    {% set supervisoryChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME %}
+    {% set amlChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER %}
+    {% set partnerChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME %}
+  {% endif %}
+{% else %}
+  {% if appData.who_is_registering == "agent" %}
+    {% set whoIsCompletingTheRegistration = ukAgent %}
+    {% set agentChangeLink = UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE %}
+    {% set dateChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
+    {% set nameChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_NAME%}
+    {% set addressChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS%}
+    {% set emailChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_EMAIL%}
+    {% set supervisoryChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME%}
+    {% set amlChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER%}
+    {% set partnerChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME%}
+  {% else %}
+    {% set whoIsCompletingTheRegistration = someoneElse %}
+    {% set dateChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
+    {% set nameChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME %}
+    {% set addressChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS %}
+    {% set emailChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL %}
+    {% set supervisoryChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME %}
+    {% set amlChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER %}
+    {% set partnerChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME %}
+  {% endif %}
+{% endif %}
+
 {% if ( appData.due_diligence and appData.due_diligence | length ) %}
   {% set dueDiligence = appData.due_diligence %}
   {% set agentCode = {
@@ -11,7 +58,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE,
+        agentChangeLink,
         "Agent’s authentication code",
         "change-agent-authentication-code-button"
       ) ]
@@ -29,27 +76,6 @@
 
 {% set checkDate = dateMacros.formatDate(dueDiligence.identity_date["day"], dueDiligence.identity_date["month"], dueDiligence.identity_date["year"]) %}
 
-{% if appData.who_is_registering == "agent" %}
-  {% set whoIsCompletingTheRegistration = "The UK agent" %}
-  {% set dateChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
-  {% set nameChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME%}
-  {% set addressChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS%}
-  {% set emailChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_EMAIL%}
-  {% set supervisoryChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME%}
-  {% set amlChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER%}
-  {% set partnerChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME%}
-{% else %}
-  {% set whoIsCompletingTheRegistration = "Someone from the overseas entity" %}
-  {% set dateChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
-  {% set nameChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME %}
-  {% set addressChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS %}
-  {% set emailChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_EMAIL %}
-  {% set supervisoryChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME %}
-  {% set amlChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER %}
-  {% set partnerChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME %}
-{% endif %}
-
-
 <h3 class="govuk-heading-l">Verification checks</h3>
 
 {{ govukSummaryList({
@@ -63,7 +89,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.DUE_DILIGENCE_CHANGE_WHO,
+            whoIsCompletingChangeLink,
             "Who is completing this registration",
             "change-identity-check-name-button"
           ) ]

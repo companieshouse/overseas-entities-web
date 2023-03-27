@@ -23,7 +23,13 @@ import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
+import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { logger } from "../../../src/utils/logger";
+
+const pageTitle = "You're about to review beneficial owner and managing officer information";
+
+const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
+mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -49,7 +55,7 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
       const resp = await request(app).get(config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("You're about to review beneficial owner and managing officer information");
+      expect(resp.text).toContain(pageTitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain("Overseas Entity Name");
       expect(resp.text).toContain("SA000392");

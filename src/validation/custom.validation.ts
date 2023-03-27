@@ -249,14 +249,14 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
 
 export const checkDateIPIndividualBO = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO } as DateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
 
 export const checkDateIPLegalEntityBO = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO } as DateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
@@ -270,7 +270,7 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
   return true;
 };
@@ -284,7 +284,7 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
   return true;
 };
@@ -298,7 +298,7 @@ export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_START_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_START_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);
   return true;
 };
@@ -312,7 +312,7 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_END_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
+  checkDateValueIsValid(ErrorMessages.INVALID_END_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);
   return true;
 };

@@ -4,7 +4,7 @@ import { DayFieldErrors, MonthFieldErrors, YearFieldErrors, checkDayFieldForErro
 export const dateValidations = (dateContext: dateContext) => {
   return [
     body(`${dateContext.dateInput.name}-${dateContext.dayInput.name}`)
-      .if(body(`${dateContext.dateInput.name}-${dateContext.monthInput.name}`).notEmpty({ ignore_whitespace: true }))
+      .if(body(`${dateContext.monthInput.name}`).notEmpty({ ignore_whitespace: true }))
       .if(body(`${dateContext.yearInput.name}`).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkDayFieldForErrors(dateContext.dayInput.errors, req.body[dateContext.dayInput.name])),
     body(`${dateContext.dateInput.name}-${dateContext.monthInput.name}`)

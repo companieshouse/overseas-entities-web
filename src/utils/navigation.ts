@@ -73,11 +73,11 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-    nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
   },
   [config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {
     currentPage: config.BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
@@ -95,11 +95,10 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: []
   },
-  [config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL]: {
-    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+  [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
-    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
-    // config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL
+    nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
@@ -271,9 +270,9 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
+  [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: { // update-an-overseas-entity/update-registrable-beneficial-owner
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
-    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
   },
 };

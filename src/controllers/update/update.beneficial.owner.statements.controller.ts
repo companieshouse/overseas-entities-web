@@ -13,7 +13,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
+    return res.render(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: config.ENTITY_URL,
       templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
@@ -45,9 +45,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     appData[BeneficialOwnerStatementKey] = boStatement;
     setExtraData(session, appData);
-    await saveAndContinue(req, session);
+    await saveAndContinue(req, session, false);
 
-    return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

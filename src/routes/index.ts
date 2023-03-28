@@ -332,7 +332,7 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
 
-router.route(config.BENEFICIAL_UPDATE_OWNER_STATEMENTS_URL)
+router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .all(
     authentication,
     companyAuthentication,

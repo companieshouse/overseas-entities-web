@@ -32,7 +32,8 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 
   test('map person of significant control to beneficial owner individual should return object', () => {
     expect(mapPscToBeneficialOwnerTypeIndividual(pscMock)).toEqual({
-      id: "",
+      id: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+      ch_reference: "dhjsabcdjhvdjhdf",
       date_of_birth: {
         day: pscMock.dateOfBirth.day,
         month: pscMock.dateOfBirth.month,
@@ -42,7 +43,11 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       last_name: pscMock.nameElements.surname,
       nationality: pscMock.nationality,
       second_nationality: undefined,
-      start_date: undefined,
+      start_date: {
+        year: "2016",
+        month: "04",
+        day: "06"
+      },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -62,9 +67,14 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 
   test('map person of significant control to beneficial owner other  should return object', () => {
     expect(mapPscToBeneficialOwnerOther(pscMock)).toEqual({
-      id: "",
+      id: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+      ch_reference: "dhjsabcdjhvdjhdf",
       name: pscMock.name,
-      start_date: undefined,
+      start_date: {
+        year: "2016",
+        month: "04",
+        day: "06"
+      },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -91,9 +101,14 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 
   test('map person of significant control to beneficial owner corporate (gov) should return object', () => {
     expect(mapPscToBeneficialOwnerGov(pscMock)).toEqual({
-      id: "",
+      id: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+      ch_reference: "dhjsabcdjhvdjhdf",
       name: pscMock.name,
-      start_date: undefined,
+      start_date: {
+        year: "2016",
+        month: "04",
+        day: "06"
+      },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       is_service_address_same_as_principal_address: yesNoResponse.No,

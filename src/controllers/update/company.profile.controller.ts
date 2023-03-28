@@ -17,7 +17,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
-      registrationDate: update.date_of_creation?.day + "/" + update.date_of_creation?.month + "/" + update.date_of_creation?.year
+      registrationDate: update.date_of_creation?.year + '-' + update.date_of_creation?.month + '-' + update.date_of_creation?.day
     });
   } catch (errors) {
     logger.errorRequest(req, errors);

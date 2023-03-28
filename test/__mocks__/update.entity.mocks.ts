@@ -4,7 +4,12 @@ export const companyProfileQueryMock = {
   companyNumber: "OE111129"
 };
 
-export const testDateOfCreation = "1/1/2023";
+export const testDateOfCreation = {
+  year: "2023",
+  month: "1",
+  day: "1"
+};
+
 export const testEntityName = "testEntity";
 export const testEntityNumber = "OE111129";
 export const testIncorporationCountry = "Ireland";

@@ -719,6 +719,38 @@ describe('Trust Utils method tests', () => {
       identification_registration_number: "",
       is_on_register_in_country_formed_in: false,
     };
+    const corporateTrustee3 = {
+      name: "Grape",
+      type: "BENEFICIARY",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+      identification_legal_authority: "la 2",
+      identification_legal_form: "lf 2",
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+      is_on_register_in_country_formed_in: false,
+    };
+    const corporateTrustee4 = {
+      name: "Kiwi",
+      type: "SETTLOR",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+      identification_legal_authority: "la 2",
+      identification_legal_form: "lf 2",
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+      is_on_register_in_country_formed_in: false,
+    };
     const historicBoTrusteeIndividual = {
       forename: "Ben",
       other_forenames: "",
@@ -750,7 +782,7 @@ describe('Trust Utils method tests', () => {
         'HISTORICAL_BO': [],
       }, {
         'trust_id': second_test_trust_id,
-        'CORPORATES': [ corporateTrustee1, corporateTrustee2 ],
+        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4 ],
         'INDIVIDUALS': [],
         'HISTORICAL_BO': [ historicBoTrusteeIndividual, historicBoTrusteeCorporate ],
       }
@@ -902,6 +934,9 @@ describe('Trust Utils method tests', () => {
       expect(corporatelTrusteesWebModel[1]["identification_country_registration"]).toEqual("");
       expect(corporatelTrusteesWebModel[1]["identification_registration_number"]).toEqual("");
       expect(corporatelTrusteesWebModel[1]["is_on_register_in_country_formed_in"]).toEqual(false);
+
+      expect(corporatelTrusteesWebModel[2]["type"]).toEqual("Beneficiary");
+      expect(corporatelTrusteesWebModel[3]["type"]).toEqual("Settlor");
 
       const historicalTrusteesWebModel = trust2.HISTORICAL_BO ?? [] as TrustHistoricalBeneficialOwner[];
       expect(historicalTrusteesWebModel[0]).toHaveProperty('id');

@@ -1,0 +1,93 @@
+{% set dateErrorMessage = '' %}
+{% set isDayError = false %}
+{% set isMonthError = false %}
+{% set isYearError = false %}
+
+{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
+{# We need to loop through the errors returned to pick out the first date field error #}
+{# to prevent duplicate messages on the same field. #}
+{# We can use its message text and then work out which of the day/month/year fields #}
+{# to mark as 'red' using the error style class #}
+
+{% if errors %}
+  {% for key, value in errors %}
+
+    {# only look at first matching error #}
+    {% if not dateErrorMessage %}
+      {% if field_name_string == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
+        {% set dateErrorMessage = value %}
+        {% if field_name %}
+          {% if not day_field_value %}
+            {% set isDayError = true %}
+          {% endif %}
+          {% if not month_field_value %}
+            {% set isMonthError = true %}
+          {% endif %}
+          {% if not year_field_value %}
+            {% set isYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif field_name_string in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
+        {% set dateErrorMessage = value %}
+        {% if "-day" in key|string %}
+          {% set isDayError = true %}
+        {% elif "-month" in key|string %}
+          {% set isMonthError = true %}
+        {% elif "-year" in key|string %}
+          {% set isYearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+
+{% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+{% if isDayError %}
+  {% set date_classes_day = date_classes_day + "--error" %}
+{% endif %}
+{% if isMonthError %}
+  {% set date_classes_month = date_classes_month + "--error" %}
+{% endif %}
+{% if isYearError %}
+  {% set date_classes_year = date_classes_year + "--error" %}
+{% endif %}
+
+
+{{ govukDateInput({
+  errorMessage: dateErrorMessage,
+  id: field_name_string,
+  namePrefix: field_name_string,
+  fieldset: {
+    legend: {
+      text: dateText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: "For example, 27 3 2007"
+  },
+  items: [
+    {
+      classes: date_classes_day,
+      name: "day",
+      value: day_field_value if field_name
+    },
+    {
+      classes: date_classes_month,
+      name: "month",
+      value: month_field_value if field_name
+    },
+    {
+      classes: date_classes_year,
+      name: "year",
+      value: year_field_value if field_name
+    }
+  ]
+}) }}

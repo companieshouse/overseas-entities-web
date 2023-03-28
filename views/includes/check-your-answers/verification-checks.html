@@ -4,8 +4,9 @@
 {% set someoneElse = "Someone from the overseas entity" %}
 
 {% if pageParams.isRegistration %}
+  {% set whoIsCompletingText = "Who is completing this registration" %}
   {% if appData.who_is_registering == "agent" %}
-    {% set whoIsCompletingTheRegistration = ukAgent %}
+    {% set whoIsCompleting = ukAgent %}
     {% set agentChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AGENT_CODE %}
     {% set dateChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
     {% set nameChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_NAME%}
@@ -15,7 +16,7 @@
     {% set amlChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_AML_NUMBER%}
     {% set partnerChangeLink = OE_CONFIGS.DUE_DILIGENCE_CHANGE_PARTNER_NAME%}
   {% else %}
-    {% set whoIsCompletingTheRegistration = someoneElse %}
+    {% set whoIsCompleting = someoneElse %}
     {% set dateChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
     {% set nameChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME %}
     {% set addressChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS %}
@@ -25,8 +26,9 @@
     {% set partnerChangeLink = OE_CONFIGS.OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME %}
   {% endif %}
 {% else %}
+  {% set whoIsCompletingText = "Who is completing this update?" %}
   {% if appData.who_is_registering == "agent" %}
-    {% set whoIsCompletingTheRegistration = ukAgent %}
+    {% set whoIsCompleting = ukAgent %}
     {% set agentChangeLink = UPDATE_DUE_DILIGENCE_CHANGE_AGENT_CODE %}
     {% set dateChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
     {% set nameChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_NAME%}
@@ -36,7 +38,7 @@
     {% set amlChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_AML_NUMBER%}
     {% set partnerChangeLink = OE_CONFIGS.UPDATE_DUE_DILIGENCE_CHANGE_PARTNER_NAME%}
   {% else %}
-    {% set whoIsCompletingTheRegistration = someoneElse %}
+    {% set whoIsCompleting = someoneElse %}
     {% set dateChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_DATE %}
     {% set nameChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_NAME %}
     {% set addressChangeLink = OE_CONFIGS.UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_IDENTITY_ADDRESS %}
@@ -82,15 +84,15 @@
     rows: [
       {
         key: {
-        text: "Who is completing this registration"
+        text: whoIsCompletingText
         },
         value: {
-          text: whoIsCompletingTheRegistration
+          text: whoIsCompleting
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
             whoIsCompletingChangeLink,
-            "Who is completing this registration",
+            whoIsCompletingText,
             "change-identity-check-name-button"
           ) ]
         }

@@ -29,6 +29,7 @@ import {
   OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
   SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE
 } from '../../__mocks__/text.mock';
+import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { PresenterKey } from '../../../src/model/presenter.model';
 import { EntityNumberKey } from '../../../src/model/data.types.model';
 import {
@@ -76,6 +77,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_USE_INFORMATION_NEED_MORE);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });

@@ -26,6 +26,7 @@ export const BeneficialOwnerIndividualKeys: string[] = [
 
 export interface BeneficialOwnerIndividual {
   id: string;
+  ch_reference?: string;
   first_name?: string;
   last_name?: string;
   date_of_birth?: InputDate;
@@ -35,6 +36,7 @@ export interface BeneficialOwnerIndividual {
   is_service_address_same_as_usual_residential_address?: yesNoResponse;
   service_address?: Address;
   start_date?: InputDate;
+  ceased_date?: InputDate;
   beneficial_owner_nature_of_control_types?: NatureOfControlType[];
   trustees_nature_of_control_types?: NatureOfControlType[];
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];

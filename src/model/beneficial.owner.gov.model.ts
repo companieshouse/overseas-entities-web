@@ -22,6 +22,7 @@ export const BeneficialOwnerGovKeys: string[] = [
 
 export interface BeneficialOwnerGov {
   id: string;
+  ch_reference?: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;
@@ -29,6 +30,7 @@ export interface BeneficialOwnerGov {
   legal_form?: string;
   law_governed?: string;
   start_date?: InputDate;
+  ceased_date?: InputDate;
   beneficial_owner_nature_of_control_types?: NatureOfControlType[];
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
   is_on_sanctions_list?: yesNoResponse;

@@ -24,6 +24,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
     if (!hasFetchedBoAndMoData(appData)) {
+      if (!appData.update) {
+        appData.update = {};
+      }
+      appData.update.managing_officers_individual = [];
+      appData.update.managing_officers_corporate = [];
+      appData.update.beneficial_owners_individual = [];
+      appData.update.beneficial_owners_corporate = [];
+      appData.update.beneficial_owners_government_or_public_authority = [];
+
       await retrieveManagingOfficers(req, appData);
       await retrieveBeneficialOwners(req, appData);
       setFetchedBoMoData(appData);
@@ -74,10 +83,16 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
     for (const officer of (companyOfficers.items || [])) {
       if (officer.officerRole === "secretary") {
         const managingOfficer = mapToManagingOfficer(officer);
-        logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
+        if (!managingOfficer.resigned_on) {
+          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
+          appData.update?.managing_officers_individual?.push(managingOfficer);
+        }
       } else if (officer.officerRole === "director") {
         const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+        if (!managingOfficerCorporate.resigned_on) {
+          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+          appData.update?.managing_officers_corporate?.push(managingOfficerCorporate);
+        }
       }
     }
   }
@@ -89,12 +104,22 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+        if (!individualBeneficialOwner.ceased_date) {
+          logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+          appData.update?.beneficial_owners_individual?.push(individualBeneficialOwner);
+        }
+      } else if (psc.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+        if (!beneficialOwnerOther.ceased_date) {
+          logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+          appData.update?.beneficial_owners_corporate?.push(beneficialOwnerOther);
+        }
       } else if (psc.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+        if (!beneficialOwnerGov.ceased_date) {
+          logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+          appData.beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
+        }
       }
     }
   }

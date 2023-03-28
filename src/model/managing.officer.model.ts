@@ -23,19 +23,21 @@ export const ManagingOfficerKeys: string[] = [
 ];
 
 export interface ManagingOfficerIndividual {
-  id: string,
-  first_name?: string
-  last_name?: string
-  has_former_names?: yesNoResponse
-  former_names?: string
-  date_of_birth?: InputDate
-  nationality?: string
+  id: string;
+  ch_reference?: string;
+  first_name?: string;
+  last_name?: string;
+  has_former_names?: yesNoResponse;
+  former_names?: string;
+  date_of_birth?: InputDate;
+  nationality?: string;
   second_nationality?: string;
-  usual_residential_address?: Address
-  service_address?: Address
-  is_service_address_same_as_usual_residential_address?: yesNoResponse
-  occupation?: string
-  role_and_responsibilities?: string
+  usual_residential_address?: Address;
+  service_address?: Address;
+  is_service_address_same_as_usual_residential_address?: yesNoResponse;
+  occupation?: string;
+  role_and_responsibilities?: string;
+  resigned_on?: InputDate;
 }
 
 export const FormerNamesKey = "former_names";

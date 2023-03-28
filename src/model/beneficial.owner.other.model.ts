@@ -26,6 +26,7 @@ export const BeneficialOwnerOtherKeys: string[] = [
 
 export interface BeneficialOwnerOther {
   id: string;
+  ch_reference?: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;
@@ -36,6 +37,7 @@ export interface BeneficialOwnerOther {
   registration_number?: string;
   is_on_register_in_country_formed_in?: yesNoResponse;
   start_date?: InputDate;
+  ceased_date?: InputDate;
   beneficial_owner_nature_of_control_types?: NatureOfControlType[];
   trustees_nature_of_control_types?: NatureOfControlType[];
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];

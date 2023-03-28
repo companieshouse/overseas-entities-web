@@ -16,6 +16,29 @@ export const mapDateOfBirth: DateOfBirthTypes = (dateOfBirth) => {
   } as InputDate;
 };
 
+export const mapSelfLink = (selfLink: string | undefined): string | undefined => {
+  if (selfLink === undefined) {
+    return undefined;
+  }
+  const path = selfLink.split('/');
+  return path.length > 0 ? path[path.length - 1] : undefined;
+};
+
+export const mapInputDate = (date: string | undefined): InputDate | undefined => {
+  if (date === undefined) {
+    return undefined;
+  }
+  const yearDayMonth = date.split('-');
+  if (yearDayMonth.length < 2) {
+    return undefined;
+  }
+  return {
+    day: (yearDayMonth.length > 2 ? yearDayMonth[2] : ""),
+    month: yearDayMonth[1],
+    year: yearDayMonth[0]
+  };
+};
+
 export const mapAddress = (address: ServiceAddress | undefined): Address => {
   if (!address) {
     return {};

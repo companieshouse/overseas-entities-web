@@ -1,4 +1,4 @@
-import { isSameAddress, mapBOMOAddress, mapDateOfBirth } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
@@ -13,6 +13,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 
   return {
     id: raw.links?.self,
+    ch_reference: mapSelfLink(raw.links?.self),
     first_name: names[0],
     last_name: names[1],
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
@@ -24,6 +25,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     service_address: service_address,
     occupation: officer.occupation,
     role_and_responsibilities: officer.officerRole,
+    resigned_on: mapInputDate(raw.resigned_on)
   };
 };
 
@@ -34,6 +36,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
 
   return {
     id: raw.links?.self,
+    ch_reference: mapSelfLink(raw.links?.self),
     name: officer.name,
     principal_address: address,
     is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
@@ -44,6 +47,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     public_register_name: officer.identification?.placeRegistered,
     registration_number: officer.identification?.registrationNumber,
     role_and_responsibilities: officer.officerRole,
+    resigned_on: mapInputDate(raw.resigned_on)
   };
 };
 

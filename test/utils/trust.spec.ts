@@ -658,9 +658,9 @@ describe('Trust Utils method tests', () => {
       forename: "Fred",
       other_forenames: "",
       surname: "Bloggs",
-      date_of_birth_day: "01",
-      date_of_birth_month: "02",
-      date_of_birth_year: "1990",
+      dob_day: "01",
+      dob_month: "02",
+      dob_year: "1990",
       nationality: "Welsh",
       second_nationality: "German",
       usual_residential_address: api_ura_address,
@@ -675,9 +675,9 @@ describe('Trust Utils method tests', () => {
       forename: "Jane",
       other_forenames: "",
       surname: "Smith",
-      date_of_birth_day: "02",
-      date_of_birth_month: "03",
-      date_of_birth_year: "1994",
+      dob_day: "02",
+      dob_month: "03",
+      dob_year: "1994",
       nationality: "English",
       second_nationality: "",
       usual_residential_address: api_ura_address,
@@ -809,9 +809,9 @@ describe('Trust Utils method tests', () => {
       expect(individualTrusteesWebModel[0]["forename"]).toEqual("Fred");
       expect(individualTrusteesWebModel[0]["other_forenames"]).toEqual("");
       expect(individualTrusteesWebModel[0]["surname"]).toEqual("Bloggs");
-      expect(individualTrusteesWebModel[0]["date_of_birth_day"]).toEqual("01");
-      expect(individualTrusteesWebModel[0]["date_of_birth_month"]).toEqual("02");
-      expect(individualTrusteesWebModel[0]["date_of_birth_year"]).toEqual("1990");
+      expect(individualTrusteesWebModel[0]["dob_day"]).toEqual("01");
+      expect(individualTrusteesWebModel[0]["dob_month"]).toEqual("02");
+      expect(individualTrusteesWebModel[0]["dob_year"]).toEqual("1990");
       expect(individualTrusteesWebModel[0]["nationality"]).toEqual("Welsh");
       expect(individualTrusteesWebModel[0]["second_nationality"]).toEqual("German");
       expect(individualTrusteesWebModel[0]["ura_address_premises"]).toEqual("2");
@@ -842,9 +842,9 @@ describe('Trust Utils method tests', () => {
       expect(individualTrusteesWebModel[1]["forename"]).toEqual("Jane");
       expect(individualTrusteesWebModel[1]["other_forenames"]).toEqual("");
       expect(individualTrusteesWebModel[1]["surname"]).toEqual("Smith");
-      expect(individualTrusteesWebModel[1]["date_of_birth_day"]).toEqual("02");
-      expect(individualTrusteesWebModel[1]["date_of_birth_month"]).toEqual("03");
-      expect(individualTrusteesWebModel[1]["date_of_birth_year"]).toEqual("1994");
+      expect(individualTrusteesWebModel[1]["dob_day"]).toEqual("02");
+      expect(individualTrusteesWebModel[1]["dob_month"]).toEqual("03");
+      expect(individualTrusteesWebModel[1]["dob_year"]).toEqual("1994");
       expect(individualTrusteesWebModel[1]["nationality"]).toEqual("English");
       expect(individualTrusteesWebModel[1]["second_nationality"]).toEqual("");
       expect(individualTrusteesWebModel[1]["ura_address_premises"]).toEqual("2");

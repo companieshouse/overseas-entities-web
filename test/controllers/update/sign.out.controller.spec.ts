@@ -14,7 +14,7 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
   SERVICE_UNAVAILABLE,
-  SIGN_OUT_HINT_TEXT,
+  UPDATE_SIGN_OUT_HINT_TEXT,
   SIGN_OUT_PAGE_TITLE
 } from "../../__mocks__/text.mock";
 
@@ -40,7 +40,7 @@ describe("SIGN OUT controller", () => {
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
     });
 

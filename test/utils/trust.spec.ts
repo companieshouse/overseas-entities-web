@@ -17,10 +17,10 @@ import {
   getFormerTrusteesFromTrust,
   checkEntityRequiresTrusts,
   getTrustLandingUrl,
-  generateTrusteeIds,
   getLegalEntityBosInTrust,
   getLegalEntityTrustee,
   getFormerTrustee,
+  mapTrustApiReturnModelToWebModel,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -604,67 +604,367 @@ describe('Trust Utils method tests', () => {
 
   });
 
-  describe('test generating id for trustees', () => {
+  describe('test mapping API Trust return model back to Web model', () => {
 
     const test_trust_id = '342';
     const second_test_trust_id = '546';
-    const individualTrustee1 = { forename: "Fred", surname: "Bloggs" } as IndividualTrustee;
-    const individualTrustee2 = { forename: "John", surname: "Doe" } as IndividualTrustee;
-    const corporateTrustee1 = { name: "Orange" } as TrustCorporate;
-    const corporateTrustee2 = { name: "Apple" } as TrustCorporate;
-    const historicBoTrustee1 = { ceased_date_day: "1", ceased_date_month: "2" } as TrustHistoricalBeneficialOwner;
-    const historicBoTrustee2 = { ceased_date_day: "2", ceased_date_month: "4" } as TrustHistoricalBeneficialOwner;
 
-    const appData = {
+    const api_ura_address = {
+      property_name_number: "2",
+      line_1: "Lime Street",
+      line_2: "Beachside",
+      locality: "Wick",
+      county: "Vale of Glamorgan",
+      country: "Wales",
+      postcode: "CF71 7QA",
+      care_of: "",
+      po_box: "",
+    };
+    const api_service_address = {
+      property_name_number: "8",
+      line_1: "Station Approach",
+      line_2: "",
+      locality: "Hereford",
+      county: "Herefordshire",
+      country: "England",
+      postcode: "HR1 1AA",
+      care_of: "",
+      po_box: "",
+    };
+    const api_registered_office_address = {
+      property_name_number: "1",
+      line_1: "Main Street",
+      line_2: "Standard Zone",
+      locality: "Toytown",
+      county: "Big Ears",
+      country: "Noddyland",
+      postcode: "NOD 1",
+      care_of: "",
+      po_box: "",
+    };
+    const api_empty_address = {
+      property_name_number: "",
+      line_1: "",
+      line_2: "",
+      locality: "",
+      county: "",
+      country: "",
+      postcode: "",
+      care_of: "",
+      po_box: "",
+    };
+    const individualTrustee1 = {
+      type: "INTERESTED_PERSON",
+      forename: "Fred",
+      other_forenames: "",
+      surname: "Bloggs",
+      dob_day: "01",
+      dob_month: "02",
+      dob_year: "1990",
+      nationality: "Welsh",
+      second_nationality: "German",
+      usual_residential_address: api_ura_address,
+      is_service_address_same_as_usual_residential_address: true,
+      service_address: api_empty_address,
+      date_became_interested_person_day: "10",
+      date_became_interested_person_month: "11",
+      date_became_interested_person_year: "2014",
+    };
+    const individualTrustee2 = {
+      type: "GRANTOR",
+      forename: "Jane",
+      other_forenames: "",
+      surname: "Smith",
+      dob_day: "02",
+      dob_month: "03",
+      dob_year: "1994",
+      nationality: "English",
+      second_nationality: "",
+      usual_residential_address: api_ura_address,
+      is_service_address_same_as_usual_residential_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+    };
+    const corporateTrustee1 = {
+      name: "Orange",
+      type: "INTERESTED_PERSON",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: true,
+      service_address: api_empty_address,
+      date_became_interested_person_day: "10",
+      date_became_interested_person_month: "11",
+      date_became_interested_person_year: "2014",
+      identification_legal_authority: "la 1",
+      identification_legal_form: "lf 1",
+      identification_place_registered: "pr 1",
+      identification_country_registration: "cr 1",
+      identification_registration_number: "rn 1",
+      is_on_register_in_country_formed_in: true,
+    };
+    const corporateTrustee2 = {
+      name: "Apple",
+      type: "GRANTOR",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+      identification_legal_authority: "la 2",
+      identification_legal_form: "lf 2",
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+      is_on_register_in_country_formed_in: false,
+    };
+    const corporateTrustee3 = {
+      name: "Grape",
+      type: "BENEFICIARY",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+      identification_legal_authority: "la 2",
+      identification_legal_form: "lf 2",
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+      is_on_register_in_country_formed_in: false,
+    };
+    const corporateTrustee4 = {
+      name: "Kiwi",
+      type: "SETTLOR",
+      registered_office_address: api_registered_office_address,
+      is_service_address_same_as_principal_address: false,
+      service_address: api_service_address,
+      date_became_interested_person_day: "",
+      date_became_interested_person_month: "",
+      date_became_interested_person_year: "",
+      identification_legal_authority: "la 2",
+      identification_legal_form: "lf 2",
+      identification_place_registered: "",
+      identification_country_registration: "",
+      identification_registration_number: "",
+      is_on_register_in_country_formed_in: false,
+    };
+    const historicBoTrusteeIndividual = {
+      forename: "Ben",
+      other_forenames: "",
+      surname: "Gone",
+      notified_date_day: "10",
+      notified_date_month: "12",
+      notified_date_year: "2010",
+      ceased_date_day: "01",
+      ceased_date_month: "02",
+      ceased_date_year: "2022",
+      corporate_indicator: false,
+    };
+    const historicBoTrusteeCorporate = {
+      corporate_name: "Yesterday Limited",
+      notified_date_day: "10",
+      notified_date_month: "12",
+      notified_date_year: "2010",
+      ceased_date_day: "01",
+      ceased_date_month: "02",
+      ceased_date_year: "2022",
+      corporate_indicator: true,
+    };
+
+    const apiData = {
       [TrustKey]: [{
         'trust_id': test_trust_id,
-        'CORPORATES': [] as TrustCorporate[],
-        'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ] as TrustIndividual[],
-        'HISTORICAL_BO': [] as TrustHistoricalBeneficialOwner[],
+        'CORPORATES': [],
+        'INDIVIDUALS': [ individualTrustee1, individualTrustee2 ],
+        'HISTORICAL_BO': [],
       }, {
         'trust_id': second_test_trust_id,
-        'CORPORATES': [ corporateTrustee1, corporateTrustee2 ] as TrustCorporate[],
-        'INDIVIDUALS': [] as TrustIndividual[],
-        'HISTORICAL_BO': [ historicBoTrustee1, historicBoTrustee2 ] as TrustHistoricalBeneficialOwner[],
+        'CORPORATES': [ corporateTrustee1, corporateTrustee2, corporateTrustee3, corporateTrustee4 ],
+        'INDIVIDUALS': [],
+        'HISTORICAL_BO': [ historicBoTrusteeIndividual, historicBoTrusteeCorporate ],
       }
       ]
-    } as ApplicationData;
+    };
 
-    test("test ids are added for multi-trust app data all trusees types", () => {
+    test("test Web Model OK for multi-trust app data with all trusees types", () => {
 
-      const trusts = appData.trusts ?? [];
+      const trusts = apiData.trusts ?? [];
+
+      expect(individualTrustee1).not.toHaveProperty('id');
+      expect(individualTrustee2).not.toHaveProperty('id');
+      expect(corporateTrustee1).not.toHaveProperty('id');
+      expect(corporateTrustee2).not.toHaveProperty('id');
+      expect(historicBoTrusteeIndividual).not.toHaveProperty('id');
+      expect(historicBoTrusteeCorporate).not.toHaveProperty('id');
+
+      mapTrustApiReturnModelToWebModel(apiData as any);
 
       const trust = trusts[0];
-      let individualTrustees = trust.INDIVIDUALS ?? [];
-      expect(individualTrustees[0]).not.toHaveProperty('id');
-      expect(individualTrustees[1]).not.toHaveProperty('id');
+      const individualTrusteesWebModel = trust.INDIVIDUALS ?? [] as TrustIndividual[];
+      expect(individualTrusteesWebModel[0]).toHaveProperty('id');
+      expect(individualTrusteesWebModel[0]["type"]).toEqual("Interested Person");
+      expect(individualTrusteesWebModel[0]["forename"]).toEqual("Fred");
+      expect(individualTrusteesWebModel[0]["other_forenames"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["surname"]).toEqual("Bloggs");
+      expect(individualTrusteesWebModel[0]["dob_day"]).toEqual("01");
+      expect(individualTrusteesWebModel[0]["dob_month"]).toEqual("02");
+      expect(individualTrusteesWebModel[0]["dob_year"]).toEqual("1990");
+      expect(individualTrusteesWebModel[0]["nationality"]).toEqual("Welsh");
+      expect(individualTrusteesWebModel[0]["second_nationality"]).toEqual("German");
+      expect(individualTrusteesWebModel[0]["ura_address_premises"]).toEqual("2");
+      expect(individualTrusteesWebModel[0]["ura_address_line_1"]).toEqual("Lime Street");
+      expect(individualTrusteesWebModel[0]["ura_address_line_2"]).toEqual("Beachside");
+      expect(individualTrusteesWebModel[0]["ura_address_locality"]).toEqual("Wick");
+      expect(individualTrusteesWebModel[0]["ura_address_region"]).toEqual("Vale of Glamorgan");
+      expect(individualTrusteesWebModel[0]["ura_address_country"]).toEqual("Wales");
+      expect(individualTrusteesWebModel[0]["ura_address_postal_code"]).toEqual("CF71 7QA");
+      expect(individualTrusteesWebModel[0]["ura_address_care_of"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["ura_address_po_box"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["is_service_address_same_as_usual_residential_address"]).toEqual(true);
+      expect(individualTrusteesWebModel[0]["sa_address_premises"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_line_1"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_line_2"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_locality"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_region"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_country"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_postal_code"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_care_of"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["sa_address_po_box"]).toEqual("");
+      expect(individualTrusteesWebModel[0]["date_became_interested_person_day"]).toEqual("10");
+      expect(individualTrusteesWebModel[0]["date_became_interested_person_month"]).toEqual("11");
+      expect(individualTrusteesWebModel[0]["date_became_interested_person_year"]).toEqual("2014");
+
+      expect(individualTrusteesWebModel[1]).toHaveProperty('id');
+      expect(individualTrusteesWebModel[1]["type"]).toEqual("Grantor");
+      expect(individualTrusteesWebModel[1]["forename"]).toEqual("Jane");
+      expect(individualTrusteesWebModel[1]["other_forenames"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["surname"]).toEqual("Smith");
+      expect(individualTrusteesWebModel[1]["dob_day"]).toEqual("02");
+      expect(individualTrusteesWebModel[1]["dob_month"]).toEqual("03");
+      expect(individualTrusteesWebModel[1]["dob_year"]).toEqual("1994");
+      expect(individualTrusteesWebModel[1]["nationality"]).toEqual("English");
+      expect(individualTrusteesWebModel[1]["second_nationality"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["ura_address_premises"]).toEqual("2");
+      expect(individualTrusteesWebModel[1]["ura_address_line_1"]).toEqual("Lime Street");
+      expect(individualTrusteesWebModel[1]["ura_address_line_2"]).toEqual("Beachside");
+      expect(individualTrusteesWebModel[1]["ura_address_locality"]).toEqual("Wick");
+      expect(individualTrusteesWebModel[1]["ura_address_region"]).toEqual("Vale of Glamorgan");
+      expect(individualTrusteesWebModel[1]["ura_address_country"]).toEqual("Wales");
+      expect(individualTrusteesWebModel[1]["ura_address_postal_code"]).toEqual("CF71 7QA");
+      expect(individualTrusteesWebModel[1]["ura_address_care_of"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["ura_address_po_box"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["is_service_address_same_as_usual_residential_address"]).toEqual(false);
+      expect(individualTrusteesWebModel[1]["sa_address_premises"]).toEqual("8");
+      expect(individualTrusteesWebModel[1]["sa_address_line_1"]).toEqual("Station Approach");
+      expect(individualTrusteesWebModel[1]["sa_address_line_2"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["sa_address_locality"]).toEqual("Hereford");
+      expect(individualTrusteesWebModel[1]["sa_address_region"]).toEqual("Herefordshire");
+      expect(individualTrusteesWebModel[1]["sa_address_country"]).toEqual("England");
+      expect(individualTrusteesWebModel[1]["sa_address_postal_code"]).toEqual("HR1 1AA");
+      expect(individualTrusteesWebModel[1]["sa_address_care_of"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["sa_address_po_box"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["date_became_interested_person_day"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["date_became_interested_person_month"]).toEqual("");
+      expect(individualTrusteesWebModel[1]["date_became_interested_person_year"]).toEqual("");
 
       const trust2 = trusts[1];
-      let corporateTrustees2 = trust2.CORPORATES ?? [];
-      expect(corporateTrustees2[0]).not.toHaveProperty('id');
-      expect(corporateTrustees2[1]).not.toHaveProperty('id');
-      let historicTrustees2 = trust2.HISTORICAL_BO ?? [];
-      expect(historicTrustees2[0]).not.toHaveProperty('id');
-      expect(historicTrustees2[1]).not.toHaveProperty('id');
 
-      generateTrusteeIds(appData);
+      const corporatelTrusteesWebModel = trust2.CORPORATES ?? [] as TrustCorporate[];
+      expect(corporatelTrusteesWebModel[0]).toHaveProperty('id');
+      expect(corporatelTrusteesWebModel[0]["type"]).toEqual("Interested Person");
+      expect(corporatelTrusteesWebModel[0]["name"]).toEqual("Orange");
+      expect(corporatelTrusteesWebModel[0]["ro_address_premises"]).toEqual("1");
+      expect(corporatelTrusteesWebModel[0]["ro_address_line_1"]).toEqual("Main Street");
+      expect(corporatelTrusteesWebModel[0]["ro_address_line_2"]).toEqual("Standard Zone");
+      expect(corporatelTrusteesWebModel[0]["ro_address_locality"]).toEqual("Toytown");
+      expect(corporatelTrusteesWebModel[0]["ro_address_region"]).toEqual("Big Ears");
+      expect(corporatelTrusteesWebModel[0]["ro_address_country"]).toEqual("Noddyland");
+      expect(corporatelTrusteesWebModel[0]["ro_address_postal_code"]).toEqual("NOD 1");
+      expect(corporatelTrusteesWebModel[0]["ro_address_care_of"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["ro_address_po_box"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["is_service_address_same_as_principal_address"]).toEqual(true);
+      expect(corporatelTrusteesWebModel[0]["sa_address_premises"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_line_1"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_line_2"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_locality"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_region"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_country"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_postal_code"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_care_of"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["sa_address_po_box"]).toEqual("");
+      expect(corporatelTrusteesWebModel[0]["date_became_interested_person_day"]).toEqual("10");
+      expect(corporatelTrusteesWebModel[0]["date_became_interested_person_month"]).toEqual("11");
+      expect(corporatelTrusteesWebModel[0]["date_became_interested_person_year"]).toEqual("2014");
+      expect(corporatelTrusteesWebModel[0]["identification_legal_authority"]).toEqual("la 1");
+      expect(corporatelTrusteesWebModel[0]["identification_legal_form"]).toEqual("lf 1");
+      expect(corporatelTrusteesWebModel[0]["identification_place_registered"]).toEqual("pr 1");
+      expect(corporatelTrusteesWebModel[0]["identification_country_registration"]).toEqual("cr 1");
+      expect(corporatelTrusteesWebModel[0]["identification_registration_number"]).toEqual("rn 1");
+      expect(corporatelTrusteesWebModel[0]["is_on_register_in_country_formed_in"]).toEqual(true);
 
-      // the trustee array references are updated in generateTrusteeIds
-      individualTrustees = trust.INDIVIDUALS ?? [];
-      expect(individualTrustees[0]).toHaveProperty('id');
-      expect(individualTrustees[1]).toHaveProperty('id');
+      expect(corporatelTrusteesWebModel[1]).toHaveProperty('id');
+      expect(corporatelTrusteesWebModel[1]["type"]).toEqual("Grantor");
+      expect(corporatelTrusteesWebModel[1]["name"]).toEqual("Apple");
+      expect(corporatelTrusteesWebModel[1]["ro_address_premises"]).toEqual("1");
+      expect(corporatelTrusteesWebModel[1]["ro_address_line_1"]).toEqual("Main Street");
+      expect(corporatelTrusteesWebModel[1]["ro_address_line_2"]).toEqual("Standard Zone");
+      expect(corporatelTrusteesWebModel[1]["ro_address_locality"]).toEqual("Toytown");
+      expect(corporatelTrusteesWebModel[1]["ro_address_region"]).toEqual("Big Ears");
+      expect(corporatelTrusteesWebModel[1]["ro_address_country"]).toEqual("Noddyland");
+      expect(corporatelTrusteesWebModel[1]["ro_address_postal_code"]).toEqual("NOD 1");
+      expect(corporatelTrusteesWebModel[1]["ro_address_care_of"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["ro_address_po_box"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["is_service_address_same_as_principal_address"]).toEqual(false);
+      expect(corporatelTrusteesWebModel[1]["sa_address_premises"]).toEqual("8");
+      expect(corporatelTrusteesWebModel[1]["sa_address_line_1"]).toEqual("Station Approach");
+      expect(corporatelTrusteesWebModel[1]["sa_address_line_2"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["sa_address_locality"]).toEqual("Hereford");
+      expect(corporatelTrusteesWebModel[1]["sa_address_region"]).toEqual("Herefordshire");
+      expect(corporatelTrusteesWebModel[1]["sa_address_country"]).toEqual("England");
+      expect(corporatelTrusteesWebModel[1]["sa_address_postal_code"]).toEqual("HR1 1AA");
+      expect(corporatelTrusteesWebModel[1]["date_became_interested_person_day"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["date_became_interested_person_month"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["date_became_interested_person_year"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["identification_legal_authority"]).toEqual("la 2");
+      expect(corporatelTrusteesWebModel[1]["identification_legal_form"]).toEqual("lf 2");
+      expect(corporatelTrusteesWebModel[1]["identification_place_registered"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["identification_country_registration"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["identification_registration_number"]).toEqual("");
+      expect(corporatelTrusteesWebModel[1]["is_on_register_in_country_formed_in"]).toEqual(false);
 
-      corporateTrustees2 = trust2.CORPORATES ?? [];
-      expect(corporateTrustees2[0]).toHaveProperty('id');
-      expect(corporateTrustees2[1]).toHaveProperty('id');
-      historicTrustees2 = trust2.HISTORICAL_BO ?? [];
-      expect(historicTrustees2[0]).toHaveProperty('id');
-      expect(historicTrustees2[1]).toHaveProperty('id');
+      expect(corporatelTrusteesWebModel[2]["type"]).toEqual("Beneficiary");
+      expect(corporatelTrusteesWebModel[3]["type"]).toEqual("Settlor");
+
+      const historicalTrusteesWebModel = trust2.HISTORICAL_BO ?? [] as TrustHistoricalBeneficialOwner[];
+      expect(historicalTrusteesWebModel[0]).toHaveProperty('id');
+      expect(historicalTrusteesWebModel[0]["forename"]).toEqual("Ben");
+      expect(historicalTrusteesWebModel[0]["other_forenames"]).toEqual("");
+      expect(historicalTrusteesWebModel[0]["surname"]).toEqual("Gone");
+      expect(historicalTrusteesWebModel[0]["corporate_indicator"]).toEqual(false);
+      expect(historicalTrusteesWebModel[0]["notified_date_day"]).toEqual("10");
+      expect(historicalTrusteesWebModel[0]["notified_date_month"]).toEqual("12");
+      expect(historicalTrusteesWebModel[0]["notified_date_year"]).toEqual("2010");
+      expect(historicalTrusteesWebModel[0]["ceased_date_day"]).toEqual("01");
+      expect(historicalTrusteesWebModel[0]["ceased_date_month"]).toEqual("02");
+      expect(historicalTrusteesWebModel[0]["ceased_date_year"]).toEqual("2022");
+
+      expect(historicalTrusteesWebModel[1]).toHaveProperty('id');
+      expect(historicalTrusteesWebModel[1]["corporate_name"]).toEqual("Yesterday Limited");
+      expect(historicalTrusteesWebModel[1]["corporate_indicator"]).toEqual(true);
+      expect(historicalTrusteesWebModel[1]["notified_date_day"]).toEqual("10");
+      expect(historicalTrusteesWebModel[1]["notified_date_month"]).toEqual("12");
+      expect(historicalTrusteesWebModel[1]["notified_date_year"]).toEqual("2010");
+      expect(historicalTrusteesWebModel[1]["ceased_date_day"]).toEqual("01");
+      expect(historicalTrusteesWebModel[1]["ceased_date_month"]).toEqual("02");
+      expect(historicalTrusteesWebModel[1]["ceased_date_year"]).toEqual("2022");
     });
 
   });
-  test("no trust data so nothing happens in generate trust ids", () => {
-    generateTrusteeIds({});
+  test("no trust data so nothing happens in mapTrustApiReturnModelToWebModel", () => {
+    mapTrustApiReturnModelToWebModel({});
   });
 
 });

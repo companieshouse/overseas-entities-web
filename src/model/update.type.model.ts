@@ -8,6 +8,6 @@ export const UpdateKeys: string[] = [ "date_of_creation", "bo_mo_data", "registr
 export interface Update {
     date_of_creation?: string;
     bo_mo_data?: true;
-    registrable_beneficial_owner?: yesNoResponse
+    registrable_beneficial_owner?: yesNoResponse;
 }
 

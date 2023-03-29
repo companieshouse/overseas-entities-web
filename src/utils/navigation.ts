@@ -82,7 +82,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   },
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
@@ -272,7 +272,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
-    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
-    nextPage: [config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
   },
 };

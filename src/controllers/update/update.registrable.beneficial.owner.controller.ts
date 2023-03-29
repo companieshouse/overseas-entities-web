@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner;
     }
     setExtraData(req.session, appData);
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
   } catch (error) {
     next(error);
   }

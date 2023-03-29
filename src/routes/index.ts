@@ -341,15 +341,6 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .get(updateBeneficialOwnerStatements.get)
   .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);
 
-router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
-  .all(
-    authentication,
-  )
-  .get(updateCheckYourAnswers.get)
-  .post(updateCheckYourAnswers.post);
-router.get(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.get);
-router.post(config.UPDATE_CHECK_YOUR_ANSWERS_URL, authentication, companyAuthentication, updateCheckYourAnswers.post);
-
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
 
 router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)

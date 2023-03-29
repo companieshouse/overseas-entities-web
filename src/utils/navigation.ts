@@ -270,7 +270,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: { // update-an-overseas-entity/update-registrable-beneficial-owner
+  [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: { 
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL]

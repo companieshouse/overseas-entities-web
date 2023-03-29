@@ -5,15 +5,11 @@ import { HasSoldLandKey, IsSecureRegisterKey, EntityNameKey, EntityNumberKey } f
 import { PresenterKey } from '../../model/presenter.model';
 import { EntityKey } from '../../model/entity.model';
 import { BeneficialOwnerStatementKey } from '../../model/beneficial.owner.statement.model';
-import { BeneficialOwnerGovKey } from '../../model/beneficial.owner.gov.model';
-import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
-import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
-import { ManagingOfficerCorporateKey } from '../../model/managing.officer.corporate.model';
-import { ManagingOfficerKey } from '../../model/managing.officer.model';
 import { WhoIsRegisteringKey } from '../../model/who.is.making.filing.model';
 import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
 import { DueDiligenceKey } from '../../model/due.diligence.model';
 import { UpdateKey } from '../../model/update.type.model';
+import { checkBOsDetailsEntered, checkMOsDetailsEntered } from '../../utils/application.data';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
 
@@ -54,13 +50,7 @@ export const checkBeneficialOwnersStatementDetailsEntered = (appData: Applicatio
 
 export const checkBOsOrMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return checkBeneficialOwnersStatementDetailsEntered(appData) &&
-  (
-    Object.keys(appData[BeneficialOwnerIndividualKey] || []).length !== 0 ||
-    Object.keys(appData[BeneficialOwnerOtherKey] || []).length !== 0 ||
-    Object.keys(appData[BeneficialOwnerGovKey] || []).length !== 0 ||
-    Object.keys(appData[ManagingOfficerKey] || []).length !== 0 ||
-    Object.keys(appData[ManagingOfficerCorporateKey] || []).length !== 0
-  );
+  (checkBOsDetailsEntered(appData) || checkMOsDetailsEntered(appData));
 };
 
 // UPDATE journey
@@ -87,4 +77,8 @@ export const checkEntityUpdateDetailsEntered = (appData: ApplicationData): boole
 
 export const checkWhoIsFilingEntered = (appData: ApplicationData): boolean => {
   return checkHasAppData(appData) && (appData[WhoIsRegisteringKey] || "").length !== 0;
+};
+
+export const checkBOsOrMOsDetailsEnteredUpdate = (appData: ApplicationData): boolean => {
+  return checkBOsDetailsEntered(appData) || checkMOsDetailsEntered(appData);
 };

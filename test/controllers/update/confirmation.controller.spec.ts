@@ -4,6 +4,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/session');
+jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import request from "supertest";
@@ -23,6 +24,7 @@ import { deleteApplicationData, getApplicationData } from "../../../src/utils/ap
 import { APPLICATION_DATA_MOCK, ENTITY_OBJECT_MOCK, getSessionRequestWithExtraData, userMail } from "../../__mocks__/session.mock";
 import { get } from "../../../src/controllers/confirmation.controller";
 import { getLoggedInUserEmail } from "../../../src/utils/session";
+import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 
 const req = {} as Request;
 const res = { render: jest.fn() as any } as Response;
@@ -32,6 +34,8 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
+mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;

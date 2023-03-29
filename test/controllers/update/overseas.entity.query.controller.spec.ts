@@ -105,7 +105,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('redirects to confirm page for valid oe number', async () => {
       mockGetApplicationData.mockReturnValueOnce({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
-      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
+      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce([{}, undefined]);
 
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)

@@ -53,7 +53,12 @@ export const companyDetailsMock: CompanyProfile = {
     nextDue: "due",
     overdue: false
   },
-  links: {}
+  links: {},
+  confirmationStatement: {
+    nextDue: "2023-04-01",
+    overdue: false,
+    nextMadeUpTo: "2023-01-01"
+  }
 };
 
 export const pscMock: CompanyPersonWithSignificantControl = {

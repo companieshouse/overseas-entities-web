@@ -46,9 +46,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         resetEntityUpdate(appData);
         appData.entity_name = companyProfile.companyName;
         appData.entity_number = entityNumber;
-        appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
+        const [entity, next_filing_due_date] = mapCompanyProfileToOverseasEntity(companyProfile);
+        appData.entity = entity;
         if (appData.update) {
           appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
+          appData.update.next_filing_due = next_filing_due_date;
         }
 
         setExtraData(req.session, appData);

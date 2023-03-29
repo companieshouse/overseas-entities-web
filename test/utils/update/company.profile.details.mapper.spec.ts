@@ -17,7 +17,7 @@ describe("Test company profile details mapping", () => {
   });
 
   test('map company details to overseas entity should return object', () => {
-    expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
+    expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual([{
       email: "",
       law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
       legal_form: companyDetailsMock.foreignCompanyDetails?.legalForm,
@@ -45,7 +45,11 @@ describe("Test company profile details mapping", () => {
       public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.name,
       is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
       is_service_address_same_as_principal_address: yesNoResponse.No
-    });
+    },
+    { year: "2023",
+      month: "04",
+      day: "01"
+    }]);
   });
 
   test(`A null OE address should map to be empty`, () => {

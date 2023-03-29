@@ -11,25 +11,29 @@ export const UpdateKey = "update";
 export const UpdateKeys: string[] = [
   "date_of_creation",
   "date_of_filing",
+  "date_of_ceasation",
   "bo_mo_data",
-  "beneficial_owners_individual",
-  "beneficial_owners_corporate",
-  "beneficial_owners_government_or_public_authority",
-  "managing_officers_individual",
-  "managing_officers_corporate"
+  "review_beneficial_owners_individual",
+  "review_beneficial_owners_corporate",
+  "review_beneficial_owners_government_or_public_authority",
+  "review_managing_officers_individual",
+  "review_managing_officers_corporate",
+  "any_beneficial_owners_ceased_or_added",
+  "next_filing_due"
 ];
 
 export interface Update {
     date_of_creation?: InputDate;
     date_of_ceasation?: InputDate;
-    date_of_filing?: InputDate; // To be used for start & ceased date validation.
+    date_of_filing?: InputDate; // To be used for start & ceased date validation. Assumption: Start dates are take from notified_on in BO/MOs.
+    next_filing_due?: InputDate; // Assumption that next_due in company profile confirmation statement can be used.
     bo_mo_data?: yesNoResponse;
     registrable_beneficial_owner?: yesNoResponse;
     any_beneficial_owners_ceased_or_added?: yesNoResponse;
     // Benefitial Owner Statement is in main part of model.
-    beneficial_owners_individual?: BeneficialOwnerIndividual[];
-    beneficial_owners_corporate?: BeneficialOwnerOther[];
-    beneficial_owners_government_or_public_authority?: BeneficialOwnerGov[];
-    managing_officers_individual?: ManagingOfficerIndividual[];
-    managing_officers_corporate?: ManagingOfficerCorporate[];
+    review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
+    review_beneficial_owners_corporate?: BeneficialOwnerOther[];
+    review_beneficial_owners_government_or_public_authority?: BeneficialOwnerGov[];
+    review_managing_officers_individual?: ManagingOfficerIndividual[];
+    review_managing_officers_corporate?: ManagingOfficerCorporate[];
 }

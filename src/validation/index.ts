@@ -24,6 +24,7 @@ import { trustDetails } from "./trust.details.validation";
 import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
 import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
 import { addTrustValidations } from "./add.trust.validation";
+import { updateBeneficialOwnerStatements } from "./update.beneficial.owner.statements.validation";
 import { trustLegalEntityBeneficialOwnerValidator } from "./trust-legal-entity-beneficial-owner.validation";
 import { registrableBeneficialOwner } from "./registrable.beneficial.owner.validation";
 
@@ -53,6 +54,7 @@ export const validator = {
   trustInvolved,
   trustDetails,
   updateBeneficialOwnerAndManagingOfficerType,
+  updateBeneficialOwnerStatements,
   trustIndividualBeneficialOwner,
   trustHistoricalBeneficialOwner,
   addTrust: addTrustValidations,

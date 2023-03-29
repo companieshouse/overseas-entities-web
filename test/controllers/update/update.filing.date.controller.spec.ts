@@ -38,6 +38,9 @@ import {
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
+
+import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
+
 import { NextFunction } from "express";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -80,6 +83,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Date (NOT LIVE)");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

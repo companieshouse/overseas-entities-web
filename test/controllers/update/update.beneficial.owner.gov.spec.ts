@@ -15,7 +15,13 @@ import { NextFunction, Request, Response } from "express";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import app from "../../../src/app";
-import { UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_GOV_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, LANDING_PAGE_URL, REMOVE } from "../../../src/config";
+import {
+  UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
+  UPDATE_BENEFICIAL_OWNER_GOV_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  LANDING_PAGE_URL,
+  REMOVE
+} from "../../../src/config";
 import {
   getFromApplicationData,
   mapFieldsToDataObject,
@@ -30,7 +36,6 @@ import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../../__mocks__/text.mock";
@@ -45,6 +50,7 @@ import {
   BO_GOV_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION,
 } from "../../__mocks__/session.mock";
+import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { AddressKeys } from '../../../src/model/data.types.model';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { ApplicationDataType } from '../../../src/model';
@@ -96,7 +102,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
@@ -124,7 +130,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("LegalForm");
       expect(resp.text).toContain("a11");
       expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(saveAndContinueButtonText);
     });
 
     test("Should render the error page", async () => {

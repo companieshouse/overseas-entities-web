@@ -6,6 +6,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -28,7 +29,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   LANDING_PAGE_URL,
   UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
-  UPDATE_MANAGING_OFFICER_CORPORATE_URL,
+  UPDATE_MANAGING_OFFICER_CORPORATE_URL
 } from "../../../src/config";
 import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
@@ -36,7 +37,6 @@ import {
   MESSAGE_ERROR,
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../../__mocks__/text.mock";
@@ -57,6 +57,7 @@ import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   MANAGING_OFFICER_CORPORATE_WITH_MAX_LENGTH_FIELDS_MOCK
 } from "../../__mocks__/validation.mock";
+import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
   mapFieldsToDataObject,
   prepareData,
@@ -65,6 +66,7 @@ import {
 import { logger } from "../../../src/utils/logger";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -83,6 +85,9 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(true);
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -103,7 +108,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
       expect(resp.text).toContain(LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });

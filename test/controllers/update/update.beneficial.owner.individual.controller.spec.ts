@@ -34,7 +34,6 @@ import {
   ERROR_LIST,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SECOND_NATIONALITY,
   SECOND_NATIONALITY_HINT,
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
@@ -62,6 +61,7 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_MAX_LENGTH_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
+import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../../src/model/address.model";
 import { ApplicationDataType } from '../../../src/model';
@@ -107,7 +107,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -124,7 +124,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain("Ivan");
       expect(resp.text).toContain("Drago");
       expect(resp.text).toContain("Russian");

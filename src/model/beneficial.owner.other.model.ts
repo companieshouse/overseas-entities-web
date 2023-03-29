@@ -22,6 +22,7 @@ export const BeneficialOwnerOtherKeys: string[] = [
   "non_legal_firm_members_nature_of_control_types",
   "is_on_sanctions_list",
   "trust_ids",
+  "ceased_date"
 ];
 
 export interface BeneficialOwnerOther {
@@ -41,4 +42,5 @@ export interface BeneficialOwnerOther {
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
   is_on_sanctions_list?: yesNoResponse;
   trust_ids?: string[];
+  ceased_date?: InputDate;
 }

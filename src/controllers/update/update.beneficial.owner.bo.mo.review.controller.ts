@@ -12,7 +12,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, {
-      backLinkUrl: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+      backLinkUrl: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
       appData
     });
@@ -26,7 +26,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

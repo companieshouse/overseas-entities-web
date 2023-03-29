@@ -12,7 +12,7 @@ export const UpdateKeys: string[] = [
   "date_of_creation",
   "date_of_filing",
   "date_of_ceasation",
-  "bo_mo_data",
+  "bo_mo_data_fetched",
   "review_beneficial_owners_individual",
   "review_beneficial_owners_corporate",
   "review_beneficial_owners_government_or_public_authority",
@@ -27,9 +27,9 @@ export interface Update {
     date_of_ceasation?: InputDate;
     date_of_filing?: InputDate; // To be used for start & ceased date validation. Assumption: Start dates are take from notified_on in BO/MOs.
     next_filing_due?: InputDate; // Assumption that next_due in company profile confirmation statement can be used.
-    bo_mo_data?: yesNoResponse;
     registrable_beneficial_owner?: yesNoResponse;
     any_beneficial_owners_ceased_or_added?: yesNoResponse;
+    bo_mo_data_fetched?: yesNoResponse;
     // Benefitial Owner Statement is in main part of model.
     review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
     review_beneficial_owners_corporate?: BeneficialOwnerOther[];

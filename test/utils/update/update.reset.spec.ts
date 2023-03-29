@@ -16,7 +16,11 @@ describe("reset update model", () => {
   test("does reset update in model", () => {
     const appData: ApplicationData = {
       update: {
-        date_of_creation: "1/1/2023"
+        date_of_creation: {
+          year: "2023",
+          month: "01",
+          day: "01"
+        }
       }
     };
     const update = resetEntityUpdate(appData);

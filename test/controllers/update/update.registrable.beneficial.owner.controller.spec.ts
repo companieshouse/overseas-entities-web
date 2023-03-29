@@ -11,7 +11,8 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
-  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -33,7 +34,6 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.model";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL } from "../../../dist/config";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;

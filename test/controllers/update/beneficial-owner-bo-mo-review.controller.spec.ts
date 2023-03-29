@@ -51,10 +51,10 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
 
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(pageTitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -64,7 +64,7 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
     test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -74,15 +74,15 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
   describe("POST tests", () => {
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      const resp = await request(app).post(config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`catch error on POST action for ${config.BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
+    test(`catch error on POST action for ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

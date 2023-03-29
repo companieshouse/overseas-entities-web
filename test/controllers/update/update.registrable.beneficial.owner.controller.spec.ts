@@ -33,7 +33,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.model";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { UPDATE_BENEFICIAL_OWNER_TYPE_URL } from "../../../dist/config";
+import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL } from "../../../dist/config";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
@@ -108,7 +108,7 @@ describe("Update registrable beneficial owner controller tests", () => {
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -119,7 +119,7 @@ describe("Update registrable beneficial owner controller tests", () => {
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.No });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

@@ -30,7 +30,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
-      backLinkUrl: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+      backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       noLists: true

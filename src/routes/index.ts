@@ -8,6 +8,7 @@ import {
   beneficialOwnerStatements,
   beneficialOwnerDeleteWarning,
   beneficialOwnerType,
+  updateBeneficialOwnerBoMoReview,
   cannotUse,
   checkYourAnswers,
   confirmation,
@@ -384,6 +385,15 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateBeneficialOwnerBoMoReview.get)
+  .post(updateBeneficialOwnerBoMoReview.post);
 
 router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
   .all(

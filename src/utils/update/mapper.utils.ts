@@ -28,16 +28,20 @@ export const mapInputDate = (date: string | undefined): InputDate | undefined =>
   if (date === undefined) {
     return undefined;
   }
-  const yearDayMonth = date.split('-');
-  if (yearDayMonth.length < 2) {
+  const yearMonthDay = date.split('-');
+  if (yearMonthDay.length < 2) {
     return undefined;
   }
   return {
-    day: (yearDayMonth.length > 2 ? yearDayMonth[2] : ""),
-    month: yearDayMonth[1],
-    year: yearDayMonth[0]
+    day: (yearMonthDay.length > 2 ? stripZero(yearMonthDay[2]) : ""),
+    month: stripZero(yearMonthDay[1]),
+    year: yearMonthDay[0]
   };
 };
+
+function stripZero(str : string) {
+  return str.startsWith('0') ? str.substring(1) : str;
+}
 
 export const mapAddress = (address: ServiceAddress | undefined): Address => {
   if (!address) {

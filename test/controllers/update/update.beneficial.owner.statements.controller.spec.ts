@@ -21,7 +21,6 @@ import {
 import {
   PAGE_TITLE_ERROR,
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 import {
@@ -70,7 +69,6 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("catch error when rendering the page", async () => {

@@ -61,14 +61,14 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   check("public_register_name")
     .if(body("public_register_name").notEmpty())
     .if(body("public_register_jurisdiction").notEmpty())
-    .custom( async (value, { req }) => {
-      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom((value, { req }) => {
+      Promise.resolve(checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160));
     }),
   check("public_register_jurisdiction")
     .if(body("public_register_jurisdiction").notEmpty())
     .if(body("public_register_name").notEmpty())
-    .custom( async (value, { req }) => {
-      await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
+    .custom((value, { req }) => {
+      Promise.resolve(checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160));
     }),
 ];
 

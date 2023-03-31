@@ -23,10 +23,9 @@ jest.mock('express-validator', () => ({
   check: jest.fn().mockImplementation(() => ({
     notEmpty: mockNotEmpty.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),
-    if: mockIf.mockReturnThis()
+    if: mockIf.mockReturnValue(true)
   })),
 }));
-
 import { ErrorMessages } from '../../src/validation/error.messages';
 import * as helper from '../../src/validation/trust.legal.entity.beneficial.owner.validation';
 

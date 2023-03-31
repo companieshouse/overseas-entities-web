@@ -103,7 +103,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE);
+      expect(resp.header.location).toEqual(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE);
     });
 
     test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {

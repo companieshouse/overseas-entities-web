@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, {
-      backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+      backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,
       templateName: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
       appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey]

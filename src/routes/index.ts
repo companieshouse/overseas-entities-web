@@ -58,7 +58,6 @@ import {
   updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
-  updateBeneficialOwnerStatements,
   updateSignOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
@@ -331,15 +330,6 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
-
-router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
-  .all(
-    authentication,
-    companyAuthentication,
-    navigation.hasOverseasEntity
-  )
-  .get(updateBeneficialOwnerStatements.get)
-  .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
 

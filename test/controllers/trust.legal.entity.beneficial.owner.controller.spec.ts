@@ -128,7 +128,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
-      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+      (validationResult as any as jest.Mock).mockImplementation(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
@@ -208,6 +208,18 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithId).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("should have validation error", async () => {
+      (validationResult as unknown as jest.Mock).mockImplementation(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+      }));
+
+      const resp = await request(app).post(pageUrl);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_INTERNAL_SERVER_ERROR);
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
   });
 });

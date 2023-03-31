@@ -53,7 +53,7 @@ describe("Confirm company data", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_OE_CONFIRM);
       expect(resp.text).toContain(testEntityName);
-      expect(resp.text).toContain(testDateOfCreation.year + '-' + testDateOfCreation.month + '-' + testDateOfCreation.day);
+      expect(resp.text).toContain(testDateOfCreation.day + "/" + testDateOfCreation.month + "/" + testDateOfCreation.year);
       expect(resp.text).toContain(testEntityNumber);
       expect(resp.text).toContain(testIncorporationCountry);
     });

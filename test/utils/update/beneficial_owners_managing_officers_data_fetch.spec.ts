@@ -9,7 +9,7 @@ describe("BO/MO fetch Utils", () => {
     appData = {};
   });
 
-  test("hasFetchedBoAndMoData returns true on empty AppData", () => {
+  test("hasFetchedBoAndMoData returns false on empty AppData", () => {
     expect(hasFetchedBoAndMoData(appData)).toEqual(false);
   });
 

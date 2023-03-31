@@ -47,8 +47,8 @@ describe("Test company profile details mapping", () => {
       is_service_address_same_as_principal_address: yesNoResponse.No
     },
     { year: "2023",
-      month: "04",
-      day: "01"
+      month: "4",
+      day: "1"
     }]);
   });
 

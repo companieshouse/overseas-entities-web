@@ -1000,7 +1000,7 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
   nationality: "country1",
   occupation: "occupation",
   officerRole: "role",
-  resignedOn: "resigned"
+  resignedOn: "2023-01-01"
 };
 
 export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl = {

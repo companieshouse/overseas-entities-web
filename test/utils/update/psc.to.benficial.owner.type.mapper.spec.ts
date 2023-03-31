@@ -45,8 +45,8 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       second_nationality: undefined,
       start_date: {
         year: "2016",
-        month: "04",
-        day: "06"
+        month: "4",
+        day: "6"
       },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -72,8 +72,8 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       name: pscMock.name,
       start_date: {
         year: "2016",
-        month: "04",
-        day: "06"
+        month: "4",
+        day: "6"
       },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
@@ -106,8 +106,8 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       name: pscMock.name,
       start_date: {
         year: "2016",
-        month: "04",
-        day: "06"
+        month: "4",
+        day: "6"
       },
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],

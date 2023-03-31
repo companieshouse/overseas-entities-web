@@ -29,7 +29,7 @@ export interface Update {
     next_filing_due?: InputDate; // Assumption that next_due in company profile confirmation statement can be used.
     registrable_beneficial_owner?: yesNoResponse;
     any_beneficial_owners_ceased_or_added?: yesNoResponse;
-    bo_mo_data_fetched?: yesNoResponse;
+    bo_mo_data_fetched?: boolean;
     // Benefitial Owner Statement is in main part of model.
     review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
     review_beneficial_owners_corporate?: BeneficialOwnerOther[];

@@ -39,7 +39,7 @@ export const mapInputDate = (date: string | undefined): InputDate | undefined =>
   };
 };
 
-function stripZero(str : string) {
+function stripZero(str: string) {
   return str.startsWith('0') ? str.substring(1) : str;
 }
 

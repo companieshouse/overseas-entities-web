@@ -33,6 +33,7 @@ export enum ErrorMessages {
   HISTORICAL_BO_FIRST_NAME = "Enter the beneficial owner's first name",
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
   LEGAL_ENTITY_BO_NAME = "Enter it's name",
+  ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
@@ -74,7 +75,7 @@ export enum ErrorMessages {
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
-  LEGAL_ENTITY_BO_ROLE = "Select its role within the trust",
+  LEGAL_ENTITY_BO_ROLE = "What is its role within the trust?",
   ADD_TRUST = "Select yes if you need to add another trust",
 
   // Date
@@ -211,6 +212,7 @@ export enum ErrorMessages {
   MAX_HISTORICAL_BO_LAST_NAME_LENGTH = "Last name must be 50 characters or less",
   LEGAL_ENTITY_BO_NAME_LENGTH = "Name must be 160 characters or less",
   NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO = "Name of register and jurisdiction must be 160 characters or less in total",
+  MAX_ENTITY_REGISTRATION_NUMBER = "Entity's registration number must be 160 characters or less",
 
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

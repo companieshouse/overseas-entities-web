@@ -144,6 +144,10 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
   });
 
   describe("POST unit tests", () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     test("Save", () => {
       const mockBoData = {} as TrustCorporate;
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);

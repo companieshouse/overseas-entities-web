@@ -15,8 +15,8 @@ const addressErrorMessages: ErrorMessagesOptional = {
 export const trustLegalEntityBeneficialOwnerValidator = [
   body("legalEntityName")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_ENTITY_BO_NAME)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.LEGAL_ENTITY_BO_NAME_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LEGAL_ENTITY_BO_NAME_INVALID_CHARACTERS),
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS),
 
   body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.LEGAL_ENTITY_BO_ROLE).if(body("roleWithinTrust")),
 
@@ -30,12 +30,12 @@ export const trustLegalEntityBeneficialOwnerValidator = [
 
   body("legalForm")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LEGAL_FORM_LEGAL_ENTITY_BO)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LEGAL_FORM_LENGTH)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_LEGAL_FORM_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LEGAL_FORM_INVALID_CHARACTERS),
 
   body("governingLaw")
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAW_GOVERNED)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_LAW_GOVERNED_LENGTH)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_LAW_GOVERNED_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAW_GOVERNED_INVALID_CHARACTERS),
 
   body("is_on_register_in_country_formed_in")

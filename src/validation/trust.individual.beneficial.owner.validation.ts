@@ -26,12 +26,12 @@ export const trustIndividualBeneficialOwner = [
   body("forename")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FIRST_NAME_INDIVIDUAL_BO)
     .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS),
   body("surname")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAST_NAME_INDIVIDUAL_BO)
     .isLength({ max: 50 })
-    .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_50)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
 
   ...dateOfBirthValidations,
 
@@ -41,7 +41,7 @@ export const trustIndividualBeneficialOwner = [
 
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
   ...second_nationality_validations(seconNationalityErrors),
 

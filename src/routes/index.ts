@@ -64,7 +64,8 @@ import {
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate,
   updateFilingDate,
-  updateRegistrableBeneficialOwner
+  updateRegistrableBeneficialOwner,
+  updateContinueSavedFiling
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -509,5 +510,10 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(updateRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
+
+router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
+  .all(authentication)
+  .get(updateContinueSavedFiling.get)
+  .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
 
 export default router;

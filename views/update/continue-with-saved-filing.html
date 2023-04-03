@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% set title = "Do you want to continue with a saved filing?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.continue_saved_filing if errors,
+          classes: "govuk-radios",
+          idPrefix: "continue_saved_filing",
+          name: "continue_saved_filing",
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }  
+          },
+          hint: {
+            text: "If you have saved filings, you can continue with one of these or start a new one. "
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes - continue with a saved filing",
+              hint: {
+                text: "You’ll be able to choose which filing you want to continue with."
+              },
+              attributes: {
+                "data-event-id": "yes-continue-saved-filing"
+              }
+            },
+            {
+              value: "no",
+              text: "No - start a new filing",
+              hint: {
+                text: "This will not delete any saved filings."
+              },
+              attributes: {
+                "data-event-id": "no-starting-new-filing"
+              }
+            }
+          ]
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

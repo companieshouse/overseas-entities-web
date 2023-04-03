@@ -126,17 +126,17 @@ const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yea
   }
 };
 
-export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
   && isYearEitherMissingOrCorrectLength(yearStr)
   && checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
-    checkStartDateFields(dayStr, monthStr, yearStr);
+    checkAllDateFields(dayStr, monthStr, yearStr);
   }
   return true;
 };
 
-const checkStartDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkAllDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areAllDateFieldsPresent) {
     const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);

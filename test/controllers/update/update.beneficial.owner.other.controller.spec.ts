@@ -12,7 +12,7 @@ import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 
 import {
-  BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
@@ -25,6 +25,7 @@ import {
   BO_OTHER_ID,
   BO_OTHER_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY,
+  UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
 } from "../../__mocks__/session.mock";
 import {
   getFromApplicationData, mapFieldsToDataObject,
@@ -132,7 +133,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET BY ID tests", () => {
     test("Renders the page through GET", async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -160,7 +161,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
       mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
-        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       const beneficialOwnerOther = mockSetApplicationData.mock.calls[0][1];
@@ -211,7 +212,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     test("Catch error when posting data", async () => {
       mockSetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
-        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -313,9 +314,9 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     });
 
     test(`Public register data from the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page is empty when is on register set to no`, async () => {
-      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO });
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
-        .send(BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
@@ -618,9 +619,9 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("UPDATE tests", () => {
     test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
-        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -630,7 +631,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
     test("Catch error when updating data", async () => {
       mockSetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL)
-        .send(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -699,7 +700,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("REMOVE tests", () => {
     test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
+      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(302);

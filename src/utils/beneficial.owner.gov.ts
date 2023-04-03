@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { ApplicationData, ApplicationDataType } from "../model";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
@@ -21,9 +21,12 @@ import { v4 as uuidv4 } from "uuid";
 export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session);
+
   res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    ...appData
   });
 };
 

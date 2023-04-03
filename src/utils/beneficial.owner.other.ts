@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "./logger";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
-import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
+import { ApplicationData, ApplicationDataType } from "../model";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
   AddressKeys,
@@ -23,9 +23,12 @@ import { v4 as uuidv4 } from 'uuid';
 export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    ...appData
   });
 };
 

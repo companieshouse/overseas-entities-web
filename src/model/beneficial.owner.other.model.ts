@@ -17,12 +17,12 @@ export const BeneficialOwnerOtherKeys: string[] = [
   "registration_number",
   "is_on_register_in_country_formed_in",
   "start_date",
+  "ceased_date",
   "beneficial_owner_nature_of_control_types",
   "trustees_nature_of_control_types",
   "non_legal_firm_members_nature_of_control_types",
   "is_on_sanctions_list",
   "trust_ids",
-  "ceased_date"
 ];
 
 export interface BeneficialOwnerOther {
@@ -37,10 +37,10 @@ export interface BeneficialOwnerOther {
   registration_number?: string;
   is_on_register_in_country_formed_in?: yesNoResponse;
   start_date?: InputDate;
+  ceased_date?: InputDate;
   beneficial_owner_nature_of_control_types?: NatureOfControlType[];
   trustees_nature_of_control_types?: NatureOfControlType[];
   non_legal_firm_members_nature_of_control_types?: NatureOfControlType[];
   is_on_sanctions_list?: yesNoResponse;
   trust_ids?: string[];
-  ceased_date?: InputDate;
 }

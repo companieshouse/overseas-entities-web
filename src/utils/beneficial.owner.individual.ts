@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -39,13 +40,17 @@ import {
   StartDateKeys,
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
+import { ApplicationData } from "../model";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    ...appData
   });
 };
 

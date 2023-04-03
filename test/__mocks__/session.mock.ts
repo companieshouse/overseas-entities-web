@@ -274,6 +274,25 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
   trust_ids: []
 };
 
+export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  id: BO_OTHER_ID,
+  name: "TestCorporation",
+  principal_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  service_address: ADDRESS,
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  public_register_name: "ThisRegister",
+  registration_number: "123456789",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: 0,
+  ...START_DATE,
+  trust_ids: []
+};
+
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
   name: "TestCorporation",
@@ -305,6 +324,24 @@ export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: "0",
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...SERVICE_ADDRESS_MOCK,
+  ...START_DATE
+};
+
+export const UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  name: "TestCorporation",
+  is_service_address_same_as_principal_address: "1",
+  legal_form: "TheLegalForm",
+  law_governed: "TheLaw",
+  public_register_name: "ThisRegister",
+  registration_number: "123456789",
+  is_on_register_in_country_formed_in: "1",
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  is_on_sanctions_list: "0",
+  is_ceased: "0",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...START_DATE
@@ -439,6 +476,16 @@ export const BENEFICIAL_OWNER_OTHER_REPLACE: beneficialOwnerOtherType.Beneficial
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
   ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.No
+};
+
+export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
   ...PRINCIPAL_ADDRESS_MOCK,
   ...START_DATE,

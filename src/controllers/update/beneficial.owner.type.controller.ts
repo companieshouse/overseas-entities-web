@@ -100,7 +100,6 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
-       
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
         appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);

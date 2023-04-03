@@ -48,8 +48,9 @@ export const getBeneficialOwnerIndividual = (req: Request, res: Response, templa
   const appData = getApplicationData(req.session);
   let boAppData: BeneficialOwnerIndividual[] | undefined;
   if(!registrationFlag){
-    console.log(`bo data parsed is ${appData.update?.review_beneficial_owners_individual}`)
-    boAppData = appData.update?.review_beneficial_owners_individual  }
+    console.log(`bo data parsed is ${JSON.stringify(appData.update?.review_beneficial_owners_individual)}`)
+    boAppData = appData.update?.review_beneficial_owners_individual  
+  }
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,

@@ -210,6 +210,7 @@ export enum ErrorMessages {
   MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH = "Legal entity’s name must be 160 characters or less",
   NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO = "Name of register and jurisdiction must be 160 characters or less in total",
   MAX_ENTITY_REGISTRATION_NUMBER = "Entity's registration number must be 160 characters or less",
+  MAX_ENTITY_JURISDICTION = "Jurisdiction must be 160 characters or less",
 
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",

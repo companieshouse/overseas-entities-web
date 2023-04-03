@@ -50,6 +50,7 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   body("public_register_jurisdiction")
     .if(body("is_on_register_in_country_formed_in").equals("1"))
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PUBLIC_REGISTER_JURISDICTION)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_ENTITY_JURISDICTION)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PUBLIC_REGISTER_JURISDICTION_INVALID_CHARACTERS),
 
   body("registration_number")
@@ -59,14 +60,14 @@ export const trustLegalEntityBeneficialOwnerValidator = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_ENTITY_REGISTRATION_NUMBER)
   ,
   check("public_register_name")
-    .if(body("public_register_name").notEmpty())
-    .if(body("public_register_jurisdiction").notEmpty())
+    .if(check("public_register_name").notEmpty())
+    .if(check("public_register_jurisdiction").notEmpty())
     .custom( async (value, { req }) => {
       await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),
   check("public_register_jurisdiction")
-    .if(body("public_register_jurisdiction").notEmpty())
-    .if(body("public_register_name").notEmpty())
+    .if(check("public_register_jurisdiction").notEmpty())
+    .if(check("public_register_name").notEmpty())
     .custom( async (value, { req }) => {
       await checkIfLessThanTargetValue(req.body.registration_number.length, req.body.public_register_jurisdiction.length, 160);
     }),

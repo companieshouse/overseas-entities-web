@@ -306,7 +306,7 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .get(updateInterruptCard.get)
   .post(updateInterruptCard.post);
 
-router.get(config.UPDATE_CONFIRMATION_URL, authentication, navigation.hasOverseasEntity, updateConfirmation.get);
+router.get(config.UPDATE_CONFIRMATION_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);

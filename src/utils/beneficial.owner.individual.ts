@@ -46,15 +46,14 @@ import { v4 as uuidv4 } from "uuid";
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string, registrationFlag?: boolean) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData = getApplicationData(req.session);
-  let appDatas: BeneficialOwnerIndividual[] | undefined;
+  let boAppData: BeneficialOwnerIndividual[] | undefined;
   if(!registrationFlag){
-    appDatas = appData["beneficial_owners_individual"]  
-  }
-  console.log(`APP DATA ${JSON.stringify(appData["beneficial_owners_individual"])}`)
+    console.log(`bo data parsed is ${appData.update?.review_beneficial_owners_individual}`)
+    boAppData = appData.update?.review_beneficial_owners_individual  }
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,
-    appDatas
+    boAppData
   });
 };
 
@@ -91,9 +90,11 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
+    const appData = getApplicationData(req.session);
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     setApplicationData(session, data, BeneficialOwnerIndividualKey);
+    
 
     await saveAndContinue(req, session, registrationFlag);
 

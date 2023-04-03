@@ -12,7 +12,7 @@
 
 {% block content %}
   {% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
-  {% if appDatas %}
+  {% if boAppData %}
     {% include "update/update-review-beneficial-owner-individual.html" %}
   {% else %}
     {% include "includes/page-templates/beneficial-owner-individual.html" %}

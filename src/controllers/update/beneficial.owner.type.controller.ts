@@ -19,7 +19,6 @@ import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBenef
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 
-const listOfBeneficialOwnersIndividual : BeneficialOwnerIndividual[] = [];
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,9 +26,18 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
     if (!hasFetchedBoAndMoData(appData)) {
+      if (!appData.update) {
+        appData.update = {};
+      }
+      appData.update.review_beneficial_owners_individual = [];
+      appData.update.review_beneficial_owners_corporate = [];
+      appData.update.review_beneficial_owners_government_or_public_authority = [];
+
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
+      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`)
+ 
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -37,7 +45,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData, //extract the list of beneficials owners in the views , loop through the list and plug to the template
       noLists: true,
-      listOfBeneficialOwnersIndividual
+      ...appData.update?.review_beneficial_owners_individual
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -95,8 +103,7 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
        
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
-        listOfBeneficialOwnersIndividual.push(individualBeneficialOwner);
-        appData["beneficial_owners_individual"] = listOfBeneficialOwnersIndividual;
+        appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
       } else if (psc.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);

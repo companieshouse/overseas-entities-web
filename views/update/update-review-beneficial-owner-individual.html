@@ -2,14 +2,12 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
-    <!-- <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span> -->
+   {% for bo in boAppData %} 
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ bo.first_name }} {{ bo.last_name}} - {{ bo.date_of_birth.year }}</span>
 
-    <span class="govuk-caption-xl"></span>
-
-    <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
-    <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here</p> <br>
-
-   {% for bo in appDatas %} 
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
+      <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here</p> <br>
+      
       <form method="post">
       {% set first_name = bo.first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
@@ -42,7 +40,6 @@
 
       {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
       {% set beneficial_owner_nature_of_control_types = bo.beneficial_owner_nature_of_control_types %}
-        
       {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
       {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}

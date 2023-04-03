@@ -33,6 +33,7 @@ export enum ErrorMessages {
   HISTORICAL_BO_FIRST_NAME = "Enter the beneficial owner's first name",
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
   LEGAL_ENTITY_BO_NAME = "Enter it's name",
+  ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
@@ -74,7 +75,7 @@ export enum ErrorMessages {
   TRUST_INVOLVED_BOS = 'Select the beneficial owners which are involved in the trust',
   TRUST_INDIVIDUAL_ROLE = "Select their role within the trust",
   TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO = TRUST_INDIVIDUAL_ROLE,
-  LEGAL_ENTITY_BO_ROLE = "Select its role within the trust",
+  LEGAL_ENTITY_BO_ROLE = "What is its role within the trust?",
   ADD_TRUST = "Select yes if you need to add another trust",
 
   // Date
@@ -180,7 +181,7 @@ export enum ErrorMessages {
   MAX_LAST_NAME_LENGTH = "Last name must be 160 characters or less",
   MAX_FORMER_NAME_LENGTH = "Former names must be 260 characters or less",
   MAX_NAME_LENGTH = "Name must be 160 characters or less",
-  MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO = "Last name must be 50 characters or less",
+  MAX_LAST_NAME_LENGTH_50 = "Last name must be 50 characters or less",
   MAX_NAME_LENGTH_TRUST = "Name of the trust must be 160 characters or less",
   MAX_NAME_LENGTH_DUE_DILIGENCE = "Name must be 256 characters or less",
   MAX_FULL_NAME_LENGTH = "Full name must be 256 characters or less",
@@ -207,19 +208,15 @@ export enum ErrorMessages {
   MAX_AML_NUMBER_LENGTH = "AML registration number must be 256 characters or less",
   MAX_AGENT_ASSURANCE_CODE_LENGTH = "Agent assurance code must be 256 characters or less",
   MAX_HISTORICAL_BO_CORPORATE_NAME_LENGTH = "Legal entity’s name must be 160 characters or less",
-  MAX_HISTORICAL_BO_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
-  MAX_HISTORICAL_BO_LAST_NAME_LENGTH = "Last name must be 50 characters or less",
-  LEGAL_ENTITY_BO_NAME_LENGTH = "Name must be 160 characters or less",
   NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO = "Name of register and jurisdiction must be 160 characters or less in total",
+  MAX_ENTITY_REGISTRATION_NUMBER = "Entity's registration number must be 160 characters or less",
+  MAX_ENTITY_JURISDICTION = "Jurisdiction must be 160 characters or less",
 
   // Invalid characters
   FULL_NAME_INVALID_CHARACTERS = "Full name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  FIRST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO = FIRST_NAME_INVALID_CHARACTERS,
   LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LAST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO =LAST_NAME_INVALID_CHARACTERS,
   NATIONALITY_INVALID_CHARACTERS = "Nationality must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  NATIONALITY_INVALID_CHARACTERS_INDIVIDUAL_BO = NATIONALITY_INVALID_CHARACTERS,
   SECOND_NATIONALITY_INVALID_CHARACTERS = "Second Nationality must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS = "Property name or number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   ADDRESS_LINE_1_INVALID_CHARACTERS = "Address line 1 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
@@ -241,15 +238,5 @@ export enum ErrorMessages {
   CONTACT_NAME_INVALID_CHARACTERS = "Contact name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
   INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
-  HISTORICAL_BO_CORPORATE_NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  HISTORICAL_BO_FIRST_NAME_INVALID_CHARACTERS = "First name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  HISTORICAL_BO_LAST_NAME_INVALID_CHARACTERS = "Last name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_NAME_INVALID_CHARACTERS = "Name must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_PROPERTY_NAME_INVALID_CHARACTERS = "Property name or number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_ADDRESS_LINE_1_INVALID_CHARACTERS = "Address line 1 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_ADDRESS_LINE_2_INVALID_CHARACTERS = "Address line 2 must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_CITY_OR_TOWN_INVALID_CHARACTERS = "City or town must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_COUNTY_INVALID_CHARACTERS = "County, state, province or region must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
-  LEGAL_ENTITY_BO_POSTCODE_INVALID_CHARACTERS = "Postcode or ZIP code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
   INVALID_ENTITY_REGISTRATION_NUMBER = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
 }

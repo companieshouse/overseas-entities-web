@@ -23,7 +23,7 @@ jest.mock('express-validator', () => ({
   check: jest.fn().mockImplementation(() => ({
     notEmpty: mockNotEmpty.mockReturnThis(),
     custom: mockCustom.mockReturnThis(),
-    if: mockIf.mockReturnValue(true)
+    if: mockIf.mockReturnThis(),
   })),
 }));
 import { ErrorMessages } from '../../src/validation/error.messages';
@@ -47,6 +47,6 @@ describe('test legal entity validator', () => {
   });
 
   test('checkIfLessThanTargetValue throws error', async () => {
-    await expect(helper.checkIfLessThanTargetValue(1, 2, 2)).rejects.toThrow(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
+    await expect(() => helper.checkIfLessThanTargetValue(1, 2, 2)).rejects.toThrow(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
   });
 });

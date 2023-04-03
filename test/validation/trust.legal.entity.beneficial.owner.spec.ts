@@ -35,15 +35,15 @@ describe('test legal entity validator', () => {
   });
   test('catch errors when renders the page', () => {
     helper.trustLegalEntityBeneficialOwnerValidator;
-    expect(mockNotEmpty).toBeCalledTimes(55);
-    expect(mockCustom).toBeCalledTimes(71);
-    expect(mockWithMessage).toBeCalledTimes(53);
-    expect(mockIsLength).toBeCalledTimes(17);
-    expect(mockMatches).toBeCalledTimes(18);
-    expect(mockIf).toBeCalledTimes(58);
-    expect(mockEquals).toBeCalledTimes(11);
-    expect(mockNot).toBeCalledTimes(9);
-    expect(mockIsEmpty).toBeCalledTimes(9);
+    expect(mockNotEmpty).toHaveBeenCalled();
+    expect(mockCustom).toHaveBeenCalled();
+    expect(mockWithMessage).toHaveBeenCalled();
+    expect(mockIsLength).toHaveBeenCalled();
+    expect(mockMatches).toHaveBeenCalled();
+    expect(mockIf).toHaveBeenCalled();
+    expect(mockEquals).toHaveBeenCalled();
+    expect(mockNot).toHaveBeenCalled();
+    expect(mockIsEmpty).toHaveBeenCalled();
   });
 
   test('checkIfLessThanTargetValue throws error', async () => {

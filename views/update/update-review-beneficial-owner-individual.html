@@ -19,11 +19,11 @@
       {% include "includes/inputs/fields/last-name-input.html" %}
 
       {% include "includes/inputs/date/date-of-birth-input.html" %}
-
-      {% set value = bo.nationality%}
+    
+      {% set nationalityField = bo.nationality %}
       {% include "includes/inputs/nationality/nationality.html" %}
 
-      {% set value = bo.second_nationality %}
+      {% set nationalityField = bo.second_nationality %}
       {% include "includes/inputs/nationality/second-nationality.html" %}
 
       {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
@@ -41,21 +41,22 @@
       }) %}
 
       {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
-      {% set value = bo.beneficial_owner_nature_of_control_types %}
+      {% set beneficial_owner_nature_of_control_types = bo.beneficial_owner_nature_of_control_types %}
+        
       {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
 
       {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-      {% set value = bo.trustees_nature_of_control_types %}
+      {% set trustees_nature_of_control_types = bo.trustees_nature_of_control_types %}
       {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
 
       {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-      {% set value = bo.non_legal_firm_members_nature_of_control_types %}
+      {% set non_legal_firm_members_nature_of_control_types = bo.non_legal_firm_members_nature_of_control_types %}
       {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
 
       {% endcall %}
 
       {% set sanctionsPronoun = "they" %}
-      {% set is_sanctioned = bo.is_on_sanctions_list %}
+      {% set is_on_sanctions_list = bo.is_on_sanctions_list %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

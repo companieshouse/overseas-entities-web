@@ -8,9 +8,13 @@
 
 {% block backLink %}
   {% include "includes/back-link.html" %}
-{% endblock %}
+{% endblock %} 
 
 {% block content %}
   {% set removePathURL = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
-  {% include "includes/page-templates/beneficial-owner-individual.html" %}
+  {% if appDatas %}
+    {% include "update/update-review-beneficial-owner-individual.html" %}
+  {% else %}
+    {% include "includes/page-templates/beneficial-owner-individual.html" %}
+  {% endif %}
 {% endblock %}

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -13,6 +14,7 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import {
+  BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
   BeneficialOwnerIndividualKeys
 } from "../model/beneficial.owner.individual.model";
@@ -40,12 +42,19 @@ import {
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
 
-export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string, registrationFlag?: boolean) => {
+  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+  const appData = getApplicationData(req.session);
+  let appDatas: BeneficialOwnerIndividual[] | undefined;
+  if(!registrationFlag){
+    appDatas = appData["beneficial_owners_individual"]  
+  }
+  console.log(`APP DATA ${JSON.stringify(appData["beneficial_owners_individual"])}`)
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    appDatas
   });
 };
 

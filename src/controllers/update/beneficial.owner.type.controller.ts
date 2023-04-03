@@ -7,7 +7,7 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
@@ -17,6 +17,9 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
+
+const listOfBeneficialOwnersIndividual : BeneficialOwnerIndividual[] = [];
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,16 +27,17 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session);
     if (!hasFetchedBoAndMoData(appData)) {
-      await retrieveManagingOfficers(req, appData);
       await retrieveBeneficialOwners(req, appData);
+      await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      ...appData,
-      noLists: true
+      ...appData, //extract the list of beneficials owners in the views , loop through the list and plug to the template
+      noLists: true,
+      listOfBeneficialOwnersIndividual
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -88,8 +92,12 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       if (psc.kind === "individual-person-with-significant-control"){
+       
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+        listOfBeneficialOwnersIndividual.push(individualBeneficialOwner);
+        appData["beneficial_owners_individual"] = listOfBeneficialOwnersIndividual;
+      } else if (psc.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
       } else if (psc.kind === "legal-person-with-significant-control") {

@@ -171,7 +171,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send({
           ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-          is_ceased: "0"
+          is_still_bo: "1"
         });
 
       expect(resp.status).toEqual(302);

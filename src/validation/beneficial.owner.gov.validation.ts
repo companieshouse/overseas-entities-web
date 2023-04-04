@@ -42,7 +42,7 @@ export const updateBeneficialOwnerGov = [
 
   ...beneficialOwnerGov,
 
-  body("is_ceased").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
+  body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
   ...ceased_date_validations
 ];

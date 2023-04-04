@@ -36,16 +36,16 @@ export const start_date_validations = [
 
 export const ceased_date_validations = [
   body("ceased_date-day")
-    .if(body('is_ceased').equals('1'))
+    .if(body('is_still_bo').equals('0'))
     .custom((value, { req }) => checkDateFieldDay(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
   body("ceased_date-month")
-    .if(body('is_ceased').equals('1'))
+    .if(body('is_still_bo').equals('0'))
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
   body("ceased_date-year")
-    .if(body('is_ceased').equals('1'))
+    .if(body('is_still_bo').equals('0'))
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
   body("ceased_date")
-    .if(body('is_ceased').equals('1'))
+    .if(body('is_still_bo').equals('0'))
     .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
 ];
 

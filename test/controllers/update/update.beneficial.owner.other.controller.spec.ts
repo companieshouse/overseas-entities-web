@@ -288,7 +288,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send({
           ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
-          is_ceased: "0"
+          is_still_bo: "1"
         });
       expect(mockMapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -301,7 +301,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send({
           ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-          is_ceased: "0"
+          is_still_bo: "1"
         });
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -314,7 +314,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send({
           ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
-          is_ceased: "0"
+          is_still_bo: "1"
         });
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("ThisRegister");
@@ -327,7 +327,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send({
           ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
-          is_ceased: "0"
+          is_still_bo: "1"
         });
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");

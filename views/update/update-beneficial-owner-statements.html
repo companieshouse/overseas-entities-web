@@ -2,6 +2,10 @@
 
 {% set title = "Has the overseas entity identified any registrable beneficial owners?" %}
 
+{% block pageTitle %}
+  {% include "../includes/page-title.html" %}
+{% endblock %}
+
 {% block content %}
   {% include "includes/page-templates/beneficial-owner-statements.html" %}
 {% endblock %}

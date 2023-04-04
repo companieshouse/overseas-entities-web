@@ -34,7 +34,7 @@
         {% set fieldParam = {
           name: 'createdDate',
           label: 'When was the trust created?',
-          error: errors.createdDateDay if errors,
+          error: errors.createdDate if errors,
           value: {
             'Day': formData.createdDateDay,
             'Month': formData.createdDateMonth,

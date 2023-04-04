@@ -1,3 +1,4 @@
+{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
 
 {% set dayError = false%}
 {% set monthError = false%}
@@ -8,16 +9,16 @@
 {% if errors %}
   {% for key, value in errors %}
     {% if not errorMsg %}
-      {% if item_name == key|string %}
+      {% if item_name|string == key|string %}
         {% set errorMsg = value %}
         {% if item_name %}
-          {% if not item_name + "Day" %}
+          {% if not item_name["Day"] %}
             {% set dayError = true %}
           {% endif %}
-          {% if not item_name + "Month" %}
+          {% if not item_name["Month"] %}
             {% set monthError = true %}
           {% endif %}
-          {% if not item_name + "Year" %}
+          {% if not item_name["Year"] %}
             {% set yearError = true %}
           {% endif %}
         {% endif %}

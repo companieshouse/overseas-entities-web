@@ -47,12 +47,12 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS,
   BENEFICIAL_OWNER_INDIVIDUAL_REPLACE,
-  BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH,
   BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_IND_ID,
   BO_IND_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { AddressKeys } from '../../../src/model/data.types.model';
@@ -143,11 +143,11 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("POST tests", () => {
     test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -169,7 +169,10 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+        .send({
+          ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
+          is_ceased: "0"
+        });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT);
@@ -210,15 +213,15 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`adds data to the session and redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce( () => UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
-      expect(beneficialOwnerIndividual).toEqual(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+      expect(beneficialOwnerIndividual).toEqual(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(BeneficialOwnerIndividualKey);
       expect(resp.status).toEqual(302);
 
@@ -229,7 +232,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -294,7 +297,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -305,7 +308,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
@@ -810,10 +813,10 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -824,7 +827,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -851,7 +854,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -862,7 +865,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});

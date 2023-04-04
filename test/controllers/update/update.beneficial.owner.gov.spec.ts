@@ -43,7 +43,7 @@ import { logger } from "../../../src/utils/logger";
 import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
   BO_GOV_ID,
@@ -118,7 +118,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET BY ID tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -147,7 +147,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -158,7 +158,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -227,7 +227,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -240,7 +240,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -547,7 +547,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -559,7 +559,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -572,7 +572,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
@@ -590,7 +590,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -603,7 +603,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];

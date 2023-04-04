@@ -49,7 +49,7 @@ import { TrustKey, Trust } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
-import { DATE_OF_BIRTH, START_DATE } from "./fields/date.mock";
+import { DATE_OF_BIRTH, EMPTY_DATE, START_DATE } from "./fields/date.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
@@ -143,9 +143,9 @@ export function getSessionRequestWithPermission(): Session {
   });
 }
 
-export function getSessionRequestWithExtraData(): Session {
+export function getSessionRequestWithExtraData(appData: ApplicationData = APPLICATION_DATA_MOCK): Session {
   const session = getSessionRequestWithPermission();
-  session.setExtraData(APPLICATION_DATA_KEY, APPLICATION_DATA_MOCK);
+  session.setExtraData(APPLICATION_DATA_KEY, appData);
   return session;
 }
 
@@ -290,6 +290,7 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
+  ceased_date: EMPTY_DATE,
   trust_ids: []
 };
 
@@ -382,11 +383,35 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   trust_ids: []
 };
 
+export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Russian",
+  second_nationality: "",
+  usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  ceased_date: EMPTY_DATE,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 1,
+  trust_ids: []
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE,
   ...DATE_OF_BIRTH
+};
+
+export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
+  ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+  is_ceased: "0"
 };
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE = {
@@ -582,6 +607,11 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
   is_on_sanctions_list: 1
 };
 
+export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
+  ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  ceased_date: EMPTY_DATE
+};
+
 export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   name: COMPANY_NAME,
   is_service_address_same_as_principal_address: "1",
@@ -593,6 +623,11 @@ export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   is_on_sanctions_list: "1",
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK
+};
+
+export const UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
+  ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  is_ceased: "0"
 };
 
 export const REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY = {
@@ -1105,6 +1140,28 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,

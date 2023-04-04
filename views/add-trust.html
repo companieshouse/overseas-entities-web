@@ -19,36 +19,25 @@
 
       <h1 class="govuk-heading-xl govuk-!-margin-10">{{ pageParams.title }}</h1>
 
-      {% set trusts = [] %}
       {% for trust in pageData.trustData %}
-        {% set trusts = (
-          trusts.push(
-            [
-              {
-                text: trust.trust_name
-              }
-            ]
-          ),
-          trusts
-        ) %}
-      {% endfor %}
-
-      {{ govukTable({
-        caption: "What you have added so far",
-        captionClasses: "govuk-table__caption--m",
-        firstCellIsHeader: true,
-        head: [
-        {
-          text: "Trust",
-          classes: "govuk-visually-hidden"
-        },
+      {{ govukSummaryList({
+        rows: [
           {
-            text: "Change or remove",
-            classes: "govuk-visually-hidden"
-          }
-        ],
-        rows: trusts
-      }) }}
+            key: {
+              text: trust.trust_name
+            },
+            actions: {
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.NAME,
+                "Trust " + trust.trust_name,
+                "change-trust-button"
+                ) ]
+              }
+            }
+          ]
+        }) 
+      }}
+    {% endfor %}
 
       <form method="post">
 

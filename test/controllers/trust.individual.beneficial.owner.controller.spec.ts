@@ -218,6 +218,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
 
     test('renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages', async () => {
 
+      // If below line does not work then we do actual validation and get typescript error in trustIndividualBeneficialOwner
       (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));

@@ -2,6 +2,7 @@ import { body } from "express-validator";
 
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+/*
 import {
   usual_residential_address_validations,
   usual_residential_service_address_validations
@@ -9,8 +10,9 @@ import {
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { dateBecameIPIndividualBeneficialOwner, dateOfBirthValidations } from "./fields/date.validation";
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
-import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
+import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model"; */
 
+/*
 const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
   addressLine1Error: ErrorMessages.ADDRESS_LINE1_INDIVIDUAL_BO,
@@ -20,7 +22,7 @@ const addressErrorMessages: ErrorMessagesOptional = {
 
 const seconNationalityErrors: DefaultErrorsSecondNationality = {
   sameError: ErrorMessages.SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO,
-};
+}; */
 
 export const trustIndividualBeneficialOwner = [
   body("forename")
@@ -32,7 +34,7 @@ export const trustIndividualBeneficialOwner = [
     .isLength({ max: 50 })
     .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_50)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
-
+/*
   ...dateOfBirthValidations,
 
   body("roleWithinTrust").notEmpty().withMessage(ErrorMessages.TRUST_INDIVIDUAL_ROLE_INDIVIDUAL_BO).if(body("roleWithinTrust")),
@@ -50,5 +52,5 @@ export const trustIndividualBeneficialOwner = [
 
   ...usual_residential_address_validations(addressErrorMessages),
   ...usual_residential_service_address_validations(addressErrorMessages as ErrorMessagesRequired),
-
+*/
 ];

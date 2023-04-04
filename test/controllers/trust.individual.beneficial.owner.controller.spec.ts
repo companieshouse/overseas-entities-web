@@ -30,8 +30,9 @@ import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model'
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapIndividualTrusteeToSession, mapIndividualTrusteeFromSessionToPage } from '../../src/utils/trust/individual.trustee.mapper';
 import { getTrustByIdFromApp, saveIndividualTrusteeInTrust, saveTrustInApp } from '../../src/utils/trusts';
-
+import * as maxLengthMocks from "../__mocks__/max.length.mock";
 import { saveAndContinue } from '../../src/utils/save.and.continue';
+import { ErrorMessages } from '../../src/validation/error.messages';
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -214,5 +215,28 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(hasTrustWithId).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
+
+    test('renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages', async () => {
+
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      const individualTrusteeAboveMaximumFieldLengths = {
+        'forename': maxLengthMocks.MAX_50 + "1",
+        'surname': maxLengthMocks.MAX_50 + "1",
+      };
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send(individualTrusteeAboveMaximumFieldLengths);
+
+      // expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      // expect(resp.header.location).toEqual(`${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+
+      // expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.MAX_FIRST_NAME_LENGTH);
+    });
+
   });
 });

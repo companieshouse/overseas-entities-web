@@ -1,6 +1,43 @@
+
+{% set dayError = false%}
+{% set monthError = false%}
+{% set yearError = false%}
+{% set item_name = fieldParam.id if fieldParam.id else fieldParam.name %}
+{% set errorMsg = fieldParam.error %}
+
+{% if errors %}
+  {% for key, value in errors %}
+    {% if not errorMsg %}
+      {% if item_name == key|string %}
+        {% set errorMsg = value %}
+        {% if item_name %}
+          {% if not item_name + "Day" %}
+            {% set dayError = true %}
+          {% endif %}
+          {% if not item_name + "Month" %}
+            {% set monthError = true %}
+          {% endif %}
+          {% if not item_name + "Year" %}
+            {% set yearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif item_name in key|string %}
+        {% set errorMsg = value %}
+        {% if "Day" in key|string %}
+          {% set dayError = true %}
+        {% elif "Month" in key|string %} 
+          {% set monthError = true %}
+        {% elif "Year" in key|string %} 
+          {% set yearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}    
+{% endif %}
+
 {{ govukDateInput({
-  errorMessage: fieldParam.error,
-  id: fieldParam.id if fieldParam.id else fieldParam.name,
+  errorMessage: errorMsg,
+  id: item_name,
   fieldset: {
     legend: {
       text: fieldParam.label,
@@ -13,22 +50,26 @@
   },
   items: [
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: date_classes_day + "--error" if dayError else date_classes_day,
       name: fieldParam.name + "Day",
       label: "Day",
-      value: fieldParam.value["Day"] if fieldParam.value
+      value: fieldParam.value["Day"] if fieldParam.value,
+      id: fieldParam.name + "Day"
     },
     {
-      classes: "govuk-input--width-2 govuk-input",
+      classes: date_classes_month + "--error" if monthError else date_classes_month,
       name: fieldParam.name + "Month",
       label: "Month",
-      value: fieldParam.value["Month"] if fieldParam.value
+      value: fieldParam.value["Month"] if fieldParam.value,
+      id: fieldParam.name + "Month"
     },
     {
-      classes: "govuk-input--width-4 govuk-input",
+      classes: date_classes_year + "--error" if yearError else date_classes_year,
       name: fieldParam.name + "Year",
       label: "Year",
-      value: fieldParam.value["Year"] if fieldParam.value
+      value: fieldParam.value["Year"] if fieldParam.value,
+      id: fieldParam.name + "Year"
+
     }
   ]
 }) }}

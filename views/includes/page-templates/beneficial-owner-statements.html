@@ -6,12 +6,6 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
-{% if (OE_CONFIGS.UPDATE_LANDING_URL in backLinkUrl) %}
-  {% set someIndentifiedText = "You'll also need to provide information about each managing officer." %}
-{% else %}
-  {% set someIndentifiedText = "You'll also need to provide information about at least one managing officer." %}
-{% endif %}
-
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -45,7 +39,7 @@
               value: "SOME_IDENTIFIED_ALL_DETAILS",
               text: "Some beneficial owners have been identified and I can provide all required information",
               hint: {
-                text: someIndentifiedText
+                text: "You'll also need to provide information about each managing officer."
               },
               checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS",
               attributes: {

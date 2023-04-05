@@ -126,7 +126,7 @@ const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yea
   }
 };
 
-export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
   && isYearEitherMissingOrCorrectLength(yearStr)
@@ -234,7 +234,7 @@ const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: st
 export const checkCeasedDateOnOrAfterStartDate = (
   ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
   startDayStr: string = "", startMonthStr: string = "", startYearStr: string = ""
-) => {
+): boolean => {
   const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
   const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
 

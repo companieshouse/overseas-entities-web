@@ -464,7 +464,15 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertDateIsNotInFuture(resp);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when ceased date month and year are empty`, async () => {
@@ -852,18 +860,6 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     expect(response.text).not.toContain(ErrorMessages.YEAR);
     expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
     expect(response.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-    expect(mockSaveAndContinue).not.toHaveBeenCalled();
-  };
-
-  const assertDateIsNotInFuture = (response) => {
-    expect(response.status).toEqual(200);
-    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
-    expect(response.text).not.toContain(ErrorMessages.DAY);
-    expect(response.text).not.toContain(ErrorMessages.MONTH);
-    expect(response.text).not.toContain(ErrorMessages.YEAR);
-    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
-    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   };
 });

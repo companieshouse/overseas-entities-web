@@ -749,25 +749,6 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    // test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when ceased date is today`, async () => {
-    //   const beneficialOwnerIndividual = { ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION };
-    //   const today = DateTime.now();
-    //   beneficialOwnerIndividual["ceased_date-day"] = today.day.toString();
-    //   beneficialOwnerIndividual["ceased_date-month"] = today.month.toString();
-    //   beneficialOwnerIndividual["ceased_date-year"] = today.year.toString();
-    //   const resp = await request(app)
-    //     .post(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
-    //     .send(beneficialOwnerIndividual);
-    //   expect(resp.status).toEqual(200);
-    //   expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
-    //   expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-    //   expect(resp.text).not.toContain(ErrorMessages.DAY);
-    //   expect(resp.text).not.toContain(ErrorMessages.MONTH);
-    //   expect(resp.text).not.toContain(ErrorMessages.YEAR);
-    //   expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-    //   expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-    // });
-
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only YEAR_LENGTH error when ceased date year is not 4 digits`, async () => {
       const beneficialOwnerIndividual = { ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION };
       beneficialOwnerIndividual["ceased_date-day"] = "30";

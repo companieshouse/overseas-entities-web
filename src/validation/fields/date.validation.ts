@@ -17,7 +17,7 @@ import {
   MonthFieldErrors,
   YearFieldErrors,
   checkDateIPLegalEntityBO,
-  checkCeasedDateAfterStartDate
+  checkCeasedDateOnOrAfterStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -50,7 +50,7 @@ export const ceased_date_validations = [
     .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
   body("ceased_date")
     .if(body('is_still_bo').equals('0'))
-    .custom((value, { req }) => checkCeasedDateAfterStartDate(
+    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
       req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"],
       req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"]
     )),

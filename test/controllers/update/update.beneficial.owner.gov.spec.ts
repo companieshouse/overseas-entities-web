@@ -633,19 +633,6 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyDayNotInPastErrors(resp);
     });
 
-    // test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when ceased date is today`, async () => {
-    //   const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
-    //   const today = DateTime.now();
-    //   beneficialOwnerGov["ceased_date-day"] = today.day.toString();
-    //   beneficialOwnerGov["ceased_date-month"] = today.month.toString();
-    //   beneficialOwnerGov["ceased_date-year"] = today.year.toString();
-    //   const resp = await request(app)
-    //     .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-    //     .send(beneficialOwnerGov);
-
-    //   assertDateIsNotInFuture(resp);
-    // });
-
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with error when ceased date is before start date`, async () => {
       const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "2";

@@ -837,27 +837,6 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    // test(`renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when ceased date is today`, async () => {
-    //   const beneficialOwnerOther = { ...UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION };
-    //   const today = DateTime.now();
-    //   beneficialOwnerOther["ceased_date-day"] = today.day.toString();
-    //   beneficialOwnerOther["ceased_date-month"] = today.month.toString();
-    //   beneficialOwnerOther["ceased_date-year"] = today.year.toString();
-    //   const resp = await request(app)
-    //     .post(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
-    //     .send(beneficialOwnerOther);
-    //   expect(resp.status).toEqual(200);
-    //   expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-    //   expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-    //   expect(resp.text).not.toContain(ErrorMessages.DAY);
-    //   expect(resp.text).not.toContain(ErrorMessages.MONTH);
-    //   expect(resp.text).not.toContain(ErrorMessages.YEAR);
-    //   expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-    //   expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-    //   expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-    //   expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    // });
-
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with error when ceased date is before start date`, async () => {
       const beneficialOwnerOther = { ...UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION };
       beneficialOwnerOther["start_date-day"] = "2";

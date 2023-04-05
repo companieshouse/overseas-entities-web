@@ -231,7 +231,7 @@ const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: st
   return true;
 };
 
-export const checkCeasedDateAfterStartDate = (
+export const checkCeasedDateOnOrAfterStartDate = (
   ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
   startDayStr: string = "", startMonthStr: string = "", startYearStr: string = ""
 ) => {

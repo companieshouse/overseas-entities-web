@@ -73,6 +73,7 @@ import { checkTrustValidations, checkValidations } from "../middleware/validatio
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
+import { checkAvailableBo, checkIfReviewedBoSubmission } from "../controllers/update/update.beneficial.owner.individual.controller";
 
 const router = Router();
 
@@ -432,8 +433,9 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
     companyAuthentication,
     navigation.hasUpdatePresenter
   )
-  .get(updateBeneficialOwnerIndividual.get)
-  .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
+  // .get(checkAvailableBo, updateBeneficialOwnerIndividual.getReviewBo).post(updateBeneficialOwnerIndividual.postcheckAndReviewBo)
+  .get(checkAvailableBo, updateBeneficialOwnerIndividual.get)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, checkIfReviewedBoSubmission, updateBeneficialOwnerIndividual.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .all(

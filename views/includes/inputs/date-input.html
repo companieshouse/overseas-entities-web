@@ -1,8 +1,6 @@
-{% from "govuk/components/error-message/macro.njk" import govukErrorMessage %}
-
-{% set dayError = false%}
-{% set monthError = false%}
-{% set yearError = false%}
+{% set dayError = false %}
+{% set monthError = false %}
+{% set yearError = false %}
 {% set item_name = fieldParam.id if fieldParam.id else fieldParam.name %}
 {% set errorMsg = fieldParam.error %}
 
@@ -34,6 +32,14 @@
       {% endif %}
     {% endif %}
   {% endfor %}    
+{% endif %}
+
+{% if dayError %}
+  {% set errorMsg = errors[item_name + "Day"] %}
+{% elif monthError%}  
+    {% set errorMsg = errors[item_name + "Month"] %}
+{% elif yearError %}
+    {% set errorMsg = errors[item_name + "Year"] %}
 {% endif %}
 
 {{ govukDateInput({

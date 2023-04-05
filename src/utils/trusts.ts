@@ -13,6 +13,7 @@ import {
   TrustKey,
   TrustCorporate,
 } from "../model/trust.model";
+import { yesNoResponse } from "../model/data.types.model";
 
 /**
  * Checks whether any beneficial owners requires trust data due to at least one of them
@@ -422,10 +423,8 @@ const mapTrustApiReturnModelToWebModel = (appData: ApplicationData) => {
       });
 
       trust.HISTORICAL_BO = (trust.HISTORICAL_BO as TrustHistoricalBeneficialOwner[]).map(
-        hbo => {return { id: uuidv4(), ...hbo }; } );
-
+        hbo => {return { id: uuidv4(), ...hbo, corporate_indicator: convertBooleanToYesNoResponse(hbo.corporate_indicator), }; } );
     }
-
   }
 };
 
@@ -444,6 +443,16 @@ function getRoleWithinTrustType(type: any): RoleWithinTrustType | undefined {
         break;
   }
   return undefined;
+}
+
+function convertBooleanToYesNoResponse(apiYesNoResponse: yesNoResponse): yesNoResponse {
+  // used to convert boolean recieved from api to number for yesNoResponse used in web.
+  // although true/false is sent by the api, typescript still detects it as a yesNoResponse hence why yesNoResponse is passed to this function
+
+  if (apiYesNoResponse === undefined){
+    return yesNoResponse.No;
+  }
+  return Number(apiYesNoResponse);
 }
 
 export {

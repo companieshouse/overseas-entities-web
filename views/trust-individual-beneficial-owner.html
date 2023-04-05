@@ -22,6 +22,10 @@
       <form class="form" method="post">
 
         {% set interestedPersonDateHtml %}
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
           <br>
           {% set fieldParam = {
             name: 'dateBecameIP',
@@ -54,6 +58,10 @@
           error: errors.surname if errors
         } %}
         {% include "includes/inputs/text-input.html" %}
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
 
         {% set fieldParam = {
           name: 'dateOfBirth',

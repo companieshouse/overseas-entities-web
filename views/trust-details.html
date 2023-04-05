@@ -27,6 +27,10 @@
         } %}
         {% include "includes/inputs/text-input.html" %}
 
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+  
         {% set fieldParam = {
           name: 'createdDate',
           label: 'When was the trust created?',

@@ -579,7 +579,8 @@ const checkCorrectIsFormat = (email: string) => {
  */
 export const addressFieldsHaveNoValue = async (formData: any, keys: string[], radioButtonSelected: boolean) => {
   if (radioButtonSelected){
-    return await Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+    const noVal = await Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+    return noVal;
   }
   return false;
 };

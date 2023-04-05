@@ -570,3 +570,18 @@ const checkCorrectIsFormat = (email: string) => {
     throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
   }
 };
+
+/**
+ *
+ * @param formData : req.body
+ * @param keys : req.body[keys]
+ * @param radioButtonSelected : if value selected is '0'
+ * @param throwError : if all fields empty throw error
+ * @returns boolean
+ */
+export const addressFieldHasNoValue = async (formData: any, keys: string[], radioButtonSelected: boolean) => {
+  if (radioButtonSelected){
+    return await Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+  }
+  return true;
+};

@@ -1,7 +1,8 @@
-import { body, check } from "express-validator";
+import { body } from "express-validator";
 import { defaultRequiredErrorMessages, defaultOptionalErrorMessages, ErrorMessagesOptional, ErrorMessagesRequired } from "../models/address.error.model";
 
 import {
+  addressFieldHasNoValue,
   checkFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
   checkMaxFieldIfRadioButtonSelected
@@ -136,6 +137,7 @@ export const legal_entity_usual_residential_service_address_validations = (error
 
   return [
     body("service_address_property_name_number")
+      .custom((value, { req }) => addressFieldHasNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0')).withMessage(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS)
       .custom((value, { req }) => checkFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.propertyValueError, value) )
       .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.maxPropertyValueLengthError, 50, value) )
       .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.propertyNameInvalidError, value)),
@@ -164,7 +166,6 @@ export const legal_entity_usual_residential_service_address_validations = (error
       .if(body("service_address_property_name_number").notEmpty())
       .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.postcodeLengthError, 15, value) )
       .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.postcodeInvalidCharacterError, value)),
-    check("service_address_property_name_number").custom((value, { req }) => addressFieldHasNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0', true)),
   ];
 };
 
@@ -194,26 +195,4 @@ export const identity_address_validations = [
     .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
-
-/**
- *
- * @param formData : req.body
- * @param keys : req.body[keys]
- * @param radioButtonSelected : if value selected is '0'
- * @param throwError : if all fields empty throw error
- * @returns boolean
- */
-export const addressFieldHasNoValue = async (formData: any, keys: string[], radioButtonSelected: boolean, throwError: boolean = false) => {
-  if (radioButtonSelected){
-    const noVal = await Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
-    if (noVal){
-      if (throwError){
-        throw new Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS);
-      }
-      return true;
-    }
-    return false;
-  }
-  return true;
-};
 

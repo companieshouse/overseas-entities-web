@@ -23,34 +23,25 @@ jest.mock('express-validator', () => ({
   })),
 }));
 
-import { ErrorMessages } from "../../src/validation/error.messages";
+import { addressFieldHasNoValue } from "../../src/validation/custom.validation";
 import * as addressHelper from "../../src/validation/fields/address.validation";
 
 describe('tests for addressFieldHasNoValue', () => {
-  test('should throw error when radio button selection true', async () => {
-    await expect(addressHelper.addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], true, true)).rejects.toThrow(Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS));
+  test('should return true when radio button selection true and all fields empty', async () => {
+    await expect(addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], true)).resolves.toBe(true);
   });
 
   test('should return true when radio button selection is false', async () => {
-    await expect((await addressHelper.addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], false, true)).valueOf()).toBe(true);
-  });
-
-  test('should not throw error when throwsError false and all formData empty', async () => {
-    await expect((await addressHelper.addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], true, false)).valueOf()).toBe(true);
-  });
-
-  test('should return true for radioButton selection false', async () => {
-    await expect((await addressHelper.addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], false)).valueOf()).toBe(true);
+    await expect((await addressFieldHasNoValue({ hero: "", nonHero: "" }, ["hero", "nonHero"], false)).valueOf()).toBe(true);
   });
 
   test('should return false when atLeast one formData field has value', async () => {
-    await expect((await addressHelper.addressFieldHasNoValue({ hero: "Mario", nonHero: "" }, ["hero", "nonHero"], true, false)).valueOf()).toBe(false);
+    await expect((await addressFieldHasNoValue({ hero: "Mario", nonHero: "" }, ["hero", "nonHero"], true)).valueOf()).toBe(false);
   });
 
   test('should return true when radio button selection false', async () => {
-    await expect((await addressHelper.addressFieldHasNoValue({}, [], false, false)).valueOf()).toBe(true);
+    await expect((await addressFieldHasNoValue({}, [], false)).valueOf()).toBe(true);
   });
-
 });
 
 describe('Legal entity usual residential service address validations test', () => {

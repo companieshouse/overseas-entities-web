@@ -10,14 +10,13 @@ import { saveAndContinue } from "../utils/save.and.continue";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
   try {
-    const PAGE_NAME = registrationFlag ? config.BENEFICIAL_OWNER_STATEMENTS_PAGE : config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
     const BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
-    logger.debugRequest(req, `GET ${PAGE_NAME}`);
+    logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    return res.render(PAGE_NAME, {
+    return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: BACK_LINK,
-      templateName: PAGE_NAME,
+      templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
     });
   } catch (error) {
@@ -28,10 +27,9 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
 
 export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
   try {
-    const PAGE_NAME = registrationFlag ? config.BENEFICIAL_OWNER_STATEMENTS_PAGE : config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
     const REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
 
-    logger.debugRequest(req, `POST ${PAGE_NAME}`);
+    logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const session = req.session as Session;
     const boStatement = req.body[BeneficialOwnerStatementKey];

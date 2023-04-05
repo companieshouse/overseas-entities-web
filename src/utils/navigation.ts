@@ -96,7 +96,7 @@ export const NAVIGATION: Navigation = {
     nextPage: []
   },
   [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
-    currentPage: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },

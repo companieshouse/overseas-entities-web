@@ -231,6 +231,20 @@ const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: st
   return true;
 };
 
+export const checkCeasedDateAfterStartDate = (
+  ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
+  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = ""
+) => {
+  const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
+  const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
+
+  if (startDate > ceaseDate) {
+    throw new Error(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+  }
+
+  return true;
+};
+
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)

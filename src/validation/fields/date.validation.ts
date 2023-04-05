@@ -16,7 +16,8 @@ import {
   DayFieldErrors,
   MonthFieldErrors,
   YearFieldErrors,
-  checkDateIPLegalEntityBO
+  checkDateIPLegalEntityBO,
+  checkCeasedDateAfterStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -47,6 +48,12 @@ export const ceased_date_validations = [
   body("ceased_date")
     .if(body('is_still_bo').equals('0'))
     .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
+  body("ceased_date")
+    .if(body('is_still_bo').equals('0'))
+    .custom((value, { req }) => checkCeasedDateAfterStartDate(
+      req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"],
+      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"]
+    )),
 ];
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.

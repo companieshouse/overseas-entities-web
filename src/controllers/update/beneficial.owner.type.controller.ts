@@ -7,7 +7,7 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData, setExtraData } from "../../utils/application.data";
+import { getApplicationData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
@@ -17,8 +17,6 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
-
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,14 +34,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
-      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`)
- 
+      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`);
+
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      ...appData, //extract the list of beneficials owners in the views , loop through the list and plug to the template
+      ...appData, // extract the list of beneficials owners in the views , loop through the list and plug to the template
       noLists: true,
       ...appData.update?.review_beneficial_owners_individual
     });

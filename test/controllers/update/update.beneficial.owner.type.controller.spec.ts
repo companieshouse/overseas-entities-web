@@ -72,7 +72,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   describe("GET tests", () => {
 
-
     test(`test other benefical owner data returned when getCompanyPsc data kind is other`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,

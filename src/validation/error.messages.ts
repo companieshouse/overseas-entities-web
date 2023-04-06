@@ -146,8 +146,8 @@ export enum ErrorMessages {
   END_YEAR_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a year",
   END_DAY_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner day must include 1 or 2 numbers",
   END_MONTH_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner month must include 1 or 2 numbers",
-  END_YEAR_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner year must include 4 numbers ",
-  CEASED_DATE_BEFORE_START_DATE = "Ceased date cannot be before the start date",
+  END_YEAR_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner year must include 4 numbers",
+  CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the appointed date",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

@@ -63,7 +63,8 @@ import {
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate,
   updateFilingDate,
-  updateRegistrableBeneficialOwner
+  updateRegistrableBeneficialOwner,
+  updateReviewBeneficialOwnerIndividual
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -73,7 +74,6 @@ import { checkTrustValidations, checkValidations } from "../middleware/validatio
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
-import { checkAvailableBo, checkIfReviewedBoSubmission } from "../controllers/update/update.beneficial.owner.individual.controller";
 
 const router = Router();
 
@@ -426,6 +426,15 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .get(updateBeneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerGov.remove);
+ 
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  ).get(updateReviewBeneficialOwnerIndividual.get)
+  .post(...validator.updateBeneficialOwnerAndReviewValidator,  checkValidations, updateReviewBeneficialOwnerIndividual.post);
+
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -433,9 +442,8 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
     companyAuthentication,
     navigation.hasUpdatePresenter
   )
-  // .get(checkAvailableBo, updateBeneficialOwnerIndividual.getReviewBo).post(updateBeneficialOwnerIndividual.postcheckAndReviewBo)
-  .get(checkAvailableBo, updateBeneficialOwnerIndividual.get)
-  .post(...validator.beneficialOwnerIndividual, checkValidations, checkIfReviewedBoSubmission, updateBeneficialOwnerIndividual.post);
+  .get(updateBeneficialOwnerIndividual.get)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .all(
@@ -501,5 +509,4 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(updateRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
-
 export default router;

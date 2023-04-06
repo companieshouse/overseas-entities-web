@@ -35,8 +35,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
-      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`)
- 
+      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`);
+
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {

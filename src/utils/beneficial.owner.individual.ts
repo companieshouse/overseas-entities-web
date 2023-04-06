@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import {
-  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -14,7 +13,6 @@ import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType } from "../model";
 import { logger } from "../utils/logger";
 import {
-  BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKey,
   BeneficialOwnerIndividualKeys
 } from "../model/beneficial.owner.individual.model";
@@ -87,7 +85,6 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
     setApplicationData(session, data, BeneficialOwnerIndividualKey);
-    
 
     await saveAndContinue(req, session, registrationFlag);
 
@@ -137,7 +134,7 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
   }
 };
 
-const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
 
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);

@@ -103,5 +103,4 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   }
 
   setExtraData(session, appData);
-
 };

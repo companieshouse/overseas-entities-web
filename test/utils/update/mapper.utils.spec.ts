@@ -6,6 +6,11 @@ describe("Test mapping utils", () => {
     expect(InputDate).toEqual({ day: "21", month: "7", year: "2022" });
   });
 
+  test("does map date of creation for day format containing single digit ", () => {
+    const InputDate = mapInputDate("2022-7-01");
+    expect(InputDate).toEqual({ day: "1", month: "7", year: "2022" });
+  });
+
   test("does map date of creation for month format containing two digits", () => {
     const InputDate = mapInputDate("2022-12-21");
     expect(InputDate).toEqual({ day: "21", month: "12", year: "2022" });

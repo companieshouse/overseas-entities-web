@@ -26,7 +26,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
     const appData: ApplicationData = getApplicationData(req.session);
     if (appData.update) {
-      // convert isRegistrableBeneficialOwner from string to number so that it can be deserialized
       appData.update.registrable_beneficial_owner = (isRegistrableBeneficialOwner) ? +isRegistrableBeneficialOwner : 0;
     }
     setExtraData(req.session, appData);

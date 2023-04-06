@@ -8,7 +8,7 @@ import {
 } from "./fields/address.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { date_of_birth_validations, start_date_validations } from "./fields/date.validation";
+import { start_date_validations } from "./fields/date.validation";
 
 export const updateBeneficialOwnerAndReviewValidator = [
   body("first_name")
@@ -35,7 +35,7 @@ export const updateBeneficialOwnerAndReviewValidator = [
   ...usual_residential_address_validations(),
   ...usual_residential_service_address_validations(),
 
-  ...start_date_validations,
+  // ...start_date_validations,
 
   ...nature_of_control_validations
 ];

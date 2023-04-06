@@ -1,126 +1,137 @@
 {% extends "layout.html" %}
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set title = "Tell us about the individual person (NOT LIVE)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %} 
+
+{% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
     {% for bo in boAppData %}
+        {% set dob = dateMacros.formatDate("", bo.date_of_birth.month | string, bo.date_of_birth.year) %}
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ bo.first_name }} {{ bo.last_name }} - born {{ dob }}</span>
 
-      {% set dob = dateMacros.formatDate("", bo.date_of_birth.month | string, bo.date_of_birth.year) %}
-      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ bo.first_name }} {{ bo.last_name }} - born {{ dob }}</span>
-
-      <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
-      <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
-      {{ govukInsetText({
-        html: "You'll need to <strong>enter their home address</strong>, and tell us if they're still a registrable beneficial owner."
-      }) }}
-
-      <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
-        <summary class="govuk-details__summary">
-          <span class="govuk-details__summary-text">
-            How to complete this section for a ceased beneficial owner
-          </span>
-        </summary>
-        <div class="govuk-details__text">
-          <p class="govuk-body">If they are no longer a registrable beneficial owner, you need to make sure this information is correct as at the ceased date, and update it if needed.</p>
-        </div>
-      </details>
-
-      <form method="post">
-      <input type="hidden" name="boIndex" value="{{ indexTracker }}" />
-      {% set first_name = bo.first_name %}
-      {% include "includes/inputs/fields/first-name-input.html" %}
-
-      {% set hintLastNameText = "This is also known as your family name." %}
-      {% set last_name = bo.last_name %}
-      {% include "includes/inputs/fields/last-name-input.html" %}
-    
-      {% set nationalityField = bo.nationality %}
-      {% include "includes/inputs/nationality/nationality.html" %}
-
-      {% set nationalityField = bo.second_nationality %}
-      {% include "includes/inputs/nationality/second-nationality.html" %}
-
-      {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
-      {% include "includes/inputs/address/residential-address-input.html" %}
-
-      <h2 class="govuk-heading-m">Date they became a beneficial owner for the overseas entity:</h2>
-      <p class="govuk-body">10 July 2004 [placeholder]</p><br>
-
-      {% set ceasedDateHtml %}
-        <br>
-        {% set dateText = "Date they ceased to be a registrable beneficial owner" %}
-        {% include "includes/inputs/date/ceased-date-input.html" %}
-      {% endset -%}
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        idPrefix: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
-        name: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
-        fieldset: {
-          legend: {
-            text: "Are they still a registrable beneficial owner for the overseas entity?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-          }
-        },
-        items: [
-          {
-            value: 1,
-            text: "Yes",
-            checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 1,
-            attributes: {
-              "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-yes-radio-option"
-            }
-          },
-          {
-            value: 0,
-            text: "No",
-            checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 0,
-            attributes: {
-              "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-no-radio-option"
-            },
-            conditional: {
-              html: ceasedDateHtml
-            }
-          }
-        ]
-      }) }}
-
-      {% call govukFieldset({
-        legend: {
-          text: "What is their nature of control?",
-          classes: "govuk-fieldset__legend--m",
-          isPageHeading: false
-        }
-      }) %}
-
-      {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
-      {% set beneficial_owner_nature_of_control_types = bo.beneficial_owner_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
-
-      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-      {% set trustees_nature_of_control_types = bo.trustees_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
-
-      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-      {% set non_legal_firm_members_nature_of_control_types = bo.non_legal_firm_members_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
-
-      {% endcall %}
-
-      {% set sanctionsPronoun = "they" %}
-      {% set is_on_sanctions_list = bo.is_on_sanctions_list %}
-      {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
-
-      {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
-      {% include "includes/inset-text.html" %}
-
-      {% include "includes/save-and-continue-button.html" %}
-      {% set nameToBeRemoved = first_name + " " + last_name %}
-      {% include "includes/remove-button.html" %}
-      </form>
-   {% endfor %}
+        <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
+        <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
+        {{ govukInsetText({
+          html: "You'll need to <strong>enter their home address</strong>, and tell us if they're still a registrable beneficial owner."
+        }) }}
+      
+        <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              How to complete this section for a ceased beneficial owner
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">If they are no longer a registrable beneficial owner, you need to make sure this information is correct as at the ceased date, and update it if needed.</p>
+          </div>
+        </details>
+        <form method="post">
+            <input type="hidden" name="boIndex" value="{{ indexTracker }}" />
+            {% set first_name = bo.first_name %}
+            {% include "includes/inputs/fields/first-name-input.html" %}
+          
+            {% set hintLastNameText = "This is also known as your family name." %}
+            {% set last_name = bo.last_name %}
+            {% include "includes/inputs/fields/last-name-input.html" %}
+          
+            {% set nationalityField = bo.nationality %}
+            {% include "includes/inputs/nationality/nationality.html" %}
+          
+            {% set nationalityField = bo.second_nationality %}
+            {% include "includes/inputs/nationality/second-nationality.html" %}
+          
+            {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
+            {% include "includes/inputs/address/residential-address-input.html" %}
+          
+            <h2 class="govuk-heading-m">Date they became a beneficial owner for the overseas entity:</h2>
+            <p class="govuk-body">10 July 2004 [placeholder]</p><br>
+          
+            {% set ceasedDateHtml %}
+              <br>
+              {% set dateText = "Date they ceased to be a registrable beneficial owner" %}
+              {% include "includes/inputs/date/ceased-date-input.html" %}
+            {% endset -%}
+          
+            {{ govukRadios({
+              classes: "govuk-radios",
+              idPrefix: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
+              name: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
+              fieldset: {
+                legend: {
+                  text: "Are they still a registrable beneficial owner for the overseas entity?",
+                  isPageHeading: false,
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: 1,
+                  text: "Yes",
+                  checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 1,
+                  attributes: {
+                    "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-yes-radio-option"
+                  }
+                },
+                {
+                  value: 0,
+                  text: "No",
+                  checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 0,
+                  attributes: {
+                    "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-no-radio-option"
+                  },
+                  conditional: {
+                    html: ceasedDateHtml
+                  }
+                }
+              ]
+            }) }}
+          
+            {% call govukFieldset({
+              legend: {
+                text: "What is their nature of control?",
+                classes: "govuk-fieldset__legend--m",
+                isPageHeading: false
+              }
+            }) %}
+          
+            {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
+            {% set beneficial_owner_nature_of_control_types = bo.beneficial_owner_nature_of_control_types %}
+            {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
+          
+            {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+            {% set trustees_nature_of_control_types = bo.trustees_nature_of_control_types %}
+            {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
+          
+            {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
+            {% set non_legal_firm_members_nature_of_control_types = bo.non_legal_firm_members_nature_of_control_types %}
+            {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
+          
+            {% endcall %}
+          
+            {% set sanctionsPronoun = "they" %}
+            {% set is_on_sanctions_list = bo.is_on_sanctions_list %}
+            {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
+          
+            {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
+            {% include "includes/inset-text.html" %}
+          
+            {% include "includes/save-and-continue-button.html" %}
+            {% set nameToBeRemoved = first_name + " " + last_name %}
+            {% include "includes/remove-button.html" %}
+          </form>
+    {% endfor %}
   </div>
 </div>
+  
+{% endblock %}

@@ -570,3 +570,37 @@ const checkCorrectIsFormat = (email: string) => {
     throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
   }
 };
+
+/**
+ * @param formData : req.body
+ * @param keys : req.body[keys]
+ * @param radioButtonSelected : if value selected is '0'
+ * @returns boolean
+ */
+export const addressFieldsHaveNoValue = (formData: any, keys: string[], radioButtonSelected: boolean) => {
+  if (radioButtonSelected){
+    return Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+  }
+  return false;
+};
+
+/**
+ *
+ * @param allEmpty : Checks if all correspondence fields empty
+ * @param selected : check if radio button selected for correspondence address
+ * @param errMsg : Message to be thrown if there is an error
+ * @param value : Address field value
+ * @param isPrimaryField : Throw error if field is a primary field
+ * @returns
+ */
+export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: boolean, allEmpty: boolean, selected: boolean, errMsg: string, value: string = "") => {
+  if (!allEmpty) {
+    checkFieldIfRadioButtonSelected(selected, errMsg, value);
+  } else {
+    if (isPrimaryField){
+      throw new Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS);
+    } else {
+      return false;
+    }
+  }
+};

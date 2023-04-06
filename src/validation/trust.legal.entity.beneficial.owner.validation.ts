@@ -44,7 +44,6 @@ export const trustLegalEntityBeneficialOwnerValidator = [
   body("public_register_name")
     .if(body("is_on_register_in_country_formed_in").equals("1"))
     .notEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PUBLIC_REGISTER_NAME)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.PUBLIC_REGISTER_NAME_INVALID_CHARACTERS),
 
   body("public_register_jurisdiction")

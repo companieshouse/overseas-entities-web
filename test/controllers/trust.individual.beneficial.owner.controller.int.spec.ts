@@ -27,6 +27,7 @@ import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.mode
 import { Trust } from '../../src/model/trust.model';
 import { IndividualTrusteesFormCommon } from '../../src/model/trust.page.model';
 import * as maxLengthMocks from "../__mocks__/max.length.mock";
+import { RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK, SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -54,18 +55,9 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       dateOfBirthDay: "19",
       dateOfBirthMonth: "03",
       dateOfBirthYear: "1976",
-      nationality: "welsh",
-      usual_residential_address_property_name_number: '1',
-      usual_residential_address_line_1: "ss",
-      usual_residential_address_town: "dd",
-      usual_residential_address_county: "dd",
-      usual_residential_address_country: "wales",
-      usual_residential_address_postcode: "cf240tl",
-      service_address_property_name_number: "ss",
-      service_address_town: "dd",
-      service_address_county: "dd",
-      service_address_country: "wales",
-      service_address_postcode: "cf240tl",
+      nationality: maxLengthMocks.NO_MAX,
+      ...RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
+      ...SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK,
       is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       dateBecameIPDay: "11",
       dateBecameIPMonth: "11",
@@ -80,6 +72,13 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
     expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
     expect(resp.text).toContain(ErrorMessages.MAX_FIRST_NAME_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_LAST_NAME_LENGTH_50);
+    expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE1_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_ADDRESS_LINE2_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_CITY_OR_TOWN_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
+    expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
   });
 
 });

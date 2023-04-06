@@ -15,14 +15,14 @@ export const dateValidations = (dateContext: dateContext) => {
       .if(body(dateContext.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContext.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkYearFieldForErrors(dateContext.yearInput.errors, req.body[dateContext.yearInput.name])),
-    body(dateContext.dateInput.name)
+    body(dateContext.dayInput.name)
       .custom((value, { req }) => dateContext.dateInput.callBack(req.body[dateContext.dayInput.name], req.body[dateContext.monthInput.name], req.body[dateContext.yearInput.name])),
   ];
 };
 
 export const conditionalDateValidations = (dateContextWithCondition: dateContextWithCondition) => {
   return [
-    body(`${dateContextWithCondition.dayInput.name}`)
+    body(dateContextWithCondition.dayInput.name)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .if(body(dateContextWithCondition.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContextWithCondition.yearInput.name).notEmpty({ ignore_whitespace: true }))
@@ -37,7 +37,7 @@ export const conditionalDateValidations = (dateContextWithCondition: dateContext
       .if(body(dateContextWithCondition.dayInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContextWithCondition.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .custom((value, { req }) => checkYearFieldForErrors(dateContextWithCondition.yearInput.errors, req.body[dateContextWithCondition.yearInput.name])),
-    body(dateContextWithCondition.dateInput.name)
+    body(dateContextWithCondition.dayInput.name)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .custom((value, { req }) => dateContextWithCondition.dateInput.callBack(req.body[dateContextWithCondition.dayInput.name], req.body[dateContextWithCondition.monthInput.name], req.body[dateContextWithCondition.yearInput.name])),
   ];

@@ -1,4 +1,7 @@
-import { checkCeasedDateOnOrAfterStartDate } from "../../src/validation/custom.validation";
+import {
+  checkCeasedDateOnOrAfterStartDate,
+  checkFieldIfRadioButtonSelectedAndFieldsEmpty
+} from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
 
 describe('checkCeasedDateOnOrAfterStartDate', () => {
@@ -22,5 +25,13 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
     const startDate = ["3", "3", "2023"];
 
     expect(checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
+  });
+
+  test("should test checkFieldIfRadioButtonSelectedAndFieldsEmpty validity", () => {
+    const errorMsg = "kaput";
+    expect(() => checkFieldIfRadioButtonSelectedAndFieldsEmpty(true, true, true, errorMsg)).toThrowError("Enter their correspondence address");
+    expect(checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, true, true, errorMsg)).toBe(false);
+    expect(() => checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, false, true, errorMsg)).toThrowError(errorMsg);
+    expect(checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, false, false, errorMsg)).toBeFalsy();
   });
 });

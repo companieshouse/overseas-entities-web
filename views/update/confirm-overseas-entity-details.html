@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
 
 {% set title = "Confirm Overseas Data" %}
 
@@ -9,6 +10,8 @@
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
+
+{% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -69,7 +72,7 @@
                 }
               },
               {
-                text: registrationDate,
+                text: displayRegistrationDate,
                 attributes: {
                   "id": "oe_entity_registered_date_value"
                 }

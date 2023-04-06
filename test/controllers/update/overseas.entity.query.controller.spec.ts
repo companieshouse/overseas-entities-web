@@ -93,6 +93,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('renders not found error for non existing oe number', async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       mockGetCompanyProfile.mockReturnValueOnce(undefined);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
@@ -103,7 +104,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('redirects to confirm page for valid oe number', async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 
@@ -112,6 +113,17 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .send({ entity_number: 'OE111129' });
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
+    });
+
+    test('redirects to confirm page without calling getCompanyProfile for Resume', async () => {
+      mockGetApplicationData.mockReturnValue({ entity_number: 'OE111129', overseas_entity_id: '34r34534' });
+
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ entity_number: 'OE111129' });
+      expect(resp.status).toEqual(302);
+      expect(mockGetCompanyProfile).not.toHaveBeenCalled();
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 

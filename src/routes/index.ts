@@ -65,7 +65,8 @@ import {
   updateManagingOfficerCorporate,
   updateFilingDate,
   updateRegistrableBeneficialOwner,
-  updateContinueSavedFiling
+  updateContinueSavedFiling,
+  resumeUpdateSubmission
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -292,6 +293,8 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
+
+router.get(config.RESUME_UPDATE_SUBMISSION_URL, authentication, resumeUpdateSubmission.get);
 
 router.route(config.SECURE_UPDATE_FILTER_URL)
   .all(authentication)

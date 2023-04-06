@@ -1,10 +1,11 @@
+import { DATE } from "./fields/date.mock";
 
 export const companyProfileQueryMock = {
   companyName: "Test1",
   companyNumber: "OE111129"
 };
 
-export const testDateOfCreation = "1/1/2023";
+export const testDateOfCreation = DATE;
 export const testEntityName = "testEntity";
 export const testEntityNumber = "OE111129";
 export const testIncorporationCountry = "Ireland";

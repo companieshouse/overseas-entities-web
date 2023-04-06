@@ -17,6 +17,7 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import app from "app";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -37,6 +38,29 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       setFetchedBoMoData(appData);
     }
+
+    // First review any retriewed individual bo:
+    while ((appData.update?.review_managing_officers_individual?.length || 0)> 0) {
+        const boi = appData.update?.review_managing_officers_individual?.pop();
+        if (!boi) {
+          break;
+        }
+        let index = 0;
+        if (!appData.beneficial_owners_individual) {
+            appData.beneficial_owners_individual = [boi];
+        } else {
+          index = appData.beneficial_owners_individual.push(boi) - 1;
+        }
+        return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "/review-individual-benifitial-owner?index=" + index + "&review=true");
+        // This will call get() in new page for reviewing this type of bo with an index into the main model.
+        // On post (after/if validation passes) the new review indiv. bo controller will redirect back to this controller (may need review param to decide).
+        // Then will skip reloading, do next in review_managing_officers_individual list
+        // or if that is empty go on to next.
+    }
+
+    // Next the bo corps, bo others ....
+
+    // Then render for any adds
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_URL,

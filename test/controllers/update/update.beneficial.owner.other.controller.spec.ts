@@ -362,13 +362,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyMonthAndYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
@@ -378,13 +373,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
@@ -394,13 +384,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndMonthErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only DAY error when start date day is empty`, async () => {
@@ -410,16 +395,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2022";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyDayErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only MONTH error when start date month is empty`, async () => {
@@ -429,16 +406,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2022";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyMonthErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR error when start date year is empty`, async () => {
@@ -448,16 +417,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day is outside valid numbers`, async () => {
@@ -467,16 +428,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
@@ -486,17 +439,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "20";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyYearLengthError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
@@ -506,16 +450,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
@@ -525,16 +461,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
@@ -544,16 +472,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
@@ -564,16 +484,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["start_date-year"] = inTheFuture.year.toString();
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyDayNotInPastErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
@@ -623,13 +535,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyMonthAndYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date day and year are empty`, async () => {
@@ -639,13 +546,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date day and month are empty`, async () => {
@@ -655,13 +557,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndMonthErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only DAY error when ceased date day is empty`, async () => {
@@ -671,16 +568,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2022";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyDayErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only MONTH error when ceased date month is empty`, async () => {
@@ -690,16 +579,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2022";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyMonthErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR error when ceased date year is empty`, async () => {
@@ -709,16 +590,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date day is outside valid numbers`, async () => {
@@ -728,16 +601,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR_LENGTH error when ceased date year is not 4 digits`, async () => {
@@ -747,17 +612,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "20";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyYearLengthError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date month is outside valid numbers`, async () => {
@@ -767,16 +623,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date day is zero`, async () => {
@@ -786,16 +634,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when ceased date month is zero`, async () => {
@@ -805,16 +645,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when ceased date is in the future`, async () => {
@@ -825,16 +657,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       beneficialOwnerOther["ceased_date-year"] = inTheFuture.year.toString();
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyDayNotInPastErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with error when ceased date is before start date`, async () => {
@@ -998,4 +822,104 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
   });
+
+  const assertOnlyEmptyDayErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyEmptyMonthErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyEmptyYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyDayAndMonthErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY_AND_MONTH);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyMonthAndYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.MONTH_AND_YEAR);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyDayAndYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY_AND_YEAR);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyInvalidDateError = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyYearLengthError = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).toContain(ErrorMessages.YEAR_LENGTH);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyDayNotInPastErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
 });

@@ -5,6 +5,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock('../../../src/service/payment.service');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
@@ -80,6 +81,7 @@ import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { dueDiligenceType, overseasEntityDueDiligenceType } from "../../../src/model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
+import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -89,6 +91,9 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockHasBOsOrMOsUpdateMiddleware = hasBOsOrMOsUpdate as jest.Mock;
+mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

@@ -6,7 +6,8 @@ import {
   SOLD_LAND_FILTER_URL,
   RESUME,
   STARTING_NEW_URL,
-  SECURE_UPDATE_FILTER_URL
+  SECURE_UPDATE_FILTER_URL,
+  UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../config';
 
 import {
@@ -21,10 +22,10 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
 
       let returnUrl = SOLD_LAND_FILTER_URL;
 
-      if (req.path.startsWith(UPDATE_LANDING_URL)) {
-        returnUrl = SECURE_UPDATE_FILTER_URL;
-      } else if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`)) {
+      if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`) || req.path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
         returnUrl = req.path;
+      } else if (req.path.startsWith(UPDATE_LANDING_URL)) {
+        returnUrl = SECURE_UPDATE_FILTER_URL;
       }
 
       return res.redirect(`/signin?return_to=${returnUrl}`);

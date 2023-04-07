@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 import { RoleWithinTrustType } from '../../src/model/role.within.trust.type.model';
 import { checkBirthDate,
   checkDateIPIndividualBO,
+  checkDateIPLegalEntityBO,
   checkDateIsInPast,
   checkDateIsInPastOrToday,
   checkDateIsNotCompletelyEmpty,
@@ -182,6 +183,20 @@ describe("test date method", () => {
     ErrorMessages.INVALID_DATE,
   ];
 
+  const errMsgIPLegalEntityBO: ErrorMessages[] = [
+    ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO,
+    ErrorMessages.MONTH_AND_YEAR,
+    ErrorMessages.DAY_AND_YEAR,
+    ErrorMessages.DAY_AND_MONTH,
+    ErrorMessages.INVALID_DATE,
+    ErrorMessages.INVALID_DATE,
+    ErrorMessages.INVALID_DATE,
+    ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON,
+    ErrorMessages.INVALID_DATE,
+    ErrorMessages.INVALID_DATE,
+    ErrorMessages.INVALID_DATE,
+  ];
+
   const errMsgcheckBirthDate: ErrorMessages[] = [
     ErrorMessages.ENTER_DATE_OF_BIRTH_INDIVIDUAL_BO,
     ErrorMessages.MONTH_AND_YEAR_OF_BIRTH,
@@ -252,16 +267,28 @@ describe("test date method", () => {
     ["31", "04", "2008", err[10]],
   ];
 
-  test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDateIP", (_day, _month, _year, _err) => {
+  test.each(testDateCheck(errMsgcheckDate))("should throw appropriate date errors for checkDateIPIndividualBO", (_day, _month, _year, _err) => {
     expect(() => checkDateIPIndividualBO(_day, _month, _year)).toThrow(_err);
   });
 
-  test("should throw no errors for checkDateIP", () => {
+  test("should throw no errors for checkDateIPIndividualBO", () => {
     expect(checkDateIPIndividualBO("01", "01", "2000")).toBe(true);
   });
 
-  test("should throw errors for no arguments checkDateIP", () => {
+  test("should throw errors for no arguments checkDateIPIndividualBO", () => {
     expect(() => checkDateIPIndividualBO()).toThrowError(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO);
+  });
+
+  test.each(testDateCheck(errMsgIPLegalEntityBO))("should throw appropriate date errors for checkDateIPLegalEntityBO", (_day, _month, _year, _err) => {
+    expect(() => checkDateIPLegalEntityBO(_day, _month, _year)).toThrow(_err);
+  });
+
+  test("should throw no errors for checkDateIPLegalEntityBO", () => {
+    expect(checkDateIPLegalEntityBO("01", "01", "2000")).toBe(true);
+  });
+
+  test("should throw errors for no arguments checkDateIPLegalEntityBO", () => {
+    expect(() => checkDateIPLegalEntityBO()).toThrowError(ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO);
   });
 
   test.each(testDateCheck(errMsgcheckBirthDate))("should throw appropriate date errors for checkBirthDate", (_day, _month, _year, _err) => {

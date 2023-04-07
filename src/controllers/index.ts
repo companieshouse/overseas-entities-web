@@ -51,12 +51,16 @@ export * as updateCheckYourAnswers from "./update/check.your.answers.controller"
 export * as overseasEntityPayment from './update/payment.controller';
 export * as updateConfirmation from "./update/confirmation.controller";
 export * as overseasEntityReview from "./update/overseas.entity.review.controller";
+export * as updateBeneficialOwnerBoMoReview from "./update/update.beneficial.owner.bo.mo.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateBeneficialOwnerType from "./update/beneficial.owner.type.controller";
 export * as updateBeneficialOwnerGov from "./update/update.beneficial.owner.gov.controller";
+export * as updateBeneficialOwnerStatements from "./update/update.beneficial.owner.statements.controller";
 export * as updateManagingOfficerIndividual from "./update/update.managing.officer.controller";
 export * as updateBeneficialOwnerIndividual from "./update/update.beneficial.owner.individual.controller";
 export * as updateSignOut from "./update/update.sign.out.controller";
 export * as updateManagingOfficerCorporate from "./update/update.corporate.managing.officer.controller";
 export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";
 export * as updateFilingDate from "./update/update.filing.date.controller";
+export * as updateRegistrableBeneficialOwner from "./update/update.registrable.beneficial.owner.controller";
+export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";

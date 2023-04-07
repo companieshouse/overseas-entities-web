@@ -11,6 +11,7 @@ jest.mock("../../src/middleware/is.feature.enabled.middleware", () => ({
 jest.mock("../../src/utils/trusts");
 jest.mock("../../src/utils/trust/common.trust.data.mapper");
 jest.mock("../../src/utils/trust/legal.entity.beneficial.owner.mapper");
+jest.mock("../../src/middleware/validation.middleware");
 
 import { constants } from "http2";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
@@ -46,6 +47,8 @@ import {
 import { mapCommonTrustDataToPage } from "../../src/utils/trust/common.trust.data.mapper";
 import { mapLegalEntityToSession } from "../../src/utils/trust/legal.entity.beneficial.owner.mapper";
 import { saveAndContinue } from '../../src/utils/save.and.continue';
+import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
+import { formatValidationError } from "../../src/middleware/validation.middleware";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -94,7 +97,35 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       session: {} as Session,
       route: "",
       method: "",
-      body: { body: "dummy" },
+      body: {
+        legalEntityId: "001",
+        legalEntityName: "Ambosia",
+        roleWithinTrust: RoleWithinTrustType.INTERESTED_PERSON,
+        interestedPersonStartDateDay: "12",
+        interestedPersonStartDateMonth: "12",
+        interestedPersonStartDateYear: "2001",
+        principal_address_property_name_number: "12",
+        principal_address_line_1: "Ever green",
+        principal_address_line_2: "Forest road",
+        principal_address_town: "Amazon",
+        principal_address_county: "Ozia",
+        principal_address_country: "Oz",
+        principal_address_postcode: "12 F",
+        service_address_property_name_number: "12",
+        service_address_line_1: "Slippery slope",
+        service_address_line_2: "Hill",
+        service_address_town: "Starway",
+        service_address_county: "Milkyway",
+        service_address_country: "Galactica",
+        service_address_postcode: "12F",
+        governingLaw: "Law",
+        legalForm: "Form",
+        public_register_name: "Clause",
+        public_register_jurisdiction: "xxx",
+        registration_number: "1234",
+        is_service_address_same_as_principal_address: "0",
+        is_on_register_in_country_formed_in: "0",
+      },
     } as Request;
   });
 
@@ -113,6 +144,10 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
   });
 
   describe("POST unit tests", () => {
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
     test("Save", () => {
       const mockBoData = {} as TrustCorporate;
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
@@ -128,7 +163,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       const mockUpdatedAppData = {} as Trust;
       (saveTrustInApp as jest.Mock).mockReturnValue(mockUpdatedAppData);
 
-      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+      (validationResult as any as jest.Mock).mockImplementation(() => ({
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
@@ -208,6 +243,20 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithId).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("should have validation error", async () => {
+      (validationResult as unknown as jest.Mock).mockImplementation(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+        array: jest.fn().mockReturnValue([{ test: 'error' }])
+      }));
+      formatValidationError as jest.Mock;
+
+      const resp = await (await request(app).post(pageUrl).send(mockReq));
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
   });
 });

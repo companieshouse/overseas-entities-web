@@ -257,7 +257,7 @@ export const checkDateIPIndividualBO = (dayStr: string = "", monthStr: string = 
 export const checkDateIPLegalEntityBO = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO } as DateFieldErrors, dayStr, monthStr, yearStr);
   checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-  checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
 
@@ -372,25 +372,19 @@ const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = 
 };
 
 export const checkDayFieldForErrors = (dateErrors: DayFieldErrors, dayStr: string = "") => {
-  const day = parseInt(dayStr);
   if (dayStr === "") {
     throw new Error(dateErrors.noDayError);
   } else if (dayStr.length > 2){
     throw new Error(dateErrors.wrongDayLength);
-  } else if (day <= 0 || day > 31){
-    throw new Error(dateErrors.noRealDay);
   }
   return true;
 };
 
 export const checkMonthFieldForErrors = (dateErrors: MonthFieldErrors, monthStr: string = "") => {
-  const month = parseInt(monthStr);
   if (monthStr === "") {
     throw new Error(dateErrors.noMonthError);
   } else if (monthStr.length > 2){
     throw new Error(dateErrors.wrongMonthLength);
-  } else if (month <= 0 || month > 12){
-    throw new Error(ErrorMessages.INVALID_MONTH);
   }
   return true;
 };
@@ -574,5 +568,39 @@ const checkIsWithinLengthLimit = (email: string, maxLength: number) => {
 const checkCorrectIsFormat = (email: string) => {
   if (!email.match(VALID_EMAIL_FORMAT)) {
     throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
+  }
+};
+
+/**
+ * @param formData : req.body
+ * @param keys : req.body[keys]
+ * @param radioButtonSelected : if value selected is '0'
+ * @returns boolean
+ */
+export const addressFieldsHaveNoValue = (formData: any, keys: string[], radioButtonSelected: boolean) => {
+  if (radioButtonSelected){
+    return Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+  }
+  return false;
+};
+
+/**
+ *
+ * @param allEmpty : Checks if all correspondence fields empty
+ * @param selected : check if radio button selected for correspondence address
+ * @param errMsg : Message to be thrown if there is an error
+ * @param value : Address field value
+ * @param isPrimaryField : Throw error if field is a primary field
+ * @returns
+ */
+export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: boolean, allEmpty: boolean, selected: boolean, errMsg: string, value: string = "") => {
+  if (!allEmpty) {
+    checkFieldIfRadioButtonSelected(selected, errMsg, value);
+  } else {
+    if (isPrimaryField){
+      throw new Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS);
+    } else {
+      return false;
+    }
   }
 };

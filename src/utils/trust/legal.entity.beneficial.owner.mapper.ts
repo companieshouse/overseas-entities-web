@@ -32,7 +32,7 @@ const mapLegalEntityToSession = (
     identification_legal_form: formData.legalForm,
     is_service_address_same_as_principal_address: (formData.is_service_address_same_as_principal_address) ? Number(formData.is_service_address_same_as_principal_address) : 0,
 
-    is_on_register_in_country_formed_in: formData.is_on_register_in_country_formed_in,
+    is_on_register_in_country_formed_in: (formData.is_on_register_in_country_formed_in) ? Number(formData.is_on_register_in_country_formed_in) : 0,
   };
 
   let publicRegisterData = {};

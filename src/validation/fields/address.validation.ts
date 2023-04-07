@@ -2,7 +2,9 @@ import { body } from "express-validator";
 import { defaultRequiredErrorMessages, defaultOptionalErrorMessages, ErrorMessagesOptional, ErrorMessagesRequired } from "../models/address.error.model";
 
 import {
+  addressFieldsHaveNoValue,
   checkFieldIfRadioButtonSelected,
+  checkFieldIfRadioButtonSelectedAndFieldsEmpty,
   checkInvalidCharactersIfRadioButtonSelected,
   checkMaxFieldIfRadioButtonSelected
 } from "../custom.validation";
@@ -121,6 +123,46 @@ export const usual_residential_service_address_validations = (errors: ErrorMessa
   ];
 };
 
+export const legal_entity_usual_residential_service_address_validations = (errors: ErrorMessagesRequired = defaultRequiredErrorMessages, radioButtonElementID: string = "is_service_address_same_as_usual_residential_address") => {
+  errors = { ...defaultRequiredErrorMessages, ...errors };
+
+  const addressFields = [
+    "service_address_property_name_number",
+    "service_address_line_1",
+    "service_address_line_2",
+    "service_address_town",
+    "service_address_county",
+    "service_address_country",
+    "service_address_postcode",
+  ];
+
+  return [
+    body("service_address_property_name_number")
+      .custom(async (value, { req }) => checkFieldIfRadioButtonSelectedAndFieldsEmpty(true, await addressFieldsHaveNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0'), req.body[`${radioButtonElementID}`] === '0', errors.propertyValueError, value) )
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.maxPropertyValueLengthError, 50, value) )
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.propertyNameInvalidError, value)),
+    body("service_address_line_1")
+      .custom(async (value, { req }) => checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, await addressFieldsHaveNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0'), req.body[`${radioButtonElementID}`] === '0', errors.addressLine1Error, value) )
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.addressLine1LengthError, 50, value) )
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.addressLine1InvalidCharacterError, value)),
+    body("service_address_line_2")
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.addressLine2LengthError, 50, value))
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.addressLine2InvalidCharacterError, value)),
+    body("service_address_town")
+      .custom(async (value, { req }) => checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, await addressFieldsHaveNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0'), req.body[`${radioButtonElementID}`] === '0', errors.townValueError, value) )
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.maxTownValueLengthError, 50, value) )
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.townInvalidCharacterError, value)),
+    body("service_address_county")
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.maxCountyValueLengthError, 50, value) )
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.countyInvalidCharacterError, value)),
+    body("service_address_country")
+      .custom(async (value, { req }) => checkFieldIfRadioButtonSelectedAndFieldsEmpty(false, await addressFieldsHaveNoValue(req.body, addressFields, req.body[`${radioButtonElementID}`] === '0'), req.body[`${radioButtonElementID}`] === '0', errors.countryValueError, value) ),
+    body("service_address_postcode")
+      .custom((value, { req }) => checkMaxFieldIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.postcodeLengthError, 15, value) )
+      .custom((value, { req }) => checkInvalidCharactersIfRadioButtonSelected(req.body[`${radioButtonElementID}`] === '0', errors.postcodeInvalidCharacterError, value)),
+  ];
+};
+
 export const identity_address_validations = [
   body("identity_address_property_name_number")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PROPERTY_NAME_OR_NUMBER)
@@ -147,5 +189,4 @@ export const identity_address_validations = [
     .isLength({ max: 15 }).withMessage(ErrorMessages.MAX_POSTCODE_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.POSTCODE_ZIPCODE_INVALID_CHARACTERS)
 ];
-export { ErrorMessagesOptional, ErrorMessagesRequired };
 

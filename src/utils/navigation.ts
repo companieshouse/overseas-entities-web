@@ -73,11 +73,16 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {
+    currentPage: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
+    previousPage: () => config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_CHECK_YOUR_ANSWERS_URL]
   },
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
@@ -89,6 +94,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: []
+  },
+  [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
@@ -259,5 +269,15 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
+    currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
+  },
+  [config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL]: {
+    currentPage: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_PAGE,
+    nextPage: [config.YOUR_FILINGS_PATH]
   },
 };

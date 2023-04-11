@@ -19,7 +19,6 @@ import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBenef
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 
-
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -41,11 +40,11 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     checkReviewBo(req, res);
-  
+
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      ...appData, 
+      ...appData,
       noLists: true,
       ...appData.update?.review_beneficial_owners_individual
     });
@@ -55,7 +54,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => true
+const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
+  if (boi) {return true;}
+};
 
 export const checkReviewBo = (req: Request, res: Response) => {
   const appData: ApplicationData = getApplicationData(req.session);
@@ -63,7 +64,6 @@ export const checkReviewBo = (req: Request, res: Response) => {
   // Check last individual BO validates - in case back button is clicked
   const boiLength = appData.beneficial_owners_individual?.length || 0;
   if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiLength - 1])) {
-    // Get user to fix this up.
     return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "/review-individual-benifitial-owner?index=" + (boiLength - 1) + "&review=true");
   }
 
@@ -73,31 +73,24 @@ export const checkReviewBo = (req: Request, res: Response) => {
     if (!boi) {
       break;
     }
-    
+
     let index = 0;
     if (!appData.beneficial_owners_individual) {
-      console.log(`calling if part`)
+      console.log(`calling if part`);
       appData.beneficial_owners_individual = [boi];
     } else {
-      console.log(`calling else part`)
+      console.log(`calling else part`);
 
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
-   //  return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "/review-individual-benifitial-owner?index=" + index + "&review=true");
-   console.log(`individual bo is ${JSON.stringify(appData.beneficial_owners_individual)} and index is ${index}`)
+    console.log(`individual bo is ${JSON.stringify(appData.beneficial_owners_individual)} and index is ${index}`);
 
-  return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "review-beneficial-owner-individual?index=" + index + "&review=true");
-
-    // This will call get() in new page for reviewing this type of bo with an index into the main model.
-    // On post (after/if validation passes) the new review indiv. bo controller will redirect back to this controller (may need review param to decide).
-    // Then will skip reloading, do next in review_managing_officers_individual list
-    // or if that is empty go on to next.
+    return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "review-beneficial-owner-individual?index=" + index + "&review=true");
   }
-}
+};
 
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  console.log(`INSIDE OF POST REQUEST FOR TYPE CONTROLLER`)
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
 

@@ -42,7 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
     templateName: templateName,

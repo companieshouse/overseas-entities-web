@@ -426,7 +426,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .get(updateBeneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
 router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerGov.remove);
- 
+
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
     authentication,
@@ -434,11 +434,9 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateReviewBeneficialOwnerIndividual.get)
-  .post(...validator.updateBeneficialOwnerAndReviewValidator,  checkValidations, updateReviewBeneficialOwnerIndividual.post);
+  .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
 
-  router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + config.BO_MO_REVIEW_ID + "&review=true", updateReviewBeneficialOwnerIndividual.get)
-
-
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + config.BO_MO_REVIEW_ID + "&review=true", updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(

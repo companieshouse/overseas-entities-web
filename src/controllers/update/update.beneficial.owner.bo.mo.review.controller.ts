@@ -5,7 +5,7 @@ import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { getApplicationData } from "../../utils/application.data";
 
-export const get = async (req: Request, res: Response, next: NextFunction) => {
+export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 

@@ -8,7 +8,6 @@ import {
 } from "./fields/address.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { start_date_validations } from "./fields/date.validation";
 
 export const updateBeneficialOwnerAndReviewValidator = [
   body("first_name")
@@ -20,7 +19,7 @@ export const updateBeneficialOwnerAndReviewValidator = [
     .isLength({ max: 160 })
     .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
-  
+
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),

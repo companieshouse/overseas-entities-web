@@ -116,17 +116,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 
-    test('redirects to confirm page without calling getCompanyProfile for Resume', async () => {
-      mockGetApplicationData.mockReturnValue({ entity_number: 'OE111129', overseas_entity_id: '34r34534' });
-
-      const resp = await request(app)
-        .post(config.OVERSEAS_ENTITY_QUERY_URL)
-        .send({ entity_number: 'OE111129' });
-      expect(resp.status).toEqual(302);
-      expect(mockGetCompanyProfile).not.toHaveBeenCalled();
-      expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
-    });
-
     test("catch error when posting data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)

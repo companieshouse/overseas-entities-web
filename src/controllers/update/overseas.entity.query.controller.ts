@@ -30,12 +30,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData: ApplicationData = getApplicationData(req.session);
-    // For Resume cases appData will contain overseas entity id so don't call getCompanyProfile
-    if (appData.overseas_entity_id) {
-      return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
-    }
-
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
     if (!companyProfile) {

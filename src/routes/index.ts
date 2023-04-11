@@ -425,7 +425,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerGov.get)
-  .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.post);
+  .post(...validator.updateBeneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .all(
@@ -444,7 +444,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerIndividual.get)
-  .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
+  .post(...validator.updateBeneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .all(
@@ -472,7 +472,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerOther.get)
-  .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.post);
+  .post(...validator.updateBeneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .all(

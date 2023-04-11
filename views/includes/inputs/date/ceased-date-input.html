@@ -1,0 +1,90 @@
+{% set dateText = "Date it ceased to be a registrable beneficial owner" %}
+
+{% set ceasedDateErrorMessage = '' %}
+{% set isCeasedDateDayError = false %}
+{% set isCeasedDateMonthError = false %}
+{% set isCeasedDateYearError = false %}
+
+{% if errors %}
+  {% for key, value in errors %}
+
+    {# only look at first matching error #}
+    {% if not ceasedDateErrorMessage %}
+      {% if "ceased_date" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
+        {% set ceasedDateErrorMessage = value %}
+        {% if ceased_date %}
+          {% if not ceased_date["ceased_date-day"] %}
+            {% set isCeasedDateDayError = true %}
+          {% endif %}
+          {% if not ceased_date["ceased_date-month"] %}
+            {% set isCeasedDateMonthError = true %}
+          {% endif %}
+          {% if not ceased_date["ceased_date-year"] %}
+            {% set isCeasedDateYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif "ceased_date" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
+        {% set ceasedDateErrorMessage = value %}
+        {% if "-day" in key|string %}
+          {% set isCeasedDateDayError = true %}
+        {% elif "-month" in key|string %}
+          {% set isCeasedDateMonthError = true %}
+        {% elif "-year" in key|string %}
+          {% set isCeasedDateYearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+
+{% set ceased_date_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set ceased_date_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set ceased_date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+{% if isCeasedDateDayError %}
+  {% set ceased_date_classes_day = ceased_date_classes_day + "--error" %}
+{% endif %}
+{% if isCeasedDateMonthError %}
+  {% set ceased_date_classes_month = ceased_date_classes_month + "--error" %}
+{% endif %}
+{% if isCeasedDateYearError %}
+  {% set ceased_date_classes_year = ceased_date_classes_year + "--error" %}
+{% endif %}
+
+
+{{ govukDateInput({
+  errorMessage: ceasedDateErrorMessage,
+  id: "ceased_date",
+  namePrefix: "ceased_date",
+  fieldset: {
+    legend: {
+      text: dateText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: "For example, 27 3 2007"
+  },
+  items: [
+    {
+      classes: ceased_date_classes_day,
+      name: "day",
+      value: ceased_date["ceased_date-day"] if ceased_date
+    },
+    {
+      classes: ceased_date_classes_month,
+      name: "month",
+      value: ceased_date["ceased_date-month"] if ceased_date
+    },
+    {
+      classes: ceased_date_classes_year,
+      name: "year",
+      value: ceased_date["ceased_date-year"] if ceased_date
+    }
+  ]
+}) }}
+

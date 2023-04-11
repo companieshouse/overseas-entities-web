@@ -10,7 +10,7 @@ import { checkBirthDate,
   checkDateOfBirthFieldsArePresent,
   checkDateValueIsValid,
   checkDayFieldForErrors,
-  checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkStartDate,
+  checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkDate,
   checkTrustDate,
   checkYearFieldForErrors,
   isYearEitherMissingOrCorrectLength } from '../../src/validation/custom.validation';
@@ -45,7 +45,7 @@ describe('Test to validate date validator', () => {
     const mockDateValidationsContext: dateContext = {
       dateInput: {
         name: fieldNames[3],
-        callBack: checkStartDate,
+        callBack: checkDate,
       },
       dayInput: {
         name: fieldNames[0],
@@ -84,7 +84,7 @@ describe('Test to validate date validator', () => {
     const mockDateValidationsContext: dateContextWithCondition = {
       dateInput: {
         name: fieldNames[3],
-        callBack: checkStartDate,
+        callBack: checkDate,
       },
       dayInput: {
         name: fieldNames[0],
@@ -128,7 +128,7 @@ describe('Test to validate date validator', () => {
     const mockDateValidationsContext: dateContextWithCondition = {
       dateInput: {
         name: fieldNames[3],
-        callBack: checkStartDate,
+        callBack: checkDate,
       },
       dayInput: {
         name: fieldNames[0],

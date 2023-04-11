@@ -11,12 +11,13 @@ import {
   checkHistoricalBOEndDate,
   checkHistoricalBOStartDate,
   checkIdentityDate,
-  checkStartDate,
+  checkDate,
   checkTrustDate,
   DayFieldErrors,
   MonthFieldErrors,
   YearFieldErrors,
-  checkDateIPLegalEntityBO
+  checkDateIPLegalEntityBO,
+  checkCeasedDateOnOrAfterStartDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -31,7 +32,26 @@ export const start_date_validations = [
   body("start_date-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date")
-    .custom((value, { req }) => checkStartDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+    .custom((value, { req }) => checkDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+];
+
+export const ceased_date_validations = [
+  body("ceased_date-day")
+    .if(body('is_still_bo').equals('0'))
+    .custom((value, { req }) => checkDateFieldDay(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
+  body("ceased_date-month")
+    .if(body('is_still_bo').equals('0'))
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
+  body("ceased_date-year")
+    .if(body('is_still_bo').equals('0'))
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
+  body("ceased_date")
+    .if(body('is_still_bo').equals('0'))
+    .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"]))
+    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
+      req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"],
+      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"]
+    )),
 ];
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.

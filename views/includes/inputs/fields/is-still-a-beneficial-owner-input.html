@@ -1,0 +1,38 @@
+{% set ceasedDateHtml %}
+  {% include "includes/inputs/date/ceased-date-input.html" %}
+{% endset -%}
+
+{{ govukRadios({
+  errorMessage: errors.is_still_bo if errors,
+  classes: "govuk-radios",
+  idPrefix: "is_still_bo",
+  name: "is_still_bo",
+  fieldset: {
+    legend: {
+      text: "Is it still a beneficial owner for the overseas entity?",
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  items: [
+    {
+      value: 1,
+      text: "Yes",
+      checked: is_still_bo == 1,
+      attributes: {
+        "data-event-id": "is-still-bo-yes"
+      }
+    },
+    {
+      value: 0,
+      text: "No",
+      checked: is_still_bo == 0,
+      attributes: {
+        "data-event-id": "is-still-bo-no"
+      },
+      conditional: {
+        html: ceasedDateHtml
+      }
+    }
+  ]
+}) }}

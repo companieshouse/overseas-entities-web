@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 
 import { getApplicationData } from "../../src/utils/application.data";
-import { getSessionRequestWithExtraData } from "../__mocks__/session.mock";
+import { APPLICATION_DATA_UPDATE_BO_MOCK, getSessionRequestWithExtraData } from "../__mocks__/session.mock";
 import {
   BeneficialOwnerIndividual,
   BeneficialOwnerIndividualKeys
@@ -9,8 +9,8 @@ import {
 import { ApplicationData } from '../../src/model';
 import { HasSameResidentialAddressKey, IsOnSanctionsListKey } from '../../src/model/data.types.model';
 
-describe("BO Individua model", () => {
-  const session = getSessionRequestWithExtraData();
+describe("BO Individual model", () => {
+  const session = getSessionRequestWithExtraData(APPLICATION_DATA_UPDATE_BO_MOCK);
   const appData = getApplicationData(session) as ApplicationData;
   let boiData = {};
   if (appData.beneficial_owners_individual) {

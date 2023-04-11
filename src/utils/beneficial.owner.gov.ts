@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { ApplicationDataType } from "../model";
-import { getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { ApplicationData, ApplicationDataType } from "../model";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
@@ -14,16 +14,24 @@ import {
   NonLegalFirmNoc
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
-import { StartDateKey, StartDateKeys } from "../model/date.model";
+import {
+  CeasedDateKey,
+  CeasedDateKeys,
+  StartDateKey,
+  StartDateKeys
+} from "../model/date.model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 import { v4 as uuidv4 } from "uuid";
 
 export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session);
+
   res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    ...appData
   });
 };
 
@@ -120,6 +128,7 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  data[CeasedDateKey] = mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys);
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

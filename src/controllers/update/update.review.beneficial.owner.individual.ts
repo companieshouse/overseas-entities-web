@@ -6,12 +6,11 @@ import { logger } from "../../utils/logger";
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData = getApplicationData(req.session);
-  const boAppData = appData.beneficial_owners_individual;
-
+  console.log(`app data is ${JSON.stringify(appData.beneficial_owners_individual)}`);
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    boAppData
+    ...appData,
   });
 };
 

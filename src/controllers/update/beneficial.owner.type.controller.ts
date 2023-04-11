@@ -38,6 +38,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`);
 
     }
+    console.log(`called get controller on error?`);
 
     checkReviewBo(req, res);
 
@@ -46,7 +47,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       noLists: true,
-      ...appData.update?.review_beneficial_owners_individual
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -70,6 +70,7 @@ export const checkReviewBo = (req: Request, res: Response) => {
   // First review any retriewed individual bo:
   while ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0) {
     const boi = appData.update?.review_beneficial_owners_individual?.pop();
+
     if (!boi) {
       break;
     }

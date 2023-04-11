@@ -35,10 +35,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
-      console.log(`bo data parsed in bo type is ${appData.update?.review_beneficial_owners_individual}`);
 
     }
-    console.log(`called get controller on error?`);
 
     checkReviewBo(req, res);
 
@@ -77,15 +75,10 @@ export const checkReviewBo = (req: Request, res: Response) => {
 
     let index = 0;
     if (!appData.beneficial_owners_individual) {
-      console.log(`calling if part`);
       appData.beneficial_owners_individual = [boi];
     } else {
-      console.log(`calling else part`);
-
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
-    console.log(`individual bo is ${JSON.stringify(appData.beneficial_owners_individual)} and index is ${index}`);
-
     return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "review-beneficial-owner-individual?index=" + index + "&review=true");
   }
 };

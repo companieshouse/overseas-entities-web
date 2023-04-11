@@ -26,9 +26,9 @@ describe("Test mapping utils", () => {
     expect(InputDate).toEqual({ day: "", month: "", year: "" });
   });
 
-  test("returns empty string for invalid date", () => {
+  test("returns empty string for date with month and year", () => {
     const InputDate = mapInputDate("2022-07");
-    expect(InputDate).toEqual({ day: "", month: "", year: "" });
+    expect(InputDate).toEqual({ day: "", month: "7", year: "2022" });
   });
 
 });

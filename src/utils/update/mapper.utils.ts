@@ -28,8 +28,8 @@ export const mapInputDate = (date: string | undefined): InputDate => {
   if (yearMonthDay.length <= 2) {
     return {
       day: '',
-      month: '',
-      year: ''
+      month: stripZero(yearMonthDay[1]),
+      year: yearMonthDay[0]
     };
   }
   return {

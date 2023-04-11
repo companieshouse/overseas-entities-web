@@ -15,7 +15,9 @@ import {
   PAGE_NOT_FOUND_TEXT,
   SERVICE_UNAVAILABLE,
   UPDATE_SIGN_OUT_HINT_TEXT,
-  SIGN_OUT_PAGE_TITLE
+  SIGN_OUT_PAGE_TITLE,
+  UPDATE_SIGN_OUT_HELP_DETAILS_TEXT,
+  UPDATE_SIGN_OUT_DROPDOWN_TEXT
 } from "../../__mocks__/text.mock";
 
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -35,17 +37,19 @@ describe("SIGN OUT controller", () => {
   });
   describe("GET tests", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_DROPDOWN_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is not active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValue(false);
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);

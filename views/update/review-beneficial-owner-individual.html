@@ -15,9 +15,9 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
-    {% if beneficial_owners_individual[0] %}
-      {% set dob = dateMacros.formatDate("", beneficial_owners_individual[0].date_of_birth.month | string, beneficial_owners_individual[0].date_of_birth.year) %}
-      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ beneficial_owners_individual[0].first_name }} {{ beneficial_owners_individual[0].last_name }} - born {{ dob }}</span>
+    {% if beneficial_owners_individual[index] %}
+      {% set dob = dateMacros.formatDate("", beneficial_owners_individual[index].date_of_birth.month | string, beneficial_owners_individual[index].date_of_birth.year) %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ beneficial_owners_individual[index].first_name }} {{ beneficial_owners_individual[index].last_name }} - born {{ dob }}</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
       <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
       {{ govukInsetText({
@@ -35,17 +35,18 @@
         </div>
       </details>
       <form method="post">
-        {% set first_name = beneficial_owners_individual[0].first_name %}
+        {% set first_name = beneficial_owners_individual[index].first_name %}
         {% include "includes/inputs/fields/first-name-input.html" %}
-
+        <console class="l">index</console>
+        <p>{{ index }}</p>
         {% set hintLastNameText = "This is also known as your family name." %}
-        {% set last_name = beneficial_owners_individual[0].last_name %}
+        {% set last_name = beneficial_owners_individual[index].last_name %}
         {% include "includes/inputs/fields/last-name-input.html" %}
 
-        {% set nationalityField = beneficial_owners_individual[0].nationality %}
+        {% set nationalityField = beneficial_owners_individual[index].nationality %}
         {% include "includes/inputs/nationality/nationality.html" %}
 
-        {% set nationalityField = beneficial_owners_individual[0].second_nationality %}
+        {% set nationalityField = beneficial_owners_individual[index].second_nationality %}
         {% include "includes/inputs/nationality/second-nationality.html" %}
         
         {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
@@ -103,21 +104,21 @@
         }) %}
       
         {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
-        {% set beneficial_owner_nature_of_control_types = beneficial_owners_individual[0].beneficial_owner_nature_of_control_types %}
+        {% set beneficial_owner_nature_of_control_types = beneficial_owners_individual[index].beneficial_owner_nature_of_control_types %}
         {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
       
         {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-        {% set trustees_nature_of_control_types = beneficial_owners_individual[0].trustees_nature_of_control_types %}
+        {% set trustees_nature_of_control_types = beneficial_owners_individual[index].trustees_nature_of_control_types %}
         {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
       
         {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
-        {% set non_legal_firm_members_nature_of_control_types = beneficial_owners_individual[0].non_legal_firm_members_nature_of_control_types %}
+        {% set non_legal_firm_members_nature_of_control_types = beneficial_owners_individual[index].non_legal_firm_members_nature_of_control_types %}
         {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
       
         {% endcall %}
       
         {% set sanctionsPronoun = "they" %}
-        {% set is_on_sanctions_list = beneficial_owners_individual[0].is_on_sanctions_list %}
+        {% set is_on_sanctions_list = beneficial_owners_individual[index].is_on_sanctions_list %}
         {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
       
         {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

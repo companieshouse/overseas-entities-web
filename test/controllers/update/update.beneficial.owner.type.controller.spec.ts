@@ -34,6 +34,7 @@ import {
 import {
   APPLICATION_DATA_MOCK,
   ERROR,
+  UPDATE_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -88,6 +89,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
+        ...UPDATE_OBJECT_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
       });
       mockGetCompanyPscService.mockReturnValueOnce({});

@@ -329,6 +329,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
+  ch_reference: "",
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
@@ -767,7 +768,8 @@ export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SP
 
 export const UPDATE_OBJECT_MOCK: updateType.Update = {
   date_of_creation: "27/10/2022",
-  registrable_beneficial_owner: undefined
+  registrable_beneficial_owner: undefined,
+  review_beneficial_owners_individual: [],
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {

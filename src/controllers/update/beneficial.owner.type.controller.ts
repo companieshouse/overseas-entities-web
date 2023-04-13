@@ -35,10 +35,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
-
     }
-
-    checkReviewBo(req, res);
+    if (appData.update && appData.update.review_beneficial_owners_individual?.length){
+      checkReviewBo(req, res);
+    }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,

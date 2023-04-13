@@ -188,4 +188,4 @@ export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact 
 export const UPDATE_SIGN_OUT_HINT_TEXT = "We will save your filing.";
 export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
 export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to review beneficial owner and managing officer information";
-
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";

@@ -436,7 +436,7 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .get(updateReviewBeneficialOwnerIndividual.get)
   .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
 
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + config.BO_MO_REVIEW_ID + "&review=true", updateReviewBeneficialOwnerIndividual.get);
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + config.ID + "&review=true", updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(

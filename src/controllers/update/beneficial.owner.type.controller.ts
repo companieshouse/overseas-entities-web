@@ -24,7 +24,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    //if (!hasFetchedBoAndMoData(appData)) {
+    if (!hasFetchedBoAndMoData(appData)) {
       if (!appData.update) {
         appData.update = {};
       }
@@ -35,10 +35,10 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
-   // }
+    }
     if (appData.update && appData.update.review_beneficial_owners_individual?.length){
       checkReviewBo(req, res);
-   }
+    }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -62,23 +62,25 @@ export const checkReviewBo = (req: Request, res: Response) => {
   // Check last individual BO validates - in case back button is clicked
   const boiLength = appData.beneficial_owners_individual?.length || 0;
   if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiLength - 1])) {
-    return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "/review-individual-benifitial-owner?index=" + (boiLength - 1) + "&review=true");
+    return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "review-beneficial-owner-individual?index=" + (boiLength - 1) + "&review=true");
   }
 
   // First review any retriewed individual bo:
   while ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0) {
-    const boi = appData.update?.review_beneficial_owners_individual?.pop();
 
+    const boi = appData.update?.review_beneficial_owners_individual?.pop();
     if (!boi) {
       break;
     }
-
+    console.log(`boi popped is ${JSON.stringify(boi)}`);
     let index = 0;
+
     if (!appData.beneficial_owners_individual) {
       appData.beneficial_owners_individual = [boi];
     } else {
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
+
     return res.redirect(config.UPDATE_AN_OVERSEAS_ENTITY_URL + "review-beneficial-owner-individual?index=" + index + "&review=true");
   }
 };

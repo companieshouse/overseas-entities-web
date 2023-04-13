@@ -7,13 +7,22 @@ export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData = getApplicationData(req.session);
   const index = req.query.index;
-  console.log(`query index is : ${index}`);
+  console.log(`index without review is ${index}`);
+  console.log(`calling this time ${index}`);
+  console.log(`index in review is ${Number(index)}`);
+
+  console.log(`BO IN REVIEW IS ${JSON.stringify(appData.beneficial_owners_individual)}`);
+  let dataToReview = {};
+  if (appData?.beneficial_owners_individual){
+    dataToReview = appData?.beneficial_owners_individual[Number(index)];
+  }
+
+  console.log(`data in review is ${JSON.stringify(dataToReview)}`);
 
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    ...appData,
-    index
+    ...dataToReview,
   });
 };
 

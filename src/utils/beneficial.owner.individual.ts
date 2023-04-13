@@ -38,6 +38,8 @@ import {
   DateOfBirthKeys,
   StartDateKey,
   StartDateKeys,
+  CeasedDateKey,
+  CeasedDateKeys
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
 
@@ -148,6 +150,7 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
     : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  data[CeasedDateKey] = mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys);
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

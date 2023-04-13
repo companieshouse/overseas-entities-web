@@ -18,7 +18,7 @@ import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_BENEFICIAL_OWNER_
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST } from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -51,7 +51,7 @@ describe(`Update review beneficial owner individual controller`, () => {
 
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
-      const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL);
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
     });
@@ -59,7 +59,9 @@ describe(`Update review beneficial owner individual controller`, () => {
 
   describe("POST tests", () => {
     test(`throw validation error on incomplete individual bo review submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      // mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
 
       const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
 

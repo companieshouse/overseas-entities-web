@@ -22,7 +22,7 @@ import { startPaymentsSession } from "../../service/payment.service";
 import { getTransaction } from "../../service/transaction.service";
 import { mapTrustApiReturnModelToWebModel } from "../../utils/trusts";
 
-export const getResumePage = async (req: Request, res: Response, next: NextFunction, isFeatureActive: boolean, resumePage: string) => {
+export const getResumePage = async (req: Request, res: Response, next: NextFunction, isSaveAndResumeFeatureActive: boolean, resumePage: string) => {
   try {
     logger.debugRequest(req, `GET a saved OE submission`);
 
@@ -31,7 +31,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
 
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
-    if (isFeatureActive) {
+    if (isSaveAndResumeFeatureActive) {
       const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
       if (!Object.keys(appData || {}).length) {

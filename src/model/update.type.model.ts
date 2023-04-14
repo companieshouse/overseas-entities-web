@@ -7,6 +7,7 @@ export const UpdateKeys: string[] = [ "date_of_creation", "bo_mo_data_fetched", 
 
 export interface Update {
     date_of_creation?: InputDate;
+    // used to indicate that data is fetched from the endpoint and saved into DB hence does not need to be fetched again
     bo_mo_data_fetched?: boolean;
     registrable_beneficial_owner?: yesNoResponse;
 }

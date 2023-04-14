@@ -3,9 +3,9 @@
 {% endset -%}
 
 {% if beneficialOwnerPronoun == "they" %}
-  {% set legendText = "Are they still a beneficial owner for the overseas entity?" %}
+  {% set stillBoText = "Are they still a beneficial owner for the overseas entity?" %}
 {% else %}
-  {% set legendText = "Is it still a beneficial owner for the overseas entity?" %}
+  {% set stillBoText = "Is it still a beneficial owner for the overseas entity?" %}
 {% endif %}
 
 {{ govukRadios({
@@ -15,7 +15,7 @@
   name: "is_still_bo",
   fieldset: {
     legend: {
-      text: legendText,
+      text: stillBoText,
       isPageHeading: false,
       classes: "govuk-fieldset__legend--m"
     }

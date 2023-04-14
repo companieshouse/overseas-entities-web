@@ -2,6 +2,12 @@
   {% include "includes/inputs/date/ceased-date-input.html" %}
 {% endset -%}
 
+{% if beneficialOwnerPronoun == "they" %}
+  {% set legendText = "Are they still a beneficial owner for the overseas entity?" %}
+{% else %}
+  {% set legendText = "Is it still a beneficial owner for the overseas entity?" %}
+{% endif %}
+
 {{ govukRadios({
   errorMessage: errors.is_still_bo if errors,
   classes: "govuk-radios",
@@ -9,7 +15,7 @@
   name: "is_still_bo",
   fieldset: {
     legend: {
-      text: "Is it still a beneficial owner for the overseas entity?",
+      text: legendText,
       isPageHeading: false,
       classes: "govuk-fieldset__legend--m"
     }

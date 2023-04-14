@@ -11,7 +11,6 @@ export const get = (req: Request, res: Response) => {
   let dataToReview = {};
   if (appData?.beneficial_owners_individual){
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
-
   }
 
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {

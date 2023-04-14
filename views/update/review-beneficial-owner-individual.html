@@ -16,8 +16,12 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
-    {% set dob = dateMacros.formatDate("", date_of_birth["month"], date_of_birth["year"]) %}
-
+    {% if bo_dob %}
+     {% set dob = dateMacros.formatDate("", bo_dob_month, bo_dob) %}
+    {% elif date_of_birth["month"] %} 
+      {% set dob = dateMacros.formatDate("", date_of_birth["month"] | string, date_of_birth["year"]) %}
+    {% endif %}
+    
     <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ first_name }} {{ last_name }} - born {{ dob }}</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
     <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
@@ -36,6 +40,8 @@
       </div>
     </details>
     <form method="post">
+      <input type="hidden" name="bo_dob" value="{{ date_of_birth.year }}"/>
+      <input type="hidden" name="bo_dob_month" value="{{ date_of_birth.month }}"/>
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
       {% set hintLastNameText = "This is also known as your family name." %}
@@ -50,75 +56,23 @@
       
       {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
-
-      <h2 class="govuk-heading-m">Date they became a beneficial owner for the overseas entity:</h2>
-      <p class="govuk-body">10 July 2004 [placeholder]</p><br>
-      
-      {% set ceasedDateHtml %}
-      <br>
-      {% set dateText = "Date they ceased to be a registrable beneficial owner" %}
-      {% include "includes/inputs/date/ceased-date-input.html" %}
-      {% endset -%}
-
-      {{ govukRadios({
-        classes: "govuk-radios",
-        idPrefix: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
-        name: "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity",
-        fieldset: {
-          legend: {
-            text: "Are they still a registrable beneficial owner for the overseas entity?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-          }
-        },
-        items: [
-          {
-            value: 1,
-            text: "Yes",
-            checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 1,
-            attributes: {
-              "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-yes-radio-option"
-            }
-          },
-          {
-            value: 0,
-            text: "No",
-            checked: are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity == 0,
-            attributes: {
-              "data-event-id": "are_they_still_a_registrable_beneficial_owner_for_the_overseas_entity-no-radio-option"
-            },
-            conditional: {
-              html: ceasedDateHtml
-            }
-          }
-        ]
-      }) }}
-
-      {% call govukFieldset({
-        legend: {
-          text: "What is their nature of control?",
-          classes: "govuk-fieldset__legend--m",
-          isPageHeading: false
-        }
-      }) %}
     
-      {% set errorMessage = errors.beneficial_owner_nature_of_control_types if errors %}
+      {% set dateText = "When did they become a beneficial owner for the overseas entity?" %}
+      {% include "includes/inputs/date/start-date-input.html" %} -->
+
+      {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
+
+      {% set isBeneficialOwnerGov = false %}
+      {% set natureOfControlText = "What is their nature of control?" %}
       {% set beneficial_owner_nature_of_control_types = beneficial_owner_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/beneficial-owner-nature-of-control-types.html" %}
-    
-      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
       {% set trustees_nature_of_control_types = trustees_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/trustees-nature-of-control-types.html" %}
-    
-      {% set errorMessage = {} if errors.beneficial_owner_nature_of_control_types %}
       {% set non_legal_firm_members_nature_of_control_types = non_legal_firm_members_nature_of_control_types %}
-      {% include "includes/inputs/nature-of-control-checkboxes/non-legal-firm-nature-of-control-types.html" %}
-    
-      {% endcall %}
-    
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
+      
       {% set sanctionsPronoun = "they" %}
       {% set is_on_sanctions_list = is_on_sanctions_list %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
+
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
       {% include "includes/inset-text.html" %}
     

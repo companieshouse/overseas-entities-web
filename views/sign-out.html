@@ -67,24 +67,24 @@
       }) }}
 
       {% if saveAndResume %}
-      <details class="govuk-details" data-module="govuk-details" data-event-id="find-saved-information-details">
-        <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-          {% if journey === "register" %}
-            How do I find my saved applications?
-          {% elif journey === "update" %}
-            How do I find my saved filing?
-          {% endif %}
-        </span>
-        </summary>  
-        <div class="govuk-details__text">
-          {% if journey === "register" %}
-          Sign in to your Companies House account and select Your filings to access your saved applications.
-          {% elif journey === "update" %}
-          When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
-          {% endif %}
-        </div>
-      </details>
+        <details class="govuk-details" data-module="govuk-details" data-event-id="find-saved-information-details">
+          <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            {% if journey === "register" %}
+              How do I find my saved applications?
+            {% elif journey === "update" %}
+              How do I find my saved filing?
+            {% endif %}
+          </span>
+          </summary>  
+          <div class="govuk-details__text">
+            {% if journey === "register" %}
+            Sign in to your Companies House account and select Your filings to access your saved applications.
+            {% elif journey === "update" %}
+            When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
+            {% endif %}
+          </div>
+        </details>
       {% endif %}
       
       {% if journey === "register" %}

@@ -200,7 +200,7 @@ export const BO_ID = `/:${ROUTE_PARAM_BENEFICIAL_OWNER_ID}`;
 export const TRUST_ID = `/:${ROUTE_PARAM_TRUST_ID}`;
 export const TRUSTEE_ID = `/:${ROUTE_PARAM_TRUSTEE_ID}`;
 export const GET_COMPANY_OFFICERS_PAGE_SIZE = 100;
-export const BO_MO_REVIEW_ID = "/:index";
+export const UPDATE_REVIEW_OWNERS_PARAMS = "?index=" + ID + "&review=true";
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";
 export const TRANSACTION = "transaction";
@@ -216,7 +216,7 @@ export const RESUME = "resume";
 export const RESUME_SUBMISSION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTION_PATH + OVERSEAS_ENTITY_PATH + RESUME;
 
 // Update configs
-export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL = UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + BO_MO_REVIEW_ID + "&review=true";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL = UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + ID + "&review=true";
 
 // Change links
 export const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";

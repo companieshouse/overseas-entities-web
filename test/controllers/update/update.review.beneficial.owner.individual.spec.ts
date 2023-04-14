@@ -59,12 +59,10 @@ describe(`Update review beneficial owner individual controller`, () => {
 
   describe("POST tests", () => {
     test(`throw validation error on incomplete individual bo review submission`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      mockPrepareData.mockImplementationOnce( () => APPLICATION_DATA_MOCK );
 
-      const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
-
+      const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL).send(APPLICATION_DATA_MOCK.beneficial_owners_individual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
     });
@@ -90,7 +88,6 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.LAST_NAME);
-      // expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);

@@ -25,7 +25,7 @@ sonar:
 	npm run sonarqube
 
 .PHONY: test
-test:
+test: clean
 	npm run coverage
 
 .PHONY: package

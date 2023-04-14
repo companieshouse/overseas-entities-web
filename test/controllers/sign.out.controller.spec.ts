@@ -73,10 +73,11 @@ describe("Sign Out controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
       expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
       expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain('How do I find my saved applications?');
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
@@ -87,6 +88,8 @@ describe("Sign Out controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).not.toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
       expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);

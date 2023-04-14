@@ -66,6 +66,7 @@
         classes: "govuk-visually-hidden"
       }) }}
 
+      {% if saveAndResume %}
       <details class="govuk-details" data-module="govuk-details" data-event-id="find-saved-information-details">
         <summary class="govuk-details__summary">
         <span class="govuk-details__summary-text">
@@ -84,7 +85,8 @@
           {% endif %}
         </div>
       </details>
-
+      {% endif %}
+      
       {% if journey === "register" %}
       {% include "includes/continue-button.html" %}
       {% elif journey === "update" %}

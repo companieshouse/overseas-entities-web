@@ -60,8 +60,35 @@ describe("Sign Out controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
       expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
-      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    });
+
+    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, and guidance for resuming a saved journey is displayed`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
+      expect(resp.text).toContain('How do I find my saved applications?');
+      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    });
+
+    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, and guidance for resuming a saved journey is not displayed`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).not.toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+      expect(resp.text).not.toContain('How do I find my saved applications?');
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {

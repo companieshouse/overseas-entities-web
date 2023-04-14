@@ -1,6 +1,6 @@
-import { beneficialOwnerGov } from "./beneficial.owner.gov.validation";
-import { beneficialOwnerIndividual } from "./beneficial.owner.individual.validation";
-import { beneficialOwnerOther } from "./beneficial.owner.other.validation";
+import { beneficialOwnerGov, updateBeneficialOwnerGov } from "./beneficial.owner.gov.validation";
+import { beneficialOwnerIndividual, updateBeneficialOwnerIndividual } from "./beneficial.owner.individual.validation";
+import { beneficialOwnerOther, updateBeneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
 import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } from "./beneficial.owner.type.validation";
@@ -24,9 +24,11 @@ import { trustDetails } from "./trust.details.validation";
 import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
 import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
 import { addTrustValidations } from "./add.trust.validation";
-import { trustLegalEntityBeneficialOwnerValidator } from "./trust-legal-entity-beneficial-owner.validation";
+import { updateBeneficialOwnerStatements } from "./update.beneficial.owner.statements.validation";
+import { trustLegalEntityBeneficialOwnerValidator } from "./trust.legal.entity.beneficial.owner.validation";
 import { registrableBeneficialOwner } from "./registrable.beneficial.owner.validation";
 import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.owner.indiviual.review.validation";
+import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 
 export const validator = {
   soldLandFilter,
@@ -54,10 +56,15 @@ export const validator = {
   trustInvolved,
   trustDetails,
   updateBeneficialOwnerAndManagingOfficerType,
+  updateBeneficialOwnerStatements,
+  updateBeneficialOwnerIndividual,
+  updateBeneficialOwnerGov,
+  updateBeneficialOwnerOther,
   trustIndividualBeneficialOwner,
   trustHistoricalBeneficialOwner,
   addTrust: addTrustValidations,
   trustLegalEntityBeneficialOwnerValidator,
   registrableBeneficialOwner,
   updateBeneficialOwnerAndReviewValidator,
+  updateContinueSavedFiling
 };

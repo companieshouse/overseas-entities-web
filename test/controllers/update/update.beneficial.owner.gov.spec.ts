@@ -43,12 +43,13 @@ import { logger } from "../../../src/utils/logger";
 import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
+  UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   REQ_BODY_BENEFICIAL_OWNER_GOV_EMPTY,
   BO_GOV_ID,
   BO_GOV_ID_URL,
-  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION,
+  REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
+  UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
 } from "../../__mocks__/session.mock";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { AddressKeys } from '../../../src/model/data.types.model';
@@ -118,7 +119,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET BY ID tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -147,7 +148,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -158,7 +159,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -227,7 +228,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -240,7 +241,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -268,8 +269,11 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only ENTER DATE error when start date is completely empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+    test.each([
+      REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
+      UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION
+    ])(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only ENTER DATE error when date is completely empty`, async (mockObject) => {
+      const beneficialOwnerGov = { ...mockObject };
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
@@ -285,191 +289,136 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date month and year are empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "01";
       beneficialOwnerGov["start_date-month"] = "";
       beneficialOwnerGov["start_date-year"] = "";
+
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.MONTH_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyMonthAndYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date day and year are empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "";
       beneficialOwnerGov["start_date-month"] = "01";
       beneficialOwnerGov["start_date-year"] = "";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when start date day and month are empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "";
       beneficialOwnerGov["start_date-month"] = "";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY_AND_MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertEmptyDayAndMonthErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DAY error when start date day is empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "";
       beneficialOwnerGov["start_date-month"] = "06";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyDayErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only MONTH error when start date month is empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "06";
+      beneficialOwnerGov["start_date-month"] = "";
       beneficialOwnerGov["start_date-year"] = "2020";
+
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyMonthErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR error when start date year is empty`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "01";
       beneficialOwnerGov["start_date-month"] = "06";
+      beneficialOwnerGov["start_date-year"] = "";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when date is outside valid numbers`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "31";
       beneficialOwnerGov["start_date-month"] = "06";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is outside valid numbers`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "30";
       beneficialOwnerGov["start_date-month"] = "13";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when day is zero`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "0";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is zero`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "30";
       beneficialOwnerGov["start_date-month"] = "0";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyInvalidDateError(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "a";
       beneficialOwnerGov["start_date-month"] = "b";
       beneficialOwnerGov["start_date-year"] = "c";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
+
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
@@ -481,27 +430,19 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR_LENGTH error when year length is not 4 digits`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "10";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "20";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyYearLengthError(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start date is not in the past`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       const inTheFuture = DateTime.now().plus({ days: 1 });
       beneficialOwnerGov["start_date-day"] = inTheFuture.day.toString();
       beneficialOwnerGov["start_date-month"] = inTheFuture.month.toString();
@@ -509,19 +450,12 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
-      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
-      expect(resp.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      assertOnlyDayNotInPastErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page without date errors including DATE_NOT_IN_PAST_OR_TODAY error when start date is today`, async () => {
-      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_DATE_VALIDATION };
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       const today = DateTime.now();
       beneficialOwnerGov["start_date-day"] = today.day.toString();
       beneficialOwnerGov["start_date-month"] = today.month.toString();
@@ -529,6 +463,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
+
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
@@ -538,6 +473,190 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when ceased date month and year are empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "01";
+      beneficialOwnerGov["ceased_date-month"] = "";
+      beneficialOwnerGov["ceased_date-year"] = "";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertEmptyMonthAndYearErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when ceased date day and year are empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "";
+      beneficialOwnerGov["ceased_date-month"] = "01";
+      beneficialOwnerGov["ceased_date-year"] = "";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertEmptyDayAndYearErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when ceased date day and month are empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "";
+      beneficialOwnerGov["ceased_date-month"] = "";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertEmptyDayAndMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DAY error when ceased date day is empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "";
+      beneficialOwnerGov["ceased_date-month"] = "06";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyDayErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only MONTH error when ceased date month is empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "06";
+      beneficialOwnerGov["ceased_date-month"] = "";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR error when ceased date year is empty`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "01";
+      beneficialOwnerGov["ceased_date-month"] = "06";
+      beneficialOwnerGov["ceased_date-year"] = "";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyYearErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when date is outside valid numbers`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "31";
+      beneficialOwnerGov["ceased_date-month"] = "06";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is outside valid numbers`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "30";
+      beneficialOwnerGov["ceased_date-month"] = "13";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when day is zero`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "0";
+      beneficialOwnerGov["ceased_date-month"] = "12";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is zero`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "30";
+      beneficialOwnerGov["ceased_date-month"] = "0";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "a";
+      beneficialOwnerGov["ceased_date-month"] = "b";
+      beneficialOwnerGov["ceased_date-year"] = "c";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR_LENGTH error when year length is not 4 digits`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "10";
+      beneficialOwnerGov["ceased_date-month"] = "12";
+      beneficialOwnerGov["ceased_date-year"] = "20";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyYearLengthError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when ceased date is not in the past`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      const inTheFuture = DateTime.now().plus({ days: 1 });
+      beneficialOwnerGov["ceased_date-day"] = inTheFuture.day.toString();
+      beneficialOwnerGov["ceased_date-month"] = inTheFuture.month.toString();
+      beneficialOwnerGov["ceased_date-year"] = inTheFuture.year.toString();
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyDayNotInPastErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with error when ceased date is before start date`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "2";
+      beneficialOwnerGov["start_date-month"] = "2";
+      beneficialOwnerGov["start_date-year"] = "2023";
+      beneficialOwnerGov["ceased_date-day"] = "1";
+      beneficialOwnerGov["ceased_date-month"] = "1";
+      beneficialOwnerGov["ceased_date-year"] = "2023";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
     });
   });
 
@@ -547,7 +666,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -559,7 +678,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -572,7 +691,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
@@ -590,7 +709,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -603,7 +722,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
       await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL)
-        .send(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+        .send(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -643,4 +762,104 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
+
+  const assertOnlyEmptyDayErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyEmptyMonthErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyEmptyYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyDayAndMonthErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY_AND_MONTH);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyMonthAndYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.MONTH_AND_YEAR);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertEmptyDayAndYearErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).toContain(ErrorMessages.DAY_AND_YEAR);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyInvalidDateError = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyYearLengthError = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).toContain(ErrorMessages.YEAR_LENGTH);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
+
+  const assertOnlyDayNotInPastErrors = (response) => {
+    expect(response.status).toEqual(200);
+    expect(response.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
+    expect(response.text).not.toContain(ErrorMessages.ENTER_DATE);
+    expect(response.text).not.toContain(ErrorMessages.DAY);
+    expect(response.text).not.toContain(ErrorMessages.MONTH);
+    expect(response.text).not.toContain(ErrorMessages.YEAR);
+    expect(response.text).not.toContain(ErrorMessages.INVALID_DATE);
+    expect(response.text).toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  };
 });

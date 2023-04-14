@@ -94,7 +94,7 @@ const post = async (req: Request, res: Response, next: NextFunction) => {
     const errorList = validationResult(req);
     const formData: TrustLegalEntityForm = req.body as TrustLegalEntityForm;
 
-    if (!errorList.isEmpty()) {
+    if (errorList && !errorList.isEmpty()) {
       const pageProps = getPageProperties(
         req,
         trustId,

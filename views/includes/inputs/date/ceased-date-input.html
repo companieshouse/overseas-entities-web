@@ -1,13 +1,9 @@
+{% set dateText = "Date it ceased to be a registrable beneficial owner" %}
+
 {% set ceasedDateErrorMessage = '' %}
 {% set isCeasedDateDayError = false %}
 {% set isCeasedDateMonthError = false %}
 {% set isCeasedDateYearError = false %}
-
-{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
-{# We need to loop through the errors returned to pick out the first start_date error #}
-{# to prevent duplicate messages on the same field. #}
-{# We can use its message text and then work out which of the day/month/year fields #}
-{# to mark as 'red' using the error style class #}
 
 {% if errors %}
   {% for key, value in errors %}
@@ -24,7 +20,7 @@
           {% if not ceased_date["ceased_date-month"] %}
             {% set isCeasedDateMonthError = true %}
           {% endif %}
-          {% if not ceased_date["start_date-year"] %}
+          {% if not ceased_date["ceased_date-year"] %}
             {% set isCeasedDateYearError = true %}
           {% endif %}
         {% endif %}
@@ -33,14 +29,14 @@
         {% set ceasedDateErrorMessage = value %}
         {% if "-day" in key|string %}
           {% set isCeasedDateDayError = true %}
-        {% elif "-month" in key|string %} 
+        {% elif "-month" in key|string %}
           {% set isCeasedDateMonthError = true %}
-        {% elif "-year" in key|string %} 
+        {% elif "-year" in key|string %}
           {% set isCeasedDateYearError = true %}
         {% endif %}
       {% endif %}
     {% endif %}
-  {% endfor %}    
+  {% endfor %}
 {% endif %}
 
 
@@ -91,3 +87,4 @@
     }
   ]
 }) }}
+

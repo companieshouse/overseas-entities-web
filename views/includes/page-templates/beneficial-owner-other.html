@@ -22,15 +22,19 @@
 
       {% set registerHintText = "Include its jurisdiction. For example, Hong Kong or State of Delaware." %}
       {% set includeJurisdiction = false %}
-      {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was 
-      formed in?" %}
+      {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was formed in?" %}
       {% set registrationNumberText = "Entity's registration number" %}
 
       {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
       {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
+      {% include "includes/inputs/date/start-date-input.html" %}
+      {% if entity_number %}
+        {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
+      {% endif %}
 
-      {% set isBeneficialOwnerOther = true %}
+      {% set isBeneficialOwnerGov = false %}
+      {% set natureOfControlText = "What is its nature of control?" %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
       {% set sanctionsPronoun = "it" %}

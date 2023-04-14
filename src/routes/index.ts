@@ -58,6 +58,7 @@ import {
   updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
+  updateBeneficialOwnerStatements,
   updateSignOut,
   updateBeneficialOwnerOther,
   updateManagingOfficerIndividual,
@@ -65,6 +66,7 @@ import {
   updateFilingDate,
   updateRegistrableBeneficialOwner,
   updateReviewBeneficialOwnerIndividual,
+  updateContinueSavedFiling
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -306,7 +308,7 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .get(updateInterruptCard.get)
   .post(updateInterruptCard.post);
 
-router.get(config.UPDATE_CONFIRMATION_URL, authentication, navigation.hasOverseasEntity, updateConfirmation.get);
+router.get(config.UPDATE_CONFIRMATION_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
@@ -331,6 +333,15 @@ router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   )
   .get(overseasEntityPresenter.get)
   .post(...validator.presenter, checkValidations, overseasEntityPresenter.post);
+
+router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateBeneficialOwnerStatements.get)
+  .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
 
@@ -415,7 +426,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerGov.get)
-  .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.post);
+  .post(...validator.updateBeneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   .all(
@@ -445,7 +456,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerIndividual.get)
-  .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
+  .post(...validator.updateBeneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .all(
@@ -473,7 +484,7 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateBeneficialOwnerOther.get)
-  .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.post);
+  .post(...validator.updateBeneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .all(
@@ -511,4 +522,9 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(updateRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
+router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
+  .all(authentication)
+  .get(updateContinueSavedFiling.get)
+  .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
+
 export default router;

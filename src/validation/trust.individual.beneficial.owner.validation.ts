@@ -3,14 +3,13 @@ import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import {
-  ErrorMessagesOptional,
-  ErrorMessagesRequired,
   usual_residential_address_validations,
   usual_residential_service_address_validations
 } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { dateBecameIPIndividualBeneficialOwner, dateOfBirthValidations } from "./fields/date.validation";
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
+import { ErrorMessagesOptional, ErrorMessagesRequired } from "./models/address.error.model";
 
 const addressErrorMessages: ErrorMessagesOptional = {
   propertyValueError: ErrorMessages.PROPERTY_NAME_OR_NUMBER_INDIVIDUAL_BO,
@@ -27,12 +26,12 @@ export const trustIndividualBeneficialOwner = [
   body("forename")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FIRST_NAME_INDIVIDUAL_BO)
     .isLength({ max: 50 }).withMessage(ErrorMessages.MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.FIRST_NAME_INVALID_CHARACTERS),
   body("surname")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.LAST_NAME_INDIVIDUAL_BO)
     .isLength({ max: 50 })
-    .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .withMessage(ErrorMessages.MAX_LAST_NAME_LENGTH_50)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.LAST_NAME_INVALID_CHARACTERS),
 
   ...dateOfBirthValidations,
 
@@ -42,7 +41,7 @@ export const trustIndividualBeneficialOwner = [
 
   body("nationality")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY_INDIVIDUAL_BO)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS_INDIVIDUAL_BO),
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
   ...second_nationality_validations(seconNationalityErrors),
 

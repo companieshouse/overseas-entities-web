@@ -15,7 +15,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 describe("service availability middleware tests", () => {
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
   });
 
   test("should return service offline page", async () => {
@@ -89,5 +89,4 @@ describe("service availability middleware tests", () => {
     expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin?return_to=${RESUME_SUBMISSION_URL}`);
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
-
 });

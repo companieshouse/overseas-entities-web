@@ -943,7 +943,7 @@ describe('Trust Utils method tests', () => {
       expect(historicalTrusteesWebModel[0]["forename"]).toEqual("Ben");
       expect(historicalTrusteesWebModel[0]["other_forenames"]).toEqual("");
       expect(historicalTrusteesWebModel[0]["surname"]).toEqual("Gone");
-      expect(historicalTrusteesWebModel[0]["corporate_indicator"]).toEqual(false);
+      expect(historicalTrusteesWebModel[0]["corporate_indicator"]).toEqual(0);
       expect(historicalTrusteesWebModel[0]["notified_date_day"]).toEqual("10");
       expect(historicalTrusteesWebModel[0]["notified_date_month"]).toEqual("12");
       expect(historicalTrusteesWebModel[0]["notified_date_year"]).toEqual("2010");
@@ -953,7 +953,7 @@ describe('Trust Utils method tests', () => {
 
       expect(historicalTrusteesWebModel[1]).toHaveProperty('id');
       expect(historicalTrusteesWebModel[1]["corporate_name"]).toEqual("Yesterday Limited");
-      expect(historicalTrusteesWebModel[1]["corporate_indicator"]).toEqual(true);
+      expect(historicalTrusteesWebModel[1]["corporate_indicator"]).toEqual(1);
       expect(historicalTrusteesWebModel[1]["notified_date_day"]).toEqual("10");
       expect(historicalTrusteesWebModel[1]["notified_date_month"]).toEqual("12");
       expect(historicalTrusteesWebModel[1]["notified_date_year"]).toEqual("2010");
@@ -966,5 +966,4 @@ describe('Trust Utils method tests', () => {
   test("no trust data so nothing happens in mapTrustApiReturnModelToWebModel", () => {
     mapTrustApiReturnModelToWebModel({});
   });
-
 });

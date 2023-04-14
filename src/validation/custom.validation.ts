@@ -126,17 +126,17 @@ const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yea
   }
 };
 
-export const checkStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
   && isYearEitherMissingOrCorrectLength(yearStr)
   && checkDateIsNotCompletelyEmpty(dayStr, monthStr, yearStr)) {
-    checkStartDateFields(dayStr, monthStr, yearStr);
+    checkAllDateFields(dayStr, monthStr, yearStr);
   }
   return true;
 };
 
-const checkStartDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+const checkAllDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areAllDateFieldsPresent) {
     const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
@@ -231,6 +231,20 @@ const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: st
   return true;
 };
 
+export const checkCeasedDateOnOrAfterStartDate = (
+  ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
+  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = ""
+): boolean => {
+  const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
+  const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
+
+  if (startDate > ceaseDate) {
+    throw new Error(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+  }
+
+  return true;
+};
+
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
@@ -249,15 +263,15 @@ export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yea
 
 export const checkDateIPIndividualBO = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO } as DateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
 
 export const checkDateIPLegalEntityBO = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   checkDateFieldsForErrors({ completelyEmptyDateError: ErrorMessages.ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO } as DateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
-  checkDateIsInPast(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_THE_PAST_INTERESTED_PERSON, dayStr, monthStr, yearStr);
   return true;
 };
 
@@ -270,7 +284,7 @@ export const checkBirthDate = (dayStr: string = "", monthStr: string = "", yearS
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_BIRTH, dayStr, monthStr, yearStr);
   checkDateIsInPast(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST, dayStr, monthStr, yearStr);
   return true;
 };
@@ -284,7 +298,7 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_TRUST, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST, dayStr, monthStr, yearStr);
   return true;
 };
@@ -298,7 +312,7 @@ export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_START_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_START_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.START_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);
   return true;
 };
@@ -312,7 +326,7 @@ export const checkHistoricalBOEndDate = (dayStr: string = "", monthStr: string =
   };
 
   checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
-  checkDateValueIsValid(ErrorMessages.INVALID_END_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_END_DATE_HISTORICAL_BO, dayStr, monthStr, yearStr);
   checkDateIsInPastOrToday(ErrorMessages.END_DATE_NOT_IN_PAST_OR_TODAY_HISTORICAL_BO, dayStr, monthStr, yearStr);
   return true;
 };
@@ -372,25 +386,19 @@ const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = 
 };
 
 export const checkDayFieldForErrors = (dateErrors: DayFieldErrors, dayStr: string = "") => {
-  const day = parseInt(dayStr);
   if (dayStr === "") {
     throw new Error(dateErrors.noDayError);
   } else if (dayStr.length > 2){
     throw new Error(dateErrors.wrongDayLength);
-  } else if (day <= 0 || day > 31){
-    throw new Error(dateErrors.noRealDay);
   }
   return true;
 };
 
 export const checkMonthFieldForErrors = (dateErrors: MonthFieldErrors, monthStr: string = "") => {
-  const month = parseInt(monthStr);
   if (monthStr === "") {
     throw new Error(dateErrors.noMonthError);
   } else if (monthStr.length > 2){
     throw new Error(dateErrors.wrongMonthLength);
-  } else if (month <= 0 || month > 12){
-    throw new Error(ErrorMessages.INVALID_MONTH);
   }
   return true;
 };
@@ -574,5 +582,39 @@ const checkIsWithinLengthLimit = (email: string, maxLength: number) => {
 const checkCorrectIsFormat = (email: string) => {
   if (!email.match(VALID_EMAIL_FORMAT)) {
     throw new Error(ErrorMessages.EMAIL_INVALID_FORMAT);
+  }
+};
+
+/**
+ * @param formData : req.body
+ * @param keys : req.body[keys]
+ * @param radioButtonSelected : if value selected is '0'
+ * @returns boolean
+ */
+export const addressFieldsHaveNoValue = (formData: any, keys: string[], radioButtonSelected: boolean) => {
+  if (radioButtonSelected){
+    return Promise.resolve(keys.every(key => formData[`${key}`] === "" ));
+  }
+  return false;
+};
+
+/**
+ *
+ * @param allEmpty : Checks if all correspondence fields empty
+ * @param selected : check if radio button selected for correspondence address
+ * @param errMsg : Message to be thrown if there is an error
+ * @param value : Address field value
+ * @param isPrimaryField : Throw error if field is a primary field
+ * @returns
+ */
+export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: boolean, allEmpty: boolean, selected: boolean, errMsg: string, value: string = "") => {
+  if (!allEmpty) {
+    checkFieldIfRadioButtonSelected(selected, errMsg, value);
+  } else {
+    if (isPrimaryField){
+      throw new Error(ErrorMessages.ENTITY_CORRESPONDENCE_ADDRESS);
+    } else {
+      return false;
+    }
   }
 };

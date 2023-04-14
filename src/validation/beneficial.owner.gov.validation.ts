@@ -4,7 +4,7 @@ import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { checkAtLeastOneFieldHasValue } from "./custom.validation";
-import { start_date_validations } from "./fields/date.validation";
+import { start_date_validations, ceased_date_validations } from "./fields/date.validation";
 
 export const beneficialOwnerGov = [
   body("name")
@@ -36,4 +36,13 @@ export const beneficialOwnerGov = [
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST),
 
   ...start_date_validations,
+];
+
+export const updateBeneficialOwnerGov = [
+
+  ...beneficialOwnerGov,
+
+  body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
+
+  ...ceased_date_validations
 ];

@@ -220,6 +220,8 @@ export const RESUME_SUBMISSION_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRANSACTI
 
 // Update configs
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL = UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + "?index=" + ID + "&review=true";
+export const REVIEW_BENEFICIAL_OWNER_INDEX_PARAM = "?index=";
+export const REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM = "&review=true";
 
 // Change links
 export const CHANGE_PRINCIPAL_ADDRESS = "#principal_address_property_name_number";

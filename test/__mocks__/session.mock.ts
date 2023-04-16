@@ -623,7 +623,6 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  ceased_date: EMPTY_DATE
 };
 
 export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
@@ -1252,7 +1251,6 @@ export const UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PA
 export const UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST = `${UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL}?index=0&review=true`;
 
-// http://chs.local/update-an-overseas-entity/review-beneficial-owner-individual?index=1&review=true
 // get company psc mocks
 export const serviceNameGetCompanyPsc = "companyPsc";
 export const fnNameGetCompanyPsc = "getCompanyPsc";

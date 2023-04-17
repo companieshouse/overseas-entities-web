@@ -17,6 +17,7 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
+    isOwnersReview: true
   });
 };
 

@@ -37,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       setFetchedBoMoData(appData);
     }
     if (appData.update?.review_beneficial_owners_individual?.length){
-      checkAndReviewBeneficialOwner(req, res);
+      return checkAndReviewBeneficialOwner(appData, res, next);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -56,19 +56,17 @@ const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
   if (boi) {return true;}
 };
 
-export const checkAndReviewBeneficialOwner = (req: Request, res: Response) => {
-
-  const appData: ApplicationData = getApplicationData(req.session);
-
+export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Response) => {
   const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
     + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
     + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
 
   // Check last individual BO validates - in case back button is clicked
   const boiLength = appData.beneficial_owners_individual?.length || 0;
+
   const boiIndex: number = boiLength - 1;
   if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
   }
 
   // First review any retriewed individual bo:
@@ -86,7 +84,7 @@ export const checkAndReviewBeneficialOwner = (req: Request, res: Response) => {
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
 
-    res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
   }
 };
 

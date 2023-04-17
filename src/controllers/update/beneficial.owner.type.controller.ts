@@ -70,14 +70,14 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
   }
 
   // First review any retriewed individual bo:
-  while ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0) {
-
+  for (let i = 0; i <= boiLength; i++){
     const boi = appData.update?.review_beneficial_owners_individual?.pop();
     if (!boi) {
       break;
     }
 
-    let index = 0;
+    let index = i;
+
     if (!appData.beneficial_owners_individual) {
       appData.beneficial_owners_individual = [boi];
     } else {

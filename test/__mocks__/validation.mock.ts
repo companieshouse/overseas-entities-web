@@ -34,7 +34,7 @@ const PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   principal_address_postcode: "١١١١١١١"
 };
 
-const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
+export const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   usual_residential_address_property_name_number: maxLengthMocks.MAX_50 + "1",
   usual_residential_address_line_1: maxLengthMocks.MAX_50 + "1",
   usual_residential_address_line_2: maxLengthMocks.MAX_50 + "1",
@@ -44,7 +44,7 @@ const RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   usual_residential_address_postcode: maxLengthMocks.MAX_20 + "1"
 };
 
-const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
+export const SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK = {
   service_address_property_name_number: maxLengthMocks.MAX_50 + "1",
   service_address_line_1: maxLengthMocks.MAX_50 + "1",
   service_address_line_2: maxLengthMocks.MAX_50 + "1",

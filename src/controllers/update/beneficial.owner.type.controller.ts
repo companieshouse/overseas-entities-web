@@ -70,20 +70,15 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
   }
 
   // First review any retriewed individual bo:
-  for (let i = 0; i <= boiLength; i++){
+  if (boiLength >= 0){
     const boi = appData.update?.review_beneficial_owners_individual?.pop();
-    if (!boi) {
-      break;
-    }
+    let index = 0;
 
-    let index = i;
-
-    if (!appData.beneficial_owners_individual) {
+    if (!appData.beneficial_owners_individual && boi) {
       appData.beneficial_owners_individual = [boi];
-    } else {
+    } else if (appData.beneficial_owners_individual && boi) {
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
-
     return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
   }
 };

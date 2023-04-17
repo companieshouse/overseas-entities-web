@@ -37,7 +37,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       setFetchedBoMoData(appData);
     }
     if (appData.update?.review_beneficial_owners_individual?.length){
-      return checkAndReviewBeneficialOwner(appData, res, next);
+      return checkAndReviewBeneficialOwner(appData, res);
     }
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {

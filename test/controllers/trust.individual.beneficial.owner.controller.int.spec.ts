@@ -9,15 +9,13 @@ jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
 jest.mock('../../src/utils/trusts');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
-// import { NextFunction, Request, Response } from "express";
 import { NextFunction } from "express";
 import request from "supertest";
 import { constants } from 'http2';
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
-// import { getApplicationData, setExtraData } from '../../src/utils/application.data';
+import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { getTrustByIdFromApp } from '../../src/utils/trusts';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { saveAndContinue } from '../../src/utils/save.and.continue';
@@ -32,7 +30,6 @@ import { RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK, SERVICE_ADDRESS_WITH_M
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe('Trust Individual Beneficial Owner Controller Integration Tests', () => {
-  // const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL;
@@ -45,7 +42,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
 
   describe("POST tests", () => {
 
-    test('renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages', async () => {
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {
 
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
@@ -86,7 +83,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       expect(resp.text).toContain(ErrorMessages.COUNTRY_INDIVIDUAL_BO);
     });
 
-    test('renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages', async () => {
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages`, async () => {
 
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
@@ -123,7 +120,5 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
     });
-
   });
-
 });

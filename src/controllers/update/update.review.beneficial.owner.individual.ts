@@ -25,7 +25,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    if (req.query.review){
+    if (req.query.index !== undefined){
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
   } catch (error) {

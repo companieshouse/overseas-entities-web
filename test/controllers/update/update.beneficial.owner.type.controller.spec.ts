@@ -86,7 +86,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       console.log(`resp is ${resp.text}`);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain('Redirecting to /update-an-overseas-entity/review-beneficial-owner-individual?index=1&review=true');
+      expect(resp.text).toContain('Redirecting to /update-an-overseas-entity/review-beneficial-owner-individual?index=1');
     });
 
     test(`test other benefical owner data returned when getCompanyPsc data kind is other`, async () => {

@@ -36,7 +36,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
     }
-    if (appData.update?.review_beneficial_owners_individual?.length){
+    if ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0){
       return checkAndReviewBeneficialOwner(appData, res);
     }
 
@@ -44,7 +44,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      noLists: true,
+      noLists: true
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -53,7 +53,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
-  if (boi) {return true;}
+  if (boi) {return false;}
 };
 
 export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Response) => {
@@ -66,7 +66,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
 
   const boiIndex: number = boiLength - 1;
   if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}`);
   }
 
   // First review any retriewed individual bo:
@@ -79,7 +79,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
     } else if (appData.beneficial_owners_individual && boi) {
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
-    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}`);
   }
 };
 

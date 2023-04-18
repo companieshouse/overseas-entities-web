@@ -64,7 +64,6 @@ describe(`Update review beneficial owner individual controller`, () => {
 
       const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL).send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL);
       expect(resp.status).toEqual(200);
-      console.log(`heading ${UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING}`);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);

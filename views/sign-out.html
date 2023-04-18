@@ -27,6 +27,9 @@
 
     <form method="post">
 
+      <input type="hidden" name="journey" value="{{ journey }}"/>
+      <input type="hidden" name="saveAndResume" value="{{ saveAndResume }}"/>
+
       {{ govukRadios({
         errorMessage: errors.sign_out if errors,
         classes: "govuk-radios--inline",

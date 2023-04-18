@@ -163,10 +163,13 @@ describe("Sign Out controller", () => {
 
     test("catch error when posting the page with no selection", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.SIGN_OUT_URL);
+      const resp = await request(app).post(config.SIGN_OUT_URL)
+      .send({ journey: 'register', saveAndResume: true });
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_SIGN_OUT);
+      expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
+      expect(resp.text).toContain('Continue');
     });
   });
 });

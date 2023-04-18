@@ -64,6 +64,7 @@ describe('Trust Involved controller', () => {
       params: {
         trustId: trustId,
       } as Params,
+      headers: {},
       session: {} as Session,
       route: '',
       method: '',

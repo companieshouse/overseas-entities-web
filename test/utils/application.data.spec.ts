@@ -36,7 +36,7 @@ let req: Request;
 describe("Application data utils", () => {
 
   beforeEach(() => {
-    req = {} as Request;
+    req = { headers: {} } as Request;
   });
 
   test("getApplicationData should return Extra data store in the session", () => {

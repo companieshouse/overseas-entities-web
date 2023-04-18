@@ -1,29 +1,38 @@
 import { NextFunction, Request, Response } from "express";
 
-import { logger } from "../../utils/logger";
-// import { Session } from "@companieshouse/node-session-handler";
+import { Session } from "@companieshouse/node-session-handler";
 
-// import { ApplicationData } from "../../model";
-// import { getApplicationData } from "../../utils/application.data";
-import { CONFIRM_TO_REMOVE_PAGE, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE } from "../../config";
+import { ApplicationData } from "../../model";
+import { getApplicationData } from "../../utils/application.data";
+
+import { logger } from "../../utils/logger";
+import {
+  CONFIRM_TO_REMOVE_PAGE,
+  PARAM_BENEFICIAL_OWNER_GOV,
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  PARAM_BENEFICIAL_OWNER_OTHER,
+  PARAM_BENEFICIAL_OWNER_TYPE,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE
+} from "../../config";
 import { DoYouWantToRemoveKey } from "../../model/data.types.model";
-// import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-// import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-// import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
+import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { removeBeneficialOwnerIndividual } from "../../utils/beneficial.owner.individual";
+import { removeBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
+import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // const session = req.session as Session;
-    // const appData: ApplicationData = getApplicationData(session);
+    const session = req.session as Session;
+    const appData: ApplicationData = getApplicationData(session);
 
     return res.render(CONFIRM_TO_REMOVE_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
       templateName: CONFIRM_TO_REMOVE_PAGE,
-      beneficialOwnerId: req.params['id'],
-      beneficialOwnerType: req.body['boType'],
-      beneficialOwnerName: req.body['boName'],
+      beneficialOwnerName: getBoName(req.params['id'], req.params[PARAM_BENEFICIAL_OWNER_TYPE], appData)
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -36,8 +45,14 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body[DoYouWantToRemoveKey] === '1'){
-      // call removeBO existing functionality
-      // need to know which type and ID here
+      switch (req.params[PARAM_BENEFICIAL_OWNER_TYPE]) {
+          case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
+            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+          case PARAM_BENEFICIAL_OWNER_GOV:
+            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+          case PARAM_BENEFICIAL_OWNER_OTHER:
+            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+      }
     }
 
     return res.redirect(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
@@ -47,26 +62,23 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-// const getBoName = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
-//   const beneficialOwner = findBo(id, beneficialOwnerType, appData);
+const getBoName = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
+  const beneficialOwner = findBo(id, beneficialOwnerType, appData);
 
-//   if (beneficialOwnerType === BeneficialOwnerIndividualKey){
-//     return beneficialOwner.first_name + " " + beneficialOwner.last_name;
-//   } else {
-//     return beneficialOwner.name;
-//   }
-// };
+  if (beneficialOwnerType === PARAM_BENEFICIAL_OWNER_INDIVIDUAL){
+    return beneficialOwner.first_name + " " + beneficialOwner.last_name;
+  } else {
+    return beneficialOwner.name;
+  }
+};
 
-// const findBo = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
-
-//   switch (beneficialOwnerType) {
-//       case BeneficialOwnerIndividualKey:
-//         return appData[BeneficialOwnerIndividualKey]?.find(beneficialOwner => beneficialOwner.id === id);
-//       case BeneficialOwnerGovKey:
-//         return appData[BeneficialOwnerGovKey]?.find(beneficialOwner => beneficialOwner.id === id);
-//       case BeneficialOwnerOtherKey:
-//         return appData[BeneficialOwnerOtherKey]?.find(beneficialOwner => beneficialOwner.id === id);
-//       default:
-//         return null; // redirect to error page?
-//   }
-// };
+const findBo = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
+  switch (beneficialOwnerType) {
+      case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
+        return appData[BeneficialOwnerIndividualKey]?.find(beneficialOwner => beneficialOwner.id === id);
+      case PARAM_BENEFICIAL_OWNER_GOV:
+        return appData[BeneficialOwnerGovKey]?.find(beneficialOwner => beneficialOwner.id === id);
+      case PARAM_BENEFICIAL_OWNER_OTHER:
+        return appData[BeneficialOwnerOtherKey]?.find(beneficialOwner => beneficialOwner.id === id);
+  }
+};

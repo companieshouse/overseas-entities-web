@@ -497,12 +497,13 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
 
-router.route(config.CONFIRM_TO_REMOVE_URL + config.ID)
+router.route(config.CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
   .all(
     authentication,
     companyAuthentication
   )
-  .get(confirmToRemove.get);
+  .get(confirmToRemove.get)
+  .post(confirmToRemove.post);
 
 router.route(config.UPDATE_FILING_DATE_URL)
   .all(

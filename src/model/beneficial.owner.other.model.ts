@@ -27,6 +27,7 @@ export const BeneficialOwnerOtherKeys: string[] = [
 
 export interface BeneficialOwnerOther {
   id: string;
+  ch_reference?: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

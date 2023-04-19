@@ -40,6 +40,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       checkAndReviewBeneficialOwner(req, res);
     }
 
+    console.log(appData.beneficial_owners_individual);
+
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
@@ -82,8 +84,12 @@ export const checkAndReviewBeneficialOwner = (req: Request, res: Response) => {
     let index = 0;
     if (!appData.beneficial_owners_individual) {
       appData.beneficial_owners_individual = [boi];
+      appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
+      console.log("******  if ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
     } else {
       index = appData.beneficial_owners_individual.push(boi) - 1;
+      appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
+      console.log("******  else ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
     }
 
     res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);

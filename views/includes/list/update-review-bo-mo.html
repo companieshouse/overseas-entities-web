@@ -1,0 +1,40 @@
+<table class="govuk-table">
+    <caption class="govuk-table__caption govuk-table__caption--s">What you have reviewed</caption>
+    <tbody class="govuk-table__body">
+        {% for boi in beneficial_owners_individual %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
+                <td class="govuk-table__cell">Individual Beneficial Owner</td>
+                <td class="govuk-table__cell">Active</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}0{{ reviewQueryParam }}" data-event-id="change-link">
+                        Change
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for boo in beneficial_owners_corporate %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
+                <td class="govuk-table__cell">Other legal entity</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}0{{ reviewQueryParam }}" data-event-id="change-link">
+                        Change
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        {% for bog in beneficial_owners_government_or_public_authority %}
+            <tr class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
+                <td class="govuk-table__cell">Government or public authority</td>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}0{{ reviewQueryParam }}" data-event-id="change-link">>
+                        Change
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+

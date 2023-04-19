@@ -6,6 +6,10 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <br/>
 
+    {% if hasBoMoReview %}
+      {% include "includes/list/update-review-bo-mo.html" %}
+    {% endif %}
+
     {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
       {{ govukDetails({
         summaryText: "What is a managing officer?",

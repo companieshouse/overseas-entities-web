@@ -50,6 +50,14 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
+{% set hasBoMoReview = false %}
+
+{% for boMo in (beneficial_owners_individual) or (beneficial_owners_corporate) or (beneficial_owners_government_or_public_authority) %}
+  {% if boMo.ch_reference %}
+    {% set hasBoMoReview = true %}
+  {% endif %} 
+{% endfor %}
+
 {% block content %}
   {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
   {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}

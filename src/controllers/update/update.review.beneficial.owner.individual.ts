@@ -10,6 +10,8 @@ export const get = (req: Request, res: Response) => {
 
   let dataToReview = {};
   if (appData?.beneficial_owners_individual){
+    // appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
+    // console.log("****** ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
 

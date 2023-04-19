@@ -8,6 +8,7 @@
     <br> <p class="govuk-body">You can add more later.</p> <br>
 
     <form method="post">
+      {% set beneficialOwnerPronoun = "they" %}
       {% include "includes/inputs/fields/first-name-input.html" %}
 
       {% set hintLastNameText = "This is also known as your family name." %}
@@ -31,7 +32,6 @@
       {% set natureOfControlText = "What is their nature of control?" %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
-      {% set sanctionsPronoun = "they" %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

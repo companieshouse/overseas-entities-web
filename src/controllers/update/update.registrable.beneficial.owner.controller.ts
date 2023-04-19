@@ -26,7 +26,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
     const appData: ApplicationData = getApplicationData(req.session);
     if (appData.update) {
-      appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner;
+      appData.update.registrable_beneficial_owner = (isRegistrableBeneficialOwner) ? +isRegistrableBeneficialOwner : 0;
     }
     setExtraData(req.session, appData);
     return res.redirect(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);

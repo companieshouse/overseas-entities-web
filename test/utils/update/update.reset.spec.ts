@@ -2,6 +2,7 @@ import { ApplicationData } from "../../../src/model";
 import { resetEntityUpdate } from "../../../src/utils/update/update.reset";
 import { describe, expect, test } from '@jest/globals';
 import { WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
+import { DATE } from "../../__mocks__/fields/date.mock";
 
 describe("reset update model", () => {
 
@@ -16,7 +17,7 @@ describe("reset update model", () => {
   test("does reset update in model", () => {
     const appData: ApplicationData = {
       update: {
-        date_of_creation: "1/1/2023"
+        date_of_creation: DATE
       }
     };
     const update = resetEntityUpdate(appData);

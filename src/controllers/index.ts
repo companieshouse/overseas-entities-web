@@ -63,4 +63,5 @@ export * as updateManagingOfficerCorporate from "./update/update.corporate.manag
 export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.other.controller";
 export * as updateFilingDate from "./update/update.filing.date.controller";
 export * as updateRegistrableBeneficialOwner from "./update/update.registrable.beneficial.owner.controller";
+export * as resumeUpdateSubmission from "./update/update.resume.submission.controller";
 export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";

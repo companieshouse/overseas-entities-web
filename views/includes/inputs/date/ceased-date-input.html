@@ -1,4 +1,8 @@
-{% set dateText = "Date it ceased to be a registrable beneficial owner" %}
+{% if beneficialOwnerPronoun == "they" %}
+  {% set dateText = "Date they ceased to be a registrable beneficial owner" %}
+{% else %}
+  {% set dateText = "Date it ceased to be a registrable beneficial owner" %}
+{% endif %}
 
 {% set ceasedDateErrorMessage = '' %}
 {% set isCeasedDateDayError = false %}

@@ -500,10 +500,11 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
 router.route(config.CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
   .all(
     authentication,
-    companyAuthentication
+    companyAuthentication,
+    // navigation.hasBOsOrMOs
   )
   .get(confirmToRemove.get)
-  .post(confirmToRemove.post);
+  .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);
 
 router.route(config.UPDATE_FILING_DATE_URL)
   .all(

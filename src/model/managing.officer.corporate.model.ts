@@ -34,5 +34,5 @@ export interface ManagingOfficerCorporate {
   contact_full_name?: string;
   contact_email?: string;
   start_date?: InputDate;
-  ceased_date?: InputDate;
+  resigned_on?: InputDate;
 }

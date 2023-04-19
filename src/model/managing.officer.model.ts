@@ -39,7 +39,7 @@ export interface ManagingOfficerIndividual {
   occupation?: string;
   role_and_responsibilities?: string;
   start_date?: InputDate;
-  ceased_date?: InputDate;
+  resigned_on?: InputDate;
 }
 
 export const FormerNamesKey = "former_names";

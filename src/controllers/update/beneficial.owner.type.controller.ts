@@ -36,8 +36,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       await retrieveManagingOfficers(req, appData);
       setFetchedBoMoData(appData);
     }
-    if (appData.update?.review_beneficial_owners_individual?.length){
-      checkAndReviewBeneficialOwner(req, res);
+    if ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0){
+      return checkAndReviewBeneficialOwner(appData, res);
     }
 
     console.log(appData.beneficial_owners_individual);
@@ -46,7 +46,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      noLists: true,
+      noLists: true
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -55,44 +55,35 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
-  if (boi) {return true;}
+  if (boi) {return false;}
 };
 
-export const checkAndReviewBeneficialOwner = (req: Request, res: Response) => {
-
-  const appData: ApplicationData = getApplicationData(req.session);
-
+export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Response) => {
   const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
     + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
     + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
 
   // Check last individual BO validates - in case back button is clicked
   const boiLength = appData.beneficial_owners_individual?.length || 0;
+
   const boiIndex: number = boiLength - 1;
   if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}`);
   }
 
   // First review any retriewed individual bo:
-  while ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0) {
-
+  if (boiLength >= 0){
     const boi = appData.update?.review_beneficial_owners_individual?.pop();
-    if (!boi) {
-      break;
-    }
-
     let index = 0;
-    if (!appData.beneficial_owners_individual) {
+
+    if (!appData.beneficial_owners_individual && boi) {
       appData.beneficial_owners_individual = [boi];
-      appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
-      console.log("******  if ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
-    } else {
+    } else if (appData.beneficial_owners_individual && boi) {
       index = appData.beneficial_owners_individual.push(boi) - 1;
       appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
       console.log("******  else ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
     }
-
-    res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}${config.REVIEW_BENEFICIAL_OWNER_REVIEW_PARAM}`);
+    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}`);
   }
 };
 

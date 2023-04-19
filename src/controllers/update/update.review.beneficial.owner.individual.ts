@@ -19,6 +19,7 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
+    isOwnersReview: true
   });
 };
 
@@ -26,7 +27,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    if (req.query.review){
+    console.log(`req index is ${req.query.index}`);
+    if (req.query.index !== undefined){
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
   } catch (error) {

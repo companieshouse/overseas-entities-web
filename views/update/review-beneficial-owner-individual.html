@@ -42,6 +42,7 @@
     <form method="post">
       <input type="hidden" name="bo_dob" value="{{ date_of_birth.year }}"/>
       <input type="hidden" name="bo_dob_month" value="{{ date_of_birth.month }}"/>
+
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
       {% set hintLastNameText = "This is also known as your family name." %}
@@ -55,11 +56,13 @@
       {% include "includes/inputs/nationality/second-nationality.html" %}
       
       {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
+      {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
     
-      {% set dateText = "When did they become a beneficial owner for the overseas entity?" %}
+      {% set dateText = "Date they became beneficial owner for the overseas entity: " %}
       {% include "includes/inputs/date/start-date-input.html" %}
 
+      {% set beneficialOwnerPronoun = "they" %}
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
 
       {% set isBeneficialOwnerGov = false %}
@@ -70,6 +73,7 @@
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
       
       {% set sanctionsPronoun = "they" %}
+      {% set isReview = isOwnersReview %}
       {% set is_on_sanctions_list = is_on_sanctions_list %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 

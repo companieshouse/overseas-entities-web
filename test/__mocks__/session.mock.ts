@@ -291,7 +291,6 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 0,
   ...START_DATE,
-  ceased_date: EMPTY_DATE,
   trust_ids: []
 };
 
@@ -871,6 +870,11 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_individual: [],
 };
 
+export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
+  ...UPDATE_OBJECT_MOCK,
+  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
+};
+
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
   redirectUri: PAYMENT_WITH_TRANSACTION_URL,
   reference: `${REFERENCE}_${TRANSACTION_ID}`,
@@ -1194,6 +1198,16 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_EMPTY_BO_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  ...APPLICATION_DATA_UPDATE_BO_MOCK["beneficial_owners_individual"] = [ ]
+};
+
+export const APPLICATION_DATA_MULTIPLE_BO_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  ...APPLICATION_DATA_UPDATE_BO_MOCK["beneficial_owners_individual"] = [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION]
+};
+
 export const APPLICATION_DATA_NO_TRUSTS_MOCK: ApplicationData = {
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
@@ -1249,7 +1263,7 @@ export const fnGetCompanyNameGetOE = "getCompanyProfile";
 export const UPDATE_PAYMENT_WITH_TRANSACTION_URL = `${UPDATE_AN_OVERSEAS_ENTITY_URL}transaction/${TRANSACTION_ID}/overseas-entity/${OVERSEAS_ENTITY_ID}/payment`;
 export const UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
-export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST = `${UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL}?index=0&review=true`;
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST = `${UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL}?index=0`;
 
 // get company psc mocks
 export const serviceNameGetCompanyPsc = "companyPsc";

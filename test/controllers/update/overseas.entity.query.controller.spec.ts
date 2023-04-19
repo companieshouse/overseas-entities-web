@@ -93,6 +93,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('renders not found error for non existing oe number', async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
       mockGetCompanyProfile.mockReturnValueOnce(undefined);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
@@ -103,7 +104,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     });
 
     test('redirects to confirm page for valid oe number', async () => {
-      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
 

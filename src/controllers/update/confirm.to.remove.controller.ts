@@ -12,7 +12,7 @@ import {
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_BENEFICIAL_OWNER_TYPE,
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE
 } from "../../config";
 import { DoYouWantToRemoveKey } from "../../model/data.types.model";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
@@ -30,7 +30,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
 
     return res.render(CONFIRM_TO_REMOVE_PAGE, {
-      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: CONFIRM_TO_REMOVE_PAGE,
       beneficialOwnerName: getBoName(req.params['id'], req.params[PARAM_BENEFICIAL_OWNER_TYPE], appData)
     });
@@ -47,15 +47,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (req.body[DoYouWantToRemoveKey] === '1'){
       switch (req.params[PARAM_BENEFICIAL_OWNER_TYPE]) {
           case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
           case PARAM_BENEFICIAL_OWNER_GOV:
-            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
           case PARAM_BENEFICIAL_OWNER_OTHER:
-            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE, false);
+            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
       }
     }
 
-    return res.redirect(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
+    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

@@ -1,8 +1,12 @@
 import { body } from "express-validator";
 import { DoYouWantToRemoveKey } from "../model/data.types.model";
 
-// import { ErrorMessages } from "./error.messages";
-
 export const confirmToRemove = [
-  body(DoYouWantToRemoveKey).not().isEmpty().withMessage("Gon pick something")
+  body(DoYouWantToRemoveKey).custom((value, { req }) => {
+    if (value === undefined) {
+      throw new Error("Are you sure you want to remove " + req.body['beneficialOwnerName'] + "?");
+    }
+
+    return true;
+  })
 ];

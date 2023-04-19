@@ -14,7 +14,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, removeFromApplicationData } from "../../../src/utils/application.data";
-import { CONFIRM_TO_REMOVE_PAGE, CONFIRM_TO_REMOVE_URL, PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE } from "../../../src/config";
+import { CONFIRM_TO_REMOVE_PAGE, CONFIRM_TO_REMOVE_URL, PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE } from "../../../src/config";
 import { ARE_YOU_SURE_YOU_WANT_TO_REMOVE } from "../../__mocks__/text.mock";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -45,21 +45,18 @@ describe("CONFIRM TO REMOVE controller", () => {
   // ERROR TESTS
   describe("GET tests", () => {
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner individual`, async () => {
-      // mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'Ivan Drago?');
     });
 
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner gov`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'my company name?');
     });
 
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner other`, async () => {
-      // mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
@@ -67,48 +64,48 @@ describe("CONFIRM TO REMOVE controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page if user selects no`, async () => {
+    test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects no`, async () => {
       const resp = await request(app)
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '0' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
       expect(mockRemoveFromApplicationData).not.toHaveBeenCalled();
     });
 
-    test(`BO individual removed and redirects to ${UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page if user selects yes`, async () => {
+    test(`BO individual removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 
-    test(`BO gov removed and redirects to ${UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page if user selects yes`, async () => {
+    test(`BO gov removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 
-    test(`BO other removed and redirects to ${UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page if user selects yes`, async () => {
+    test(`BO other removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 
-    test(`Re-renders ${UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page with error if user makes no selection`, async () => {
+    test(`Re-renders ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with error if user makes no selection`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
+        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL).send({ beneficialOwnerName: 'TestCorporation' });
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE);
-      expect(resp.text).toContain("Gon pick something");
+      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
+      expect(resp.text).toContain("Are you sure you want to remove TestCorporation?");
       expect(mockRemoveFromApplicationData).not.toHaveBeenCalled();
     });
   });

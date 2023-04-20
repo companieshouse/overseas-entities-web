@@ -55,7 +55,7 @@
 {% for boMo in (beneficial_owners_individual) or (beneficial_owners_corporate) or (beneficial_owners_government_or_public_authority) %}
   {% if boMo.ch_reference %}
     {% set hasBoMoReview = true %}
-  {% endif %} 
+  {% endif %}
 {% endfor %}
 
 {% block content %}

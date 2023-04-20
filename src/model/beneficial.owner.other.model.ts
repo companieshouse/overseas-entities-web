@@ -7,6 +7,7 @@ export const BeneficialOwnerOtherKey: string = "beneficial_owners_corporate";
 */
 export const BeneficialOwnerOtherKeys: string[] = [
   "id",
+  "ch_reference",
   "name",
   "principal_address",
   "is_service_address_same_as_principal_address",

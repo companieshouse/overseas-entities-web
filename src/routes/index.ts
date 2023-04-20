@@ -446,7 +446,6 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   )
   .get(updateReviewBeneficialOwnerIndividual.get)
   .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
-
 router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)

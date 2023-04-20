@@ -16,6 +16,10 @@
     "coverage": "jest --coverage --forceExit --passWithNoTests",
     "prepare": "husky install"
   },
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/companieshouse/overseas-entities-web.git"

@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.given.valid.beneficial.owner.details.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -14,14 +15,24 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, removeFromApplicationData } from "../../../src/utils/application.data";
-import { CONFIRM_TO_REMOVE_PAGE, CONFIRM_TO_REMOVE_URL, PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE } from "../../../src/config";
-import { ARE_YOU_SURE_YOU_WANT_TO_REMOVE } from "../../__mocks__/text.mock";
+import {
+  CONFIRM_TO_REMOVE_PAGE,
+  CONFIRM_TO_REMOVE_URL,
+  PARAM_BENEFICIAL_OWNER_GOV,
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  PARAM_BENEFICIAL_OWNER_OTHER,
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
+} from "../../../src/config";
+import { ARE_YOU_SURE_YOU_WANT_TO_REMOVE, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   BO_IND_ID_URL,
   BO_GOV_ID_URL,
-  BO_OTHER_ID_URL
+  BO_OTHER_ID_URL,
+  ERROR
 } from "../../__mocks__/session.mock";
+import { hasGivenValidBODetails } from "../../../src/middleware/navigation/update/has.given.valid.beneficial.owner.details.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -31,6 +42,9 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockhasGivenValidBODetailsMiddleware = hasGivenValidBODetails as jest.Mock;
+mockhasGivenValidBODetailsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 
@@ -61,6 +75,14 @@ describe("CONFIRM TO REMOVE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
     });
+
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
+      const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 
   describe("POST tests", () => {
@@ -69,7 +91,7 @@ describe("CONFIRM TO REMOVE controller", () => {
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '0' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockRemoveFromApplicationData).not.toHaveBeenCalled();
     });
 
@@ -78,7 +100,7 @@ describe("CONFIRM TO REMOVE controller", () => {
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 
@@ -87,7 +109,7 @@ describe("CONFIRM TO REMOVE controller", () => {
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 
@@ -96,7 +118,7 @@ describe("CONFIRM TO REMOVE controller", () => {
         .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockRemoveFromApplicationData).toHaveBeenCalledTimes(1);
     });
 

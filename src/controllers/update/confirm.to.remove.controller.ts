@@ -12,7 +12,8 @@ import {
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
   PARAM_BENEFICIAL_OWNER_TYPE,
-  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from "../../config";
 import { DoYouWantToRemoveKey } from "../../model/data.types.model";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
@@ -47,15 +48,15 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (req.body[DoYouWantToRemoveKey] === '1'){
       switch (req.params[PARAM_BENEFICIAL_OWNER_TYPE]) {
           case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
+            return removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
           case PARAM_BENEFICIAL_OWNER_GOV:
-            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
+            return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
           case PARAM_BENEFICIAL_OWNER_OTHER:
-            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, false);
+            return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
       }
     }
 
-    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_PAGE);
+    return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

@@ -501,7 +501,7 @@ router.route(config.CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_
   .all(
     authentication,
     companyAuthentication,
-    // navigation.hasBOsOrMOs
+    navigation.hasGivenValidBODetails
   )
   .get(confirmToRemove.get)
   .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);

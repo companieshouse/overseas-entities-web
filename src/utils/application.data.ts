@@ -14,6 +14,7 @@ import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../model/managing.officer.model';
+import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER } from '../config';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -58,6 +59,23 @@ export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
 
 export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
+};
+
+export const findBeneficialOwner = (appData: ApplicationData, beneficialOwnerType: string, id: string) => {
+  switch (beneficialOwnerType) {
+      case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
+        return appData[BeneficialOwnerIndividualKey]?.find(beneficialOwner => beneficialOwner.id === id);
+      case PARAM_BENEFICIAL_OWNER_GOV:
+        return appData[BeneficialOwnerGovKey]?.find(beneficialOwner => beneficialOwner.id === id);
+      case PARAM_BENEFICIAL_OWNER_OTHER:
+        return appData[BeneficialOwnerOtherKey]?.find(beneficialOwner => beneficialOwner.id === id);
+      default:
+        return undefined;
+  }
+};
+
+export const checkGivenBoDetailsExist = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
+  return findBeneficialOwner(appData, beneficialOwnerType, id) ? true : false;
 };
 
 export const removeFromApplicationData = (req: Request, key: string, id: string) => {

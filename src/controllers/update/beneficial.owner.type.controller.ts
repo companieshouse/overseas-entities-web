@@ -71,7 +71,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
     return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}`);
   }
 
-  // First review any retriewed individual bo:
+  // First review any retrieved individual bo:
   if (boiLength >= 0){
     const boi = appData.update?.review_beneficial_owners_individual?.pop();
     let index = 0;
@@ -80,8 +80,6 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Res
       appData.beneficial_owners_individual = [boi];
     } else if (appData.beneficial_owners_individual && boi) {
       index = appData.beneficial_owners_individual.push(boi) - 1;
-      appData.beneficial_owners_individual[Number(index)].ch_reference = "reviewed";
-      console.log("******  else ch ref : " + appData.beneficial_owners_individual[Number(index)].ch_reference);
     }
     return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}`);
   }

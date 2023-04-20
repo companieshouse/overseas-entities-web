@@ -26,7 +26,7 @@ import { NextFunction } from "express";
 import { getCompanyProfile } from "../../../src/service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
 
-import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
+import { companyProfileEmptyQueryMock, companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
 
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
@@ -69,7 +69,6 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
   });
 
   describe("POST tests", () => {
-
     const invalid_input_values = ['OE123', 'EO123456', 'OE123456789'];
 
     test.each(invalid_input_values)(
@@ -95,6 +94,17 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
     test('renders not found error for non existing oe number', async () => {
       mockGetApplicationData.mockReturnValueOnce({});
       mockGetCompanyProfile.mockReturnValueOnce(undefined);
+      const resp = await request(app)
+        .post(config.OVERSEAS_ENTITY_QUERY_URL)
+        .send({ entity_number: testOENumber });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(notFoundOENumberError);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+    });
+
+    test('renders not found error for 404 non existing oe number with empty object value', async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileEmptyQueryMock);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
         .send({ entity_number: testOENumber });

@@ -57,6 +57,7 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
     setFetchedBoMoData(appData);
   }
 };
+
 const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
   if (boi.usual_residential_address){
     return true;
@@ -148,7 +149,6 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
         appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
-        console.log(`app update review in retrieve ${JSON.stringify(appData.update?.review_beneficial_owners_individual)}`);
       } else if (psc.kind === "corporate-entity-beneficial-owner") {
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);

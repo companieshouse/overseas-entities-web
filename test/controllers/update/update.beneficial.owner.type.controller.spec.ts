@@ -115,7 +115,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
     });
 
-    test(`redirection to beneficial owner review page if beneficialowner application data`, async () => {
+    test(`redirection to beneficial owner review page if beneficial owner application data`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_MODEL,

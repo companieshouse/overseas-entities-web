@@ -1,12 +1,11 @@
-import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE } from "../../config";
+import { REVIEW_BENEFICIAL_OWNER_INDEX_PARAM, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { ApplicationData, ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
-import * as config from "../../config";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -15,7 +14,7 @@ export const get = (req: Request, res: Response) => {
 
   let dataToReview = {};
   if (appData?.beneficial_owners_individual){
-    dataToReview = appData?.beneficial_owners_individual[Number(index)] as BeneficialOwnerIndividual;
+    dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
 
   const backLinkUrl = getBackLinkUrl(appData, index);
@@ -31,7 +30,7 @@ const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
   if (appData.beneficial_owners_individual?.length === 0 || pageIndex < 1){
     return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
   } else {
-    return config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
+    return UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
   }
 };
 

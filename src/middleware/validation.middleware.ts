@@ -20,7 +20,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
-  console.log(`check validation is called`)
+  console.log(`check validation is called`);
   try {
     const errorList = validationResult(req);
 

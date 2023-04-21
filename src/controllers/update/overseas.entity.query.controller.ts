@@ -9,6 +9,7 @@ import { EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { mapInputDate } from "../../utils/update/mapper.utils";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,7 +33,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
-    if (!companyProfile) {
+    if (!companyProfile || isEmptyObject(companyProfile)) {
       const errors = createEntityNumberError(entityNumber);
       return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
         backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
@@ -69,3 +70,14 @@ function createEntityNumberError(entityNumber: string): any {
   return errors;
 }
 
+const isEmptyObject = (data: CompanyProfile) => {
+  // checks minimal required fields else will be strict
+  const emptyObject = JSON.stringify({});
+  if (!data || JSON.stringify(data.companyName) === emptyObject
+           || JSON.stringify(data.companyNumber) === emptyObject
+           || JSON.stringify(data.registeredOfficeAddress) === emptyObject){
+    return true;
+  } else {
+    return false;
+  }
+};

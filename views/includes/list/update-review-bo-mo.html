@@ -1,53 +1,75 @@
-<table class="govuk-table">
-    <caption class="govuk-table__caption govuk-table__caption--s">What you have reviewed</caption>
-    <tbody class="govuk-table__body">
-        {% for boi in beneficial_owners_individual %}
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
-                <td class="govuk-table__cell">Individual Beneficial Owner</td>
-                {% if ceased_date %}
-                    <td class="govuk-table__cell">Ceased</td>
-                {% else %}
-                    <td class="govuk-table__cell">Active</td>
-                {% endif%}
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}" data-event-id="change-link">
-                        Change
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        {% for boo in beneficial_owners_corporate %}
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
-                <td class="govuk-table__cell">Other legal entity</td>
-                {% if ceased_date %}
-                    <td class="govuk-table__cell">Ceased</td>
-                {% else %}
-                    <td class="govuk-table__cell">Active</td>
-                {% endif%}
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}" data-event-id="change-link">
-                        Change
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-        {% for bog in beneficial_owners_government_or_public_authority %}
-            <tr class="govuk-table__row">
-                <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
-                <td class="govuk-table__cell">Government or public authority</td>
-                {% if ceased_date %}
-                    <td class="govuk-table__cell">Ceased</td>
-                {% else %}
-                    <td class="govuk-table__cell">Active</td>
-                {% endif%}
-                <td class="govuk-table__cell">
-                    <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}" data-event-id="change-link">>
-                        Change
-                    </a>
-                </td>
-            </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="govuk-summary-card">
+    <div class="govuk-summary-card__title-wrapper">
+        <h2 class="govuk-summary-card__title">What you have reviewed</h2>
+    </div>
+    <div class="govuk-summary-card__content">
+        <dl class="govuk-summary-list">
+            {% for boi in beneficial_owners_individual %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        {{ boi.first_name }} {{ boi.last_name }}
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        Individual beneficial owner
+                    </dd>
+                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                        {% if boi.ceased_date %}
+                            Ceased
+                        {% else %}
+                            Active
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}">
+                            Change<span class="govuk-visually-hidden"> {{ boi.first_name }} {{ boi.last_name }} - Individual beneficial owner</span>
+                        </a>
+                    </dd>
+                </div>
+            {% endfor %}
+            {% for boo in beneficial_owners_corporate %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        {{ boo.name }}
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        Other legal entity
+                    </dd>
+                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                        {% if boo.ceased_date %}
+                            Ceased
+                        {% else %}
+                            Active
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}">
+                            Change<span class="govuk-visually-hidden">{{ boo.name }} - Other legal entity</span>
+                        </a>
+                    </dd>
+                </div>
+            {% endfor %}
+            {% for bog in beneficial_owners_government_or_public_authority %}
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        {{ bog.name }}
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        Government or public authority
+                    </dd>
+                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                        {% if bog.ceased_date %}
+                            Ceased
+                        {% else %}
+                            Active
+                        {% endif %}
+                    </dd>
+                    <dd class="govuk-summary-list__actions">
+                        <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}">
+                            Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
+                        </a>
+                    </dd>
+                </div>
+            {% endfor %}
+        </dl>
+    </div>
+</div>

@@ -64,3 +64,4 @@ export * as updateBeneficialOwnerOther from "./update/update.beneficial.owner.ot
 export * as updateFilingDate from "./update/update.filing.date.controller";
 export * as updateRegistrableBeneficialOwner from "./update/update.registrable.beneficial.owner.controller";
 export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";
+export * as updateReviewOverseasEntityInformation from "./update/update.review.overseas.entity.information.controller";

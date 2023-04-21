@@ -65,7 +65,8 @@ import {
   updateManagingOfficerCorporate,
   updateFilingDate,
   updateRegistrableBeneficialOwner,
-  updateContinueSavedFiling
+  updateContinueSavedFiling,
+  updateReviewOverseasEntityInformation
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -388,6 +389,15 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
+
+router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateReviewOverseasEntityInformation.get)
+  .post(updateReviewOverseasEntityInformation.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL)
   .all(

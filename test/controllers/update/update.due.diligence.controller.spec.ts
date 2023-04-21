@@ -12,9 +12,9 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
   UPDATE_DUE_DILIGENCE_PAGE,
-  OVERSEAS_ENTITY_REVIEW_PAGE,
   UPDATE_DUE_DILIGENCE_URL,
-  OVERSEAS_ENTITY_REVIEW_URL
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
 import app from "../../../src/app";
 
@@ -126,7 +126,7 @@ describe("Update due diligence controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${OVERSEAS_ENTITY_REVIEW_PAGE} when successful`, async () => {
+    test(`redirects to ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} when successful`, async () => {
       mockPrepareData.mockReturnValueOnce({ ...DUE_DILIGENCE_OBJECT_MOCK });
 
       const twoMonthOldDate = getTwoMonthOldDate();
@@ -141,7 +141,7 @@ describe("Update due diligence controller tests", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -160,7 +160,7 @@ describe("Update due diligence controller tests", () => {
         .send(dueDiligenceData);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL}`);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];

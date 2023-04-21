@@ -68,6 +68,11 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
+    nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]
+  },
+  [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]: {
+    currentPage: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_PAGE]
   },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
@@ -223,7 +228,7 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_DUE_DILIGENCE_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,
-    nextPage: [config.OVERSEAS_ENTITY_REVIEW_URL]
+    nextPage: [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_GOV_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_GOV_PAGE,

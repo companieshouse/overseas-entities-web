@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
 import { ApplicationData } from "../../model";
-import { getApplicationData } from "../../utils/application.data";
+import { findBeneficialOwner, getApplicationData } from "../../utils/application.data";
 
 import { logger } from "../../utils/logger";
 import {
@@ -16,9 +16,6 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from "../../config";
 import { DoYouWantToRemoveKey } from "../../model/data.types.model";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { removeBeneficialOwnerIndividual } from "../../utils/beneficial.owner.individual";
 import { removeBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
 import { removeBeneficialOwnerOther } from "../../utils/beneficial.owner.other";
@@ -33,7 +30,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(CONFIRM_TO_REMOVE_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       templateName: CONFIRM_TO_REMOVE_PAGE,
-      beneficialOwnerName: getBoName(req.params['id'], req.params[PARAM_BENEFICIAL_OWNER_TYPE], appData)
+      beneficialOwnerName: getBoName(appData, req.params[PARAM_BENEFICIAL_OWNER_TYPE], req.params['id'])
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -63,23 +60,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getBoName = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
-  const beneficialOwner = findBo(id, beneficialOwnerType, appData);
+const getBoName = (appData: ApplicationData, beneficialOwnerType: string, id: string) => {
+  const beneficialOwner = findBeneficialOwner(appData, beneficialOwnerType, id);
 
   if (beneficialOwnerType === PARAM_BENEFICIAL_OWNER_INDIVIDUAL){
     return beneficialOwner.first_name + " " + beneficialOwner.last_name;
   } else {
     return beneficialOwner.name;
-  }
-};
-
-const findBo = (id: string, beneficialOwnerType: string, appData: ApplicationData) => {
-  switch (beneficialOwnerType) {
-      case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-        return appData[BeneficialOwnerIndividualKey]?.find(beneficialOwner => beneficialOwner.id === id);
-      case PARAM_BENEFICIAL_OWNER_GOV:
-        return appData[BeneficialOwnerGovKey]?.find(beneficialOwner => beneficialOwner.id === id);
-      case PARAM_BENEFICIAL_OWNER_OTHER:
-        return appData[BeneficialOwnerOtherKey]?.find(beneficialOwner => beneficialOwner.id === id);
   }
 };

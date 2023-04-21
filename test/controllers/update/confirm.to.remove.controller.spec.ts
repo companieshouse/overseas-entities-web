@@ -14,7 +14,7 @@ import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, removeFromApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, removeFromApplicationData, findBeneficialOwner } from "../../../src/utils/application.data";
 import {
   CONFIRM_TO_REMOVE_PAGE,
   CONFIRM_TO_REMOVE_URL,
@@ -30,7 +30,10 @@ import {
   BO_IND_ID_URL,
   BO_GOV_ID_URL,
   BO_OTHER_ID_URL,
-  ERROR
+  ERROR,
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK
 } from "../../__mocks__/session.mock";
 import { hasGivenValidBODetails } from "../../../src/middleware/navigation/update/has.given.valid.beneficial.owner.details.middleware";
 
@@ -47,7 +50,7 @@ const mockhasGivenValidBODetailsMiddleware = hasGivenValidBODetails as jest.Mock
 mockhasGivenValidBODetailsMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
-
+const mockFindBeneficialOwner = findBeneficialOwner as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
 
@@ -59,18 +62,21 @@ describe("CONFIRM TO REMOVE controller", () => {
   // ERROR TESTS
   describe("GET tests", () => {
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner individual`, async () => {
+      mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK; });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'Ivan Drago?');
     });
 
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner gov`, async () => {
+      mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK; });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'my company name?');
     });
 
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner other`, async () => {
+      mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK; });
       const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');

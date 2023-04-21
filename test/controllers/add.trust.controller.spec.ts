@@ -49,6 +49,7 @@ describe("Add Trust Controller Tests", () => {
 
     mockReq = {
       session: {} as Session,
+      headers: {},
       route: '',
       method: '',
       body: {},

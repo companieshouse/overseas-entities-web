@@ -90,7 +90,7 @@ describe("Confirmation controller tests", () => {
   test("should test that deleteApplicationData does the work", () => {
     mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK } );
     req.session = getSessionRequestWithExtraData();
-
+    req.headers = {};
     get(req, res);
 
     const appData = getApplicationData(req.session);

@@ -32,7 +32,7 @@ export enum ErrorMessages {
   HISTORICAL_BO_CORPORATE_NAME = "Enter the beneficial owner's name",
   HISTORICAL_BO_FIRST_NAME = "Enter the beneficial owner's first name",
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
-  LEGAL_ENTITY_BO_NAME = "Enter it's name",
+  LEGAL_ENTITY_BO_NAME = "Enter its name",
   ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
 
   // Public Register

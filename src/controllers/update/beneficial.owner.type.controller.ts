@@ -73,8 +73,8 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
     + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
 
   // Check last individual BO validates - in case back button is clicked
-  const boiLength = appData.beneficial_owners_individual?.length || 0;
-  const boiIndex: number = boiLength - 1;
+  const boiLength: number = appData.beneficial_owners_individual?.length || 0;
+  const boiIndex = boiLength - 1;
   if ((appData.beneficial_owners_individual && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
     redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
     return redirectUrl;

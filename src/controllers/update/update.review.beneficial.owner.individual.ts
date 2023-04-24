@@ -6,6 +6,8 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { ApplicationData, ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -34,19 +36,23 @@ const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
     const appData = getApplicationData(req.session);
-    if ((boiIndex !== undefined && appData.beneficial_owners_individual) && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
+    if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
 
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
+      const session = req.session as Session;
+
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
-      // await saveAndContinue(req, session, false);
+      await saveAndContinue(req, session, false);
+
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
   } catch (error) {

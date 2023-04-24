@@ -9,7 +9,9 @@ export const UpdateKey = "update";
 export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
 
 export const UpdateKeys: string[] = [
-  "date_of_creation", "bo_mo_data_fetched", "registrable_beneficial_owner",
+  "date_of_creation",
+  "bo_mo_data_fetched",
+  "registrable_beneficial_owner",
   "review_beneficial_owners_individual",
   "review_beneficial_owners_corporate",
   "review_beneficial_owners_government_or_public_authority",

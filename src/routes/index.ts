@@ -449,7 +449,8 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   )
   .get(updateReviewBeneficialOwnerIndividual.get)
   .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, updateReviewBeneficialOwnerIndividual.get);
+
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -524,6 +525,7 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(updateRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
+
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)
   .get(updateContinueSavedFiling.get)

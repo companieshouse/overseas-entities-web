@@ -59,7 +59,7 @@ describe("CONFIRM TO REMOVE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
-  // ERROR TESTS
+
   describe("GET tests", () => {
     test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner individual`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK; });

@@ -40,7 +40,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    logger.debugRequest(req, `DELETE ${req.route.path}`);
 
     if (req.body[DoYouWantToRemoveKey] === '1'){
       switch (req.params[PARAM_BENEFICIAL_OWNER_TYPE]) {

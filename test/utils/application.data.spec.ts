@@ -226,7 +226,7 @@ describe("Application data utils", () => {
     )).toEqual(true);
   });
 
-  test('checkGivenBoDetailsExist returns true if beneficial owner found', () => {
+  test('checkGivenBoDetailsExist returns false if beneficial owner not found', () => {
     expect(checkGivenBoDetailsExist(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_GOV,

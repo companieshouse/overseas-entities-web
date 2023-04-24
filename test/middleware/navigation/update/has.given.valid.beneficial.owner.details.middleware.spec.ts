@@ -9,8 +9,8 @@ import { Params } from "express-serve-static-core";
 import { logger } from "../../../../src/utils/logger";
 import {
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
-  SECURE_UPDATE_FILTER_PAGE,
-  SECURE_UPDATE_FILTER_URL
+  UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from '../../../../src/config';
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
 
@@ -36,7 +36,7 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
     jest.clearAllMocks();
   });
 
-  test(`should redirect to ${SECURE_UPDATE_FILTER_PAGE} page and log message error ${NavigationErrorMessage} if check fails`, () => {
+  test(`should redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page and log message error ${NavigationErrorMessage} if check fails`, () => {
     mockCheckHasGivenValidBOData.mockImplementationOnce( () => { return false; });
     hasGivenValidBODetails(req, res, next);
 
@@ -46,7 +46,7 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, NavigationErrorMessage);
 
     expect(res.redirect).toHaveBeenCalledTimes(1);
-    expect(res.redirect).toHaveBeenCalledWith(SECURE_UPDATE_FILTER_URL);
+    expect(res.redirect).toHaveBeenCalledWith(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 
   test(`should not redirect and pass to the next middleware`, () => {

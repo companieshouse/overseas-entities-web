@@ -50,6 +50,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
             return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
           case PARAM_BENEFICIAL_OWNER_OTHER:
             return removeBeneficialOwnerOther(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
+          default:
+            break;
       }
     }
 

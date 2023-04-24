@@ -43,12 +43,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const appData = getApplicationData(req.session);
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
-
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       const session = req.session as Session;
 
-      const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+      const setId = uuidv4();
+      req.body["ch_reference"] = setId;
+      const data: ApplicationDataType = setBeneficialOwnerData(req.body, setId);
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
       await saveAndContinue(req, session, false);

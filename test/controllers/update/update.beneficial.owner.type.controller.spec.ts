@@ -35,6 +35,7 @@ import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   ERROR,
+  UNDEFINED_UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_MODEL,
 } from '../../__mocks__/session.mock';
@@ -262,6 +263,32 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with empty app data`, async () => {
+      mockGetApplicationData.mockReturnValue({});
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+    });
+
+    test (`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with undefined update appData`, async() => {
+      mockGetApplicationData.mockReturnValue({
+        ...UNDEFINED_UPDATE_OBJECT_MOCK
+      });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
     });
 
   });

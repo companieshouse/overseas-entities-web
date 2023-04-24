@@ -83,6 +83,8 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
   if (boiLength >= 0){
     const boi = appData.update?.review_beneficial_owners_individual?.pop() as BeneficialOwnerIndividual;
     if (!boi){
+      // redirectUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+      redirectUrl = "";
       return redirectUrl;
     }
 

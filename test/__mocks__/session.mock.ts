@@ -871,6 +871,10 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_individual: [],
 };
 
+export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
+  review_beneficial_owners_individual: undefined
+};
+
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
   review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]

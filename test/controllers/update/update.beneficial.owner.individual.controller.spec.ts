@@ -25,7 +25,8 @@ import {
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
-  setApplicationData
+  setApplicationData,
+  getApplicationData
 } from '../../../src/utils/application.data';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
@@ -42,11 +43,11 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT,
 } from '../../__mocks__/text.mock';
 import {
+  APPLICATION_DATA_UPDATE_BO_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_RADIO_BUTTONS,
-  BENEFICIAL_OWNER_INDIVIDUAL_REPLACE,
   BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH,
   BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE,
   BO_IND_ID,
@@ -89,6 +90,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -120,7 +122,9 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("GET BY ID tests", () => {
     test(`renders ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -131,6 +135,7 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain("Russian");
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
     });
 
     test(`catch error when rendering the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
@@ -942,10 +947,10 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`replaces existing object on submit`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
+      mockPrepareData.mockReturnValueOnce({ id: BO_IND_ID, name: "new name" });
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
-        .send(BENEFICIAL_OWNER_INDIVIDUAL_REPLACE);
+        .send(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);

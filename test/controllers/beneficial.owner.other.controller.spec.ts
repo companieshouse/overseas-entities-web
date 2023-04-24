@@ -9,6 +9,7 @@ import request from "supertest";
 import { NextFunction, Request, Response } from "express";
 
 import {
+  APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
@@ -27,7 +28,8 @@ import {
   getFromApplicationData, mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
-  setApplicationData
+  setApplicationData,
+  getApplicationData
 } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import app from "../../src/app";
@@ -55,6 +57,7 @@ import {
 } from "../__mocks__/text.mock";
 import {
   AddressKeys,
+  EntityNumberKey,
   IsOnSanctionsListKey,
   NatureOfControlType, PublicRegisterNameKey, RegistrationNumberKey,
   yesNoResponse
@@ -86,6 +89,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -132,6 +136,10 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test("Renders the page through GET", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(200);

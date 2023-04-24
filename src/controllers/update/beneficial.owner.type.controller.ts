@@ -33,7 +33,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      noLists: true
+      noLists: false
     });
   } catch (error) {
     logger.errorRequest(req, error);

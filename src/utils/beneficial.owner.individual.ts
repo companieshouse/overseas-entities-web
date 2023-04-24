@@ -20,12 +20,13 @@ import {
 import {
   AddressKeys,
   BeneficialOwnerNoc,
+  EntityNumberKey,
   HasSameResidentialAddressKey,
   ID,
   InputDateKeys,
   IsOnSanctionsListKey,
   NonLegalFirmNoc,
-  TrusteesNoc,
+  TrusteesNoc
 } from "../model/data.types.model";
 import {
   ServiceAddressKey,
@@ -34,6 +35,8 @@ import {
   UsualResidentialAddressKeys,
 } from "../model/address.model";
 import {
+  CeasedDateKey,
+  CeasedDateKeys,
   DateOfBirthKey,
   DateOfBirthKeys,
   StartDateKey,
@@ -59,13 +62,14 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+    const appData = getApplicationData(req.session);
 
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    return res.render(templateName, {
+    const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
@@ -74,7 +78,16 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
-    });
+    };
+
+    // extra data needed for update journey
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== null) {
+      templateOptions["is_still_bo"] = (Object.keys(data["ceased_date"]).length === 0) ? 1 : 0;
+      templateOptions[EntityNumberKey] = appData[EntityNumberKey];
+      templateOptions["ceased_date"] = (data) ? mapDataObjectToFields(data[CeasedDateKey], CeasedDateKeys, InputDateKeys) : {};
+    }
+
+    return res.render(templateName, templateOptions);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -149,6 +162,13 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
+  // not present in register journey
+  if ("is_still_bo" in reqBody && reqBody["is_still_bo"] === '0') {
+    data[CeasedDateKey] = mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys);
+  } else {
+    data[CeasedDateKey] = undefined;
+  }
+
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.
   data[BeneficialOwnerNoc] = (data[BeneficialOwnerNoc]) ? [].concat(data[BeneficialOwnerNoc]) : [];
@@ -158,5 +178,6 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
   data[ID] = id;
+
   return data;
 };

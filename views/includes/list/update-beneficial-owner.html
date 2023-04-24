@@ -1,0 +1,64 @@
+{% if hasBeneficialOwners %}
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">What you have added in this update</caption>
+        <tbody class="govuk-table__body">
+            {% for boi in beneficial_owners_individual %}
+                {% if not boi.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
+                        <td class="govuk-table__cell">Individual beneficial owner</td>
+                        <td class="govuk-table__cell">{% if boi.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerIndividualUrl }}/{{ boi.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerRemoveBaseUrl }}/beneficial-owner-individual/{{ boi.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for boo in beneficial_owners_corporate %}
+                {% if not boo.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
+                        <td class="govuk-table__cell">Other legal entity beneficial owner</td>
+                        <td class="govuk-table__cell">{% if boo.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerOtherUrl }}/{{ boo.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerRemoveBaseUrl }}/beneficial-owner-other/{{ boo.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for bog in beneficial_owners_government_or_public_authority %}
+                {% if not bog.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
+                        <td class="govuk-table__cell">Government or public authority beneficial owner</td>
+                        <td class="govuk-table__cell">{% if bog.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerGovUrl }}/{{ bog.id }}" data-event-id="change-link" >
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerRemoveBaseUrl }}/beneficial-owner-gov/{{ bog.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

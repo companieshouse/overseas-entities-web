@@ -192,3 +192,4 @@ export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE = "Has anyone become or c
 export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to review beneficial owner and managing officer information";
 export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
 export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a saved filing?";
+export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";

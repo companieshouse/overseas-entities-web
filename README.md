@@ -42,8 +42,8 @@ Environment variables used to configure this service in docker are located in th
 
 ### Requirements
 
-1. node v12.22.12 (Concourse pipeline builds using Node 10 and live runs on Node 12)
-2. npm 6.14.16
+1. node v16 (Concourse pipeline builds using Node 16 and live runs on Node 16)
+2. npm 8
 3. Docker
 
 ### Build and Test changes

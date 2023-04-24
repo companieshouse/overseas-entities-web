@@ -16,8 +16,8 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, removeFromApplicationData, findBeneficialOwner } from "../../../src/utils/application.data";
 import {
-  CONFIRM_TO_REMOVE_PAGE,
-  CONFIRM_TO_REMOVE_URL,
+  UPDATE_CONFIRM_TO_REMOVE_PAGE,
+  UPDATE_CONFIRM_TO_REMOVE_URL,
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
@@ -61,30 +61,30 @@ describe("CONFIRM TO REMOVE controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner individual`, async () => {
+    test(`renders the ${UPDATE_CONFIRM_TO_REMOVE_PAGE} page for beneficial owner individual`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK; });
-      const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL);
+      const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'Ivan Drago?');
     });
 
-    test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner gov`, async () => {
+    test(`renders the ${UPDATE_CONFIRM_TO_REMOVE_PAGE} page for beneficial owner gov`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK; });
-      const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL);
+      const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'my company name?');
     });
 
-    test(`renders the ${CONFIRM_TO_REMOVE_PAGE} page for beneficial owner other`, async () => {
+    test(`renders the ${UPDATE_CONFIRM_TO_REMOVE_PAGE} page for beneficial owner other`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK; });
-      const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
+      const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
     });
 
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
-      const resp = await request(app).get(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
+      const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -94,7 +94,7 @@ describe("CONFIRM TO REMOVE controller", () => {
   describe("POST tests", () => {
     test(`redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects no`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '0' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -103,7 +103,7 @@ describe("CONFIRM TO REMOVE controller", () => {
 
     test(`BO individual removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -112,7 +112,7 @@ describe("CONFIRM TO REMOVE controller", () => {
 
     test(`BO gov removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -121,7 +121,7 @@ describe("CONFIRM TO REMOVE controller", () => {
 
     test(`BO other removed and redirects to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page if user selects yes`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL)
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL)
         .send({ do_you_want_to_remove: '1' });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -130,7 +130,7 @@ describe("CONFIRM TO REMOVE controller", () => {
 
     test(`Re-renders ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with error if user makes no selection`, async () => {
       const resp = await request(app)
-        .post(CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL).send({ beneficialOwnerName: 'TestCorporation' });
+        .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL).send({ beneficialOwnerName: 'TestCorporation' });
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
       expect(resp.text).toContain("Are you sure you want to remove TestCorporation?");

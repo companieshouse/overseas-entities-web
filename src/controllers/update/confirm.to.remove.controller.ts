@@ -7,7 +7,7 @@ import { findBeneficialOwner, getApplicationData } from "../../utils/application
 
 import { logger } from "../../utils/logger";
 import {
-  CONFIRM_TO_REMOVE_PAGE,
+  UPDATE_CONFIRM_TO_REMOVE_PAGE,
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
   PARAM_BENEFICIAL_OWNER_OTHER,
@@ -27,9 +27,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
 
-    return res.render(CONFIRM_TO_REMOVE_PAGE, {
+    return res.render(UPDATE_CONFIRM_TO_REMOVE_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-      templateName: CONFIRM_TO_REMOVE_PAGE,
+      templateName: UPDATE_CONFIRM_TO_REMOVE_PAGE,
       beneficialOwnerName: getBoName(appData, req.params[PARAM_BENEFICIAL_OWNER_TYPE], req.params['id'])
     });
   } catch (error) {

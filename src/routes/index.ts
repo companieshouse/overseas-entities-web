@@ -494,7 +494,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
 
-router.route(config.CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
+router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
   .all(
     authentication,
     companyAuthentication,

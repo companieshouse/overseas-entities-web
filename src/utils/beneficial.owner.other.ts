@@ -143,10 +143,10 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
 
   // not present in register journey
-  if ("is_still_bo" in reqBody && reqBody["is_still_bo"] === '0') {
-    data[CeasedDateKey] = mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys);
-  } else {
-    data[CeasedDateKey] = undefined;
+  if ("is_still_bo" in reqBody) {
+    data[CeasedDateKey] = (reqBody["is_still_bo"] === '0')
+      ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys)
+      : {};
   }
 
   // It needs concatenations because if in the check boxes we select only one option

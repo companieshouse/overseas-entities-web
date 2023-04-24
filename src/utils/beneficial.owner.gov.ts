@@ -67,7 +67,6 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
 
     return res.render(templateName, templateOptions);
   } catch (error) {
-
     logger.errorRequest(req, error);
     next(error);
   }

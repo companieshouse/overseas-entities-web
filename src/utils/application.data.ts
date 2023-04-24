@@ -62,16 +62,22 @@ export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
 };
 
 export const findBeneficialOwner = (appData: ApplicationData, beneficialOwnerType: string, id: string) => {
+  let boList;
   switch (beneficialOwnerType) {
       case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-        return appData[BeneficialOwnerIndividualKey]?.find(beneficialOwner => beneficialOwner.id === id);
+        boList = appData[BeneficialOwnerIndividualKey];
+        break;
       case PARAM_BENEFICIAL_OWNER_GOV:
-        return appData[BeneficialOwnerGovKey]?.find(beneficialOwner => beneficialOwner.id === id);
+        boList = appData[BeneficialOwnerGovKey];
+        break;
       case PARAM_BENEFICIAL_OWNER_OTHER:
-        return appData[BeneficialOwnerOtherKey]?.find(beneficialOwner => beneficialOwner.id === id);
+        boList = appData[BeneficialOwnerOtherKey];
+        break;
       default:
         return undefined;
   }
+
+  return boList.find(beneficialOwner => beneficialOwner.id === id);
 };
 
 export const checkGivenBoDetailsExist = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {

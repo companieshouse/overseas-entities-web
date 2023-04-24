@@ -65,21 +65,21 @@ describe("CONFIRM TO REMOVE controller", () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK; });
       const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_INDIVIDUAL + BO_IND_ID_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'Ivan Drago?');
+      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + ' Ivan Drago?');
     });
 
     test(`renders the ${UPDATE_CONFIRM_TO_REMOVE_PAGE} page for beneficial owner gov`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK; });
       const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_GOV + BO_GOV_ID_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'my company name?');
+      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + ' my company name?');
     });
 
     test(`renders the ${UPDATE_CONFIRM_TO_REMOVE_PAGE} page for beneficial owner other`, async () => {
       mockFindBeneficialOwner.mockImplementationOnce( () => { return UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK; });
       const resp = await request(app).get(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
+      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + ' TestCorporation?');
     });
 
     test("catch error when rendering the page", async () => {
@@ -132,7 +132,7 @@ describe("CONFIRM TO REMOVE controller", () => {
       const resp = await request(app)
         .post(UPDATE_CONFIRM_TO_REMOVE_URL + "/" + PARAM_BENEFICIAL_OWNER_OTHER + BO_OTHER_ID_URL).send({ beneficialOwnerName: 'TestCorporation' });
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + 'TestCorporation?');
+      expect(resp.text).toContain(ARE_YOU_SURE_YOU_WANT_TO_REMOVE + ' TestCorporation?');
       expect(resp.text).toContain("Are you sure you want to remove TestCorporation?");
       expect(mockRemoveFromApplicationData).not.toHaveBeenCalled();
     });

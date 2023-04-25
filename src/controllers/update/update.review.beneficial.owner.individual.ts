@@ -18,7 +18,6 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_individual){
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
-
   const backLinkUrl = getBackLinkUrl(appData, index);
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
     backLinkUrl,

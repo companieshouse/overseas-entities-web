@@ -83,4 +83,4 @@ export const RegistrationModelKey = "registration";
 // Update Journey
 export const EntityNumberKey = "entity_number";
 export const UpdateModelKey = "update";
-
+export const DoYouWantToRemoveKey = "do_you_want_to_remove";

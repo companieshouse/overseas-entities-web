@@ -150,7 +150,8 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
     : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
-  data[CeasedDateKey] = mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys);
+
+  data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : undefined;
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

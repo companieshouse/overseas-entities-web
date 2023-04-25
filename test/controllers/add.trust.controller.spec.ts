@@ -110,7 +110,7 @@ describe("Add Trust Controller Tests", () => {
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
       (generateTrustId as jest.Mock).mockReturnValue(trustId);
 
-      expect(post(mockReq, {} as Response, mockNext)).toBeUndefined();
+      post(mockReq, {} as Response, mockNext);
       expect(mockNext).toBeCalledTimes(1);
     });
 

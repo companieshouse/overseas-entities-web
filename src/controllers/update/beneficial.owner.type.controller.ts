@@ -22,22 +22,13 @@ import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individu
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const appData: ApplicationData = getApplicationData(req.session);
-    if (!hasFetchedBoAndMoData(appData)) {
-      if (!appData.update) {
-        appData.update = {};
-      }
-      appData.update.review_beneficial_owners_individual = [];
-      appData.update.review_beneficial_owners_corporate = [];
-      appData.update.review_beneficial_owners_government_or_public_authority = [];
 
-      await retrieveBeneficialOwners(req, appData);
-      await retrieveManagingOfficers(req, appData);
-      setFetchedBoMoData(appData);
-    }
-    if ((appData.update?.review_beneficial_owners_individual?.length || 0) > 0){
-      return checkAndReviewBeneficialOwner(appData, res);
+    await fetchAndSetBoMo(req, appData);
+
+    const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
+    if (checkIsRedirect && checkIsRedirect !== ""){
+      return res.redirect(checkIsRedirect);
     }
 
     console.log(appData.beneficial_owners_individual);
@@ -54,35 +45,60 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
-  if (boi) {return false;}
+const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
+  if (!hasFetchedBoAndMoData(appData)) {
+    if (!appData.update) {
+      appData.update = {};
+    }
+    appData.update.review_beneficial_owners_individual = [];
+    appData.update.review_beneficial_owners_corporate = [];
+    appData.update.review_beneficial_owners_government_or_public_authority = [];
+
+    await retrieveBeneficialOwners(req, appData);
+    await retrieveManagingOfficers(req, appData);
+    setFetchedBoMoData(appData);
+  }
 };
 
-export const checkAndReviewBeneficialOwner = (appData: ApplicationData, res: Response) => {
+const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
+  if (boi.usual_residential_address || boi.is_service_address_same_as_usual_residential_address){
+    return true;
+  } else {
+    return false;
+  }
+};
+
+export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
+  let redirectUrl = "";
   const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
     + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
     + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
 
   // Check last individual BO validates - in case back button is clicked
-  const boiLength = appData.beneficial_owners_individual?.length || 0;
-
-  const boiIndex: number = boiLength - 1;
-  if (appData.beneficial_owners_individual && (boiLength > 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${boiIndex}`);
+  const boiLength: number = appData.beneficial_owners_individual?.length || 0;
+  const boiIndex = boiLength - 1;
+  if ((appData.beneficial_owners_individual && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
+    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
+    return redirectUrl;
   }
 
-  // First review any retrieved individual bo:
   if (boiLength >= 0){
-    const boi = appData.update?.review_beneficial_owners_individual?.pop();
+    const boi = appData.update?.review_beneficial_owners_individual?.pop() as BeneficialOwnerIndividual;
+    if (!boi){
+      return redirectUrl;
+    }
+
     let index = 0;
 
-    if (!appData.beneficial_owners_individual && boi) {
+    if (!appData.beneficial_owners_individual) {
       appData.beneficial_owners_individual = [boi];
-    } else if (appData.beneficial_owners_individual && boi) {
+    } else {
       index = appData.beneficial_owners_individual.push(boi) - 1;
     }
-    return res.redirect(`${beneficialOwnerReviewRedirectUrl}${index}`);
+    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
+    return redirectUrl;
   }
+  return redirectUrl;
 };
 
 export const post = (req: Request, res: Response) => {

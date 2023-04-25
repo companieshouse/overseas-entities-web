@@ -25,9 +25,9 @@
   "license": "MIT",
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "^2.0.70",
+    "@companieshouse/api-sdk-node": "^2.0.71",
     "@companieshouse/node-session-handler": "^4.1.9",
-    "@companieshouse/structured-logging-node": "^1.0.4",
+    "@companieshouse/structured-logging-node": "^1.0.8",
     "@companieshouse/web-security-node": "^2.0.3",
     "cookie-parser": "^1.4.6",
     "express": "^4.17.3",

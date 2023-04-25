@@ -11,9 +11,14 @@ import {
   removeFromApplicationData,
   getFromApplicationData,
   checkBOsDetailsEntered,
-  checkMOsDetailsEntered
+  checkMOsDetailsEntered,
+  findBeneficialOwner,
+  checkGivenBoDetailsExist
 } from "../../src/utils/application.data";
 import {
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  BO_IND_ID,
+  BO_OTHER_ID,
   BO_GOV_ID,
   SERVICE_ADDRESS_MOCK,
   APPLICATION_DATA_MOCK,
@@ -22,6 +27,11 @@ import {
   getSessionRequestWithExtraData,
   getSessionRequestWithPermission,
 } from "../__mocks__/session.mock";
+import {
+  PARAM_BENEFICIAL_OWNER_GOV,
+  PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+  PARAM_BENEFICIAL_OWNER_OTHER
+} from "../..//src/config";
 import { ADDRESS } from "../__mocks__/fields/address.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
@@ -36,7 +46,7 @@ let req: Request;
 describe("Application data utils", () => {
 
   beforeEach(() => {
-    req = {} as Request;
+    req = { headers: {} } as Request;
   });
 
   test("getApplicationData should return Extra data store in the session", () => {
@@ -161,6 +171,67 @@ describe("Application data utils", () => {
       [ManagingOfficerCorporateKey]: undefined
     });
     expect(response).toEqual(false);
+  });
+
+  test('findBeneficialOwner should return BO Individual if valid data given', () => {
+    const beneficialOwner = findBeneficialOwner(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
+      BO_IND_ID
+    );
+    expect(beneficialOwner.id).toEqual(BO_IND_ID);
+  });
+
+  test('findBeneficialOwner should return BO Gov if valid data given', () => {
+    const beneficialOwner = findBeneficialOwner(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_GOV,
+      BO_GOV_ID
+    );
+    expect(beneficialOwner.id).toEqual(BO_GOV_ID);
+  });
+
+  test('findBeneficialOwner should return BO Other if valid data given', () => {
+    const beneficialOwner = findBeneficialOwner(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_OTHER,
+      BO_OTHER_ID
+    );
+    expect(beneficialOwner.id).toEqual(BO_OTHER_ID);
+  });
+
+  test('findBeneficialOwner should return undefined if invalid id given', () => {
+    const beneficialOwner = findBeneficialOwner(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_OTHER,
+      'fake-id'
+    );
+    expect(beneficialOwner).toEqual(undefined);
+  });
+
+  test('findBeneficialOwner should return undefined if invalid benficialOwnerType given', () => {
+    const beneficialOwner = findBeneficialOwner(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      'not-a-real-bo-type',
+      BO_OTHER_ID
+    );
+    expect(beneficialOwner).toEqual(undefined);
+  });
+
+  test('checkGivenBoDetailsExist returns true if beneficial owner found', () => {
+    expect(checkGivenBoDetailsExist(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_GOV,
+      BO_GOV_ID
+    )).toEqual(true);
+  });
+
+  test('checkGivenBoDetailsExist returns false if beneficial owner not found', () => {
+    expect(checkGivenBoDetailsExist(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_BENEFICIAL_OWNER_GOV,
+      'fake-id'
+    )).toEqual(false);
   });
 
   test("mapFieldsToDataObject should map address fields coming from the view to address", () => {

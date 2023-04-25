@@ -25,7 +25,7 @@ sonar:
 	npm run sonarqube
 
 .PHONY: test
-test:
+test: clean
 	npm run coverage
 
 .PHONY: package
@@ -47,3 +47,4 @@ endif
 
 .PHONY: dist
 dist: lint test clean package
+

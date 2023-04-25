@@ -31,6 +31,7 @@ describe('Trust Interrupt controller', () => {
 
     mockReq = {
       session: {} as Session,
+      headers: {},
       route: '',
       method: '',
       body: {},

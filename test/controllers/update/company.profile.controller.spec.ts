@@ -17,7 +17,6 @@ import request from "supertest";
 import { NextFunction } from "express";
 import { ANY_MESSAGE_ERROR, BACK_LINK_FOR_UPDATE_OE_CONFIRM, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import {
-  testDateOfCreation,
   testEntityNumber,
   testEntityName,
   entityModelMock,
@@ -53,7 +52,7 @@ describe("Confirm company data", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_OE_CONFIRM);
       expect(resp.text).toContain(testEntityName);
-      expect(resp.text).toContain(testDateOfCreation);
+      expect(resp.text).toContain("January");
       expect(resp.text).toContain(testEntityNumber);
       expect(resp.text).toContain(testIncorporationCountry);
     });

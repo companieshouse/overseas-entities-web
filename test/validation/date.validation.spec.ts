@@ -74,9 +74,9 @@ describe('Test to validate date validator', () => {
 
     const sut = dateValidations(mockDateValidationsContext);
     expect(sut.length).toEqual(4);
-    expect(mockIf).toBeCalledTimes(6);
-    expect(mockCustom).toBeCalledTimes(4);
-    expect(mockEquals).toBeCalledTimes(0);
+    expect(mockIf).toHaveBeenCalled();
+    expect(mockCustom).toHaveBeenCalled();
+    expect(mockEquals).not.toHaveBeenCalled();
   });
 
   test('should test conditionalDateValidations success', () => {

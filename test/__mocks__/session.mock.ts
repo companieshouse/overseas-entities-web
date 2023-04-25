@@ -114,6 +114,7 @@ export const PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRA
 export const PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 export const PAYMENT_JOURNEY_URL = "PAYMENT_JOURNEY_URL";
 export const RESUME_SUBMISSION_URL = `${REGISTER_AN_OVERSEAS_ENTITY_URL}${TRANSACTION_PATH}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
+export const RESUME_UPDATE_SUBMISSION_URL = `${UPDATE_AN_OVERSEAS_ENTITY_URL}${TRANSACTION_PATH}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${RESUME}`;
 export const RR_CARRIAGE_RETURN = "abc-xyzž \r\n def";
 export const PAYMENT_MOCK_VALUE = {
   resource: {
@@ -885,9 +886,13 @@ export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SP
 };
 
 export const UPDATE_OBJECT_MOCK: updateType.Update = {
-  date_of_creation: "27/10/2022",
+  date_of_creation: { day: "1", month: "1", year: "2011" },
   registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [],
+};
+
+export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
+  review_beneficial_owners_individual: undefined
 };
 
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {

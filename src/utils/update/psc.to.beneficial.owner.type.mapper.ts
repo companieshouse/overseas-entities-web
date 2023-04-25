@@ -3,13 +3,14 @@ import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress, mapDateOfBirth } from "./mapper.utils";
+import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink } from "./mapper.utils";
 import { logger } from "../../utils/logger";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
+    ch_reference: mapSelfLink(psc.links?.self),
     first_name: psc.nameElements?.forename,
     last_name: psc.nameElements?.surname,
     nationality: psc.nationality,
@@ -30,6 +31,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
 
   const result: BeneficialOwnerOther = {
     id: psc.links?.self,
+    ch_reference: mapSelfLink(psc.links?.self),
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,
@@ -52,6 +54,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 
   const result: BeneficialOwnerGov = {
     id: psc.links?.self,
+    ch_reference: mapSelfLink(psc.links?.self),
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,

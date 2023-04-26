@@ -208,4 +208,9 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
+
+  test(`Navigation returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL}`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
 });

@@ -48,7 +48,7 @@ describe(`Get overseas entity profile details service suite`, () => {
 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(companyServiceNameOE, fnGetCompanyNameGetOE, req, session, COMPANY_NUMBER);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    expect(response).toEqual({});
+    expect(response).toEqual(undefined);
   });
 
   test(`getCompanyRequest should throw with 500 status code`, async () => {
@@ -56,7 +56,6 @@ describe(`Get overseas entity profile details service suite`, () => {
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
     await expect(getCompanyProfile(req, COMPANY_NUMBER)).rejects.toThrow(ERROR);
-
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });
 });

@@ -138,7 +138,7 @@ export const removeBeneficialOwnerIndividual = async (req: Request, res: Respons
   }
 };
 
-const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerIndividualKeys);
 
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);

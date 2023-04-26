@@ -346,6 +346,10 @@ describe("test date method", () => {
   ])("test more than one date of birth field not missing", (date, err) => {
     expect (() => checkMoreThanOneDateOfBirthFieldIsNotMissing(...date)).toThrow(err);
   });
+
+  test("test default arguments for checkMoreThanOneDateOfBirthFieldIsNotMissing", () => {
+    expect (checkMoreThanOneDateOfBirthFieldIsNotMissing()).toBeUndefined();
+  });
 });
 
 describe("test day,month and year error checkers", () => {
@@ -381,6 +385,11 @@ describe("test day,month and year error checkers", () => {
       noDayError: errors.noDayError,
       wrongDayLength: errors.wrongDayLength,
       noRealDay: errors.noRealDay, }, "3")).toBe(true);
+
+    expect(() => checkDayFieldForErrors({
+      noDayError: errors.noDayError,
+      wrongDayLength: errors.wrongDayLength,
+      noRealDay: errors.noRealDay, })).toThrow(errors.noDayError);
   });
   test("test month absent", () => {
     expect(() => checkMonthFieldForErrors({
@@ -403,11 +412,20 @@ describe("test day,month and year error checkers", () => {
       noMonthError: errors.noMonthError,
       wrongMonthLength: errors.wrongMonthLength,
       noRealMonth: errors.noRealMonth, }, "12")).toBe(true);
+
+    expect(() => checkMonthFieldForErrors({
+      noMonthError: errors.noMonthError,
+      wrongMonthLength: errors.wrongMonthLength,
+      noRealMonth: errors.noRealMonth, })).toThrowError(errors.noMonthError);
   });
   test("test year absent", () => {
     expect(() => checkYearFieldForErrors({
       noYearError: errors.noYearError,
       wrongYearLength: errors.wrongYearLength }, "")).toThrowError(errors.noYearError);
+
+    expect(() => checkYearFieldForErrors({
+      noYearError: errors.noYearError,
+      wrongYearLength: errors.wrongYearLength })).toThrowError(errors.noYearError);
 
     expect(() => checkYearFieldForErrors({
       noYearError: errors.noYearError,

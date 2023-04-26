@@ -3,6 +3,7 @@ import { beneficialOwnerIndividual, updateBeneficialOwnerIndividual } from "./be
 import { beneficialOwnerOther, updateBeneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
+import { confirmToRemove } from "./confirm.to.remove.validation";
 import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
@@ -27,6 +28,7 @@ import { addTrustValidations } from "./add.trust.validation";
 import { updateBeneficialOwnerStatements } from "./update.beneficial.owner.statements.validation";
 import { trustLegalEntityBeneficialOwnerValidator } from "./trust.legal.entity.beneficial.owner.validation";
 import { registrableBeneficialOwner } from "./registrable.beneficial.owner.validation";
+import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.owner.indiviual.review.validation";
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 
 export const validator = {
@@ -49,6 +51,7 @@ export const validator = {
   overseasEntityDueDiligence,
   trustInformation,
   beneficialOwnerDeleteWarning,
+  confirmToRemove,
   signOut,
   overseasName,
   startingNew,
@@ -64,5 +67,6 @@ export const validator = {
   addTrust: addTrustValidations,
   trustLegalEntityBeneficialOwnerValidator,
   registrableBeneficialOwner,
+  updateBeneficialOwnerAndReviewValidator,
   updateContinueSavedFiling
 };

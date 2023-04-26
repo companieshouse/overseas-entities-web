@@ -66,6 +66,7 @@ import {
   updateManagingOfficerCorporate,
   updateFilingDate,
   updateRegistrableBeneficialOwner,
+  updateReviewBeneficialOwnerIndividual,
   updateContinueSavedFiling,
   resumeUpdateSubmission
 } from "../controllers";
@@ -439,6 +440,17 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   )
   .get(updateBeneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
+
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewBeneficialOwnerIndividual.get)
+  .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
+
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(

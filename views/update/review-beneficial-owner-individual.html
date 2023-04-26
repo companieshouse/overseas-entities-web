@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set title = "Review the individual beneficial owner (NOT LIVE)" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %} 
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+
+    {% if dob_year %}
+     {% set dob = dateMacros.formatDate("", dob_month, dob_year) %}
+    {% elif date_of_birth["month"] %} 
+      {% set dob = dateMacros.formatDate("", date_of_birth["month"] | string, date_of_birth["year"]) %}
+    {% endif %}
+    
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ first_name }} {{ last_name }} - born {{ dob }}</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
+    <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
+    {{ govukInsetText({
+      html: "You'll need to <strong>enter their home address</strong>, and tell us if they're still a registrable beneficial owner."
+    }) }}
+  
+    <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+      <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+          How to complete this section for a ceased beneficial owner
+        </span>
+      </summary>
+      <div class="govuk-details__text">
+        <p class="govuk-body">If they are no longer a registrable beneficial owner, you need to make sure this information is correct as at the ceased date, and update it if needed.</p>
+      </div>
+    </details>
+    <form method="post">
+      <input type="hidden" name="id" value="{{ id }}" />
+      <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
+      <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
+      <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
+
+      {% set first_name = first_name %}
+      {% include "includes/inputs/fields/first-name-input.html" %}
+      {% set hintLastNameText = "This is also known as your family name." %}
+      {% set last_name = last_name %}
+      {% include "includes/inputs/fields/last-name-input.html" %}
+
+      {% set nationalityField = nationality %}
+      {% include "includes/inputs/nationality/nationality.html" %}
+
+      {% set nationalityField = second_nationality %}
+      {% include "includes/inputs/nationality/second-nationality.html" %}
+      
+      {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
+      {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
+      {% include "includes/inputs/address/residential-address-input.html" %}
+    
+      {% set dateText = "Date they became beneficial owner for the overseas entity: " %}
+      {% include "includes/inputs/date/start-date-input.html" %}
+
+      {% set beneficialOwnerPronoun = "they" %}
+      {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
+
+      {% set isBeneficialOwnerGov = false %}
+      {% set natureOfControlText = "What is their nature of control?" %}
+      {% set beneficial_owner_nature_of_control_types = beneficial_owner_nature_of_control_types %}
+      {% set trustees_nature_of_control_types = trustees_nature_of_control_types %}
+      {% set non_legal_firm_members_nature_of_control_types = non_legal_firm_members_nature_of_control_types %}
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
+      
+      {% set sanctionsPronoun = "they" %}
+      {% set isReview = isOwnersReview %}
+      {% set is_on_sanctions_list = is_on_sanctions_list %}
+      {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
+
+      {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
+      {% include "includes/inset-text.html" %}
+    
+      {% include "includes/save-and-continue-button.html" %}
+    </form>
+  </div>
+</div>
+  
+{% endblock %}

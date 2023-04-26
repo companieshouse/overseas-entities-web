@@ -61,7 +61,7 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
 };
 
 const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
-  if (boi.usual_residential_address || boi.is_service_address_same_as_usual_residential_address){
+  if (boi.usual_residential_address){
     return true;
   } else {
     return false;

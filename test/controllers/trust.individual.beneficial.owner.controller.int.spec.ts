@@ -120,5 +120,46 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
       expect(resp.text).toContain(ErrorMessages.MAX_COUNTY_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_POSTCODE_LENGTH);
     });
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with no nationality error messages`, async () => {
+
+      const mockTrust = {} as Trust;
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
+
+      const individualTrusteeAboveMaximumFieldLengths: Partial<IndividualTrusteesFormCommon> = {
+        nationality: "Cameroon",
+        second_nationality: "Argentina",
+      };
+
+      const resp =
+        await request(app)
+          .post(pageUrl)
+          .send(individualTrusteeAboveMaximumFieldLengths);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(resp.text).not.toContain(ErrorMessages.NATIONALITY_INVALID_CHARACTERS);
+      expect(resp.text).not.toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO);
+    });
+    test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with second nationality invalid error messages`, async () => {
+
+      const mockTrust = {} as Trust;
+      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
+
+      const individualTrusteeAboveMaximumFieldLengths: Partial<IndividualTrusteesFormCommon> = {
+        nationality: "Cameroon",
+        second_nationality: "_",
+      };
+
+      const resp =
+        await request(app)
+          .post(pageUrl)
+          .send(individualTrusteeAboveMaximumFieldLengths);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+
+      // Two errors one at the top and one over the element
+      expect(2).toEqual(--resp.text.split(ErrorMessages.NATIONALITY_INVALID_CHARACTERS).length);
+    });
   });
 });

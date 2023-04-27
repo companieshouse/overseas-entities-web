@@ -68,35 +68,64 @@ const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
 
 export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
   let redirectUrl = "";
-  const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
-    + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
-    + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+  if (appData.update?.review_beneficial_owners_individual?.length !== 0){
+    const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
+      + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
+      + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
 
-  // Check last individual BO validates - in case back button is clicked
-  const boiLength: number = appData.beneficial_owners_individual?.length || 0;
-  const boiIndex = boiLength - 1;
-  if ((appData.beneficial_owners_individual && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
-    return redirectUrl;
-  }
-
-  if (boiLength >= 0){
-    const boi = appData.update?.review_beneficial_owners_individual?.pop() as BeneficialOwnerIndividual;
-    if (!boi){
+    const boiLength: number = appData.beneficial_owners_individual?.length || 0;
+    const boiIndex = boiLength - 1;
+    if ((appData.beneficial_owners_individual && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
+      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
       return redirectUrl;
     }
 
-    let index = 0;
+    if (boiLength >= 0){
+      const boi = appData.update?.review_beneficial_owners_individual?.pop() as BeneficialOwnerIndividual;
+      if (!boi){
+        return redirectUrl;
+      }
 
-    if (!appData.beneficial_owners_individual) {
-      appData.beneficial_owners_individual = [boi];
-    } else {
-      index = appData.beneficial_owners_individual.push(boi) - 1;
+      let index = 0;
+
+      if (!appData.beneficial_owners_individual) {
+        appData.beneficial_owners_individual = [boi];
+      } else {
+        index = appData.beneficial_owners_individual.push(boi) - 1;
+      }
+      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
+      return redirectUrl;
     }
-    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
+    return redirectUrl;
+  } else if (appData.update.review_beneficial_owners_government_or_public_authority?.length !== 0){
+    const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
+      + config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE
+      + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+    const boiLength: number = appData.beneficial_owners_individual?.length || 0;
+    const boiIndex = boiLength - 1;
+    if ((appData.beneficial_owners_government_or_public_authority && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_government_or_public_authority[boiIndex])) {
+      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
+      return redirectUrl;
+    }
+
+    if (boiLength >= 0){
+      const boi = appData.update?.review_beneficial_owners_government_or_public_authority?.pop() as BeneficialOwnerIndividual;
+      if (!boi){
+        return redirectUrl;
+      }
+
+      let index = 0;
+
+      if (!appData.beneficial_owners_government_or_public_authority) {
+        appData.beneficial_owners_government_or_public_authority = [boi];
+      } else {
+        index = appData.beneficial_owners_government_or_public_authority.push(boi) - 1;
+      }
+      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
+      return redirectUrl;
+    }
     return redirectUrl;
   }
-  return redirectUrl;
 };
 
 export const post = (req: Request, res: Response) => {
@@ -154,6 +183,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       } else if (psc.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+        appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
       }
     }
   }

@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% set title = "Are you sure you want to remove " + beneficialOwnerName + "?" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.do_you_want_to_remove if errors,
+          classes: "govuk-radios",
+          idPrefix: "do_you_want_to_remove",
+          name: "do_you_want_to_remove",
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: do_you_want_to_remove == 1,
+              attributes: {
+                "data-event-id": "yes-want-to-remove"
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: do_you_want_to_remove == 0,
+              attributes: {
+                "data-event-id": "no-dont-want-to-remove"
+              }
+            }
+          ]
+        }) }}
+
+        <input type="hidden" name="beneficialOwnerName" value="{{ beneficialOwnerName }}"/>
+        {% include "includes/save-and-continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

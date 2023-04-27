@@ -7,6 +7,7 @@
     <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
     <form class="form" method="post">
+      {% set beneficialOwnerPronoun = "it" %}
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -27,7 +28,6 @@
       {% set natureOfControlText = "What is its nature of control?" %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
-      {% set sanctionsPronoun = "it" %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% include "includes/inset-text.html" %}

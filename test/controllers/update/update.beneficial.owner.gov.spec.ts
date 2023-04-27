@@ -19,8 +19,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_BENEFICIAL_OWNER_GOV_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  LANDING_PAGE_URL,
-  REMOVE
+  LANDING_PAGE_URL
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -732,38 +731,6 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("REMOVE tests", () => {
-    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
-
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + REMOVE + BO_GOV_ID_URL);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test("catch error when removing data", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + REMOVE + BO_GOV_ID_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test("removes the Government Beneficial Owner object from session based on id", async () => {
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + REMOVE + BO_GOV_ID_URL);
-
-      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerGovKey);
-      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_GOV_ID);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });

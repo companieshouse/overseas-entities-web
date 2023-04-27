@@ -41,8 +41,7 @@ import app from "../../../src/app";
 import {
   UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_BENEFICIAL_OWNER_OTHER_URL,
-  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  REMOVE
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL
 } from "../../../src/config";
 import {
   BENEFICIAL_OWNER_OTHER_PAGE_HEADING,
@@ -795,36 +794,6 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("REMOVE tests", () => {
-    test(`Redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce({ ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test("Catch error when removing data", async () => {
-      mockRemoveFromApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
-    });
-
-    test(`Removes the object from session`, async () => {
-      const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL + REMOVE + BO_OTHER_ID_URL);
-
-      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerOtherKey);
-      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_OTHER_ID);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
   });
 

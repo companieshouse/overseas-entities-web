@@ -49,6 +49,8 @@ export const SIGN_OUT_PAGE_TITLE = "Are you sure you want to sign out?";
 export const SIGN_OUT_HINT_TEXT = "We will save your application.";
 export const SIGN_OUT_HELP_DETAILS_TEXT = "How do I find my saved applications?";
 export const SIGN_OUT_DROPDOWN_TEXT = "Sign in to your Companies House account and select Your filings to access your saved applications.";
+export const SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT = "We will save your application.";
+export const SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT = "How do I find my saved applications?";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const VERIFICATION_CHECKS = "Verification checks";
@@ -190,6 +192,7 @@ export const UPDATE_SIGN_OUT_HELP_DETAILS_TEXT = "How do I find my saved filing?
 export const UPDATE_SIGN_OUT_DROPDOWN_TEXT = "When you sign back in to this service, we'll ask you if you want to continue with a saved filing.";
 export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
 export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to review beneficial owner and managing officer information";
-export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
+export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";
 export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a saved filing?";
 export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";

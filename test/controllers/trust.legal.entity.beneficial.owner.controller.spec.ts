@@ -94,6 +94,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       params: {
         trustId: trustId,
       } as Params,
+      headers: {},
       session: {} as Session,
       route: "",
       method: "",

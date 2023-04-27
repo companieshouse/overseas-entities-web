@@ -8,6 +8,7 @@ import { resetEntityUpdate } from "../../utils/update/update.reset";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
+import { mapInputDate } from "../../utils/update/mapper.utils";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -47,7 +48,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         appData.entity_number = entityNumber;
         appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
         if (appData.update) {
-          appData.update.date_of_creation = companyProfile.dateOfCreation;
+          appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
         }
 
         setExtraData(req.session, appData);

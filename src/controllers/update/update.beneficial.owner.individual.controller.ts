@@ -4,7 +4,6 @@ import {
   getBeneficialOwnerIndividual,
   getBeneficialOwnerIndividualById,
   postBeneficialOwnerIndividual,
-  removeBeneficialOwnerIndividual,
   updateBeneficialOwnerIndividual
 } from "../../utils/beneficial.owner.individual";
 
@@ -24,8 +23,4 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
   updateBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
-};
-
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerIndividual(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
 };

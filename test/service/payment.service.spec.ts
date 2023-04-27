@@ -41,7 +41,7 @@ const mockCreateApiClient = createApiClient as jest.Mock;
 mockCreateApiClient.mockReturnValue({ payment: PaymentService.prototype });
 
 const session = getSessionRequestWithExtraData();
-const req: Request = {} as Request;
+const req: Request = { headers: {} } as Request;
 
 describe('Payment Service test suite', () => {
 

@@ -1,6 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL } from "../../config";
-import { getBeneficialOwnerGov, getBeneficialOwnerGovById, postBeneficialOwnerGov, removeBeneficialOwnerGov, updateBeneficialOwnerGov } from "../../utils/beneficial.owner.gov";
+import {
+  getBeneficialOwnerGov,
+  getBeneficialOwnerGovById,
+  postBeneficialOwnerGov,
+  updateBeneficialOwnerGov
+} from "../../utils/beneficial.owner.gov";
 
 export const get = (req: Request, res: Response) => {
   return getBeneficialOwnerGov(req, res, UPDATE_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -16,8 +21,4 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
   return updateBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
-};
-
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  return removeBeneficialOwnerGov(req, res, next, UPDATE_BENEFICIAL_OWNER_TYPE_URL, false);
 };

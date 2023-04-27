@@ -80,7 +80,7 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   },
   etag: '',
   links: {
-    self: "",
+    self: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
     statement: ""
   },
   identification: {

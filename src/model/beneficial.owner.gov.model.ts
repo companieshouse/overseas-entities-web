@@ -8,6 +8,7 @@ export const BeneficialOwnerGovKey = "beneficial_owners_government_or_public_aut
 */
 export const BeneficialOwnerGovKeys: string[] = [
   "id",
+  "ch_reference",
   "name",
   "principal_address",
   "is_service_address_same_as_principal_address",
@@ -23,6 +24,7 @@ export const BeneficialOwnerGovKeys: string[] = [
 
 export interface BeneficialOwnerGov {
   id: string;
+  ch_reference?: string;
   name?: string;
   principal_address?: Address;
   is_service_address_same_as_principal_address?: yesNoResponse;

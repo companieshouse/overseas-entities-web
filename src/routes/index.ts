@@ -61,12 +61,15 @@ import {
   updateBeneficialOwnerStatements,
   updateSignOut,
   updateBeneficialOwnerOther,
+  confirmToRemove,
   updateManagingOfficerIndividual,
   updateManagingOfficerCorporate,
   updateFilingDate,
   updateRegistrableBeneficialOwner,
   updateContinueSavedFiling,
-  updateReviewOverseasEntityInformation
+  updateReviewOverseasEntityInformation,
+  updateReviewBeneficialOwnerIndividual,
+  resumeUpdateSubmission
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -294,6 +297,8 @@ router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, conf
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);
 
+router.get(config.RESUME_UPDATE_SUBMISSION_URL, authentication, resumeUpdateSubmission.get);
+
 router.route(config.SECURE_UPDATE_FILTER_URL)
   .all(authentication)
   .get(secureUpdateFilter.get)
@@ -445,7 +450,17 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID)
   )
   .get(updateBeneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, updateBeneficialOwnerGov.update);
-router.get(config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerGov.remove);
+
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewBeneficialOwnerIndividual.get)
+  .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
+
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -464,7 +479,6 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   )
   .get(updateBeneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, updateBeneficialOwnerIndividual.update);
-router.get(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerIndividual.remove);
 
 router.route(config.UPDATE_MANAGING_OFFICER_URL)
   .all(
@@ -492,7 +506,6 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.ID)
   )
   .get(updateBeneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, updateBeneficialOwnerOther.update);
-router.get(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerOther.remove);
 
 router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   .all(
@@ -502,6 +515,15 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   )
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
+
+router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasGivenValidBODetails
+  )
+  .get(confirmToRemove.get)
+  .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);
 
 router.route(config.UPDATE_FILING_DATE_URL)
   .all(

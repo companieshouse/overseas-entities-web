@@ -18,7 +18,6 @@ export const getSoldLandFilterBackLink = (): string => {
     return config.LANDING_PAGE_URL;
   }
 };
-
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {
     currentPage: config.STARTING_NEW_PAGE,
@@ -250,6 +249,16 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.UPDATE_SIGN_OUT_URL]: {
     currentPage: config.UPDATE_SIGN_OUT_PAGE,
     previousPage: () => "",
@@ -264,6 +273,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID]: {
+    currentPage: config.UPDATE_CONFIRM_TO_REMOVE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
   },
   [config.UPDATE_MANAGING_OFFICER_URL]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,

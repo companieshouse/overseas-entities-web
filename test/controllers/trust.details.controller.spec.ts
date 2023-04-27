@@ -98,6 +98,7 @@ describe('Trust Details controller', () => {
       params: {
         trustId: mockTrust2Data.trust_id,
       } as Params,
+      headers: {},
       session: {} as Session,
       route: '',
       method: '',

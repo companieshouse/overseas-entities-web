@@ -18,7 +18,7 @@ const addressErrorMessages: ErrorMessagesOptional = {
   countryValueError: ErrorMessages.COUNTRY_INDIVIDUAL_BO,
 };
 
-const seconNationalityErrors: DefaultErrorsSecondNationality = {
+const secondNationalityErrors: DefaultErrorsSecondNationality = {
   sameError: ErrorMessages.SECOND_NATIONALITY_IS_SAME_INDIVIDUAL_BO,
 };
 
@@ -43,7 +43,7 @@ export const trustIndividualBeneficialOwner = [
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.NATIONALITY_INDIVIDUAL_BO)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS),
 
-  ...second_nationality_validations(seconNationalityErrors),
+  ...second_nationality_validations(secondNationalityErrors),
 
   body("is_service_address_same_as_usual_residential_address")
     .not().isEmpty().withMessage(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS_INDIVIDUAL_BO),

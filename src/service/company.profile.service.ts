@@ -7,7 +7,7 @@ import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/compa
 export const getCompanyProfile = async (
   req: Request,
   oeNumber: string,
-): Promise<CompanyProfile> => {
+): Promise<CompanyProfile| undefined> => {
   const response = await makeApiCallWithRetry(
     "companyProfile",
     "getCompanyProfile",
@@ -19,6 +19,11 @@ export const getCompanyProfile = async (
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching company profile = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
+  }
+
+  if (response.httpStatusCode === 404) {
+    logger.debugRequest(req, `No company profile data found for ${oeNumber}`);
+    return undefined;
   }
 
   const infoMsg = `OE NUMBER ID: ${oeNumber}`;

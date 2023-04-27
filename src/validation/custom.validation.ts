@@ -113,7 +113,7 @@ export const checkIdentityDate = (dayStr: string = "", monthStr: string = "", ye
   return true;
 };
 
-const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkIdentityDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areAllDateFieldsPresent) {
     const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
@@ -136,7 +136,7 @@ export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: s
   return true;
 };
 
-const checkAllDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkAllDateFields = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const areAllDateFieldsPresent = checkAllDateFieldsArePresent(dayStr, monthStr, yearStr);
   if (areAllDateFieldsPresent) {
     const isDateValid = checkDateValueIsValid(ErrorMessages.INVALID_DATE, dayStr, monthStr, yearStr);
@@ -215,14 +215,14 @@ export const checkDateFieldYear = (yearMissingMessage: string, yearLengthMessage
   return true;
 };
 
-const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkAllDateFieldsArePresent = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if (dayStr === "" || monthStr === "" || yearStr === "") {
     return false;
   }
   return true;
 };
 
-const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   if ((dayStr === "" && monthStr === "" && yearStr !== "") ||
      (dayStr !== "" && monthStr === "" && yearStr === "") ||
      (dayStr === "" && monthStr !== "" && yearStr === "")) {
@@ -371,7 +371,7 @@ export type YearFieldErrors = {
   wrongYearLength: ErrorMessages,
 };
 
-const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+export const checkDateFieldsForErrors = (dateErrors: DateFieldErrors, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   dateErrors = { ...defaultDateFieldErrors, ...dateErrors };
   if (dayStr === "" && monthStr === "" && yearStr === "") {
     throw new Error(dateErrors.completelyEmptyDateError);

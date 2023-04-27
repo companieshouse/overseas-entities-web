@@ -9,7 +9,11 @@ import { WhoIsRegisteringKey } from '../../model/who.is.making.filing.model';
 import { OverseasEntityDueDiligenceKey } from '../../model/overseas.entity.due.diligence.model';
 import { DueDiligenceKey } from '../../model/due.diligence.model';
 import { UpdateKey } from '../../model/update.type.model';
-import { checkBOsDetailsEntered, checkMOsDetailsEntered } from '../../utils/application.data';
+import {
+  checkBOsDetailsEntered,
+  checkMOsDetailsEntered,
+  checkGivenBoDetailsExist
+} from '../../utils/application.data';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
 
@@ -92,4 +96,7 @@ export const checkHasUpdateDueDiligenceDetails = (appData: ApplicationData): boo
 
 export const checkUpdateDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {
   return checkHasOverseasEntity(appData) && checkHasUpdateDueDiligenceDetails(appData);
+
+export const checkHasGivenValidBOData = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
+  return checkGivenBoDetailsExist(appData, beneficialOwnerType, id);
 };

@@ -7,6 +7,6 @@ import { DefaultErrorsSecondNationality } from "validation/models/second.nationa
 
 export const second_nationality_validations = (errors?: DefaultErrorsSecondNationality) => [
   body("second_nationality")
-    .matches(VALID_CHARACTERS).withMessage(errors?.invalidCharatersError ?? ErrorMessages.NATIONALITY_INVALID_CHARACTERS)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NATIONALITY_INVALID_CHARACTERS)
     .custom((_, { req }) => checkSecondNationality(req.body["nationality"], req.body["second_nationality"], errors))
 ];

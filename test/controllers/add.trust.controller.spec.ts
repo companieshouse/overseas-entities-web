@@ -20,6 +20,8 @@ import { hasTrustData } from "../../src/middleware/navigation/has.trust.middlewa
 import { Trust, TrustKey } from "../../src/model/trust.model";
 import { generateTrustId } from "../../src/utils/trust/details.mapper";
 import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.controller";
+import { constants } from "http2";
+import { ErrorMessages } from "../../src/validation/error.messages";
 
 describe("Add Trust Controller Tests", () => {
 
@@ -49,6 +51,7 @@ describe("Add Trust Controller Tests", () => {
 
     mockReq = {
       session: {} as Session,
+      headers: {},
       route: '',
       method: '',
       body: {},
@@ -103,6 +106,14 @@ describe("Add Trust Controller Tests", () => {
       expect(mockRes.redirect).toBeCalledWith(`${config.TRUST_DETAILS_URL}/${trustId}`);
     });
 
+    test('catches post request errors', () => {
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+      (generateTrustId as jest.Mock).mockReturnValue(trustId);
+
+      post(mockReq, {} as Response, mockNext);
+      expect(mockNext).toBeCalledTimes(1);
+    });
+
     test('select yes to add trust', () => {
       mockReq.body = {
         addTrust: '0',
@@ -140,6 +151,20 @@ describe("Add Trust Controller Tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(config.CHECK_YOUR_ANSWERS_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test(`renders the ${config.ADD_TRUST_PAGE} page with missing mandatory field messages`, async () => {
+
+      // Arrange
+      const mockTrust = <Trust>{};
+      (getApplicationData as jest.Mock).mockReturnValue(mockTrust);
+
+      // Act
+      const resp = await request(app).post(pageUrl).send({});
+
+      // Assert
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(ErrorMessages.ADD_TRUST);
     });
   });
 });

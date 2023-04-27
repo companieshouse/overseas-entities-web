@@ -18,6 +18,7 @@ import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBenef
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerGov } from "model/beneficial.owner.gov.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -109,7 +110,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
     }
 
     if (boiLength >= 0){
-      const boi = appData.update?.review_beneficial_owners_government_or_public_authority?.pop() as BeneficialOwnerIndividual;
+      const boi = appData.update?.review_beneficial_owners_government_or_public_authority?.pop() as BeneficialOwnerGov;
       if (!boi){
         return redirectUrl;
       }

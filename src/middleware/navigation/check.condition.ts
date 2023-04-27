@@ -96,6 +96,7 @@ export const checkHasUpdateDueDiligenceDetails = (appData: ApplicationData): boo
 
 export const checkUpdateDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {
   return checkHasOverseasEntity(appData) && checkHasUpdateDueDiligenceDetails(appData);
+};
 
 export const checkHasGivenValidBOData = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
   return checkGivenBoDetailsExist(appData, beneficialOwnerType, id);

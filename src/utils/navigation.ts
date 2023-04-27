@@ -77,7 +77,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
-    previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+    previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {

@@ -82,3 +82,14 @@ export const checkWhoIsFilingEntered = (appData: ApplicationData): boolean => {
 export const checkBOsOrMOsDetailsEnteredUpdate = (appData: ApplicationData): boolean => {
   return checkBOsDetailsEntered(appData) || checkMOsDetailsEntered(appData);
 };
+
+export const checkHasUpdateDueDiligenceDetails = (appData: ApplicationData): boolean => {
+  return checkUpdatePresenterEntered(appData) && (
+    Object.keys(appData[OverseasEntityDueDiligenceKey] || {}).length !== 0 ||
+    Object.keys(appData[DueDiligenceKey] || {}).length !== 0
+  );
+};
+
+export const checkUpdateDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasOverseasEntity(appData) && checkHasUpdateDueDiligenceDetails(appData);
+};

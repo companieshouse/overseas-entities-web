@@ -4,7 +4,7 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
-jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
+jest.mock('../../../src/middleware/navigation/update/has.due.diligence.details.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -29,10 +29,10 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
-import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+import { hasDueDiligenceDetails } from "../../../src/middleware/navigation/update/has.due.diligence.details.middleware";
 
-const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
-mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockHasDueDiligenceDetails = hasDueDiligenceDetails as jest.Mock;
+mockHasDueDiligenceDetails.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

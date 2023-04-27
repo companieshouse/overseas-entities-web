@@ -394,7 +394,7 @@ router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
   .all(
     authentication,
     companyAuthentication,
-    navigation.hasOverseasEntity
+    navigation.hasDueDiligenceDetails
   )
   .get(updateReviewOverseasEntityInformation.get)
   .post(updateReviewOverseasEntityInformation.post);

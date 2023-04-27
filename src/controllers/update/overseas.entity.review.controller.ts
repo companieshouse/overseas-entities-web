@@ -11,7 +11,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.WHO_IS_MAKING_UPDATE_URL;
+    const backLinkUrl: string = config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL;
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
     const overseasEntityHeading: string = "Check the overseas entity details (NOT LIVE)";
 

@@ -14,6 +14,7 @@ import { hasUpdatePresenter } from "./update/has.presenter.middleware";
 import { hasWhoIsMakingUpdate } from "./update/has.who.is.making.update.middleware";
 import { hasEntityUpdateDetails } from "./update/has.entity.update.middleware";
 import { hasBOsOrMOsUpdate } from "./update/has.beneficial.owners.or.managing.officers.update.middleware";
+import { hasDueDiligenceDetails } from "./update/has.due.diligence.details.middleware";
 
 export const navigation = {
   hasSoldLand,
@@ -31,5 +32,6 @@ export const navigation = {
   hasUpdatePresenter,
   hasWhoIsMakingUpdate,
   hasEntityUpdateDetails,
-  hasBOsOrMOsUpdate
+  hasBOsOrMOsUpdate,
+  hasDueDiligenceDetails
 };

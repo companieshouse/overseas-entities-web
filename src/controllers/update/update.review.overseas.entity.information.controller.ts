@@ -7,15 +7,14 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.WHO_IS_MAKING_UPDATE_URL;
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-      backLinkUrl,
+      backLinkUrl: config.WHO_IS_MAKING_UPDATE_URL,
       appData
     });
   } catch (errors) {
@@ -26,7 +25,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
     return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
   } catch (errors) {
     logger.errorRequest(req, errors);

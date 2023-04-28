@@ -1,0 +1,20 @@
+{{ govukInsetText({
+  html: "You'll need to tell us if it's still a registrable beneficial owner."
+}) }}
+
+{% if beneficialOwnerPronoun == "they" %}
+  {% set boTense = "are" %}
+{% else %}
+  {% set boTense = "is" %}
+{% endif %}
+
+<details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      How to complete this section for a ceased beneficial owner
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p class="govuk-body">If {{ beneficialOwnerPronoun }} {{ boTense }} no longer a registrable beneficial owner, you need to make sure this information is correct as at the ceased date, and update it if needed.</p>
+  </div>
+</details>

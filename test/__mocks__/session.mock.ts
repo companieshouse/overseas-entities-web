@@ -297,6 +297,12 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
   trust_ids: []
 };
 
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK = {
+  ...UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  is_still_bo: '1'
+};
+
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
   ch_reference: "",
@@ -906,6 +912,8 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [],
+  review_beneficial_owners_corporate: [],
+  review_beneficial_owners_government_or_public_authority: []
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
@@ -915,6 +923,11 @@ export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
   review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
+};
+
+export const UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL: updateType.Update = {
+  ...UPDATE_OBJECT_MOCK,
+  review_beneficial_owners_corporate: [UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK]
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
@@ -1176,7 +1189,7 @@ export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl
   },
   nationality: "country1",
   naturesOfControl: [],
-  notifiedOn: '01/01/1900',
+  notifiedOn: "2016-04-06",
   identification: {
     legalForm: "all forms",
     legalAuthority: "country2",

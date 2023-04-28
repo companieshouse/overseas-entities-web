@@ -259,10 +259,15 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_SIGN_OUT_URL]: {
-    currentPage: config.UPDATE_SIGN_OUT_PAGE,
-    previousPage: () => "",
-    nextPage: []
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL_WITH_PARAM_URL]: {
+    currentPage: config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_OTHER_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_OTHER_PAGE,
@@ -299,4 +304,9 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.SECURE_UPDATE_FILTER_PAGE,
     nextPage: [config.YOUR_FILINGS_PATH]
   },
+  [config.UPDATE_SIGN_OUT_URL]: {
+    currentPage: config.UPDATE_SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
+  }
 };

@@ -1,4 +1,4 @@
-import { beneficialOwnerGov, updateBeneficialOwnerGov } from "./beneficial.owner.gov.validation";
+import { beneficialOwnerGov, updateBeneficialOwnerGov, updateReviewBeneficialOwnerGovValidator } from "./beneficial.owner.gov.validation";
 import { beneficialOwnerIndividual, updateBeneficialOwnerIndividual } from "./beneficial.owner.individual.validation";
 import { beneficialOwnerOther, updateBeneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
@@ -68,5 +68,6 @@ export const validator = {
   trustLegalEntityBeneficialOwnerValidator,
   registrableBeneficialOwner,
   updateBeneficialOwnerAndReviewValidator,
+  updateReviewBeneficialOwnerGovValidator,
   updateContinueSavedFiling
 };

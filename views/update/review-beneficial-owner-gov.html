@@ -35,6 +35,8 @@
    </details>
 
    <form class="form" method="post">
+    <input type="hidden" name="id" value="{{ id }}" />
+
     {% set beneficialOwnerPronoun = "it" %}
     {% include "includes/inputs/fields/name-input.html" %}
 
@@ -46,15 +48,22 @@
     {% set hintText = "This is the law that the beneficial owner operates under" %}
     {% include "includes/inputs/governing-law-input.html" %}
 
+    <div class="govuk-form-group">
+      <h1 class="govuk-label-wrapper">
+        <label class="govuk-fieldset__legend--m" for="start_date">
+          Date it became a beneficial owner for overseas entity:
+        </label>
+      </h1>
+      <!-- to check design and format to prototype -->
+      <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">10/02/2023</p>
+    </div>
+
     {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}
     {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
 
     {% set isBeneficialOwnerGov = true %}
     {% set natureOfControlText = "What is its nature of control?" %}
     {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
-
-    
-    <input type="text" readonly="true" value="10/03/2020" />
 
     {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 

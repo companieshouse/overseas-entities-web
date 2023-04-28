@@ -449,7 +449,7 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateReviewBeneficialOwnerGov.get)
-  .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerGov.post);
+  .post(...validator.updateReviewBeneficialOwnerGovValidator, checkValidations, updateReviewBeneficialOwnerGov.post);
 
 router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerGov.get);
 

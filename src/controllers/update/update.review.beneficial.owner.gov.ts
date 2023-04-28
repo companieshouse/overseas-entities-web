@@ -5,8 +5,6 @@ import { logger } from "../../utils/logger";
 import { ApplicationData, ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
-import { saveAndContinue } from "../../utils/save.and.continue";
-import { Session } from "@companieshouse/node-session-handler";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 
 export const get = (req: Request, res: Response) => {
@@ -35,7 +33,7 @@ const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
   }
 };
 
-export const post = async (req: Request, res: Response, next: NextFunction) => {
+export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
@@ -45,12 +43,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;
       removeFromApplicationData(req, BeneficialOwnerGovKey, boId);
 
-      const session = req.session as Session;
+      // const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerGovKey);
-      await saveAndContinue(req, session, false);
+      // await saveAndContinue(req, session, false);
 
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }

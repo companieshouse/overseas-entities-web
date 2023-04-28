@@ -43,7 +43,13 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
+      const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth;
+
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
+
+      req.body["date_of_birth-day"] = String(dob?.day).length > 1 ? dob?.day : String(dob?.day).padStart(2, '0');
+      req.body["date_of_birth-month"] = String(dob?.month).length > 1 ? dob?.month : String(dob?.month).padStart(2, '0');
+      req.body["date_of_birth-year"] = dob?.year;
 
       const session = req.session as Session;
 

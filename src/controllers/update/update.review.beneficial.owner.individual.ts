@@ -8,7 +8,7 @@ import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual"
 import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
-import { CeasedDateKey, CeasedDateKeys } from "model/date.model";
+import { CeasedDateKey, CeasedDateKeys } from "../../model/date.model";
 import { EntityNumberKey, InputDateKeys } from "model/data.types.model";
 
 export const get = (req: Request, res: Response) => {

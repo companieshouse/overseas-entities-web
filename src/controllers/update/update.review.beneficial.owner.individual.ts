@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { CeasedDateKey, CeasedDateKeys } from "../../model/date.model";
-import { EntityNumberKey, InputDateKeys } from "model/data.types.model";
+import { EntityNumberKey, InputDateKeys } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);

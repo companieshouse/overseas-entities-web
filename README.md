@@ -42,8 +42,8 @@ Environment variables used to configure this service in docker are located in th
 
 ### Requirements
 
-1. node v16(engines block in package.json is used to enforce this)(Concourse pipeline builds using Node 16 and live runs on Node 16)
-2. npm 8(engines block in package.json is used to enforce this)
+1. node v16 (engines block in package.json is used to enforce this)(Concourse pipeline builds using Node 16 and live runs on Node 16)
+2. npm 8 (engines block in package.json is used to enforce this)
 3. Docker
 
 ### Build and Test changes

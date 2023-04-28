@@ -1,0 +1,23 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+<!-- start_date type different depending on if coming from controller or validation middleware -->
+{% if start_date["day"] %}
+  {% set start_date_day = start_date["day"] %}
+  {% set start_date_month = start_date["month"] %}
+  {% set start_date_year = start_date["year"] %}
+{% else %}
+  {% set start_date_day = start_date["start_date-day"] %}
+  {% set start_date_month = start_date["start_date-month"] %}
+  {% set start_date_year = start_date["start_date-year"] %}
+{% endif %}
+
+{% set formatted_start_date = dateMacros.formatDate(start_date_day, start_date_month, start_date_year) %}
+
+<p><legend class="govuk-fieldset__legend govuk-fieldset__legend--m"> Date it became a beneficial owner for the overseas entity:</legend></p>
+<p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">{{ formatted_start_date }}</p>
+
+<!-- append needed data for validation re-render to form -->
+<input type="hidden" name="start_date" value="{{ start_date }}" />
+<input type="hidden" name="start_date-day" value="{{ start_date_day }}" />
+<input type="hidden" name="start_date-month" value="{{ start_date_month }}" />
+<input type="hidden" name="start_date-year" value="{{ start_date_year }}" />

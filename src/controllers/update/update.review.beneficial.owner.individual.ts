@@ -6,6 +6,8 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { ApplicationData, ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
+import { Session } from "@companieshouse/node-session-handler";
+import { saveAndContinue } from "../../utils/save.and.continue";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -33,7 +35,7 @@ const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
@@ -41,14 +43,19 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
+      const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth;
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
+  
+      const session = req.session as Session;
 
-      // const session = req.session as Session;
-
+      req.body["date_of_birth-day"] = String(dob?.day).length > 1 ? dob?.day : String(dob?.day).padStart(2, '0');
+      req.body["date_of_birth-month"] = String(dob?.month).length > 1 ? dob?.month : String(dob?.month).padStart(2, '0');
+      req.body["date_of_birth-year"] = dob?.year;
+      
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
-      // await saveAndContinue(req, session, false);
+      await saveAndContinue(req, session, false);
 
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }

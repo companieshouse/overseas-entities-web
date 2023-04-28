@@ -54,25 +54,25 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
     const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
       + config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE
       + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
-    const boiLength: number = appData.beneficial_owners_individual?.length || 0;
-    const boiIndex = boiLength - 1;
-    if ((appData.beneficial_owners_government_or_public_authority && boiLength >= 1) && !checkBoGovValidation(appData.beneficial_owners_government_or_public_authority[boiIndex])) {
-      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
+    const bogLength: number = appData.beneficial_owners_individual?.length || 0;
+    const bogIndex = bogLength - 1;
+    if ((appData.beneficial_owners_government_or_public_authority && bogLength >= 1) && !checkBoGovValidation(appData.beneficial_owners_government_or_public_authority[bogIndex])) {
+      redirectUrl = `${beneficialOwnerReviewRedirectUrl}${bogIndex}`;
       return redirectUrl;
     }
 
-    if (boiLength >= 0){
-      const boi = appData.update?.review_beneficial_owners_government_or_public_authority?.pop() as BeneficialOwnerGov;
-      if (!boi){
+    if (bogLength >= 0){
+      const boGov = appData.update?.review_beneficial_owners_government_or_public_authority?.pop() as BeneficialOwnerGov;
+      if (!boGov){
         return redirectUrl;
       }
 
       let index = 0;
 
       if (!appData.beneficial_owners_government_or_public_authority) {
-        appData.beneficial_owners_government_or_public_authority = [boi];
+        appData.beneficial_owners_government_or_public_authority = [boGov];
       } else {
-        index = appData.beneficial_owners_government_or_public_authority.push(boi) - 1;
+        index = appData.beneficial_owners_government_or_public_authority.push(boGov) - 1;
       }
       redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
       return redirectUrl;

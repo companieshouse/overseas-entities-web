@@ -192,6 +192,8 @@ export const UPDATE_SIGN_OUT_HELP_DETAILS_TEXT = "How do I find my saved filing?
 export const UPDATE_SIGN_OUT_DROPDOWN_TEXT = "When you sign back in to this service, we'll ask you if you want to continue with a saved filing.";
 export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
 export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to review beneficial owner and managing officer information";
-export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING = "Review the government or public authority";
+export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
 export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";
 export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a saved filing?";

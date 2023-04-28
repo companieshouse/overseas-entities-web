@@ -10,7 +10,7 @@ type DateOfBirthTypes = {
 
 export const mapDateOfBirth: DateOfBirthTypes = (dateOfBirth) => {
   return {
-    day: dateOfBirth?.day,
+    day: dateOfBirth?.day ?? 1,
     month: dateOfBirth?.month,
     year: dateOfBirth?.year
   } as InputDate;

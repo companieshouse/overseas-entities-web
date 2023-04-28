@@ -16,22 +16,22 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_government_or_public_authority){
     dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
   }
-  const backLinkUrl = getBackLinkUrl(appData, index);
+  // const backLinkUrl = getBackLinkUrl(appData, index);
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, {
-    backLinkUrl,
+    backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
     ...dataToReview,
     isOwnersReview: true
   });
 };
 
-const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
-  if (appData.beneficial_owners_government_or_public_authority?.length === 0 || pageIndex < 1){
-    return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-  } else {
-    return UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
-  }
-};
+// const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
+//   if (appData.beneficial_owners_government_or_public_authority?.length === 0 || pageIndex < 1){
+//     return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
+//   } else {
+//     return UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
+//   }
+// };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {

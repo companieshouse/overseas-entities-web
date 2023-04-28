@@ -42,8 +42,7 @@
     <form method="post">
       <input type="hidden" name="id" value="{{ id }}" />
       <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
-      <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
-      <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
+      <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>      <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
 
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
@@ -61,8 +60,16 @@
       {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
     
-      {% set dateText = "Date they became beneficial owner for the overseas entity: " %}
       {% include "includes/inputs/date/start-date-input.html" %}
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-fieldset__legend--m" for="start_date">
+            Date they became a beneficial owner for overseas entity:
+          </label>
+        </h1>
+        <!-- to check design and format to prototype -->
+        <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">10/02/2023</p>
+      </div>
 
       {% set beneficialOwnerPronoun = "they" %}
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}

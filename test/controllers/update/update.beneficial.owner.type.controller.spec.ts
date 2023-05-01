@@ -36,10 +36,11 @@ import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   ERROR,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UNDEFINED_UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_MODEL,
+  APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -93,6 +94,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).toHaveBeenCalled();
       expect(mockGetCompanyOfficers).toHaveBeenCalled();
@@ -268,7 +270,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with newly added BO's table displayed`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_NEWLY_ADDED_BO });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
@@ -279,13 +281,16 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without newly added BO's table displayed`, async () => {
       const data = { ...APPLICATION_DATA_MOCK };
       delete data[BeneficialOwnerIndividualKey];
-      data[BeneficialOwnerIndividualKey] = [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK];
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      const boiNoChReference = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      boiNoChReference["ch_reference"] = "123";
+      data[BeneficialOwnerIndividualKey] = [boiNoChReference];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...data });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
-      expect(resp.text).toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
+      expect(resp.text).not.toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
     });
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with empty app data`, async () => {

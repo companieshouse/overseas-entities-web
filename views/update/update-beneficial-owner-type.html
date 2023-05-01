@@ -79,11 +79,14 @@
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
 
 </div>
+
+{% if hasBeneficialOwners %}
 <div>
   <br/>
-  {% include "includes/list/update-beneficial-owner.html" %}
+  {% include "includes/list/update-added-beneficial-owner.html" %}
   <br/>
 </div>
+{% endif %}
 <div class="govuk-grid-column-two-thirds">
       <form method="post">
   

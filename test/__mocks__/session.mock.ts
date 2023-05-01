@@ -1198,6 +1198,11 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_MOCK_NEWLY_ADDED_BO: ApplicationData = {
+  ...APPLICATION_DATA_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
+};
+
 export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

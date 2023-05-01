@@ -10,6 +10,7 @@ import {
   removeFromApplicationData,
   setApplicationData
 } from "../utils/application.data";
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType, ApplicationData } from "../model";
 import { logger } from "../utils/logger";
@@ -61,33 +62,31 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+    const boData = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
     const appData = getApplicationData(req.session);
 
-    const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
-    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const usualResidentialAddress = (boData) ? mapDataObjectToFields(boData[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    const serviceAddress = (boData) ? mapDataObjectToFields(boData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const dobDate = (boData) ? mapDataObjectToFields(boData[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
+    const startDate = (boData) ? mapDataObjectToFields(boData[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
-      ...data,
+      ...boData,
       ...usualResidentialAddress,
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
     };
 
-    // extra data needed for update journey
     if (EntityNumberKey in appData && appData[EntityNumberKey] !== null) {
-      templateOptions["is_still_bo"] = (Object.keys(data["ceased_date"]).length === 0) ? 1 : 0;
-      templateOptions[EntityNumberKey] = appData[EntityNumberKey];
-      templateOptions["ceased_date"] = (data) ? mapDataObjectToFields(data[CeasedDateKey], CeasedDateKeys, InputDateKeys) : {};
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, boData));
+    } else {
+      return res.render(templateName, templateOptions);
     }
 
-    return res.render(templateName, templateOptions);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -161,13 +160,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
     : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
-
-  // not present in register journey
-  if ("is_still_bo" in reqBody) {
-    data[CeasedDateKey] = (reqBody["is_still_bo"] === '0')
-      ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys)
-      : {};
-  }
+  data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

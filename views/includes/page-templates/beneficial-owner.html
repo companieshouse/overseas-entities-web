@@ -38,15 +38,11 @@
       <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
 
       {% if (hasBeneficialOwners or hasManagingOfficers) %}
-        
-        {% if not noLists %}
-          <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>
-          <br>
-          {% include "includes/list/beneficial-owner.html" %}
-          {% include "includes/list/managing-officer.html" %}
-        {% endif %}
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
-
+        <h2 class="govuk-heading-l govuk-!-margin-0">What <span class="govuk-visually-hidden"> {{ hiddenTextValue }}</span> you have added so far:</h2>
+        <br>
+        {% include "includes/list/beneficial-owner.html" %}
+        {% include "includes/list/managing-officer.html" %}
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
       {% endif %}
 
       <!-- Hidden input, needed to submit the beneficial owners statement -->

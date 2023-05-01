@@ -3,7 +3,16 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import {
+  getApplicationData,
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData
+} from "../utils/application.data";
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
@@ -41,31 +50,29 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
+    const boData = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
     const appData = getApplicationData(req.session);
 
-    const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const principalAddress = (boData) ? mapDataObjectToFields(boData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = (boData) ? mapDataObjectToFields(boData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const startDate = (boData) ? mapDataObjectToFields(boData[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
-      ...data,
+      ...boData,
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate
     };
 
-    // extra data needed for update journey
     if (EntityNumberKey in appData && appData[EntityNumberKey] !== null) {
-      templateOptions["is_still_bo"] = (Object.keys(data["ceased_date"]).length === 0) ? 1 : 0;
-      templateOptions[EntityNumberKey] = appData[EntityNumberKey];
-      templateOptions["ceased_date"] = (data) ? mapDataObjectToFields(data[CeasedDateKey], CeasedDateKeys, InputDateKeys) : {};
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, boData));
+    } else {
+      return res.render(templateName, templateOptions);
     }
 
-    return res.render(templateName, templateOptions);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -130,7 +137,7 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
   }
 };
 
-const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerGovKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
@@ -139,13 +146,7 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
-
-  // not present in register journey
-  if ("is_still_bo" in reqBody) {
-    data[CeasedDateKey] = (reqBody["is_still_bo"] === '0')
-      ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys)
-      : {};
-  }
+  data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

@@ -56,6 +56,14 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
     });
+
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 
   describe("POST tests", () => {
@@ -121,14 +129,6 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
       expect(resp.header.location).not.toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-    });
-
-    test("catch error when rendering the page", async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

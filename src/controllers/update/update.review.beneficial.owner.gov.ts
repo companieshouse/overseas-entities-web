@@ -1,8 +1,8 @@
-import { REVIEW_BENEFICIAL_OWNER_INDEX_PARAM, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL } from "../../config";
+import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
-import { ApplicationData, ApplicationDataType } from "../../model";
+import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
@@ -38,6 +38,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
     const appData = getApplicationData(req.session);
+    console.log(`app data ${JSON.stringify(req.body["id"])}`);
 
     if (boiIndex !== undefined && appData.beneficial_owners_government_or_public_authority && appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;

@@ -3,7 +3,7 @@
         <caption class="govuk-table__caption govuk-table__caption--m">What you have added in this update</caption>
         <tbody class="govuk-table__body">
             {% for boi in beneficial_owners_individual %}
-                {% if boi.ch_reference %}
+                {% if not boi.ch_reference %}
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
                         <td class="govuk-table__cell">Individual beneficial owner</td>
@@ -22,7 +22,7 @@
                 {% endif %}
             {% endfor %}
             {% for boo in beneficial_owners_corporate %}
-                {% if boo.ch_reference %}
+                {% if not boo.ch_reference %}
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
                         <td class="govuk-table__cell">Other legal entity beneficial owner</td>
@@ -41,7 +41,7 @@
                 {% endif %}
             {% endfor %}
             {% for bog in beneficial_owners_government_or_public_authority %}
-                {% if bog.ch_reference %}
+                {% if not bog.ch_reference %}
                     <tr class="govuk-table__row">
                         <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
                         <td class="govuk-table__cell">Government or public authority beneficial owner</td>

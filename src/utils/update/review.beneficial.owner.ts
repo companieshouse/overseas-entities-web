@@ -38,9 +38,6 @@ const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: strin
 
   if (boiLength >= 0 && appData.update){
     const boi = appData?.update[boReviewType]?.pop() as typeof boType;
-    if (!boi){
-      return redirectUrl;
-    }
 
     let index = 0;
 

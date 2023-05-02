@@ -52,10 +52,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const session = req.session as Session;
 
-      req.body["date_of_birth-day"] = String(dob?.day).length > 1 ? dob?.day : String(dob?.day).padStart(2, '0');
-      req.body["date_of_birth-month"] = String(dob?.month).length > 1 ? dob?.month : String(dob?.month).padStart(2, '0');
-      req.body["date_of_birth-year"] = dob?.year;
-
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);

@@ -413,14 +413,6 @@ export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_D
   ...START_DATE
 };
 
-export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
-  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
-  is_still_bo: "1",
-  ...RESIDENTIAL_ADDRESS_MOCK,
-  ...START_DATE
-};
-
 export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL = {
   ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
@@ -632,6 +624,14 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Beneficial
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+};
+
+export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
+  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
+  is_still_bo: "1",
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  ...START_DATE
 };
 
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA = {
@@ -887,6 +887,7 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [],
+  review_beneficial_owners_government_or_public_authority: [],
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
@@ -895,7 +896,8 @@ export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
 
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
-  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
+  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+  review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {

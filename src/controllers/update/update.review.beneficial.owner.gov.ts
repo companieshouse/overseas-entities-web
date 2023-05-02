@@ -18,8 +18,6 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_government_or_public_authority){
     dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
   }
-  console.log(`bo data to review ${JSON.stringify(dataToReview)}`);
-  // const backLinkUrl = getBackLinkUrl(appData, index);
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
@@ -28,20 +26,11 @@ export const get = (req: Request, res: Response) => {
   });
 };
 
-// const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
-//   if (appData.beneficial_owners_government_or_public_authority?.length === 0 || pageIndex < 1){
-//     return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-//   } else {
-//     return UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
-//   }
-// };
-
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const boiIndex = req.query.index;
     const appData = getApplicationData(req.session);
-    console.log(`app data ${JSON.stringify(req.body["id"])}`);
 
     if (boiIndex !== undefined && appData.beneficial_owners_government_or_public_authority && appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_government_or_public_authority[Number(boiIndex)].id;
@@ -52,7 +41,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerGovKey);
-      console.log(`app data ${JSON.stringify(appData.beneficial_owners_government_or_public_authority)}`);
 
       await saveAndContinue(req, session, false);
 

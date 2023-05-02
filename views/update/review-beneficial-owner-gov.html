@@ -36,9 +36,11 @@
 
    <form class="form" method="post">
     <input type="hidden" name="id" value="{{ id }}" />
+ 
+    <!-- values to be obtained after UAR-384 -->
     <input type="hidden" name="start_date-day" value="1" />
     <input type="hidden" name="start_date-month" value="4" />
-    <input type="hidden" name="start_date-day" value="01" />
+    <input type="hidden" name="start_date-year" value="1997" />
 
     {% set beneficialOwnerPronoun = "it" %}
     {% include "includes/inputs/fields/name-input.html" %}
@@ -57,7 +59,7 @@
           Date it became a beneficial owner for overseas entity:
         </label>
       </h1>
-      <!-- to check design and format to prototype -->
+      <!-- to sub with start date value after UAR-384 -->
       <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">10/02/2023</p>
     </div>
 

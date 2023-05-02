@@ -17,7 +17,7 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { checkAndReviewBeneficialOwner } from "../../utils/update/reviewBeneficialOwners";
+import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

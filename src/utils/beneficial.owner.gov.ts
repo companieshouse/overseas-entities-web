@@ -50,25 +50,25 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const boData = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
+    const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
     const appData = getApplicationData(req.session);
 
-    const principalAddress = (boData) ? mapDataObjectToFields(boData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (boData) ? mapDataObjectToFields(boData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const startDate = (boData) ? mapDataObjectToFields(boData[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
-      ...boData,
+      ...data,
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate
     };
 
-    if (EntityNumberKey in appData && appData[EntityNumberKey] !== null) {
-      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, boData));
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
     } else {
       return res.render(templateName, templateOptions);
     }

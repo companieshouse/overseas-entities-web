@@ -62,27 +62,27 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     logger.debugRequest(req, `GET BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const boData = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
+    const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
     const appData = getApplicationData(req.session);
 
-    const usualResidentialAddress = (boData) ? mapDataObjectToFields(boData[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    const serviceAddress = (boData) ? mapDataObjectToFields(boData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const dobDate = (boData) ? mapDataObjectToFields(boData[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
-    const startDate = (boData) ? mapDataObjectToFields(boData[StartDateKey], StartDateKeys, InputDateKeys) : {};
+    const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
+    const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
     const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
-      ...boData,
+      ...data,
       ...usualResidentialAddress,
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
     };
 
-    if (EntityNumberKey in appData && appData[EntityNumberKey] !== null) {
-      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, boData));
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
     } else {
       return res.render(templateName, templateOptions);
     }

@@ -104,11 +104,11 @@ describe('tests for custom Date fields', () => {
     expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError })).toThrowError(errors.sameError);
   });
 
-  test("should test checkPublicRegisterJurisdictionLength is not triggered when register field not selected", () => {
+  test("should return truthy value for checkPublicRegisterJurisdictionLength when register field not selected", () => {
     expect(() => custom.checkPublicRegisterJurisdictionLength(false, public_register_name, public_register_jurisdiction)).toBeTruthy();
   });
 
-  test("should test checkPublicRegisterJurisdictionLength will trigger when register field is selected", () => {
+  test("should throw error for checkPublicRegisterJurisdictionLength when register field is selected", () => {
     expect(() => custom.checkPublicRegisterJurisdictionLength(true, public_register_name, public_register_jurisdiction))
       .toThrowError(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
   });

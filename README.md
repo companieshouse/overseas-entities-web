@@ -35,15 +35,15 @@ The only local development mode available, that includes account, redis and othe
 2. Run `./bin/chs-dev modules enable overseas-entities`
 3. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
 4. Run docker using `tilt up` in the docker-chs-development directory.
-5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.
+5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.(If you have credential errors then  you may not be logged into `eu-west-2`.)
 6. Open your browser and go to page <http://chs.local/register-an-overseas-entity>
 
 Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 
 ### Requirements
 
-1. node v12.22.12 (Concourse pipeline builds using Node 10 and live runs on Node 12)
-2. npm 6.14.16
+1. node v16 (engines block in package.json is used to enforce this)(Concourse pipeline builds using Node 16 and live runs on Node 16)
+2. npm 8 (engines block in package.json is used to enforce this)
 3. Docker
 
 ### Build and Test changes

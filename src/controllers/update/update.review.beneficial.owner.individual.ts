@@ -13,6 +13,7 @@ import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual"
 import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { InputDate } from "model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 
 export const get = (req: Request, res: Response) => {
@@ -58,8 +59,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
-      const dateOfBirth = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth;
+      const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth as InputDate;
+
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
+
+      setReviewedDateOfBirth(req, dob);
 
       const session = req.session as Session;
 
@@ -67,7 +71,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
-      appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth = dateOfBirth;
+      // appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth = dateOfBirth;
 
       await saveAndContinue(req, session, false);
 
@@ -76,4 +80,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     next(error);
   }
+};
+
+export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
+  req.body["date_of_birth-day"] = padWithZero(dob?.day, 2, "0");
+  req.body["date_of_birth-month"] = padWithZero(dob?.month, 2, "0");
+  req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
+};
+
+const padWithZero = (input: string, maxLength: number, fillString: string): string => {
+  if (input.length > 1){
+    return input;
+  }
+  return String(input).padStart(maxLength, fillString);
 };

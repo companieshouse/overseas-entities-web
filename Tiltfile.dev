@@ -1,6 +1,6 @@
 local_resource(
   name = 'dev:overseas-entities-web',
-  cmd = 'npm --silent install && npm --silent run build',
+  cmd = 'npm install && npm run build',
   deps = ['src', 'views']
 )
 

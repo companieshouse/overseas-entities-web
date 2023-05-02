@@ -71,8 +71,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
-      // appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth = dateOfBirth;
-
       await saveAndContinue(req, session, false);
 
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

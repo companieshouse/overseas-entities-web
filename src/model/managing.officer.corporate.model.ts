@@ -1,4 +1,4 @@
-import { Address, yesNoResponse } from "./data.types.model";
+import { Address, InputDate, yesNoResponse } from "./data.types.model";
 
 export const ManagingOfficerCorporateKey: string = "managing_officers_corporate";
 export const ManagingOfficerCorporateKeys: string[] = [
@@ -14,7 +14,9 @@ export const ManagingOfficerCorporateKeys: string[] = [
   "registration_number",
   "role_and_responsibilities",
   "contact_full_name",
-  "contact_email"
+  "contact_email",
+  "start_date",
+  "resigned_on"
 ];
 
 export interface ManagingOfficerCorporate {
@@ -31,4 +33,6 @@ export interface ManagingOfficerCorporate {
   role_and_responsibilities?: string;
   contact_full_name?: string;
   contact_email?: string;
+  start_date?: InputDate;
+  resigned_on?: InputDate;
 }

@@ -4,7 +4,7 @@ import { getDueDiligence, postDueDiligence } from "../../utils/overseas.due.dili
 import {
   WHO_IS_MAKING_UPDATE_URL,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
-  OVERSEAS_ENTITY_REVIEW_URL
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -12,5 +12,5 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postDueDiligence(req, res, next, OVERSEAS_ENTITY_REVIEW_URL, false);
+  postDueDiligence(req, res, next, UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL, false);
 };

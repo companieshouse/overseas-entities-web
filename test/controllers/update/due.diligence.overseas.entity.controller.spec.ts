@@ -37,8 +37,8 @@ import {
   WHO_IS_MAKING_UPDATE_URL,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE,
   UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL,
-  OVERSEAS_ENTITY_REVIEW_PAGE,
-  OVERSEAS_ENTITY_REVIEW_URL
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+  UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL
 } from "../../../src/config";
 import {
   ANY_MESSAGE_ERROR,
@@ -121,7 +121,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page after a successful post from ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
+    test(`redirect to ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page after a successful post from ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page`, async () => {
       const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
       const twoMonthOldDate = getTwoMonthOldDate();
       dueDiligenceMock["identity_date-day"] = twoMonthOldDate.day.toString();
@@ -133,7 +133,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
         .send(dueDiligenceMock);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL}`);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -148,7 +148,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
         .send(dueDiligenceMock);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL}`);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
@@ -215,7 +215,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
-    test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page, no validation error for empty date`, async () => {
+    test(`redirect to ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page, no validation error for empty date`, async () => {
       const dueDiligenceMock = {
         ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         ...EMPTY_IDENTITY_DATE_REQ_BODY_MOCK
@@ -227,7 +227,7 @@ describe("UPDATE DUE DILIGENCE OVERSEAS ENTITY controller", () => {
         .send(dueDiligenceMock);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${OVERSEAS_ENTITY_REVIEW_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL}`);
     });
 
     test(`renders the ${UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE} page with error messages`, async () => {

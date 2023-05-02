@@ -7,23 +7,15 @@ import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `GET ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL;
-    const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const overseasEntityHeading: string = "Check the overseas entity details (NOT LIVE)";
 
-    return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
-      templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
-      backLinkUrl,
-      changeLinkUrl,
-      overseasEntityHeading,
-      appData,
-      pageParams: {
-        isRegistration: false
-      },
+    return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
+      templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
+      backLinkUrl: config.WHO_IS_MAKING_UPDATE_URL,
+      appData
     });
   } catch (errors) {
     logger.errorRequest(req, errors);
@@ -33,8 +25,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

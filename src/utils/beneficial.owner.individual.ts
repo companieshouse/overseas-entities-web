@@ -1,15 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import {
-  getApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData
-} from "../utils/application.data";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType, ApplicationData } from "../model";
@@ -63,7 +55,6 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerIndividualKey, id, true);
-    const appData = getApplicationData(req.session);
 
     const usualResidentialAddress = (data) ? mapDataObjectToFields(data[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -80,6 +71,8 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
     };
+
+    const appData = getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

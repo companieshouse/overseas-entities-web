@@ -3,15 +3,7 @@ import { logger } from "./logger";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import {
-  getApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData
-} from "./application.data";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "./application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { BeneficialOwnerOtherKey, BeneficialOwnerOtherKeys } from "../model/beneficial.owner.other.model";
 import {
@@ -53,7 +45,6 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerOtherKey, id, true);
-    const appData = getApplicationData(req.session);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -68,6 +59,8 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...serviceAddress,
       [StartDateKey]: startDate
     };
+
+    const appData = getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

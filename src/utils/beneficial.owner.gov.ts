@@ -3,15 +3,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import {
-  getApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData
-} from "../utils/application.data";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
 import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import {
   AddressKeys,
@@ -51,7 +43,6 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
 
     const id = req.params[ID];
     const data = getFromApplicationData(req, BeneficialOwnerGovKey, id, true);
-    const appData = getApplicationData(req.session);
 
     const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
@@ -67,12 +58,13 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       [StartDateKey]: startDate
     };
 
+    const appData = getApplicationData(req.session);
+
     if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
     } else {
       return res.render(templateName, templateOptions);
     }
-
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

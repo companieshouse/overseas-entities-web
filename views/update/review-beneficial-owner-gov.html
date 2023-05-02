@@ -37,6 +37,18 @@
    <form class="form" method="post">
     <input type="hidden" name="id" value="{{ id }}" />
 
+     <!-- Hidden input, needed to add start date to the data submitted -->
+     {{ govukInput({
+      label: {
+        text: "Hidden input, needed to add start date to the data submitted",
+        classes: "govuk-visually-hidden"
+      },
+      id: "start_date",
+      value: start_date,
+      name: "start_date",
+      classes: "govuk-visually-hidden"
+    }) }}
+
     {% set beneficialOwnerPronoun = "it" %}
     {% include "includes/inputs/fields/name-input.html" %}
 

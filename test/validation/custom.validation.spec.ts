@@ -1,6 +1,10 @@
 import * as custom from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { DateTime } from 'luxon';
+import { MAX_80 } from "../__mocks__/max.length.mock";
+
+const public_register_name = MAX_80 + "1";
+const public_register_jurisdiction = MAX_80;
 
 describe('checkCeasedDateOnOrAfterStartDate', () => {
 
@@ -98,5 +102,14 @@ describe('tests for custom Date fields', () => {
 
   test('should throw error for checkSecondNationality when nationality same as second nationality', () => {
     expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError })).toThrowError(errors.sameError);
+  });
+
+  test("should return truthy value for checkPublicRegisterJurisdictionLength when register field not selected", () => {
+    expect(() => custom.checkPublicRegisterJurisdictionLength(false, public_register_name, public_register_jurisdiction)).toBeTruthy();
+  });
+
+  test("should throw error for checkPublicRegisterJurisdictionLength when register field is selected", () => {
+    expect(() => custom.checkPublicRegisterJurisdictionLength(true, public_register_name, public_register_jurisdiction))
+      .toThrowError(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
   });
 });

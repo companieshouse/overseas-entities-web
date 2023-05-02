@@ -65,16 +65,8 @@
   
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
       <br/>
-  
-      {% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
-        {{ govukDetails({
-          summaryText: "What is a managing officer?",
-          attributes: {
-            "data-event-id": "what-is-a-managing-officer-details"
-          },
-          html: "<p>This is a director, manager or company secretary of the overseas entity.</p>"
-        }) }}
-      {% endif %}
+
+      {% include "includes/managing-officer-details-summary.html" %}
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
   </div>
@@ -89,27 +81,12 @@
 
   <div class="govuk-grid-column-two-thirds">
     <form method="post">
-      {{ govukRadios({
-        errorMessage: errors.beneficial_owner_type if errors,
-        idPrefix: "beneficial_owner_type",
-        name: "beneficial_owner_type",
-        fieldset: {
-          legend: {
-          text: boTypesLegendText,
-          isPageHeading: false,
-          classes: "govuk-fieldset__legend--m"
-          }
-        },
-        hint: {
-          text: "You can add more later."
-        },
-          items: boTypes
-        }) }}
+      {% include "includes/beneficial-owner-type-add-radios.html" %}
   
-        <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
+      <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 
-        <!-- Hidden input, needed to submit the beneficial owners statement -->
+      <!-- Hidden input, needed to submit the beneficial owners statement -->
         {{ govukInput({
           label: {
             text: "Hidden input, needed to submit the beneficial owners statement",

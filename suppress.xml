@@ -5,7 +5,7 @@
            File name: word-wrap:1.2.3
            Suppressed for 5 months
            As of 02/05/2023, word-wrap has not seen an update in 6 years. I suspect it is unlikely to receive any further updates. 
-           I've surpressed the issue for 5 months to review it then. The dependancy is brought in via the dev dependancy `eslint`. 
+           I've suppressed the issue for 5 months to review it then. The dependancy is brought in via the dev dependancy `eslint`. 
            Dev dependancies are not packaged for live deployment so this should not pose immediate threat.
            Link to issue: https://security.snyk.io/package/npm/word-wrap
            ]]></notes>

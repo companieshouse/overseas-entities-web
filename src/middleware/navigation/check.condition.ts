@@ -87,6 +87,17 @@ export const checkBOsOrMOsDetailsEnteredUpdate = (appData: ApplicationData): boo
   return checkBOsDetailsEntered(appData) || checkMOsDetailsEntered(appData);
 };
 
+export const checkHasUpdateDueDiligenceDetails = (appData: ApplicationData): boolean => {
+  return checkUpdatePresenterEntered(appData) && (
+    Object.keys(appData[OverseasEntityDueDiligenceKey] || {}).length !== 0 ||
+    Object.keys(appData[DueDiligenceKey] || {}).length !== 0
+  );
+};
+
+export const checkUpdateDueDiligenceDetailsEntered = (appData: ApplicationData): boolean => {
+  return checkHasOverseasEntity(appData) && checkHasUpdateDueDiligenceDetails(appData);
+};
+
 export const checkHasGivenValidBOData = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
   return checkGivenBoDetailsExist(appData, beneficialOwnerType, id);
 };

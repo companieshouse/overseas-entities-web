@@ -41,7 +41,7 @@ import {
   DateOfBirthKey,
   DateOfBirthKeys,
   StartDateKey,
-  StartDateKeys,
+  StartDateKeys
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
 

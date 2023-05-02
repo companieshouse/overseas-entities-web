@@ -66,8 +66,9 @@ import {
   updateManagingOfficerCorporate,
   updateFilingDate,
   updateRegistrableBeneficialOwner,
-  updateReviewBeneficialOwnerIndividual,
   updateContinueSavedFiling,
+  updateReviewOverseasEntityInformation,
+  updateReviewBeneficialOwnerIndividual,
   resumeUpdateSubmission,
   updateReviewBeneficialOwnerGov
 } from "../controllers";
@@ -394,6 +395,15 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
   )
   .get(overseasEntityReview.get)
   .post(overseasEntityReview.post);
+
+router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasDueDiligenceDetails
+  )
+  .get(updateReviewOverseasEntityInformation.get)
+  .post(updateReviewOverseasEntityInformation.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL)
   .all(

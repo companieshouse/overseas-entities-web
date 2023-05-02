@@ -42,7 +42,13 @@
     <form method="post">
       <input type="hidden" name="id" value="{{ id }}" />
       <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
-      <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>      <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
+
+      <input type="hidden" name="dob_day" value="{{ date_of_birth.day }}"/>
+      <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
+      <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
+
+      <input type="hidden" name="date_of_birth" value="{{ date_of_birth }}"/>
+
 
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}

@@ -68,3 +68,4 @@ export * as resumeUpdateSubmission from "./update/update.resume.submission.contr
 export * as updateReviewBeneficialOwnerIndividual from "./update/update.review.beneficial.owner.individual";
 export * as updateReviewBeneficialOwnerGov from "./update/update.review.beneficial.owner.gov";
 export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";
+export * as updateReviewOverseasEntityInformation from "./update/update.review.overseas.entity.information.controller";

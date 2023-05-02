@@ -25,7 +25,6 @@ export const get = (req: Request, res: Response) => {
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
     ...dataToReview,
     isOwnersReview: true,
-    start_date: { day: "1", month: "04", year: "1997" } // temporary to test save and resume
   });
 };
 
@@ -53,6 +52,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerGovKey);
+      console.log(`app data ${JSON.stringify(appData.beneficial_owners_government_or_public_authority)}`);
+
       await saveAndContinue(req, session, false);
 
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

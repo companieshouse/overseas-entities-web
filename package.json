@@ -62,6 +62,6 @@
     "ts-node": "^10.9.1",
     "typescript": "^4.6.2"
   },"overrides": {
-    "file-type": "18.2.1"
+    "file-type": "16.5.4"
   }
 }

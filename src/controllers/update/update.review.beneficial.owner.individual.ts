@@ -55,6 +55,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+
       await saveAndContinue(req, session, false);
 
       res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

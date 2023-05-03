@@ -259,6 +259,7 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
+  ch_reference: "",
   name: "TestCorporation",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -278,6 +279,7 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.Benefi
 
 export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
+  ch_reference: "",
   name: "TestCorporation",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -297,6 +299,7 @@ export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType
 
 export const BENEFICIAL_OWNER_OTHER_NO_TRUSTS_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
+  ch_reference: "",
   name: "TestCorporation",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -333,7 +336,8 @@ export const BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 
 export const UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS,
-  is_still_bo: "1"
+  is_still_bo: "1",
+  ceased_date: {}
 };
 
 export const UPDATE_BENEFICIAL_OWNER_OTHER_MOCK_FOR_CEASE_VALIDATION = {
@@ -360,7 +364,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_OTHER_EMPTY = {
 
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
-  ch_reference: "",
+  ch_reference: undefined,
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
@@ -379,7 +383,7 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
 
 export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
-  ch_reference: undefined,
+  ch_reference: "",
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
@@ -440,7 +444,8 @@ export const REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL = {
 
 export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
-  is_still_bo: "1"
+  is_still_bo: "1",
+  ceased_date: {}
 };
 
 export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_MOCK_FOR_CEASE_VALIDATION = {
@@ -521,6 +526,16 @@ export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: b
   legal_form: "LegalForm",
   law_governed: "1234",
   is_on_register_in_country_formed_in: yesNoResponse.Yes
+};
+
+export const UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES: beneficialOwnerOtherType.BeneficialOwnerOther = {
+  ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  ...PRINCIPAL_ADDRESS_MOCK,
+  ...START_DATE,
+  legal_form: "LegalForm",
+  law_governed: "1234",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
 };
 
 export const BENEFICIAL_OWNER_OTHER_REPLACE: beneficialOwnerOtherType.BeneficialOwnerOther = {
@@ -629,6 +644,7 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficia
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   id: BO_GOV_ID,
+  ch_reference: "",
   name: COMPANY_NAME,
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -660,7 +676,8 @@ export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   ...BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS,
-  is_still_bo: "1"
+  is_still_bo: "1",
+  ceased_date: {}
 };
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION = {
@@ -1199,6 +1216,11 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [TrustKey]: [TRUST],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_MOCK_NEWLY_ADDED_BO: ApplicationData = {
+  ...APPLICATION_DATA_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
 };
 
 export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {

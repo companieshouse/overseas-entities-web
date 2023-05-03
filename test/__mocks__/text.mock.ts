@@ -196,4 +196,5 @@ export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the ind
 export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";
 export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a saved filing?";
 export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What you have reviewed";
+export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";

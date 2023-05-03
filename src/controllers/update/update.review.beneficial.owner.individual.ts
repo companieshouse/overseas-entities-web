@@ -37,8 +37,6 @@ export const get = (req: Request, res: Response) => {
     populateAddress: false
   };
 
-  console.log(dataToReview);
-
   // Ceased date is undefined for initial review of BO - don't set ceased date data in this scenario
   if (CeasedDateKey in dataToReview) {
     templateOptions.populateAddress = true;
@@ -75,8 +73,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
-
-      console.log(data);
 
       await saveAndContinue(req, session, false);
 

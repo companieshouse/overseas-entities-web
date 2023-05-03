@@ -33,14 +33,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkIsRedirect);
     }
 
-    const hasBoMoReview = checkForReviewedBos(appData);
+    const hasExistingBos = checkForReviewedBos(appData);
     const hasNewlyAddedBos = checkForNewlyAddedBos(appData);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      hasBoMoReview,
+      hasExistingBos,
       hasNewlyAddedBos
     });
   } catch (error) {

@@ -24,7 +24,7 @@
       <cve>CVE-2021-21368</cve>
       <cpe>cpe:2.3:a:*:msgpack5:4.5.1</cpe>
     </suppress>
-        <suppress until="2023-10-02Z">
+    <suppress until="2023-10-02Z">
       <notes><![CDATA[
       file name: file-type:6.2.0
       Suppressed for 5 months

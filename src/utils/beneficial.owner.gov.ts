@@ -4,9 +4,11 @@ import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
 import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import {
   AddressKeys,
   BeneficialOwnerNoc,
+  EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
   InputDateKeys,
@@ -15,6 +17,8 @@ import {
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import {
+  CeasedDateKey,
+  CeasedDateKeys,
   StartDateKey,
   StartDateKeys
 } from "../model/date.model";
@@ -44,7 +48,7 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
     const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    return res.render(templateName, {
+    const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
@@ -52,7 +56,15 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...principalAddress,
       ...serviceAddress,
       [StartDateKey]: startDate
-    });
+    };
+
+    const appData = getApplicationData(req.session);
+
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
+    } else {
+      return res.render(templateName, templateOptions);
+    }
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -117,7 +129,7 @@ export const removeBeneficialOwnerGov = async (req: Request, res: Response, next
   }
 };
 
-const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, BeneficialOwnerGovKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);
@@ -126,6 +138,7 @@ const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDataType =
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     : {};
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.

@@ -19,7 +19,8 @@ import {
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
-  setApplicationData
+  setApplicationData,
+  getApplicationData
 } from '../../src/utils/application.data';
 import {
   BENEFICIAL_OWNER_GOV_PAGE_HEADING,
@@ -45,8 +46,9 @@ import {
   BO_GOV_ID,
   BO_GOV_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
+  APPLICATION_DATA_MOCK,
 } from "../__mocks__/session.mock";
-import { AddressKeys } from '../../src/model/data.types.model';
+import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
 import { ServiceAddressKey, ServiceAddressKeys } from "../../src/model/address.model";
 import { ApplicationDataType } from '../../src/model';
 import {
@@ -71,6 +73,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -106,6 +109,10 @@ describe("BENEFICIAL OWNER GOV controller", () => {
 
     test("renders the beneficial owner gov page", async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);

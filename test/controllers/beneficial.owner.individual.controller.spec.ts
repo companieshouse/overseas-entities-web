@@ -22,7 +22,8 @@ import {
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
-  setApplicationData
+  setApplicationData,
+  getApplicationData
 } from '../../src/utils/application.data';
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import {
@@ -44,6 +45,7 @@ import {
   SANCTIONS_HINT_TEXT_THEY
 } from '../__mocks__/text.mock';
 import {
+  APPLICATION_DATA_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
@@ -57,7 +59,7 @@ import {
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
 } from '../__mocks__/session.mock';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
-import { AddressKeys } from '../../src/model/data.types.model';
+import { AddressKeys, EntityNumberKey } from '../../src/model/data.types.model';
 import {
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_MOCK,
   BENEFICIAL_OWNER_INDIVIDUAL_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK,
@@ -82,6 +84,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -118,6 +121,10 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   describe("GET BY ID tests", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL);
 
       expect(resp.status).toEqual(200);

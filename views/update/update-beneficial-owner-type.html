@@ -56,6 +56,49 @@
   {% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
   {% set beneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
   {% set beneficialOwnerGovUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
-  <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-  {% include "includes/page-templates/beneficial-owner.html" %}
+  {% set beneficialOwnerRemoveBaseUrl = "/update-an-overseas-entity/confirm-to-remove"%}
+
+  <div class="govuk-grid-row govuk-body">
+    <div class="govuk-grid-column-two-thirds">
+  
+      {% include "includes/list/errors.html" %}
+  
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
+      <br/>
+
+      {% include "includes/managing-officer-details-summary.html" %}
+
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+  </div>
+
+  {% if hasBeneficialOwners %}
+    <div class="govuk-grid-column-two-thirds">
+      <br/>
+        {% include "includes/list/update-added-beneficial-owner.html" %}
+      <br/>
+    </div>
+  {% endif %}
+
+  <div class="govuk-grid-column-two-thirds">
+    <form method="post">
+      {% include "includes/beneficial-owner-type-add-radios.html" %}
+  
+      <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
+      <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
+
+      <!-- Hidden input, needed to submit the beneficial owners statement -->
+        {{ govukInput({
+          label: {
+            text: "Hidden input, needed to submit the beneficial owners statement",
+            classes: "govuk-visually-hidden"
+          },
+          id: "beneficial_owners_statement",
+          value: beneficial_owners_statement,
+          name: "beneficial_owners_statement",
+          classes: "govuk-visually-hidden"
+        }) }}
+      </form>
+    </div>
+
+  </div>
 {% endblock %}

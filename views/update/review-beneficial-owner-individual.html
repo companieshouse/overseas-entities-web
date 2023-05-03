@@ -47,8 +47,11 @@
       <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
       <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
 
-      <input type="hidden" name="date_of_birth" value="{{ date_of_birth }}"/>
 
+      <!-- values to be obtained after UAR-384 -->
+    <input type="hidden" name="start_date-day" value="1" />
+    <input type="hidden" name="start_date-month" value="4" />
+    <input type="hidden" name="start_date-year" value="1997" />
 
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
@@ -66,7 +69,6 @@
       {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
     
-      {% include "includes/inputs/date/start-date-input.html" %}
       <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
           <label class="govuk-fieldset__legend--m" for="start_date">

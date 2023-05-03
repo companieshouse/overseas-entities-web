@@ -30,9 +30,8 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
   const boLength: number = appData[boType]?.length || 0;
   const boIndex = boLength - 1;
 
-  if ((appData[boType] === AllBoTypes.boIndividual && boLength >= 1) && !checkBoIndividualValidation(appData[boType][boIndex])) {
-    return `${boRedirectUrl}${boIndex}`;
-  } else if ((appData[boType] === AllBoTypes.boGov && boLength >= 1) && !checkBoGovValidation(appData[boType][boIndex])) {
+  if ((appData[boType] && boLength >= 1) && (boType === AllBoTypes.boIndividual) && !checkBoIndividualValidation(appData[boType][boIndex])
+      || (appData[boType] && boLength >= 1) && (boType === AllBoTypes.boGov) && !checkBoGovValidation(appData[boType][boIndex])){
     return `${boRedirectUrl}${boIndex}`;
   }
 };
@@ -41,7 +40,6 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
   let redirectUrl = "";
 
   for (const updateAppData in appData.update){
-
     switch (updateAppData){
         case AllBoTypes.boiReview: {
           const boiFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boIndividual, beneficialOwnerReviewRedirectUrl);
@@ -57,7 +55,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
           break;
         }
         case AllBoTypes.boGovReview: {
-          const bogFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boGovReview, beneficialOwnerGovReviewRedirectUrl);
+          const bogFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl);
           if (bogFromBackButton) {
             redirectUrl = bogFromBackButton;
             return redirectUrl;
@@ -74,7 +72,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
   return redirectUrl;
 };
 
-const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: string, boType: string, beneficialOwnerReviewRedirectUrl: string) => {
+const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: string, boType: string, beneficialOwnerRedirectUrl: string) => {
   let redirectUrl = "";
   const boLength: number = appData[boType]?.length || 0;
 
@@ -91,7 +89,7 @@ const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: strin
     } else {
       index = appData[boType].push(bo) - 1;
     }
-    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
+    redirectUrl = `${beneficialOwnerRedirectUrl}${index}`;
     return redirectUrl;
   }
   return redirectUrl;

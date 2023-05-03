@@ -1,0 +1,16 @@
+{{ govukRadios({
+    errorMessage: errors.beneficial_owner_type if errors,
+    idPrefix: "beneficial_owner_type",
+    name: "beneficial_owner_type",
+    fieldset: {
+      legend: {
+        text: boTypesLegendText,
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    hint: {
+      text: "You can add more later."
+    },
+    items: boTypes
+  }) }}

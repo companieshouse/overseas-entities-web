@@ -26,7 +26,8 @@ import {
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
-  setApplicationData
+  setApplicationData,
+  getApplicationData
 } from '../../../src/utils/application.data';
 import {
   ANY_MESSAGE_ERROR,
@@ -49,6 +50,7 @@ import {
   BO_GOV_ID_URL,
   REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION,
   UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
 } from "../../__mocks__/session.mock";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { AddressKeys } from '../../../src/model/data.types.model';
@@ -83,6 +85,7 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
 describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
@@ -119,6 +122,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
   describe("GET BY ID tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       mockGetFromApplicationData.mockReturnValueOnce(UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL + BO_GOV_ID_URL);
 
       expect(resp.status).toEqual(200);
@@ -130,6 +134,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain("LegalForm");
       expect(resp.text).toContain("a11");
       expect(resp.text).toContain("name=\"is_on_sanctions_list\" type=\"radio\" value=\"1\" checked");
+      expect(resp.text).toContain("name=\"is_still_bo\" type=\"radio\" value=\"1\" checked");
       expect(resp.text).toContain(saveAndContinueButtonText);
     });
 

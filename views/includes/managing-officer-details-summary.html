@@ -1,0 +1,9 @@
+{% if beneficial_owners_statement != "ALL_IDENTIFIED_ALL_DETAILS" %}
+{{ govukDetails({
+  summaryText: "What is a managing officer?",
+  attributes: {
+    "data-event-id": "what-is-a-managing-officer-details"
+  },
+  html: "<p>This is a director, manager or company secretary of the overseas entity.</p>"
+}) }}
+{% endif %}

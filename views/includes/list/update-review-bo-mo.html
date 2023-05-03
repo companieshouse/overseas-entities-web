@@ -14,10 +14,10 @@
                             Individual beneficial owner
                         </dd>
                         <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                            {% if boi.ceased_date["day"] %}
-                                Ceased
-                            {% else %}
+                            {% if boi.ceased_date|length === 0 %}
                                 Active
+                            {% else %}
+                                Ceased
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
@@ -38,10 +38,10 @@
                             Other legal entity
                         </dd>
                         <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                            {% if boo.ceased_date["day"] %}
-                                Ceased
-                            {% else %}
+                            {% if boo.ceased_date|length === 0 %}
                                 Active
+                            {% else %}
+                                Ceased
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">
@@ -62,10 +62,10 @@
                             Government or public authority
                         </dd>
                         <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                            {% if bog.ceased_date["day"] %}
-                                Ceased
-                            {% else %}
+                            {% if bog.ceased_date|length === 0 %}
                                 Active
+                            {% else %}
+                                Ceased
                             {% endif %}
                         </dd>
                         <dd class="govuk-summary-list__actions">

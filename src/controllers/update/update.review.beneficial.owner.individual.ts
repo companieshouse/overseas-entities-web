@@ -15,6 +15,7 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { InputDate } from "model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+import { CeasedDateKey } from "../../model/date.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -26,21 +27,25 @@ export const get = (req: Request, res: Response) => {
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
 
-  if (!dataToReview["ceased_date"]) {
-    dataToReview["ceased_date"] = {};
-  }
-
   const backLinkUrl = getBackLinkUrl(appData, index);
 
-  const templateOptions = {
-    backLinkUrl,
-    templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-    ...dataToReview,
-    isOwnersReview: true
-  };
-
-  return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
-
+  // Check if ceased_date field exists to populate field for change link after review
+  if (CeasedDateKey in dataToReview) {
+    const templateOptions = {
+      backLinkUrl,
+      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+      ...dataToReview,
+      isOwnersReview: true
+    };
+    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
+  } else {
+    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
+      backLinkUrl,
+      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+      ...dataToReview,
+      isOwnersReview: true
+    });
+  }
 };
 
 const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {

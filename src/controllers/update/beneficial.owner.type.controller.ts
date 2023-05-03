@@ -32,9 +32,13 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     if (checkIsRedirect && checkIsRedirect !== ""){
       return res.redirect(checkIsRedirect);
     }
+    const allBos = [
+      ...(appData[BeneficialOwnerIndividualKey] ?? []),
+      ...(appData[BeneficialOwnerOtherKey] ?? []),
+      ...(appData[BeneficialOwnerGovKey] ?? [])];
 
-    const hasExistingBos = checkForReviewedBos(appData);
-    const hasNewlyAddedBos = checkForNewlyAddedBos(appData);
+    const hasExistingBos = checkForReviewedBos(allBos);
+    const hasNewlyAddedBos = checkForNewlyAddedBos(allBos);
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -166,12 +170,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
   }
 };
 
-const checkForReviewedBos = (appData: ApplicationData) => {
-  const allBos = [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? [])];
-
+const checkForReviewedBos = (allBos) => {
   if (allBos) {
     for (const bo of allBos) {
       if (bo.ch_reference){
@@ -182,12 +181,7 @@ const checkForReviewedBos = (appData: ApplicationData) => {
   return false;
 };
 
-const checkForNewlyAddedBos = (appData: ApplicationData) => {
-  const allBos = [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? [])];
-
+const checkForNewlyAddedBos = (allBos) => {
   if (allBos) {
     for (const bo of allBos) {
       if (bo.ch_reference === undefined){

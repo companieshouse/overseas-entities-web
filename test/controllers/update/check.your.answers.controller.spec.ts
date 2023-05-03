@@ -42,8 +42,8 @@ import {
   VERIFICATION_CHECKS_PERSON,
   UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
   UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT,
-  UPDATE_CHANGE_LINK_BO_IND,
-  UPDATE_CHANGE_LINK_BO_GOV,
+  UPDATE_CHANGE_LINK_BO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_BO_GOVERNMENT,
   UPDATE_CHANGE_LINK_BO_OTHER
 } from "../../__mocks__/text.mock";
 import {
@@ -133,8 +133,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_IND);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOV);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOVERNMENT);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
     });
 

@@ -17,7 +17,9 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,11 +33,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkIsRedirect);
     }
 
+    const hasBoMoReview = checkForReviewedBos(appData);
+
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      noLists: true
+      noLists: true,
+      hasBoMoReview
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -157,4 +162,20 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       }
     }
   }
+};
+
+const checkForReviewedBos = (appData: ApplicationData) => {
+  const allBos = [
+    ...(appData[BeneficialOwnerIndividualKey] ?? []),
+    ...(appData[BeneficialOwnerOtherKey] ?? []),
+    ...(appData[BeneficialOwnerGovKey] ?? [])];
+
+  if (allBos) {
+    for (const bo of allBos) {
+      if (bo.ch_reference){
+        return true;
+      }
+    }
+  }
+  return false;
 };

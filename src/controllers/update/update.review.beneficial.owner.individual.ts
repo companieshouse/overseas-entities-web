@@ -29,22 +29,22 @@ export const get = (req: Request, res: Response) => {
 
   const backLinkUrl = getBackLinkUrl(appData, index);
 
-  // Check if ceased_date field exists to populate field for change link after review
+  const templateOptions = {
+    backLinkUrl,
+    templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    ...dataToReview,
+    isBeneficialOwnersReview: true,
+    populateAddress: false
+  };
+
+  console.log(dataToReview);
+
+  // Ceased date is undefined for initial review of BO - don't set ceased date data in this scenario
   if (CeasedDateKey in dataToReview) {
-    const templateOptions = {
-      backLinkUrl,
-      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-      ...dataToReview,
-      isOwnersReview: true
-    };
+    templateOptions.populateAddress = true;
     return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
   } else {
-    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
-      backLinkUrl,
-      templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-      ...dataToReview,
-      isOwnersReview: true
-    });
+    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);
   }
 };
 
@@ -75,6 +75,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
+
+      console.log(data);
 
       await saveAndContinue(req, session, false);
 

@@ -34,12 +34,12 @@ export const get = (req: Request, res: Response) => {
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
     isBeneficialOwnersReview: true,
-    populateAddress: false
+    populateResidentialAddress: false
   };
 
-  // Ceased date is undefined for initial review of BO - don't set ceased date data in this scenario
+  // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
   if (CeasedDateKey in dataToReview) {
-    templateOptions.populateAddress = true;
+    templateOptions.populateResidentialAddress = true;
     return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
   } else {
     return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);

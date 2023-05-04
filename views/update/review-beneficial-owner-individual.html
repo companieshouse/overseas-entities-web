@@ -47,7 +47,7 @@
       <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
       <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
 
-      {% if populateAddress %}
+      {% if populateResidentialAddress %}
         {% set usual_residential_address_property_name_number =  usual_residential_address.property_name_number %}
         {% set usual_residential_address_line_1 = usual_residential_address.line_1 %}
         {% set usual_residential_address_line_2 = usual_residential_address.line_2 %}
@@ -55,16 +55,6 @@
         {% set usual_residential_address_county = usual_residential_address.county %}
         {% set usual_residential_address_country = usual_residential_address.country %}
         {% set usual_residential_address_postcode = usual_residential_address.postcode %}
-        {% set is_service_address_same_as_usual_residential_address = is_service_address_same_as_usual_residential_address %}
-        {% if is_service_address_same_as_usual_residential_address === 0 %}
-          {% set service_address_property_name_number = service_address.property_name_number %}
-          {% set service_address_line_1 = service_address.line_1 %}
-          {% set service_address_line_2 = service_address.line_2 %}
-          {% set service_address_town = service_address.town %}
-          {% set service_address_county = service_address.county %}
-          {% set service_address_country = service_address.country %}
-          {% set service_address_postcode = service_address.postcode %}
-        {% endif %}
       {% endif %}
 
       <input type="hidden" name="date_of_birth" value="{{ date_of_birth }}"/>

@@ -4,74 +4,77 @@
     </div>
     <div class="govuk-summary-card__content">
         <dl class="govuk-summary-list">
-            {% set savedBoIndividual = beneficial_owners_individual | rejectattr("ch_reference", "undefined") %}
-            {% for boi in savedBoIndividual %}
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        {{ boi.first_name }} {{ boi.last_name }}
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        Individual beneficial owner
-                    </dd>
-                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                        {% if boi.ceased_date|length === 0 %}
-                            Active
-                        {% else %}
-                            Ceased
-                        {% endif %}
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}">
-                            Change<span class="govuk-visually-hidden"> {{ boi.first_name }} {{ boi.last_name }} - Individual beneficial owner</span>
-                        </a>
-                    </dd>
-                </div>
+            {% for boi in beneficial_owners_individual %}
+                {% if boi.ch_reference %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            {{ boi.first_name }} {{ boi.last_name }}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Individual beneficial owner
+                        </dd>
+                        <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                            {% if boi.ceased_date|length === 0 %}
+                                Active
+                            {% else %}
+                                Ceased
+                            {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="{{ reviewBeneficialOwnerIndividualUrl }}{{ indexQueryParam }}{{ beneficial_owners_individual.indexOf(boi) }}">
+                                Change<span class="govuk-visually-hidden"> {{ boi.first_name }} {{ boi.last_name }} - Individual beneficial owner</span>
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
             {% endfor %}
-            {% set savedBoOther = beneficial_owners_corporate | rejectattr("ch_reference", "undefined") %}
-            {% for boo in savedBoOther %}
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        {{ boo.name }}
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        Other legal entity
-                    </dd>
-                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                        {% if boo.ceased_date|length === 0 %}
-                            Active
-                        {% else %}
-                            Ceased
-                        {% endif %}
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}">
-                            Change<span class="govuk-visually-hidden">{{ boo.name }} - Other legal entity</span>
-                        </a>
-                    </dd>
-                </div>
+            {% for boo in beneficial_owners_corporate %}
+                {% if boo.ch_reference %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            {{ boo.name }}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Other legal entity
+                        </dd>
+                        <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                            {% if boo.ceased_date|length === 0 %}
+                                Active
+                            {% else %}
+                                Ceased
+                            {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="{{ reviewBeneficialOwnerOtherUrl }}{{ indexQueryParam }}{{ beneficial_owners_corporate.indexOf(boo) }}">
+                                Change<span class="govuk-visually-hidden">{{ boo.name }} - Other legal entity</span>
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
             {% endfor %}
-            {% set savedBoGov = beneficial_owners_government_or_public_authority | rejectattr("ch_reference", "undefined") %}
-            {% for bog in savedBoGov %}
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        {{ bog.name }}
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        Government or public authority
-                    </dd>
-                    <dd class="govuk-summary-list__value summary-status" aria-label="status">
-                        {% if bog.ceased_date|length === 0 %}
-                            Active
-                        {% else %}
-                            Ceased
-                        {% endif %}
-                    </dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}">
-                            Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
-                        </a>
-                    </dd>
-                </div>
+            {% for bog in beneficial_owners_government_or_public_authority %}
+                {% if bog.ch_reference %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            {{ bog.name }}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Government or public authority
+                        </dd>
+                        <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                            {% if bog.ceased_date|length === 0 %}
+                                Active
+                            {% else %}
+                                Ceased
+                            {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}">
+                                Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
             {% endfor %}
         </dl>
     </div>

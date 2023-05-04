@@ -18,6 +18,8 @@
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
       {% include "includes/entity.html" %}
+
+
       {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0)
       or (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0)
       or (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
@@ -70,6 +72,28 @@
           {% endif %}
           {% for bog in savedGovernmentBO %}
             {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+          {% endfor %}
+        {% endif %}
+
+      {% set moTextDisplayed = false %}
+        {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0) %}
+          {% set savedIndividualMO = appData.managing_officers_individual | rejectattr("ch_reference", "undefined") %}
+          {% if (savedIndividualMO.length > 0)%}
+          {% set moTextDisplayed = true %}
+          <br><h2 class="govuk-heading-l">Managing officers you have added</h2>
+          {% endif %}
+          {% for moi in savedIndividualMO %}
+              {% include "includes/check-your-answers/managing-officer-individual.html" %}
+          {% endfor %}
+        {% endif %}
+        {% if (appData.managing_officers_corporate and appData.managing_officers_corporate.length > 0) %}
+          {% set savedCorporateMO = appData.managing_officers_corporate | rejectattr("ch_reference", "undefined") %}
+          {% if (savedCorporateMO.length > 0 and moTextDisplayed == false) %}
+          {% set moTextDisplayed = true %}
+          <br><h2 class="govuk-heading-l">Managing officers you have added</h2>
+          {% endif %}
+          {% for moc in savedCorporateMO %}
+              {% include "includes/check-your-answers/managing-officer-corporate.html" %}
           {% endfor %}
         {% endif %}
       {% endif %}

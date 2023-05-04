@@ -27,6 +27,12 @@
 {% endset %}
 
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
+{% if pageParams.isRegistration %}
+  {% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_URL %}
+{% else %}
+  {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL %}
+{% endif %}
+
 {% set rows=[] %}
 
 {% set rows = (rows.push({
@@ -38,7 +44,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - first name",
       "change-individual-managing-officer-first-name-button"
     ) ]
@@ -54,7 +60,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.LAST_NAME,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.LAST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - last name",
       "change-individual-managing-officer-last-name-button"
     ) ]
@@ -70,7 +76,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeFormerNamesHtml,
+      changeLinkUrl + "/" + moi.id + moiChangeFormerNamesHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names",
       "change-individual-managing-officer-former-names-button"
     ) ]
@@ -86,7 +92,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - date of birth",
       "change-individual-managing-officer-date-of-birth-button"
     ) ]
@@ -102,7 +108,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.NATIONALITY,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.NATIONALITY,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - nationality",
       "change-individual-managing-officer-nationality-button"
     ) ]
@@ -119,7 +125,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.SECOND_NATIONALITY,
+        changeLinkUrl + "/" + moi.id + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual managing officer " + moi.first_name + " " + moi.last_name + " - second_nationality",
         "change-individual-managing-officer-second-nationality-button"
       ) ]
@@ -136,7 +142,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - home address",
       "change-individual-managing-officer-residential-address-button"
     ) ]
@@ -152,7 +158,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + moiChangeServiceAddressHtml,
+      changeLinkUrl + "/" + moi.id + moiChangeServiceAddressHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - correspondence address",
       "change-individual-managing-officer-correspondence-address-button"
     ) ]
@@ -168,7 +174,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.OCCUPATION,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.OCCUPATION,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - occupation",
       "change-individual-managing-officer-occupation-button"
     ) ]
@@ -184,7 +190,7 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+      changeLinkUrl + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - role and responsibilities",
       "change-individual-managing-officer-role-and-responsibilities-button"
     ) ]

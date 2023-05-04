@@ -511,6 +511,16 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL)
   .get(updateManagingOfficerIndividual.get)
   .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
 
+router.route(config.UPDATE_MANAGING_OFFICER_URL + config.ID)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateManagingOfficerIndividual.getById)
+  .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.update);
+router.get(config.UPDATE_MANAGING_OFFICER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerIndividual.remove);
+
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
   .all(
     authentication,
@@ -537,6 +547,16 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL)
   )
   .get(updateManagingOfficerCorporate.get)
   .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.post);
+
+router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateManagingOfficerCorporate.getById)
+  .post(...validator.managingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.update);
+router.get(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerCorporate.remove);
 
 router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
   .all(

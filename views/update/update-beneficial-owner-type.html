@@ -50,6 +50,11 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
+{% set reviewBeneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+{% set reviewBeneficialOwnerGovUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL %}
+{% set reviewBeneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL %}
+{% set indexQueryParam = OE_CONFIGS.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM %}
+
 {% block content %}
   {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
   {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
@@ -62,14 +67,22 @@
     <div class="govuk-grid-column-two-thirds">
   
       {% include "includes/list/errors.html" %}
-  
+
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
       <br/>
 
       {% include "includes/managing-officer-details-summary.html" %}
 
-      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
   </div>
+
+  {% if hasExistingBos %}
+    <div class="govuk-grid-column-two-thirds">
+      <br/>
+        {% include "includes/list/update-review-bo-mo.html" %}
+      <br/>
+    </div> 
+  {% endif %}
 
   {% if hasBeneficialOwners %}
     <div class="govuk-grid-column-two-thirds">

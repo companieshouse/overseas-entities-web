@@ -44,7 +44,7 @@
         {% set textDisplayed = false %}
         {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
           {% set savedIndividualBO = appData.beneficial_owners_individual | rejectattr("ch_reference", "undefined") %}
-          {% if (savedIndividualBO.length >0)%}
+          {% if (savedIndividualBO.length > 0)%}
           {% set textDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}
@@ -54,7 +54,7 @@
         {% endif %}
         {% if (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0) %}
           {% set savedCorporateBO = appData.beneficial_owners_corporate | rejectattr("ch_reference", "undefined") %}
-          {% if (savedCorporateBO.length >0 and textDisplayed == false) %}
+          {% if (savedCorporateBO.length > 0 and textDisplayed == false) %}
           {% set textDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}
@@ -64,7 +64,7 @@
         {% endif %}
         {% if (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
           {% set savedGovernmentBO = appData.beneficial_owners_government_or_public_authority | rejectattr("ch_reference", "undefined") %}
-          {% if (savedGovernmentBO.length >0 and textDisplayed == false) %}
+          {% if (savedGovernmentBO.length > 0 and textDisplayed == false) %}
           {% set textDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { ApplicationDataType } from "../../model";
-import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
+import { setBeneficialOwnerData } from "../../utils/beneficial.owner.gov";
 import { v4 as uuidv4 } from "uuid";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { Session } from "@companieshouse/node-session-handler";
@@ -18,6 +18,7 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_government_or_public_authority){
     dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
   }
+  console.log(`bo data to review ${JSON.stringify(dataToReview)}`);
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,

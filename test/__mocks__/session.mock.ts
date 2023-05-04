@@ -918,13 +918,18 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
-  review_beneficial_owners_individual: undefined
+  review_beneficial_owners_individual: undefined,
+  review_beneficial_owners_government_or_public_authority: undefined,
+};
+
+export const UPDATE_BO_DATA_WITH_VALUE: updateType.Update = {
+  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+  review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
 };
 
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
-  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
-  review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
+  ...UPDATE_BO_DATA_WITH_VALUE
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
@@ -1237,6 +1242,15 @@ export const APPLICATION_DATA_MOCK_N0_BOI: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_MOCK_WITH_BO_UPDATE_REVIEW_DATA: ApplicationData = {
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ ],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_BO_DATA_WITH_VALUE
+};
+
 export const APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO: ApplicationData = {
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_NO_ADDRESS ],
@@ -1244,6 +1258,11 @@ export const APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO: ApplicationData
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO ],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK_REVIEW_MODEL
+};
+
+export const APPLICATION_DATA_BENEFICIAL_OWNER_UNDEFINED_UPDATE_REVIEW_BO: ApplicationData = {
+  ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO,
+  ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO[updateType.UpdateKey] = UNDEFINED_UPDATE_OBJECT_MOCK
 };
 
 export const APPLICATION_DATA_MOCK_NEWLY_ADDED_BO: ApplicationData = {

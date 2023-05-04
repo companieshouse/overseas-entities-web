@@ -16,4 +16,3 @@ export const addCeasedDateToTemplateOptions = (templateOptions: Object, appData:
 
   return templateOptions;
 };
-

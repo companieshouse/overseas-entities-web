@@ -39,7 +39,7 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
@@ -53,7 +53,9 @@ import {
   RR_CARRIAGE_RETURN,
   EMAIL_ADDRESS,
   MO_CORP_ID_URL,
-  MO_CORP_ID
+  MO_CORP_ID,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  MO_IND_ID_URL
 } from "../../__mocks__/session.mock";
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
@@ -62,6 +64,8 @@ import {
 } from "../../__mocks__/validation.mock";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
+  getApplicationData,
+  getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
@@ -85,12 +89,14 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
@@ -404,6 +410,28 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
       expect(data["contact_email"]).toEqual(EMAIL_ADDRESS);
+    });
+  });
+
+  describe("GET BY ID tests", () => {
+    test(`renders ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
+
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain("Joe Bloggs");
+    });
+
+    test(`catch error when rendering the ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 

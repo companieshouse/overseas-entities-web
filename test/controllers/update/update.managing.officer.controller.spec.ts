@@ -24,6 +24,8 @@ import {
   REMOVE
 } from "../../../src/config";
 import {
+  getApplicationData,
+  getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
   removeFromApplicationData,
@@ -40,7 +42,8 @@ import {
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
   MO_IND_ID,
-  MO_IND_ID_URL
+  MO_IND_ID_URL,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK
 } from "../../__mocks__/session.mock";
 import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
@@ -87,12 +90,14 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
-const mockRemoveFromApplicationData = removeFromApplicationData as unknown as jest.Mock;
+const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const DUMMY_DATA_OBJECT = { dummy: "data" };
 
@@ -654,6 +659,27 @@ describe("UPDATE MANAGING OFFICER controller", () => {
     });
   });
 
+  describe("GET BY ID tests", () => {
+    test(`renders ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
+
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain("some first name");
+    });
+
+    test(`catch error when rendering the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);

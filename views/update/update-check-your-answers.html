@@ -19,35 +19,43 @@
       <br>
       {% include "includes/entity.html" %}
 
-
-      {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0)
-      or (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0)
-      or (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
-      <br><h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+        {% set boTextDisplayed = false %}
         {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
           {% set existingIndividualBO = appData.beneficial_owners_individual | selectattr("ch_reference", "undefined") %}
+          {% if (existingIndividualBO.length > 0)%}
+          {% set boTextDisplayed = true %}
+          <br><h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+          {% endif %}
           {% for boi in existingIndividualBO %}
             {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
           {% endfor %}
         {% endif %}
         {% if (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0) %}
           {% set existingCorporateBO = appData.beneficial_owners_corporate | selectattr("ch_reference", "undefined") %}
+          {% if (existingCorporateBO.length > 0 and boTextDisplayed == false) %}
+          {% set boTextDisplayed = true %}
+          <br><h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+          {% endif %}
           {% for boc in existingCorporateBO %}
             {% include "includes/check-your-answers/beneficial-owner-other.html" %}
           {% endfor %}
         {% endif %}
         {% if (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
           {% set existingGovernmentBO = appData.beneficial_owners_government_or_public_authority | selectattr("ch_reference", "undefined") %}
+          {% if (existingGovernmentBO.length > 0 and boTextDisplayed == false) %}
+          {% set boTextDisplayed = true %}
+          <br><h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+          {% endif %}
           {% for bog in existingGovernmentBO %}
             {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
           {% endfor %}
         {% endif %}
 
-        {% set textDisplayed = false %}
+        {% set newBoTextDisplayed = false %}
         {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
           {% set savedIndividualBO = appData.beneficial_owners_individual | rejectattr("ch_reference", "undefined") %}
           {% if (savedIndividualBO.length > 0)%}
-          {% set textDisplayed = true %}
+          {% set newBoTextDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}
           {% for boi in savedIndividualBO %}
@@ -56,8 +64,8 @@
         {% endif %}
         {% if (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0) %}
           {% set savedCorporateBO = appData.beneficial_owners_corporate | rejectattr("ch_reference", "undefined") %}
-          {% if (savedCorporateBO.length > 0 and textDisplayed == false) %}
-          {% set textDisplayed = true %}
+          {% if (savedCorporateBO.length > 0 and newBoTextDisplayed == false) %}
+          {% set newBoTextDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}
           {% for boc in savedCorporateBO %}
@@ -66,8 +74,8 @@
         {% endif %}
         {% if (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
           {% set savedGovernmentBO = appData.beneficial_owners_government_or_public_authority | rejectattr("ch_reference", "undefined") %}
-          {% if (savedGovernmentBO.length > 0 and textDisplayed == false) %}
-          {% set textDisplayed = true %}
+          {% if (savedGovernmentBO.length > 0 and newBoTextDisplayed == false) %}
+          {% set newBoTextDisplayed = true %}
           <br><h2 class="govuk-heading-l">Beneficial owners you have added</h2>
           {% endif %}
           {% for bog in savedGovernmentBO %}
@@ -75,11 +83,11 @@
           {% endfor %}
         {% endif %}
 
-      {% set moTextDisplayed = false %}
+      {% set newMoTextDisplayed = false %}
         {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0) %}
           {% set savedIndividualMO = appData.managing_officers_individual | rejectattr("ch_reference", "undefined") %}
           {% if (savedIndividualMO.length > 0)%}
-          {% set moTextDisplayed = true %}
+          {% set newMoTextDisplayed = true %}
           <br><h2 class="govuk-heading-l">Managing officers you have added</h2>
           {% endif %}
           {% for moi in savedIndividualMO %}
@@ -88,15 +96,15 @@
         {% endif %}
         {% if (appData.managing_officers_corporate and appData.managing_officers_corporate.length > 0) %}
           {% set savedCorporateMO = appData.managing_officers_corporate | rejectattr("ch_reference", "undefined") %}
-          {% if (savedCorporateMO.length > 0 and moTextDisplayed == false) %}
-          {% set moTextDisplayed = true %}
+          {% if (savedCorporateMO.length > 0 and newMoTextDisplayed == false) %}
+          {% set newoTextDisplayed = true %}
           <br><h2 class="govuk-heading-l">Managing officers you have added</h2>
           {% endif %}
           {% for moc in savedCorporateMO %}
               {% include "includes/check-your-answers/managing-officer-corporate.html" %}
           {% endfor %}
         {% endif %}
-      {% endif %}
+
       <br>
       <form method="post">
         <div class="govuk-button-group">

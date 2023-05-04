@@ -18,7 +18,7 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_government_or_public_authority){
     dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
   }
-  console.log(`bo data to review ${JSON.stringify(dataToReview)}`);
+  
   return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE, {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,

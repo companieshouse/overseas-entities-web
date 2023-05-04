@@ -39,7 +39,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       ...(appData[BeneficialOwnerGovKey] ?? [])];
 
     const hasExistingBos = allBos.find(bo => bo.ch_reference) !== undefined;
-    const hasNewlyAddedBos = allBos.find(bo => !bo.ch_reference);
+    const hasNewlyAddedBos = allBos.find(bo => bo.ch_reference === undefined) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,

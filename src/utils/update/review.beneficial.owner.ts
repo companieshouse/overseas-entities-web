@@ -30,8 +30,8 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
   const boLength: number = appData[boType]?.length || 0;
   const boIndex = boLength - 1;
 
-  if ((appData[boType] && boLength >= 1) && (boType === AllBoTypes.boIndividual) && !checkBoIndividualValidation(appData[boType][boIndex])
-      || (appData[boType] && boLength >= 1) && (boType === AllBoTypes.boGov) && !checkBoGovValidation(appData[boType][boIndex])){
+  if (((appData[boType] && boLength >= 1) && (boType === AllBoTypes.boIndividual) && !checkBoIndividualValidation(appData[boType][boIndex]))
+      || ((appData[boType] && boLength >= 1) && (boType === AllBoTypes.boGov) && !checkBoGovValidation(appData[boType][boIndex]))){
     return `${boRedirectUrl}${boIndex}`;
   }
 };

@@ -119,7 +119,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     jest.clearAllMocks();
   });
 
-  describe("GET tests", () => {
+  describe("GET test", () => {
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
@@ -139,7 +139,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
     });
 
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with existing BO`, async () => {
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 

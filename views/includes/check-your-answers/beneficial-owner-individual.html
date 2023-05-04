@@ -216,6 +216,57 @@
   }
 }), rows) %}
 
+{% if pageParams.isRegistration == false %}
+  {% if boi.ceased_date | length %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Are they still a beneficial owner?"
+    },
+    value: {
+      text: "No"
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
+        "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
+        "change-individual-beneficial-owner-still-beneficial-owner-button"
+      ) ]
+    }
+  }), rows) %}
+  {% set boiCeasedDate = dateMacros.formatDate(boi.ceased_date["day"], boi.ceased_date["month"], boi.ceased_date["year"]) %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Ceased date"
+    },
+    value: {
+      html: boiCeasedDate
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.CEASED_DATE,
+        "Individual beneficial owner " + boiFullName + " - ceased date",
+        "change-individual-beneficial-owner-ceased-date-button"
+      ) ]
+    }
+  }), rows) %}
+  {% else %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Are they still a benficial owner"
+    },
+    value: {
+      text: "Yes"
+    },
+    actions: {
+      items: [ CREATE_CHANGE_LINK(
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.CEASED_DATE,
+        "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
+        "change-individual-beneficial-owner-ceased-date-button"
+      ) ]
+    }
+  }), rows) %}
+  {% endif %}
+{% endif %}
 <h3 class="govuk-heading-m">Individual beneficial owner</h3>
 
 {{ govukSummaryList({

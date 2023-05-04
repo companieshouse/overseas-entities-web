@@ -41,12 +41,15 @@ import {
   VERIFICATION_CHECKS_DATE,
   VERIFICATION_CHECKS_PERSON,
   UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
-  UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT
+  UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT,
+  UPDATE_CHANGE_LINK_BO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_BO_GOVERNMENT,
+  UPDATE_CHANGE_LINK_BO_OTHER
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
   OVERSEAS_ENTITY_ID,
-  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID
@@ -118,7 +121,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -130,10 +133,13 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -151,7 +157,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -177,7 +183,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - OE (Someone else) selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
         [dueDiligenceType.DueDiligenceKey]: {},
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
         [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE
@@ -215,7 +221,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
   describe("POST tests", () => {
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -225,7 +231,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, if Save and Resume not enabled`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
-      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);

@@ -29,7 +29,7 @@ const checkBoGovValidation = (boGov: BeneficialOwnerGov): boolean => {
 const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedirectUrl: string) => {
   const boLength: number = appData[boType]?.length || 0;
   const boIndex = boLength - 1;
-  const isAppDataAndBoLength = (appData[boType] && boLength >= 1);
+  const isAppDataAndBoLength = appData[boType] && boLength >= 1;
 
   if (isAppDataAndBoLength && (boType === AllBoTypes.boIndividual) && (!checkBoIndividualValidation(appData[boType][boIndex]))
         ||

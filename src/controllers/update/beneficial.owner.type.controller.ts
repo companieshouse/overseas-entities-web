@@ -16,9 +16,8 @@ import { getCompanyPsc } from "../../service/persons.with.signficant.control.ser
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
-import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
-
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 
@@ -34,12 +33,19 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkIsRedirect);
     }
 
-    const hasNewlyAddedBos = checkForNewlyAddedBos(appData);
+    const allBos = [
+      ...(appData[BeneficialOwnerIndividualKey] ?? []),
+      ...(appData[BeneficialOwnerOtherKey] ?? []),
+      ...(appData[BeneficialOwnerGovKey] ?? [])];
+
+    const hasExistingBos = allBos.find(bo => bo.ch_reference) !== undefined;
+    const hasNewlyAddedBos = allBos.find(bo => bo.ch_reference === undefined) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
+      hasExistingBos,
       hasNewlyAddedBos
     });
   } catch (error) {
@@ -122,20 +128,4 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       }
     }
   }
-};
-
-const checkForNewlyAddedBos = (appData: ApplicationData) => {
-  const allBos = [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? [])];
-
-  if (allBos) {
-    for (const bo of allBos) {
-      if (bo.ch_reference === undefined){
-        return true;
-      }
-    }
-  }
-  return false;
 };

@@ -412,6 +412,26 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   trust_ids: []
 };
 
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  ch_reference: "string",
+  first_name: "Jimmothy",
+  last_name: "Johnnothy",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Russian",
+  second_nationality: "",
+  usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  ceased_date: EMPTY_DATE,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 1,
+  trust_ids: []
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,

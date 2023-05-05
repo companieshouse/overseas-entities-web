@@ -1,4 +1,9 @@
-import { REVIEW_BENEFICIAL_OWNER_INDEX_PARAM, UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL } from "../../config";
+import {
+  REVIEW_BENEFICIAL_OWNER_INDEX_PARAM,
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL } from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
@@ -9,6 +14,8 @@ import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { InputDate } from "model/data.types.model";
+import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
+import { CeasedDateKey } from "../../model/date.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -19,13 +26,24 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_individual){
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
+
   const backLinkUrl = getBackLinkUrl(appData, index);
-  return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, {
+
+  const templateOptions = {
     backLinkUrl,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
-    isOwnersReview: true
-  });
+    isBeneficialOwnersReview: true,
+    populateResidentialAddress: false
+  };
+
+  // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario
+  if (CeasedDateKey in dataToReview) {
+    templateOptions.populateResidentialAddress = true;
+    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
+  } else {
+    return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);
+  }
 };
 
 const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {

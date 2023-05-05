@@ -2,8 +2,8 @@ import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-nod
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
-import { InputDate, NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink } from "./mapper.utils";
+import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
+import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate } from "./mapper.utils";
 import { logger } from "../../utils/logger";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
@@ -18,7 +18,7 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, undefined) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,
     service_address: service_address,
-    start_date: mapStartDate(psc.notifiedOn),
+    start_date: mapInputDate(psc.notifiedOn),
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -41,7 +41,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     public_register_name: psc.identification?.placeRegistered,
     registration_number: psc.identification?.registrationNumber,
     is_on_register_in_country_formed_in: psc.identification !== undefined && psc.identification?.registrationNumber ? yesNoResponse.Yes : yesNoResponse.No,
-    start_date: mapStartDate(psc.notifiedOn),
+    start_date: mapInputDate(psc.notifiedOn),
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -61,32 +61,12 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
     is_service_address_same_as_principal_address: isSameAddress(service_address, principal_address) ? yesNoResponse.Yes : yesNoResponse.No,
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
-    start_date: mapStartDate(psc.notifiedOn),
+    start_date: mapInputDate(psc.notifiedOn),
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, true);
   return result;
 };
-
-const mapStartDate = (notifiedOn: string): InputDate | undefined => {
-  if (notifiedOn === undefined) {
-    return undefined;
-  }
-
-  const date = notifiedOn.split('-');
-  if (date.length < 2) {
-    return undefined;
-  }
-  return {
-    day: (date.length > 2 ? stripZero(date[2]) : ""),
-    month: stripZero(date[1]),
-    year: date[0]
-  };
-};
-
-function stripZero(str: string) {
-  return str.startsWith('0') ? str.substring(1) : str;
-}
 
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
   psc.naturesOfControl?.forEach(natureType => {

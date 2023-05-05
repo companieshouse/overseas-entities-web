@@ -52,7 +52,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
           }
 
           if (appData.update?.review_beneficial_owners_individual?.length){
-            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl);
+            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
             return redirectUrl;
           }
           break;
@@ -65,7 +65,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
           }
 
           if (appData.update?.review_beneficial_owners_government_or_public_authority?.length){
-            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl);
+            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
             return redirectUrl;
           }
           break;
@@ -94,5 +94,4 @@ const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: strin
     redirectUrl = `${beneficialOwnerRedirectUrl}${index}`;
     return redirectUrl;
   }
-  return redirectUrl;
 };

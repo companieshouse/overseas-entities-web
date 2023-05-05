@@ -7,7 +7,6 @@ import { APPLICATION_DATA_BENEFICIAL_OWNER_UNDEFINED_UPDATE_REVIEW_BO,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST } from "../../__mocks__/session.mock";
 
 describe(`Test review beneficial Owners`, () => {
-
   test(`Test review beneficial Owners check beneficial owner individual validation `, () => {
     expect(checkAndReviewBeneficialOwner(
       { ...APPLICATION_DATA_UPDATE_BO_MOCK_NO_USUAL_ADDRESS,

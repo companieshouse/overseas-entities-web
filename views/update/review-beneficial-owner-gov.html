@@ -38,10 +38,9 @@
     <input type="hidden" name="id" value="{{ id }}" />
     <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
  
-    <!-- values to be obtained after UAR-384 -->
-    <input type="hidden" name="start_date-day" value="1" />
-    <input type="hidden" name="start_date-month" value="4" />
-    <input type="hidden" name="start_date-year" value="1997" />
+    <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
+    <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
+    <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
 
     {% set beneficialOwnerPronoun = "it" %}
     {% include "includes/inputs/fields/name-input.html" %}
@@ -54,6 +53,7 @@
     {% set hintText = "This is the law that the beneficial owner operates under" %}
     {% include "includes/inputs/governing-law-input.html" %}
 
+    {% set formatted_start_date = dateMacros.formatDate(start_date.day, start_date.month, start_date.year) %}
     <div class="govuk-form-group">
       <h1 class="govuk-label-wrapper">
         <label class="govuk-fieldset__legend--m" for="start_date">
@@ -61,7 +61,7 @@
         </label>
       </h1>
       <!-- to sub with start date value after UAR-384 -->
-      <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">10/02/2023</p>
+      <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">{{ formatted_start_date }}</p>
     </div>
 
     {% set dateText = "When did it become a beneficial owner for the overseas entity?" %}

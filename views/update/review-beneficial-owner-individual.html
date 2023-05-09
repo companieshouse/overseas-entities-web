@@ -57,11 +57,9 @@
         {% set usual_residential_address_postcode = usual_residential_address.postcode %}
       {% endif %}
 
-
-      <!-- values to be obtained after UAR-384 -->
-    <input type="hidden" name="start_date-day" value="1" />
-    <input type="hidden" name="start_date-month" value="4" />
-    <input type="hidden" name="start_date-year" value="1997" />
+    <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
+    <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
+    <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
       {% set hintLastNameText = "This is also known as your family name." %}
@@ -78,14 +76,14 @@
       {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
 
+      {% set formatted_start_date = dateMacros.formatDate(start_date.day, start_date.month, start_date.year) %}
       <div class="govuk-form-group">
         <h1 class="govuk-label-wrapper">
           <label class="govuk-fieldset__legend--m" for="start_date">
             Date they became a beneficial owner for overseas entity:
           </label>
         </h1>
-        <!-- to check design and format to prototype -->
-        <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">10/02/2023</p>
+        <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">{{ formatted_start_date }}</p>
       </div>
 
       {% set beneficialOwnerPronoun = "they" %}

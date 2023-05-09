@@ -57,6 +57,35 @@
   {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
 {% else %}
   {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
+  {% if boc.ceased_date | length %}
+    {% set bocCeasedDate = dateMacros.formatDate(boc.ceased_date["day"], boc.ceased_date["month"], boc.ceased_date["year"]) %}
+    {% set isStillBeneficialOwner = { 
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "No" },
+        actions: {
+          items:
+            [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.IS_CEASED,
+            "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
+            "change-corporate-beneficial-owner-still-beneficial-owner-button" ) ] } } %}
+    {% set ceasedDate ={
+      key: {
+        text: "Ceased date" },
+        value: { text: bocCeasedDate },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.CEASED_DATE,
+          "Corporate beneficial owner " + bocFullName + " - ceased date",
+          "change-corporate-beneficial-owner-ceased-date-button" ) ] } } %}
+  {% else %}
+    {% set isStillBeneficialOwner = {
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "Yes" },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.IS_CEASED,
+          "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
+          "change-corporate-beneficial-owner-still-beneficial-owner-button" ) ] } } %}
+  {% endif %}
 {% endif %}
 
 <h3 class="govuk-heading-m">Other legal entity beneficial owner</h3>
@@ -197,6 +226,7 @@
             "change-corporate-beneficial-owner-sanctions-list-button"
           ) ]
         }
-      }
+      },
+      isStillBeneficialOwner, ceasedDate
     ]
 }) }}

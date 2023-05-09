@@ -2,6 +2,7 @@ import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficia
 import * as config from "../../config";
 import { ApplicationData } from "../../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { Update } from "model/update.type.model";
 
 const AllBoTypes = {
   boiReview: "review_beneficial_owners_individual",
@@ -41,35 +42,33 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
 
 export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string => {
   let redirectUrl = "";
+  const update_review = appData.update as Update;
 
-  for (const updateAppData in appData.update){
-    switch (updateAppData){
-        case AllBoTypes.boiReview: {
-          const boiFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl);
-          if (boiFromBackButton) {
-            redirectUrl = boiFromBackButton;
-            return redirectUrl;
-          }
+  console.log(`update review is ${AllBoTypes.boiReview in update_review}`);
+  console.log(`app data is ${JSON.stringify(appData)}`);
+  if (AllBoTypes.boiReview in update_review){
+    const boiFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl);
+    if (boiFromBackButton) {
+      redirectUrl = boiFromBackButton;
+      return redirectUrl;
+    }
 
-          if (appData.update?.review_beneficial_owners_individual?.length){
-            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
-            return redirectUrl;
-          }
-          break;
-        }
-        case AllBoTypes.boGovReview: {
-          const bogFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl);
-          if (bogFromBackButton) {
-            redirectUrl = bogFromBackButton;
-            return redirectUrl;
-          }
+    if (appData.update?.review_beneficial_owners_individual?.length){
+      redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
+      return redirectUrl;
+    }
+  }
 
-          if (appData.update?.review_beneficial_owners_government_or_public_authority?.length){
-            redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
-            return redirectUrl;
-          }
-          break;
-        }
+  if (AllBoTypes.boGovReview in update_review){
+    const bogFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl);
+    if (bogFromBackButton) {
+      redirectUrl = bogFromBackButton;
+      return redirectUrl;
+    }
+
+    if (appData.update?.review_beneficial_owners_government_or_public_authority?.length){
+      redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
+      return redirectUrl;
     }
   }
   return redirectUrl;

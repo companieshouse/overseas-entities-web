@@ -17,9 +17,9 @@ import { hasFetchedBoAndMoData, setFetchedBoMoData } from "../../utils/update/be
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
-
+import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
+import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -67,48 +67,6 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
     await retrieveManagingOfficers(req, appData);
     setFetchedBoMoData(appData);
   }
-};
-
-const checkBOIndividualValidation = (boi: BeneficialOwnerIndividual) => {
-  if (boi.usual_residential_address){
-    return true;
-  } else {
-    return false;
-  }
-};
-
-export const checkAndReviewBeneficialOwner = (appData: ApplicationData) => {
-  let redirectUrl = "";
-  const beneficialOwnerReviewRedirectUrl = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL
-    + config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
-    + config.REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
-
-  // Check last individual BO validates - in case back button is clicked
-  const boiLength: number = appData.beneficial_owners_individual?.length || 0;
-  const boiIndex = boiLength - 1;
-  if ((appData.beneficial_owners_individual && boiLength >= 1) && !checkBOIndividualValidation(appData.beneficial_owners_individual[boiIndex])) {
-    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${boiIndex}`;
-    return redirectUrl;
-  }
-
-  if (boiLength >= 0){
-    const boi = appData.update?.review_beneficial_owners_individual?.pop() as BeneficialOwnerIndividual;
-
-    if (!boi){
-      return redirectUrl;
-    }
-
-    let index = 0;
-
-    if (!appData.beneficial_owners_individual) {
-      appData.beneficial_owners_individual = [boi];
-    } else {
-      index = appData.beneficial_owners_individual.push(boi) - 1;
-    }
-    redirectUrl = `${beneficialOwnerReviewRedirectUrl}${index}`;
-    return redirectUrl;
-  }
-  return redirectUrl;
 };
 
 export const post = (req: Request, res: Response) => {
@@ -166,6 +124,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       } else if (psc.kind === "legal-person-with-significant-control") {
         const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+        appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
       }
     }
   }

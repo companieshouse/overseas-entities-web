@@ -11,8 +11,8 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { ApplicationData, ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
-import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { saveAndContinue } from "../../utils/save.and.continue";
 import { InputDate } from "model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey } from "../../model/date.model";
@@ -89,7 +89,7 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
 };
 
-const padWithZero = (input: string, maxLength: number, fillString: string): string => {
+export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
   if (input.length > 1){
     return input;
   }

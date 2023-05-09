@@ -18,7 +18,8 @@ import {
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   RESUME,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL
 } from "../../src/config";
 import {
   APPLICATION_DATA_KEY,
@@ -402,6 +403,16 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualT
   trust_ids: []
 };
 
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_NO_ADDRESS: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  ch_reference: undefined,
+  second_nationality: "",
+  usual_residential_address: undefined,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: undefined,
+  start_date: { day: "1", month: "3", year: "1999" },
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   ch_reference: "testchreference",
@@ -718,6 +729,23 @@ export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Ben
   ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
 };
 
+export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
+  ceased_date: { day: "01", month: "04", year: "1920" },
+  is_still_bo: "1",
+  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  ...START_DATE
+};
+
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA = {
+  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+  ch_reference: undefined,
+  service_address: ADDRESS,
+  ceased_date: EMPTY_DATE,
+  is_still_bo: 1,
+  ...PRINCIPAL_ADDRESS_MOCK,
+};
+
 export const BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   name: COMPANY_NAME,
   is_service_address_same_as_principal_address: "1",
@@ -963,15 +991,22 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [],
+  review_beneficial_owners_government_or_public_authority: [],
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
-  review_beneficial_owners_individual: undefined
+  review_beneficial_owners_individual: undefined,
+  review_beneficial_owners_government_or_public_authority: undefined,
+};
+
+export const UPDATE_BO_DATA_WITH_VALUE: updateType.Update = {
+  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+  review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
 };
 
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
   ...UPDATE_OBJECT_MOCK,
-  review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
+  ...UPDATE_BO_DATA_WITH_VALUE
 };
 
 export const PAYMENT_OBJECT_MOCK: CreatePaymentRequest = {
@@ -1275,6 +1310,38 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_MOCK_N0_BOI: ApplicationData = {
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO ],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_MOCK_WITH_BO_UPDATE_REVIEW_DATA: ApplicationData = {
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ ],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_BO_DATA_WITH_VALUE
+};
+
+export const APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO: ApplicationData = {
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_NO_ADDRESS ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO ],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK_REVIEW_MODEL
+};
+
+export const APPLICATION_DATA_BENEFICIAL_OWNER_UNDEFINED_UPDATE_REVIEW_BO: ApplicationData = {
+  ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO,
+  ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO[updateType.UpdateKey] = UNDEFINED_UPDATE_OBJECT_MOCK
+};
+
 export const APPLICATION_DATA_MOCK_NEWLY_ADDED_BO: ApplicationData = {
   ...APPLICATION_DATA_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK]
@@ -1320,6 +1387,15 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_UPDATE_BO_MOCK_NO_USUAL_ADDRESS: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_NO_ADDRESS ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
@@ -1390,6 +1466,7 @@ export const UPDATE_PAYMENT_WITH_TRANSACTION_URL = `${UPDATE_AN_OVERSEAS_ENTITY_
 export const UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${PAYMENT_QUERY_STRING}`;
 export const UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING = `${UPDATE_PAYMENT_WITH_TRANSACTION_URL}${REFERENCE_QUERY_STRING}${STATE}${STATUS_DECLINED}`;
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST = `${UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL}?index=0`;
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST = `${UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL}?index=0`;
 
 // get company psc mocks
 export const serviceNameGetCompanyPsc = "companyPsc";

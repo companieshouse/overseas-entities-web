@@ -57,8 +57,9 @@
         {% set usual_residential_address_postcode = usual_residential_address.postcode %}
       {% endif %}
 
-      <input type="hidden" name="date_of_birth" value="{{ date_of_birth }}"/>
-
+    <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
+    <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
+    <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
       {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
       {% set hintLastNameText = "This is also known as your family name." %}
@@ -75,8 +76,15 @@
       {% set reviewBoCorrespondenceHintText = "This is also known as a service address." %}
       {% include "includes/inputs/address/residential-address-input.html" %}
 
-      {% set dateText = "Date they became beneficial owner for the overseas entity: " %}
-      {% include "includes/inputs/date/start-date-input.html" %}
+      {% set formatted_start_date = dateMacros.formatDate(start_date.day, start_date.month, start_date.year) %}
+      <div class="govuk-form-group">
+        <h1 class="govuk-label-wrapper">
+          <label class="govuk-fieldset__legend--m" for="start_date">
+            Date they became a beneficial owner for overseas entity:
+          </label>
+        </h1>
+        <p class="govuk-!-font-size-20 govuk-!-margin-bottom-7">{{ formatted_start_date }}</p>
+      </div>
 
       {% set beneficialOwnerPronoun = "they" %}
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}

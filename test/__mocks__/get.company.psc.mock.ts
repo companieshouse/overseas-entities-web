@@ -111,7 +111,7 @@ export const MOCK_GET_COMPANY_PSC_RESOURCE_FOR_GOV = {
         "year": '1983'
       },
       "links": {
-        "self": "/company/OE111129/persons-with-significant-control/individual/RandomeaP1EB70SSD9SLmiK5Y"
+        "self": "/company/OE111129/persons-with-significant-control/legal-person/RandomeaP1EB70SSD9SLmiK5Y"
       },
       "etag": "8cb9d4c9ba82059ff01ed123405bc41c1bc4db40"
     },

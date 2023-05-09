@@ -673,9 +673,9 @@ export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.Ben
 };
 
 export const REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA = {
-  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK.ceased_date = { day: "01", month: "04", year: "1920" },
+  ceased_date: { day: "01", month: "04", year: "1920" },
   is_still_bo: "1",
+  ...UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,
   ...START_DATE
 };

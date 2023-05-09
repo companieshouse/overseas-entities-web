@@ -5,10 +5,11 @@ jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
+jest.mock('../../../src/utils/save.and.continue');
 
 import * as config from "../../../src/config";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST, UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST, UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA } from "../../__mocks__/session.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
@@ -20,6 +21,7 @@ import { NextFunction } from "express";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -36,6 +38,8 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe(`Update review beneficial owner Gov`, () => {
@@ -45,8 +49,20 @@ describe(`Update review beneficial owner Gov`, () => {
   });
 
   describe(`GET tests`, () => {
-    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+    });
+
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page With ceased date`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK });
+
+      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
+
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
@@ -56,13 +72,25 @@ describe(`Update review beneficial owner Gov`, () => {
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
   describe(`POST tests`, () => {
+
+    test(`throw validation error on bo gov review submission without form address data`, async () => {
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST)
+        .send(REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
+      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+      expect(resp.text).toContain(ErrorMessages.COUNTRY);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission`, async () => {
       mockGetApplicationData.mockReturnValueOnce({

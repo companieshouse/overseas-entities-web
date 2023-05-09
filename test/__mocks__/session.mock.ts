@@ -1176,7 +1176,7 @@ export const PSC_BENEFICIAL_OWNER_MOCK_DATA: CompanyPersonWithSignificantControl
   },
   nationality: "country1",
   naturesOfControl: [],
-  notifiedOn: '01/01/1900',
+  notifiedOn: "2016-04-06",
   identification: {
     legalForm: "all forms",
     legalAuthority: "country2",

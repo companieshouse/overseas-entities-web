@@ -24,14 +24,11 @@ export const mapSelfLink = (selfLink: string | undefined): string | undefined =>
   return path.length > 0 ? path[path.length - 1] : undefined;
 };
 
-export const mapInputDate = (date: string | undefined): InputDate => {
+export const mapInputDate = (date: string | undefined): InputDate | undefined => {
   if (date === undefined) {
-    return {
-      day: '',
-      month: '',
-      year: ''
-    };
+    return undefined;
   }
+
   const yearMonthDay = date.split('-');
   if (yearMonthDay.length <= 2) {
     return {
@@ -40,6 +37,7 @@ export const mapInputDate = (date: string | undefined): InputDate => {
       year: yearMonthDay[0]
     };
   }
+
   return {
     day: (yearMonthDay.length > 2 ? stripZero(yearMonthDay[2]) : ""),
     month: stripZero(yearMonthDay[1]),

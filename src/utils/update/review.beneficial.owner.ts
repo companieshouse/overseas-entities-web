@@ -44,8 +44,6 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
   let redirectUrl = "";
   const update_review = appData.update as Update;
 
-  console.log(`update review is ${AllBoTypes.boiReview in update_review}`);
-  console.log(`app data is ${JSON.stringify(appData)}`);
   if (AllBoTypes.boiReview in update_review){
     const boiFromBackButton = checkForBackButtonBo(appData, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl);
     if (boiFromBackButton) {

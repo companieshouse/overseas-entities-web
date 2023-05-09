@@ -69,8 +69,9 @@ import {
   updateContinueSavedFiling,
   updateReviewOverseasEntityInformation,
   updateReviewBeneficialOwnerIndividual,
-  resumeUpdateSubmission,
-  updateReviewBeneficialOwnerGov
+  updateReviewBeneficialOwnerOther,
+  updateReviewBeneficialOwnerGov,
+  resumeUpdateSubmission
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -433,6 +434,15 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
+
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+  )
+  .get(updateReviewBeneficialOwnerOther.get)
+  .post(...validator.updateBeneficialOwnerOther, checkValidations, updateReviewBeneficialOwnerOther.post);
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerOther.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
   .all(

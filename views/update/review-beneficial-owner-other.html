@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+
+{% set title = "Review the other legal entity beneficial owner" %}
+{% set beneficialOwnerPronoun = "it" %}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ name }}</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
+    <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
+
+    {% include "includes/ceased-date-details-summary.html" %}
+
+    <form class="form" method="post">
+      {% include "includes/inputs/fields/name-input.html" %}
+
+      {% include "includes/inputs/address/principal-address-input.html" %}
+
+      {% set hintText = "For example, limited company or partnership" %}
+      {% include "includes/inputs/legal-form-input.html" %}
+
+      {% set hintText = "This is the law that the beneficial owner operates under" %}
+      {% include "includes/inputs/governing-law-input.html" %}
+
+      {% set registerHintText = "Include its jurisdiction. For example, Hong Kong or State of Delaware." %}
+      {% set includeJurisdiction = false %}
+      {% set registerInCountryFormedText = "Is the other legal entity already on a public register in the country it was formed in?" %}
+      {% set registrationNumberText = "Entity's registration number" %}
+      {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
+
+      {% include "includes/uneditable-start-date.html" %}
+      {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
+
+      {% set isBeneficialOwnerGov = false %}
+      {% set natureOfControlText = "What is its nature of control?" %}
+      {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
+
+      {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
+
+      {% include "includes/inset-text.html" %}
+
+      {% include "includes/save-and-continue-button.html" %}
+
+      <input type="hidden" name="id" value="{{ id }}" />
+      <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
+    </form>
+    </div>
+  </div>
+{% endblock %}

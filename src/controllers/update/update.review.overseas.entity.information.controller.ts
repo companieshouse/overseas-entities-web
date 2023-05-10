@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-      backLinkUrl: config.WHO_IS_MAKING_UPDATE_URL,
+      backLinkUrl: config.UPDATE_DUE_DILIGENCE_PAGE,
       appData
     });
   } catch (errors) {

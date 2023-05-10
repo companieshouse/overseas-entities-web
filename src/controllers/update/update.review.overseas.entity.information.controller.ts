@@ -14,21 +14,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
 
-    let backLinkUrl;
-
-    if (appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length > 0) {
-      backLinkUrl = config.UPDATE_DUE_DILIGENCE_URL;
-    } else if (appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length > 0) {
-      backLinkUrl = config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL;
-    } else {
-      backLinkUrl = config.WHO_IS_MAKING_UPDATE_URL;
-    }
-
-    console.log(appData);
-
     return res.render(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE, {
       templateName: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-      backLinkUrl,
+      backLinkUrl: getBackLinkUrl(appData),
       appData
     });
   } catch (errors) {
@@ -45,4 +33,22 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, errors);
     next(errors);
   }
+};
+
+const getBackLinkUrl = (appData: ApplicationData) => {
+  let backLinkUrl;
+
+  const agentDueDiligence = appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length > 0;
+  const overseasEntityDueDiligence = appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length > 0;
+
+  if (agentDueDiligence) {
+    backLinkUrl = config.UPDATE_DUE_DILIGENCE_URL;
+  } else if (overseasEntityDueDiligence) {
+    backLinkUrl = config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL;
+  } else {
+    backLinkUrl = config.WHO_IS_MAKING_UPDATE_URL;
+  }
+
+  return backLinkUrl;
+
 };

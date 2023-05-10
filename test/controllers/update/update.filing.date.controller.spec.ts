@@ -164,7 +164,7 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${config.OVERSEAS_ENTITY_PRESENTER_URL}`);
     });
 
-    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with  error when filing date is empty`, async () => {
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with error when filing date is empty`, async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };

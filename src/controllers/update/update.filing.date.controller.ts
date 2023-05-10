@@ -15,7 +15,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData = getApplicationData(req.session);
-    const filingDate = (appData.update?.[FilingDateKey]) ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
+    const filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
@@ -41,7 +41,6 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
         appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
-        setExtraData(session, appData);
       }
       if (appData.update) {
         appData.update[FilingDateKey] = mapFieldsToDataObject(req.body, FilingDateKeys, InputDateKeys);

@@ -54,6 +54,7 @@ export * as overseasEntityReview from "./update/overseas.entity.review.controlle
 export * as updateBeneficialOwnerBoMoReview from "./update/update.beneficial.owner.bo.mo.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateBeneficialOwnerType from "./update/beneficial.owner.type.controller";
+export * as updateReviewBeneficialOwnerOther from "./update/update.review.beneficial.owner.other";
 export * as updateBeneficialOwnerGov from "./update/update.beneficial.owner.gov.controller";
 export * as updateBeneficialOwnerStatements from "./update/update.beneficial.owner.statements.controller";
 export * as updateManagingOfficerIndividual from "./update/update.managing.officer.controller";
@@ -66,5 +67,6 @@ export * as updateFilingDate from "./update/update.filing.date.controller";
 export * as updateRegistrableBeneficialOwner from "./update/update.registrable.beneficial.owner.controller";
 export * as resumeUpdateSubmission from "./update/update.resume.submission.controller";
 export * as updateReviewBeneficialOwnerIndividual from "./update/update.review.beneficial.owner.individual";
+export * as updateReviewBeneficialOwnerGov from "./update/update.review.beneficial.owner.gov";
 export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";
 export * as updateReviewOverseasEntityInformation from "./update/update.review.overseas.entity.information.controller";

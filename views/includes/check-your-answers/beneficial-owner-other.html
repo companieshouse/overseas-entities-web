@@ -53,6 +53,41 @@
   {% endif %}
 {% endset %}
 
+{% if pageParams.isRegistration %}
+  {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
+{% else %}
+  {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
+  {% if boc.ceased_date | length %}
+    {% set bocCeasedDate = dateMacros.formatDate(boc.ceased_date["day"], boc.ceased_date["month"], boc.ceased_date["year"]) %}
+    {% set isStillBeneficialOwner = { 
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "No" },
+        actions: {
+          items:
+            [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.IS_CEASED,
+            "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
+            "change-corporate-beneficial-owner-still-beneficial-owner-button" ) ] } } %}
+    {% set ceasedDate ={
+      key: {
+        text: "Ceased date" },
+        value: { text: bocCeasedDate },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.CEASED_DATE,
+          "Corporate beneficial owner " + bocFullName + " - ceased date",
+          "change-corporate-beneficial-owner-ceased-date-button" ) ] } } %}
+  {% else %}
+    {% set isStillBeneficialOwner = {
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "Yes" },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + boc.id + OE_CONFIGS.IS_CEASED,
+          "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
+          "change-corporate-beneficial-owner-still-beneficial-owner-button" ) ] } } %}
+  {% endif %}
+{% endif %}
+
 <h3 class="govuk-heading-m">Other legal entity beneficial owner</h3>
 
 {{ govukSummaryList({
@@ -66,7 +101,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.NAME,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.NAME,
             "Corporate beneficial owner " + boc.name + " - name",
             "change-corporate-beneficial-owner-name-button"
           ) ]
@@ -81,7 +116,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Corporate beneficial owner " + boc.name + " - principal or registered office address",
             "change-corporate-beneficial-owner-principal-address-button"
           ) ]
@@ -96,7 +131,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + bocChangeServiceAddressHtml,
+            changeLinkUrl + "/" + boc.id + bocChangeServiceAddressHtml,
             "Corporate beneficial owner " + boc.name + " - correspondence address",
             "change-corporate-beneficial-owner-service-address-button"
           ) ]
@@ -111,7 +146,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.LEGAL_FORM,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.LEGAL_FORM,
             "Corporate beneficial owner " + boc.name + " - legal form",
             "change-corporate-beneficial-owner-legal-form-button"
           ) ]
@@ -126,7 +161,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.LAW_GOVERNED,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.LAW_GOVERNED,
             "Corporate beneficial owner " + boc.name + " - governing law",
             "change-corporate-beneficial-owner-law-governed-button"
           ) ]
@@ -141,7 +176,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + bocChangePublicRegister,
+            changeLinkUrl + "/" + boc.id + bocChangePublicRegister,
             "Corporate beneficial owner " + boc.name + " - public register",
             "change-corporate-beneficial-owner-public-register-button"
           ) ]
@@ -156,7 +191,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.START_DATE,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
             "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
             "change-corporate-beneficial-owner-start-date-button"
           ) ]
@@ -171,7 +206,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.NOC_TYPES,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.NOC_TYPES,
             "Corporate beneficial owner " + boc.name + " - nature of control",
             "change-corporate-beneficial-owner-nature-of-control-button"
           ) ]
@@ -186,11 +221,12 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL + "/" + boc.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
             "Corporate beneficial owner " + boc.name + " - is it on the sanctions list?",
             "change-corporate-beneficial-owner-sanctions-list-button"
           ) ]
         }
-      }
+      },
+      isStillBeneficialOwner, ceasedDate
     ]
 }) }}

@@ -21,9 +21,9 @@ describe("Test mapping utils", () => {
     expect(InputDate).toEqual({ day: "21", month: "7", year: "2022" });
   });
 
-  test("returns empty string for undefined date", () => {
+  test("returns undefined for undefined date", () => {
     const InputDate = mapInputDate(undefined);
-    expect(InputDate).toEqual({ day: "", month: "", year: "" });
+    expect(InputDate).toEqual(undefined);
   });
 
   test("returns empty string for date with month and year", () => {

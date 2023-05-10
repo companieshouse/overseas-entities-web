@@ -147,17 +147,21 @@ export const NO_SANCTIONS_TEXT_IT = "No, it is not on the Sanctions List";
 export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018.";
 export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
 
-export const CHANGE_LINK_INDIVIDUAL_BO = "Individual beneficial owner ";
-export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - first name";
-export const CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - last name";
-export const CHANGE_LINK_INDIVIDUAL_BO_DOB = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date of birth";
-export const CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nationality";
-export const CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - second_nationality";
-export const CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - home address";
-export const CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - correspondence address";
-export const CHANGE_LINK_INDIVIDUAL_BO_START_DATE = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - date they became a beneficial owner";
-export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - nature of control";
-export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO + "Ivan Drago - are they on the sanctions list?";
+export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
+export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
+export const CHANGE_LINK_INDIVIDUAL_BO_LAST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - last name";
+export const CHANGE_LINK_INDIVIDUAL_BO_DOB = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - date of birth";
+export const CHANGE_LINK_INDIVIDUAL_BO_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - nationality";
+export const CHANGE_LINK_INDIVIDUAL_BO_SECOND_NATIONALITY = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - second_nationality";
+export const CHANGE_LINK_INDIVIDUAL_BO_HOME_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - home address";
+export const CHANGE_LINK_INDIVIDUAL_BO_SERVICE_ADDRESS = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - correspondence address";
+export const CHANGE_LINK_INDIVIDUAL_BO_START_DATE = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - date they became a beneficial owner";
+export const CHANGE_LINK_INDIVIDUAL_BO_NOC = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - nature of control";
+export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - are they on the sanctions list?";
+
+export const CHANGE_LINK_BO_INDIVIDUAL = "/register-an-overseas-entity/beneficial-owner-individual/7ab403a0-4459-4ac0-b500-6d6f314da5b2";
+export const CHANGE_LINK_BO_GOVERNMENT = "/register-an-overseas-entity/beneficial-owner-gov/10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
+export const CHANGE_LINK_BO_OTHER = "/register-an-overseas-entity/beneficial-owner-other/e12267a4-ae92-4cfe-bea5-e3731463b2b1";
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the Overseas Entity ID?";
@@ -176,6 +180,9 @@ export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/en
 export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
 export const CHANGE_LINK_ENTITY_LEGAL_FORM = "/update-an-overseas-entity/entity#legal_form";
 export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/entity#law_governed";
+export const UPDATE_CHANGE_LINK_BO_INDIVIDUAL = "/update-an-overseas-entity/update-beneficial-owner-individual/7ab403a0-4459-4ac0-b500-6d6f314da5b2";
+export const UPDATE_CHANGE_LINK_BO_GOVERNMENT = "/update-an-overseas-entity/update-beneficial-owner-gov/10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
+export const UPDATE_CHANGE_LINK_BO_OTHER = "/update-an-overseas-entity/update-beneficial-owner-other/e12267a4-ae92-4cfe-bea5-e3731463b2b1";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/update-beneficial-owner-type";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
@@ -192,7 +199,12 @@ export const UPDATE_SIGN_OUT_HELP_DETAILS_TEXT = "How do I find my saved filing?
 export const UPDATE_SIGN_OUT_DROPDOWN_TEXT = "When you sign back in to this service, we'll ask you if you want to continue with a saved filing.";
 export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
 export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to review beneficial owner and managing officer information";
-export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING = "Review the other legal entity beneficial owner";
+export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING = "Review the government or public authority";
+export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
 export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";
 export const CONTINUE_SAVED_FILING_PAGE_TITLE = "Do you want to continue with a saved filing?";
+export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What you have reviewed";
+export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";

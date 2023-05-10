@@ -1,15 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
 
-import {
-  getApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData
-} from "../utils/application.data";
+import { getApplicationData, getFromApplicationData, mapDataObjectToFields, mapFieldsToDataObject, prepareData, removeFromApplicationData, setApplicationData } from "../utils/application.data";
+import { addCeasedDateToTemplateOptions } from "../utils/update/ceased_date_util";
 import { saveAndContinue } from "../utils/save.and.continue";
 import { ApplicationDataType, ApplicationData } from "../model";
 import { logger } from "../utils/logger";
@@ -20,12 +13,13 @@ import {
 import {
   AddressKeys,
   BeneficialOwnerNoc,
+  EntityNumberKey,
   HasSameResidentialAddressKey,
   ID,
   InputDateKeys,
   IsOnSanctionsListKey,
   NonLegalFirmNoc,
-  TrusteesNoc,
+  TrusteesNoc
 } from "../model/data.types.model";
 import {
   ServiceAddressKey,
@@ -34,10 +28,12 @@ import {
   UsualResidentialAddressKeys,
 } from "../model/address.model";
 import {
+  CeasedDateKey,
+  CeasedDateKeys,
   DateOfBirthKey,
   DateOfBirthKeys,
   StartDateKey,
-  StartDateKeys,
+  StartDateKeys
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
 
@@ -65,7 +61,7 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     const dobDate = (data) ? mapDataObjectToFields(data[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
     const startDate = (data) ? mapDataObjectToFields(data[StartDateKey], StartDateKeys, InputDateKeys) : {};
 
-    return res.render(templateName, {
+    const templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
@@ -74,7 +70,16 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       ...serviceAddress,
       [DateOfBirthKey]: dobDate,
       [StartDateKey]: startDate
-    });
+    };
+
+    const appData = getApplicationData(req.session);
+
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
+      return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
+    } else {
+      return res.render(templateName, templateOptions);
+    }
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -148,6 +153,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
     : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 
   // It needs concatenations because if in the check boxes we select only one option
   // nunjucks returns just a string and with concat we will return an array.
@@ -158,5 +164,6 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
   data[IsOnSanctionsListKey] = (data[IsOnSanctionsListKey]) ? +data[IsOnSanctionsListKey] : '';
 
   data[ID] = id;
+
   return data;
 };

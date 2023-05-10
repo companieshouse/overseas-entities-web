@@ -29,15 +29,22 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
-  PAGE_TITLE_ERROR
+  PAGE_TITLE_ERROR,
+  REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
+  NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING
 } from '../../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   ERROR,
+  REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
   UNDEFINED_UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_MODEL,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -46,7 +53,11 @@ import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { BeneficialOwnerIndividualKey } from '../../../src/model/beneficial.owner.individual.model';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
-import { MOCK_GET_COMPANY_PSC_RESOURCE } from '../../__mocks__/get.company.psc.mock';
+import {
+  MOCK_GET_COMPANY_PSC_RESOURCE,
+  MOCK_GET_COMPANY_PSC_RESOURCE_CORPORATE_ENTITY,
+  MOCK_GET_COMPANY_PSC_RESOURCE_FOR_GOV
+} from '../../__mocks__/get.company.psc.mock';
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 
@@ -72,9 +83,52 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReset();
+    mockGetCompanyPscService.mockReset();
   });
 
   describe("GET tests", () => {
+
+    test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed BOs if BOs have been reviewed`, async () => {
+      const reviewBoAppData = { ...APPLICATION_DATA_UPDATE_BO_MOCK };
+      delete reviewBoAppData["beneficial_owners_individual"];
+      reviewBoAppData["beneficial_owners_individual"] = [UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK];
+
+      mockGetApplicationData.mockReturnValueOnce({
+        ...reviewBoAppData
+      });
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without review BO table if no BOs have been reviewed`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).not.toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+    });
+
+    test(`redirection to ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page if beneficial owner application data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ...REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(false);
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE_FOR_GOV);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain('Found. Redirecting to /update-an-overseas-entity/review-beneficial-owner-gov?index=1');
+    });
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners and managing officers`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
@@ -91,6 +145,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
       expect(mockGetCompanyPscService).toHaveBeenCalled();
       expect(mockGetCompanyOfficers).toHaveBeenCalled();
@@ -128,6 +183,22 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain('Redirecting to /update-an-overseas-entity/review-beneficial-owner-individual?index=2');
+    });
+
+    test(`redirection to beneficial owner other legal review page if BO to review`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
+        beneficial_owners_individual: {}
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(false);
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE_CORPORATE_ENTITY);
+      mockGetCompanyOfficers.mockReturnValueOnce({});
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual('Found. Redirecting to /update-an-overseas-entity/review-beneficial-owner-other?index=1');
     });
 
     test(`test other benefical owner data returned when getCompanyPsc data kind is other`, async () => {
@@ -227,26 +298,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetBoMoData).toBeTruthy;
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCompanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-        [BeneficialOwnerIndividualKey]: []
-      });
-      mockHasFetchedBoAndMoData.mockReturnValue(true);
-
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
-      expect(mockGetCompanyPscService).not.toHaveBeenCalled();
-    });
-
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for beneficial owners with just the BOs options`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -263,6 +314,30 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with newly added BO's table displayed`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_NEWLY_ADDED_BO });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without newly added BO's table displayed`, async () => {
+      const data = { ...APPLICATION_DATA_MOCK };
+      delete data[BeneficialOwnerIndividualKey];
+      const boiNoChReference = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      boiNoChReference["ch_reference"] = "123";
+      data[BeneficialOwnerIndividualKey] = [boiNoChReference];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...data });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).not.toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
     });
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with empty app data`, async () => {
@@ -290,7 +365,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
     });
+  });
 
+  describe("GET PSC tests", () => {
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page, doesn't call getCompanyPsc if BeneficialOwnerIndividualKey exists`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerIndividualKey]: []
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(true);
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(mockGetCompanyPscService).not.toHaveBeenCalled();
+    });
   });
 
   describe("POST tests", () => {
@@ -366,4 +462,3 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
   });
 });
-

@@ -37,6 +37,41 @@
   {% endif %}
 {% endset %}
 
+{% if pageParams.isRegistration %}
+  {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL %}
+{% else %}
+  {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
+    {% if bog.ceased_date | length %}
+    {% set bogCeasedDate = dateMacros.formatDate(bog.ceased_date["day"], bog.ceased_date["month"], bog.ceased_date["year"]) %}
+    {% set isStillBeneficialOwner = { 
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "No" },
+        actions: {
+          items:
+            [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + bog.id + OE_CONFIGS.IS_CEASED,
+            "Government or public authority beneficial owner " + bogFullName + " - are they still a beneficial owner?",
+            "change-government-or-public-authority-still-beneficial-owner-button" ) ] } } %}
+    {% set ceasedDate ={
+      key: {
+        text: "Ceased date" },
+        value: { text: bogCeasedDate },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + bog.id + OE_CONFIGS.CEASED_DATE,
+          "Government or public authority beneficial owner " + bogFullName + " - ceased date",
+          "change-government-or-public-authority-ceased-date-button" ) ] } } %}
+  {% else %}
+    {% set isStillBeneficialOwner = {
+      key: {
+        text: "Are they still a beneficial owner?" },
+        value: { text: "Yes" },
+        actions: {
+          items: [ CREATE_CHANGE_LINK( changeLinkUrl + "/" + bog.id + OE_CONFIGS.IS_CEASED,
+          "Government or public authority beneficial owner " + bogFullName + " - are they still a beneficial owner?",
+          "change-government-or-public-authority-still-beneficial-owner-button" ) ] } } %}
+  {% endif %}
+{% endif %}
+
 <h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>
 
 {{ govukSummaryList({
@@ -50,7 +85,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.NAME,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.NAME,
             "Government or public authority beneficial owner " + bog.name + " - name",
             "change-government-or-public-authority-beneficial-owner-name-button"
           ) ]
@@ -65,7 +100,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Government or public authority beneficial owner " + bog.name + " - principal or registered office address",
             "change-government-or-public-authority-beneficial-owner-principal-address-button"
           ) ]
@@ -80,7 +115,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + bogChangeServiceAddressHtml,
+            changeLinkUrl + "/" + bog.id + bogChangeServiceAddressHtml,
             "Government or public authority beneficial owner " + bog.name + " - correspondence address",
             "change-government-or-public-authority-beneficial-owner-correspondence-address-button"
           ) ]
@@ -95,7 +130,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.LEGAL_FORM,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.LEGAL_FORM,
             "Government or public authority beneficial owner " + bog.name + " - legal form",
             "change-government-or-public-authority-beneficial-owner-legal-form-button"
           ) ]
@@ -110,7 +145,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.LAW_GOVERNED,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.LAW_GOVERNED,
             "Government or public authority beneficial owner " + bog.name + " - governing law",
             "change-government-or-public-authority-beneficial-owner-law-governed-button"
           ) ]
@@ -125,7 +160,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.START_DATE,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.START_DATE,
             "Government or public authority beneficial owner " + bog.name + " - date it became a beneficial owner",
             "change-government-or-public-authority-beneficial-owner-start-date-button"
           ) ]
@@ -140,7 +175,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.NOC_TYPES,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.NOC_TYPES,
             "Government or public authority beneficial owner " + bog.name + " - nature of control",
             "change-government-or-public-authority-beneficial-owner-nature-of-control-button"
           ) ]
@@ -155,11 +190,12 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL + "/" + bog.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
             "Government or public authority beneficial owner " + bog.name + " - is it on the sanctions list?",
             "change-government-or-public-authority-beneficial-owner-sanctions-list-button"
           ) ]
         }
-      }
+      },
+      isStillBeneficialOwner, ceasedDate
     ]
 }) }}

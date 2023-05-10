@@ -71,7 +71,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]: {
     currentPage: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
-    previousPage: () => config.UPDATE_DUE_DILIGENCE_PAGE,
+    previousPage: () => config.UPDATE_DUE_DILIGENCE_URL,
     nextPage: [config.OVERSEAS_ENTITY_REVIEW_URL]
   },
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {

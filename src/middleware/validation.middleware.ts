@@ -12,6 +12,8 @@ import {
   IdentityDateKeys,
   CeasedDateKey,
   CeasedDateKeys,
+  FilingDateKey,
+  FilingDateKeys
 } from "../model/date.model";
 
 import { logger } from '../utils/logger';
@@ -32,7 +34,8 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         [DateOfBirthKey]: prepareData(req.body, DateOfBirthKeys),
         [StartDateKey]: prepareData(req.body, StartDateKeys),
         [IdentityDateKey]: prepareData(req.body, IdentityDateKeys),
-        [CeasedDateKey]: prepareData(req.body, CeasedDateKeys)
+        [CeasedDateKey]: prepareData(req.body, CeasedDateKeys),
+        [FilingDateKey]: prepareData(req.body, FilingDateKeys)
       };
 
       const routePath = req.route.path;

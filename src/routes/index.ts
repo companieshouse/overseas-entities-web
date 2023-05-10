@@ -554,7 +554,7 @@ router.route(config.UPDATE_FILING_DATE_URL)
     navigation.hasOverseasEntity
   )
   .get(updateFilingDate.get)
-  .post(updateFilingDate.post);
+  .post(...validator.updateFilingDate, checkValidations, updateFilingDate.post);
 
 router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   .all(

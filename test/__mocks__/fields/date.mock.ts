@@ -16,6 +16,10 @@ export const DATE_OF_BIRTH = {
     "identity_date-day": "",
     "identity_date-month": "",
     "identity_date-year": "",
+  }, FILING_DATE_REQ_BODY_MOCK = {
+    "filing_date-day": "1",
+    "filing_date-month": "1",
+    "filing_date-year": "2022",
   }, DATE = { day: "1", month: "1", year: "2000" }, EMPTY_DATE = { day: "", month: "", year: "" },
   getTwoMonthOldDate = (): DateTime => {
     const now = DateTime.now();

@@ -80,6 +80,17 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
+export const filing_date_validations = [
+  body("filing_date-day")
+    .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+  body("filing_date-month")
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+  body("filing_date-year")
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+  body("filing_date-day")
+    .custom((value, { req }) => checkDate(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
+];
+
 const dateOfBirthValidationsContext: dateContext = {
   dayInput: {
     name: "dateOfBirthDay",

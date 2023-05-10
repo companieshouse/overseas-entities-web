@@ -995,6 +995,7 @@ export const PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SP
 
 export const UPDATE_OBJECT_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
+  filing_date: { day: "1", month: "1", year: "2022" },
   registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [],
   review_beneficial_owners_corporate: [],

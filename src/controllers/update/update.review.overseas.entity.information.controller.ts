@@ -5,7 +5,6 @@ import { ApplicationData } from "model";
 import { getApplicationData } from "../../utils/application.data";
 import { Session } from "@companieshouse/node-session-handler";
 import { DueDiligenceKey } from "../../model/due.diligence.model";
-import { OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -39,14 +38,11 @@ const getBackLinkUrl = (appData: ApplicationData) => {
   let backLinkUrl;
 
   const agentDueDiligence = appData[DueDiligenceKey] && Object.keys(appData[DueDiligenceKey]).length > 0;
-  const overseasEntityDueDiligence = appData[OverseasEntityDueDiligenceKey] && Object.keys(appData[OverseasEntityDueDiligenceKey]).length > 0;
 
   if (agentDueDiligence) {
     backLinkUrl = config.UPDATE_DUE_DILIGENCE_URL;
-  } else if (overseasEntityDueDiligence) {
-    backLinkUrl = config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL;
   } else {
-    backLinkUrl = config.WHO_IS_MAKING_UPDATE_URL;
+    backLinkUrl = config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL;
   }
 
   return backLinkUrl;

@@ -11,7 +11,7 @@ export const MOCK_GET_COMPANY_PSC_RESOURCE = {
         'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
         'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
       ],
-      "kind": "individual-person-with-significant-control",
+      "kind": "individual-beneficial-owner",
       "name_elements": {
         "middleName": "Notreal",
         "forename": "Random",
@@ -43,7 +43,7 @@ export const MOCK_GET_COMPANY_PSC_RESOURCE = {
         'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
         'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
       ],
-      "kind": "individual-person-with-significant-control",
+      "kind": "individual-beneficial-owner",
       "name_elements": {
         "middleName": "Second",
         "forename": "Beneficialowner",
@@ -129,7 +129,7 @@ export const MOCK_GET_COMPANY_PSC_RESOURCE_FOR_GOV = {
         'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
         'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
       ],
-      "kind": "legal-person-with-significant-control",
+      "kind": "legal-person-beneficial-owner",
       "name_elements": {
         "middleName": "Notreal",
         "forename": "Random",

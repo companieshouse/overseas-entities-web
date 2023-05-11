@@ -207,7 +207,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       });
 
       mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE);
-      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-with-significant-control');
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'legal-person-beneficial-owner');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);
@@ -281,7 +281,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
       });
-      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-person-with-significant-control');
+      mockGetCompanyPscService.mockReturnValueOnce(MOCK_GET_COMPANY_PSC_RESOURCE.items[0].kind = 'individual-beneficial-owner');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyPscService).toBeCalledTimes(1);

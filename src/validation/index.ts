@@ -30,6 +30,7 @@ import { trustLegalEntityBeneficialOwnerValidator } from "./trust.legal.entity.b
 import { registrableBeneficialOwner } from "./registrable.beneficial.owner.validation";
 import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.owner.indiviual.review.validation";
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
+import { updateFilingDate } from "./update/update.filing.date.validation";
 
 export const validator = {
   soldLandFilter,
@@ -69,5 +70,6 @@ export const validator = {
   registrableBeneficialOwner,
   updateBeneficialOwnerAndReviewValidator,
   updateReviewBeneficialOwnerGovValidator,
-  updateContinueSavedFiling
+  updateContinueSavedFiling,
+  updateFilingDate
 };

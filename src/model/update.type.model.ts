@@ -17,6 +17,7 @@ export const UpdateKeys: string[] = [
   "review_beneficial_owners_government_or_public_authority",
   "review_managing_officers_individual",
   "review_managing_officers_corporate",
+  "filing_date"
 ];
 
 export interface Update {
@@ -29,5 +30,6 @@ export interface Update {
   review_beneficial_owners_government_or_public_authority?: BeneficialOwnerGov[];
   review_managing_officers_individual?: ManagingOfficerIndividual[];
   review_managing_officers_corporate?: ManagingOfficerCorporate[];
+  filing_date?: InputDate;
 }
 

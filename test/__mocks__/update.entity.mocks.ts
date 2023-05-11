@@ -6,6 +6,7 @@ export const companyProfileQueryMock = {
 };
 
 export const testDateOfCreation = DATE;
+export const testFilingDate = DATE;
 export const testEntityName = "testEntity";
 export const testEntityNumber = "OE111129";
 export const testIncorporationCountry = "Ireland";
@@ -54,6 +55,7 @@ export const missingDateOfCreationMock = {
 
 export const updateModelMock = {
   update: {
-    date_of_creation: testDateOfCreation
+    date_of_creation: testDateOfCreation,
+    filing_date: testFilingDate
   }
 };

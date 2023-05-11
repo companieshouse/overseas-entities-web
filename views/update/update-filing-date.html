@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Date (NOT LIVE)" %}
+{% set title = "Date of the update statement (NOT LIVE)" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -13,8 +13,13 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
     <h1 class="govuk-heading-xl">{{ title }}</h1>
     <form method="post">
+      <p class="govuk-body">All the information in this update statement must be correct on this date.
+      Verification checks must be completed no more than 3 months before the statement date.</p>
+      {% set filingDateLabelText = "What is the date of the update statement?" %}
+      {% include "includes/inputs/date/filing-date-input.html" %}
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

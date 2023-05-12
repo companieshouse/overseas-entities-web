@@ -29,7 +29,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     await fetchAndSetBoMo(req, appData);
 
     const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
-    if (checkIsRedirect && checkIsRedirect !== ""){
+    if (checkIsRedirect && checkIsRedirect !== "") {
       return res.redirect(checkIsRedirect);
     }
 
@@ -99,12 +99,15 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
-      if (officer.officerRole === "secretary") {
-        const managingOfficer = mapToManagingOfficer(officer);
-        logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-      } else if (officer.officerRole === "director") {
-        const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+      logger.info("Loaded officer " + officer.officerRole);
+      if (officer.resignedOn === undefined) {
+        if (officer.officerRole === "managing-officer") {
+          const managingOfficer = mapToManagingOfficer(officer);
+          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
+        } else if (officer.officerRole === "corporate-managing-officer") {
+          const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+        }
       }
     }
   }
@@ -114,18 +117,21 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs) {
     for (const psc of (pscs.items || [])) {
-      if (psc.kind === "individual-beneficial-owner"){
-        const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
-        appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
-      } else if (psc.kind === "corporate-entity-beneficial-owner") {
-        const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
-        appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
-      } else if (psc.kind === "legal-person-beneficial-owner") {
-        const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-        logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
-        appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
+      logger.info("Loaded psc " + psc.kind);
+      if (psc.ceasedOn === undefined) {
+        if (psc.kind === "individual-beneficial-owner") {
+          const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
+          logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+          appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
+        } else if (psc.kind === "corporate-entity-beneficial-owner") {
+          const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+          logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+          appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
+        } else if (psc.kind === "legal-person-beneficial-owner") {
+          const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+          logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+          appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
+        }
       }
     }
   }

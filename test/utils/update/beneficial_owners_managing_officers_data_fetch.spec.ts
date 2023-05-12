@@ -18,9 +18,3 @@ describe("BO/MO fetch Utils", () => {
     expect(hasFetchedBoAndMoData(appData)).toEqual(true);
   });
 });
-
-describe("fetch mo", () => {
-  test("fetch", () => {
-  });
-
-});

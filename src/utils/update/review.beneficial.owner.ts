@@ -1,7 +1,7 @@
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import {
-  REVIEW_BENEFICIAL_OWNER_INDEX_PARAM,
+  REVIEW_OWNER_INDEX_PARAM,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
@@ -22,15 +22,15 @@ const AllBoTypes = {
 
 const beneficialOwnerIndividualReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 const beneficialOwnerOtherReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 const beneficialOwnerGovReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 // these checks are to determine whether the BO has been fully submitted
 // by checking for appData submitted with form and not present after PSC fetch
@@ -106,7 +106,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
   return redirectUrl;
 };
 
-const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: string, boType: string, beneficialOwnerRedirectUrl: string) => {
+export const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: string, boType: string, beneficialOwnerRedirectUrl: string) => {
   let redirectUrl = "";
   const boLength: number = appData[boType]?.length || 0;
 

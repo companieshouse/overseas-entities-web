@@ -71,7 +71,8 @@ import {
   updateReviewBeneficialOwnerIndividual,
   updateReviewBeneficialOwnerOther,
   updateReviewBeneficialOwnerGov,
-  resumeUpdateSubmission
+  resumeUpdateSubmission,
+  updateReviewIndividualManagingOfficer
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -510,6 +511,17 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL)
   )
   .get(updateManagingOfficerIndividual.get)
   .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
+
+router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICE_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewIndividualManagingOfficer.get)
+  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateReviewIndividualManagingOfficer.post);
+
+router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerGov.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
   .all(

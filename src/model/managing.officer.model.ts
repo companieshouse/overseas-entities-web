@@ -26,6 +26,7 @@ export const ManagingOfficerKeys: string[] = [
 
 export interface ManagingOfficerIndividual {
   id: string;
+  ch_reference?: string;
   first_name?: string;
   last_name?: string;
   has_former_names?: yesNoResponse;

@@ -29,7 +29,8 @@ import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   LANDING_PAGE_URL,
   UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
-  UPDATE_MANAGING_OFFICER_CORPORATE_URL
+  UPDATE_MANAGING_OFFICER_CORPORATE_URL,
+  REMOVE
 } from "../../../src/config";
 import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
@@ -38,7 +39,7 @@ import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
@@ -50,7 +51,11 @@ import {
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
-  EMAIL_ADDRESS
+  EMAIL_ADDRESS,
+  MO_CORP_ID_URL,
+  MO_CORP_ID,
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  MO_IND_ID_URL
 } from "../../__mocks__/session.mock";
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
@@ -59,14 +64,18 @@ import {
 } from "../../__mocks__/validation.mock";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
+  getApplicationData,
+  getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
+  removeFromApplicationData,
   setApplicationData
 } from "../../../src/utils/application.data";
 import { logger } from "../../../src/utils/logger";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -80,11 +89,14 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockRemoveFromApplicationData = removeFromApplicationData as jest.Mock;
 const mockMapFieldsToDataObject = mapFieldsToDataObject as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
@@ -400,4 +412,144 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(data["contact_email"]).toEqual(EMAIL_ADDRESS);
     });
   });
+
+  describe("GET BY ID tests", () => {
+    test(`renders ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
+
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain("Joe Bloggs");
+    });
+
+    test(`catch error when rendering the ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
+  describe("UPDATE tests", () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("catch error when updating data", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`replaces existing object on submit`, async () => {
+      const newMoData: ManagingOfficerCorporate = { id: MO_CORP_ID, name: "new name", role_and_responsibilities: "role and responsibilities text", contact_email: "test@test.com", contact_full_name: "full name" };
+      mockPrepareData.mockReturnValueOnce(newMoData);
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
+
+      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_CORP_ID);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerCorporateKey);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Service address from the ${UPDATE_MANAGING_OFFICER_CORPORATE_URL} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Service address from the ${UPDATE_MANAGING_OFFICER_CORPORATE_URL} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
+      await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Public register data from the ${UPDATE_MANAGING_OFFICER_CORPORATE_URL} is present when is on register set to yes`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
+      await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("Reg");
+      expect(data[RegistrationNumberKey]).toEqual("123456");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Public register data from the ${UPDATE_MANAGING_OFFICER_CORPORATE_URL} is empty when is on register set to no`, async () => {
+      mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
+      await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[PublicRegisterNameKey]).toEqual("");
+      expect(data[RegistrationNumberKey]).toEqual("");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("REMOVE tests", () => {
+    test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("catch error when removing data", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`removes the object from session`, async () => {
+      const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+  });
+
 });

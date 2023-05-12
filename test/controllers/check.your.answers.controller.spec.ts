@@ -67,7 +67,9 @@ import {
   TRUST_INFORMATION_LINK,
   CHANGE_LINK_BO_OTHER,
   CHANGE_LINK_BO_GOVERNMENT,
-  CHANGE_LINK_BO_INDIVIDUAL
+  CHANGE_LINK_BO_INDIVIDUAL,
+  CHANGE_LINK_MO_INDIVIDUAL,
+  CHANGE_LINK_MO_CORPORATE
 } from "../__mocks__/text.mock";
 import {
   ERROR,
@@ -162,6 +164,8 @@ describe("GET tests", () => {
     expect(resp.text).toContain(CHANGE_LINK_BO_INDIVIDUAL);
     expect(resp.text).toContain(CHANGE_LINK_BO_GOVERNMENT);
     expect(resp.text).toContain(CHANGE_LINK_BO_OTHER);
+    expect(resp.text).toContain(CHANGE_LINK_MO_INDIVIDUAL);
+    expect(resp.text).toContain(CHANGE_LINK_MO_CORPORATE);
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including print button`, async () => {

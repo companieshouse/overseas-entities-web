@@ -44,7 +44,9 @@ import {
   UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT,
   UPDATE_CHANGE_LINK_BO_INDIVIDUAL,
   UPDATE_CHANGE_LINK_BO_GOVERNMENT,
-  UPDATE_CHANGE_LINK_BO_OTHER
+  UPDATE_CHANGE_LINK_BO_OTHER,
+  UPDATE_CHANGE_LINK_MO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_MO_CORPORATE
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -137,6 +139,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOVERNMENT);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_MO_CORPORATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO`, async () => {

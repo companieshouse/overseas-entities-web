@@ -803,6 +803,23 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION: beneficial
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
+  ch_reference: undefined,
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Malawian",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities"
+};
+
+export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  ch_reference: "testchreference",
   first_name: "Joe",
   last_name: "Bloggs",
   has_former_names: yesNoResponse.Yes,
@@ -859,6 +876,24 @@ export const REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION = {
 
 export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
   id: MO_CORP_ID,
+  ch_reference: undefined,
+  name: "Joe Bloggs Ltd",
+  principal_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_principal_address: yesNoResponse.Yes,
+  legal_form: "legalForm",
+  law_governed: "LegAuth",
+  is_on_register_in_country_formed_in: yesNoResponse.Yes,
+  public_register_name: "register",
+  registration_number: "123456789",
+  role_and_responsibilities: "role and responsibilities text",
+  contact_full_name: "Joe Bloggs",
+  contact_email: "jbloggs@bloggs.co.ru"
+};
+
+export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  id: MO_CORP_ID,
+  ch_reference: "testchreference",
   name: "Joe Bloggs Ltd",
   principal_address: ADDRESS,
   service_address: ADDRESS,
@@ -1224,7 +1259,7 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
     region: "region",
     country: "country"
   },
-  appointedOn: "appointed",
+  appointedOn: "2023-04-01",
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
@@ -1369,8 +1404,8 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF ],
-  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ UPDATE_MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,

@@ -162,6 +162,8 @@ export const CHANGE_LINK_INDIVIDUAL_BO_IS_ON_SANCTIONS_LIST = CHANGE_LINK_INDIVI
 export const CHANGE_LINK_BO_INDIVIDUAL = "/register-an-overseas-entity/beneficial-owner-individual/7ab403a0-4459-4ac0-b500-6d6f314da5b2";
 export const CHANGE_LINK_BO_GOVERNMENT = "/register-an-overseas-entity/beneficial-owner-gov/10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const CHANGE_LINK_BO_OTHER = "/register-an-overseas-entity/beneficial-owner-other/e12267a4-ae92-4cfe-bea5-e3731463b2b1";
+export const CHANGE_LINK_MO_INDIVIDUAL = "/register-an-overseas-entity/managing-officer/0dccbd5e-cc09-4f8f-828e-f7cc9fc352ac";
+export const CHANGE_LINK_MO_CORPORATE = "/register-an-overseas-entity/managing-officer-corporate/2df18e59-74dd-42d7-9494-8d40b953ddbe";
 
 // Update journey
 export const OVERSEAS_ENTITY_QUERY_PAGE_TITLE = "What is the Overseas Entity ID?";
@@ -183,6 +185,8 @@ export const CHANGE_LINK_ENTITY_GOVERNING_LAW = "/update-an-overseas-entity/enti
 export const UPDATE_CHANGE_LINK_BO_INDIVIDUAL = "/update-an-overseas-entity/update-beneficial-owner-individual/7ab403a0-4459-4ac0-b500-6d6f314da5b2";
 export const UPDATE_CHANGE_LINK_BO_GOVERNMENT = "/update-an-overseas-entity/update-beneficial-owner-gov/10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const UPDATE_CHANGE_LINK_BO_OTHER = "/update-an-overseas-entity/update-beneficial-owner-other/e12267a4-ae92-4cfe-bea5-e3731463b2b1";
+export const UPDATE_CHANGE_LINK_MO_INDIVIDUAL = "/update-an-overseas-entity/update-managing-officer/0dccbd5e-cc09-4f8f-828e-f7cc9fc352ac";
+export const UPDATE_CHANGE_LINK_MO_CORPORATE = "/update-an-overseas-entity/update-managing-officer-corporate/2df18e59-74dd-42d7-9494-8d40b953ddbe";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/update-beneficial-owner-type";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";

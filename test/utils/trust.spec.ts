@@ -805,7 +805,7 @@ describe('Trust Utils method tests', () => {
       const trust = trusts[0];
       const individualTrusteesWebModel = trust.INDIVIDUALS ?? [] as TrustIndividual[];
       expect(individualTrusteesWebModel[0]).toHaveProperty('id');
-      expect(individualTrusteesWebModel[0]["type"]).toEqual("Interested Person");
+      expect(individualTrusteesWebModel[0]["type"]).toEqual("Interested_Person");
       expect(individualTrusteesWebModel[0]["forename"]).toEqual("Fred");
       expect(individualTrusteesWebModel[0]["other_forenames"]).toEqual("");
       expect(individualTrusteesWebModel[0]["surname"]).toEqual("Bloggs");
@@ -874,7 +874,7 @@ describe('Trust Utils method tests', () => {
 
       const corporatelTrusteesWebModel = trust2.CORPORATES ?? [] as TrustCorporate[];
       expect(corporatelTrusteesWebModel[0]).toHaveProperty('id');
-      expect(corporatelTrusteesWebModel[0]["type"]).toEqual("Interested Person");
+      expect(corporatelTrusteesWebModel[0]["type"]).toEqual("Interested_Person");
       expect(corporatelTrusteesWebModel[0]["name"]).toEqual("Orange");
       expect(corporatelTrusteesWebModel[0]["ro_address_premises"]).toEqual("1");
       expect(corporatelTrusteesWebModel[0]["ro_address_line_1"]).toEqual("Main Street");

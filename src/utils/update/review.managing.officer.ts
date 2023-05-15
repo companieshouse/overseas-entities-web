@@ -3,11 +3,11 @@ import { ApplicationData } from "../../model";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerIndividual, ManagingOfficerKey } from "../../model/managing.officer.model";
 import { Update } from "../../model/update.type.model";
-import { reviewAllBeneficialOwnwer } from "./review.beneficial.owner";
+import { reviewAllOwnwers } from "./review.beneficial.owner";
 
 const AllMoTypes = {
-  moIndividualOfiicerReview: "review_beneficial_owners_individual",
-  moCorporateOfficerReview: "review_beneficial_owners_corporate",
+  moIndividualOfiicerReview: "review_managing_officers_individual",
+  moCorporateOfficerReview: "review_managing_officers_corporate",
   moIndividual: ManagingOfficerKey,
   moCorporate: ManagingOfficerCorporateKey
 };
@@ -34,10 +34,7 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
   let redirectUrl = "";
 
   const update_review = appData.update as Update;
-  console.log(`app data details ${JSON.stringify(appData.update)}`);
-  console.log(`is it inside it ${AllMoTypes.moIndividualOfiicerReview in update_review}`);
   if (AllMoTypes.moIndividualOfiicerReview in update_review){
-    console.log(`all mo types ${appData.update?.review_managing_officers_individual}`);
     const moiFromBackButton = checkForBackButtonBo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
     if (moiFromBackButton) {
       redirectUrl = moiFromBackButton;
@@ -46,7 +43,7 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
   }
 
   if (appData.update?.review_managing_officers_individual?.length){
-    redirectUrl = reviewAllBeneficialOwnwer(appData, AllMoTypes.moIndividualOfiicerReview, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl) as string;
+    redirectUrl = reviewAllOwnwers(appData, AllMoTypes.moIndividualOfiicerReview, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl) as string;
     return redirectUrl;
   }
   return "";

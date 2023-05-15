@@ -18,6 +18,7 @@ import app from "../../../src/app";
 import {
   APPLICATION_DATA_MOCK
 } from '../../__mocks__/session.mock';
+import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
 import {
   PAGE_TITLE_ERROR,
   ANY_MESSAGE_ERROR,
@@ -60,6 +61,21 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("href=\"/update-an-overseas-entity/update-due-diligence\"");
+    });
+
+    test(`renders the ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page`, async () => {
+      const appData = { ...APPLICATION_DATA_MOCK };
+      appData.due_diligence = {};
+      appData.overseas_entity_due_diligence = OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK;
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      const resp = await request(app).get(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("href=\"/update-an-overseas-entity/due-diligence-overseas-entity\"");
+
     });
 
     test("catch error when rendering the page", async () => {

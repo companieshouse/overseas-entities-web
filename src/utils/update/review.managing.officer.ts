@@ -38,9 +38,9 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
   console.log(`is it inside it ${AllMoTypes.moIndividualOfiicerReview in update_review}`);
   if (AllMoTypes.moIndividualOfiicerReview in update_review){
     console.log(`all mo types ${appData.update?.review_managing_officers_individual}`);
-    const boiFromBackButton = checkForBackButtonBo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
-    if (boiFromBackButton) {
-      redirectUrl = boiFromBackButton;
+    const moiFromBackButton = checkForBackButtonBo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
+    if (moiFromBackButton) {
+      redirectUrl = moiFromBackButton;
       return redirectUrl;
     }
   }

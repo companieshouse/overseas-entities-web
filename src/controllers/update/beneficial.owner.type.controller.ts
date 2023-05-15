@@ -21,6 +21,7 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
+import { ManagingOfficerIndividual } from "model/managing.officer.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -68,6 +69,8 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
     appData.update.review_beneficial_owners_individual = [];
     appData.update.review_beneficial_owners_corporate = [];
     appData.update.review_beneficial_owners_government_or_public_authority = [];
+    appData.update.review_managing_officers_individual = [];
+    appData.update.review_managing_officers_corporate = [];
 
     await retrieveBeneficialOwners(req, appData);
     await retrieveManagingOfficers(req, appData);
@@ -108,10 +111,8 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
       if (officer.officerRole === "secretary") {
         const managingOfficer = mapToManagingOfficer(officer);
         logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-        if (appData.update !== undefined){
-          appData.update.review_managing_officers_individual?.push(managingOfficer);
-        }
-
+        appData.update?.review_managing_officers_individual?.push(managingOfficer);
+        console.log(`moi data is ${JSON.stringify(appData.update?.review_managing_officers_individual)}`);
       } else if (officer.officerRole === "director") {
         const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
         logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);

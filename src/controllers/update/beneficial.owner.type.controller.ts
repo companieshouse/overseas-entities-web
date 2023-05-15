@@ -21,7 +21,6 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
-import { ManagingOfficerIndividual } from "model/managing.officer.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

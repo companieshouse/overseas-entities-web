@@ -23,7 +23,7 @@ export const MOCK_GET_COMPANY_OFFICERS: CompanyOfficers = {
         "country": "England",
         "premises": "Samron House"
       },
-      "appointedOn": "",
+      "appointedOn": "2023-01-01",
       "links": {
         "officer": {
           "appointments": "/officers/secretary1/appointments"

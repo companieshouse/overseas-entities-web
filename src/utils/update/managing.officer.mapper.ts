@@ -1,4 +1,4 @@
-import { isSameAddress, mapBOMOAddress, mapDateOfBirth } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
@@ -22,6 +22,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     usual_residential_address: address,
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
     service_address: service_address,
+    start_date: mapInputDate(officer.appointedOn),
     occupation: officer.occupation,
     role_and_responsibilities: officer.officerRole,
   };
@@ -38,6 +39,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     principal_address: address,
     is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
     service_address: service_address,
+    start_date: mapInputDate(officer.appointedOn),
     legal_form: officer.identification?.legalForm,
     law_governed: officer.identification?.legalAuthority,
     is_on_register_in_country_formed_in: undefined,

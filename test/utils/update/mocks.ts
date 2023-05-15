@@ -109,7 +109,7 @@ export const managingOfficerMock: CompanyOfficer = {
     region: "region",
     country: "country"
   },
-  appointedOn: "appointed",
+  appointedOn: "2023-04-01",
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",

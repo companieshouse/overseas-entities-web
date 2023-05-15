@@ -35,7 +35,11 @@ describe("Test mapping to managing officer", () => {
         year: managingOfficerMock.dateOfBirth?.year
       },
       nationality: managingOfficerMock.nationality,
-      // appointed_on: managingOfficerMock.appointedOn,
+      start_date: {
+        day: "1",
+        month: "4",
+        year: "2023",
+      },
       usual_residential_address: undefined,
       is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
       service_address: {
@@ -58,6 +62,11 @@ describe("Test mapping to managing officer", () => {
       name: managingOfficerMock.name,
       principal_address: undefined,
       is_service_address_same_as_principal_address: yesNoResponse.Yes,
+      start_date: {
+        day: "1",
+        month: "4",
+        year: "2023",
+      },
       service_address: {
         property_name_number: managingOfficerMock.address.premises,
         line_1: managingOfficerMock.address.addressLine1,

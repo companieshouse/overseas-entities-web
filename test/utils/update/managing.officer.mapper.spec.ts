@@ -1,8 +1,8 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { mapToManagingOfficer, mapToManagingOfficerCorporate, splitNames, getFormerNames } from '../../../src/utils/update/managing.officer.mapper';
+import { mapToManagingOfficer, mapToManagingOfficerCorporate, splitNames, getFormerNames, splitNationalities } from '../../../src/utils/update/managing.officer.mapper';
 import { MANAGING_OFFICER_MOCK_MAP_DATA } from '../../__mocks__/session.mock';
-import { managingOfficerMock } from './mocks';
+import { managingOfficerMock, managingOfficerMockDualNationality } from './mocks';
 
 describe("Test mapping to managing officer", () => {
 
@@ -34,7 +34,7 @@ describe("Test mapping to managing officer", () => {
         month: managingOfficerMock.dateOfBirth?.month,
         year: managingOfficerMock.dateOfBirth?.year
       },
-      nationality: managingOfficerMock.nationality,
+      nationality: splitNationalities(managingOfficerMock.nationality)[0],
       start_date: {
         day: "1",
         month: "4",
@@ -53,6 +53,41 @@ describe("Test mapping to managing officer", () => {
       },
       occupation: managingOfficerMock.occupation,
       role_and_responsibilities: managingOfficerMock.officerRole
+    });
+  });
+
+  test('map officer data to managing officer with two nationalities should return object', () => {
+    expect(mapToManagingOfficer(managingOfficerMockDualNationality)).toEqual({
+      id: undefined,
+      first_name: splitNames(managingOfficerMockDualNationality.name)[0],
+      last_name: splitNames(managingOfficerMockDualNationality.name)[1],
+      has_former_names: yesNoResponse.Yes,
+      former_names: getFormerNames(managingOfficerMockDualNationality.formerNames),
+      date_of_birth: {
+        day: managingOfficerMockDualNationality.dateOfBirth?.day,
+        month: managingOfficerMockDualNationality.dateOfBirth?.month,
+        year: managingOfficerMockDualNationality.dateOfBirth?.year
+      },
+      nationality: splitNationalities(managingOfficerMockDualNationality.nationality)[0],
+      second_nationality: splitNationalities(managingOfficerMockDualNationality.nationality)[1],
+      start_date: {
+        day: "1",
+        month: "4",
+        year: "2023",
+      },
+      usual_residential_address: undefined,
+      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      service_address: {
+        property_name_number: managingOfficerMockDualNationality.address.premises,
+        line_1: managingOfficerMockDualNationality.address.addressLine1,
+        line_2: managingOfficerMockDualNationality.address.addressLine2,
+        town: managingOfficerMockDualNationality.address.locality,
+        county: managingOfficerMockDualNationality.address.region,
+        country: managingOfficerMockDualNationality.address.country,
+        postcode: managingOfficerMockDualNationality.address.postalCode,
+      },
+      occupation: managingOfficerMockDualNationality.occupation,
+      role_and_responsibilities: managingOfficerMockDualNationality.officerRole
     });
   });
 

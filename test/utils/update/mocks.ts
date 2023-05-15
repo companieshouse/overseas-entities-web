@@ -135,3 +135,42 @@ export const managingOfficerMock: CompanyOfficer = {
   officerRole: "role",
   resignedOn: "resigned"
 };
+
+export const managingOfficerMockDualNationality: CompanyOfficer = {
+  address: {
+    premises: "1 Acme Road",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
+    locality: "locality",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
+    region: "region",
+    country: "country"
+  },
+  appointedOn: "2023-04-01",
+  countryOfResidence: "country1",
+  dateOfBirth: {
+    day: "1",
+    month: "2",
+    year: "1900"
+  },
+  formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  },
+  links: {
+    officer: {
+      appointments: ""
+    }
+  },
+  name: "Jimmy John Wabb",
+  nationality: "country1, country2",
+  occupation: "occupation",
+  officerRole: "role",
+  resignedOn: "resigned"
+};

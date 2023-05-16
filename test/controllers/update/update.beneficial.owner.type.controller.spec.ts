@@ -44,7 +44,8 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
+  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
+  APPLICATION_DATA_UPDATE_MO_MOCK
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -85,6 +86,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     mockGetApplicationData.mockReset();
     mockGetCompanyPscService.mockReset();
+    mockGetCompanyOfficers.mockReset();
   });
 
   describe("GET tests", () => {
@@ -105,7 +107,32 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without review BO table if no BOs have been reviewed`, async () => {
+    test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed MOs if MOs have been reviewed`, async () => {
+
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_MO_MOCK
+      });
+
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without table of reviewed BOsMOs if no BOs have been reviewed`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        ...APPLICATION_DATA_UPDATE_BO_MOCK });
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
+      expect(resp.text).not.toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
+    });
+
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without table of reviewed BOsMOs if no MOs have been reviewed`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
         ...APPLICATION_DATA_UPDATE_BO_MOCK });

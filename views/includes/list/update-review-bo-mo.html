@@ -35,7 +35,7 @@
                             {{ boo.name }}
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            Other legal entity
+                            Other legal entity beneficial owner
                         </dd>
                         <dd class="govuk-summary-list__value summary-status" aria-label="status">
                             {% if boo.ceased_date|length === 0 %}
@@ -59,7 +59,7 @@
                             {{ bog.name }}
                         </dt>
                         <dd class="govuk-summary-list__value">
-                            Government or public authority
+                            Government or public authority beneficial owner
                         </dd>
                         <dd class="govuk-summary-list__value summary-status" aria-label="status">
                             {% if bog.ceased_date|length === 0 %}
@@ -71,6 +71,54 @@
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="{{ reviewBeneficialOwnerGovUrl }}{{ indexQueryParam }}{{ beneficial_owners_government_or_public_authority.indexOf(bog) }}">
                                 Change<span class="govuk-visually-hidden">{{ bog.name }} - Government or public authority</span>
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% for mo in managing_officers_individual %}
+                {% if mo.ch_reference %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            {{ mo.first_name + " " + mo.last_name }}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Individual managing officer
+                        </dd>
+                        <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                            {% if mo.resigned_on|length === 0 %}
+                                Active
+                            {% else %}
+                                Not active
+                            {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="{{ reviewManagingOfficerIndividualUrl }}{{ indexQueryParam }}{{ managing_officers_individual.indexOf(mo) }}">
+                                Change<span class="govuk-visually-hidden">{{ mo.first_name + " " + mo.last_name }} - Individual managing officer</span>
+                            </a>
+                        </dd>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            {% for moc in managing_officers_corporate %}
+                {% if moc.ch_reference %}
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">
+                            {{ moc.first_name + " " + mo.last_name }}
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            Corporate managing officer
+                        </dd>
+                        <dd class="govuk-summary-list__value summary-status" aria-label="status">
+                            {% if moc.resigned_on|length === 0 %}
+                                Active
+                            {% else %}
+                                Not active
+                            {% endif %}
+                        </dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="{{ reviewManagingOfficerCorporateUrl }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}">
+                                Change<span class="govuk-visually-hidden">{{ moc.first_name + " " + mo.last_name }} - Corporate managing officer</span>
                             </a>
                         </dd>
                     </div>

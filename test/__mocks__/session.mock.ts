@@ -479,6 +479,22 @@ export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOw
   trust_ids: []
 };
 
+export const UPDATE_REVIEW_MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  ch_reference: "string",
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Malawian",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities"
+};
+
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,
@@ -803,7 +819,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION: beneficial
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
-  ch_reference: undefined,
+  ch_reference: "string",
   first_name: "Joe",
   last_name: "Bloggs",
   has_former_names: yesNoResponse.Yes,
@@ -1427,6 +1443,28 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_UPDATE_MO_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ UPDATE_REVIEW_MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
   [PaymentKey]: PAYMENT_OBJECT_MOCK,

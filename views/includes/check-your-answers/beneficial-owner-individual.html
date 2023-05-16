@@ -252,14 +252,14 @@
   {% else %}
   {% set rows = (rows.push({
     key: {
-      text: "Are they still a benficial owner"
+      text: "Are they still a benficial owner?"
     },
     value: {
       text: "Yes"
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.CEASED_DATE,
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-ceased-date-button"
       ) ]

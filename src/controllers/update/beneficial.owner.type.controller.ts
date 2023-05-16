@@ -36,26 +36,36 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     // TO-DO : Remove after review pages come in
-    if (appData.managing_officers_individual) {
-      appData.managing_officers_individual.forEach(officer => {
-        officer.ch_reference = "String";
-        // TO-DO : This is commented out as save and resume is currently off, will need to be on
-        // officer.date_of_birth = {day: "1", month: "2", year: "1990"};
-        officer.resigned_on = { day: "1", month: "2", year: "2023" };
-        appData.managing_officers_individual?.push(officer);
-      });
+    if (appData.managing_officers_individual && appData.managing_officers_individual.length > 0) {
+      appData.managing_officers_individual[0].ch_reference = "string";
+      appData.managing_officers_individual[0].resigned_on = { day: "1", month: "2", year: "2023" };
+      // appData.managing_officers_individual.forEach(officer => {
+      //   officer.ch_reference = "String";
+      //   // TO-DO : This is commented out as save and resume is currently off, will need to be on
+      //   // officer.date_of_birth = {day: "1", month: "2", year: "1990"};
+      //   officer.resigned_on = { day: "1", month: "2", year: "2023" };
+      //   appData.managing_officers_individual?.push(officer);
+      //   if (appData.managing_officers_individual && appData.managing_officers_individual?.length > 1) {
+      //     appData.managing_officers_individual.pop();
+      //   }
+      // });
     }
 
-    const allBosMos = [
+    const allBos = [
       ...(appData[BeneficialOwnerIndividualKey] ?? []),
       ...(appData[BeneficialOwnerOtherKey] ?? []),
-      ...(appData[BeneficialOwnerGovKey] ?? []),
+      ...(appData[BeneficialOwnerGovKey] ?? [])
+    ];
+
+    const hasNewlyAddedBos = allBos.find(bo => bo.ch_reference === undefined) !== undefined;
+
+    const allBosMos = [
+      ...allBos,
       ...(appData[ManagingOfficerCorporateKey] ?? []),
       ...(appData[ManagingOfficerKey] ?? [])
     ];
 
     const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
-    const hasNewlyAddedBos = allBosMos.find(bo => bo.ch_reference === undefined) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,

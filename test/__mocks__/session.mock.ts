@@ -479,22 +479,6 @@ export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOw
   trust_ids: []
 };
 
-export const UPDATE_REVIEW_MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
-  id: MO_IND_ID,
-  ch_reference: "string",
-  first_name: "Joe",
-  last_name: "Bloggs",
-  has_former_names: yesNoResponse.Yes,
-  former_names: "Some name",
-  date_of_birth: { day: "21", month: "3", year: "1947" },
-  nationality: "Malawian",
-  usual_residential_address: ADDRESS,
-  service_address: ADDRESS,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  occupation: "Some Occupation",
-  role_and_responsibilities: "Some role and responsibilities"
-};
-
 export const BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK = {
   ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   ...RESIDENTIAL_ADDRESS_MOCK,
@@ -819,7 +803,6 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION: beneficial
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
-  ch_reference: "string",
   first_name: "Joe",
   last_name: "Bloggs",
   has_former_names: yesNoResponse.Yes,
@@ -848,6 +831,22 @@ export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOf
   occupation: "Some Occupation",
   role_and_responsibilities: "Some role and responsibilities"
 };
+
+// export const UPDATE_REVIEW_MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+//   id: MO_IND_ID,
+//   ch_reference: "string",
+//   first_name: "Joe",
+//   last_name: "Bloggs",
+//   has_former_names: yesNoResponse.Yes,
+//   former_names: "Some name",
+//   date_of_birth: { day: "21", month: "3", year: "1947" },
+//   nationality: "Malawian",
+//   usual_residential_address: ADDRESS,
+//   service_address: ADDRESS,
+//   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+//   occupation: "Some Occupation",
+//   role_and_responsibilities: "Some role and responsibilities"
+// };
 
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
   first_name: "",
@@ -1464,7 +1463,7 @@ export const APPLICATION_DATA_UPDATE_MO_MOCK: ApplicationData = {
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-  [managingOfficerType.ManagingOfficerKey]: [ UPDATE_REVIEW_MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ UPDATE_MANAGING_OFFICER_OBJECT_MOCK ],
   [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
   [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
   [PaymentKey]: PAYMENT_OBJECT_MOCK,

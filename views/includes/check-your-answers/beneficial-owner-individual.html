@@ -85,7 +85,19 @@
     ) ]
   }
 }), rows) %}
-
+{% if hiddenChangeLink == true %}
+{% set rows = (rows.push({
+  key: {
+    text: "Date of birth"
+  },
+  value: {
+    text: boiDateOfBirth
+  },
+  actions: {
+  items: [undefined]
+  }
+}), rows) %}
+{% else %}
 {% set rows = (rows.push({
   key: {
     text: "Date of birth"
@@ -101,6 +113,7 @@
     ) ]
   }
 }), rows) %}
+{% endif %}
 
 {% set rows = (rows.push({
   key: {
@@ -168,6 +181,7 @@
   }
 }), rows) %}
 
+{% if hiddenChangeLink == true %}
 {% set rows = (rows.push({
   key: {
     text: "Date they became a beneficial owner"
@@ -176,13 +190,26 @@
    text: boiStartDate
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+  items: [undefined]
+  }
+}), rows) %}
+{% else %}
+{% set rows = (rows.push({
+  key: {
+    text: "Date they became a beneficial owner"
+  },
+  value: {
+   text: boiStartDate
+  },
+  actions: {
+  items: [CREATE_CHANGE_LINK(
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.START_DATE,
       "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
       "change-individual-beneficial-owner-start-date-button"
-    ) ]
+    )]
   }
 }), rows) %}
+{% endif %}
 
 {% set rows = (rows.push({
   key: {

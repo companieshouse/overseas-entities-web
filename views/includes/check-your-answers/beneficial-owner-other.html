@@ -53,17 +53,6 @@
   {% endif %}
 {% endset %}
 
-{% if hiddenChangeLink == true %}
-  {% set changeLink = undefined %}
-{% else %}
-  {% set changeLink = CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
-            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
-            "change-corporate-beneficial-owner-start-date-button"
-          )%}
-{% endif %}
-
-
 {% if pageParams.isRegistration %}
   {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
 {% else %}
@@ -97,6 +86,16 @@
           "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
           "change-corporate-beneficial-owner-still-beneficial-owner-button" ) ] } } %}
   {% endif %}
+{% endif %}
+
+{% if hideChangeLinksForNonEditableFields == true %}
+  {% set changeLink = undefined %}
+{% else %}
+  {% set changeLink = CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
+            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
+            "change-corporate-beneficial-owner-start-date-button"
+          )%}
 {% endif %}
 
 <h3 class="govuk-heading-m">Other legal entity beneficial owner</h3>

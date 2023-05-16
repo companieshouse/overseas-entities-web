@@ -85,7 +85,8 @@
     ) ]
   }
 }), rows) %}
-{% if hiddenChangeLink == true %}
+
+{% if hideChangeLinksForNonEditableFields == true %}
 {% set rows = (rows.push({
   key: {
     text: "Date of birth"
@@ -94,7 +95,7 @@
     text: boiDateOfBirth
   },
   actions: {
-  items: [undefined]
+  items: [ undefined ]
   }
 }), rows) %}
 {% else %}
@@ -181,7 +182,7 @@
   }
 }), rows) %}
 
-{% if hiddenChangeLink == true %}
+{% if hideChangeLinksForNonEditableFields == true %}
 {% set rows = (rows.push({
   key: {
     text: "Date they became a beneficial owner"
@@ -190,7 +191,7 @@
    text: boiStartDate
   },
   actions: {
-  items: [undefined]
+  items: [ undefined ]
   }
 }), rows) %}
 {% else %}
@@ -270,7 +271,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.CEASED_DATE,
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - ceased date",
         "change-individual-beneficial-owner-ceased-date-button"
       ) ]
@@ -286,7 +287,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.CEASED_DATE,
+        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-ceased-date-button"
       ) ]

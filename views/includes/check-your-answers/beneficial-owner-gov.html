@@ -37,16 +37,6 @@
   {% endif %}
 {% endset %}
 
-{% if hiddenChangeLink == true %}
-  {% set changeLink = undefined %}
-{% else %}
-  {% set changeLink = CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
-            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
-            "change-government-or-public-authority-still-beneficial-owner-start-date-button"
-          )%}
-{% endif %}
-
 {% if pageParams.isRegistration %}
   {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL %}
 {% else %}
@@ -80,6 +70,16 @@
           "Government or public authority beneficial owner " + bogFullName + " - are they still a beneficial owner?",
           "change-government-or-public-authority-still-beneficial-owner-button" ) ] } } %}
   {% endif %}
+{% endif %}
+
+{% if hideChangeLinksForNonEditableFields == true %}
+  {% set changeLink = undefined %}
+{% else %}
+  {% set changeLink =  CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.START_DATE,
+            "Government or public authority beneficial owner " + bog.name + " - date it became a beneficial owner",
+            "change-government-or-public-authority-beneficial-owner-start-date-button"
+          )%}
 {% endif %}
 
 <h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>

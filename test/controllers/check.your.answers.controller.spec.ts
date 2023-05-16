@@ -306,6 +306,7 @@ describe("GET tests", () => {
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.CHANGE_PRINCIPAL_ADDRESS}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.LEGAL_FORM}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.LAW_GOVERNED}`);
+    expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.START_DATE}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.NOC_TYPES}`);
     expect(resp.text).toContain(`${BENEFICIAL_OWNER_GOV_URL}${BO_GOV_ID_URL}${CHANGE_LINKS.IS_ON_SANCTIONS_LIST}`);
   });

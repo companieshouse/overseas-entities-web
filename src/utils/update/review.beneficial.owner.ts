@@ -1,7 +1,7 @@
-import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import {
-  REVIEW_BENEFICIAL_OWNER_INDEX_PARAM,
+  REVIEW_OWNER_INDEX_PARAM,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
@@ -22,15 +22,15 @@ const AllBoTypes = {
 
 const beneficialOwnerIndividualReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 const beneficialOwnerOtherReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 const beneficialOwnerGovReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_URL
         + UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE
-        + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM}`;
+        + REVIEW_OWNER_INDEX_PARAM}`;
 
 // these checks are to determine whether the BO has been fully submitted
 // by checking for appData submitted with form and not present after PSC fetch
@@ -38,9 +38,12 @@ const checkBoIndividualValidation = (boi: BeneficialOwnerIndividual): boolean =>
   return boi?.usual_residential_address ? true : false;
 };
 
-const checkBoValidation = (bo: BeneficialOwnerGov): boolean => {
-  const principalAddress = bo.principal_address || {};
-  return Object.keys(principalAddress).length ? true : false;
+const checkBoOtherValidation = (boOther: BeneficialOwnerOther): boolean => {
+  return boOther?.principal_address ? true : false;
+};
+
+const checkBoGovValidation = (boGov: BeneficialOwnerGov): boolean => {
+  return boGov?.principal_address ? true : false;
 };
 
 const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedirectUrl: string) => {
@@ -50,7 +53,9 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
 
   if (isAppDataAndBoLength && (boType === AllBoTypes.boIndividual) && (!checkBoIndividualValidation(appData[boType][boIndex]))
         ||
-        isAppDataAndBoLength && (boType === AllBoTypes.boOther || boType === AllBoTypes.boGov) && (!checkBoValidation(appData[boType][boIndex]))
+        isAppDataAndBoLength && (boType === AllBoTypes.boGov) && (!checkBoGovValidation(appData[boType][boIndex]))
+        ||
+        isAppDataAndBoLength && (boType === AllBoTypes.boOther) && (!checkBoOtherValidation(appData[boType][boIndex]))
   ) {
     return `${boRedirectUrl}${boIndex}`;
   }
@@ -68,7 +73,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
     }
 
     if (appData.update?.review_beneficial_owners_individual?.length){
-      redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
+      redirectUrl = reviewAllOwnwers(appData, AllBoTypes.boiReview, AllBoTypes.boIndividual, beneficialOwnerIndividualReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
@@ -81,7 +86,7 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
     }
 
     if (appData.update?.review_beneficial_owners_corporate?.length){
-      redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.booReview, AllBoTypes.boOther, beneficialOwnerOtherReviewRedirectUrl) as string;
+      redirectUrl = reviewAllOwnwers(appData, AllBoTypes.booReview, AllBoTypes.boOther, beneficialOwnerOtherReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
@@ -94,30 +99,30 @@ export const checkAndReviewBeneficialOwner = (appData: ApplicationData): string 
     }
 
     if (appData.update?.review_beneficial_owners_government_or_public_authority?.length){
-      redirectUrl = reviewAllBeneficialOwnwer(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
+      redirectUrl = reviewAllOwnwers(appData, AllBoTypes.boGovReview, AllBoTypes.boGov, beneficialOwnerGovReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
   return redirectUrl;
 };
 
-const reviewAllBeneficialOwnwer = (appData: ApplicationData, boReviewType: string, boType: string, beneficialOwnerRedirectUrl: string) => {
+export const reviewAllOwnwers = (appData: ApplicationData, ownerReviewType: string, ownerType: string, ownerRedirectUrl: string) => {
   let redirectUrl = "";
-  const boLength: number = appData[boType]?.length || 0;
+  const ownerLength: number = appData[ownerType]?.length || 0;
 
-  if (boLength >= 0){
-    const bo = appData?.update?.[boReviewType]?.pop() as typeof boType;
-    if (!bo){
+  if (ownerLength >= 0){
+    const boOrmo = appData?.update?.[ownerReviewType]?.pop() as typeof ownerType;
+    if (!boOrmo){
       return redirectUrl;
     }
 
     let index = 0;
-    if (!appData[boType]) {
-      appData[boType] = [bo];
+    if (!appData[ownerType]) {
+      appData[ownerType] = [boOrmo];
     } else {
-      index = appData[boType].push(bo) - 1;
+      index = appData[ownerType].push(boOrmo) - 1;
     }
-    redirectUrl = `${beneficialOwnerRedirectUrl}${index}`;
+    redirectUrl = `${ownerRedirectUrl}${index}`;
     return redirectUrl;
   }
 };

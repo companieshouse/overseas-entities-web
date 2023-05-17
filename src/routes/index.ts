@@ -522,16 +522,16 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL + config.ID)
   .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.update);
 router.get(config.UPDATE_MANAGING_OFFICER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerIndividual.remove);
 
-router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICE_URL)
+router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL)
   .all(
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter
   )
   .get(updateReviewIndividualManagingOfficer.get)
-  .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateReviewIndividualManagingOfficer.post);
+  .post(...validator.reviewManagingOfficers, checkValidations, updateReviewIndividualManagingOfficer.post);
 
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerGov.get);
+router.get(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewIndividualManagingOfficer.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)
   .all(

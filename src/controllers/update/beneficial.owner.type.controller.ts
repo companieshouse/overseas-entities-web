@@ -108,8 +108,10 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
       logger.info("Loaded officer " + officer.officerRole);
-      if (officer.resignedOn === undefined) {
-        if (officer.officerRole === "managing-officer") {
+      // if (officer.resignedOn === undefined) {
+        // if (officer.officerRole === "managing-officer") {
+          if (officer.officerRole === "secretary") {
+
           const managingOfficer = mapToManagingOfficer(officer);
           logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
           appData.update?.review_managing_officers_individual?.push(managingOfficer);
@@ -117,7 +119,7 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
           const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
           logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
         }
-      }
+      // }
     }
   }
 };

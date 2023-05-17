@@ -9,7 +9,7 @@ import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
-import { date_of_birth_validations } from "./fields/date.validation";
+import { date_of_birth_validations, managing_officer_ceased_date_validations } from "./fields/date.validation";
 
 export const managingOfficerIndividual = [
   body("first_name").not().isEmpty({ ignore_whitespace: true })
@@ -48,3 +48,8 @@ export const managingOfficerIndividual = [
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_ROLE_LENGTH)
     .matches(VALID_CHARACTERS_FOR_TEXT_BOX).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS)
 ];
+
+export const reviewManagingOfficers = [
+  ...managingOfficerIndividual,
+  ...managing_officer_ceased_date_validations,
+]

@@ -1,102 +1,139 @@
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+{% extends "layout.html" %}
 
-    {% include "includes/list/errors.html" %}
-    <span class="govuk-caption-xl">Managing officer</span>
-    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
-    <br> <p class="govuk-body">You can add more later.</p> <br>
+{% set title = "Review the individual managing officer" %}
+{% set beneficialOwnerPronoun = "it" %}
 
-    <form class="form" method="post">
-      {% include "includes/inputs/fields/first-name-input.html" %}
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
 
-      {% set hintLastNameText = "This is also known as their family name." %}
-      {% include "includes/inputs/fields/last-name-input.html" %}
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
 
-      {% set formerNameHtml %}
-        {{ govukInput({
-          errorMessage: errors.former_names if errors,
-          id: "former_names",
-          name: "former_names",
-          value: former_names,
-          classes: "govuk-!-width-half",
-          label: {
-            text: "Former name or names"
-          }
-        }) }}
-      {% endset %}
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">  
+      {% include "includes/list/errors.html" %}
 
-      {{ govukRadios({
-        errorMessage: errors.has_former_names if errors,
-        classes: "govuk-radios",
-        idPrefix: "has_former_names",
-        name: "has_former_names",
-        fieldset: {
-          legend: {
-            text: "Do they have any former names?",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-          }
-        },
-        items: [
-          {
-            value: 1,
-            text: "Yes",
-            checked: has_former_names == 1,
-            conditional: {
-              html: formerNameHtml
+      {% if dob_year %}
+        {% set dob = dateMacros.formatDate("", dob_month, dob_year) %}
+      {% elif date_of_birth["month"] %}
+        {% set dob = dateMacros.formatDate("", date_of_birth["month"] | string, date_of_birth["year"]) %}
+      {% endif %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ first_name }} {{ last_name }} - born {{ dob }}</span>
+
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
+      <br> <p class="govuk-body">If you need to update this managing officer's information, you can change the answers here.</p>
+
+      {{ govukInsetText({
+        html: "You'll need to <strong>enter their home address</strong>, and tell us if they're still a managing officer."
+      }) }}
+
+      <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            How to complete this section if they are no longer a managing officer
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          <p class="govuk-body">You need to make sure this information is correct as at the date they stopped being a managing officer, and update it if needed.</p>
+        </div>
+      </details>
+
+      <form class="form" method="post"> -->
+        <input type="hidden" name="id" value="{{ id }}" />
+        <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
+
+        <input type="hidden" name="date_of_birth-day" value="01"/>
+        <input type="hidden" name="date_of_birth-month" value="12"/>
+        <input type="hidden" name="date_of_birth-year" value=1970 />
+
+        {% include "includes/inputs/fields/first-name-input.html" %}  
+        {% set hintLastNameText = "This is also known as their family name." %}
+        {% include "includes/inputs/fields/last-name-input.html" %} 
+        {% set formerNameHtml %}
+          {{ govukInput({
+            errorMessage: errors.former_names if errors,
+            id: "former_names",
+            name: "former_names",
+            value: former_names,
+            classes: "govuk-!-width-half",
+            label: {
+              text: "Former name or names"
+            }
+          }) }}
+        {% endset %}  
+        {{ govukRadios({
+          errorMessage: errors.has_former_names if errors,
+          classes: "govuk-radios",
+          idPrefix: "has_former_names",
+          name: "has_former_names",
+          fieldset: {
+            legend: {
+              text: "Do they have any former names?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
             }
           },
-          {
-            value: 0,
-            text: "No",
-            checked: has_former_names == 0
-          }
-        ]
-      }) }}
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: has_former_names == 1,
+              conditional: {
+                html: formerNameHtml
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: has_former_names == 0
+            }
+          ]
+        }) }} 
 
-      {% include "includes/inputs/date/date-of-birth-input.html" %}
+        {% include "includes/inputs/nationality/nationality.html" %}
+        {% include "includes/inputs/nationality/second-nationality.html" %} 
+        {% set hintResidentialAddress = "If they have more than one home address, use the address where they live most of the time" %}
+        {% include "includes/inputs/address/residential-address-input.html" %}  
+        {{ govukInput({
+          errorMessage: errors.occupation if errors,
+          label: {
+            text: "What is their occupation?",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          hint: {
+            html: "For example, consultant."
+          },
+          id: "occupation",
+          name: "occupation",
+          value: occupation
+        }) }} 
+        {{ govukTextarea({
+          errorMessage: errors.role_and_responsibilities if errors,
+          label: {
+            text: "Describe their role and responsibilities in relation to the entity",
+            classes: "govuk-label--m",
+            isPageHeading: false
+          },
+          id: "role_and_responsibilities",
+          name: "role_and_responsibilities",
+          value: role_and_responsibilities
+        }) }} 
+       
+        {% include "includes/inputs/fields/is-still-a-managing-officer-input.html"%}
 
-      {% include "includes/inputs/nationality/nationality.html" %}
-      {% include "includes/inputs/nationality/second-nationality.html" %}
+        {% set paragraphOne = '<p>We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
+        {% include "includes/inset-text.html" %}  
+        {% include "includes/save-and-continue-button.html" %}  
 
-      {% set hintResidentialAddress = "The managing officer's home address would be shown on the public register as the correspondence address." %}
-      {% include "includes/inputs/address/residential-address-input.html" %}
-
-      {{ govukInput({
-        errorMessage: errors.occupation if errors,
-        label: {
-          text: "What is their occupation?",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        hint: {
-          html: "For example, consultant."
-        },
-        id: "occupation",
-        name: "occupation",
-        value: occupation
-      }) }}
-
-      {{ govukTextarea({
-        errorMessage: errors.role_and_responsibilities if errors,
-        label: {
-          text: "Describe their role and responsibilities in relation to the entity",
-          classes: "govuk-label--m",
-          isPageHeading: false
-        },
-        id: "role_and_responsibilities",
-        name: "role_and_responsibilities",
-        value: role_and_responsibilities
-      }) }}
-
-      {% set paragraphOne = '<p>We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
-      {% include "includes/inset-text.html" %}
-
-      {% include "includes/save-and-continue-button.html" %}
-
-      {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_URL + OE_CONFIGS.REMOVE + "/" + id %}
-      {% set nameToBeRemoved = first_name + " " + last_name %}
-      {% include "includes/remove-button.html" %}
+        <input type="hidden" name="start_date-day" value="{{ start_date_day }}" />
+        <input type="hidden" name="start_date-month" value="{{ start_date_month }}" />
+        <input type="hidden" name="start_date-year" value="{{ start_date_year }}" />
       </form>
     </div>
   </div>
+{% endblock %}
+

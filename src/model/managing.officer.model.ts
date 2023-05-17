@@ -8,6 +8,7 @@ export const ManagingOfficerKey = "managing_officers_individual";
 */
 export const ManagingOfficerKeys: string[] = [
   "id",
+  "ch_reference",
   "first_name",
   "last_name",
   "has_former_names",

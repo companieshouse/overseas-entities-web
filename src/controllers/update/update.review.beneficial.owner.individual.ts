@@ -75,15 +75,15 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session, false);
-
-      res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
+    res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     next(error);
   }
 };
 
 export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
+  console.log(`date of birth ${JSON.stringify(dob)}`);
   req.body["date_of_birth-day"] = padWithZero(dob?.day, 2, "0");
   req.body["date_of_birth-month"] = padWithZero(dob?.month, 2, "0");
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");

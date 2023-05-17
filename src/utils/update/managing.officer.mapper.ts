@@ -1,4 +1,4 @@
-import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
@@ -13,6 +13,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 
   return {
     id: raw.links?.self,
+    ch_reference: mapSelfLink(officer.links.officer.appointments),
     first_name: names[0],
     last_name: names[1],
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,

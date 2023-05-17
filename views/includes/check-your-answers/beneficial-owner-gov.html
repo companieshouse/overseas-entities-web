@@ -72,6 +72,16 @@
   {% endif %}
 {% endif %}
 
+{% if hideChangeLinksForNonEditableFields == true %}
+  {% set changeLink = undefined %}
+{% else %}
+  {% set changeLink =  CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + bog.id + OE_CONFIGS.START_DATE,
+            "Government or public authority beneficial owner " + bog.name + " - date it became a beneficial owner",
+            "change-government-or-public-authority-beneficial-owner-start-date-button"
+          )%}
+{% endif %}
+
 <h3 class="govuk-heading-m">Government or public authority beneficial owner</h3>
 
 {{ govukSummaryList({
@@ -159,11 +169,7 @@
           text: bogStartDate
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + bog.id + OE_CONFIGS.START_DATE,
-            "Government or public authority beneficial owner " + bog.name + " - date it became a beneficial owner",
-            "change-government-or-public-authority-beneficial-owner-start-date-button"
-          ) ]
+          items: [ changeLink ]
         }
       },
       {

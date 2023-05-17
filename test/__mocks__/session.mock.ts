@@ -20,7 +20,6 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL,
-  UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
   UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL
 } from "../../src/config";
 import {
@@ -805,7 +804,7 @@ export const REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION: beneficial
 
 export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
-  ch_reference: undefined,
+  ch_reference: "testchreference",
   first_name: "Joe",
   last_name: "Bloggs",
   has_former_names: yesNoResponse.Yes,

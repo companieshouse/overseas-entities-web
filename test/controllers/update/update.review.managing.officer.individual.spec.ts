@@ -13,15 +13,13 @@ import app from "../../../src/app";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { NextFunction } from "express";
 import { logger } from "../../../src/utils/logger";
-import { ErrorMessages } from "../../../src/validation/error.messages";
-import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL } from "../../../src/config";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST } from "../../__mocks__/session.mock";
+import { getApplicationData } from "../../../src/utils/application.data";
+import { APPLICATION_DATA_UPDATE_BO_MOCK, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE } from '../../../src/config';
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -36,11 +34,9 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockPrepareData = prepareData as jest.Mock;
 describe('Test review managing officer', () => {
-  
+
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -52,10 +48,11 @@ describe('Test review managing officer', () => {
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
       });
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
+      // console.log(`resp data is ${resp.text}`)
       expect(resp.status).toEqual(200);
-      console.log(resp.text)
-    })
-  })
+      console.log(resp.text);
+    });
+  });
 
   test("catch error when rendering the page", async () => {
     mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -64,4 +61,4 @@ describe('Test review managing officer', () => {
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
-})
+});

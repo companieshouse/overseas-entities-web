@@ -11,35 +11,40 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { InputDate } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
 
-export const get = (req: Request, res: Response) => {
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
-  const appData = getApplicationData(req.session);
-  const index = req.query.index;
+export const get = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData = getApplicationData(req.session);
+    const index = req.query.index;
 
-  let dataToReview = {};
-  if (appData?.managing_officers_individual){
-    dataToReview = appData?.managing_officers_individual[Number(index)];
+    let dataToReview = {};
+
+    if (appData?.managing_officers_individual){
+      dataToReview = appData?.managing_officers_individual[Number(index)];
+    }
+
+    console.log(`data to review is ${JSON.stringify(dataToReview)}`);
+
+    const templateOptions = {
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+      templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
+      ...dataToReview,
+      isOwnersReview: true
+    };
+    return res.render(templateOptions.templateName, templateOptions);
+  } catch (error){
+    logger.errorRequest(req, error);
+    next(error);
   }
-
-  console.log(`date of birth is ${JSON.stringify(dataToReview)}`)
-  const templateOptions = {
-    backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-    templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
-    ...dataToReview,
-    populateResidentialAddress: false
-  };
-
-  return res.render(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE, templateOptions);
-
 };
 
-export const post =  async (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const moIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    console.log(`managing officer is ${JSON.stringify(appData.managing_officers_individual)}`)
+    console.log(`managing officer is ${JSON.stringify(appData.managing_officers_individual)}`);
     if (moIndex !== undefined && appData.managing_officers_individual && appData.managing_officers_individual[Number(moIndex)].id === req.body["id"]){
 
       const moId = appData.managing_officers_individual[Number(moIndex)].id;
@@ -54,7 +59,7 @@ export const post =  async (req: Request, res: Response, next: NextFunction) => 
       const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
 
       setApplicationData(req.session, data, ManagingOfficerKey);
-      console.log(`after setting data ${appData.managing_officers_individual}`)
+      console.log(`after setting data ${appData.managing_officers_individual}`);
       await saveAndContinue(req, session, false);
     }
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

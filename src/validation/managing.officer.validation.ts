@@ -52,4 +52,4 @@ export const managingOfficerIndividual = [
 export const reviewManagingOfficers = [
   ...managingOfficerIndividual,
   ...managing_officer_ceased_date_validations,
-]
+];

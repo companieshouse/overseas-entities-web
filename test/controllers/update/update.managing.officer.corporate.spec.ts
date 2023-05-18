@@ -55,7 +55,8 @@ import {
   MO_CORP_ID_URL,
   MO_CORP_ID,
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  MO_IND_ID_URL
+  MO_IND_ID_URL,
+  APPLICATION_DATA_MOCK
 } from "../../__mocks__/session.mock";
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
@@ -114,6 +115,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);

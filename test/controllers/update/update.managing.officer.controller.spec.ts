@@ -43,7 +43,8 @@ import {
   RR_CARRIAGE_RETURN,
   MO_IND_ID,
   MO_IND_ID_URL,
-  APPLICATION_DATA_CH_REF_UPDATE_MOCK
+  APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  APPLICATION_DATA_MOCK
 } from "../../__mocks__/session.mock";
 import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
@@ -112,6 +113,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);

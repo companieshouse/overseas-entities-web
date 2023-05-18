@@ -64,7 +64,7 @@ export const splitNames = (officerName: string): string[] => {
           firstNames += " ";
         }
       }
-      return [firstNames, names[names.length - 1]];
+      return [firstNames.trim(), names[names.length - 1].trim()];
     } else {
       return names;
     }

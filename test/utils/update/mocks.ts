@@ -99,14 +99,14 @@ export const pscMock: CompanyPersonWithSignificantControl = {
 
 export const managingOfficerMock: CompanyOfficer = {
   address: {
-    premises: "1 Acme Road",
+    premises: "1",
     addressLine1: "addressLine1",
     addressLine2: "addressLine2",
-    locality: "locality",
+    locality: "town",
     careOf: "careOf",
     poBox: "pobox",
     postalCode: "BY 2",
-    region: "region",
+    region: "county",
     country: "country"
   },
   appointedOn: "2023-04-01",
@@ -138,14 +138,14 @@ export const managingOfficerMock: CompanyOfficer = {
 
 export const managingOfficerMockDualNationality: CompanyOfficer = {
   address: {
-    premises: "1 Acme Road",
+    premises: "1",
     addressLine1: "addressLine1",
     addressLine2: "addressLine2",
-    locality: "locality",
+    locality: "town",
     careOf: "careOf",
     poBox: "pobox",
     postalCode: "BY 2",
-    region: "region",
+    region: "county",
     country: "country"
   },
   appointedOn: "2023-04-01",

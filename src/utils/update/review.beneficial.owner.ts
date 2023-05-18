@@ -1,4 +1,4 @@
-import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
+import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import {
   REVIEW_OWNER_INDEX_PARAM,
@@ -38,12 +38,9 @@ const checkBoIndividualValidation = (boi: BeneficialOwnerIndividual): boolean =>
   return boi?.usual_residential_address ? true : false;
 };
 
-const checkBoOtherValidation = (boOther: BeneficialOwnerOther): boolean => {
-  return boOther?.principal_address ? true : false;
-};
-
-const checkBoGovValidation = (boGov: BeneficialOwnerGov): boolean => {
-  return boGov?.principal_address ? true : false;
+const checkBoValidation = (bo: BeneficialOwnerGov): boolean => {
+  const principalAddress = bo.principal_address || {};
+  return Object.keys(principalAddress).length ? true : false;
 };
 
 const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedirectUrl: string) => {
@@ -53,9 +50,7 @@ const checkForBackButtonBo = (appData: ApplicationData, boType: string, boRedire
 
   if (isAppDataAndBoLength && (boType === AllBoTypes.boIndividual) && (!checkBoIndividualValidation(appData[boType][boIndex]))
         ||
-        isAppDataAndBoLength && (boType === AllBoTypes.boGov) && (!checkBoGovValidation(appData[boType][boIndex]))
-        ||
-        isAppDataAndBoLength && (boType === AllBoTypes.boOther) && (!checkBoOtherValidation(appData[boType][boIndex]))
+        isAppDataAndBoLength && (boType === AllBoTypes.boOther || boType === AllBoTypes.boGov) && (!checkBoValidation(appData[boType][boIndex]))
   ) {
     return `${boRedirectUrl}${boIndex}`;
   }

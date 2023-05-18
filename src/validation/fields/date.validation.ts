@@ -35,45 +35,29 @@ export const start_date_validations = [
     .custom((value, { req }) => checkDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
 ];
 
-export const ceased_date_validations = [
-  body("ceased_date-day")
-    .if(body('is_still_bo').equals('0'))
-    .custom((value, { req }) => checkDateFieldDay(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
-  body("ceased_date-month")
-    .if(body('is_still_bo').equals('0'))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
-  body("ceased_date-year")
-    .if(body('is_still_bo').equals('0'))
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"])),
-  body("ceased_date")
-    .if(body('is_still_bo').equals('0'))
-    .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"]))
+const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [
+  body(date_field_id + "-day")
+    .if(body(radio_button_id).equals('0'))
+    .custom((value, { req }) => checkDateFieldDay(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
+  body(date_field_id + "-month")
+    .if(body(radio_button_id).equals('0'))
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
+  body(date_field_id + "-year")
+    .if(body(radio_button_id).equals('0'))
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
+  body(date_field_id)
+    .if(body(radio_button_id).equals('0'))
+    .custom((value, { req }) => checkDate(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"]))
     .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
-      req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"],
+      req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
       req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
-      ErrorMessages.CEASED_DATE_BEFORE_START_DATE
+      error_message
     )),
 ];
 
-export const resigned_on_validations = [
-  body("resigned_on-day")
-    .if(body('is_still_mo').equals('0'))
-    .custom((value, { req }) => checkDateFieldDay(req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
-  body("resigned_on-month")
-    .if(body('is_still_mo').equals('0'))
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
-  body("resigned_on-year")
-    .if(body('is_still_mo').equals('0'))
-    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
-  body("resigned_on")
-    .if(body('is_still_mo').equals('0'))
-    .custom((value, { req }) => checkDate(req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"]))
-    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
-      req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"],
-      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
-      ErrorMessages.RESIGNED_ON_BEFORE_START_DATE
-    )),
-];
+export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+
+export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others

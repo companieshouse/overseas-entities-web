@@ -20,7 +20,7 @@ import {
   ID,
   InputDateKeys
 } from "../model/data.types.model";
-import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
+import { DateOfBirthKey, DateOfBirthKeys, ResignedOnKey, ResignedOnKeys, StartDateKey, StartDateKeys } from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
 import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
@@ -118,6 +118,8 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
+  data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  data[ResignedOnKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnKeys, InputDateKeys) : {};
 
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])

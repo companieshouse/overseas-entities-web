@@ -63,7 +63,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       removeFromApplicationData(req, ManagingOfficerKey, moId);
 
       setReviewedDateOfBirth(req, dob);
-
       const session = req.session as Session;
 
       const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
@@ -73,6 +72,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       console.log(`before save and resume data ${JSON.stringify(appData.managing_officers_individual)}`);
 
       await saveAndContinue(req, session, false);
+
       console.log(`after save and resume data ${JSON.stringify(appData.managing_officers_individual)}`);
     }
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

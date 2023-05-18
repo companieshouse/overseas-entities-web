@@ -25,6 +25,7 @@ describe("Test mapping to managing officer", () => {
   test('map officer data to managing officer should return object', () => {
     expect(mapToManagingOfficer(managingOfficerMock)).toEqual({
       id: undefined,
+      ch_reference: "",
       first_name: splitNames(managingOfficerMock.name)[0],
       last_name: splitNames(managingOfficerMock.name)[1],
       has_former_names: yesNoResponse.Yes,

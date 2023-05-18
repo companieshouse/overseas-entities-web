@@ -17,7 +17,7 @@ import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_UPDATE_BO_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST, UPDATE_REVIEW_MANAGING_OFFICER_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_EMPTY_BO_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST, UPDATE_REVIEW_MANAGING_OFFICER_MOCK } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
@@ -49,16 +49,16 @@ describe('Test review managing officer', () => {
 
   describe('GET tests', () => {
 
-    // test(`render the ${UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page`, async () => {
-    //   mockGetApplicationData.mockReturnValueOnce({
-    //     ...APPLICATION_DATA_EMPTY_BO_MOCK,
-    //   });
-    //   const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
-    //   expect(resp.status).toEqual(200);
-    //   expect(resp.text).toContain(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING);
-    //   expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-    //   expect(resp.text).toContain("Bloggs");
-    // });
+    test(`render the ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_EMPTY_BO_MOCK,
+      });
+      const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain("Bloggs");
+    });
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

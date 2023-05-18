@@ -132,9 +132,10 @@
         {% include "includes/inset-text.html" %}  
         {% include "includes/save-and-continue-button.html" %}  
 
-        <input type="hidden" name="start_date-day" value="{{ start_date_day }}" />
-        <input type="hidden" name="start_date-month" value="{{ start_date_month }}" />
-        <input type="hidden" name="start_date-year" value="{{ start_date_year }}" />
+        <input type="hidden" name="start_date" value="{{ start_date }}" />
+        <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
+        <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
+        <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
       </form>
     </div>
   </div>

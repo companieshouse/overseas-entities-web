@@ -46,11 +46,9 @@
         <input type="hidden" name="id" value="{{ id }}" />
         <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
       
-        <input type="hidden" name="date_of_birth-day" value="{{ date_of_birth.day }}"/>
-        <input type="hidden" name="date_of_birth-month" value="11"/>
-        <input type="hidden" name="date_of_birth-year" value="1970" />
-        <input type="hidden" name="date_of_birth" value="{{ date_of_birth}}" />
-
+        <input type="hidden" name="dob_day" value="{{ date_of_birth.day }}"/>
+        <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
+        <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
 
         {% include "includes/inputs/fields/first-name-input.html" %}  
         {% set hintLastNameText = "This is also known as their family name." %}
@@ -132,10 +130,11 @@
         {% include "includes/inset-text.html" %}  
         {% include "includes/save-and-continue-button.html" %}  
 
-        <input type="hidden" name="start_date" value="{{ start_date }}" />
-        <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
-        <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
-        <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
+        {% set start_date_only = "true" %}
+        {% include "includes/uneditable-start-date.html" %}
+        <input type="hidden" name="date_of_birth-day" value="{{ date_of_birth.day }}"/>
+        <input type="hidden" name="date_of_birth-month" value="{{ date_of_birth.month }}"/>
+        <input type="hidden" name="date_of_birth-year" value="{{ date_of_birth.year }}" />
       </form>
     </div>
   </div>

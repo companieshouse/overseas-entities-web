@@ -27,8 +27,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
     }
 
-    console.log(`data to review is ${JSON.stringify(dataToReview)}`);
-
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
@@ -54,7 +52,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const moIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    console.log(`managing officer is ${JSON.stringify(appData.managing_officers_individual)}`);
     if (moIndex !== undefined && appData.managing_officers_individual && appData.managing_officers_individual[Number(moIndex)].id === req.body["id"]){
 
       const moId = appData.managing_officers_individual[Number(moIndex)].id;
@@ -69,11 +66,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       setApplicationData(req.session, data, ManagingOfficerKey);
 
-      console.log(`before save and resume data ${JSON.stringify(appData.managing_officers_individual)}`);
-
       await saveAndContinue(req, session, false);
-
-      console.log(`after save and resume data ${JSON.stringify(appData.managing_officers_individual)}`);
     }
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error){

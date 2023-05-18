@@ -1,3 +1,5 @@
+{% set beneficialOwnerPronoun = "it" %}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
@@ -6,8 +8,11 @@
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <p class="govuk-caption-l  govuk-!-margin-bottom-5 govuk-!-margin-top-5">You can add more later.</p>
 
+    {% if entity_number %}
+      {% include "includes/ceased-date-details-summary-new-bo.html" %}
+    {% endif %}
+
     <form class="form" method="post">
-      {% set beneficialOwnerPronoun = "it" %}
       {% include "includes/inputs/fields/name-input.html" %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
@@ -34,8 +39,8 @@
 
       {% include "includes/save-and-continue-button.html" %}
       {% set nameToBeRemoved = name %}
-      
-      {% if not entity_number %} 
+
+      {% if not entity_number %}
         {% include "includes/remove-button.html" %}
       {% endif %}
     </form>

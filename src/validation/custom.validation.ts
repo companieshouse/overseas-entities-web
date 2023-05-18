@@ -233,13 +233,14 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
 
 export const checkCeasedDateOnOrAfterStartDate = (
   ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
-  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = ""
+  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = "",
+  errorMessage: string = ""
 ): boolean => {
   const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
   const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
 
   if (startDate > ceaseDate) {
-    throw new Error(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+    throw new Error(errorMessage);
   }
 
   return true;

@@ -3,8 +3,9 @@ import { Session } from "@companieshouse/node-session-handler";
 
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { ApplicationDataType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -15,6 +16,7 @@ import {
 
 import {
   AddressKeys,
+  EntityNumberKey,
   HasFormerNames,
   HasSameResidentialAddressKey,
   ID,
@@ -28,9 +30,12 @@ import { v4 as uuidv4 } from 'uuid';
 export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session as Session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    entity_number: appData[EntityNumberKey]
   });
 };
 

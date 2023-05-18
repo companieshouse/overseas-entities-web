@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
-import { ApplicationDataType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -16,6 +17,7 @@ import {
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 import {
   AddressKeys,
+  EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
   IsOnRegisterInCountryFormedInKey,
@@ -27,9 +29,12 @@ import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAd
 export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session as Session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    entity_number: appData[EntityNumberKey]
   });
 };
 

@@ -12,7 +12,7 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
     const ceaseDate = ["2", "2", "2023"];
     const startDate = ["3", "3", "2023"];
 
-    expect(() => custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toThrowError(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+    expect(() => custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate, ErrorMessages.CEASED_DATE_BEFORE_START_DATE)).toThrowError(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
   });
 
   test('should return true if ceased date after start date', () => {

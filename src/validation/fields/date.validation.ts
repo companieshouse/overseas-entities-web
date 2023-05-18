@@ -50,7 +50,28 @@ export const ceased_date_validations = [
     .custom((value, { req }) => checkDate(req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"]))
     .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
       req.body["ceased_date-day"], req.body["ceased_date-month"], req.body["ceased_date-year"],
-      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"]
+      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
+      ErrorMessages.CEASED_DATE_BEFORE_START_DATE
+    )),
+];
+
+export const resigned_on_validations = [
+  body("resigned_on-day")
+    .if(body('is_still_mo').equals('0'))
+    .custom((value, { req }) => checkDateFieldDay(req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
+  body("resigned_on-month")
+    .if(body('is_still_mo').equals('0'))
+    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
+  body("resigned_on-year")
+    .if(body('is_still_mo').equals('0'))
+    .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"])),
+  body("resigned_on")
+    .if(body('is_still_mo').equals('0'))
+    .custom((value, { req }) => checkDate(req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"]))
+    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
+      req.body["resigned_on-day"], req.body["resigned_on-month"], req.body["resigned_on-year"],
+      req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
+      ErrorMessages.RESIGNED_ON_BEFORE_START_DATE
     )),
 ];
 

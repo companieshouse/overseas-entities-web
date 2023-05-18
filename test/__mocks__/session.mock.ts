@@ -899,20 +899,13 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
 };
 
 export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
-  id: MO_CORP_ID,
-  ch_reference: "testchreference",
-  name: "Joe Bloggs Ltd",
-  principal_address: ADDRESS,
-  service_address: ADDRESS,
-  is_service_address_same_as_principal_address: yesNoResponse.Yes,
-  legal_form: "legalForm",
-  law_governed: "LegAuth",
-  is_on_register_in_country_formed_in: yesNoResponse.Yes,
-  public_register_name: "register",
-  registration_number: "123456789",
-  role_and_responsibilities: "role and responsibilities text",
-  contact_full_name: "Joe Bloggs",
-  contact_email: "jbloggs@bloggs.co.ru"
+  ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  start_date: { day: "1", month: "1", year: "2022" }
+};
+
+export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  ch_reference: "testchreference"
 };
 
 export const REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY = {
@@ -945,6 +938,19 @@ export const REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS = {
   ...START_DATE
 };
 
+export const REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE = {
+  ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+  ...START_DATE,
+  is_still_mo: '1'
+};
+
+export const REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE = {
+  ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+  ...START_DATE,
+  is_still_mo: '0',
+  ...RESIGNED_ON_DATE
+};
+
 export const MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
   name: "Joe Bloggs Ltd",
   is_service_address_same_as_principal_address: "0",
@@ -959,6 +965,11 @@ export const MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_T
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK,
   ...START_DATE
+};
+
+export const UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES = {
+  ...MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  is_still_mo: '1'
 };
 
 export const MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES: managingOfficerType.ManagingOfficerIndividual = {
@@ -1412,7 +1423,7 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF ],
   [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF ],
   [managingOfficerType.ManagingOfficerKey]: [ UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF ],
   [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
   [PaymentKey]: PAYMENT_OBJECT_MOCK,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,

@@ -42,13 +42,12 @@ import {
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
 import {
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
-  REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
   EMAIL_ADDRESS,
@@ -56,7 +55,8 @@ import {
   MO_CORP_ID,
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   MO_IND_ID_URL,
-  APPLICATION_DATA_MOCK
+  APPLICATION_DATA_MOCK,
+  UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
 } from "../../__mocks__/session.mock";
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
@@ -138,17 +138,17 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("POST tests", () => {
     test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-      expect(managingOfficerCorporate).toEqual(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      expect(managingOfficerCorporate).toEqual(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       expect(managingOfficerCorporate.name).toEqual("Joe Bloggs Ltd");
       expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
       expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
@@ -165,7 +165,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -173,9 +173,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
-        ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+        ...REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
         contact_email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
 
       const resp = await request(app)
@@ -188,9 +188,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
-        ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+        ...REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
         contact_email: "socarrollA123456789B132456798C123456798D123456789@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
 
       const resp = await request(app)
@@ -203,9 +203,9 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
     });
 
     test("Test email is valid with very long email name and address", async () => {
-      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const managingOfficerCorporate = {
-        ...REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
+        ...REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE,
         contact_email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
 
       const resp = await request(app)
@@ -222,7 +222,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -364,7 +364,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
@@ -374,7 +374,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
@@ -384,7 +384,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("Reg");
       expect(data[RegistrationNumberKey]).toEqual("123456");
@@ -394,17 +394,18 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
     });
 
     test(`renders the next page ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} and no errors are reported if email has leading and trailing spaces`, async () => {
-      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
-        .send(MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+        .send(UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -417,7 +418,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("GET BY ID tests", () => {
     test(`renders ${UPDATE_MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
 
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_IND_ID_URL);
@@ -439,10 +440,10 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -453,7 +454,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -465,7 +466,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockReturnValueOnce(newMoData);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerCorporateKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_CORP_ID);
@@ -482,7 +483,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
@@ -493,7 +494,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual({});
@@ -504,7 +505,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("Reg");
       expect(data[RegistrationNumberKey]).toEqual("123456");
@@ -515,7 +516,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       mockPrepareData.mockImplementation( () => MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_PUBLIC_REGISTER_DATA_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[PublicRegisterNameKey]).toEqual("");
       expect(data[RegistrationNumberKey]).toEqual("");
@@ -525,7 +526,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
   describe("REMOVE tests", () => {
     test(`redirects to the ${UPDATE_BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
-      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      mockPrepareData.mockReturnValueOnce(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_CORPORATE_URL + REMOVE + MO_CORP_ID_URL);
 
       expect(resp.status).toEqual(302);

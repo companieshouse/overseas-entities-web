@@ -108,18 +108,20 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
       logger.info("Loaded officer " + officer.officerRole);
-      // if (officer.resignedOn === undefined) {
-      // if (officer.officerRole === "managing-officer") {
-      if (officer.officerRole === "secretary") {
+      if (officer.resignedOn === undefined) {
+        if (officer.officerRole === "managing-officer") {
+          console.log(`before mapp is ${JSON.stringify(officer)}`);
 
-        const managingOfficer = mapToManagingOfficer(officer);
-        logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-        appData.update?.review_managing_officers_individual?.push(managingOfficer);
-      } else if (officer.officerRole === "corporate-managing-officer") {
-        const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-        logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+          const managingOfficer = mapToManagingOfficer(officer);
+          console.log(`officer data is ${JSON.stringify(managingOfficer)}`);
+          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
+          appData.update?.review_managing_officers_individual?.push(managingOfficer);
+          console.log(`data pushed is ${JSON.stringify(appData.update?.review_managing_officers_individual)}`);
+        } else if (officer.officerRole === "corporate-managing-officer") {
+          const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+        }
       }
-      // }
     }
   }
 };

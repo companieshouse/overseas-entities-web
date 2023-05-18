@@ -47,6 +47,10 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       const appData: ApplicationData = getApplicationData(req.session);
       const entityName = appData?.[EntityNameKey];
 
+      console.log(`check validation error called ${JSON.stringify(errors)}`);
+      console.log(`req body data is ${JSON.stringify(req.body)}`);
+      console.log(`app data body is ${JSON.stringify(appData)}`);
+
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,

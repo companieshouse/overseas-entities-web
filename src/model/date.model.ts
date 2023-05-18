@@ -7,6 +7,7 @@ export const DateOfBirthKey: string = "date_of_birth";
 export const StartDateKey: string = "start_date";
 export const IdentityDateKey: string = "identity_date";
 export const CeasedDateKey: string = "ceased_date";
+export const ResignedOnKey: string = "resigned_on";
 export const FilingDateKey: string = "filing_date";
 
 /*
@@ -40,4 +41,10 @@ export const FilingDateKeys: string[] = [
   "filing_date-day",
   "filing_date-month",
   "filing_date-year",
+];
+
+export const ResignedOnKeys: string[] = [
+  "resigned_on-day",
+  "resigned_on-month",
+  "resigned_on-year",
 ];

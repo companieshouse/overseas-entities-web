@@ -1,4 +1,5 @@
- {% extends "layout.html" %}
+{% extends "layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
 
 {% set title = "Review the individual managing officer" %}
 {% set beneficialOwnerPronoun = "it" %}
@@ -10,6 +11,7 @@
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
+
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -40,14 +42,15 @@
           <p class="govuk-body">You need to make sure this information is correct as at the date they stopped being a managing officer, and update it if needed.</p>
         </div>
       </details>
-
       <form class="form" method="post"> 
         <input type="hidden" name="id" value="{{ id }}" />
         <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
+      
+        <input type="hidden" name="date_of_birth-day" value="{{ date_of_birth.day }}"/>
+        <input type="hidden" name="date_of_birth-month" value="11"/>
+        <input type="hidden" name="date_of_birth-year" value="1970" />
+        <input type="hidden" name="date_of_birth" value="{{ date_of_birth}}" />
 
-        <input type="hidden" name="date_of_birth-day" value="01"/>
-        <input type="hidden" name="date_of_birth-month" value="12"/>
-        <input type="hidden" name="date_of_birth-year" value=1970 />
 
         {% include "includes/inputs/fields/first-name-input.html" %}  
         {% set hintLastNameText = "This is also known as their family name." %}

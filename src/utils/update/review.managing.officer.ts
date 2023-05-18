@@ -17,10 +17,10 @@ const managingOfficerIndividualReviewRedirectUrl = `${UPDATE_AN_OVERSEAS_ENTITY_
   + REVIEW_OWNER_INDEX_PARAM}`;
 
 const checkmoIndividualValidation = (moIndividual: ManagingOfficerIndividual): boolean => {
-  return moIndividual?.resigned_on ? true : false;
+  return moIndividual?.usual_residential_address ? true : false;
 };
 
-const checkForBackButtonBo = (appData: ApplicationData, moType: string, moRedirectUrl: string) => {
+const checkForBackButtonMo = (appData: ApplicationData, moType: string, moRedirectUrl: string) => {
   const moLength: number = appData[moType]?.length || 0;
   const moIndex = moLength - 1;
   const isAppDataAndMoLength = appData[moType] && moLength >= 1;
@@ -35,7 +35,7 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
 
   const update_review = appData.update as Update;
   if (AllMoTypes.moIndividualOfiicerReview in update_review){
-    const moiFromBackButton = checkForBackButtonBo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
+    const moiFromBackButton = checkForBackButtonMo(appData, AllMoTypes.moIndividual, managingOfficerIndividualReviewRedirectUrl);
     if (moiFromBackButton) {
       redirectUrl = moiFromBackButton;
       return redirectUrl;

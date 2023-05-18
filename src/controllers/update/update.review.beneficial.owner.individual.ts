@@ -83,8 +83,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
-  console.log(`date of birth ${JSON.stringify(dob)}`);
-  req.body["date_of_birth-day"] = padWithZero(dob?.day, 2, "0");
+  req.body["date_of_birth-day"] = padWithZero((dob?.day), 2, "0");
   req.body["date_of_birth-month"] = padWithZero(dob?.month, 2, "0");
   req.body["date_of_birth-year"] = padWithZero(dob?.year, 2, "0");
 };

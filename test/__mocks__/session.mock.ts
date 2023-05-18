@@ -834,6 +834,14 @@ export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOf
   role_and_responsibilities: "Some role and responsibilities"
 };
 
+export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  ...UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  resigned_on: { day: "21", month: "3", year: "1970" },
+  start_date: { day: "21", month: "3", year: "1960" },
+  ...DATE_OF_BIRTH
+};
+
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
   first_name: "",
   last_name: "",

@@ -509,7 +509,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL)
     navigation.hasUpdatePresenter
   )
   .get(updateManagingOfficerIndividual.get)
-  .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
+  .post(...validator.updateManagingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.post);
 
 router.route(config.UPDATE_MANAGING_OFFICER_URL + config.ID)
   .all(
@@ -518,7 +518,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL + config.ID)
     navigation.hasUpdatePresenter
   )
   .get(updateManagingOfficerIndividual.getById)
-  .post(...validator.managingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.update);
+  .post(...validator.updateManagingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.update);
 router.get(config.UPDATE_MANAGING_OFFICER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerIndividual.remove);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_OTHER_URL)

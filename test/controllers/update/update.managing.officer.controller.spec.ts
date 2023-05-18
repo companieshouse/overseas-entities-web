@@ -38,7 +38,7 @@ import {
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES,
   MANAGING_OFFICER_OBJECT_MOCK,
   REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION,
-  REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE,
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
   RR_CARRIAGE_RETURN,
   MO_IND_ID,
@@ -135,7 +135,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -147,7 +147,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
 
@@ -166,7 +166,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -178,7 +178,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -321,7 +321,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
@@ -331,7 +331,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -342,7 +342,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("John Doe");
     });
@@ -351,7 +351,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
     });
@@ -663,7 +663,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
 
   describe("GET BY ID tests", () => {
     test(`renders ${UPDATE_MANAGING_OFFICER_PAGE} page`, async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      mockGetFromApplicationData.mockReturnValueOnce(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_CH_REF_UPDATE_MOCK });
 
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL);
@@ -687,7 +687,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -698,7 +698,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -710,7 +710,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockReturnValueOnce(newMoData);
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL + MO_IND_ID_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
       expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
@@ -727,7 +727,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
@@ -738,7 +738,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES );
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
       expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
@@ -750,7 +750,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("John Doe");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -760,7 +760,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
       await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
-        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
       const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
       expect(data[FormerNamesKey]).toEqual("");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

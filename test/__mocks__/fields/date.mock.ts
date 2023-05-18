@@ -20,7 +20,13 @@ export const DATE_OF_BIRTH = {
     "filing_date-day": "1",
     "filing_date-month": "1",
     "filing_date-year": "2022",
-  }, DATE = { day: "1", month: "1", year: "2000" }, EMPTY_DATE = { day: "", month: "", year: "" },
+  }, RESIGNED_ON_DATE = {
+    "resigned_on-day": "1",
+    "resigned_on-month": "1",
+    "resigned_on-year": "2023",
+  },
+
+  DATE = { day: "1", month: "1", year: "2000" }, EMPTY_DATE = { day: "", month: "", year: "" },
   getTwoMonthOldDate = (): DateTime => {
     const now = DateTime.now();
     return DateTime.utc(now.year, now.month, now.day).minus({ months: 2 });

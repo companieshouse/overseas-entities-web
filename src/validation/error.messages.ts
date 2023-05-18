@@ -178,6 +178,7 @@ export enum ErrorMessages {
   SELECT_IF_REGISTRABLE_BENEFICIAL_OWNER = "Select if anyone has become or ceased to be a registrable beneficial owner during the update period",
   UPDATE_SELECT_IF_CONTINUE_SAVED_FILING = "Select yes if you want to continue with a saved filing",
   SELECT_IF_STILL_BENEFICIAL_OWNER = "Select yes if they are still a registrable beneficial owner",
+  SELECT_IF_STILL_MANAGING_OFFICER = "Select yes if they are still a managing officer",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO = MAX_FIRST_NAME_LENGTH,

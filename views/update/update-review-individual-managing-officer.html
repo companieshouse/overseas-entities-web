@@ -130,11 +130,10 @@
         {% include "includes/inset-text.html" %}  
         {% include "includes/save-and-continue-button.html" %}  
 
-        {% set start_date_only = "true" %}
-        {% include "includes/uneditable-start-date.html" %}
-        <input type="hidden" name="date_of_birth-day" value="{{ date_of_birth.day }}"/>
-        <input type="hidden" name="date_of_birth-month" value="{{ date_of_birth.month }}"/>
-        <input type="hidden" name="date_of_birth-year" value="{{ date_of_birth.year }}" />
+        <input type="hidden" name="start_date" value="{{ start_date }}" />
+        <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
+        <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
+        <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
       </form>
     </div>
   </div>

@@ -44,7 +44,7 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
+  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -225,12 +225,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetBoMoData).toBeTruthy;
     });
 
-    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is director`, async () => {
+    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is corporate-managing-officer`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
       });
       mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
-      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'director');
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'corporate-managing-officer');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);
@@ -245,12 +245,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetBoMoData).toBeTruthy;
     });
 
-    test(`test individual managing officer data returned when getCompanyOfficers data officer role is secretary`, async () => {
+    test(`test individual managing officer data returned when getCompanyOfficers data officer role is managing-officer`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
       });
       mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
-      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'secretary');
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'managing-officer');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);

@@ -9,6 +9,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
   const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
   const names = splitNames(officer.name);
+  const nationalities = splitNationalities(officer.nationality);
   const formernames = getFormerNames(officer.formerNames);
 
   return {
@@ -18,7 +19,8 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
     former_names: formernames,
     date_of_birth: mapDateOfBirth(officer.dateOfBirth),
-    nationality: officer.nationality,
+    nationality: nationalities[0],
+    second_nationality: nationalities[1],
     usual_residential_address: address,
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
     service_address: service_address,
@@ -62,11 +64,18 @@ export const splitNames = (officerName: string): string[] => {
           firstNames += " ";
         }
       }
-      return [firstNames, names[names.length - 1]];
+      return [firstNames.trim(), names[names.length - 1].trim()];
     } else {
       return names;
     }
   }
+};
+
+export const splitNationalities = (officerNationalities: string | undefined): string[] => {
+  if (!officerNationalities) {
+    return [""];
+  }
+  return officerNationalities.split(/\s*,\s*/).slice(0, 2);
 };
 
 export const getFormerNames = (formerNames?: FormerNameResource[]): string => {

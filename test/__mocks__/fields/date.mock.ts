@@ -25,8 +25,8 @@ export const DATE_OF_BIRTH = {
     "resigned_on-month": "1",
     "resigned_on-year": "2023",
   },
-
-  DATE = { day: "1", month: "1", year: "2000" }, EMPTY_DATE = { day: "", month: "", year: "" },
+  DATE = { day: "1", month: "1", year: "2000" },
+  EMPTY_DATE = { day: "", month: "", year: "" },
   getTwoMonthOldDate = (): DateTime => {
     const now = DateTime.now();
     return DateTime.utc(now.year, now.month, now.day).minus({ months: 2 });

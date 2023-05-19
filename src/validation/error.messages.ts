@@ -147,6 +147,7 @@ export enum ErrorMessages {
   END_DAY_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner day must include 1 or 2 numbers",
   END_MONTH_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner month must include 1 or 2 numbers",
   END_YEAR_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner year must include 4 numbers",
+  DATE_BEFORE_START_DATE = "Date must be on or after the appointed date",
   CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the appointed date",
   RESIGNED_ON_BEFORE_START_DATE = "Resigned on date must be on or after the appointed date",
 

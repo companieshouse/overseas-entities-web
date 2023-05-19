@@ -141,10 +141,10 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   }
 
   // only set start_date and resigned_on keys for Update journey
-  if (reqBody['start_date-day']){
+  if ('start_date-day' in reqBody){
     data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   }
-  if (reqBody['is_still_mo']){
+  if ('is_still_mo' in reqBody){
     data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
   }
   data[ID] = id;

@@ -56,7 +56,8 @@ import {
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   MO_IND_ID_URL,
   APPLICATION_DATA_MOCK,
-  UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
+  UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE
 } from "../../__mocks__/session.mock";
 import {
   MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_MOCK,
@@ -137,7 +138,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for active MO`, async () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
 
       const resp = await request(app)
@@ -156,6 +157,31 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
       expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
       expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
       expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for inactive MO`, async () => {
+      mockPrepareData.mockImplementationOnce( () => UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_CORPORATE_URL)
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_INACTIVE);
+
+      const managingOfficerCorporate = mockSetApplicationData.mock.calls[0][1];
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(managingOfficerCorporate).toEqual(UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      expect(managingOfficerCorporate.name).toEqual("Joe Bloggs Ltd");
+      expect(managingOfficerCorporate.legal_form).toEqual("legalForm");
+      expect(managingOfficerCorporate.law_governed).toEqual("LegAuth");
+      expect(managingOfficerCorporate.registration_number).toEqual("123456789");
+      expect(managingOfficerCorporate.role_and_responsibilities).toEqual("role and responsibilities text");
+      expect(managingOfficerCorporate.contact_full_name).toEqual("Joe Bloggs");
+      expect(managingOfficerCorporate.contact_email).toEqual("jbloggs@bloggs.co.ru");
+      expect(managingOfficerCorporate.start_date).toEqual(DUMMY_DATA_OBJECT);
+      expect(managingOfficerCorporate.resigned_on).toEqual(DUMMY_DATA_OBJECT);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerCorporateType.ManagingOfficerCorporateKey);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });

@@ -44,7 +44,8 @@ import {
   MO_IND_ID,
   MO_IND_ID_URL,
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
-  APPLICATION_DATA_MOCK
+  APPLICATION_DATA_MOCK,
+  REQ_BODY_UPDATE_MANAGING_OFFICER_INACTIVE
 } from "../../__mocks__/session.mock";
 import {
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
@@ -142,19 +143,40 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page after all mandatory fields for ${UPDATE_MANAGING_OFFICER_PAGE} have been populated`, async () => {
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for valid active MO`, async () => {
       mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
 
       const resp = await request(app)
         .post(UPDATE_MANAGING_OFFICER_URL)
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_ACTIVE);
 
-      const beneficialOwnerIndividual = mockSetApplicationData.mock.calls[0][1];
+      const managingOfficer = mockSetApplicationData.mock.calls[0][1];
 
-      expect(beneficialOwnerIndividual).toEqual(MANAGING_OFFICER_OBJECT_MOCK);
-      expect(beneficialOwnerIndividual.first_name).toEqual("Joe");
-      expect(beneficialOwnerIndividual.nationality).toEqual("Malawian");
-      expect(beneficialOwnerIndividual.occupation).toEqual("Some Occupation");
+      expect(managingOfficer).toEqual(MANAGING_OFFICER_OBJECT_MOCK);
+      expect(managingOfficer.first_name).toEqual("Joe");
+      expect(managingOfficer.nationality).toEqual("Malawian");
+      expect(managingOfficer.occupation).toEqual("Some Occupation");
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`sets session data and renders the ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page for valid inactive MO`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_URL)
+        .send(REQ_BODY_UPDATE_MANAGING_OFFICER_INACTIVE);
+
+      const managingOfficer = mockSetApplicationData.mock.calls[0][1];
+
+      expect(managingOfficer).toEqual(MANAGING_OFFICER_OBJECT_MOCK);
+      expect(managingOfficer.first_name).toEqual("Joe");
+      expect(managingOfficer.nationality).toEqual("Malawian");
+      expect(managingOfficer.occupation).toEqual("Some Occupation");
+      expect(managingOfficer.start_date).toEqual(DUMMY_DATA_OBJECT);
+      expect(managingOfficer.resigned_on).toEqual(DUMMY_DATA_OBJECT);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(managingOfficerType.ManagingOfficerKey);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_TYPE_URL);

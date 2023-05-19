@@ -22,7 +22,14 @@ import {
   ID,
   InputDateKeys
 } from "../model/data.types.model";
-import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
+import {
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  ResignedOnDateKey,
+  ResignedOnDateKeys,
+  StartDateKey,
+  StartDateKeys
+} from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
 import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
@@ -133,6 +140,13 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
     data[FormerNamesKey] = "";
   }
 
+  // only set start_date and resigned_on keys for Update journey
+  if (reqBody['start_date-day']){
+    data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  }
+  if (reqBody['is_still_mo']){
+    data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
+  }
   data[ID] = id;
 
   return data;

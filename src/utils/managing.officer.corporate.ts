@@ -20,11 +20,13 @@ import {
   EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
+  InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   PublicRegisterNameKey,
   RegistrationNumberKey
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
+import { ResignedOnDateKey, ResignedOnDateKeys, StartDateKey, StartDateKeys } from "../model/date.model";
 
 export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -134,6 +136,15 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
     data[PublicRegisterNameKey] = "";
     data[RegistrationNumberKey] = "";
   }
+
+  // only set start_date and resigned_on keys for Update journey
+  if (reqBody['start_date-day']){
+    data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  }
+  if (reqBody['is_still_mo']){
+    data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
+  }
+
   data[ID] = id;
 
   return data;

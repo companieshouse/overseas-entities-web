@@ -830,7 +830,8 @@ export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOf
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "Some Occupation",
-  role_and_responsibilities: "Some role and responsibilities"
+  role_and_responsibilities: "Some role and responsibilities",
+  resigned_on: { day: "21", month: "3", year: "2010" },
 };
 
 export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -841,12 +842,21 @@ export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK: managingOfficerType.ManagingOf
   ...DATE_OF_BIRTH
 };
 
+export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO = {
+  ...UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
+  ...RESIDENTIAL_ADDRESS_MOCK,
+  resigned_on: { day: "21", month: "3", year: "1970" },
+  start_date: { day: "21", month: "3", year: "1960" },
+  ...DATE_OF_BIRTH,
+  is_still_mo: 1
+};
+
 export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK_NO_ADDRESS: managingOfficerType.ManagingOfficerIndividual = {
   ...UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   usual_residential_address: undefined,
   resigned_on: { day: "21", month: "3", year: "1970" },
   start_date: { day: "21", month: "3", year: "1960" },
-  ...DATE_OF_BIRTH
+  ...DATE_OF_BIRTH,
 };
 
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {

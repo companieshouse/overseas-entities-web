@@ -9,7 +9,7 @@ import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
-import { ceased_date_validations, date_of_birth_validations } from "./fields/date.validation";
+import { date_of_birth_validations, resigned_on_validations } from "./fields/date.validation";
 
 export const managing_officer_name_validation = [
   body("first_name").not().isEmpty({ ignore_whitespace: true })
@@ -68,5 +68,5 @@ export const reviewManagingOfficers = [
   ...managing_officer_address_validation,
   ...managing_officer_occupation_validation,
   ...managing_officer_role_validation,
-  ...ceased_date_validations,
+  ...resigned_on_validations,
 ];

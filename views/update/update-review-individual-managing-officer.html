@@ -57,11 +57,6 @@
         {% set paragraphOne = '<p>We will not show the managing officer’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}
         {% include "includes/inset-text.html" %}  
         {% include "includes/save-and-continue-button.html" %}  
-
-        <input type="hidden" name="start_date" value="{{ start_date }}" />
-        <input type="hidden" name="start_date-day" value="{{ start_date.day }}" />
-        <input type="hidden" name="start_date-month" value="{{ start_date.month }}" />
-        <input type="hidden" name="start_date-year" value="{{ start_date.year }}" />
       </form>
     </div>
   </div>

@@ -1,0 +1,25 @@
+{{ govukInput({
+  errorMessage: errors.occupation if errors,
+  label: {
+    text: "What is their occupation?",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  hint: {
+    html: "For example, consultant."
+  },
+  id: "occupation",
+  name: "occupation",
+  value: occupation
+}) }} 
+{{ govukTextarea({
+  errorMessage: errors.role_and_responsibilities if errors,
+  label: {
+    text: "Describe their role and responsibilities in relation to the entity",
+    classes: "govuk-label--m",
+    isPageHeading: false
+  },
+  id: "role_and_responsibilities",
+  name: "role_and_responsibilities",
+  value: role_and_responsibilities
+}) }} 

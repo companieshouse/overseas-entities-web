@@ -859,6 +859,39 @@ export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK_NO_ADDRESS: managingOfficerType
   ...DATE_OF_BIRTH,
 };
 
+export const UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  ch_reference: "testchreference",
+  first_name: "Jimmy John",
+  last_name: "Wabb",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Jimmothy James Jimminny, Finn McCumhaill, Test Tester",
+  date_of_birth: { day: "1", month: "2", year: "1900" },
+  nationality: "country1",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "occupation",
+  role_and_responsibilities: "role"
+};
+
+export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  ch_reference: "testchreference",
+  first_name: "Jimmy John",
+  last_name: "Wabb",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Jimmothy James Jimminny, Finn McCumhaill, Test Tester",
+  date_of_birth: { day: "1", month: "2", year: "1900" },
+  nationality: "country1",
+  second_nationality: "country2",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "occupation",
+  role_and_responsibilities: "role"
+};
+
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
   first_name: "",
   last_name: "",

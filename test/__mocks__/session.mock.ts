@@ -1555,9 +1555,6 @@ export const APPLICATION_DATA_WITH_TRUST_ID_MOCK: ApplicationData = {
 
 export const APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_NO_ADDRESS ],
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
   [managingOfficerType.ManagingOfficerKey]: [UPDATE_REVIEW_MANAGING_OFFICER_MOCK_NO_ADDRESS],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK

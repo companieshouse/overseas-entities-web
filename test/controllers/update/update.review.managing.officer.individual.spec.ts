@@ -106,6 +106,16 @@ describe('Test review managing officer', () => {
       expect(resp.text).toContain(ErrorMessages.OCCUPATION);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
+
+    test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK
+      });
+      const resp = await request(app).post(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL)
+        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 });
 

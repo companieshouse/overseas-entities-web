@@ -46,6 +46,7 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS,
+  UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -474,4 +475,19 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
     });
   });
+
+  describe("MANAGING OFFICER REVIEWS TESTS", () => {
+    test(`redirection to ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page if managing-officer data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...UPDATE_REVIEW_MANAGING_OFFICER_MOCK
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(false);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain('Found. Redirecting to /update-an-overseas-entity/update-review-individual-managing-officer?index=0');
+    });
+  });
+
 });

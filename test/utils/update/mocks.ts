@@ -125,6 +125,7 @@ export const managingOfficerMock: CompanyOfficer = {
     registrationNumber: "0000"
   },
   links: {
+    self: "selfLink",
     officer: {
       appointments: ""
     }
@@ -164,6 +165,7 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
     registrationNumber: "0000"
   },
   links: {
+    self: "selfLink",
     officer: {
       appointments: ""
     }

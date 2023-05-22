@@ -1,8 +1,8 @@
 import {
   CeasedDateKey,
   CeasedDateKeys,
-  ResignedOnKey,
-  ResignedOnKeys,
+  ResignedOnDateKey,
+  ResignedOnDateKeys,
 } from "../../model/date.model";
 import {
   mapDataObjectToFields,
@@ -22,7 +22,7 @@ export const addCeasedDateToTemplateOptions = (templateOptions: Object, appData:
 export const addResignedDateToTemplateOptions = (templateOptions: Object, appData: ApplicationData, moData: Object): any => {
   templateOptions["is_still_mo"] = (Object.keys(moData["resigned_on"]).length === 0) ? 1 : 0;
   templateOptions[EntityNumberKey] = appData[EntityNumberKey];
-  templateOptions["resigned_on"] = (moData) ? mapDataObjectToFields(moData[ResignedOnKey], ResignedOnKeys, InputDateKeys) : {};
+  templateOptions["resigned_on"] = (moData) ? mapDataObjectToFields(moData[ResignedOnDateKey], ResignedOnDateKeys, InputDateKeys) : {};
 
   return templateOptions;
 };

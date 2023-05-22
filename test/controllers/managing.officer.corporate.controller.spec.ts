@@ -28,7 +28,8 @@ import {
   MO_CORP_ID_URL,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_MOCK_WITH_ADDRESS,
   REQ_BODY_MANAGING_OFFICER_CORPORATE_OBJECT_EMPTY,
-  RR_CARRIAGE_RETURN
+  RR_CARRIAGE_RETURN,
+  APPLICATION_DATA_MOCK
 } from "../__mocks__/session.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -50,6 +51,7 @@ import {
   SHOW_INFORMATION_ON_PUBLIC_REGISTER
 } from "../__mocks__/text.mock";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
@@ -75,6 +77,7 @@ mockHasBeneficialOwnersStatementMiddleware.mockImplementation((req: Request, res
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
@@ -97,6 +100,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);
@@ -109,6 +113,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
     });
 
     test(`renders the ${MANAGING_OFFICER_CORPORATE_PAGE} page without public register jurisdiction field`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL);
 
       expect(resp.status).toEqual(200);

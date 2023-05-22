@@ -9,6 +9,7 @@ export const IdentityDateKey: string = "identity_date";
 export const CeasedDateKey: string = "ceased_date";
 export const ResignedOnKey: string = "resigned_on";
 export const FilingDateKey: string = "filing_date";
+export const ResignedOnDateKey: string = "resigned_on";
 
 /*
   The sub-fields for Date Objects used in the templates
@@ -43,7 +44,7 @@ export const FilingDateKeys: string[] = [
   "filing_date-year",
 ];
 
-export const ResignedOnKeys: string[] = [
+export const ResignedOnDateKeys: string[] = [
   "resigned_on-day",
   "resigned_on-month",
   "resigned_on-year",

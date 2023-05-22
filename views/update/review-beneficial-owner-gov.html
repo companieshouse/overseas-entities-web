@@ -2,6 +2,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% set title = "Review the government or public authority (NOT LIVE)" %}
+{% set beneficialOwnerPronoun = "it" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -20,13 +21,12 @@
    <h1 class="govuk-heading-xl govuk-!-margin-0">Review the government or public authority</h1>
    <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
 
-   {% include "includes/ceased-date-details-summary.html" %}
+   {% include "includes/ceased-date-details-summary-review-bo.html" %}
 
    <form class="form" method="post">
     <input type="hidden" name="id" value="{{ id }}" />
     <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
 
-    {% set beneficialOwnerPronoun = "it" %}
     {% include "includes/inputs/fields/name-input.html" %}
 
     {% include "includes/inputs/address/principal-address-input.html" %}

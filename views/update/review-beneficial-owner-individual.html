@@ -2,6 +2,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% set title = "Review the individual beneficial owner (NOT LIVE)" %}
+{% set beneficialOwnerPronoun = "they" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -20,20 +21,9 @@
 
     <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
     <br> <p class="govuk-body">If you need to update this beneficial owner's information, you can change the answers here.</p>
-    {{ govukInsetText({
-      html: "You'll need to <strong>enter their home address</strong>, and tell us if they're still a registrable beneficial owner."
-    }) }}
 
-    <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
-      <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-          How to complete this section for a ceased beneficial owner
-        </span>
-      </summary>
-      <div class="govuk-details__text">
-        <p class="govuk-body">If they are no longer a registrable beneficial owner, you need to make sure this information is correct as at the ceased date, and update it if needed.</p>
-      </div>
-    </details>
+    {% include "includes/ceased-date-details-summary-review-bo.html" %}
+
     <form method="post">
       <input type="hidden" name="id" value="{{ id }}" />
       <input type="hidden" name="ch_reference" value="{{ ch_reference }}" />
@@ -70,7 +60,6 @@
 
       {% include "includes/uneditable-start-date.html" %}
 
-      {% set beneficialOwnerPronoun = "they" %}
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
 
       {% set isBeneficialOwnerGov = false %}

@@ -7,8 +7,8 @@ import { confirmToRemove } from "./confirm.to.remove.validation";
 import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
-import { managingOfficerCorporate } from "./managing.officer.corporate.validation";
-import { managingOfficerIndividual, reviewManagingOfficers } from "./managing.officer.validation";
+import { managingOfficerCorporate, updateManagingOfficerCorporate } from "./managing.officer.corporate.validation";
+import { managingOfficerIndividual, updateManagingOfficerIndividual, reviewManagingOfficers } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
@@ -42,7 +42,9 @@ export const validator = {
   beneficialOwnersType,
   beneficialOwnersTypeSubmission,
   managingOfficerIndividual,
+  updateManagingOfficerIndividual,
   managingOfficerCorporate,
+  updateManagingOfficerCorporate,
   beneficialOwnerIndividual,
   beneficialOwnerOther,
   beneficialOwnerGov,

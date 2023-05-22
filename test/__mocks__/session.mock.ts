@@ -818,21 +818,9 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
 };
 
 export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
-  id: MO_IND_ID,
-  ch_reference: "testchreference",
-  first_name: "Joe",
-  last_name: "Bloggs",
-  has_former_names: yesNoResponse.Yes,
-  former_names: "Some name",
-  date_of_birth: { day: "21", month: "3", year: "1947" },
-  nationality: "Malawian",
-  usual_residential_address: ADDRESS,
-  service_address: ADDRESS,
-  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-  occupation: "Some Occupation",
-  role_and_responsibilities: "Some role and responsibilities",
-  resigned_on: { day: "21", month: "3", year: "2010" },
   ...MANAGING_OFFICER_OBJECT_MOCK,
+  ch_reference: "testchreference",
+  resigned_on: { day: "21", month: "3", year: "2010" },
   start_date: { day: "1", month: "1", year: "2022" }
 };
 

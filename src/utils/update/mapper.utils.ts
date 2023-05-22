@@ -84,6 +84,13 @@ export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
   };
 };
 
+export const splitNationalities = (officerNationalities: string | undefined): string[] => {
+  if (!officerNationalities) {
+    return [""];
+  }
+  return officerNationalities.split(/\s*,\s*/).slice(0, 2);
+};
+
 type AddressMatches = {
   (address1: Address, address2?: Address): boolean;
   (address1: OfficeAddress, address2?: OfficeAddress): boolean;

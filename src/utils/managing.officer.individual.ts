@@ -3,8 +3,9 @@ import { Session } from "@companieshouse/node-session-handler";
 
 import { logger } from "../utils/logger";
 import { saveAndContinue } from "../utils/save.and.continue";
-import { ApplicationDataType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -15,12 +16,20 @@ import {
 
 import {
   AddressKeys,
+  EntityNumberKey,
   HasFormerNames,
   HasSameResidentialAddressKey,
   ID,
   InputDateKeys
 } from "../model/data.types.model";
-import { DateOfBirthKey, DateOfBirthKeys } from "../model/date.model";
+import {
+  DateOfBirthKey,
+  DateOfBirthKeys,
+  ResignedOnDateKey,
+  ResignedOnDateKeys,
+  StartDateKey,
+  StartDateKeys
+} from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
 import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
@@ -28,9 +37,12 @@ import { v4 as uuidv4 } from 'uuid';
 export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session as Session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    entity_number: appData[EntityNumberKey]
   });
 };
 
@@ -128,6 +140,13 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
     data[FormerNamesKey] = "";
   }
 
+  // only set start_date and resigned_on keys for Update journey
+  if ('start_date-day' in reqBody){
+    data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  }
+  if ('is_still_mo' in reqBody){
+    data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
+  }
   data[ID] = id;
 
   return data;

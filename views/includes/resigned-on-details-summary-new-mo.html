@@ -1,0 +1,18 @@
+{% if managingOfficerPronoun == "they" %}
+  {% set moDetailsTense = "have" %}
+  {% set moSummaryTense = "are" %}
+{% else %}
+  {% set moDetailsTense = "had" %}
+  {% set moSummaryTense = "is" %}
+{% endif %}
+
+<details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+  <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      How to complete this section if {{ managingOfficerPronoun }} {{ moSummaryTense }} no longer a managing officer
+    </span>
+  </summary>
+  <div class="govuk-details__text">
+    <p class="govuk-body">If {{ managingOfficerPronoun }} {{ moDetailsTense }} become and then stopped being a managing officer during this update period, you need to enter information that is correct as at the date it stopped being one.</p>
+  </div>
+</details>

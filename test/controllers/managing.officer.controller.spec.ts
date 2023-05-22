@@ -19,6 +19,7 @@ import {
   REMOVE
 } from "../../src/config";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapFieldsToDataObject,
   prepareData,
@@ -26,6 +27,7 @@ import {
   setApplicationData
 } from '../../src/utils/application.data';
 import {
+  APPLICATION_DATA_MOCK,
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO,
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES,
   MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO,
@@ -77,6 +79,7 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetFromApplicationData = getFromApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
@@ -98,6 +101,7 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${MANAGING_OFFICER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);

@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
-import { ApplicationDataType } from "../model";
+import { ApplicationData, ApplicationDataType } from "../model";
 import {
+  getApplicationData,
   getFromApplicationData,
   mapDataObjectToFields,
   mapFieldsToDataObject,
@@ -16,20 +17,26 @@ import {
 import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
 import {
   AddressKeys,
+  EntityNumberKey,
   HasSamePrincipalAddressKey,
   ID,
+  InputDateKeys,
   IsOnRegisterInCountryFormedInKey,
   PublicRegisterNameKey,
   RegistrationNumberKey
 } from "../model/data.types.model";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
+import { ResignedOnDateKey, ResignedOnDateKeys, StartDateKey, StartDateKeys } from "../model/date.model";
 
 export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+  const appData: ApplicationData = getApplicationData(req.session as Session);
+
   return res.render(templateName, {
     backLinkUrl: backLinkUrl,
-    templateName: templateName
+    templateName: templateName,
+    entity_number: appData[EntityNumberKey]
   });
 };
 
@@ -129,6 +136,15 @@ const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
     data[PublicRegisterNameKey] = "";
     data[RegistrationNumberKey] = "";
   }
+
+  // only set start_date and resigned_on keys for Update journey
+  if ('start_date-day' in reqBody){
+    data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
+  }
+  if ('is_still_mo' in reqBody){
+    data[ResignedOnDateKey] = reqBody["is_still_mo"] === '0' ? mapFieldsToDataObject(reqBody, ResignedOnDateKeys, InputDateKeys) : {};
+  }
+
   data[ID] = id;
 
   return data;

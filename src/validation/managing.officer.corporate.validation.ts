@@ -5,6 +5,16 @@ import { principal_address_validations, principal_service_address_validations } 
 import { public_register_validations } from "./fields/public-register.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
 import { contact_email_validations } from "./fields/email.validation";
+import { resigned_on_validations, start_date_validations } from "./fields/date.validation";
+
+const contact_name_and_email_validations = [
+  body("contact_full_name")
+    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FULL_NAME)
+    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
+
+  ...contact_email_validations
+];
 
 export const managingOfficerCorporate = [
   body("name").not()
@@ -38,10 +48,13 @@ export const managingOfficerCorporate = [
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_ROLE_LENGTH)
     .matches(VALID_CHARACTERS_FOR_TEXT_BOX).withMessage(ErrorMessages.ROLES_AND_RESPONSIBILITIES_INVALID_CHARACTERS),
 
-  body("contact_full_name")
-    .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.FULL_NAME)
-    .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_FULL_NAME_LENGTH)
-    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.CONTACT_NAME_INVALID_CHARACTERS),
+  ...contact_name_and_email_validations
+];
 
-  ...contact_email_validations
+export const updateManagingOfficerCorporate = [
+  ...managingOfficerCorporate,
+  ...start_date_validations,
+  body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
+  ...resigned_on_validations,
+  ...contact_name_and_email_validations
 ];

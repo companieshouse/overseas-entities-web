@@ -14,7 +14,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 
   return {
     id: raw.links?.self,
-    ch_reference: mapSelfLink(officer.links?.officer?.appointments),
+    ch_reference: mapSelfLink((officer as any)?.links?.self),
     first_name: names[0],
     last_name: names[1],
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,

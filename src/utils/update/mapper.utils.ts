@@ -2,6 +2,7 @@ import { Address, InputDate } from "../../model/data.types.model";
 import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";
 
 type DateOfBirthTypes = {
   (dateOfBirth: PSCDateOfBirth | undefined): InputDate;
@@ -11,7 +12,7 @@ type DateOfBirthTypes = {
 export const mapDateOfBirth: DateOfBirthTypes = (dateOfBirth) => {
   return {
     day: dateOfBirth?.day ?? "01",
-    month: dateOfBirth?.month,
+    month: padWithZero(dateOfBirth?.month, 2, "0"),
     year: dateOfBirth?.year
   } as InputDate;
 };

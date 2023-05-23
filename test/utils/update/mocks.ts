@@ -75,7 +75,7 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   countryOfResidence: "Wales",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   etag: '',
@@ -154,7 +154,7 @@ export const managingOfficerMock: CompanyOfficer = {
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
@@ -193,7 +193,7 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],

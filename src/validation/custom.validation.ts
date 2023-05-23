@@ -239,7 +239,7 @@ export const checkCeasedDateOnOrAfterStartDate = (
   const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
   const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
 
-  if (startDate > ceaseDate) {
+  if (startDate && startDate > ceaseDate) {
     throw new Error(errorMessage);
   }
 

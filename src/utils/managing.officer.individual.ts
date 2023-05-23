@@ -126,7 +126,7 @@ export const removeManagingOfficer = async (req: Request, res: Response, next: N
   }
 };
 
-const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);

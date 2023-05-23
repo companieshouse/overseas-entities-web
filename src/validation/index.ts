@@ -8,7 +8,7 @@ import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } fro
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
 import { managingOfficerCorporate, updateManagingOfficerCorporate } from "./managing.officer.corporate.validation";
-import { managingOfficerIndividual, updateManagingOfficerIndividual } from "./managing.officer.validation";
+import { managingOfficerIndividual, updateManagingOfficerIndividual, reviewManagingOfficers } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { overseasEntityQuery } from "./overseas.entity.query.validation";
 import { secureRegisterFilter } from "./secure.register.filter.validation";
@@ -72,6 +72,7 @@ export const validator = {
   registrableBeneficialOwner,
   updateBeneficialOwnerAndReviewValidator,
   updateReviewBeneficialOwnerGovValidator,
+  reviewManagingOfficers,
   updateContinueSavedFiling,
   updateFilingDate
 };

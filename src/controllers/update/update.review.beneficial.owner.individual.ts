@@ -1,5 +1,5 @@
 import {
-  REVIEW_BENEFICIAL_OWNER_INDEX_PARAM,
+  REVIEW_OWNER_INDEX_PARAM,
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
@@ -50,7 +50,7 @@ const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
   if (appData.beneficial_owners_individual?.length === 0 || pageIndex < 1){
     return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
   } else {
-    return UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + REVIEW_BENEFICIAL_OWNER_INDEX_PARAM + (pageIndex - 1);
+    return UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + REVIEW_OWNER_INDEX_PARAM + (pageIndex - 1);
   }
 };
 
@@ -75,9 +75,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session, false);
-
-      res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
+    res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     next(error);
   }
@@ -90,7 +89,7 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
 };
 
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
-  if (input.length > 1){
+  if (input && input.length > 1){
     return input;
   }
   return String(input).padStart(maxLength, fillString);

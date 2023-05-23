@@ -30,7 +30,7 @@ export const MOCK_GET_COMPANY_OFFICERS: CompanyOfficers = {
         }
       },
       "name": "JONES, Tim Bill",
-      "officerRole": "secretary"
+      "officerRole": "managing-officer"
     }
   ],
   "resignedCount": '0',

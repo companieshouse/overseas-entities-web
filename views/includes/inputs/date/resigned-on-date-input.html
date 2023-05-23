@@ -1,42 +1,38 @@
-{% set resignedOnErrorMessage = '' %}
-{% set isResignedOnDayError = false %}
-{% set isResignedOnMonthError = false %}
-{% set isResignedOnYearError = false %}
+{% set dateText = "Date they stopped being a managing officer" %}
 
-{# We are constrained by the generic validation handling so have to manipulate the error data in the template rather than the controller #}
-{# We need to loop through the errors returned to pick out the first resigned_on error #}
-{# to prevent duplicate messages on the same field. #}
-{# We can use its message text and then work out which of the day/month/year fields #}
-{# to mark as 'red' using the error style class #}
+{% set resignedDateErrorMessage = '' %}
+{% set isResignedDateDayError = false %}
+{% set isResignedDateMonthError = false %}
+{% set isResignedDateYearError = false %}
 
 {% if errors %}
   {% for key, value in errors %}
 
     {# only look at first matching error #}
-    {% if not resignedOnErrorMessage %}
+    {% if not resignedDateErrorMessage %}
       {% if "resigned_on" == key|string %}
         {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
-        {% set resignedOnErrorMessage = value %}
+        {% set resignedDateErrorMessage = value %}
         {% if resigned_on %}
           {% if not resigned_on["resigned_on-day"] %}
-            {% set isResignedOnDayError = true %}
+            {% set isResignedDateDayError = true %}
           {% endif %}
           {% if not resigned_on["resigned_on-month"] %}
-            {% set isResignedOnMonthError = true %}
+            {% set isResignedDateMonthError = true %}
           {% endif %}
           {% if not resigned_on["resigned_on-year"] %}
-            {% set isResignedOnYearError = true %}
+            {% set isResignedDateYearError = true %}
           {% endif %}
         {% endif %}
       {% elif "resigned_on" in key|string %}
         {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
-        {% set resignedOnErrorMessage = value %}
+        {% set resignedDateErrorMessage = value %}
         {% if "-day" in key|string %}
-          {% set isResignedOnDayError = true %}
+          {% set isResignedDateDayError = true %}
         {% elif "-month" in key|string %}
-          {% set isResignedOnMonthError = true %}
+          {% set isResignedDateMonthError = true %}
         {% elif "-year" in key|string %}
-          {% set isResignedOnYearError = true %}
+          {% set isResignedDateYearError = true %}
         {% endif %}
       {% endif %}
     {% endif %}
@@ -48,19 +44,19 @@
 {% set resigned_on_classes_month = "govuk-input--width-2 govuk-input" %}
 {% set resigned_on_classes_day = "govuk-input--width-2 govuk-input" %}
 
-{% if isResignedOnDayError %}
+{% if isResignedDateDayError %}
   {% set resigned_on_classes_day = resigned_on_classes_day + "--error" %}
 {% endif %}
-{% if isResignedOnMonthError %}
+{% if isResignedDateMonthError %}
   {% set resigned_on_classes_month = resigned_on_classes_month + "--error" %}
 {% endif %}
-{% if isResignedOnYearError %}
+{% if isResignedDateYearError %}
   {% set resigned_on_classes_year = resigned_on_classes_year + "--error" %}
 {% endif %}
 
 
 {{ govukDateInput({
-  errorMessage: resignedOnErrorMessage,
+  errorMessage: resignedDateErrorMessage,
   id: "resigned_on",
   namePrefix: "resigned_on",
   fieldset: {

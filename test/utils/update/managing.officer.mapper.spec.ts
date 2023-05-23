@@ -43,7 +43,7 @@ describe("Test mapping to managing officer", () => {
         year: "2023",
       },
       usual_residential_address: undefined,
-      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         property_name_number: UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK.service_address?.property_name_number,
         line_1: UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK.service_address?.line_1,
@@ -79,7 +79,7 @@ describe("Test mapping to managing officer", () => {
         year: "2023",
       },
       usual_residential_address: undefined,
-      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         property_name_number: UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK.service_address?.property_name_number,
         line_1: UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK.service_address?.line_1,
@@ -99,7 +99,7 @@ describe("Test mapping to managing officer", () => {
       id: undefined,
       name: managingOfficerMock.name,
       principal_address: undefined,
-      is_service_address_same_as_principal_address: yesNoResponse.Yes,
+      is_service_address_same_as_principal_address: yesNoResponse.No,
       start_date: {
         day: "1",
         month: "4",

@@ -51,7 +51,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.addressLine1,
         line_2: pscMock.address.addressLine2,
@@ -59,6 +59,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.country,
+        county: pscMock.address.county
       },
       usual_residential_address: undefined,
       is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0
@@ -86,7 +87,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
       beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.addressLine1,
         line_2: pscMock.address.addressLine2,
@@ -94,6 +95,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         property_name_number: pscMock.address.premises,
         town: pscMock.address.locality,
         country: pscMock.address.country,
+        county: pscMock.address.county
       },
       usual_residential_address: undefined,
       is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0

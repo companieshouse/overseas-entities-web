@@ -46,6 +46,7 @@ import {
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS,
+  APPLICATION_DATA_UPDATE_MO_MOCK,
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
@@ -129,7 +130,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
-      expect(resp.status).toEqual(200);
+      expect(resp.status).toEqual(302);
       expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
     });

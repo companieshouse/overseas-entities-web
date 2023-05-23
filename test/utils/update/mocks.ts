@@ -75,6 +75,47 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   countryOfResidence: "Wales",
   dateOfBirth: {
     day: "1",
+    month: "02",
+    year: "1900"
+  },
+  etag: '',
+  links: {
+    self: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+    statement: ""
+  },
+  identification: {
+    legalAuthority: "",
+    legalForm: "",
+    placeRegistered: "",
+    registrationNumber: ""
+  },
+  naturesOfControl: [
+    'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
+    'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
+    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
+  ],
+  isSanctioned: true,
+};
+
+export const pscDualNationalityMock: CompanyPersonWithSignificantControl = {
+  nameElements: {
+    forename: "Random",
+    surname: "Person"
+  },
+  name: "Mr Random Notreal Person",
+  notifiedOn: "2016-04-06",
+  nationality: "British, Italian",
+  address: {
+    country: "country1",
+    postalCode: "CF14 3UZ",
+    premises: "Companies House",
+    locality: "Limavady",
+    addressLine1: "",
+    addressLine2: "",
+  },
+  countryOfResidence: "Wales",
+  dateOfBirth: {
+    day: "1",
     month: "2",
     year: "1900"
   },
@@ -113,7 +154,7 @@ export const managingOfficerMock: CompanyOfficer = {
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
@@ -153,7 +194,7 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],

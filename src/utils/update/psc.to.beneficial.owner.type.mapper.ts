@@ -3,17 +3,19 @@ import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate } from "./mapper.utils";
+import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate, splitNationalities } from "./mapper.utils";
 import { logger } from "../../utils/logger";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
+  const nationalities = splitNationalities(psc.nationality);
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
     ch_reference: mapSelfLink(psc.links?.self),
     first_name: psc.nameElements?.forename,
     last_name: psc.nameElements?.surname,
-    nationality: psc.nationality,
+    nationality: nationalities[0],
+    second_nationality: nationalities[1],
     date_of_birth: mapDateOfBirth(psc.dateOfBirth),
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, undefined) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,

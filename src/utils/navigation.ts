@@ -209,6 +209,16 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL]: {
+    currentPage: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL]: {
+    currentPage: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,

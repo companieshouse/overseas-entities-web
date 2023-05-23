@@ -1,3 +1,5 @@
+{% set managingOfficerPronoun = "it" %}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
 
@@ -6,6 +8,10 @@
     <span class="govuk-caption-xl">Managing officer</span>
     <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
     <br> <p class="govuk-body">You can add more later.</p> <br>
+
+    {% if entity_number %}
+      {% include "includes/resigned-on-details-summary-new-mo.html" %}
+    {% endif %}
 
     <form class="form" method="post">
       {% include "includes/inputs/fields/name-input.html" %}
@@ -36,6 +42,12 @@
         name: "role_and_responsibilities",
         value: role_and_responsibilities
       }) }}
+
+      {% if entity_number %}
+        {% set dateText = "When did it become a managing officer for the overseas entity?" %}
+        {% include "includes/inputs/date/start-date-input.html" %}
+        {% include "includes/inputs/fields/is-still-a-managing-officer-input.html" %}
+      {% endif %}
 
       <h2 class="govuk-heading-l">Who can we contact about this managing officer?</h2>
 

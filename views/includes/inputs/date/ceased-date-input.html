@@ -1,6 +1,8 @@
 {% if beneficialOwnerPronoun == "they" %}
   {% set dateText = "Date they ceased to be a registrable beneficial owner" %}
-{% else %}
+{% elif reviewMoText %}
+  {% set dateText = "Date they stopped being a managing officer" %}
+{% else  %}
   {% set dateText = "Date it ceased to be a registrable beneficial owner" %}
 {% endif %}
 

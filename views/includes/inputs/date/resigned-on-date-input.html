@@ -1,0 +1,89 @@
+{% set dateText = "Date they stopped being a managing officer" %}
+
+{% set resignedDateErrorMessage = '' %}
+{% set isResignedDateDayError = false %}
+{% set isResignedDateMonthError = false %}
+{% set isResignedDateYearError = false %}
+
+{% if errors %}
+  {% for key, value in errors %}
+
+    {# only look at first matching error #}
+    {% if not resignedDateErrorMessage %}
+      {% if "resigned_on" == key|string %}
+        {# if the matching error is for the whole date field, look at the data to see what has not been populated in the date #}
+        {% set resignedDateErrorMessage = value %}
+        {% if resigned_on %}
+          {% if not resigned_on["resigned_on-day"] %}
+            {% set isResignedDateDayError = true %}
+          {% endif %}
+          {% if not resigned_on["resigned_on-month"] %}
+            {% set isResignedDateMonthError = true %}
+          {% endif %}
+          {% if not resigned_on["resigned_on-year"] %}
+            {% set isResignedDateYearError = true %}
+          {% endif %}
+        {% endif %}
+      {% elif "resigned_on" in key|string %}
+        {# if the matching error is for a -day,-month,-year field, set the flag to mark that field as in error #}
+        {% set resignedDateErrorMessage = value %}
+        {% if "-day" in key|string %}
+          {% set isResignedDateDayError = true %}
+        {% elif "-month" in key|string %}
+          {% set isResignedDateMonthError = true %}
+        {% elif "-year" in key|string %}
+          {% set isResignedDateYearError = true %}
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+
+{% set resigned_on_classes_year = "govuk-input--width-4 govuk-input" %}
+{% set resigned_on_classes_month = "govuk-input--width-2 govuk-input" %}
+{% set resigned_on_classes_day = "govuk-input--width-2 govuk-input" %}
+
+{% if isResignedDateDayError %}
+  {% set resigned_on_classes_day = resigned_on_classes_day + "--error" %}
+{% endif %}
+{% if isResignedDateMonthError %}
+  {% set resigned_on_classes_month = resigned_on_classes_month + "--error" %}
+{% endif %}
+{% if isResignedDateYearError %}
+  {% set resigned_on_classes_year = resigned_on_classes_year + "--error" %}
+{% endif %}
+
+
+{{ govukDateInput({
+  errorMessage: resignedDateErrorMessage,
+  id: "resigned_on",
+  namePrefix: "resigned_on",
+  fieldset: {
+    legend: {
+      text: dateText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  hint: {
+    text: "For example, 27 3 2007"
+  },
+  items: [
+    {
+      classes: resigned_on_classes_day,
+      name: "day",
+      value: resigned_on["resigned_on-day"] if resigned_on
+    },
+    {
+      classes: resigned_on_classes_month,
+      name: "month",
+      value: resigned_on["resigned_on-month"] if resigned_on
+    },
+    {
+      classes: resigned_on_classes_year,
+      name: "year",
+      value: resigned_on["resigned_on-year"] if resigned_on
+    }
+  ]
+}) }}

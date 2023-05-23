@@ -1,4 +1,4 @@
-import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink, splitNationalities } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
@@ -13,6 +13,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 
   return {
     id: officer.links?.self,
+    ch_reference: mapSelfLink(officer.links?.self),
     first_name: names[0],
     last_name: names[1],
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
@@ -67,13 +68,6 @@ export const splitNames = (officerName: string): string[] => {
       return names;
     }
   }
-};
-
-export const splitNationalities = (officerNationalities: string | undefined): string[] => {
-  if (!officerNationalities) {
-    return [""];
-  }
-  return officerNationalities.split(/\s*,\s*/).slice(0, 2);
 };
 
 export const getFormerNames = (formerNames?: FormerNameResource[]): string => {

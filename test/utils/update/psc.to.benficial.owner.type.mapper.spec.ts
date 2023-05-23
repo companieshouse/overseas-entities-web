@@ -2,7 +2,7 @@ import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-nod
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
-import { pscMock } from './mocks';
+import { pscDualNationalityMock, pscMock } from './mocks';
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
 
@@ -43,6 +43,41 @@ describe("Test Mapping person of significant control to beneficial owner type", 
       last_name: pscMock.nameElements.surname,
       nationality: pscMock.nationality,
       second_nationality: undefined,
+      start_date: {
+        "day": "6",
+        "month": "4",
+        "year": "2016",
+      },
+      non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+      service_address: {
+        line_1: pscMock.address.addressLine1,
+        line_2: pscMock.address.addressLine2,
+        postcode: pscMock.address.postalCode,
+        property_name_number: pscMock.address.premises,
+        town: pscMock.address.locality,
+        country: pscMock.address.country,
+      },
+      usual_residential_address: undefined,
+      is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0
+    });
+  });
+
+  test('map person of significant control to beneficial owner individual with dual nationalities should return object', () => {
+    expect(mapPscToBeneficialOwnerTypeIndividual(pscDualNationalityMock)).toEqual({
+      id: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+      ch_reference: "dhjsabcdjhvdjhdf",
+      date_of_birth: {
+        day: pscMock.dateOfBirth.day,
+        month: pscMock.dateOfBirth.month,
+        year: pscMock.dateOfBirth.year
+      },
+      first_name: pscMock.nameElements.forename,
+      last_name: pscMock.nameElements.surname,
+      nationality: "British",
+      second_nationality: "Italian",
       start_date: {
         "day": "6",
         "month": "4",

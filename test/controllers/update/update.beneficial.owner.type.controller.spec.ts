@@ -48,6 +48,7 @@ import {
   APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS,
   APPLICATION_DATA_UPDATE_MO_MOCK,
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -123,14 +124,20 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed MOs if MOs have been reviewed`, async () => {
 
+      const reviewMoAppData = { ...APPLICATION_DATA_UPDATE_MO_MOCK };
+      delete reviewMoAppData["beneficial_owners_individual"];
+      reviewMoAppData["beneficial_owners_individual"] = [UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK];
+
+      delete reviewMoAppData["managing_officers_individual"];
+      reviewMoAppData["managing_officers_individual"] = [UPDATE_MANAGING_OFFICER_OBJECT_MOCK];
+
       mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_UPDATE_MO_MOCK
+        ...reviewMoAppData
       });
 
-      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
-      expect(resp.status).toEqual(302);
+      expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING);
       expect(resp.text).toContain(REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING);
     });

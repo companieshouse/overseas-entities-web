@@ -829,7 +829,7 @@ export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK: managingOfficerType.ManagingOf
   ...RESIDENTIAL_ADDRESS_MOCK,
   resigned_on: { day: "21", month: "3", year: "1970" },
   start_date: { day: "21", month: "3", year: "1960" },
-  ...DATE_OF_BIRTH
+  ...DATE_OF_BIRTH,
 };
 
 export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO = {

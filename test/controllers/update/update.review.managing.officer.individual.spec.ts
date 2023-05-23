@@ -17,7 +17,7 @@ import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_EMPTY_BO_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST, UPDATE_REVIEW_MANAGING_OFFICER_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_EMPTY_BO_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST, UPDATE_REVIEW_MANAGING_OFFICER_MOCK, UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
@@ -87,7 +87,7 @@ describe('Test review managing officer', () => {
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
       const resp = await request(app)
         .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)
-        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK);
+        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual("/update-an-overseas-entity/update-beneficial-owner-type");
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -112,7 +112,7 @@ describe('Test review managing officer', () => {
         ...APPLICATION_DATA_UPDATE_BO_MOCK
       });
       const resp = await request(app).post(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL)
-        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK);
+        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

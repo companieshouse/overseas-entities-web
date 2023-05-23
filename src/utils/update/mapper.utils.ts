@@ -98,5 +98,9 @@ type AddressMatches = {
 };
 
 export const isSameAddress: AddressMatches = (address1: any, address2?: any) => {
-  return !address2 || Object.keys(address1).every(key => address1[key] === address2[key]);
+  if (address2 === undefined) {
+    return false;
+  } else {
+    return Object.keys(address1).every(key => address1[key] === address2[key]);
+  }
 };

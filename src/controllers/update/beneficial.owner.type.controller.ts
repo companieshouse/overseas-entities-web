@@ -120,15 +120,13 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
     for (const officer of (companyOfficers.items || [])) {
       logger.info("Loaded officer " + officer.officerRole);
       if (officer.resignedOn === undefined) {
-        // TO-DO : Change string condition to individual-managing-officer
-        if (officer.officerRole === "secretary") {
+        if (officer.officerRole === "managing-officer") {
           const managingOfficer = mapToManagingOfficer(officer);
           logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
           appData.update?.review_managing_officers_individual?.push(managingOfficer);
         } else if (officer.officerRole === "corporate-managing-officer") {
           const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
           logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
-          // TO-DO : Remove, will come in with review ticket
           appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
         }
       }

@@ -33,8 +33,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const overseasEntityHeading: string = OVERSEAS_ENTITY_SECTION_HEADING;
     const whoIsCompletingChangeLink: string = WHO_IS_MAKING_UPDATE_URL;
 
-    console.log(appData.managing_officers_individual);
-
     return res.render(UPDATE_CHECK_YOUR_ANSWERS_PAGE, {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
       templateName: UPDATE_CHECK_YOUR_ANSWERS_PAGE,

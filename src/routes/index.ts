@@ -533,7 +533,7 @@ router.route(config.UPDATE_MANAGING_OFFICER_URL + config.ID)
   .post(...validator.updateManagingOfficerIndividual, checkValidations, updateManagingOfficerIndividual.update);
 router.get(config.UPDATE_MANAGING_OFFICER_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerIndividual.remove);
 
-router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICE_URL)
+router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL)
   .all(
     authentication,
     companyAuthentication,

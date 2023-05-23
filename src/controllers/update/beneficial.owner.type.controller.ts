@@ -41,22 +41,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkMoRedirect);
     }
 
-    // TO-DO : Remove after review pages come in
-    if (appData.managing_officers_individual && appData.managing_officers_individual.length > 0) {
-      appData.managing_officers_individual[0].ch_reference = "string";
-      appData.managing_officers_individual[0].resigned_on = { day: "1", month: "2", year: "2023" };
-      // appData.managing_officers_individual.forEach(officer => {
-      //   officer.ch_reference = "String";
-      //   // TO-DO : This is commented out as save and resume is currently off, will need to be on
-      //   // officer.date_of_birth = {day: "1", month: "2", year: "1990"};
-      //   officer.resigned_on = { day: "1", month: "2", year: "2023" };
-      //   appData.managing_officers_individual?.push(officer);
-      //   if (appData.managing_officers_individual && appData.managing_officers_individual?.length > 1) {
-      //     appData.managing_officers_individual.pop();
-      //   }
-      // });
-    }
-
     const allBos = [
       ...(appData[BeneficialOwnerIndividualKey] ?? []),
       ...(appData[BeneficialOwnerOtherKey] ?? []),
@@ -97,10 +81,6 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
     appData.update.review_beneficial_owners_government_or_public_authority = [];
     appData.update.review_managing_officers_individual = [];
     appData.update.review_managing_officers_corporate = [];
-
-    // TO-DO : Remove
-    appData.managing_officers_individual = [];
-    appData.managing_officers_corporate = [];
 
     await retrieveBeneficialOwners(req, appData);
     await retrieveManagingOfficers(req, appData);
@@ -145,8 +125,6 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
           const managingOfficer = mapToManagingOfficer(officer);
           logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
           appData.update?.review_managing_officers_individual?.push(managingOfficer);
-          // TO-DO : Remove, will come in with review ticket
-          appData.managing_officers_individual?.push(managingOfficer);
         } else if (officer.officerRole === "corporate-managing-officer") {
           const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
           logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);

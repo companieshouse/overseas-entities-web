@@ -75,6 +75,47 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   countryOfResidence: "Wales",
   dateOfBirth: {
     day: "1",
+    month: "02",
+    year: "1900"
+  },
+  etag: '',
+  links: {
+    self: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
+    statement: ""
+  },
+  identification: {
+    legalAuthority: "",
+    legalForm: "",
+    placeRegistered: "",
+    registrationNumber: ""
+  },
+  naturesOfControl: [
+    'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
+    'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
+    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
+  ],
+  isSanctioned: true,
+};
+
+export const pscDualNationalityMock: CompanyPersonWithSignificantControl = {
+  nameElements: {
+    forename: "Random",
+    surname: "Person"
+  },
+  name: "Mr Random Notreal Person",
+  notifiedOn: "2016-04-06",
+  nationality: "British, Italian",
+  address: {
+    country: "country1",
+    postalCode: "CF14 3UZ",
+    premises: "Companies House",
+    locality: "Limavady",
+    addressLine1: "",
+    addressLine2: "",
+  },
+  countryOfResidence: "Wales",
+  dateOfBirth: {
+    day: "1",
     month: "2",
     year: "1900"
   },
@@ -99,21 +140,21 @@ export const pscMock: CompanyPersonWithSignificantControl = {
 
 export const managingOfficerMock: CompanyOfficer = {
   address: {
-    premises: "1 Acme Road",
+    premises: "1",
     addressLine1: "addressLine1",
     addressLine2: "addressLine2",
-    locality: "locality",
+    locality: "town",
     careOf: "careOf",
     poBox: "pobox",
     postalCode: "BY 2",
-    region: "region",
+    region: "county",
     country: "country"
   },
   appointedOn: "2023-04-01",
   countryOfResidence: "country1",
   dateOfBirth: {
     day: "1",
-    month: "2",
+    month: "02",
     year: "1900"
   },
   formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
@@ -131,6 +172,45 @@ export const managingOfficerMock: CompanyOfficer = {
   },
   name: "Jimmy John Wabb",
   nationality: "country1",
+  occupation: "occupation",
+  officerRole: "role",
+  resignedOn: "resigned"
+};
+
+export const managingOfficerMockDualNationality: CompanyOfficer = {
+  address: {
+    premises: "1",
+    addressLine1: "addressLine1",
+    addressLine2: "addressLine2",
+    locality: "town",
+    careOf: "careOf",
+    poBox: "pobox",
+    postalCode: "BY 2",
+    region: "county",
+    country: "country"
+  },
+  appointedOn: "2023-04-01",
+  countryOfResidence: "country1",
+  dateOfBirth: {
+    day: "1",
+    month: "02",
+    year: "1900"
+  },
+  formerNames: [ { forenames: "Jimmothy James", surname: "Jimminny" }, { forenames: "Finn", surname: "McCumhaill" }, { forenames: "Test", surname: "Tester" } ],
+  identification: {
+    legalForm: "all forms",
+    legalAuthority: "country2",
+    identificationType: "identification type",
+    placeRegistered: "place",
+    registrationNumber: "0000"
+  },
+  links: {
+    officer: {
+      appointments: ""
+    }
+  },
+  name: "Jimmy John Wabb",
+  nationality: "country1, country2",
   occupation: "occupation",
   officerRole: "role",
   resignedOn: "resigned"

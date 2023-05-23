@@ -1,0 +1,43 @@
+{% include "includes/inputs/fields/first-name-input.html" %}  
+        {% set hintLastNameText = "This is also known as their family name." %}
+        {% include "includes/inputs/fields/last-name-input.html" %} 
+        {% set formerNameHtml %}
+          {{ govukInput({
+            errorMessage: errors.former_names if errors,
+            id: "former_names",
+            name: "former_names",
+            value: former_names,
+            classes: "govuk-!-width-half",
+            label: {
+              text: "Former name or names"
+            }
+          }) }}
+        {% endset %}  
+        {{ govukRadios({
+          errorMessage: errors.has_former_names if errors,
+          classes: "govuk-radios",
+          idPrefix: "has_former_names",
+          name: "has_former_names",
+          fieldset: {
+            legend: {
+              text: "Do they have any former names?",
+              isPageHeading: false,
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: has_former_names == 1,
+              conditional: {
+                html: formerNameHtml
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: has_former_names == 0
+            }
+          ]
+        }) }} 

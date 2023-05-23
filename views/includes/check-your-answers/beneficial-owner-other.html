@@ -88,6 +88,16 @@
   {% endif %}
 {% endif %}
 
+{% if hideChangeLinksForNonEditableFields == true %}
+  {% set changeLink = undefined %}
+{% else %}
+  {% set changeLink = CREATE_CHANGE_LINK(
+            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
+            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
+            "change-corporate-beneficial-owner-start-date-button"
+          )%}
+{% endif %}
+
 <h3 class="govuk-heading-m">Other legal entity beneficial owner</h3>
 
 {{ govukSummaryList({
@@ -190,11 +200,7 @@
           text: bocStartDate
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + boc.id + OE_CONFIGS.START_DATE,
-            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
-            "change-corporate-beneficial-owner-start-date-button"
-          ) ]
+          items: [ changeLink ]
         }
       },
       {

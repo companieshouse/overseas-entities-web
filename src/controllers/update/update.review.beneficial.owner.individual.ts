@@ -75,9 +75,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 
       await saveAndContinue(req, session, false);
-
-      res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     }
+    res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
     next(error);
   }
@@ -90,7 +89,7 @@ export const setReviewedDateOfBirth = (req: Request, dob: InputDate) => {
 };
 
 export const padWithZero = (input: string, maxLength: number, fillString: string): string => {
-  if (input.length > 1){
+  if (input && input.length > 1){
     return input;
   }
   return String(input).padStart(maxLength, fillString);

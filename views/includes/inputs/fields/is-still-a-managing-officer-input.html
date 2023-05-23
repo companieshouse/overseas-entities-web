@@ -1,0 +1,46 @@
+{% if managingOfficerPronoun == "they" %}
+  {% set dateText = "Date they stopped being a managing officer" %}
+  {% set stillMoText = "Are they still a managing officer for the overseas entity?" %}
+{% else %}
+  {% set dateText = "Date it stopped being a managing officer" %}
+  {% set stillMoText = "Is it still a managing officer for the overseas entity?" %}
+{% endif %}
+
+{% set resignedOnHtml %}
+  {% include "includes/inputs/date/resigned-on-date-input.html" %}
+{% endset %}
+
+{{ govukRadios({
+  errorMessage: errors.is_still_mo if errors,
+  classes: "govuk-radios",
+  idPrefix: "is_still_mo",
+  name: "is_still_mo",
+  fieldset: {
+    legend: {
+      text: stillMoText,
+      isPageHeading: false,
+      classes: "govuk-fieldset__legend--m"
+    }
+  },
+  items: [
+    {
+      value: 1,
+      text: "Yes",
+      checked: is_still_mo == 1,
+      attributes: {
+        "data-event-id": "is-still-mo-yes"
+      }
+    },
+    {
+      value: 0,
+      text: "No",
+      checked: is_still_mo == 0,
+      attributes: {
+        "data-event-id": "is-still-mo-no"
+      },
+      conditional: {
+        html: resignedOnHtml
+      }
+    }
+  ]
+}) }}

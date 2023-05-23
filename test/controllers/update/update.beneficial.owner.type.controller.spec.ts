@@ -45,7 +45,8 @@ import {
   APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
-  APPLICATION_DATA_UPDATE_MO_MOCK
+  APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS,
+  UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -90,6 +91,18 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("GET tests", () => {
+
+    test(`redirection to individual manager review page if individual owner application data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_MO_MOCK_NO_USUAL_ADDRESS,
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(false);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/update-review-individual-managing-officer?index=0");
+    });
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed BOs if BOs have been reviewed`, async () => {
       const reviewBoAppData = { ...APPLICATION_DATA_UPDATE_BO_MOCK };
@@ -252,12 +265,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetBoMoData).toBeTruthy;
     });
 
-    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is director`, async () => {
+    test(`test corporate managing officer data returned when getCompanyOfficers data officer role is corporate-managing-officer`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
       });
       mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
-      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'director');
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'corporate-managing-officer');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);
@@ -272,12 +285,12 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetBoMoData).toBeTruthy;
     });
 
-    test(`test individual managing officer data returned when getCompanyOfficers data officer role is secretary`, async () => {
+    test(`test individual managing officer data returned when getCompanyOfficers data officer role is managing-officer`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
       });
       mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
-      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'secretary');
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS.items[0].officerRole = 'managing-officer');
 
       await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(mockGetCompanyOfficers).toBeCalledTimes(1);
@@ -488,4 +501,19 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
     });
   });
+
+  describe("MANAGING OFFICER REVIEWS TESTS", () => {
+    test(`redirection to ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE} page if managing-officer data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...UPDATE_REVIEW_MANAGING_OFFICER_MOCK
+      });
+      mockHasFetchedBoAndMoData.mockReturnValue(false);
+      mockGetCompanyOfficers.mockReturnValueOnce(MOCK_GET_COMPANY_OFFICERS);
+
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain('Found. Redirecting to /update-an-overseas-entity/update-review-individual-managing-officer?index=0');
+    });
+  });
+
 });

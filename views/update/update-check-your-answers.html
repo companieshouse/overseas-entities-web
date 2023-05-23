@@ -21,6 +21,7 @@
 
         {% set boTextDisplayed = false %}
         {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
+          {% set hideChangeLinksForNonEditableFields = true %}
           {% set existingIndividualBO = appData.beneficial_owners_individual | selectattr("ch_reference", "undefined") %}
           {% if (existingIndividualBO.length > 0)%}
           {% set boTextDisplayed = true %}
@@ -53,6 +54,7 @@
 
         {% set newBoTextDisplayed = false %}
         {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
+          {% set hideChangeLinksForNonEditableFields = false %}
           {% set savedIndividualBO = appData.beneficial_owners_individual | rejectattr("ch_reference", "undefined") %}
           {% if (savedIndividualBO.length > 0)%}
           {% set newBoTextDisplayed = true %}
@@ -85,6 +87,7 @@
 
       {% set newMoTextDisplayed = false %}
         {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0) %}
+          {% set hideChangeLinksForNonEditableFields = false %}
           {% set savedIndividualMO = appData.managing_officers_individual | rejectattr("ch_reference", "undefined") %}
           {% if (savedIndividualMO.length > 0)%}
           {% set newMoTextDisplayed = true %}

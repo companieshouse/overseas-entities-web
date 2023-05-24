@@ -24,8 +24,8 @@ describe("Test mapping to managing officer", () => {
 
   test('map officer data to managing officer should return object', () => {
     expect(mapToManagingOfficer(managingOfficerMock)).toEqual({
-      id: undefined,
-      ch_reference: undefined,
+      id: "selfLink",
+      ch_reference: "selfLink",
       first_name: UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK.first_name,
       last_name: UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK.last_name,
       has_former_names: yesNoResponse.Yes,
@@ -60,8 +60,8 @@ describe("Test mapping to managing officer", () => {
 
   test('map officer data to managing officer with two nationalities should return object', () => {
     expect(mapToManagingOfficer(managingOfficerMockDualNationality)).toEqual({
-      id: undefined,
-      ch_reference: undefined,
+      id: "selfLink",
+      ch_reference: "selfLink",
       first_name: UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK.first_name,
       last_name: UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK.last_name,
       has_former_names: yesNoResponse.Yes,
@@ -96,7 +96,7 @@ describe("Test mapping to managing officer", () => {
 
   test('map officer data to managing officer corporate should return object', () => {
     expect(mapToManagingOfficerCorporate(managingOfficerMock)).toEqual({
-      id: undefined,
+      id: "selfLink",
       name: managingOfficerMock.name,
       principal_address: undefined,
       is_service_address_same_as_principal_address: yesNoResponse.Yes,

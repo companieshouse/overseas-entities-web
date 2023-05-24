@@ -1356,6 +1356,7 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
     registrationNumber: "0000"
   },
   links: {
+    self: "selfLink",
     officer: {
       appointments: ""
     }

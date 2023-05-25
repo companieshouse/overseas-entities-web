@@ -13,7 +13,6 @@ import { setOfficerData } from "../../utils/managing.officer.individual";
 import { ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -21,12 +20,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData = getApplicationData(req.session);
     const index = req.query.index;
 
-    let dataToReview = {}, residentialAddress = {}, service_address = {};
+    let dataToReview = {}, residentialAddress = {};
 
     if (appData?.managing_officers_individual){
       dataToReview = appData?.managing_officers_individual[Number(index)];
       residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-      service_address = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
 
     const templateOptions = {
@@ -34,7 +32,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
       ...dataToReview,
       ...residentialAddress,
-      ...service_address,
       isOwnersReview: true,
     };
 

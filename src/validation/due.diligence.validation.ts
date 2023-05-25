@@ -21,7 +21,8 @@ export const dueDiligence = [
   ...email_validations,
 
   body("aml_number")
-    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AML_NUMBER_LENGTH),
+    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AML_NUMBER_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_AML_NUMBER),
 
   body("supervisory_name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.SUPERVISORY_NAME)
@@ -30,7 +31,8 @@ export const dueDiligence = [
 
   body("agent_code")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.AGENT_CODE)
-    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH),
+    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AGENT_ASSURANCE_CODE_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_AGENT_ASSURANCE_CODE),
 
   body("partner_name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.PARTNER_NAME)

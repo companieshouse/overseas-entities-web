@@ -243,4 +243,6 @@ export enum ErrorMessages {
   EMAIL_INVALID_FORMAT = "Enter an email address in the correct format, like name@example.com",
   INVALID_OE_NUMBER = "OE number must be \"OE\" followed by 6 digits",
   INVALID_ENTITY_REGISTRATION_NUMBER = "Entity’s registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  INVALID_AGENT_ASSURANCE_CODE = "Agent assurance code must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes",
+  INVALID_AML_NUMBER = "AML registration number must only include letters a to z, numbers, and special characters such as hyphens, spaces and apostrophes"
 }

@@ -33,7 +33,8 @@ export const overseasEntityDueDiligence = [
   ...email_validations,
 
   body("aml_number")
-    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AML_NUMBER_LENGTH),
+    .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_AML_NUMBER_LENGTH)
+    .matches(VALID_CHARACTERS).withMessage(ErrorMessages.INVALID_AML_NUMBER),
 
   body("supervisory_name")
     .isLength({ max: 256 }).withMessage(ErrorMessages.MAX_SUPERVISORY_NAME_LENGTH)

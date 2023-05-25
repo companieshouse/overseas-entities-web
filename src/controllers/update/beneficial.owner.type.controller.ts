@@ -21,6 +21,8 @@ import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.indiv
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { checkAndReviewBeneficialOwner } from "../../utils/update/review.beneficial.owner";
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
+import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
+import { ManagingOfficerKey } from "../../model/managing.officer.model";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -42,16 +44,24 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const allBos = [
       ...(appData[BeneficialOwnerIndividualKey] ?? []),
       ...(appData[BeneficialOwnerOtherKey] ?? []),
-      ...(appData[BeneficialOwnerGovKey] ?? [])];
+      ...(appData[BeneficialOwnerGovKey] ?? [])
+    ];
 
-    const hasExistingBos = allBos.find(bo => bo.ch_reference) !== undefined;
     const hasNewlyAddedBos = allBos.find(bo => bo.ch_reference === undefined) !== undefined;
+
+    const allBosMos = [
+      ...allBos,
+      ...(appData[ManagingOfficerCorporateKey] ?? []),
+      ...(appData[ManagingOfficerKey] ?? [])
+    ];
+
+    const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
-      hasExistingBos,
+      hasExistingBosMos,
       hasNewlyAddedBos
     });
   } catch (error) {
@@ -65,6 +75,7 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
     if (!appData.update) {
       appData.update = {};
     }
+
     appData.update.review_beneficial_owners_individual = [];
     appData.update.review_beneficial_owners_corporate = [];
     appData.update.review_beneficial_owners_government_or_public_authority = [];

@@ -5,7 +5,6 @@ import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate
 import { yesNoResponse } from "../../model/data.types.model";
 
 export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIndividual => {
-  const raw = officer as any;
   const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
   const names = splitNames(officer.name);
@@ -13,8 +12,8 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
   const formernames = getFormerNames(officer.formerNames);
 
   return {
-    id: raw.links?.self,
-    ch_reference: mapSelfLink((officer as any)?.links?.self),
+    id: officer.links?.self,
+    ch_reference: mapSelfLink(officer.links?.self),
     first_name: names[0],
     last_name: names[1],
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
@@ -32,12 +31,11 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 };
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): ManagingOfficerCorporate => {
-  const raw = officer as any;
   const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
 
   return {
-    id: raw.links?.self,
+    id: officer.links?.self,
     name: officer.name,
     principal_address: address,
     is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,

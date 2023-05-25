@@ -198,6 +198,7 @@ export const BENEFICIAL_OWNER_MANAGING_OFFFICER_TYPE_PAGE_HEADING = "Beneficial 
 export const BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT = "Which type of beneficial owner or managing officer do you want to add?";
 export const UPDATE_BENEFICIAL_OWNER_TYPE_PAGE_REDIRECT = "Found. Redirecting to /update-an-overseas-entity/update-beneficial-owner-type";
 export const UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS = "Contact details";
+export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE = "Have any beneficial owners become or ceased in the update period?";
 export const UPDATE_SIGN_OUT_HINT_TEXT = "We will save your filing.";
 export const UPDATE_SIGN_OUT_HELP_DETAILS_TEXT = "How do I find my saved filing?";
 export const UPDATE_SIGN_OUT_DROPDOWN_TEXT = "When you sign back in to this service, we'll ask you if you want to continue with a saved filing.";

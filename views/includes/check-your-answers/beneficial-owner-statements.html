@@ -1,4 +1,4 @@
-{% set statementText %}
+{% set identifiedStatementText %}
     {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
       All beneficial owners have been identified and I can provide all the required information
     {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
@@ -8,24 +8,82 @@
     {% endif %}
 {% endset %}
 
-<h2 class="govuk-heading-l">Has the overseas entity identified any registrable beneficial owners?</h2>
+{% set ceasedStatementText %}
+    {% if appData.update.registrable_beneficial_owner == 0 %}
+    The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.
+    {% elif appData.update.registrable_beneficial_owner == 1 %}
+    The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.
+    {% endif %}
+{% endset %}
 
-{{ govukSummaryList({
-    rows: [
-      {
-        key: {
-          text: "Statement"
-        },
-        value: {
-          text: statementText
-        },
-        actions: {
-          items: [ CREATE_CHANGE_LINK(
-            OE_CONFIGS.BENEFICIAL_OWNER_STATEMENTS_URL,
-            statementText,
-            "change-beneficial-owner-statement-button"
-          ) ]
+{% if pageParams.isRegistration %}
+  <h2 class="govuk-heading-l">Has the overseas entity identified any registrable beneficial owners?</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: identifiedStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.BENEFICIAL_OWNER_STATEMENTS_URL,
+              identifiedStatementText,
+              "change-registrable-beneficial-owner-statement-button"
+            ) ]
+          }
         }
-      }
-    ]
-}) }}
+      ]
+  }) }}
+
+{% else %}
+  <h2 class="govuk-heading-l">Statement details</h2>
+
+  <h2 class="govuk-heading-m">Has the overseas entity identified any registrable beneficial owners?</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: identifiedStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+              identifiedStatementText,
+              "update-change-registrable-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Have any beneficial owners become or ceased in the update period?</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: ceasedStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+              ceasedStatementText,
+              "update-change-ceased-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+{% endif %}

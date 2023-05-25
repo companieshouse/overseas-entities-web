@@ -100,7 +100,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/update-review-individual-managing-officer?index=0");
+      expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/review-individual-managing-officer?index=0");
     });
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed BOs if BOs have been reviewed`, async () => {
@@ -486,7 +486,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain('Found. Redirecting to /update-an-overseas-entity/update-review-individual-managing-officer?index=0');
+      expect(resp.text).toContain('Found. Redirecting to /update-an-overseas-entity/review-individual-managing-officer?index=0');
     });
   });
 

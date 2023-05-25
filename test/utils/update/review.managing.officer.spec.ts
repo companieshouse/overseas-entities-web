@@ -17,7 +17,7 @@ describe('Test review managing officers', () => {
         ...APPLICATION_DATA_MANAGING_INDIVIDUAL_UPDATE_REVIEW_MO,
         ...APPLICATION_DATA_MANAGING_INDIVIDUAL_UNDEFINED_UPDATE_REVIEW_MO,
       }
-    )).toEqual("/update-an-overseas-entity/update-review-individual-managing-officer?index=0");
+    )).toEqual("/update-an-overseas-entity/review-individual-managing-officer?index=0");
   });
 
   test(`review beneficial individual managing officer with only managing officer data`, () => {

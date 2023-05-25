@@ -1,18 +1,20 @@
-import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL, UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE } from "../../config";
+import {
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE
+} from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
-import { ManagingOfficerKey } from "../../model/managing.officer.model";
-import { setReviewedDateOfBirth } from "./update.review.beneficial.owner.individual";
 import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationDataType } from "../../model";
-import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { AddressKeys, InputDate } from "../../model/data.types.model";
+import { AddressKeys } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
 import { ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
+import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
+import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -20,18 +22,20 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData = getApplicationData(req.session);
     const index = req.query.index;
 
-    let dataToReview = {}, residentialAddress = {};
+    let dataToReview = {}, principalAddress = {}, serviceAddress = {};
 
     if (appData?.managing_officers_individual){
       dataToReview = appData?.managing_officers_individual[Number(index)];
-      residentialAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+      principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
 
     const templateOptions = {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
-      templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
+      templateName: UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
       ...dataToReview,
-      ...residentialAddress
+      ...principalAddress,
+      ...serviceAddress
     };
 
     if (ResignedOnKey in dataToReview) {
@@ -51,22 +55,23 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const moIndex = req.query.index;
     const appData = getApplicationData(req.session);
 
-    if (moIndex !== undefined && appData.managing_officers_individual && appData.managing_officers_individual[Number(moIndex)].id === req.body["id"]){
+    if (moIndex !== undefined && appData.managing_officers_corporate && appData.managing_officers_corporate[Number(moIndex)].id === req.body["id"]){
 
-      const moId = appData.managing_officers_individual[Number(moIndex)].id;
-      const dob = appData.managing_officers_individual[Number(moIndex)].date_of_birth as InputDate;
+      const moId = appData.managing_officers_corporate[Number(moIndex)].id;
 
-      removeFromApplicationData(req, ManagingOfficerKey, moId);
+      // Remove old Managing Officer
+      removeFromApplicationData(req, ManagingOfficerCorporateKey, moId);
 
-      setReviewedDateOfBirth(req, dob);
+      // Set officer data
+      const data: ApplicationDataType = setOfficerData(req.body, moId);
+
+      // Save new Managing Officer
       const session = req.session as Session;
-
-      const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
-
-      setApplicationData(req.session, data, ManagingOfficerKey);
+      setApplicationData(session, data, ManagingOfficerCorporateKey);
 
       await saveAndContinue(req, session, false);
     }
+
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error){
     next(error);

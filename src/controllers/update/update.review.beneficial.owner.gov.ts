@@ -30,8 +30,7 @@ export const get = (req: Request, res: Response) => {
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE,
     ...dataToReview,
     ...principalAddress,
-    ...serviceAddress,
-    isOwnersReview: true
+    ...serviceAddress
   };
 
   if (CeasedDateKey in dataToReview) {

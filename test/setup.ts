@@ -13,7 +13,7 @@ export default () => {
   process.env.PIWIK_START_GOAL_ID = "test";
   process.env.PIWIK_UPDATE_START_GOAL_ID = "test";
   process.env.PAYMENT_FEE = "100";
-  process.env.UPDATE_PAYMENT_FEE = "200";
+  process.env.UPDATE_PAYMENT_FEE = "120";
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.LANDING_PAGE_STARTING_NEW_URL = "/register-an-overseas-entity/starting-new";
   process.env.UPDATE_LANDING_PAGE_URL = "/update-an-overseas-entity/overseas-entity-query";

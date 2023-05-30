@@ -171,7 +171,7 @@ export const managingOfficerMock: CompanyOfficer = {
       appointments: ""
     }
   },
-  name: "Jimmy John Wabb",
+  name: "Wabb, Jimmy John",
   nationality: "country1",
   occupation: "occupation",
   officerRole: "role",
@@ -211,7 +211,7 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
       appointments: ""
     }
   },
-  name: "Jimmy John Wabb",
+  name: "Wabb, Jimmy John",
   nationality: "country1, country2",
   occupation: "occupation",
   officerRole: "role",

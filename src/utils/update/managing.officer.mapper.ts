@@ -54,19 +54,8 @@ export const splitNames = (officerName: string): string[] => {
   if (officerName === undefined) {
     return ["", ""];
   } else {
-    const names = officerName.split(" ");
-    if (names.length > 2) {
-      let firstNames = "";
-      for (let loop = 0; loop < names.length - 1; loop++) {
-        firstNames += names[loop];
-        if (loop !== names.length - 1) {
-          firstNames += " ";
-        }
-      }
-      return [firstNames.trim(), names[names.length - 1].trim()];
-    } else {
-      return names;
-    }
+    const names = officerName.split(/\s*,\s*/);
+    return [names[1], names[0]];
   }
 };
 

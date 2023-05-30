@@ -299,7 +299,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID]: {
+  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID]: {
     currentPage: config.UPDATE_CONFIRM_TO_REMOVE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]

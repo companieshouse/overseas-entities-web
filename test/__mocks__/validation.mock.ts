@@ -140,8 +140,8 @@ export const DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK: DueDiligence = {
   identity_address: ADDRESS,
   email: EMAIL_INVALID_FORMAT,
   supervisory_name: "площадь",
-  aml_number: "Any AML number",
-  agent_code: "Any agent code",
+  aml_number: "єиЗжлЛКдґи дйтийитєr",
+  agent_code: "єиЗжлЛКдґи дйтийитє",
   partner_name: "площадь",
   diligence: "agree"
 };
@@ -151,7 +151,7 @@ export const OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK: 
   identity_address: ADDRESS,
   email: EMAIL_INVALID_FORMAT,
   supervisory_name: "площадь",
-  aml_number: "Any AML number",
+  aml_number: "єиЗжлЛКдґи дйтийитє",
   partner_name: "площадь"
 };
 

@@ -444,7 +444,13 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
   )
   .get(updateReviewBeneficialOwnerOther.get)
   .post(...validator.updateBeneficialOwnerOther, checkValidations, updateReviewBeneficialOwnerOther.post);
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerOther.get);
+
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewBeneficialOwnerOther.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_GOV_URL)
   .all(
@@ -473,7 +479,12 @@ router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL)
   .get(updateReviewIndividualManagingOfficer.get)
   .post(...validator.reviewManagingOfficers, checkValidations, updateReviewIndividualManagingOfficer.post);
 
-router.get(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewIndividualManagingOfficer.get);
+router.route(config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewIndividualManagingOfficer.get);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL)
   .all(
@@ -484,7 +495,12 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL)
   .get(updateReviewBeneficialOwnerGov.get)
   .post(...validator.updateReviewBeneficialOwnerGovValidator, checkValidations, updateReviewBeneficialOwnerGov.post);
 
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerGov.get);
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL + config.UPDATE_REVIEW_OWNERS_PARAMS)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewBeneficialOwnerGov.get);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -495,7 +511,12 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .get(updateReviewBeneficialOwnerIndividual.get)
   .post(...validator.updateBeneficialOwnerAndReviewValidator, checkValidations, updateReviewBeneficialOwnerIndividual.post);
 
-router.get(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, navigation.hasUpdatePresenter, updateReviewBeneficialOwnerIndividual.get);
+router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + config.UPDATE_REVIEW_OWNERS_PARAMS)
+  .all(
+    authentication,
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewBeneficialOwnerIndividual.get);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(

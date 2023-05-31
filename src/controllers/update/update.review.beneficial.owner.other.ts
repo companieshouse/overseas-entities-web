@@ -76,7 +76,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     return res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error) {
-    console.log(error);
     logger.errorRequest(req, error);
     next(error);
   }

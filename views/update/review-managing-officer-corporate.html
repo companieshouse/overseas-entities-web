@@ -18,9 +18,13 @@
 
       {% include "includes/list/errors.html" %}
 
-      <span class="govuk-caption-xl">Managing officer</span>
+      <span class="govuk-caption-xl">{{ name }}</span>
       <h1 class="govuk-heading-xl govuk-!-margin-0">{{ title }}</h1>
       <br> <p class="govuk-body">If you need to update the managing officer's information, you can change your answers here.</p> <br>
+
+      {{ govukInsetText({
+        html: "You'll need to tell us if it's still a managing officer."
+      }) }}
 
       {% include "includes/resigned-on-details-summary-new-mo.html" %}
 
@@ -45,7 +49,7 @@
         {{ govukTextarea({
         errorMessage: errors.role_and_responsibilities if errors,
         label: {
-            text: "Describe their role and responsibilities in relation to the entity",
+            text: "Describe it's role and responsibilities in relation to the entity",
             classes: "govuk-label--m",
             isPageHeading: false
           },

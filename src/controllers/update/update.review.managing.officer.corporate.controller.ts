@@ -24,8 +24,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     let dataToReview = {}, principalAddress = {}, serviceAddress = {};
 
-    if (appData?.managing_officers_individual){
-      dataToReview = appData?.managing_officers_individual[Number(index)];
+    if (appData?.managing_officers_corporate){
+      dataToReview = appData?.managing_officers_corporate[Number(index)];
       principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
       serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
@@ -37,6 +37,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...principalAddress,
       ...serviceAddress
     };
+
+    console.log("============DATA TO REVIEW================");
+    console.log(dataToReview);
 
     if (ResignedOnKey in dataToReview) {
       return res.render(templateOptions.templateName, addResignedDateToTemplateOptions(templateOptions, appData, dataToReview));

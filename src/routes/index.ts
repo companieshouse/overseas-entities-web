@@ -574,11 +574,11 @@ router.get(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config
 router.route(config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL)
   .all(
     authentication,
-    companyAuthentication
-    // TO DO - new nav checks
+    companyAuthentication,
+    navigation.hasUpdatePresenter
   )
   .get(updateReviewManagingOfficerCorporate.get)
-  .post(...validator.reviewManagingOfficers, checkValidations, updateReviewManagingOfficerCorporate.post);
+  .post(...validator.reviewManagingOfficerCorporate, checkValidations, updateReviewManagingOfficerCorporate.post);
 
 router.get(config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, updateReviewManagingOfficerCorporate.get);
 

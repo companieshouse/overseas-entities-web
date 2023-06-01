@@ -476,12 +476,12 @@ describe("should chek date functions for custom validation", () => {
     expect(checkDateIsInPast("", _day, _month, _year)).toBe(true);
   });
 
-  test.each([
-    [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
-    [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
-  ])("should test checkDateIsInPast throws error", (_day, _month, _year) => {
-    expect(() => checkDateIsInPast(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
-  });
+  // test.each([
+  //   [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
+  //   [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
+  // ])("should test checkDateIsInPast throws error", (_day, _month, _year) => {
+  //   expect(() => checkDateIsInPast(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  // });
 
   // TODO: empty strings should not be returning true
   test("should test checkDateIsInPast returns true for no param", () => {

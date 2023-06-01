@@ -26,6 +26,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
     const errorList = validationResult(req);
 
     if (!errorList.isEmpty()) {
+      console.log("================================");
+      console.log("Found and error and rerendering");
+      console.log(errorList);
       const errors = formatValidationError(errorList.array());
 
       // Bypass the direct use of variables with dashes that

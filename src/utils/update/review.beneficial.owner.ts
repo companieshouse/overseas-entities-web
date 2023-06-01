@@ -107,6 +107,8 @@ export const reviewAllOwnwers = (appData: ApplicationData, ownerReviewType: stri
 
   if (ownerLength >= 0){
     const boOrmo = appData?.update?.[ownerReviewType]?.pop() as typeof ownerType;
+    console.log("========appData?.update?.[ownerReviewType]?.pop()==========");
+    console.log(appData?.update?.[ownerReviewType]);
     if (!boOrmo){
       return redirectUrl;
     }

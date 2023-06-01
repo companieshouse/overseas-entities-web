@@ -68,7 +68,6 @@ export const updateManagingOfficerCorporate = [
 
 export const reviewManagingOfficerCorporate = [
   ...managingOfficerCorporateValidations,
-  ...start_date_validations,
   ...isStillMoValidation,
   ...resigned_on_validations,
   ...contact_name_and_email_validations

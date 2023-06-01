@@ -38,9 +38,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...serviceAddress
     };
 
-    console.log("============DATA TO REVIEW================");
-    console.log(dataToReview);
-
     if (ResignedOnKey in dataToReview) {
       return res.render(templateOptions.templateName, addResignedDateToTemplateOptions(templateOptions, appData, dataToReview));
     } else {

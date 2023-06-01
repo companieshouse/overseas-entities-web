@@ -27,17 +27,20 @@ import { ManagingOfficerKey } from "../../model/managing.officer.model";
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    console.log("============INSIDE THE GET BOTC============");
     const appData: ApplicationData = getApplicationData(req.session);
 
     await fetchAndSetBoMo(req, appData);
 
     const checkIsRedirect = checkAndReviewBeneficialOwner(appData);
     if (checkIsRedirect && checkIsRedirect !== "") {
+      console.log("============INSIDE BO REDIRECT============");
       return res.redirect(checkIsRedirect);
     }
 
     const checkMoRedirect = checkAndReviewManagingOfficers(appData);
     if (checkMoRedirect){
+      console.log("============INSIDE MO REDIRECT============");
       return res.redirect(checkMoRedirect);
     }
 
@@ -84,6 +87,9 @@ const fetchAndSetBoMo = async (req: Request, appData: ApplicationData) => {
 
     await retrieveBeneficialOwners(req, appData);
     await retrieveManagingOfficers(req, appData);
+
+    console.log("retrieveManagingOfficers");
+    console.log(appData.update.review_managing_officers_corporate);
     setFetchedBoMoData(appData);
   }
 };

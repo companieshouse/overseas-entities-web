@@ -41,12 +41,17 @@ const checkForBackButtonMo = (appData: ApplicationData, moType: string, moRedire
         (moType === AllMoTypes.moCorporate) && (!checkMoCorporateValidation(appData[moType][moIndex]))
       )
   ) {
+    console.log("==========BACK BUTTON URL ==============");
+    console.log(`${moRedirectUrl}${moIndex}`);
     return `${moRedirectUrl}${moIndex}`;
   }
 };
 
 export const checkAndReviewManagingOfficers = (appData: ApplicationData): string => {
   let redirectUrl = "";
+
+  console.log("==========INSIDE CHECK AND REVIEW MO==============");
+  console.log(appData.update);
 
   const update_review = appData.update as Update;
   if (AllMoTypes.moIndividualOfficerReview in update_review){
@@ -63,16 +68,26 @@ export const checkAndReviewManagingOfficers = (appData: ApplicationData): string
   }
 
   if (AllMoTypes.moCorporateOfficerReview in update_review){
+    console.log("==========Had a CO MO to review==============");
     const mocFromBackButton = checkForBackButtonMo(appData, AllMoTypes.moCorporate, managingOfficerCorporateReviewRedirectUrl);
     if (mocFromBackButton) {
+      console.log("==========Back button stuff==============");
       redirectUrl = mocFromBackButton;
+      console.log("==========REDIRECT URL ==============");
+      console.log(redirectUrl);
       return redirectUrl;
     }
 
     if (appData.update?.review_managing_officers_corporate?.length){
+      console.log("========appData.update?.review_managing_officers_corporate?.length==========");
+      console.log(appData.update?.review_managing_officers_corporate);
       redirectUrl = reviewAllOwnwers(appData, AllMoTypes.moCorporateOfficerReview, AllMoTypes.moCorporate, managingOfficerCorporateReviewRedirectUrl) as string;
       return redirectUrl;
     }
   }
+
+  console.log("==========REDIRECT URL ==============");
+  console.log(redirectUrl);
+
   return "";
 };

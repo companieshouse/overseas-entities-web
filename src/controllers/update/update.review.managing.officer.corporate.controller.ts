@@ -10,7 +10,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationDataType } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { AddressKeys } from "../../model/data.types.model";
-import { setOfficerData } from "../../utils/managing.officer.individual";
+import { setOfficerData } from "../../utils/managing.officer.corporate";
 import { ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
@@ -74,6 +74,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     res.redirect(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   } catch (error){
+    logger.errorRequest(req, error);
     next(error);
   }
 };

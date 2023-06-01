@@ -54,7 +54,7 @@
 {% set reviewBeneficialOwnerGovUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL %}
 {% set reviewBeneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL %}
 {% set reviewManagingOfficerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
-{% set reviewManagingOfficerCorporateUrl = OE_CONFIGS.UPDATE_REVIEW_CORPORATE_MANAGING_OFFICER_URL %}
+{% set reviewManagingOfficerCorporateUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
 {% set indexQueryParam = OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM %}
 
 {% block content %}
@@ -67,7 +67,7 @@
 
   <div class="govuk-grid-row govuk-body">
     <div class="govuk-grid-column-two-thirds">
-  
+
       {% include "includes/list/errors.html" %}
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
@@ -83,7 +83,7 @@
       <br/>
         {% include "includes/list/update-review-bo-mo.html" %}
       <br/>
-    </div> 
+    </div>
   {% endif %}
 
   {% if hasBeneficialOwners %}
@@ -97,7 +97,7 @@
   <div class="govuk-grid-column-two-thirds">
     <form method="post">
       {% include "includes/beneficial-owner-type-add-radios.html" %}
-  
+
       <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 

@@ -108,7 +108,7 @@
                 {% if moc.ch_reference %}
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key">
-                            {{ moc.first_name + " " + mo.last_name }}
+                            {{ moc.name }}
                         </dt>
                         <dd class="govuk-summary-list__value">
                             Corporate managing officer
@@ -123,7 +123,7 @@
                         <dd class="govuk-summary-list__actions">
                             <a class="govuk-link" href="{{ reviewManagingOfficerCorporateUrl }}{{ indexQueryParam }}{{ managing_officers_corporate.indexOf(moc) }}"
                             data-event-id="change-link-review-corporate-mo">
-                                Change<span class="govuk-visually-hidden">{{ moc.first_name + " " + mo.last_name }} - Corporate managing officer</span>
+                                Change<span class="govuk-visually-hidden">{{ moc.name }} - Corporate managing officer</span>
                             </a>
                         </dd>
                     </div>

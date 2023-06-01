@@ -1,4 +1,5 @@
 import {
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
 } from "../../config";
@@ -36,7 +37,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     }
 
     const templateOptions = {
-      backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
       ...dataToReview,
       ...principalAddress,

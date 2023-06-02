@@ -62,7 +62,7 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
 
     const appData = getApplicationData(req.session);
 
-    if (EntityNumberKey in appData && !!appData[EntityNumberKey]) {
+    if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
     } else {
       return res.render(templateName, templateOptions);

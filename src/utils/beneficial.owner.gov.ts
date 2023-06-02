@@ -57,10 +57,9 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       ...serviceAddress,
       [StartDateKey]: startDate
     };
-
     const appData = getApplicationData(req.session);
 
-    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined) {
+    if (EntityNumberKey in appData && appData[EntityNumberKey] !== undefined && appData[EntityNumberKey] !== null) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));
     } else {
       return res.render(templateName, templateOptions);

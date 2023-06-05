@@ -812,8 +812,7 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "Some Occupation",
-  role_and_responsibilities: "Some role and responsibilities",
-  resigned_on: EMPTY_DATE
+  role_and_responsibilities: "Some role and responsibilities"
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.ManagingOfficerIndividual = {
@@ -824,8 +823,14 @@ export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.Manag
 export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   ...MANAGING_OFFICER_OBJECT_MOCK,
   ch_reference: "testchreference",
-  resigned_on: { day: "21", month: "3", year: "2010" },
-  start_date: { day: "1", month: "1", year: "2022" }
+  start_date: { day: "21", month: "3", year: "2010" },
+  resigned_on: { day: "1", month: "1", year: "2022" },
+};
+
+export const UPDATE_NEWLY_ADDED_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  ...MANAGING_OFFICER_OBJECT_MOCK,
+  start_date: { day: "21", month: "3", year: "2010" },
+  resigned_on: { day: "1", month: "1", year: "2022" },
 };
 
 export const UPDATE_REVIEW_MANAGING_OFFICER_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -950,7 +955,6 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   public_register_name: "register",
   registration_number: "123456789",
   role_and_responsibilities: "role and responsibilities text",
-  resigned_on: EMPTY_DATE,
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
 };
@@ -963,8 +967,14 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF: managingOfficer
 export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
   ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   ch_reference: "testchreference",
-  resigned_on: { day: "21", month: "3", year: "2010" },
-  start_date: { day: "1", month: "1", year: "2022" }
+  start_date: { day: "21", month: "3", year: "2010" },
+  resigned_on: { day: "1", month: "1", year: "2022" }
+};
+
+export const UPDATE_NEWLY_ADDED_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  start_date: { day: "21", month: "3", year: "2010" },
+  resigned_on: { day: "1", month: "1", year: "2022" }
 };
 
 export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF: managingOfficerCorporateType.ManagingOfficerCorporate = {
@@ -1629,7 +1639,7 @@ export const APPLICATION_DATA_UPDATE_MO_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
-export const APPLICATION_DATA_MANAGING_INDIVIDUAL_UNDEFINED_UPDATE_REVIEW_MO: ApplicationData = {
+export const APPLICATION_DATA_UNSUBMITTED_UPDATE_REVIEW_MO: ApplicationData = {
   ...APPLICATION_DATA_UPDATE_MO_MOCK_UNSUBMITTED,
   ...APPLICATION_DATA_UPDATE_MO_MOCK_UNSUBMITTED[updateType.UpdateKey] = UNDEFINED_UPDATE_OBJECT_MOCK
 };

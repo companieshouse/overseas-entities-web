@@ -58,6 +58,7 @@ import { ApplicationDataType, managingOfficerType } from '../../src/model';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import {
   AddressKeys,
+  EntityNumberKey,
   HasFormerNames,
   HasSameResidentialAddressKey
 } from '../../src/model/data.types.model';
@@ -120,7 +121,14 @@ describe("MANAGING_OFFICER controller", () => {
   describe("GET BY ID tests", () => {
 
     test("renders the managing officer page", async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const moMock = { ...MANAGING_OFFICER_OBJECT_MOCK };
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [ManagingOfficerKey]: [moMock],
+        [EntityNumberKey]: undefined,
+      };
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_URL + MO_IND_ID_URL);
 
       expect(resp.status).toEqual(200);

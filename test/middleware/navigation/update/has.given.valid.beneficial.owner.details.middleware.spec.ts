@@ -14,11 +14,11 @@ import {
 } from '../../../../src/config';
 import { ANY_MESSAGE_ERROR } from '../../../__mocks__/text.mock';
 
-import { NavigationErrorMessage, checkHasGivenValidBOData } from '../../../../src/middleware/navigation/check.condition';
-import { hasGivenValidBODetails } from '../../../../src/middleware/navigation/update/has.given.valid.beneficial.owner.details.middleware';
+import { NavigationErrorMessage, checkBoOrMoTypeAndId } from '../../../../src/middleware/navigation/check.condition';
+import { hasGivenValidBoMoDetails } from '../../../../src/middleware/navigation/update/has.given.valid.bo.mo.details.middleware';
 import { BO_IND_ID } from '../../../__mocks__/session.mock';
 
-const mockCheckHasGivenValidBOData = checkHasGivenValidBOData as jest.Mock;
+const mockCheckBoOrMoTypeAndId = checkBoOrMoTypeAndId as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 
 const req = {
@@ -37,8 +37,8 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
   });
 
   test(`should redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page and log message error ${NavigationErrorMessage} if check fails`, () => {
-    mockCheckHasGivenValidBOData.mockImplementationOnce( () => { return false; });
-    hasGivenValidBODetails(req, res, next);
+    mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { return false; });
+    hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).not.toBeCalled();
 
@@ -50,8 +50,8 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
   });
 
   test(`should not redirect and pass to the next middleware`, () => {
-    mockCheckHasGivenValidBOData.mockImplementationOnce( () => { return true; });
-    hasGivenValidBODetails(req, res, next);
+    mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { return true; });
+    hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 
@@ -60,8 +60,8 @@ describe("has.given.valid.beneficial.owner.details navigation middleware tests",
   });
 
   test("should catch the error and call next(err)", () => {
-    mockCheckHasGivenValidBOData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-    hasGivenValidBODetails(req, res, next);
+    mockCheckBoOrMoTypeAndId.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    hasGivenValidBoMoDetails(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
 

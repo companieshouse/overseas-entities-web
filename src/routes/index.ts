@@ -591,11 +591,11 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID)
   .post(...validator.updateManagingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.update);
 router.get(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerCorporate.remove);
 
-router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
+router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID)
   .all(
     authentication,
     companyAuthentication,
-    navigation.hasGivenValidBODetails
+    navigation.hasGivenValidBoMoDetails
   )
   .get(confirmToRemove.get)
   .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);

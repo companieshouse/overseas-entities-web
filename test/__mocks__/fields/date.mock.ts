@@ -27,6 +27,8 @@ export const DATE_OF_BIRTH = {
   },
   DATE = { day: "1", month: "1", year: "2000" },
   EMPTY_DATE = { day: "", month: "", year: "" },
+  MO_START_DATE = { day: '1', month: '2', year: '2012' },
+  MO_RESIGNED_ON_DATE = { day: '1', month: '2', year: '2023' },
   getTwoMonthOldDate = (): DateTime => {
     const now = DateTime.now();
     return DateTime.utc(now.year, now.month, now.day).minus({ months: 2 });

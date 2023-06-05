@@ -85,7 +85,10 @@
         {% set removePathURL = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REMOVE + "/" + id %}
       {% endif %}
       {% set nameToBeRemoved = name %}
-      {% include "includes/remove-button.html" %}
+      
+      {% if not entity_number %} 
+        {% include "includes/remove-button.html" %}
+      {% endif %}
     </form>
   </div>
 </div>

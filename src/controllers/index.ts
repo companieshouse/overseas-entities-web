@@ -63,7 +63,7 @@ export * as updateBeneficialOwnerGov from "./update/update.beneficial.owner.gov.
 export * as updateReviewBeneficialOwnerGov from "./update/update.review.beneficial.owner.gov";
 export * as updateManagingOfficerIndividual from "./update/update.managing.officer.controller";
 export * as updateReviewIndividualManagingOfficer from "./update/update.review.individual.managing.officer";
-export * as updateManagingOfficerCorporate from "./update/update.corporate.managing.officer.controller";
+export * as updateManagingOfficerCorporate from "./update/update.managing.officer.corporate.controller";
 export * as updateReviewManagingOfficerCorporate from "./update/update.review.managing.officer.corporate.controller";
 export * as confirmToRemove from "./update/confirm.to.remove.controller";
 export * as updateSignOut from "./update/update.sign.out.controller";

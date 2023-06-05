@@ -476,12 +476,12 @@ describe("should chek date functions for custom validation", () => {
     expect(checkDateIsInPast("", _day, _month, _year)).toBe(true);
   });
 
-  // test.each([
-  //   [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
-  //   [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
-  // ])("should test checkDateIsInPast throws error", (_day, _month, _year) => {
-  //   expect(() => checkDateIsInPast(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
-  // });
+  test.each([
+    [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
+    [today.day.toString(), today.month.toString(), today.year.toString()]
+  ])("should test checkDateIsInPast throws error", (_day, _month, _year) => {
+    expect(() => checkDateIsInPast(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  });
 
   // TODO: empty strings should not be returning true
   test("should test checkDateIsInPast returns true for no param", () => {
@@ -490,7 +490,7 @@ describe("should chek date functions for custom validation", () => {
 
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
-    [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()]
+    [today.day.toString(), today.month.toString(), today.year.toString()]
   ])("should test checkDateIsInPastOrToday returns true", (_day, _month, _year) => {
     expect(checkDateIsInPastOrToday("", _day, _month, _year)).toBe(true);
   });
@@ -508,7 +508,7 @@ describe("should chek date functions for custom validation", () => {
 
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
-    [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
+    [today.day.toString(), today.month.toString(), today.year.toString()],
     [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()]
   ])("should test checkDateIsWithinLast3Months returns true", (_day, _month, _year) => {
     expect(checkDateIsWithinLast3Months("", _day, _month, _year)).toBe(true);
@@ -528,7 +528,7 @@ describe("should chek date functions for custom validation", () => {
 
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
-    [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
+    [today.day.toString(), today.month.toString(), today.year.toString()],
     [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
     [threeMonthsBack.day.toString(), threeMonthsBack.month.toString(), threeMonthsBack.year.toString()],
     [threeMonthsBackPlus.day.toString(), threeMonthsBackPlus.month.toString(), threeMonthsBackPlus.year.toString()]
@@ -549,7 +549,7 @@ describe("should chek date functions for custom validation", () => {
 
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
-    [today.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
+    [today.day.toString(), today.month.toString(), today.year.toString()],
     [tomorrow.day.toString(), tomorrow.month.toString(), tomorrow.year.toString()],
     [threeMonthsBack.day.toString(), threeMonthsBack.month.toString(), threeMonthsBack.year.toString()],
     [threeMonthsBackPlus.day.toString(), threeMonthsBackPlus.month.toString(), threeMonthsBackPlus.year.toString()]

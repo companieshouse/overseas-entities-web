@@ -261,7 +261,6 @@ export const BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK =
 
 export const BENEFICIAL_OWNER_OTHER_OBJECT_MOCK: beneficialOwnerOtherType.BeneficialOwnerOther = {
   id: BO_OTHER_ID,
-  ch_reference: "",
   name: "TestCorporation",
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -703,7 +702,6 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO: beneficia
 
 export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {
   id: BO_GOV_ID,
-  ch_reference: "",
   name: COMPANY_NAME,
   principal_address: ADDRESS,
   is_service_address_same_as_principal_address: yesNoResponse.Yes,
@@ -815,6 +813,11 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "Some Occupation",
   role_and_responsibilities: "Some role and responsibilities"
+};
+
+export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.ManagingOfficerIndividual = {
+  ...MANAGING_OFFICER_OBJECT_MOCK,
+  ch_reference: 'mo-individual-ch-ref',
 };
 
 export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -948,6 +951,11 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   role_and_responsibilities: "role and responsibilities text",
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
+};
+
+export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF: managingOfficerCorporateType.ManagingOfficerCorporate = {
+  ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  ch_reference: 'mo-corporate-ch-ref',
 };
 
 export const UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateType.ManagingOfficerCorporate = {
@@ -1465,6 +1473,15 @@ export const APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO: ApplicationData
 export const APPLICATION_DATA_BENEFICIAL_OWNER_UNDEFINED_UPDATE_REVIEW_BO: ApplicationData = {
   ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO,
   ...APPLICATION_DATA_MOCK_N0_BOI_WITH_UPDATE_REVIEW_BO[updateType.UpdateKey] = UNDEFINED_UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS: ApplicationData = {
+  ...APPLICATION_DATA_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF],
+  [managingOfficerType.ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF]
 };
 
 export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {

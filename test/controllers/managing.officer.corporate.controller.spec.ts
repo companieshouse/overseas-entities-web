@@ -13,6 +13,7 @@ import app from "../../src/app";
 
 import {
   AddressKeys,
+  EntityNumberKey,
   HasSamePrincipalAddressKey,
   IsOnRegisterInCountryFormedInKey, PublicRegisterNameKey, RegistrationNumberKey,
 } from "../../src/model/data.types.model";
@@ -129,7 +130,14 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
   describe("GET BY ID tests", () => {
 
     test("renders the managing officer corporate page", async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(MANAGING_OFFICER_CORPORATE_OBJECT_MOCK);
+      const moMock = { ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK };
+      const appData = {
+        ...APPLICATION_DATA_MOCK,
+        [ManagingOfficerCorporateKey]: [moMock],
+        [EntityNumberKey]: undefined,
+      };
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetFromApplicationData.mockReturnValueOnce(moMock);
       const resp = await request(app).get(MANAGING_OFFICER_CORPORATE_URL + MO_CORP_ID_URL);
 
       expect(resp.status).toEqual(200);

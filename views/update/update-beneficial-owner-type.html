@@ -50,24 +50,20 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
-{% set reviewBeneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
-{% set reviewBeneficialOwnerGovUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL %}
-{% set reviewBeneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL %}
-{% set reviewManagingOfficerIndividualUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
-{% set reviewManagingOfficerCorporateUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
-{% set indexQueryParam = OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM %}
+{% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+{% set beneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
+{% set beneficialOwnerGovUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
+{% set managingOfficerIndividualUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL %}
+{% set managingOfficerCorporateUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL %}
+
+{% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
+{% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
 
 {% block content %}
-  {% set addButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type" %}
-  {% set noMoreToAddButtonAction = "/update-an-overseas-entity/update-beneficial-owner-type/submit" %}
-  {% set beneficialOwnerIndividualUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
-  {% set beneficialOwnerOtherUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_OTHER_URL %}
-  {% set beneficialOwnerGovUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_GOV_URL %}
-  {% set beneficialOwnerRemoveBaseUrl = "/update-an-overseas-entity/confirm-to-remove"%}
 
   <div class="govuk-grid-row govuk-body">
     <div class="govuk-grid-column-two-thirds">
-
+  
       {% include "includes/list/errors.html" %}
 
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
@@ -83,13 +79,13 @@
       <br/>
         {% include "includes/list/update-review-bo-mo.html" %}
       <br/>
-    </div>
+    </div> 
   {% endif %}
 
-  {% if hasBeneficialOwners %}
+  {% if hasBeneficialOwners or hasManagingOfficers %}
     <div class="govuk-grid-column-two-thirds">
       <br/>
-        {% include "includes/list/update-added-beneficial-owner.html" %}
+        {% include "includes/list/update-added-bo-mo.html" %}
       <br/>
     </div>
   {% endif %}
@@ -97,7 +93,7 @@
   <div class="govuk-grid-column-two-thirds">
     <form method="post">
       {% include "includes/beneficial-owner-type-add-radios.html" %}
-
+  
       <button class="govuk-button" data-module="govuk-button" id="add" formaction="{{ addButtonAction }}" >Add<span class="govuk-visually-hidden"> {{ whatToAdd }} </span></button>
       <button class="govuk-button govuk-button--secondary" data-module="govuk-button" id="noMoreToAdd" formaction="{{ noMoreToAddButtonAction }}" >No more <span class="govuk-visually-hidden"> {{ hiddenTextValue }} </span> to add </button>
 

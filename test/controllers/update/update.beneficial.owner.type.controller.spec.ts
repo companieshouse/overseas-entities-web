@@ -42,7 +42,7 @@ import {
   UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_MODEL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+  APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   APPLICATION_DATA_UPDATE_MO_MOCK,
@@ -50,6 +50,10 @@ import {
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
   APPLICATION_DATA_UPDATE_MO_MOCK_UNSUBMITTED,
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+  MANAGING_OFFICER_OBJECT_MOCK,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
@@ -66,6 +70,8 @@ import {
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { hasFetchedBoAndMoData, setFetchedBoMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
+import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.model';
+import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -349,8 +355,19 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with newly added BO's table displayed`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_NEWLY_ADDED_BO });
+    test.each([
+      ['BO Individual', BeneficialOwnerIndividualKey, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+      ['BO Other', BeneficialOwnerOtherKey, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+      ['BO Gov', BeneficialOwnerGovKey, BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+      ['MO Individual', ManagingOfficerKey, MANAGING_OFFICER_OBJECT_MOCK ],
+      ['MO Corporate', ManagingOfficerCorporateKey, MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
+    ])(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with newly added BOs and MOs table displayed when a %s has been added`, async (_, key, mockObject) => {
+      const appData = {
+        ...APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS,
+        [key]: [mockObject],
+      };
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(200);
@@ -358,12 +375,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING);
     });
 
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without newly added BO's table displayed`, async () => {
-      const data = { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW };
-      delete data[BeneficialOwnerIndividualKey];
-      const boiNoChReference = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
-      boiNoChReference["ch_reference"] = "123";
-      data[BeneficialOwnerIndividualKey] = [boiNoChReference];
+    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without newly added BOs table displayed`, async () => {
+      const data = { ...APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS };
 
       mockGetApplicationData.mockReturnValueOnce({ ...data });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

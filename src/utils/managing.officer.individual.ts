@@ -11,7 +11,7 @@ import {
   mapFieldsToDataObject,
   prepareData,
   setApplicationData,
-  removeFromApplicationData
+  removeFromApplicationData,
 } from "../utils/application.data";
 
 import {
@@ -31,8 +31,11 @@ import {
   StartDateKeys
 } from "../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../model/address.model";
-import { FormerNamesKey, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
+import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
+import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
+
+const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.ch_reference;
 
 export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -46,26 +49,42 @@ export const getManagingOfficer = (req: Request, res: Response, backLinkUrl: str
   });
 };
 
-export const getManagingOfficerById = (req: Request, res: Response, next: NextFunction, backlinkUrl: string, templateName: string) => {
+export const getManagingOfficerById = (req: Request, res: Response, next: NextFunction, backLinkUrl: string, templateName: string) => {
   try {
     logger.debugRequest(req, `${req.method} BY ID ${templateName}`);
 
     const id = req.params[ID];
+
+    const appData = getApplicationData(req.session);
     const officerData = getFromApplicationData(req, ManagingOfficerKey, id, true);
 
-    const usualResidentialAddress = (officerData) ? mapDataObjectToFields(officerData[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
-    const serviceAddress = (officerData) ? mapDataObjectToFields(officerData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-    const dobDate = (officerData) ? mapDataObjectToFields(officerData[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
+    const newlyAddedMO = isNewlyAddedMO(officerData);
+    const inUpdateJourney = !!appData[EntityNumberKey];
 
-    return res.render(templateName, {
-      backLinkUrl: backlinkUrl,
+    const usualResidentialAddress = officerData ? mapDataObjectToFields(officerData[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
+    const serviceAddress = officerData ? mapDataObjectToFields(officerData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const dobDate = officerData ? mapDataObjectToFields(officerData[DateOfBirthKey], DateOfBirthKeys, InputDateKeys) : {};
+
+    let templateOptions = {
+      backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
       ...officerData,
       ...usualResidentialAddress,
       ...serviceAddress,
-      [DateOfBirthKey]: dobDate
-    });
+      [DateOfBirthKey]: dobDate,
+    };
+
+    if (newlyAddedMO) {
+      const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
+      templateOptions[StartDateKey] = startDate;
+    }
+
+    if (inUpdateJourney) {
+      templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);
+    }
+
+    return res.render(templateName, templateOptions);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

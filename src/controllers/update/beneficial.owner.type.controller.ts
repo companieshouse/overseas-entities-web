@@ -41,20 +41,15 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(checkMoRedirect);
     }
 
-    const allBos = [
+    const allBosMos = [
       ...(appData[BeneficialOwnerIndividualKey] ?? []),
       ...(appData[BeneficialOwnerOtherKey] ?? []),
-      ...(appData[BeneficialOwnerGovKey] ?? [])
-    ];
-
-    const hasNewlyAddedBos = allBos.find(bo => bo.ch_reference === undefined) !== undefined;
-
-    const allBosMos = [
-      ...allBos,
+      ...(appData[BeneficialOwnerGovKey] ?? []),
       ...(appData[ManagingOfficerCorporateKey] ?? []),
       ...(appData[ManagingOfficerKey] ?? [])
     ];
 
+    const hasNewlyAddedBosMos = allBosMos.find(boMo => boMo.ch_reference === undefined) !== undefined;
     const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {
@@ -62,7 +57,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       templateName: config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
       ...appData,
       hasExistingBosMos,
-      hasNewlyAddedBos
+      hasNewlyAddedBosMos
     });
   } catch (error) {
     logger.errorRequest(req, error);

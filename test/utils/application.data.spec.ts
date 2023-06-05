@@ -12,8 +12,8 @@ import {
   getFromApplicationData,
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
-  findBeneficialOwner,
-  checkGivenBoDetailsExist
+  findBoOrMo,
+  checkGivenBoOrMoDetailsExist
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -26,11 +26,15 @@ import {
   ENTITY_OBJECT_MOCK,
   getSessionRequestWithExtraData,
   getSessionRequestWithPermission,
+  MO_IND_ID,
+  MO_CORP_ID,
 } from "../__mocks__/session.mock";
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
   PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
-  PARAM_BENEFICIAL_OWNER_OTHER
+  PARAM_BENEFICIAL_OWNER_OTHER,
+  PARAM_MANAGING_OFFICER_CORPORATE,
+  PARAM_MANAGING_OFFICER_INDIVIDUAL
 } from "../..//src/config";
 import { ADDRESS } from "../__mocks__/fields/address.mock";
 import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
@@ -173,8 +177,8 @@ describe("Application data utils", () => {
     expect(response).toEqual(false);
   });
 
-  test('findBeneficialOwner should return BO Individual if valid data given', () => {
-    const beneficialOwner = findBeneficialOwner(
+  test('findBoOrMo should return BO Individual if valid data given', () => {
+    const beneficialOwner = findBoOrMo(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_INDIVIDUAL,
       BO_IND_ID
@@ -182,8 +186,8 @@ describe("Application data utils", () => {
     expect(beneficialOwner.id).toEqual(BO_IND_ID);
   });
 
-  test('findBeneficialOwner should return BO Gov if valid data given', () => {
-    const beneficialOwner = findBeneficialOwner(
+  test('findBoOrMo should return BO Gov if valid data given', () => {
+    const beneficialOwner = findBoOrMo(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_GOV,
       BO_GOV_ID
@@ -191,8 +195,8 @@ describe("Application data utils", () => {
     expect(beneficialOwner.id).toEqual(BO_GOV_ID);
   });
 
-  test('findBeneficialOwner should return BO Other if valid data given', () => {
-    const beneficialOwner = findBeneficialOwner(
+  test('findBoOrMo should return BO Other if valid data given', () => {
+    const beneficialOwner = findBoOrMo(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_OTHER,
       BO_OTHER_ID
@@ -200,8 +204,26 @@ describe("Application data utils", () => {
     expect(beneficialOwner.id).toEqual(BO_OTHER_ID);
   });
 
-  test('findBeneficialOwner should return undefined if invalid id given', () => {
-    const beneficialOwner = findBeneficialOwner(
+  test('findBoOrMo should return MO Individual if valid data given', () => {
+    const managingOfficer = findBoOrMo(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_MANAGING_OFFICER_INDIVIDUAL,
+      MO_IND_ID
+    );
+    expect(managingOfficer.id).toEqual(MO_IND_ID);
+  });
+
+  test('findBoOrMo should return MO Corporate if valid data given', () => {
+    const managingOfficer = findBoOrMo(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_MANAGING_OFFICER_CORPORATE,
+      MO_CORP_ID
+    );
+    expect(managingOfficer.id).toEqual(MO_CORP_ID);
+  });
+
+  test('findBoOrMo should return undefined if invalid id given', () => {
+    const beneficialOwner = findBoOrMo(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_OTHER,
       'fake-id'
@@ -209,27 +231,43 @@ describe("Application data utils", () => {
     expect(beneficialOwner).toEqual(undefined);
   });
 
-  test('findBeneficialOwner should return undefined if invalid benficialOwnerType given', () => {
-    const beneficialOwner = findBeneficialOwner(
+  test('findBoOrMo should return undefined if invalid BO or MO type given', () => {
+    const boOrMo = findBoOrMo(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       'not-a-real-bo-type',
       BO_OTHER_ID
     );
-    expect(beneficialOwner).toEqual(undefined);
+    expect(boOrMo).toEqual(undefined);
   });
 
-  test('checkGivenBoDetailsExist returns true if beneficial owner found', () => {
-    expect(checkGivenBoDetailsExist(
+  test('checkGivenBoOrMoDetailsExist returns true if beneficial owner is found', () => {
+    expect(checkGivenBoOrMoDetailsExist(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_GOV,
       BO_GOV_ID
     )).toEqual(true);
   });
 
-  test('checkGivenBoDetailsExist returns false if beneficial owner not found', () => {
-    expect(checkGivenBoDetailsExist(
+  test('checkGivenBoOrMoDetailsExist returns false if beneficial owner not found', () => {
+    expect(checkGivenBoOrMoDetailsExist(
       APPLICATION_DATA_UPDATE_BO_MOCK,
       PARAM_BENEFICIAL_OWNER_GOV,
+      'fake-id'
+    )).toEqual(false);
+  });
+
+  test('checkGivenBoOrMoDetailsExist returns true if managing officer is found', () => {
+    expect(checkGivenBoOrMoDetailsExist(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_MANAGING_OFFICER_INDIVIDUAL,
+      MO_IND_ID
+    )).toEqual(true);
+  });
+
+  test('checkGivenBoOrMoDetailsExist returns false if managing officer not found', () => {
+    expect(checkGivenBoOrMoDetailsExist(
+      APPLICATION_DATA_UPDATE_BO_MOCK,
+      PARAM_MANAGING_OFFICER_INDIVIDUAL,
       'fake-id'
     )).toEqual(false);
   });

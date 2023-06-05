@@ -42,7 +42,6 @@ import {
   UPDATE_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_MODEL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   APPLICATION_DATA_UPDATE_MO_MOCK,
@@ -111,7 +110,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/review-individual-managing-officer?index=0");
+      expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/review-individual-managing-officer?index=1");
     });
 
     test(`render the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with table of reviewed BOs if BOs have been reviewed`, async () => {
@@ -363,7 +362,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       ['MO Corporate', ManagingOfficerCorporateKey, MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
     ])(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page with newly added BOs and MOs table displayed when a %s has been added`, async (_, key, mockObject) => {
       const appData = {
-        ...APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS,
+        ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
         [key]: [mockObject],
       };
 
@@ -376,7 +375,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page without newly added BOs table displayed`, async () => {
-      const data = { ...APPLICATION_DATA_MOCK_NO_NEWLY_ADDED_BOS_AND_MOS };
+      const data = { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW };
 
       mockGetApplicationData.mockReturnValueOnce({ ...data });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);

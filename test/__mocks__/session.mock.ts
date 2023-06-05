@@ -812,7 +812,8 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "Some Occupation",
-  role_and_responsibilities: "Some role and responsibilities"
+  role_and_responsibilities: "Some role and responsibilities",
+  resigned_on: EMPTY_DATE
 };
 
 export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.ManagingOfficerIndividual = {
@@ -949,6 +950,7 @@ export const MANAGING_OFFICER_CORPORATE_OBJECT_MOCK: managingOfficerCorporateTyp
   public_register_name: "register",
   registration_number: "123456789",
   role_and_responsibilities: "role and responsibilities text",
+  resigned_on: EMPTY_DATE,
   contact_full_name: "Joe Bloggs",
   contact_email: "jbloggs@bloggs.co.ru"
 };

@@ -140,7 +140,7 @@ export const removeManagingOfficerCorporate = async(req: Request, res: Response,
   }
 };
 
-const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerCorporateKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);

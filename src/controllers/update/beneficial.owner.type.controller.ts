@@ -122,6 +122,7 @@ const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) 
         } else if (officer.officerRole === "corporate-managing-officer") {
           const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
           logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
+          appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
         }
       }
     }

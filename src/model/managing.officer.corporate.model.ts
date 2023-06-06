@@ -3,6 +3,7 @@ import { Address, InputDate, yesNoResponse } from "./data.types.model";
 export const ManagingOfficerCorporateKey: string = "managing_officers_corporate";
 export const ManagingOfficerCorporateKeys: string[] = [
   "id",
+  "ch_reference",
   "name",
   "principal_address",
   "service_address",

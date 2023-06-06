@@ -31,8 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
       ...dataToReview,
-      ...residentialAddress,
-      isOwnersReview: true,
+      ...residentialAddress
     };
 
     if (ResignedOnKey in dataToReview) {

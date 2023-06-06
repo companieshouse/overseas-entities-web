@@ -1,14 +1,13 @@
 import {
-  REVIEW_OWNER_INDEX_PARAM,
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL } from "../../config";
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
+} from "../../config";
 import { NextFunction, Request, Response } from "express";
 import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
-import { ApplicationData, ApplicationDataType } from "../../model";
+import { ApplicationDataType } from "../../model";
 import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual";
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
@@ -27,10 +26,8 @@ export const get = (req: Request, res: Response) => {
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
   }
 
-  const backLinkUrl = getBackLinkUrl(appData, index);
-
   const templateOptions = {
-    backLinkUrl,
+    backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
     isBeneficialOwnersReview: true,
@@ -43,14 +40,6 @@ export const get = (req: Request, res: Response) => {
     return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, addCeasedDateToTemplateOptions(templateOptions, appData, dataToReview));
   } else {
     return res.render(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE, templateOptions);
-  }
-};
-
-const getBackLinkUrl = (appData: ApplicationData, pageIndex) => {
-  if (appData.beneficial_owners_individual?.length === 0 || pageIndex < 1){
-    return UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-  } else {
-    return UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + REVIEW_OWNER_INDEX_PARAM + (pageIndex - 1);
   }
 };
 

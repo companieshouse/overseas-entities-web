@@ -72,3 +72,4 @@ export * as updateRegistrableBeneficialOwner from "./update/update.registrable.b
 export * as resumeUpdateSubmission from "./update/update.resume.submission.controller";
 export * as updateContinueSavedFiling from "./update/update.continue.saved.filing.controller";
 export * as updateReviewOverseasEntityInformation from "./update/update.review.overseas.entity.information.controller";
+export * as updateTrustsSubmitByPaper from "./update/update.trusts.submit.by.paper.controller";

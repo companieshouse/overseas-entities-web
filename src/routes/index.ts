@@ -73,7 +73,8 @@ import {
   updateReviewBeneficialOwnerGov,
   resumeUpdateSubmission,
   updateReviewIndividualManagingOfficer,
-  updateReviewManagingOfficerCorporate
+  updateReviewManagingOfficerCorporate,
+  updateTrustsSubmitByPaper
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -634,5 +635,9 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)
   .get(updateContinueSavedFiling.get)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
+
+router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
+  .all(authentication)
+  .get(updateTrustsSubmitByPaper.get);
 
 export default router;

@@ -1,20 +1,9 @@
-import { NextFunction, Request, Response } from "express";
 import { Session } from "@companieshouse/node-session-handler";
+import { NextFunction, Request, Response } from "express";
 import { v4 as uuidv4 } from 'uuid';
 
-import { logger } from "./logger";
-import { saveAndContinue } from "./save.and.continue";
 import { ApplicationData, ApplicationDataType } from "../model";
-import {
-  getApplicationData,
-  getFromApplicationData,
-  mapDataObjectToFields,
-  mapFieldsToDataObject,
-  prepareData,
-  removeFromApplicationData,
-  setApplicationData,
-} from "./application.data";
-import { ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
+import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import {
   AddressKeys,
   EntityNumberKey,
@@ -25,8 +14,22 @@ import {
   PublicRegisterNameKey,
   RegistrationNumberKey
 } from "../model/data.types.model";
-import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../model/address.model";
 import { ResignedOnDateKey, ResignedOnDateKeys, StartDateKey, StartDateKeys } from "../model/date.model";
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey, ManagingOfficerCorporateKeys } from "../model/managing.officer.corporate.model";
+import {
+  getApplicationData,
+  getFromApplicationData,
+  mapDataObjectToFields,
+  mapFieldsToDataObject,
+  prepareData,
+  removeFromApplicationData,
+  setApplicationData,
+} from "./application.data";
+import { logger } from "./logger";
+import { saveAndContinue } from "./save.and.continue";
+import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
+
+const isNewlyAddedMO = (officerData: ManagingOfficerCorporate) => !officerData.ch_reference;
 
 export const getManagingOfficerCorporate = (req: Request, res: Response, backLinkUrl: string, templateName: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -45,19 +48,35 @@ export const getManagingOfficerCorporateById = (req: Request, res: Response, nex
     logger.debugRequest(req, `${req.method} BY ID ${req.route.path}`);
 
     const id = req.params[ID];
-    const data = getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
 
-    const principalAddress = (data) ? mapDataObjectToFields(data[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    const serviceAddress = (data) ? mapDataObjectToFields(data[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    const appData = getApplicationData(req.session);
+    const officerData = getFromApplicationData(req, ManagingOfficerCorporateKey, id, true);
 
-    return res.render(templateName, {
+    const newlyAddedMO = isNewlyAddedMO(officerData);
+    const inUpdateJourney = !!appData[EntityNumberKey];
+
+    const principalAddress = officerData ? mapDataObjectToFields(officerData[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
+    const serviceAddress = officerData ? mapDataObjectToFields(officerData[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+
+    let templateOptions = {
       backLinkUrl: backLinkUrl,
       templateName: `${templateName}/${id}`,
       id,
-      ...data,
+      ...officerData,
       ...principalAddress,
-      ...serviceAddress
-    });
+      ...serviceAddress,
+    };
+
+    if (newlyAddedMO) {
+      const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
+      templateOptions[StartDateKey] = startDate;
+    }
+
+    if (inUpdateJourney) {
+      templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);
+    }
+
+    return res.render(templateName, templateOptions);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -121,7 +140,7 @@ export const removeManagingOfficerCorporate = async(req: Request, res: Response,
   }
 };
 
-const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
+export const setOfficerData = (reqBody: any, id: string): ApplicationDataType => {
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerCorporateKeys);
 
   data[PrincipalAddressKey] = mapFieldsToDataObject(reqBody, PrincipalAddressKeys, AddressKeys);

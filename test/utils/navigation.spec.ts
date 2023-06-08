@@ -184,11 +184,6 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
 
-  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_OTHER_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_OTHER_URL].previousPage();
-    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-  });
-
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
@@ -205,6 +200,11 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_GOV_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });

@@ -207,7 +207,7 @@ export const UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE = "You're about to revie
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the individual beneficial owner";
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING = "Review the other legal entity beneficial owner";
 export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING = "Review the individual managing officer";
-
+export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING = "Review the corporate managing officer";
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING = "Review the government or public authority";
 export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
 export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";
@@ -218,3 +218,4 @@ export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're abou
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity?";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_YES_TEXT = "Yes, I need to make changes";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to make changes";
+export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING = "You'll need to file an update statement using the paper form";

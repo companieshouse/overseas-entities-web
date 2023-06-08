@@ -73,6 +73,8 @@ import {
   updateReviewBeneficialOwnerGov,
   resumeUpdateSubmission,
   updateReviewIndividualManagingOfficer,
+  updateReviewManagingOfficerCorporate,
+  updateTrustsSubmitByPaper,
   doYouWantToMakeOeChange
 } from "../controllers";
 
@@ -597,11 +599,22 @@ router.route(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID)
   .post(...validator.updateManagingOfficerCorporate, checkValidations, updateManagingOfficerCorporate.update);
 router.get(config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasUpdatePresenter, updateManagingOfficerCorporate.remove);
 
-router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID)
+router.route(config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL)
   .all(
     authentication,
     companyAuthentication,
-    navigation.hasGivenValidBODetails
+    navigation.hasUpdatePresenter
+  )
+  .get(updateReviewManagingOfficerCorporate.get)
+  .post(...validator.reviewManagingOfficerCorporate, checkValidations, updateReviewManagingOfficerCorporate.post);
+
+router.get(config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + config.UPDATE_REVIEW_OWNERS_PARAMS, authentication, updateReviewManagingOfficerCorporate.get);
+
+router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasGivenValidBoMoDetails
   )
   .get(confirmToRemove.get)
   .post(...validator.confirmToRemove, checkValidations, confirmToRemove.post);
@@ -628,5 +641,9 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)
   .get(updateContinueSavedFiling.get)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
+
+router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
+  .all(authentication)
+  .get(updateTrustsSubmitByPaper.get);
 
 export default router;

@@ -224,6 +224,16 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL]: {
+    currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URLWITH_PARAM_URL]: {
+    currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
@@ -304,7 +314,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID]: {
+  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID]: {
     currentPage: config.UPDATE_CONFIRM_TO_REMOVE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
@@ -314,7 +324,17 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_MANAGING_OFFICER_URL + config.ID]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]

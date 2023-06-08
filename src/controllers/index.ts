@@ -39,6 +39,7 @@ export * as paymentFailed from "./payment.failed.controller";
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
+export * as doYouWantToMakeOeChange from "./update/overseas.entity.change.controller";
 export * as updateUsePaper from "./update/update.use.paper.controller";
 export * as updateInterruptCard from "./update/update.interrupt.card.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";

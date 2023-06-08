@@ -52,7 +52,12 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: () => config.UPDATE_FILING_DATE_URL,
-    nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE]
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
+  },
+  [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
+    currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
+    nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
@@ -61,7 +66,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
-    previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
     nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
   },
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {

@@ -17,7 +17,7 @@ export const UpdateKeys: string[] = [
   "review_beneficial_owners_government_or_public_authority",
   "review_managing_officers_individual",
   "review_managing_officers_corporate",
-  "filing_date"
+  "filing_date",
 ];
 
 export interface Update {

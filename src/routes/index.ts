@@ -355,7 +355,7 @@ router.route(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL)
     navigation.hasOverseasEntity
   )
   .get(confirmOverseasEntityDetails.get)
-  .post(companyAuthentication, confirmOverseasEntityDetails.post);
+  .post(confirmOverseasEntityDetails.post);
 
 router.route(config.OVERSEAS_ENTITY_PRESENTER_URL)
   .all(

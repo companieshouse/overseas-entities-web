@@ -15,12 +15,12 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { DoYouNeedToMakeOeChangeKey } from '../../../src/model/data.types.model';
-import { APPLICATION_DATA_MOCK, COMPANY_NUMBER, OVERSEAS_NAME_MOCK } from '../../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, OVERSEAS_NAME_MOCK } from '../../__mocks__/session.mock';
 import { OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, PAYMENT_WITH_TRANSACTION_URL, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
+import { NoChangeKey } from '../../../src/model/update.type.model';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
@@ -65,10 +65,19 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
   describe("POST tests", () => {
 
+    test(`setextra data is not called if no update model data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+      });
+      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+        .send({ [NoChangeKey]: "0" });
+      expect(resp.status).toEqual(302);
+      expect(setExtraData).not.toHaveBeenCalled();
+    });
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-        .send({ [DoYouNeedToMakeOeChangeKey]: "1" });
+        .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -78,7 +87,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
     test(`redirect to ${PAYMENT_WITH_TRANSACTION_URL} on NO selection`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-        .send({ [DoYouNeedToMakeOeChangeKey]: "0" });
+        .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -97,7 +106,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-        .send({ [DoYouNeedToMakeOeChangeKey]: " " });
+        .send({ [NoChangeKey]: "NO" });
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

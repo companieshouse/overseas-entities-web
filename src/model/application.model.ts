@@ -38,7 +38,6 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     update?: updateType.Update;
-    do_you_need_to_make_oe_change?: string;
 }
 
 export const ApplicationDataArrayType = [

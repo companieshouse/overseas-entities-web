@@ -1455,6 +1455,11 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_MOCK_WITHOUT_UPDATE: ApplicationData = {
+  ...APPLICATION_DATA_MOCK,
+  [updateType.UpdateKey]: undefined
+};
+
 export const APPLICATION_DATA_MOCK_N0_BOI: ApplicationData = {
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ ],

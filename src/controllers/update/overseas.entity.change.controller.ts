@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { DoYouNeedToMakeOeChangeKey } from "../../model/data.types.model";
 import { getApplicationData, setExtraData } from "../../utils/application.data";
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { NoChangeKey } from "../../model/update.type.model";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -28,9 +28,13 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const session = req.session as Session;
     let redirectUrl: string;
+    const appData: ApplicationData = getApplicationData(req.session);
+    const isMakingOeChange = req.body[NoChangeKey];
 
-    const isMakingOeChange = req.body[DoYouNeedToMakeOeChangeKey];
-    setExtraData(session, { ...getApplicationData(req.session), [DoYouNeedToMakeOeChangeKey]: isMakingOeChange });
+    if (appData.update){
+      appData.update.no_change = isMakingOeChange;
+      setExtraData(session, appData);
+    }
 
     if (isMakingOeChange === "1"){
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;

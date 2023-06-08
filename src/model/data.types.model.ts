@@ -84,4 +84,3 @@ export const RegistrationModelKey = "registration";
 export const EntityNumberKey = "entity_number";
 export const UpdateModelKey = "update";
 export const DoYouWantToRemoveKey = "do_you_want_to_remove";
-export const DoYouNeedToMakeOeChangeKey = "do_you_need_to_make_oe_change";

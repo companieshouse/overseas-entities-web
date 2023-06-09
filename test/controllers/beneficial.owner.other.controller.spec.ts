@@ -53,7 +53,8 @@ import {
   SERVICE_UNAVAILABLE,
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   UK_SANCTIONS_DETAILS,
-  YES_SANCTIONS_TEXT_IT
+  YES_SANCTIONS_TEXT_IT,
+  TRUSTS_NOC_HEADING,
 } from "../__mocks__/text.mock";
 import {
   AddressKeys,
@@ -105,6 +106,11 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
   describe("GET tests", () => {
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -118,6 +124,7 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {

@@ -34,7 +34,8 @@ import {
   SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   UK_SANCTIONS_DETAILS,
   YES_SANCTIONS_TEXT_IT,
-  SANCTIONS_HINT_TEXT_IT
+  SANCTIONS_HINT_TEXT_IT,
+  TRUSTS_NOC_HEADING,
 } from "../__mocks__/text.mock";
 import { logger } from "../../src/utils/logger";
 import {
@@ -89,6 +90,11 @@ describe("BENEFICIAL OWNER GOV controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
       const resp = await request(app).get(config.BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
@@ -102,6 +108,7 @@ describe("BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
   });
 

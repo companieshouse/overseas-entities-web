@@ -146,6 +146,7 @@ export const YES_SANCTIONS_TEXT_IT = "Yes, it is on the Sanctions List";
 export const NO_SANCTIONS_TEXT_IT = "No, it is not on the Sanctions List";
 export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018.";
 export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
+export const TRUSTS_NOC_HEADING = "The beneficial owner is a trustee of a trust";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";

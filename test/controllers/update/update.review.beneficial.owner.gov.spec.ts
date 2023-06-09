@@ -9,13 +9,24 @@ jest.mock('../../../src/utils/save.and.continue');
 
 import * as config from "../../../src/config";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST, UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA } from "../../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA,
+} from "../../__mocks__/session.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
 import request from "supertest";
 import app from "../../../src/app";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING,
+  TRUSTS_NOC_HEADING,
+} from "../../__mocks__/text.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { NextFunction } from "express";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
@@ -55,6 +66,7 @@ describe(`Update review beneficial owner Gov`, () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
     test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page With ceased date`, async () => {

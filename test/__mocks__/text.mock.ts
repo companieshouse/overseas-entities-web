@@ -216,3 +216,4 @@ export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What yo
 export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING = "You'll need to file an update statement using the paper form";
+export const UPDATE_ANY_TRUSTS_INVOLVED_HEADING = "Are there any trusts involved in this overseas entity?";

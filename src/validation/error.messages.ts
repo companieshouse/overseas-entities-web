@@ -26,7 +26,7 @@ export enum ErrorMessages {
   AGENT_CODE = "Enter the agent assurance code",
   PARTNER_NAME = "Enter the name of the person with overall responsibility for identity checks",
   SUPERVISORY_NAME = "Enter the name of the supervisory body",
-  BENEFICIAL_OWNER_OTHER_NAME="Enter the other legal entity’s name",
+  BENEFICIAL_OWNER_OTHER_NAME = "Enter the other legal entity’s name",
   BO_GOV_NAME = "Enter the name of the government or public authority",
   HISTORICAL_BENEFICIAL_OWNER_ROLE = "Select if the former beneficial owner is an individual or a legal entity",
   HISTORICAL_BO_CORPORATE_NAME = "Enter the beneficial owner's name",
@@ -180,6 +180,7 @@ export enum ErrorMessages {
   UPDATE_SELECT_IF_CONTINUE_SAVED_FILING = "Select yes if you want to continue with a saved filing",
   SELECT_IF_STILL_BENEFICIAL_OWNER = "Select yes if they are still a registrable beneficial owner",
   SELECT_IF_STILL_MANAGING_OFFICER = "Select yes if they are still a managing officer",
+  SELECT_IF_ANY_TRUSTS_INVOLVED = "Select yes if there are any trusts involved in this overseas entity",
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",
   MAX_FIRST_NAME_LENGTH_INDIVIDUAL_BO = MAX_FIRST_NAME_LENGTH,

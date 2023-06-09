@@ -8,9 +8,16 @@ import { checkBOsDetailsEntered, checkMOsDetailsEntered, getApplicationData, set
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
+export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
-    const BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+    let BACK_LINK: string;
+
+    if(noChangeBackLink){
+      BACK_LINK = noChangeBackLink;
+    } else{
+      BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+    }
+
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);

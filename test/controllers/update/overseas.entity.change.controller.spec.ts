@@ -91,11 +91,21 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${PAYMENT_WITH_TRANSACTION_URL} on NO selection`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      if (APPLICATION_DATA_MOCK.update){
+        APPLICATION_DATA_MOCK.update.no_change = "0";
+      }
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+      });
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL);
+      expect(mockSetExtraData).toBeCalledWith(
+        undefined,
+        expect.objectContaining({
+          ...APPLICATION_DATA_MOCK
+        }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });

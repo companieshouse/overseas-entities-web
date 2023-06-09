@@ -111,7 +111,7 @@ export const UPDATE_MANAGING_OFFICER_CORPORATE_PAGE = "update-managing-officer-c
 export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE = "review-managing-officer-corporate";
 export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE = "update-registrable-beneficial-owner";
 export const UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE = "continue-with-saved-filing";
-export const UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE = "do-you-want-oe-change";
+export const UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE = "do-you-want-to-make-oe-change";
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE = "update-trusts-submit-by-paper";
 
 // ROUTING PATHs

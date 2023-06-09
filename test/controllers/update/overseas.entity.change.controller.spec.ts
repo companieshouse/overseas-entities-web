@@ -65,7 +65,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
   describe("POST tests", () => {
 
-    test(`setextra data is not called if no update model data`, async () => {
+    test("setextra data is not called if no update model data", async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
       });
@@ -74,12 +74,18 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(resp.status).toEqual(302);
       expect(setExtraData).not.toHaveBeenCalled();
     });
+
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
+      expect(mockSetExtraData).toBeCalledWith(
+        undefined,
+        expect.objectContaining({
+          ...APPLICATION_DATA_MOCK
+        }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
@@ -94,7 +100,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`validation error when posting`, async () => {
+    test("validation error when posting", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);

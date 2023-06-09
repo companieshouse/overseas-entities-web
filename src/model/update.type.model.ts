@@ -33,6 +33,6 @@ export interface Update {
   review_managing_officers_individual?: ManagingOfficerIndividual[];
   review_managing_officers_corporate?: ManagingOfficerCorporate[];
   filing_date?: InputDate;
-  no_change?: boolean;
+  no_change?: string;
 }
 

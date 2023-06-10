@@ -39,7 +39,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     if (isMakingOeChange === "1"){
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     } else {
-      redirectUrl = config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+      redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL;
     }
     await saveAndContinue(req, session, false);
     return resp.redirect(redirectUrl);

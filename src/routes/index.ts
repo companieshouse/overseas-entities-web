@@ -76,6 +76,7 @@ import {
   updateReviewManagingOfficerCorporate,
   updateTrustsSubmitByPaper,
   doYouWantToMakeOeChange,
+  noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner
 } from "../controllers";
 
@@ -316,10 +317,10 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
 
-router.route(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL)
   .all(authentication)
-  .get(noChangeRegistrableBeneficialOwner.get)
-  .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
+  .get(noChangeBeneficialOwnerStatement.get)
+  .post(...validator.updateBeneficialOwnerStatements, checkValidations, noChangeBeneficialOwnerStatement.post);
 
 router.route(config.UPDATE_USE_PAPER_URL)
   .all(authentication)
@@ -642,6 +643,15 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(updateRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, updateRegistrableBeneficialOwner.post);
+
+router.route(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(noChangeRegistrableBeneficialOwner.get)
+  .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

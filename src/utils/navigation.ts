@@ -109,6 +109,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
+  [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL]: {
+    currentPage: config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    nextPage: [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+  },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
     previousPage: () => config.SOLD_LAND_FILTER_URL,
@@ -343,6 +348,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
+  },
+  [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
+    currentPage: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+    previousPage: () => config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL,
+    nextPage: [] // UAR-584
   },
   [config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL]: {
     currentPage: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE,

@@ -12,9 +12,9 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   try {
     let BACK_LINK: string;
 
-    if(noChangeBackLink){
+    if (noChangeBackLink){
       BACK_LINK = noChangeBackLink;
-    } else{
+    } else {
       BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
     }
 
@@ -32,9 +32,15 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   }
 };
 
-export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
+export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   try {
-    const REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    let REDIRECT_URL: string;
+
+    if (noChangeRedirectUrl){
+      REDIRECT_URL = noChangeRedirectUrl;
+    } else {
+      REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    }
 
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 

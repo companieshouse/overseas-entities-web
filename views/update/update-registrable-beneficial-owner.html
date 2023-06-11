@@ -43,7 +43,19 @@
             }
           ]
           }) }}
-        {% include "includes/continue-button.html" %}
+
+          {% if noChangeFlag %}
+          {{ govukInsetText({
+            html: '
+              <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+              <p>We will show the information you provide in this section on the public Register of Overseas Entities.</p>
+            '
+            }) 
+          }}
+          {% include "includes/save-and-continue-button.html" %}
+          {% else %}
+            {% include "includes/continue-button.html" %}
+          {% endif %}
       </form>
     </div>
   </div>

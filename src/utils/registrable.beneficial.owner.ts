@@ -13,7 +13,8 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
       backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
       templateName: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
       appData,
-      [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey]
+      [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
+      noChangeFlag: true
     });
   } catch (error) {
     next(error);

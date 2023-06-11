@@ -24,7 +24,8 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
     return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: BACK_LINK,
       templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
-      [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
+      [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
+      noChangeFlag: true
     });
   } catch (error) {
     logger.errorRequest(req, error);

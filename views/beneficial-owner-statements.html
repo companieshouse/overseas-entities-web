@@ -65,15 +65,26 @@
           ]
         }) }}
 
-            {{ govukDetails({
-          summaryText: "What are registrable beneficial owners and managing officers?",
-          attributes: {
-            "data-event-id": "what-is-a-beneficial-owner-details"
-          },
-        html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the natures of control.</p><p>A managing officer is a director, manager or company secretary of the overseas entity.</p>"
-        }) }}
+        {% if not noChangeFlag %}
+          {{ govukDetails({
+            summaryText: "What are registrable beneficial owners and managing officers?",
+            attributes: {
+              "data-event-id": "what-is-a-beneficial-owner-details"
+            },
+            html: "<p>A beneficial owner is any legal body that has significant influence or control over the overseas entity. It can be an individual person, other legal entity, government or public authority.</p><p>A beneficial owner is registrable if they meet one or more of the conditions known as the natures of control.</p><p>A managing officer is a director, manager or company secretary of the overseas entity.</p>"
+            })
+          }}
+        {% else %}
+          {{ govukInsetText({
+            html: '
+              <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+              <p>We will show the information you provide in this section on the public Register of Overseas Entities.</p>
+            '
+            }) 
+          }}
+        {% endif %}
 
-            {% include "includes/save-and-continue-button.html" %}
+        {% include "includes/save-and-continue-button.html" %}
 
         </form>
 

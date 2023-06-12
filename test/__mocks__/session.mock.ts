@@ -1129,7 +1129,8 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_corporate: [],
   review_beneficial_owners_government_or_public_authority: [],
   review_managing_officers_individual: [],
-  review_managing_officers_corporate: []
+  review_managing_officers_corporate: [],
+  no_change: "1"
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
@@ -1453,6 +1454,11 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [TrustKey]: [TRUST],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_MOCK_WITHOUT_UPDATE: ApplicationData = {
+  ...APPLICATION_DATA_MOCK,
+  [updateType.UpdateKey]: undefined
 };
 
 export const APPLICATION_DATA_MOCK_N0_BOI: ApplicationData = {

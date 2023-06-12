@@ -31,10 +31,12 @@ import { registrableBeneficialOwner } from "./registrable.beneficial.owner.valid
 import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.owner.indiviual.review.validation";
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 import { updateFilingDate } from "./update/update.filing.date.validation";
+import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
 
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
+  doYouWantToMakeOeChange,
   entity,
   presenter,
   overseasEntityQuery,

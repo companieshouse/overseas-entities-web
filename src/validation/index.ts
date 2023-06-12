@@ -32,10 +32,12 @@ import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.own
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 import { updateFilingDate } from "./update/update.filing.date.validation";
 import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validation";
+import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
 
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
+  doYouWantToMakeOeChange,
   entity,
   presenter,
   overseasEntityQuery,

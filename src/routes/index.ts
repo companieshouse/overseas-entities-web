@@ -75,7 +75,8 @@ import {
   updateReviewIndividualManagingOfficer,
   updateReviewManagingOfficerCorporate,
   updateTrustsSubmitByPaper,
-  updateAnyTrustsInvolved
+  updateAnyTrustsInvolved,
+  doYouWantToMakeOeChange
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -309,6 +310,11 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
   .all(authentication)
   .get(secureUpdateFilter.get)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
+
+router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+  .all(authentication)
+  .get(doYouWantToMakeOeChange.get)
+  .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
 
 router.route(config.UPDATE_USE_PAPER_URL)
   .all(authentication)

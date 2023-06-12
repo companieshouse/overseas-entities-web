@@ -16,7 +16,8 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   OVERSEAS_ENTITY_PRESENTER_URL,
-  WHO_IS_MAKING_UPDATE_URL
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
 } from "../../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { ApplicationDataType } from '../../../src/model';
@@ -92,19 +93,19 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} page after a successful post from overseas entity presenter page`, async () => {
+    test(`redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page after a successful post from overseas entity presenter page`, async () => {
       const resp = await request(app).post(OVERSEAS_ENTITY_PRESENTER_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_UPDATE_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to the ${WHO_IS_MAKING_UPDATE_URL} page after a successful post from overseas entity presenter page with special characters`, async () => {
+    test(`redirect to the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page after a successful post from overseas entity presenter page with special characters`, async () => {
       const resp = await request(app).post(OVERSEAS_ENTITY_PRESENTER_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_UPDATE_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -156,7 +157,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_UPDATE_URL}`);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];

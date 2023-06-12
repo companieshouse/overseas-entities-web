@@ -219,3 +219,4 @@ export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any ch
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_YES_TEXT = "Yes, I need to make changes";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to make changes";
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING = "You'll need to file an update statement using the paper form";
+export const UPDATE_ANY_TRUSTS_INVOLVED_HEADING = "Are there any trusts involved in this overseas entity?";

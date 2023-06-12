@@ -17,7 +17,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, OVERSEAS_NAME_MOCK } from '../../__mocks__/session.mock';
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
@@ -97,7 +97,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to ${PAYMENT_WITH_TRANSACTION_URL} on NO selection`, async () => {
+    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on NO selection`, async () => {
       if (APPLICATION_DATA_MOCK.update){
         APPLICATION_DATA_MOCK.update.no_change = "0";
       }

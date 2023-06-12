@@ -102,7 +102,7 @@ describe("No change registrable beneficial owner", () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
+        .send({ [RegistrableBeneficialOwnerKey]: "1" });
 
       expect(resp.status).toEqual(302);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

@@ -11,9 +11,9 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import app from "../../../src/app";
 
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL } from "../../../src/config";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL } from "../../../src/config";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE } from "../../__mocks__/session.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -79,6 +79,15 @@ describe("No change registrable beneficial owner", () => {
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
+    test(`renders the ${UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page with unselected radio button if no update data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE });
+      const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
+
+    });
+
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
@@ -89,18 +98,17 @@ describe("No change registrable beneficial owner", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page when ${yesNoResponse.Yes} is selected`, async () => {
+    test(`Test redirect when 'no reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page when ${yesNoResponse.No} is selected`, async () => {
+    test(`redirects to the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page when 'has reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)

@@ -32,11 +32,11 @@ export const NAVIGATION: Navigation = {
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
-    nextPage: [config.UPDATE_INTERRUPT_CARD_PAGE]
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
     currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
-    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
@@ -353,5 +353,15 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_SIGN_OUT_PAGE,
     previousPage: () => "",
     nextPage: []
-  }
+  },
+  [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]: {
+    currentPage: config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
+    nextPage: [config.UPDATE_INTERRUPT_CARD_URL]
+  },
+  [config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL]: {
+    currentPage: config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
+  },
 };

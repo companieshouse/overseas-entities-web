@@ -12,6 +12,7 @@ import app from "../../../src/app";
 import {
   SECURE_UPDATE_FILTER_PAGE,
   SECURE_UPDATE_FILTER_URL,
+  UPDATE_ANY_TRUSTS_INVOLVED_URL,
   UPDATE_LANDING_PAGE_URL
 } from "../../../src/config";
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -87,7 +88,7 @@ describe("SECURE UPDATE FILTER controller", () => {
         .post(SECURE_UPDATE_FILTER_URL)
         .send({ is_secure_register: '0' });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual("update-interrupt-card");
+      expect(resp.header.location).toEqual(UPDATE_ANY_TRUSTS_INVOLVED_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

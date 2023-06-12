@@ -149,8 +149,8 @@ describe("NAVIGATION utils", () => {
   });
 
   // Update Journey
-  test(`NAVIGATION returns ${config.SECURE_UPDATE_FILTER_URL} when calling previousPage on ${config.UPDATE_INTERRUPT_CARD_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_INTERRUPT_CARD_URL].previousPage();
+  test(`NAVIGATION returns ${config.SECURE_UPDATE_FILTER_URL} when calling previousPage on ${config.UPDATE_ANY_TRUSTS_INVOLVED_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_ANY_TRUSTS_INVOLVED_URL].previousPage();
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
   });
 
@@ -212,5 +212,15 @@ describe("NAVIGATION utils", () => {
   test(`Navigation returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL}`, () => {
     const navigation = NAVIGATION[config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE} when calling previousPage on ${config.UPDATE_INTERRUPT_CARD_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_INTERRUPT_CARD_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_ANY_TRUSTS_INVOLVED_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_ANY_TRUSTS_INVOLVED_URL} when calling previousPage on ${config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_ANY_TRUSTS_INVOLVED_URL);
   });
 });

@@ -42,7 +42,8 @@ import {
   UK_SANCTIONS_DETAILS,
   YES_SANCTIONS_TEXT_THEY,
   NO_SANCTIONS_TEXT_THEY,
-  SANCTIONS_HINT_TEXT_THEY
+  SANCTIONS_HINT_TEXT_THEY,
+  TRUSTS_NOC_HEADING,
 } from '../__mocks__/text.mock';
 import {
   APPLICATION_DATA_MOCK,
@@ -99,6 +100,11 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
       const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_URL);
 
       expect(resp.status).toEqual(200);
@@ -115,6 +121,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(YES_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(NO_SANCTIONS_TEXT_THEY);
       expect(resp.text).toContain(SANCTIONS_HINT_TEXT_THEY);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
     });
   });
 

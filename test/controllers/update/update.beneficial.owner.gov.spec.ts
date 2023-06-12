@@ -37,7 +37,8 @@ import {
   MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 import { logger } from "../../../src/utils/logger";
 import {
@@ -99,6 +100,8 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
@@ -108,6 +111,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
     test("catch error when rendering the page", async () => {

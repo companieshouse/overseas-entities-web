@@ -12,7 +12,7 @@ import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual"
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { InputDate } from "model/data.types.model";
+import { EntityNumberKey, InputDate } from "../../model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey } from "../../model/date.model";
 
@@ -31,7 +31,8 @@ export const get = (req: Request, res: Response) => {
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     ...dataToReview,
     isBeneficialOwnersReview: true,
-    populateResidentialAddress: false
+    populateResidentialAddress: false,
+    entity_number: appData[EntityNumberKey],
   };
 
   // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario

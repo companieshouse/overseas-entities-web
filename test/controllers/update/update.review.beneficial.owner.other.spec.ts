@@ -23,7 +23,12 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 
 import request from "supertest";
 import app from "../../../src/app";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING,
+  TRUSTS_NOC_HEADING,
+} from "../../__mocks__/text.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { NextFunction } from "express";
 import { logger } from "../../../src/utils/logger";
@@ -59,6 +64,7 @@ describe(`Update review beneficial owner other`, () => {
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
     test("catch error when rendering the page", async () => {

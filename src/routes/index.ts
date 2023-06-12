@@ -316,8 +316,8 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
 router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   .all(
     authentication,
-    // companyAuthentication,
-    // navigation.hasOverseasEntity
+    companyAuthentication,
+    navigation.hasOverseasEntity
   )
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);

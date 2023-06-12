@@ -317,8 +317,12 @@ router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
 
-router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL)
-  .all(authentication)
+router.route(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
   .get(noChangeBeneficialOwnerStatement.get)
   .post(...validator.updateBeneficialOwnerStatements, checkValidations, noChangeBeneficialOwnerStatement.post);
 

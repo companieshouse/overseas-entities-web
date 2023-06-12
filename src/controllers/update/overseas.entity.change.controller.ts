@@ -29,17 +29,17 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     const session = req.session as Session;
     let redirectUrl: string;
     const appData: ApplicationData = getApplicationData(req.session);
-    const isMakingOeChange = req.body[NoChangeKey];
+    const noChangeStatement = req.body[NoChangeKey];
 
     if (appData.update){
-      appData.update.no_change = isMakingOeChange;
+      appData.update.no_change = noChangeStatement;
       setExtraData(session, appData);
     }
 
-    if (isMakingOeChange === "1"){
+    if (noChangeStatement === "1"){
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     } else {
-      redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL;
+      redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     }
     await saveAndContinue(req, session, false);
     return resp.redirect(redirectUrl);

@@ -49,7 +49,7 @@ describe("No change Get beneficial owner statement", () => {
   describe("GET tests", () => {
     test(`that ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} page is rendered`, async() => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL);
+      const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -61,17 +61,17 @@ describe("No change Get beneficial owner statement", () => {
 
     test("catch error when rendering the page", async () => {
       mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
-      const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL);
+      const resp = await request(app).get(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       expect(resp.status).toEqual(500);
     });
   });
 
   describe("POST tests", () => {
-    test(`redirects to ${config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE} page`, async () => {
+    test(`redirects to ${config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app)
-        .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENT_URL)
+        .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.status).toEqual(302);
@@ -80,7 +80,8 @@ describe("No change Get beneficial owner statement", () => {
     });
 
     test("renders the current page with error message", async () => {
-      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
@@ -91,7 +92,7 @@ describe("No change Get beneficial owner statement", () => {
     test("catch error when posting data", async () => {
       mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app)
-        .post(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
+        .post(config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL)
         .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

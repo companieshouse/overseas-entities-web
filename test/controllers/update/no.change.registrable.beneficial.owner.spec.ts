@@ -20,8 +20,9 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.model";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { ANY_MESSAGE_ERROR, RADIO_BUTTON_NO_SELECTED, RADIO_BUTTON_YES_SELECTED, SERVICE_UNAVAILABLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE } from "../../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, RADIO_BUTTON_NO_SELECTED, RADIO_BUTTON_YES_SELECTED, SERVICE_UNAVAILABLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE } from "../../__mocks__/text.mock";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -108,6 +109,15 @@ describe("No change registrable beneficial owner", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test("Test validation error is displayed when posting empty object", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app).post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_REGISTRABLE_BENEFICIAL_OWNER);
     });
 
     test("catch error when posting the page", async () => {

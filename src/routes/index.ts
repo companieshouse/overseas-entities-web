@@ -77,7 +77,7 @@ import {
   updateTrustsSubmitByPaper,
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
-  noChangeRegistrableBeneficialOwner
+  noChangeRegistrableBeneficialOwner,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -313,7 +313,11 @@ router.route(config.SECURE_UPDATE_FILTER_URL)
   .post(...validator.secureRegisterFilter, checkValidations, secureUpdateFilter.post);
 
 router.route(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    // companyAuthentication,
+    // navigation.hasOverseasEntity
+  )
   .get(doYouWantToMakeOeChange.get)
   .post(...validator.doYouWantToMakeOeChange, checkValidations, doYouWantToMakeOeChange.post);
 

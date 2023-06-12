@@ -81,10 +81,12 @@ describe("Overseas entity do you want to change your OE controller", () => {
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
-      expect(mockSetExtraData).toBeCalledWith(
-        undefined,
-        expect.objectContaining({
-          ...APPLICATION_DATA_MOCK
+      expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
+        {
+          update:
+                expect.objectContaining({
+                  no_change: "1"
+                })
         }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
@@ -101,10 +103,12 @@ describe("Overseas entity do you want to change your OE controller", () => {
         .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL);
-      expect(mockSetExtraData).toBeCalledWith(
-        undefined,
-        expect.objectContaining({
-          ...APPLICATION_DATA_MOCK
+      expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
+        {
+          update:
+                expect.objectContaining({
+                  no_change: "0"
+                })
         }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);

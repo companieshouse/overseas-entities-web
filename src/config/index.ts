@@ -113,7 +113,6 @@ export const UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE = "update-registrable-bene
 export const UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE = "continue-with-saved-filing";
 export const UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE = "do-you-want-to-make-oe-change";
 export const UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE = "no-change-registrable-beneficial-owner";
-export const UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE = "do-you-want-to-make-oe-change";
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE = "update-trusts-submit-by-paper";
 export const UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE = "update-no-change-beneficial-owner-statements";
 

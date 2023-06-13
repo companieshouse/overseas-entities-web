@@ -10,7 +10,7 @@ import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBenef
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
-    intialiseAppDataUpdate(appData);
+    initialiseBoAndMoUpdateAppData(appData);
     if (appData.update) {
       await retrieveBeneficialOwners(req, appData);
       await retrieveManagingOfficers(req, appData);
@@ -21,7 +21,7 @@ export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData
 
 const hasFetchedBoAndMoData = (appData: ApplicationData) => appData?.update?.bo_mo_data_fetched ?? false;
 
-const intialiseAppDataUpdate = (appData: ApplicationData) => {
+const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
   if (!appData.update) {
     appData.update = {};
   }

@@ -54,7 +54,7 @@ const trusteeNatureOfControlTypesExist = (bo: (BeneficialOwnerIndividual | Benef
 const hasTrustsInvolved = (appData: ApplicationData) => {
 
   if (!appData?.update){
-    return;
+    return false;
   }
 
   const beneficialOwnersIndividualOrCorporate = [
@@ -65,4 +65,6 @@ const hasTrustsInvolved = (appData: ApplicationData) => {
   if (beneficialOwnersIndividualOrCorporate){
     return beneficialOwnersIndividualOrCorporate.some(trusteeNatureOfControlTypesExist);
   }
+
+  return false;
 };

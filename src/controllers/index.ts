@@ -40,7 +40,7 @@ export * as paymentFailed from "./payment.failed.controller";
 export * as updateLanding from "./update/update.landing.controller";
 export * as secureUpdateFilter from "./update/secure.update.filter.controller";
 export * as doYouWantToMakeOeChange from "./update/overseas.entity.change.controller";
-export * as noChangeBeneficialOwnerStatement from "./update/update.overseas.entity.no.change.beneficial.owner.statement";
+export * as noChangeBeneficialOwnerStatement from "./update/update.overseas.entity.no.change.beneficial.owner.statement.controller";
 export * as noChangeRegistrableBeneficialOwner from "./update/update.overseas.entity.no.change.registrable.beneficial.owner.controller";
 export * as updateUsePaper from "./update/update.use.paper.controller";
 export * as updateInterruptCard from "./update/update.interrupt.card.controller";

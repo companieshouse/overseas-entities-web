@@ -18,7 +18,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
 
     if (noChangeBackLink){
       BACK_LINK = noChangeBackLink;
-      templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+      templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       noChangeFlag = true;
     } else {
       BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;

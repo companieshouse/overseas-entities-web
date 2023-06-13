@@ -81,21 +81,23 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   describe("GET tests", () => {
 
-    describe.skip("BOs and MOs to review", () => {
+    describe("BOs and MOs to review", () => {
       test.each([
-        ['review-beneficial-owner-individual', "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-        ['review-beneficial-owner-other', "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-        ['review-beneficial-owner-gov', "review_beneficial_owners_government_or_public_authority", BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-        ['review-individual-managing-officer', "review_managing_officers_individual", MANAGING_OFFICER_OBJECT_MOCK ],
-        ['review-managing-officer-corporate', "review_managing_officers_corporate", MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
-      ])(`redirects to %s review page`, async (reviewType, key, mockObject) => {
+        ['review-beneficial-owner-individual', "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BeneficialOwnerIndividualKey ],
+        ['review-beneficial-owner-other', "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, BeneficialOwnerOtherKey ],
+        ['review-beneficial-owner-gov', "review_beneficial_owners_government_or_public_authority", BENEFICIAL_OWNER_GOV_OBJECT_MOCK, BeneficialOwnerGovKey ],
+        ['review-individual-managing-officer', "review_managing_officers_individual", MANAGING_OFFICER_OBJECT_MOCK, ManagingOfficerKey ],
+        ['review-managing-officer-corporate', "review_managing_officers_corporate", MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, ManagingOfficerCorporateKey ]
+      ])(`redirects to %s review page`, async (reviewType, key, mockObject, appDataBoKey) => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[UpdateKey] = { [key]: [mockObject] };
+
         mockGetApplicationData.mockReturnValueOnce(appData);
 
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
         expect(resp.status).toEqual(302);
         expect(resp.text).toContain("Found. Redirecting to /update-an-overseas-entity/" + reviewType + "?index=0");
+        appData[appDataBoKey] = []; // clear popped review data as data propogates to further tests
       });
     });
 
@@ -104,6 +106,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       test(`render the update-beneficial-owner-type page with radios to add new BOs and MOs and no reviewed summary table`, async () => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[BeneficialOwnerStatementKey] = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
+
         mockGetApplicationData.mockReturnValueOnce(appData);
         const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
@@ -131,6 +134,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
           ...mockObject,
           ch_reference: '12345'
         };
+
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [objectWithRef];
 

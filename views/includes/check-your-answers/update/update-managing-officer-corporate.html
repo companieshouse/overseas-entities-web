@@ -1,0 +1,180 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set resignedOn = dateMacros.formatDate(moc.resigned_on["day"], moc.resigned_on["month"], moc.resigned_on["year"]) %}
+{% set mocFormattedPrincipalAddressHtml %}
+{% set address = moc.principal_address %}
+{% include "includes/display_address.html" %}
+{% endset %}
+
+{% set mocChangeServiceAddressHtml = "" %}
+{% set mocFormattedServiceAddressHtml %}
+{% if moc.is_service_address_same_as_principal_address == 1 %}
+  {% set mocChangeServiceAddressHtml = "#is_service_address_same_as_principal_address" %}
+    The correspondence address is the same as the principal or registered office address
+  {% else %}
+  {% set mocChangeServiceAddressHtml = "#service_address_property_name_number" %}
+  {% set address = moc.service_address %}
+  {% include "includes/display_address.html" %}
+{% endif %}
+{% endset %}
+
+{% set mocChangePublicregisterNameHtml = "" %}
+{% set mocFormattedPublicRegister %}
+{% if moc.is_on_register_in_country_formed_in == 1 %}
+  {% set mocChangePublicregisterNameHtml = "#public_register_name" %}
+  {{ moc.public_register_name }} / {{ moc.registration_number }}
+{% else %}
+  {% set mocChangePublicregisterNameHtml = "#is_on_register_in_country_formed_in" %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set rows = [] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Name"
+  },
+  value: {
+    text: moc.name
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Principal or registered office address"
+  },
+  value: {
+    html: mocFormattedPrincipalAddressHtml
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+{% set rows = (rows.push({
+  key: {
+    text: "Correspondence address"
+  },
+  value: {
+    html: mocFormattedServiceAddressHtml
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Legal form"
+  },
+  value: {
+    text: moc.legal_form
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Governing law"
+  },
+  value: {
+    html: moc.law_governed
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "On a public register in the country it was formed in"
+  },
+  value: {
+    html: mocFormattedPublicRegister
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+{% set rows = (rows.push({
+  key: {
+    text: "Role and responsibilities"
+  },
+  value: {
+    text: moc.role_and_responsibilities
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Contact full name"
+  },
+  value: {
+    html: moc.contact_full_name
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Contact email address"
+  },
+  value: {
+    html: moc.contact_email
+  },
+  actions: {
+    items: [undefined]
+  }
+}), rows) %}
+
+{% if resignedOn | length %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Are they still a managing officer?"
+    },
+    value: {
+        html: "No"
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Resigned on"
+    },
+    value: {
+        html: resignedOn
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+{% else %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Are they still a managing officer?"
+    },
+    value: {
+        html: "Yes"
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+{% endif %}
+
+<h3 class="govuk-heading-m">Corporate managing officer</h3>
+{{ govukSummaryList({
+   rows: rows
+}) }}

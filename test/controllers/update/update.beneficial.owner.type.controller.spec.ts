@@ -81,9 +81,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
   describe("GET tests", () => {
 
-    // Below describe when run, adds BOs & MOs to review which results in that data existing in futher tests
-    // causing them to fail
-
     describe.skip("BOs and MOs to review", () => {
       test.each([
         ['review-beneficial-owner-individual', "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],

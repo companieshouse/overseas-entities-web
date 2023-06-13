@@ -10,22 +10,24 @@ import { saveAndContinue } from "../utils/save.and.continue";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     let BACK_LINK: string;
+    let noChangeFlag: boolean = false;
 
     if (noChangeBackLink){
       BACK_LINK = noChangeBackLink;
+      noChangeFlag = true;
     } else {
       BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
     }
-
-    logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
       backLinkUrl: BACK_LINK,
       templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
-      noChangeFlag: true
+      noChangeFlag
     });
   } catch (error) {
     logger.errorRequest(req, error);

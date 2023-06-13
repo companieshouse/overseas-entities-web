@@ -5,7 +5,7 @@ import { ApplicationData } from "../model/application.model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 
-export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction) => {
+export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
@@ -14,7 +14,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
       templateName: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
       appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
-      noChangeFlag: true
+      noChangeFlag
     });
   } catch (error) {
     next(error);

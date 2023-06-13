@@ -9,9 +9,19 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
-    return res.render(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, {
-      backLinkUrl: config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
-      templateName: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+    let templateName: string;
+    let backLinkUrl: string;
+
+    if (noChangeFlag){
+      backLinkUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
+      templateName = config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE;
+    } else {
+      backLinkUrl = config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL;
+      templateName = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE;
+    }
+    return res.render(templateName, {
+      backLinkUrl: backLinkUrl,
+      templateName: templateName,
       appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
       noChangeFlag

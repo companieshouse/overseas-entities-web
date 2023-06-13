@@ -14,18 +14,21 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
 
     let BACK_LINK: string;
     let noChangeFlag: boolean = false;
+    let templateName: string;
 
     if (noChangeBackLink){
       BACK_LINK = noChangeBackLink;
+      templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
       noChangeFlag = true;
     } else {
       BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+      templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
 
     const appData: ApplicationData = getApplicationData(req.session);
-    return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
+    return res.render(templateName, {
       backLinkUrl: BACK_LINK,
-      templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+      templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
       noChangeFlag
     });

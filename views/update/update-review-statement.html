@@ -12,14 +12,47 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
-      <h1 class="govuk-heading-xl">Check your answers before sending your application (NOT LIVE)</h1>
+      <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+            },
+            value: {
+              text: appData.is_secure_register
+            },
+            actions: {}
+          },
+          {
+            key: {
+              text: "Date of the update statement"
+            },
+            value: {
+              text: appData.update.filing_date
+            },
+            actions: {}
+          },
+          {
+            key: {
+              text: "Do you need to make any changes to this overseas entity?"
+            },
+            value: {
+              text: appData.update.no_change
+            },
+            actions: {}
+          }
+        ]
+    }) }}
 
       {% include "includes/check-your-answers/presenter.html" %}
-      {% include "includes/check-your-answers/verification-checks.html" %}
+      <br>
+      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
       <br>
       {% include "includes/entity.html" %}
       <br>
-      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      
 
       {% set boTextDisplayed = false %}
       {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}

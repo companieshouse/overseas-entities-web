@@ -39,7 +39,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     if (noChangeStatement === "1"){
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     } else {
-      redirectUrl = config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL;
+      redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     }
     await saveAndContinue(req, session, false);
     return resp.redirect(redirectUrl);

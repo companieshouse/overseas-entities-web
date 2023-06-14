@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -16,11 +17,15 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, OVERSEAS_NAME_MOCK } from '../../__mocks__/session.mock';
-import { OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, PAYMENT_WITH_TRANSACTION_URL, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { NoChangeKey } from '../../../src/model/update.type.model';
+import { hasOverseasEntity } from '../../../src/middleware/navigation/update/has.overseas.entity.middleware';
+
+const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
+mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
@@ -92,7 +97,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to ${PAYMENT_WITH_TRANSACTION_URL} on NO selection`, async () => {
+    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on NO selection`, async () => {
       if (APPLICATION_DATA_MOCK.update){
         APPLICATION_DATA_MOCK.update.no_change = "0";
       }
@@ -102,7 +107,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL);
+      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
         {
           update:

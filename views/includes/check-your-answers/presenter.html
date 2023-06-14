@@ -5,7 +5,15 @@
   {% set nameFieldLabel = "Name" %}
   {% set emailFieldLabel = "Email" %}
 {% else %} 
-  {% set contactDetailsSubText = "Who can we contact about this update application?" %}
+  {% set contactDetailsSubText %}
+    {%if isStatement%}
+    Who can we contact about this update statement?
+    {%else%}
+    Who can we contact about this update application?
+    {%endif%}
+  {%endset%}
+
+  {# {% set contactDetailsSubText = isStatement ? "Who can we contact about this update statement?" : "Who can we contact about this update application?" %} #}
   {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %} 
   {% set presenterEmailChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Full Name" %}

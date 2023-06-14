@@ -59,6 +59,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
     nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
+  [config.UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL]: {
+    currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
+    previousPage: () => config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    nextPage: []
+  },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,

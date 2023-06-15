@@ -27,7 +27,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   getDataForReview(req, res, next, UPDATE_CHECK_YOUR_ANSWERS_PAGE, UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 };
 
-
 // export const get = (req: Request, res: Response, next: NextFunction) => {
 //   try {
 //     logger.debugRequest(req, `${req.method} ${req.route.path}`);

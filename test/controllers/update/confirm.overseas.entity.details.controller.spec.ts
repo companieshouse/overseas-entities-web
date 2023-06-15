@@ -25,7 +25,15 @@ import {
   missingDateOfCreationMock,
   testIncorporationCountry
 } from "../../__mocks__/update.entity.mocks";
-import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+  BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
+  UPDATE_OBJECT_MOCK
+} from "../../__mocks__/session.mock";
+import { UpdateKey } from "../../../src/model/update.type.model";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -42,9 +50,10 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 describe("Confirm company data", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReset();
   });
 
-  describe("Get confirm company profile", () => {
+  describe("Get confirm overseas entity details", () => {
     test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page`, async () => {
 
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
@@ -94,8 +103,8 @@ describe("Confirm company data", () => {
     });
   });
 
-  describe("Post confirm company profile", () => {
-    test(`redirects if no entity`, async () => {
+  describe("Post confirm overseas entity details", () => {
+    test(`redirects to overseas-entity-query page if no entity`, async () => {
       mockGetApplicationData.mockReturnValueOnce({});
 
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
@@ -104,12 +113,48 @@ describe("Confirm company data", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
     });
 
-    test(`redirect to ${config.UPDATE_FILING_DATE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    test(`redirect to update-filing-date if no BOs`, async () => {
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
       const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+
+    test.each([
+      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
+      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
+    ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
+      let appData = {};
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = {
+        ...UPDATE_OBJECT_MOCK,
+        [key]: [ mockObject ]
+      };
+
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
+    });
+
+    test.each([
+      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
+    ])(`redirect to update-trusts-submit-by-paper if %s that has nature of controls related to trusts`, async (_, key, mockObject) => {
+      let appData = {};
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = {
+        ...UPDATE_OBJECT_MOCK,
+        [key]: [ mockObject ]
+      };
+
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     });
 
     test('catch error when posting to the page', async () => {

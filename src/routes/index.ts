@@ -671,6 +671,15 @@ router.route(config.UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL)
   .get(updateReviewStatement.get);
 // .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
 
+router.route(config.UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateReviewStatement.get);
+// .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
+
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)
   .get(updateContinueSavedFiling.get)

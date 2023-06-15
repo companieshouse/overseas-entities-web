@@ -34,15 +34,17 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
     const appData: ApplicationData = getApplicationData(session);
 
     let isStatement: boolean = false;
+    overseasEntityHeading = OVERSEAS_ENTITY_SECTION_HEADING;
 
     if (noChangeFlag) {
       isStatement = true;
     } else {
       changeLinkUrl = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-      overseasEntityHeading = OVERSEAS_ENTITY_SECTION_HEADING;
       whoIsCompletingChangeLink = WHO_IS_MAKING_UPDATE_URL;
       isStatement;
     }
+
+    console.log(`App data is ${JSON.stringify(appData)}`);
 
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,

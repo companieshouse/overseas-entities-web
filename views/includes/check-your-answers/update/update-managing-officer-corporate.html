@@ -1,22 +1,8 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set resignedOn = dateMacros.formatDate(moc.resigned_on["day"], moc.resigned_on["month"], moc.resigned_on["year"]) %}
-{% set mocFormattedPrincipalAddressHtml %}
-{% set address = moc.principal_address %}
-{% include "includes/display_address.html" %}
-{% endset %}
-
-{% set mocChangeServiceAddressHtml = "" %}
-{% set mocFormattedServiceAddressHtml %}
-{% if moc.is_service_address_same_as_principal_address == 1 %}
-  {% set mocChangeServiceAddressHtml = "#is_service_address_same_as_principal_address" %}
-    The correspondence address is the same as the principal or registered office address
-  {% else %}
-  {% set mocChangeServiceAddressHtml = "#service_address_property_name_number" %}
-  {% set address = moc.service_address %}
-  {% include "includes/display_address.html" %}
-{% endif %}
-{% endset %}
+{% set moAddress = moc.principal_address %}
+{% set moSameAddresses = moc.is_service_address_same_as_principal_address %}
+{% set moServiceAddress = moc.service_address %}
 
 {% set mocChangePublicregisterNameHtml = "" %}
 {% set mocFormattedPublicRegister %}
@@ -43,28 +29,7 @@
   }
 }), rows) %}
 
-{% set rows = (rows.push({
-  key: {
-    text: "Principal or registered office address"
-  },
-  value: {
-    html: mocFormattedPrincipalAddressHtml
-  },
-  actions: {
-    items: [undefined]
-  }
-}), rows) %}
-{% set rows = (rows.push({
-  key: {
-    text: "Correspondence address"
-  },
-  value: {
-    html: mocFormattedServiceAddressHtml
-  },
-  actions: {
-    items: [undefined]
-  }
-}), rows) %}
+{% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
 
 {% set rows = (rows.push({
   key: {
@@ -137,7 +102,7 @@
   }
 }), rows) %}
 
-{% if resignedOn | length %}
+{% if moc.resigned_on | length %}
     {% set rows = (rows.push({
     key: {
         text: "Are they still a managing officer?"
@@ -149,6 +114,7 @@
         items: [ undefined ]
     }
     }), rows) %}
+    {% set resignedOn = dateMacros.formatDate(moc.resigned_on["day"], moc.resigned_on["month"], moc.resigned_on["year"]) %}
     {% set rows = (rows.push({
     key: {
         text: "Resigned on"

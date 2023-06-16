@@ -1,12 +1,10 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
 {% set moiDateOfBirth = dateMacros.formatDate("",moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
-{% set resignedOn = dateMacros.formatDate(moi.resigned_on["day"], moi.resigned_on["month"], moi.resigned_on["year"]) %}
-
-{% set moiFormattedResidentialAddressHtml %}
-  {% set address = moi.usual_residential_address %}
-  {% include "includes/display_address.html" %}
-{% endset %}
+{% set managing_officer_individual = true %}
+{% set moAddress = moi.usual_residential_address %}
+{% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
+{% set moServiceAddress = moi.service_address %}
 
 {% set moiChangeFormerNamesHtml = "" %}
 {% if moi.has_former_names == 1 %}
@@ -15,19 +13,7 @@
   {% set moiChangeFormerNamesHtml = "#has_former_names" %}
 {% endif %}
 
-{% set moiChangeServiceAddressHtml = "" %}
-{% set moiFormattedServiceAddressHtml %}
-  {% if moi.is_service_address_same_as_usual_residential_address == 1 %}
-    {% set moiChangeServiceAddressHtml = "#is_service_address_same_as_usual_residential_address" %}
-    The correspondence address is the same as the home address
-  {% else %}
-    {% set moiChangeServiceAddressHtml = "#service_address_property_name_number" %}
-    {% set address = moi.service_address %}
-    {% include "includes/display_address.html" %}
-  {% endif %}
-{% endset %}
-
-{% set rows=[] %}
+{% set rows= [] %}
 
 {% set rows = (rows.push({
   key: {
@@ -104,29 +90,7 @@
   }), rows) %}
 {% endif %}
 
-{% set rows = (rows.push({
-  key: {
-    text: "Home address"
-  },
-  value: {
-    html: moiFormattedResidentialAddressHtml
-  },
-  actions: {
-    items: [ undefined ]
-  }
-}), rows) %}
-
-{% set rows = (rows.push({
-  key: {
-    text: "Correspondence address"
-  },
-  value: {
-    html: moiFormattedServiceAddressHtml
-  },
-  actions: {
-    items: [ undefined ]
-  }
-}), rows) %}
+{% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
 
 {% set rows = (rows.push({
   key: {
@@ -151,7 +115,7 @@
     items: [ undefined ]
   }
 }), rows) %}
-{% if resignedOn | length %}
+{% if moi.resigned_on | length %}
     {% set rows = (rows.push({
     key: {
         text: "Are they still a managing officer?"
@@ -163,6 +127,7 @@
         items: [ undefined ]
     }
     }), rows) %}
+    {% set resignedOn = dateMacros.formatDate(moi.resigned_on["day"], moi.resigned_on["month"], moi.resigned_on["year"]) %}
     {% set rows = (rows.push({
     key: {
         text: "Resigned on"

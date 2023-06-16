@@ -5,6 +5,7 @@
 {% set moAddress = moi.usual_residential_address %}
 {% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
 {% set moServiceAddress = moi.service_address %}
+{% set resigned_on = moi.resigned_on %}
 
 {% set moiChangeFormerNamesHtml = "" %}
 {% if moi.has_former_names == 1 %}
@@ -115,44 +116,8 @@
     items: [ undefined ]
   }
 }), rows) %}
-{% if moi.resigned_on | length %}
-    {% set rows = (rows.push({
-    key: {
-        text: "Are they still a managing officer?"
-    },
-    value: {
-        html: "No"
-    },
-    actions: {
-        items: [ undefined ]
-    }
-    }), rows) %}
-    {% set resignedOn = dateMacros.formatDate(moi.resigned_on["day"], moi.resigned_on["month"], moi.resigned_on["year"]) %}
-    {% set rows = (rows.push({
-    key: {
-        text: "Resigned on"
-    },
-    value: {
-        html: resignedOn
-    },
-    actions: {
-        items: [ undefined ]
-    }
-    }), rows) %}
-{% else %}
-    {% set rows = (rows.push({
-    key: {
-        text: "Are they still a managing officer?"
-    },
-    value: {
-        html: "Yes"
-    },
-    actions: {
-        items: [ undefined ]
-    }
-    }), rows) %}
-{% endif %}
 
+{% include "includes/check-your-answers/update/managing-officers-resigned-on.html" %}
 
 <h3 class="govuk-heading-m">Individual managing officer</h3>
 {{ govukSummaryList({

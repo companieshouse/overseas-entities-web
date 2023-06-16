@@ -1,0 +1,37 @@
+{% if resigned_on | length %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Are they still a managing officer?"
+    },
+    value: {
+        html: "No"
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+    {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Resigned on"
+    },
+    value: {
+        html: resignedOn
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+{% else %}
+    {% set rows = (rows.push({
+    key: {
+        text: "Are they still a managing officer?"
+    },
+    value: {
+        html: "Yes"
+    },
+    actions: {
+        items: [ undefined ]
+    }
+    }), rows) %}
+{% endif %}

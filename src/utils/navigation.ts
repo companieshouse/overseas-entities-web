@@ -47,7 +47,7 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_FILING_DATE_URL]: {
     currentPage: config.UPDATE_FILING_DATE_PAGE,
     previousPage: () => config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
-    nextPage: [config.UPDATE_PRESENTER_PAGE]
+    nextPage: [config.TRUST_INFO_URL]  // UPDATE_PRESENTER_PAGE]
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,

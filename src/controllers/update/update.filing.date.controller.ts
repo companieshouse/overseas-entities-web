@@ -11,6 +11,8 @@ import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/da
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
 
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
+
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -35,8 +37,9 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
 
+    const appData: ApplicationData = getApplicationData(session);
+
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {
-      const appData: ApplicationData = getApplicationData(session);
       if (!appData[Transactionkey]) {
         const transactionID = await postTransaction(req, session);
         appData[Transactionkey] = transactionID;
@@ -48,7 +51,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       setExtraData(req.session, appData);
       await updateOverseasEntity(req, session);
     }
-    return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
+    return res.redirect(getTrustLandingUrl(appData));  //OVERSEAS_ENTITY_PRESENTER_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

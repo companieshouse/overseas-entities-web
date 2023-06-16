@@ -7,10 +7,10 @@ import { checkBOsOrMOsDetailsEntered, NavigationErrorMessage } from './check.con
 
 export const hasBOsOrMOs = (req: Request, res: Response, next: NextFunction): void => {
   try {
-    if ( !checkBOsOrMOsDetailsEntered(getApplicationData(req.session)) ) {
-      logger.infoRequest(req, NavigationErrorMessage);
-      return res.redirect(SOLD_LAND_FILTER_URL);
-    }
+    // if ( !checkBOsOrMOsDetailsEntered(getApplicationData(req.session)) ) {
+    //   logger.infoRequest(req, NavigationErrorMessage);
+    //   return res.redirect(SOLD_LAND_FILTER_URL);
+    // }
     next();
   } catch (err) {
     next(err);

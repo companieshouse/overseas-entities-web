@@ -14,6 +14,6 @@ export const trustDetails = [
   body("hasAllInfo")
     .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO),
 
-  body("beneficialOwnersIds")
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS)
+  // body("beneficialOwnersIds")
+  //   .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS)
 ];

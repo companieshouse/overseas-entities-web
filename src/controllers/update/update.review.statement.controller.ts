@@ -1,11 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-// import { logger } from "../../utils/logger";
-// import { Session } from "@companieshouse/node-session-handler";
-
-// import { ApplicationData } from "../../model";
-// import { getApplicationData } from "../../utils/application.data";
-
 import {
   UPDATE_REVIEW_STATEMENT_PAGE,
   // OVERSEAS_ENTITY_SECTION_HEADING,

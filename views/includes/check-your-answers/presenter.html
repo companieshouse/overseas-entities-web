@@ -4,56 +4,63 @@
   {% set presenterEmailChangeLink = OE_CONFIGS.PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Name" %}
   {% set emailFieldLabel = "Email" %}
+  {% set nameChangeText = "Full name - Who can we contact about this application" %}
+  {% set emailChangeText = "Email address - Who can we contact about this application" %}
 {% else %} 
   {% set contactDetailsSubText %}
-    {%if isStatement%}
+    {% if pageParams.isStatement %}
     Who can we contact about this update statement?
     {%else%}
     Who can we contact about this update application?
     {%endif%}
   {%endset%}
-
-  {# {% set contactDetailsSubText = isStatement ? "Who can we contact about this update statement?" : "Who can we contact about this update application?" %} #}
   {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %} 
   {% set presenterEmailChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_EMAIL %}
   {% set nameFieldLabel = "Full Name" %}
   {% set emailFieldLabel = "Email address" %}
+  {% if pageParams.isStatement %}
+    {% set nameChangeText = "Full name - Who can we contact about this statement" %}
+    {% set emailChangeText = "Email address - Who can we contact about this statement" %}
+  {% else %}
+    {% set nameChangeText = "Full name - Who can we contact about this application" %}
+    {% set emailChangeText = "Email address - Who can we contact about this application" %}
+  {% endif %}
 {% endif %}
 
 <h2 class="govuk-heading-l">Contact details</h2>
 <h3 class="govuk-heading-m">{{ contactDetailsSubText }}</h3>
 
 {{ govukSummaryList({
-    rows: [
-      {
-        key: {
-          text: nameFieldLabel
-        },
-        value: {
-          text: appData.presenter.full_name
-        },
-        actions: {
-          items: [ CREATE_CHANGE_LINK(
-            presenterNameChangeLink,
-            "Full name - who can we contact about this application",
-            "change-presenter-name-button"
-          ) ]
-        }
+  rows: [
+    {
+      key: {
+        text: nameFieldLabel
       },
-      {
-        key: {
-          text: emailFieldLabel
-        },
-        value: {
-          text: appData.presenter.email
-        },
-        actions: {
-          items: [ CREATE_CHANGE_LINK(
-            presenterEmailChangeLink,
-            "Email address - who can we contact about this application",
-            "change-presenter-email-button"
-          ) ]
-        }
+      value: {
+        text: appData.presenter.full_name
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          presenterNameChangeLink,
+          nameChangeText,
+          "change-presenter-name-button"
+        ) ]
       }
-    ]
+    },
+    {
+      key: {
+        text: emailFieldLabel
+      },
+      value: {
+        text: appData.presenter.email
+      },
+      actions: {
+        items: [ CREATE_CHANGE_LINK(
+          presenterEmailChangeLink,
+          emailChangeText,
+          "change-presenter-email-button"
+        ) ]
+      }
+    }
+  ]
 }) }}

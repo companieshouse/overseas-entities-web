@@ -36,9 +36,39 @@
 
 {% set isEmailPrivate %}
     {% if not appData.entity.email and pageParams.isStatement %}
-      CANNOT BE DISPLAYED
+      <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+    {% else %}
+      appData.entity.email
     {% endif %}
 {% endset %}
+
+{% if pageParams.isStatement %}
+  {% set isNoChangeData = 
+    {
+      key: {
+        text: "Jurisdiction"
+      },
+      value: {
+        text: appData.public_register_jurisdiction
+      }
+    }
+  %}
+  {% set registrationNumber = {
+    key: {
+      text: "Registration number"
+    },
+    value: {
+      text: appData.registration_number
+    },
+    actions: {
+      items: [CREATE_CHANGE_LINK(
+      )]
+      }
+    }
+  %}
+{% endif %}
+
+
 <h2 class="govuk-heading-l">{{ overseasEntityHeading }}</h2>
 
 {{ govukSummaryList({
@@ -104,7 +134,7 @@
           text: "Email address at the overseas entity should we send communications to"
         },
         value: {
-          text: isEmailPrivate if not appData.entity.email else appData.entity.email
+          html: isEmailPrivate
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
@@ -158,6 +188,7 @@
             "change-entity-public-register-button"
           )]
         }
-      }
+      },
+      isNoChangeData
     ]
 }) }}

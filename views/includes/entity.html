@@ -34,6 +34,11 @@
   %}
 {% endif %}
 
+{% set isEmailPrivate %}
+    {% if not appData.entity.email and pageParams.isStatement %}
+      CANNOT BE DISPLAYED
+    {% endif %}
+{% endset %}
 <h2 class="govuk-heading-l">{{ overseasEntityHeading }}</h2>
 
 {{ govukSummaryList({
@@ -99,7 +104,7 @@
           text: "Email address at the overseas entity should we send communications to"
         },
         value: {
-          text: appData.entity.email
+          text: isEmailPrivate if not appData.entity.email else appData.entity.email
         },
         actions: {
           items: [CREATE_CHANGE_LINK(

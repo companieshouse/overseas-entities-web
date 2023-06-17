@@ -9,6 +9,8 @@ import { EntityNumberKey } from "../../model/data.types.model";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.profile.mapper.to.overseas.entity";
 import { mapInputDate } from "../../utils/update/mapper.utils";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -32,29 +34,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     const entityNumber = req.body[EntityNumberKey];
     const companyProfile = await getCompanyProfile(req, entityNumber);
-    if (!companyProfile) {
-      const errors = createEntityNumberError(entityNumber);
-      return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
-        backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
-        templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
-        [EntityNumberKey]: entityNumber,
-        errors
-      });
-    } else {
-      const appData: ApplicationData = getApplicationData(req.session);
-      if (appData.entity_number !== entityNumber) {
-        resetEntityUpdate(appData);
-        appData.entity_name = companyProfile.companyName;
-        appData.entity_number = entityNumber;
-        appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
-        if (appData.update) {
-          appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
-        }
 
-        setExtraData(req.session, appData);
-      }
-      return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+    if (!companyProfile) {
+      return renderGetPageWithError(res, entityNumber);
     }
+
+    const appData: ApplicationData = getApplicationData(req.session);
+    if (appData.entity_number !== entityNumber) {
+      await addOeToApplicationData(req, appData, entityNumber, companyProfile);
+    }
+
+    return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
@@ -69,3 +59,26 @@ function createEntityNumberError(entityNumber: string): any {
   return errors;
 }
 
+const renderGetPageWithError = (res: Response, entityNumber: any) => {
+  const errors = createEntityNumberError(entityNumber);
+  return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
+    backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
+    templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+    [EntityNumberKey]: entityNumber,
+    errors
+  });
+};
+
+const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile) => {
+  resetEntityUpdate(appData);
+  appData.entity_name = companyProfile.companyName;
+  appData.entity_number = entityNumber;
+  appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
+  if (appData.update) {
+    appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
+  }
+
+  await retrieveBoAndMoData(req, appData);
+
+  setExtraData(req.session, appData);
+};

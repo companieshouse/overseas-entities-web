@@ -46,7 +46,7 @@ export * as noChangeRegistrableBeneficialOwner from "./update/update.overseas.en
 export * as updateUsePaper from "./update/update.use.paper.controller";
 export * as updateInterruptCard from "./update/update.interrupt.card.controller";
 export * as overseasEntityQuery from "./update/overseas.entity.query.controller";
-export * as confirmOverseasEntityDetails from "./update/company.profile.controller";
+export * as confirmOverseasEntityDetails from "./update/confirm.overseas.entity.details.controller";
 export * as overseasEntityPresenter from "./update/overseas.entity.presenter.controller";
 export * as whoIsMakingUpdate from "./update/who.is.making.update.controller";
 export * as updateDueDiligence from "./update/due.diligence.controller";

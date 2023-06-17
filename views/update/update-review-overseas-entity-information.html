@@ -15,13 +15,9 @@
   <div class="govuk-grid-column-two-thirds">
     <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
     <h1 class="govuk-heading-xl">You're about to review overseas entity information</h1>
+    <p class="govuk-body">We'll show you the information we hold about the overseas entity.</p>
+    <p class="govuk-body govuk-!-margin-bottom-7">You'll need to check the information is correct, and update it if needed.</p>
     <form method="post">
-      <p class="govuk-body">We'll show you the information we hold about the overseas entity.</p>
-      <p class="govuk-body">You'll need to:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>check the information is correct, and update it if needed</li>
-        <li>enter the overseas entity's email address</li>
-      </ul>
       {% include "includes/continue-button.html" %}
     </form>
   </div>

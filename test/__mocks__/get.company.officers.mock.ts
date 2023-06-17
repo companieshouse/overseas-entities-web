@@ -2,10 +2,52 @@ import { ApiErrorResponse, ApiResponse } from "@companieshouse/api-sdk-node/dist
 import { CompanyOfficers } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
+const MO_MOCK = {
+  "address": {
+    "region": "Gloucestershire",
+    "postalCode": "GL7 7BX",
+    "locality": "Cirencester",
+    "addressLine2": "North Cerney",
+    "addressLine1": "Cerney House",
+    "country": "England",
+    "premises": "Samron House"
+  },
+  "appointedOn": "2023-01-01",
+  "links": {
+    "self": "/company/OE111129/officers",
+    "officer": {
+      "appointments": "/officers/secretary1/appointments"
+    }
+  },
+  "name": "Dr MO Individual",
+  "officerRole": "managing-officer"
+};
+
+const MO_CORPORATE_MOCK = {
+  "address": {
+    "region": "Gloucestershire",
+    "postalCode": "GL7 7BX",
+    "locality": "Cirencester",
+    "addressLine2": "North Cerney",
+    "addressLine1": "Cerney House",
+    "country": "England",
+    "premises": "Samron House"
+  },
+  "appointedOn": "2023-01-01",
+  "links": {
+    "self": "/company/OE111129/officers",
+    "officer": {
+      "appointments": "/officers/secretary1/appointments"
+    }
+  },
+  "name": "Rev MO Corporate",
+  "officerRole": "corporate-managing-officer"
+};
+
 export const MOCK_GET_COMPANY_OFFICERS: CompanyOfficers = {
   "inactiveCount": '0',
   "links": {
-    "self": "/company/OE111129/officers"
+    "self": "/company/OE111129/officers",
   },
   "kind": "officer-list",
   "itemsPerPage": '35',
@@ -13,25 +55,8 @@ export const MOCK_GET_COMPANY_OFFICERS: CompanyOfficers = {
   "activeCount": '2',
   "startIndex": '0',
   "items": [
-    {
-      "address": {
-        "region": "Gloucestershire",
-        "postalCode": "GL7 7BX",
-        "locality": "Cirencester",
-        "addressLine2": "North Cerney",
-        "addressLine1": "Cerney House",
-        "country": "England",
-        "premises": "Samron House"
-      },
-      "appointedOn": "2023-01-01",
-      "links": {
-        "officer": {
-          "appointments": "/officers/secretary1/appointments"
-        }
-      },
-      "name": "JONES, Tim Bill",
-      "officerRole": "managing-officer"
-    }
+    MO_MOCK,
+    MO_CORPORATE_MOCK
   ],
   "resignedCount": '0',
   "totalResults": '2'

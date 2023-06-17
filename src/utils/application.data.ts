@@ -15,6 +15,8 @@ import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../model/managing.officer.model';
 import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
+import { OverseasEntityExtraDetails } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { EntityKey } from '../model/entity.model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -59,6 +61,13 @@ export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
 
 export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
+};
+
+export const addPrivateOverseasEntityDetailsToAppData = (session: Session | undefined, appData: ApplicationData, privateDetails: OverseasEntityExtraDetails) => {
+  if (appData[EntityKey]) {
+    appData[EntityKey].email = privateDetails.email_address;
+  }
+  setExtraData(session, appData);
 };
 
 export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: string) => {

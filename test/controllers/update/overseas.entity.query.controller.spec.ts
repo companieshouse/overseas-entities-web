@@ -5,6 +5,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
+jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fetch");
 
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -15,7 +16,6 @@ import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-
 import {
   ANY_MESSAGE_ERROR,
   PAGE_TITLE_ERROR,
@@ -25,8 +25,9 @@ import {
 import { NextFunction } from "express";
 import { getCompanyProfile } from "../../../src/service/company.profile.service";
 import { mapCompanyProfileToOverseasEntity } from "../../../src/utils/update/company.profile.mapper.to.overseas.entity";
-
 import { companyProfileQueryMock } from "../../__mocks__/update.entity.mocks";
+import { retrieveBoAndMoData } from "../../../src/utils/update/beneficial_owners_managing_officers_data_fetch";
+import { ApplicationData } from "../../../src/model";
 
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
@@ -42,6 +43,8 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockMapCompanyProfileToOverseasEntity = mapCompanyProfileToOverseasEntity as jest.Mock;
+const mockRetrieveBoAndMoData = retrieveBoAndMoData as jest.Mock;
+mockRetrieveBoAndMoData.mockImplementation((req: Request, appData: ApplicationData) => appData.update = { bo_mo_data_fetched: true } );
 
 describe("OVERSEAS ENTITY QUERY controller", () => {
 
@@ -112,6 +115,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
         .post(config.OVERSEAS_ENTITY_QUERY_URL)
         .send({ entity_number: 'OE111129' });
       expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });

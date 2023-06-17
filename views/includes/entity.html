@@ -37,19 +37,23 @@
 {% set isEmailPrivate %}
     {% if not appData.entity.email and pageParams.isStatement %}
       <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
-    {% else %}
-      appData.entity.email
+    {% elif appData.entity.email %}
+      {{ appData.entity.email }}
     {% endif %}
 {% endset %}
 
 {% if pageParams.isStatement %}
-  {% set isNoChangeData = 
+  {% set jurisdiction = 
     {
       key: {
         text: "Jurisdiction"
       },
       value: {
-        text: appData.public_register_jurisdiction
+        text: appData.entity.public_register_jurisdiction
+      },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+        )]
       }
     }
   %}
@@ -58,7 +62,7 @@
       text: "Registration number"
     },
     value: {
-      text: appData.registration_number
+      text: appData.entity.registration_number
     },
     actions: {
       items: [CREATE_CHANGE_LINK(
@@ -189,6 +193,6 @@
           )]
         }
       },
-      isNoChangeData
+      jurisdiction, registrationNumber
     ]
 }) }}

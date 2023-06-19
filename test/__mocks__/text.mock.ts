@@ -222,5 +222,5 @@ export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to mak
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING = "You'll need to file an update statement using the paper form";
 export const UPDATE_ANY_TRUSTS_INVOLVED_HEADING = "Are there any trusts involved in this overseas entity?";
 export const NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE = "Review the information before submitting this update statement";
-export const NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT= "Who can we contact about this update statement?";
+export const NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT = "Who can we contact about this update statement?";
 export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT = "Has the overseas entity identified any registrable beneficial owners?";

@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import {
   UPDATE_REVIEW_STATEMENT_PAGE,
-  // OVERSEAS_ENTITY_SECTION_HEADING,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL
 } from "../../config";
 import { getDataForReview, postDataForReview } from "../../utils/check.your.answers";

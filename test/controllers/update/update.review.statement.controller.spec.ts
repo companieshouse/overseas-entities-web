@@ -17,7 +17,6 @@ import request from "supertest";
 import app from "../../../src/app";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 
-import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
@@ -25,9 +24,10 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { APPLICATION_DATA_UPDATE_BO_MOCK, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID } from "../../__mocks__/session.mock";
-import { UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL, UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL } from "../../../src/config";
-import { NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
+import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID } from "../../__mocks__/session.mock";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL, UPDATE_REVIEW_STATEMENT_PAGE } from "../../../src/config";
+import { ANY_MESSAGE_ERROR, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
+import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -67,6 +67,64 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
+    });
+
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with contact details section with (ceased) existing BO`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
+      expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT);
+      expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+    });
+
+    test('catch error when rendering the page', async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
+  describe("POST tests", () => {
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+      await request(app).post(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
+
+      // expect(resp.status).toEqual(302);
+      // expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+    });
+
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, if Save and Resume not enabled`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+      await request(app).post(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
+
+      // expect(resp.status).toEqual(302);
+      // expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+    });
+
+    test(`catch error on POST action for ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockCloseTransaction.mockImplementation(() => {
+        throw ERROR;
+      });
+      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

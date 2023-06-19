@@ -181,7 +181,7 @@ export enum ErrorMessages {
   SELECT_IF_STILL_BENEFICIAL_OWNER = "Select yes if they are still a registrable beneficial owner",
   SELECT_IF_STILL_MANAGING_OFFICER = "Select yes if they are still a managing officer",
   SELECT_IF_ANY_TRUSTS_INVOLVED = "Select yes if there are any trusts involved in this overseas entity",
-  SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select ‘yes’ if you need to make any changes to this overseas entity",
+  SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

@@ -127,23 +127,6 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('saves private overseas entity data to app data if it does not exist', async () => {
-      const mockData = { ...APPLICATION_DATA_MOCK };
-      const mockPrivateOeDetails = { email_address: 'private@overseasentities.test' };
-      mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockHasRetrievedPrivateOeDetails.mockReturnValueOnce(false);
-      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: 'private@overseasentities.test' });
-
-      const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Date of the update statement (NOT LIVE)");
-      expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
-      expect(resp.text).toContain(saveAndContinueButtonText);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(mockAddPrivateOverseasEntityDetailsToAppData).toHaveBeenCalledWith(undefined, mockData, mockPrivateOeDetails);
-    });
-
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);

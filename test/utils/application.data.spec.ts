@@ -13,7 +13,8 @@ import {
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
   findBoOrMo,
-  checkGivenBoOrMoDetailsExist
+  checkGivenBoOrMoDetailsExist,
+  addPrivateOverseasEntityDetailsToAppData,
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -340,5 +341,25 @@ describe("Application data utils", () => {
     req.session = session;
     const bo: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
     expect(bo).toBeUndefined;
+  });
+
+  test('addPrivateOverseasEntityDetailsToAppData should store the private details into the session', () => {
+    const appData = { entity: {} };
+    const session = getSessionRequestWithExtraData(appData);
+
+    addPrivateOverseasEntityDetailsToAppData(session, appData, { email_address: 'private@overseasentities.test' });
+
+    const resultAppData = getApplicationData(session);
+    expect(resultAppData.entity?.email).toBe('private@overseasentities.test');
+  });
+
+  test('addPrivateOverseasEntityDetailsToAppData should leave appData unchanged if no entity present in appData', () => {
+    const appData = { entity_number: 'OE123444' };
+    const session = getSessionRequestWithExtraData(appData);
+
+    addPrivateOverseasEntityDetailsToAppData(session, appData, { email_address: 'private@overseasentities.test' });
+
+    const resultAppData = getApplicationData(session);
+    expect(resultAppData).toEqual(appData);
   });
 });

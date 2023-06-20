@@ -20,7 +20,7 @@ import {
   ServiceAddressKey,
   ServiceAddressKeys
 } from "../../model/address.model";
-import { AddressKeys } from "../../model/data.types.model";
+import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -41,7 +41,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
       ...dataToReview,
       ...principalAddress,
-      ...serviceAddress
+      ...serviceAddress,
+      entity_number: appData[EntityNumberKey],
     };
 
     if (CeasedDateKey in dataToReview) {

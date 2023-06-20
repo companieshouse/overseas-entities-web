@@ -1,0 +1,45 @@
+{% if managing_officer_individual %}
+    {% set residentialOrPrincipalAddressText = "Home address" %}
+    {% set sameAddressText = "The correspondence address is the same as the home address" %}
+{% else %}
+    {% set residentialOrPrincipalAddressText = "Principal or registered office address" %}
+    {% set sameAddressText = "The correspondence address is the same as the principal or registered office address" %}
+{% endif %}
+
+{% set moFormattedResidentialOrPrincipalAddressHtml %}
+  {% set address = moAddress %}
+  {% include "includes/display_address.html" %}
+{% endset %}
+
+{% set moFormattedServiceAddressHtml %}
+    {% if moSameAddresses == 1 %}
+       {{ sameAddressText }}
+    {% else %}  
+        {% set address = moServiceAddress %}
+        {% include "includes/display_address.html" %}
+    {% endif %}
+{% endset %}
+
+{% set rows = (rows.push({
+    key: {
+      text: residentialOrPrincipalAddressText
+    },
+    value: {
+      html: moFormattedResidentialOrPrincipalAddressHtml
+    },
+    actions: {
+      items: [ undefined ]
+    }
+  }), rows) %}
+
+{% set rows = (rows.push({
+    key: {
+      text: "Correspondence address"
+    },
+    value: {
+      html: moFormattedServiceAddressHtml
+    },
+    actions: {
+      items: [ undefined ]
+    }
+}), rows) %}

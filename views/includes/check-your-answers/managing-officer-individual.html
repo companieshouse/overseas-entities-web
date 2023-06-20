@@ -47,7 +47,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - first name",
       "change-individual-managing-officer-first-name-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -63,7 +63,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.LAST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - last name",
       "change-individual-managing-officer-last-name-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -79,7 +79,7 @@
       changeLinkUrl + "/" + moi.id + moiChangeFormerNamesHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names",
       "change-individual-managing-officer-former-names-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -95,7 +95,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - date of birth",
       "change-individual-managing-officer-date-of-birth-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -111,7 +111,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.NATIONALITY,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - nationality",
       "change-individual-managing-officer-nationality-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -128,7 +128,7 @@
         changeLinkUrl + "/" + moi.id + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual managing officer " + moi.first_name + " " + moi.last_name + " - second_nationality",
         "change-individual-managing-officer-second-nationality-button"
-      ) ]
+      ) if not pageParams.isStatement ]
     }
   }), rows) %}
 {% endif %}
@@ -145,7 +145,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - home address",
       "change-individual-managing-officer-residential-address-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -161,7 +161,7 @@
       changeLinkUrl + "/" + moi.id + moiChangeServiceAddressHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - correspondence address",
       "change-individual-managing-officer-correspondence-address-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -177,7 +177,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.OCCUPATION,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - occupation",
       "change-individual-managing-officer-occupation-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 
@@ -193,7 +193,7 @@
       changeLinkUrl + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - role and responsibilities",
       "change-individual-managing-officer-role-and-responsibilities-button"
-    ) ]
+    ) if not pageParams.isStatement ]
   }
 }), rows) %}
 

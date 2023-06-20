@@ -30,16 +30,16 @@
           },
           items: [
             {
-              value: "1",
+              value: "0",
               text: "The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone</strong> has become or ceased to be a
               registrable beneficial owner during the update period." | safe,
-              checked: registrable_beneficial_owner == 1
+              checked: registrable_beneficial_owner == 0
             },
             {
-              value: "0",
+              value: "1",
               text: "The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person</strong> has become or
               ceased to be a registrable beneficial owner during the update period." | safe,
-              checked: registrable_beneficial_owner == 0
+              checked: registrable_beneficial_owner == 1
             }
           ]
           }) }}

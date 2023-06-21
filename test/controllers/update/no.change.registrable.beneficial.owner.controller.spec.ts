@@ -11,7 +11,7 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import app from "../../../src/app";
 
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL } from "../../../src/config";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL, UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL } from "../../../src/config";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE } from "../../__mocks__/session.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -105,6 +105,7 @@ describe("No change registrable beneficial owner", () => {
         .send({ [RegistrableBeneficialOwnerKey]: "1" });
 
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
@@ -112,10 +113,10 @@ describe("No change registrable beneficial owner", () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.No });
+        .send({ [RegistrableBeneficialOwnerKey]: "0" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

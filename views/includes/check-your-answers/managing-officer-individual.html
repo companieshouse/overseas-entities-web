@@ -1,10 +1,20 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set moiDateOfBirth = dateMacros.formatDate(moi.date_of_birth["day"], moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
+{% set moiDateOfBirth %}
+  {% if moi.date_of_birth and pageParams.isStatement %}
+    {{ dateMacros.formatDate("", moi.date_of_birth["month"], moi.date_of_birth["year"]) }}
+  {% elif moi.date_of_birth %}
+    {{ dateMacros.formatDate(moi.date_of_birth["day"], moi.date_of_birth["month"], moi.date_of_birth["year"]) }}
+  {% endif %}
+{% endset %}
 
 {% set moiFormattedResidentialAddressHtml %}
+  {% if not moi.usual_residential_address and pageParams.isStatement %}
+      <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+  {% elif moi.usual_residential_address %}
   {% set address = moi.usual_residential_address %}
   {% include "includes/display_address.html" %}
+  {% endif %}
 {% endset %}
 
 {% set moiChangeFormerNamesHtml = "" %}

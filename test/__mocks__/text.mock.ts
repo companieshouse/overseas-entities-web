@@ -225,3 +225,4 @@ export const NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE = "Review the information bef
 export const NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT = "Who can we contact about this update statement?";
 export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT = "Has the overseas entity identified any registrable beneficial owners?";
 export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
+export const BENEFICIAL_OWNER_HEADING = "Beneficial owners";

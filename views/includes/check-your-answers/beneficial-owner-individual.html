@@ -76,7 +76,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
       "Individual beneficial owner " + boiFullName + " - first name",
       "change-individual-beneficial-owner-first-name-button"
-   ) if pageParams.isRegistration ]
+   ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -92,7 +92,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.LAST_NAME,
       "Individual beneficial owner " + boiFullName + " - last name",
       "change-individual-beneficial-owner-last-name-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -121,7 +121,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual beneficial owner " + boiFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 {% endif %}
@@ -138,7 +138,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.NATIONALITY,
       "Individual beneficial owner " + boiFullName + " - nationality",
       "change-individual-beneficial-owner-nationality-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -155,7 +155,7 @@
         changeLinkUrl + "/" + boi.id + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual beneficial owner " + boiFullName + " - second_nationality",
         "change-individual-beneficial-owner-second-nationality-button"
-      ) if pageParams.isRegistration ]
+      ) if not pageParams.isNoChangeJourney ]
     }
   }), rows) %}
 {% endif %}
@@ -172,7 +172,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual beneficial owner " + boiFullName + " - home address",
       "change-individual-beneficial-owner-residential-address-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -188,7 +188,7 @@
       changeLinkUrl + "/" + boi.id + boiChangeServiceAddressHtml,
       "Individual beneficial owner " + boiFullName + " - correspondence address",
       "change-individual-beneficial-owner-correspondence-address-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -217,7 +217,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.START_DATE,
       "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
       "change-individual-beneficial-owner-start-date-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 {% endif %}
@@ -234,13 +234,13 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
       "Individual beneficial owner " + boiFullName + " - nature of control",
       "change-individual-beneficial-owner-nature-of-control-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
 {% set rows = (rows.push({
   key: {
-    text: "Are they on the sanctions list?"
+    text: "Are they on the sanctions list?" if not pageParams.isNoChangeJourney else "Are they on the UK sanctions list?"
   },
   value: {
     html: boiIsOnSanctionsListHtml
@@ -250,7 +250,7 @@
       changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
       "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
       "change-individual-beneficial-owner-sanctions-list-button"
-    ) if pageParams.isRegistration ]
+    ) if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -268,7 +268,7 @@
         changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-still-beneficial-owner-button"
-      ) if not pageParams.isStatement ]
+      ) if not pageParams.isNoChangeJourney ]
     }
   }), rows) %}
   {% set boiCeasedDate = dateMacros.formatDate(boi.ceased_date["day"], boi.ceased_date["month"], boi.ceased_date["year"]) %}
@@ -284,7 +284,7 @@
         changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - ceased date",
         "change-individual-beneficial-owner-ceased-date-button"
-      ) if not pageParams.isStatement ]
+      ) if not pageParams.isNoChangeJourney ]
     }
   }), rows) %}
   {% else %}
@@ -300,7 +300,7 @@
         changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-ceased-date-button"
-      ) if pageParams.isRegistration ]
+      ) if not pageParams.isNoChangeJourney ]
     }
   }), rows) %}
   {% endif %}

@@ -99,7 +99,7 @@
 {% if hideChangeLinksForNonEditableFields == true %}
 {% set rows = (rows.push({
   key: {
-    text: "Date of birth"
+    text: "Date of birth" if not pageParams.isNoChangeJourney else "Born"
   },
   value: {
     text: boiDateOfBirth

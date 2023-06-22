@@ -78,7 +78,7 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
-  updateReviewStatement,
+  updateReviewStatement
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";

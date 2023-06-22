@@ -35,14 +35,14 @@
 {% endif %}
 
 {% set isEmailPrivate %}
-    {% if not appData.entity.email and pageParams.isStatement %}
+    {% if not appData.entity.email and pageParams.isNoChangeJourney %}
       <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
     {% elif appData.entity.email %}
       {{ appData.entity.email }}
     {% endif %}
 {% endset %}
 
-{% if pageParams.isStatement %}
+{% if pageParams.isNoChangeJourney %}
   {% set jurisdiction = 
     {
       key: {
@@ -52,7 +52,7 @@
         text: appData.entity.public_register_jurisdiction
       },
       actions: {
-        items : [" " if not pageParams.isStatement]
+        items : [" " if not pageParams.isNoChangeJourney]
       }
     }
   %}
@@ -64,7 +64,7 @@
       text: appData.entity.registration_number
     },
     actions: {
-      items : [" " if not pageParams.isStatement]
+      items : [" " if not pageParams.isNoChangeJourney]
     }
   }
   %}
@@ -83,7 +83,7 @@
           text: appData.entity_name
         },
         actions: {
-              items : [entityNameLink if not pageParams.isStatement]
+              items : [entityNameLink if not pageParams.isNoChangeJourney]
         }
       },
       {
@@ -98,7 +98,7 @@
             changeLinkUrl + OE_CONFIGS.INCORPORATION_COUNTRY,
             "Country it was formed in",
             "change-entity-incorporation-country-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -113,7 +113,7 @@
             changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Principal or registered office address",
             "change-entity-principal-address-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -128,7 +128,7 @@
             changeLinkUrl + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
             "Correspondence address",
             "change-entity-correspondence-address-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -143,7 +143,7 @@
             changeLinkUrl + OE_CONFIGS.EMAIL,
             "Email address at the overseas entity we should send communications to",
             "change-entity-email-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -158,7 +158,7 @@
             changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Legal form",
             "change-entity-legal-form-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -173,7 +173,7 @@
             changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Governing law",
             "change-entity-governing-law-button"
-          ) if not pageParams.isStatement ]
+          ) if not pageParams.isNoChangeJourney ]
         }
       },
       {
@@ -188,7 +188,7 @@
             changeLinkUrl + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
             "Already on a public register in the country it was formed in",
             "change-entity-public-register-button"
-          ) if not pageParams.isStatement]
+          ) if not pageParams.isNoChangeJourney]
         }
       },
       jurisdiction, registrationNumber

@@ -4,7 +4,7 @@ import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/com
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';
-import { mapAddress } from '../../../src/utils/update/mapper.utils';
+import { lowerCaseAllWordsExceptFirstLetters, mapAddress } from '../../../src/utils/update/mapper.utils';
 
 describe("Test company profile details mapping", () => {
 
@@ -22,7 +22,7 @@ describe("Test company profile details mapping", () => {
       law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
       legal_form: companyDetailsMock.foreignCompanyDetails?.legalForm,
       registration_number: companyDetailsMock.foreignCompanyDetails?.registrationNumber,
-      incorporation_country: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country,
+      incorporation_country: lowerCaseAllWordsExceptFirstLetters(companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.country as string),
       principal_address: {
         country: companyDetailsMock.registeredOfficeAddress.country,
         county: companyDetailsMock.registeredOfficeAddress.region,

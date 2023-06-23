@@ -106,6 +106,10 @@ export const isSameAddress: AddressMatches = (address1: any, address2?: any) => 
 };
 
 export const lowerCaseAllWordsExceptFirstLetters = (country: string) => {
+  if (!country){
+    return "";
+  }
+
   const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART"];
 
   return country.replace(/\w*/g, word => {

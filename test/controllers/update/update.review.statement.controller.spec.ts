@@ -73,7 +73,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
     });
 
-    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with contact details section with (ceased) existing BO`, async () => {
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with contact details section and beneficial owner statements`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 

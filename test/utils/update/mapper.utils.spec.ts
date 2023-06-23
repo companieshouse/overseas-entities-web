@@ -1,4 +1,4 @@
-import { lowerCaseAllWordsExceptFirstLetters, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapInputDate } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -29,31 +29,6 @@ describe("Test mapping utils", () => {
   test("returns empty string for date with month and year", () => {
     const InputDate = mapInputDate("2022-07");
     expect(InputDate).toEqual({ day: "", month: "7", year: "2022" });
-  });
-
-  describe("splitOriginatingRegistryName", () => {
-    test.each([
-      ["Undefined returns empty strings", undefined, ["", ""]],
-      ["Empty string returns empty strings", "", ["", ""]],
-      [
-        "One comma occurence splits correctly",
-        "Public Register Name,Country",
-        ["Public Register Name", "Country"]
-      ],
-      [
-        "Multiple comma occurences in country splits correctly",
-        "Public Register Name, Virgin Islands, U.S.",
-        ["Public Register Name", "Virgin Islands, U.S."]
-      ],
-      [
-        "Leading whitespace on country is removed",
-        "Public Register Name, Country",
-        ["Public Register Name", "Country"]
-      ]
-    ])(`%s`, (_, stringToSplit, expectedResult) => {
-
-      expect(splitOriginatingRegistryName(stringToSplit as string)).toEqual(expectedResult);
-    });
   });
 
   describe("lowerCaseAllWordsExceptFirstLetters", () => {

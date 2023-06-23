@@ -117,16 +117,3 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string) => {
   }
   );
 };
-
-export const splitOriginatingRegistryName = (registryName: string): string[] => {
-  if (!registryName){
-    return ["", ""];
-  }
-
-  const firstComma = registryName.indexOf(",");
-
-  const publicRegisterName = registryName.substring(0, firstComma);
-  const publicRegisterJurisdiction = registryName.substring(firstComma + 1, registryName.length);
-
-  return [publicRegisterName, publicRegisterJurisdiction.trim()];
-};

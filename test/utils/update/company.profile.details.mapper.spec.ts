@@ -4,7 +4,7 @@ import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/com
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';
-import { mapAddress, splitOriginatingRegistryName } from '../../../src/utils/update/mapper.utils';
+import { mapAddress } from '../../../src/utils/update/mapper.utils';
 
 describe("Test company profile details mapping", () => {
 
@@ -17,8 +17,6 @@ describe("Test company profile details mapping", () => {
   });
 
   test('map company details to overseas entity should return object', () => {
-    const publicRegister = splitOriginatingRegistryName(companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.name as string);
-
     expect(mapCompanyProfileToOverseasEntity(companyDetailsMock)).toEqual({
       email: "",
       law_governed: companyDetailsMock.foreignCompanyDetails?.governedBy,
@@ -43,8 +41,8 @@ describe("Test company profile details mapping", () => {
         property_name_number: companyDetailsMock.serviceAddress?.premises,
         town: companyDetailsMock.serviceAddress?.locality,
       },
-      public_register_jurisdiction: publicRegister[1],
-      public_register_name: publicRegister[0],
+      public_register_jurisdiction: "",
+      public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.name,
       is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
       is_service_address_same_as_principal_address: yesNoResponse.No
     });

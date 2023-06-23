@@ -19,8 +19,8 @@ export const companyDetailsMock: CompanyProfile = {
     governedBy: "Sheriff",
     legalForm: "The Wild West",
     originatingRegistry: {
-      name: "Sheriff Office, USA",
-      country: "United Kingdom"
+      name: "Sheriff Office",
+      country: "US"
     }
   },
   registeredOfficeAddress: {

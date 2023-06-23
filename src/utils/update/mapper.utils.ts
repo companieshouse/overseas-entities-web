@@ -104,3 +104,29 @@ export const isSameAddress: AddressMatches = (address1: any, address2?: any) => 
     return Object.keys(address1).every(key => address1[key] === address2[key]);
   }
 };
+
+export const lowerCaseAllWordsExceptFirstLetters = (country: string) => {
+  const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART"];
+
+  return country.replace(/\w*/g, word => {
+    if (wordsForAllLowerCase.includes(word)){
+      return word.toLowerCase();
+    }
+
+    return `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`;
+  }
+  );
+};
+
+export const splitOriginatingRegistryName = (registryName: string): string[] => {
+  if (!registryName){
+    return ["", ""];
+  }
+
+  const firstComma = registryName.indexOf(",");
+
+  const publicRegisterName = registryName.substring(0, firstComma);
+  const publicRegisterJurisdiction = registryName.substring(firstComma + 1, registryName.length);
+
+  return [publicRegisterName, publicRegisterJurisdiction.trim()];
+};

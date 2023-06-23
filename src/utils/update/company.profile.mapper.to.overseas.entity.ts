@@ -11,7 +11,7 @@ export const mapCompanyProfileToOverseasEntity = (cp: CompanyProfile): Entity =>
     registration_number: cp.foreignCompanyDetails?.registrationNumber,
     law_governed: cp.foreignCompanyDetails?.governedBy,
     legal_form: cp.foreignCompanyDetails?.legalForm,
-    incorporation_country: lowerCaseAllWordsExceptFirstLetters(cp.foreignCompanyDetails?.originatingRegistry?.country as string),
+    incorporation_country: lowerCaseAllWordsExceptFirstLetters(cp.foreignCompanyDetails?.originatingRegistry?.country),
     public_register_name: cp.foreignCompanyDetails?.originatingRegistry?.name,
     public_register_jurisdiction: "",
     email: "", // private data

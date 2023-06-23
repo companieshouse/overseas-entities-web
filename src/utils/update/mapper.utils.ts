@@ -105,7 +105,7 @@ export const isSameAddress: AddressMatches = (address1: any, address2?: any) => 
   }
 };
 
-export const lowerCaseAllWordsExceptFirstLetters = (country: string) => {
+export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined) => {
   if (!country){
     return "";
   }

@@ -120,7 +120,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).not.toContain("Corporate managing officer");
     });
 
-    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is not rendered if no MO data`, async () => {
+    test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is rendered if MO data exists`, async () => {
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA
       });

@@ -31,8 +31,7 @@ import {
   RADIO_BUTTON_NO_SELECTED,
   RADIO_BUTTON_YES_SELECTED,
   SERVICE_UNAVAILABLE,
-  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE
-} from "../../__mocks__/text.mock";
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE } from "../../__mocks__/text.mock";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 

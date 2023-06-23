@@ -223,4 +223,14 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_ANY_TRUSTS_INVOLVED_URL);
   });
+
+  test(`NAVIGATION returns ${config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
 });

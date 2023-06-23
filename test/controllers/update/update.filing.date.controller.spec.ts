@@ -93,7 +93,7 @@ describe("Update Filing Date controller", () => {
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Date of the update statement (NOT LIVE)");
+      expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -107,7 +107,7 @@ describe("Update Filing Date controller", () => {
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Date of the update statement (NOT LIVE)");
+      expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -121,7 +121,7 @@ describe("Update Filing Date controller", () => {
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Date of the update statement (NOT LIVE)");
+      expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -135,7 +135,7 @@ describe("Update Filing Date controller", () => {
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Date of the update statement (NOT LIVE)");
+      expect(resp.text).toContain("Date of the update statement");
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

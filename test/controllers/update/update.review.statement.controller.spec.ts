@@ -117,6 +117,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("Managing officers you have added");
       expect(resp.text).not.toContain("Individual managing officer");
+      expect(resp.text).not.toContain("Corporate managing officer");
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is not rendered if no MO data`, async () => {

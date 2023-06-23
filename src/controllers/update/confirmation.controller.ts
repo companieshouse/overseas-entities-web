@@ -28,7 +28,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       verificationCheckDays: 14,
       paymentFee: UPDATE_PAYMENT_FEE,
       isUpdate: true,
-      titleExtension: "",
       templateName: CONFIRMATION_PAGE
     });
   } catch (error) {

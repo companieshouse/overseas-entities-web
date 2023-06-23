@@ -19,7 +19,7 @@ const req = { session } as Request;
 
 const serviceName = 'overseasEntity';
 const functionName = 'getOverseasEntityDetails';
-const companyNumber = 'OE111129';
+const overseasEntityId = '123123-123123-1231-123';
 const privateOeDetails = { email_address: 'private@overseasentities.test' };
 
 describe(`Get private overseas entity details service suite`, () => {
@@ -52,23 +52,31 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getPrivateOeDetails(req, companyNumber);
+    const response = await getPrivateOeDetails(req, overseasEntityId);
 
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, companyNumber);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, overseasEntityId);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(privateOeDetails);
   });
 
-  test('getPrivateOeDetails should return undefined when api response status is 404', async () => {
+  test('getPrivateOeDetails should throw an error when no data in response and status is 200', async () => {
+    const mockResponse = { httpStatusCode: 200 };
+
+    mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
+
+    await expect(getPrivateOeDetails(req, overseasEntityId)).rejects.toThrow(ERROR);
+
+    expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
+  });
+
+  test('getPrivateOeDetails should throw when api response status is 404', async () => {
     const mockResponse = { httpStatusCode: 404, resource: privateOeDetails };
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getPrivateOeDetails(req, companyNumber);
+    await expect(getPrivateOeDetails(req, overseasEntityId)).rejects.toThrow(ERROR);
 
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, companyNumber);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    expect(response).toEqual(undefined);
+    expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });
 
   test('getPrivateOeDetails should throw when api response status is 500', async () => {
@@ -76,7 +84,7 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
-    await expect(getPrivateOeDetails(req, companyNumber)).rejects.toThrow(ERROR);
+    await expect(getPrivateOeDetails(req, overseasEntityId)).rejects.toThrow(ERROR);
 
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });

@@ -10,27 +10,26 @@ export const hasRetrievedPrivateOeDetails = (appData: ApplicationData): boolean 
 
 export const getPrivateOeDetails = async (
   req: Request,
-  oeNumber: string,
-): Promise<OverseasEntityExtraDetails | undefined> => {
+  overseasEntityId: string,
+): Promise<OverseasEntityExtraDetails> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getOverseasEntityDetails",
     req,
     req.session as Session,
-    oeNumber,
+    overseasEntityId,
   );
 
-  if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching company details = ${JSON.stringify(response)}`;
-    throw createAndLogErrorRequest(req, errorMsg);
+  const status = response.httpStatusCode;
+
+  if (status !== 200 && status !== 404) {
+    throw createAndLogErrorRequest(req, `Something went wrong fetching private overseas entity data for entity ${overseasEntityId} - ${JSON.stringify(response)}`);
   }
 
-  if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No company data found for ${oeNumber}`);
-    return undefined;
+  if (status === 404 || !response.resource) {
+    throw createAndLogErrorRequest(req, `No private overseas entity data found for entity ${overseasEntityId}`);
   }
 
-  const infoMsg = `OE NUMBER ID: ${oeNumber}`;
-  logger.debugRequest(req, `Overseas Entity Data Retrieved - ${infoMsg}`);
+  logger.debugRequest(req, `Private overseas entity data retrieved for entity ${overseasEntityId}`);
   return response.resource;
 };

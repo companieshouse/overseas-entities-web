@@ -4,19 +4,40 @@ import { Session } from "@companieshouse/node-session-handler";
 import { logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { getApplicationData, setExtraData, mapFieldsToDataObject, mapDataObjectToFields } from "../../utils/application.data";
+import {
+  getApplicationData,
+  setExtraData,
+  mapFieldsToDataObject,
+  mapDataObjectToFields,
+  addPrivateOverseasEntityDetailsToAppData,
+} from "../../utils/application.data";
 import { postTransaction } from "../../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
+import { getPrivateOeDetails, hasRetrievedPrivateOeDetails } from "../../service/private.overseas.entity.details";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+const fetchAndSavePrivateOeData = async (req: Request, appData: ApplicationData): Promise<void> => {
+  const overseasEntityId = appData[OverseasEntityKey] as string;
+
+  const privateOeDetails = await getPrivateOeDetails(req, overseasEntityId);
+
+  addPrivateOverseasEntityDetailsToAppData(req.session, appData, privateOeDetails);
+};
+
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
-    const filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
+    const filingDate = appData.update?.[FilingDateKey]
+      ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys)
+      : {};
+
+    if (!hasRetrievedPrivateOeDetails(appData)) {
+      await fetchAndSavePrivateOeData(req, appData);
+    }
 
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,

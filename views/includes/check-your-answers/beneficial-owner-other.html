@@ -179,7 +179,7 @@
       },
       {
         key: {
-          text: "On a public register in the country it was formed in"
+          text: "On a public register in the country it was formed in" if not pageParams.isNoChangeJourney else "Is it on a public register in the country it was formed in?"
         },
         value: {
           html: bocFormattedPublicRegister
@@ -220,7 +220,7 @@
       },
       {
         key: {
-          text: "Is it on the sanctions list?"
+          text: "Is it on the sanctions list?" if not pageParams.isNoChangeJourney else "Are they on the UK sanctions list?"
         },
         value: {
           html: bocIsOnSanctionsListHtml

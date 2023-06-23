@@ -11,7 +11,12 @@ import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import app from "../../../src/app";
 
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL, UPDATE_REVIEW_STATEMENT_PAGE, UPDATE_REVIEW_STATEMENT_URL } from "../../../src/config";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_REVIEW_STATEMENT_PAGE, UPDATE_REVIEW_STATEMENT_URL
+} from "../../../src/config";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE } from "../../__mocks__/session.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -20,7 +25,14 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.model";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, RADIO_BUTTON_NO_SELECTED, RADIO_BUTTON_YES_SELECTED, SERVICE_UNAVAILABLE, UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  PAGE_TITLE_ERROR,
+  RADIO_BUTTON_NO_SELECTED,
+  RADIO_BUTTON_YES_SELECTED,
+  SERVICE_UNAVAILABLE,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE
+} from "../../__mocks__/text.mock";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 

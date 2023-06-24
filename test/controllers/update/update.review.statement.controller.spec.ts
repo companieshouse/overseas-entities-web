@@ -105,7 +105,8 @@ describe("Update review overseas entity information controller tests", () => {
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(BENEFICIAL_OWNER_HEADING);
-      expect(resp.text).not.toContain("Beneficial owners you have reviewed");
+      expect(resp.text).not.toContain("Beneficial owners");
+      expect(resp.text).not.toContain("Individual beneficial owner");
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is not rendered if no MO data`, async () => {
@@ -115,7 +116,7 @@ describe("Update review overseas entity information controller tests", () => {
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain("Managing officers you have added");
+      expect(resp.text).not.toContain("Managing officers");
       expect(resp.text).not.toContain("Individual managing officer");
       expect(resp.text).not.toContain("Corporate managing officer");
     });
@@ -127,7 +128,7 @@ describe("Update review overseas entity information controller tests", () => {
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain("Managing officers you have added");
+      expect(resp.text).toContain("Managing officers");
       expect(resp.text).toContain("Individual managing officer");
     });
 

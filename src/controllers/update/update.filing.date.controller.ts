@@ -49,7 +49,11 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       setExtraData(req.session, appData);
       await updateOverseasEntity(req, session);
     }
-    return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
+
+    // Add overseas entity id to next page URL so that it can be picked up by automated testing.
+    const appData: ApplicationData = getApplicationData(session);
+    const nextPageUrl = config.OVERSEAS_ENTITY_PRESENTER_URL + "?overseas_entity_id=" + appData.overseas_entity_id;
+    return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

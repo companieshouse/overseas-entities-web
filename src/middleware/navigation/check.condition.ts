@@ -12,7 +12,7 @@ import { UpdateKey } from '../../model/update.type.model';
 import {
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
-  checkGivenBoDetailsExist
+  checkGivenBoOrMoDetailsExist,
 } from '../../utils/application.data';
 
 export const NavigationErrorMessage = `Navigation error, redirecting to ${SOLD_LAND_FILTER_URL} page, status_code=302`;
@@ -98,6 +98,6 @@ export const checkUpdateDueDiligenceDetailsEntered = (appData: ApplicationData):
   return checkHasOverseasEntity(appData) && checkHasUpdateDueDiligenceDetails(appData);
 };
 
-export const checkHasGivenValidBOData = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
-  return checkGivenBoDetailsExist(appData, beneficialOwnerType, id);
+export const checkBoOrMoTypeAndId = (appData: ApplicationData, boMoType: string, id: string): boolean => {
+  return checkGivenBoOrMoDetailsExist(appData, boMoType, id);
 };

@@ -42,11 +42,16 @@ import {
   VERIFICATION_CHECKS_PERSON,
   UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS,
   UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT,
-  UPDATE_CHANGE_LINK_BO_INDIVIDUAL,
-  UPDATE_CHANGE_LINK_BO_GOVERNMENT,
-  UPDATE_CHANGE_LINK_BO_OTHER,
-  UPDATE_CHANGE_LINK_MO_INDIVIDUAL,
-  UPDATE_CHANGE_LINK_MO_CORPORATE
+  UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT,
+  UPDATE_CHANGE_LINK_NEW_BO_OTHER,
+  UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_NEW_MO_CORPORATE,
+  CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE,
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE,
+  UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL,
+  UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT,
+  UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -134,13 +139,15 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_INDIVIDUAL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOVERNMENT);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_MO_INDIVIDUAL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_MO_CORPORATE);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_NEW_MO_CORPORATE);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO`, async () => {
@@ -154,11 +161,13 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_INDIVIDUAL);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_GOVERNMENT);
-      expect(resp.text).toContain(UPDATE_CHANGE_LINK_BO_OTHER);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT);
+      expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER);
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
@@ -169,6 +178,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_TITLE);
+      expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);

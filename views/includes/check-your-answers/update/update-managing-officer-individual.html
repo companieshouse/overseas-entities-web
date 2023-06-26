@@ -1,0 +1,125 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set moiDateOfBirth = dateMacros.formatDate("",moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
+{% set managing_officer_individual = true %}
+{% set moAddress = moi.usual_residential_address %}
+{% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
+{% set moServiceAddress = moi.service_address %}
+{% set resigned_on = moi.resigned_on %}
+
+{% set moiChangeFormerNamesHtml = "" %}
+{% if moi.has_former_names == 1 %}
+  {% set moiChangeFormerNamesHtml = "#former_names" %}
+{% else %}
+  {% set moiChangeFormerNamesHtml = "#has_former_names" %}
+{% endif %}
+
+{% set rows= [] %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "First name"
+  },
+  value: {
+    text: moi.first_name
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Last name"
+  },
+  value: {
+    text: moi.last_name
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+{% if moi.former_names | length %}
+{% set rows = (rows.push({
+  key: {
+    text: "Former names"
+  },
+  value: {
+    text: moi.former_names
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+{% endif %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Date of birth"
+  },
+  value: {
+    text: moiDateOfBirth
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Nationality"
+  },
+  value: {
+    text: moi.nationality
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+
+{% if moi.second_nationality %}
+  {% set rows = (rows.push({
+    key: {
+      text: "Second nationality"
+    },
+    value: {
+      text: moi.second_nationality
+    },
+    actions: {
+      items: [ undefined ]
+    }
+  }), rows) %}
+{% endif %}
+
+{% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Occupation"
+  },
+  value: {
+    html: moi.occupation
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+
+{% set rows = (rows.push({
+  key: {
+    text: "Role and responsibilities"
+  },
+  value: {
+    html: moi.role_and_responsibilities
+  },
+  actions: {
+    items: [ undefined ]
+  }
+}), rows) %}
+
+{% include "includes/check-your-answers/update/managing-officers-resigned-on.html" %}
+
+<h3 class="govuk-heading-m">Individual managing officer</h3>
+{{ govukSummaryList({
+   rows: rows
+}) }}

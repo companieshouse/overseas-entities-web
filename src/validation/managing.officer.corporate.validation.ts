@@ -54,10 +54,21 @@ export const managingOfficerCorporate = [
   ...contact_name_and_email_validations
 ];
 
+const isStillMoValidation = [
+  body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER)
+];
+
 export const updateManagingOfficerCorporate = [
   ...managingOfficerCorporateValidations,
   ...start_date_validations,
-  body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
+  ...isStillMoValidation,
+  ...resigned_on_validations,
+  ...contact_name_and_email_validations
+];
+
+export const reviewManagingOfficerCorporate = [
+  ...managingOfficerCorporateValidations,
+  ...isStillMoValidation,
   ...resigned_on_validations,
   ...contact_name_and_email_validations
 ];

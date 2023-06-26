@@ -97,6 +97,7 @@ describe("Test mapping to managing officer", () => {
   test('map officer data to managing officer corporate should return object', () => {
     expect(mapToManagingOfficerCorporate(managingOfficerMock)).toEqual({
       id: "selfLink",
+      ch_reference: "selfLink",
       name: managingOfficerMock.name,
       principal_address: undefined,
       is_service_address_same_as_principal_address: yesNoResponse.No,
@@ -116,7 +117,7 @@ describe("Test mapping to managing officer", () => {
       },
       legal_form: managingOfficerMock.identification?.legalForm,
       law_governed: managingOfficerMock.identification?.legalAuthority,
-      is_on_register_in_country_formed_in: undefined,
+      is_on_register_in_country_formed_in: yesNoResponse.Yes,
       public_register_name: managingOfficerMock.identification?.placeRegistered,
       registration_number: managingOfficerMock.identification?.registrationNumber,
       role_and_responsibilities: managingOfficerMock.officerRole,

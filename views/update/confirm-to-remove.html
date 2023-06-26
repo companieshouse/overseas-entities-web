@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Are you sure you want to remove " + beneficialOwnerName + "?" %}
+{% set title = "Are you sure you want to remove " + boMoName + "?" %}
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -44,7 +44,7 @@
           ]
         }) }}
 
-        <input type="hidden" name="beneficialOwnerName" value="{{ beneficialOwnerName }}"/>
+        <input type="hidden" name="boMoName" value="{{ boMoName }}"/>
         {% include "includes/save-and-continue-button.html" %}
       </form>
     </div>

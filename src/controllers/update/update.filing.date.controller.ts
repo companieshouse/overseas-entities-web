@@ -14,6 +14,7 @@ import { ApplicationData } from "../../model/application.model";
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
     const appData = getApplicationData(req.session);
     const filingDate = appData.update?.[FilingDateKey] ? mapDataObjectToFields(appData.update[FilingDateKey], FilingDateKeys, InputDateKeys) : {};
 

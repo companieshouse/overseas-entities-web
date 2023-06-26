@@ -8,5 +8,5 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postFilterPage(req, res, next, config.UPDATE_USE_PAPER_URL, config.UPDATE_INTERRUPT_CARD_PAGE);
+  postFilterPage(req, res, next, config.UPDATE_USE_PAPER_URL, config.UPDATE_ANY_TRUSTS_INVOLVED_URL);
 };

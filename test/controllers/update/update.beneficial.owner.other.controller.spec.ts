@@ -52,7 +52,8 @@ import {
   PAGE_TITLE_ERROR,
   PUBLIC_REGISTER_HINT_TEXT,
   SERVICE_UNAVAILABLE,
-  SHOW_INFORMATION_ON_PUBLIC_REGISTER
+  SHOW_INFORMATION_ON_PUBLIC_REGISTER,
+  TRUSTS_NOC_HEADING,
 } from "../../__mocks__/text.mock";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import {
@@ -111,6 +112,8 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
 
   describe("GET tests", () => {
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_OTHER_URL);
 
       expect(resp.status).toEqual(200);
@@ -120,6 +123,7 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {

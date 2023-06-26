@@ -16,7 +16,7 @@ import {
 } from "../__mocks__/session.mock";
 import {
   MOCK_GET_COMPANY_PSC_NOT_FOUND_RESPONSE,
-  MOCK_GET_COMPANY_PSC_RESOURCE,
+  MOCK_GET_COMPANY_PSC_RESOURCE_INDIVIDUAL,
   MOCK_GET_COMPANY_PSC_RESPONSE,
   MOCK_GET_COMPANY_PSC_UNAUTHORISED_RESPONSE
 } from "../__mocks__/get.company.psc.mock";
@@ -44,7 +44,7 @@ describe('Get persons with significant control service that calls API for given 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceNameGetCompanyPsc, fnNameGetCompanyPsc, req, session, COMPANY_NUMBER);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockDebugRequestLog).toHaveBeenCalled();
-    expect(resource).toEqual(MOCK_GET_COMPANY_PSC_RESOURCE);
+    expect(resource).toEqual(MOCK_GET_COMPANY_PSC_RESOURCE_INDIVIDUAL);
   });
 
   test('logs error on 401 response from API', async () => {

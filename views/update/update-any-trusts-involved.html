@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+
+{% set title = "Are there any trusts involved in this overseas entity?"%}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.any_trusts_involved if errors,
+          idPrefix: "any_trusts_involved",
+          name: "any_trusts_involved",
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          hint: {
+              text: "This includes trusts that you've already told us about, and trusts that you need to tell us about as part of this update statement."
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: any_trusts_involved == 1,
+              attributes: {
+                "data-event-id": "yes-trusts-involved"
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: any_trusts_involved == 0,
+              attributes: {
+                "data-event-id": "no-trusts-involved"
+              }
+            }
+          ]
+        }) }}
+
+        <details class="govuk-details" data-module="govuk-details" data-event-id="protected-personal-information-details" >
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+            When you need to tell us about trusts
+          </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">If there are any individuals or entities that are registrable beneficial owners of the overseas entity due to being a trustee of a trust, you need to give us information about that trust.</p>
+          </div>
+        </details>
+        {{ govukInsetText({
+          html: '
+          <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+          <p>We will not show any of the information you provide in this section on the public Register of Overseas Entities.</p>
+          '
+        }) }}
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,4 +1,5 @@
 import {
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE
 } from "../../config";
@@ -19,7 +20,7 @@ import {
   ServiceAddressKey,
   ServiceAddressKeys
 } from "../../model/address.model";
-import { AddressKeys } from "../../model/data.types.model";
+import { AddressKeys, EntityNumberKey } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -36,12 +37,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     }
 
     const templateOptions = {
-      backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+      backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
       templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
       ...dataToReview,
       ...principalAddress,
       ...serviceAddress,
-      isOwnersReview: true
+      entity_number: appData[EntityNumberKey],
     };
 
     if (CeasedDateKey in dataToReview) {

@@ -1,0 +1,110 @@
+{% set confirmToRemoveBoMoUrl = OE_CONFIGS.UPDATE_CONFIRM_TO_REMOVE_URL %}
+
+{% set beneficialOwnerIndividualParam = OE_CONFIGS.PARAM_BENEFICIAL_OWNER_INDIVIDUAL %}
+{% set beneficialOwnerGovParam = OE_CONFIGS.PARAM_BENEFICIAL_OWNER_GOV %}
+{% set beneficialOwnerOtherParam = OE_CONFIGS.PARAM_BENEFICIAL_OWNER_OTHER %}
+{% set managingOfficerIndividualParam = OE_CONFIGS.PARAM_MANAGING_OFFICER_INDIVIDUAL %}
+{% set managingOfficerCorporateParam = OE_CONFIGS.PARAM_MANAGING_OFFICER_CORPORATE %}
+
+{% if hasNewlyAddedBosMos %}
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">What you have added in this update</caption>
+        <tbody class="govuk-table__body">
+            {% for boi in beneficial_owners_individual %}
+                {% if not boi.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ boi.first_name }} {{ boi.last_name }}</th>
+                        <td class="govuk-table__cell">Individual beneficial owner</td>
+                        <td class="govuk-table__cell">{% if boi.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerIndividualUrl }}/{{ boi.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerIndividualParam }}/{{ boi.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for boo in beneficial_owners_corporate %}
+                {% if not boo.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ boo.name }}</th>
+                        <td class="govuk-table__cell">Other legal entity beneficial owner</td>
+                        <td class="govuk-table__cell">{% if boo.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerOtherUrl }}/{{ boo.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerOtherParam }}/{{ boo.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for bog in beneficial_owners_government_or_public_authority %}
+                {% if not bog.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ bog.name }}</th>
+                        <td class="govuk-table__cell">Government or public authority beneficial owner</td>
+                        <td class="govuk-table__cell">{% if bog.ceased_date|length === 0 %} Active {% else %} Ceased {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ beneficialOwnerGovUrl }}/{{ bog.id }}" data-event-id="change-link" >
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ beneficialOwnerGovParam }}/{{ bog.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for mo in managing_officers_individual %}
+                {% if not mo.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ mo.first_name + " " + mo.last_name }}</th>
+                        <td class="govuk-table__cell">Individual managing officer</td>
+                        <td class="govuk-table__cell">{% if mo.resigned_on|length === 0 %} Active {% else %} Not active {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ managingOfficerIndividualUrl }}/{{ mo.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ managingOfficerIndividualParam }}/{{ mo.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            {% for moc in managing_officers_corporate %}
+                {% if not moc.ch_reference %}
+                    <tr class="govuk-table__row">
+                        <th scope="row" class="govuk-table__header">{{ moc.name }}</th>
+                        <td class="govuk-table__cell">Corporate managing officer</td>
+                        <td class="govuk-table__cell">{% if moc.resigned_on|length === 0 %} Active {% else %} Not active {% endif %}</td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ managingOfficerCorporateUrl }}/{{ moc.id }}" data-event-id="change-link">
+                                Change
+                            </a>
+                        </td>
+                        <td class="govuk-table__cell">
+                            <a class="govuk-link" href="{{ confirmToRemoveBoMoUrl }}/{{ managingOfficerCorporateParam }}/{{ moc.id }}" data-event-id="remove-link">
+                                Remove
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endif %}

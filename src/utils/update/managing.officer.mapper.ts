@@ -36,6 +36,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
 
   return {
     id: officer.links?.self,
+    ch_reference: mapSelfLink(officer.links?.self),
     name: officer.name,
     principal_address: address,
     is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
@@ -43,7 +44,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     start_date: mapInputDate(officer.appointedOn),
     legal_form: officer.identification?.legalForm,
     law_governed: officer.identification?.legalAuthority,
-    is_on_register_in_country_formed_in: undefined,
+    is_on_register_in_country_formed_in: officer.identification !== undefined && officer.identification?.registrationNumber ? yesNoResponse.Yes : yesNoResponse.No,
     public_register_name: officer.identification?.placeRegistered,
     registration_number: officer.identification?.registrationNumber,
     role_and_responsibilities: officer.officerRole,
@@ -54,19 +55,8 @@ export const splitNames = (officerName: string): string[] => {
   if (officerName === undefined) {
     return ["", ""];
   } else {
-    const names = officerName.split(" ");
-    if (names.length > 2) {
-      let firstNames = "";
-      for (let loop = 0; loop < names.length - 1; loop++) {
-        firstNames += names[loop];
-        if (loop !== names.length - 1) {
-          firstNames += " ";
-        }
-      }
-      return [firstNames.trim(), names[names.length - 1].trim()];
-    } else {
-      return names;
-    }
+    const names = officerName.split(/\s*,\s*/);
+    return [names[1], names[0]];
   }
 };
 

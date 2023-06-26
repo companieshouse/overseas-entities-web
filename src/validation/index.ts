@@ -7,7 +7,7 @@ import { confirmToRemove } from "./confirm.to.remove.validation";
 import { beneficialOwnersType, updateBeneficialOwnerAndManagingOfficerType } from "./beneficial.owner.type.validation";
 import { soldLandFilter } from "./sold.land.filter.validation";
 import { entity } from "./entity.validation";
-import { managingOfficerCorporate, updateManagingOfficerCorporate } from "./managing.officer.corporate.validation";
+import { managingOfficerCorporate, reviewManagingOfficerCorporate, updateManagingOfficerCorporate } from "./managing.officer.corporate.validation";
 import { managingOfficerIndividual, updateManagingOfficerIndividual, reviewManagingOfficers } from "./managing.officer.validation";
 import { presenter } from "./presenter.validation";
 import { overseasEntityQuery } from "./overseas.entity.query.validation";
@@ -31,10 +31,13 @@ import { registrableBeneficialOwner } from "./registrable.beneficial.owner.valid
 import { updateBeneficialOwnerAndReviewValidator } from "./update.beneficial.owner.indiviual.review.validation";
 import { updateContinueSavedFiling } from "./update/update.continue.saved.filing.validation";
 import { updateFilingDate } from "./update/update.filing.date.validation";
+import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validation";
+import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
 
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
+  doYouWantToMakeOeChange,
   entity,
   presenter,
   overseasEntityQuery,
@@ -74,5 +77,7 @@ export const validator = {
   updateReviewBeneficialOwnerGovValidator,
   reviewManagingOfficers,
   updateContinueSavedFiling,
-  updateFilingDate
+  updateFilingDate,
+  reviewManagingOfficerCorporate,
+  anyTrustsInvolved
 };

@@ -8,16 +8,29 @@ import { checkBOsDetailsEntered, checkMOsDetailsEntered, getApplicationData, set
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
 import { saveAndContinue } from "../utils/save.and.continue";
 
-export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
+export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
-    const BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
-    logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    let BACK_LINK: string;
+    let noChangeFlag: boolean = false;
+    let templateName: string;
+
+    if (noChangeBackLink){
+      BACK_LINK = noChangeBackLink;
+      templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
+      noChangeFlag = true;
+    } else {
+      BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+      templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
+    }
 
     const appData: ApplicationData = getApplicationData(req.session);
-    return res.render(config.BENEFICIAL_OWNER_STATEMENTS_PAGE, {
+    return res.render(templateName, {
       backLinkUrl: BACK_LINK,
-      templateName: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
-      [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey]
+      templateName: templateName,
+      [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
+      noChangeFlag
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -25,9 +38,15 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   }
 };
 
-export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean) => {
+export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   try {
-    const REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    let REDIRECT_URL: string;
+
+    if (noChangeRedirectUrl){
+      REDIRECT_URL = noChangeRedirectUrl;
+    } else {
+      REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    }
 
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 

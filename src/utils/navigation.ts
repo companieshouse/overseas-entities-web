@@ -32,11 +32,11 @@ export const NAVIGATION: Navigation = {
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
     previousPage: () => config.UPDATE_LANDING_PAGE_URL,
-    nextPage: [config.UPDATE_INTERRUPT_CARD_PAGE]
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
     currentPage: config.UPDATE_INTERRUPT_CARD_PAGE,
-    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
     nextPage: [config.OVERSEAS_ENTITY_QUERY_PAGE]
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
@@ -52,7 +52,12 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
     previousPage: () => config.UPDATE_FILING_DATE_URL,
-    nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE]
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
+  },
+  [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
+    currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
+    nextPage: [config.WHO_IS_MAKING_UPDATE_PAGE, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
@@ -61,7 +66,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
-    previousPage: () => config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
     nextPage: [config.UPDATE_DUE_DILIGENCE_PAGE, config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_PAGE]
   },
   [config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL]: {
@@ -103,6 +108,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
+  },
+  [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
+    currentPage: config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+    nextPage: [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
     currentPage: config.SECURE_REGISTER_FILTER_PAGE,
@@ -219,6 +229,16 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL]: {
+    currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URLWITH_PARAM_URL]: {
+    currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
@@ -299,7 +319,7 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
-  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BENEFICIAL_OWNER_TYPE + config.ID]: {
+  [config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE + config.ID]: {
     currentPage: config.UPDATE_CONFIRM_TO_REMOVE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
@@ -309,7 +329,17 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.UPDATE_MANAGING_OFFICER_URL + config.ID]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL]: {
+    currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
     currentPage: config.UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
@@ -318,6 +348,11 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
+  },
+  [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
+    currentPage: config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
+    previousPage: () => config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [] // UAR-584
   },
   [config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL]: {
     currentPage: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE,
@@ -328,5 +363,15 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_SIGN_OUT_PAGE,
     previousPage: () => "",
     nextPage: []
-  }
+  },
+  [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]: {
+    currentPage: config.UPDATE_ANY_TRUSTS_INVOLVED_PAGE,
+    previousPage: () => config.SECURE_UPDATE_FILTER_URL,
+    nextPage: [config.UPDATE_INTERRUPT_CARD_URL]
+  },
+  [config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL]: {
+    currentPage: config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE,
+    previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
+    nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
+  },
 };

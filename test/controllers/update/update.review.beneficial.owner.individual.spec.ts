@@ -13,12 +13,22 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import { logger } from "../../../src/utils/logger";
-
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  SERVICE_UNAVAILABLE,
+  TRUSTS_NOC_HEADING,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING,
+} from "../../__mocks__/text.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA, REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY, UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST, REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL } from "../../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_MOCK,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
+  REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
+  UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
+} from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -55,6 +65,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
     test("catch error when rendering the page", async () => {

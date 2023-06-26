@@ -14,7 +14,9 @@ import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individu
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
 import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
 import { ManagingOfficerKey } from '../model/managing.officer.model';
-import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER } from '../config';
+import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
+import { OverseasEntityExtraDetails } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { EntityKey } from '../model/entity.model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -61,28 +63,40 @@ export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
 };
 
-export const findBeneficialOwner = (appData: ApplicationData, beneficialOwnerType: string, id: string) => {
-  let boList;
-  switch (beneficialOwnerType) {
+export const addPrivateOverseasEntityDetailsToAppData = (session: Session | undefined, appData: ApplicationData, privateDetails: OverseasEntityExtraDetails) => {
+  if (appData[EntityKey]) {
+    appData[EntityKey].email = privateDetails.email_address;
+  }
+  setExtraData(session, appData);
+};
+
+export const findBoOrMo = (appData: ApplicationData, boMoType: string, id: string) => {
+  let boMos;
+  switch (boMoType) {
       case PARAM_BENEFICIAL_OWNER_INDIVIDUAL:
-        boList = appData[BeneficialOwnerIndividualKey];
+        boMos = appData[BeneficialOwnerIndividualKey];
         break;
       case PARAM_BENEFICIAL_OWNER_GOV:
-        boList = appData[BeneficialOwnerGovKey];
+        boMos = appData[BeneficialOwnerGovKey];
         break;
       case PARAM_BENEFICIAL_OWNER_OTHER:
-        boList = appData[BeneficialOwnerOtherKey];
+        boMos = appData[BeneficialOwnerOtherKey];
+        break;
+      case PARAM_MANAGING_OFFICER_INDIVIDUAL:
+        boMos = appData[ManagingOfficerKey];
+        break;
+      case PARAM_MANAGING_OFFICER_CORPORATE:
+        boMos = appData[ManagingOfficerCorporateKey];
         break;
       default:
         return undefined;
   }
 
-  return boList.find(beneficialOwner => beneficialOwner.id === id);
+  return boMos.find(boMo => boMo.id === id);
 };
 
-export const checkGivenBoDetailsExist = (appData: ApplicationData, beneficialOwnerType: string, id: string): boolean => {
-  return findBeneficialOwner(appData, beneficialOwnerType, id) ? true : false;
-};
+export const checkGivenBoOrMoDetailsExist = (appData: ApplicationData, boMoType: string, id: string): boolean =>
+  findBoOrMo(appData, boMoType, id) ? true : false;
 
 export const removeFromApplicationData = (req: Request, key: string, id: string) => {
   const session = req.session;

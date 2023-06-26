@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% set title = "Has anyone become or ceased to be a registrable beneficial owner during the update period?"%}
+
+{% block pageTitle %}
+  {% include "includes/page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.registrable_beneficial_owner if errors,
+          classes: "govuk-radios--inline",
+          idPrefix: "registrable_beneficial_owner",
+          name: "registrable_beneficial_owner",
+          fieldset: {
+          legend: {
+            text: title,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+          },
+          items: [
+            {
+              value: "0",
+              text: "The entity has <strong>no reasonable cause</strong> to believe that <strong>anyone</strong> has become or ceased to be a
+              registrable beneficial owner during the update period." | safe,
+              checked: registrable_beneficial_owner == 0
+            },
+            {
+              value: "1",
+              text: "The entity <strong>has reasonable cause</strong> to believe that <strong>at least one person</strong> has become or
+              ceased to be a registrable beneficial owner during the update period." | safe,
+              checked: registrable_beneficial_owner == 1
+            }
+          ]
+          }) }}
+
+          {% if noChangeFlag %}
+          {{ govukInsetText({
+            html: '
+              <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+              <p>We will show the information you provide in this section on the public Register of Overseas Entities.</p>
+            '
+            }) 
+          }}
+          {% include "includes/save-and-continue-button.html" %}
+          {% else %}
+            {% include "includes/continue-button.html" %}
+          {% endif %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -10,24 +10,24 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
 
+import { beforeEach, describe, expect, jest, test } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
-import { beforeEach, expect, jest, test, describe } from "@jest/globals";
-import { logger } from "../../../src/utils/logger";
 import request from "supertest";
 import app from "../../../src/app";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { logger } from "../../../src/utils/logger";
 
+import { SECURE_UPDATE_FILTER_URL, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_FILING_DATE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL, UPDATE_REVIEW_STATEMENT_PAGE } from "../../../src/config";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { postTransaction, closeTransaction } from "../../../src/service/transaction.service";
+import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../../src/service/payment.service";
+import { closeTransaction, postTransaction } from "../../../src/service/transaction.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_UPDATE_BO_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID } from "../../__mocks__/session.mock";
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL, UPDATE_REVIEW_STATEMENT_PAGE } from "../../../src/config";
 import { ANY_MESSAGE_ERROR, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
-import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -75,13 +75,17 @@ describe("Update review overseas entity information controller tests", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
-      expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
       expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).toContain(UPDATE_FILING_DATE_URL);
+      expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.text).toContain(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).toContain(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
     });
 
     test('catch error when rendering the page', async () => {

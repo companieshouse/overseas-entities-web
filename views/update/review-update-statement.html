@@ -54,7 +54,11 @@
               text: isProtectedInformation 
             },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+                isProtectedInformation,
+                "nochange-changelink-beneficial-owner-review-statement-button"
+              ) ]
             }          
           },
           {
@@ -65,7 +69,11 @@
               text: updateStatmentDate 
             },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.UPDATE_FILING_DATE_URL,
+                updateStatmentDate,
+                "nochange-changelink-filingdate-review-statement-button"
+              ) ]
             }    
           },
           {
@@ -76,7 +84,11 @@
               text: noChange
             },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+                noChange,
+                "nochange-changelink-entity-review-statement-button"
+              ) ]
             }    
           }
         ]
@@ -117,9 +129,9 @@
           },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+              OE_CONFIGS.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL,
               identifiedStatementText,
-              "update-change-registrable-beneficial-owner-statement-button"
+              "nochange-changelink-registrable-beneficial-owner-statement-button"
             ) ]
           }
         }
@@ -139,9 +151,9 @@
           },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+              OE_CONFIGS.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
               ceasedStatementText,
-              "update-change-ceased-beneficial-owner-statement-button"
+              "nochange-changelink-ceased-beneficial-owner-statement-button"
             ) ]
           }
         }

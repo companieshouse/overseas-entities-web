@@ -1,9 +1,13 @@
 {% if managing_officer_individual %}
-    {% set residentialOrPrincipalAddressText = "Home address" %}
-    {% set sameAddressText = "The correspondence address is the same as the home address" %}
+  {% set residentialOrPrincipalAddressText = "Home address" %}
+  {% set sameAddressText = "The correspondence address is the same as the home address" %}
+  {% set changeResidentialOrPrincipalAddress = OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS %}
+  {% set changeCorresponceAddressLink = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_USUAL_RESIDENTIAL_ADDRESS %}
 {% else %}
-    {% set residentialOrPrincipalAddressText = "Principal or registered office address" %}
-    {% set sameAddressText = "The correspondence address is the same as the principal or registered office address" %}
+  {% set residentialOrPrincipalAddressText = "Principal or registered office address" %}
+  {% set sameAddressText = "The correspondence address is the same as the principal or registered office address" %}
+  {% set changeResidentialOrPrincipalAddress = OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS %}
+  {% set changeCorresponceAddressLink = OE_CONFIGS.IS_SERVICE_ADDRESS_SAME_AS_PRINCIPAL_ADDRESS %}
 {% endif %}
 
 {% set moFormattedResidentialOrPrincipalAddressHtml %}
@@ -12,13 +16,16 @@
 {% endset %}
 
 {% set moFormattedServiceAddressHtml %}
-    {% if moSameAddresses == 1 %}
-       {{ sameAddressText }}
-    {% else %}  
-        {% set address = moServiceAddress %}
-        {% include "includes/display_address.html" %}
-    {% endif %}
+  {% if moSameAddresses == 1 %}
+    {% set changeCorrespondenceAddress = changeCorresponceAddressLink %}
+    {{ sameAddressText }}
+  {% else %}
+    {% set address = moServiceAddress %}
+    {% set changeCorrespondenceAddress = OE_CONFIGS.CHANGE_SERVICE_ADDRESS %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
 {% endset %}
+
 
 {% set rows = (rows.push({
     key: {
@@ -28,7 +35,11 @@
       html: moFormattedResidentialOrPrincipalAddressHtml
     },
     actions: {
-      items: [ undefined ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeResidentialOrPrincipalAddress, 
+      moChangeLinkText + " - residential or principal address", 
+      "change-managing-officer-residential-or-principal-address-button"
+    ) ]
     }
   }), rows) %}
 
@@ -40,6 +51,10 @@
       html: moFormattedServiceAddressHtml
     },
     actions: {
-      items: [ undefined ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeCorrespondenceAddress, 
+      moChangeLinkText + " - correspondence address", 
+      "change-managing-officer-correspondence-address-button"
+    ) ]
     }
 }), rows) %}

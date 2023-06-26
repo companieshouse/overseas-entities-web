@@ -1496,6 +1496,7 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
 
 export const APPLICATION_DATA_MOCK_WITHOUT_UPDATE: ApplicationData = {
   ...APPLICATION_DATA_MOCK,
+  [EntityNumberKey]: undefined,
   [updateType.UpdateKey]: undefined
 };
 

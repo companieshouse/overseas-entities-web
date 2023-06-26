@@ -19,7 +19,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_GOV_PAGE,
   UPDATE_BENEFICIAL_OWNER_GOV_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  LANDING_PAGE_URL
+  UPDATE_LANDING_PAGE_URL
 } from "../../../src/config";
 import {
   getFromApplicationData,
@@ -105,7 +105,7 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       const resp = await request(app).get(UPDATE_BENEFICIAL_OWNER_GOV_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BENEFICIAL_OWNER_GOV_PAGE_HEADING);
       expect(resp.text).toContain(saveAndContinueButtonText);

@@ -3,7 +3,13 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 
 const pageNotFound = (req: Request, res: Response) => {
-  return res.status(404).render(config.NOT_FOUND_PAGE);
+  let isRegistration = true;
+  if (req.path.startsWith(config.UPDATE_LANDING_URL)) {
+    isRegistration = false;
+  }
+  return res.status(404).render(config.NOT_FOUND_PAGE, {
+    isRegistration
+  });
 };
 
 /**
@@ -13,8 +19,13 @@ const pageNotFound = (req: Request, res: Response) => {
  */
 const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   logger.errorRequest(req, `An error has occurred. Re-routing to the error screen - ${err.stack}`);
+  let isRegistration = true;
+  if (req.path.startsWith(config.UPDATE_LANDING_URL)) {
+    isRegistration = false;
+  }
   res.status(500).render(config.ERROR_PAGE, {
-    templateName: config.ERROR_PAGE
+    templateName: config.ERROR_PAGE,
+    isRegistration
   });
 };
 

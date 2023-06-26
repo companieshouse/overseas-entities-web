@@ -1,4 +1,9 @@
-{% extends "layout.html" %}
+{% if isUpdate %}
+  {% extends "update-layout.html" %}
+  {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
+{% else %}
+  {% extends "layout.html" %}
+{% endif %}
 
 {% block pageTitle %}
   Confirmation - {{ SERVICE_NAME }} - GOV.UK

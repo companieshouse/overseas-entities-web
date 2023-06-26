@@ -30,7 +30,8 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       backLinkUrl: BACK_LINK,
       templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
-      noChangeFlag
+      noChangeFlag,
+      ...appData
     });
   } catch (error) {
     logger.errorRequest(req, error);

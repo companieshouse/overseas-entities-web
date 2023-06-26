@@ -29,6 +29,7 @@ export const VF01_FORM_DOWNLOAD_URL = getEnvironmentValue("VF01_FORM_DOWNLOAD_UR
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
+export const UPDATE_SERVICE_NAME = 'File an overseas entity update statement';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
@@ -178,6 +179,7 @@ export const UPDATE_CONFIRM_TO_REMOVE_PAGE = "confirm-to-remove";
 export const UPDATE_LANDING_URL = "/update-an-overseas-entity";
 
 export const UPDATE_AN_OVERSEAS_ENTITY_URL = UPDATE_LANDING_URL + "/";
+export const UPDATE_ACCESSIBILITY_STATEMENT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + ACCESSIBILITY_STATEMENT_PAGE;
 export const SECURE_UPDATE_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + SECURE_UPDATE_FILTER_PAGE;
 export const UPDATE_USE_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + USE_PAPER_PAGE;
 export const OVERSEAS_ENTITY_QUERY_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + OVERSEAS_ENTITY_QUERY_PAGE;

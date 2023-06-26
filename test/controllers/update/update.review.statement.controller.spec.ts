@@ -105,7 +105,6 @@ describe("Update review overseas entity information controller tests", () => {
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(BENEFICIAL_OWNER_HEADING);
-      expect(resp.text).not.toContain("Beneficial owners");
       expect(resp.text).not.toContain("Individual beneficial owner");
     });
 

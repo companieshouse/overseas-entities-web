@@ -48,9 +48,15 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         "month": "4",
         "year": "2016",
       },
-      non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      non_legal_firm_members_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      beneficial_owner_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
       is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.addressLine1,
@@ -102,7 +108,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
     });
   });
 
-  test('map person of significant control to beneficial owner other  should return object', () => {
+  test('map person of significant control to beneficial owner other should return object', () => {
     expect(mapPscToBeneficialOwnerOther(pscMock)).toEqual({
       id: "company/OE111129/persons-of-significant-control/dhjsabcdjhvdjhdf",
       ch_reference: "dhjsabcdjhvdjhdf",
@@ -112,9 +118,15 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         "month": "4",
         "year": "2016",
       },
-      non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      non_legal_firm_members_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
       trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      beneficial_owner_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
       is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.addressLine1,
@@ -146,8 +158,14 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         "month": "4",
         "year": "2016",
       },
-      non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
-      beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+      non_legal_firm_members_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
+      beneficial_owner_nature_of_control_types: [
+        NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
+        NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
+      ],
       is_service_address_same_as_principal_address: yesNoResponse.No,
       service_address: {
         line_1: pscMock.address.addressLine1,
@@ -167,9 +185,9 @@ describe("Test Mapping person of significant control to beneficial owner type", 
   test('that no error is thrown if nature of control type does not match', () => {
     pscMock.naturesOfControl = ['Some unknown 25% share'];
     const bo = mapPscToBeneficialOwnerOther(pscMock);
-    expect(bo.trustees_nature_of_control_types).toEqual(undefined);
-    expect(bo.beneficial_owner_nature_of_control_types).toEqual(undefined);
-    expect(bo.non_legal_firm_members_nature_of_control_types).toEqual(undefined);
+    expect(bo.trustees_nature_of_control_types).toEqual([]);
+    expect(bo.beneficial_owner_nature_of_control_types).toEqual([]);
+    expect(bo.non_legal_firm_members_nature_of_control_types).toEqual([]);
   });
 
   test('that error is empty pcsc nature of control', () => {

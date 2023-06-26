@@ -92,7 +92,9 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   naturesOfControl: [
     'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
     'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
-    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
+    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity',
+    'right-to-appoint-and-remove-directors-as-firm-registered-overseas-entity',
+    'right-to-appoint-and-remove-directors-registered-overseas-entity',
   ],
   isSanctioned: true,
 };

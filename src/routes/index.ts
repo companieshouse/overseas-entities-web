@@ -79,6 +79,7 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
+  removeEntity,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -638,7 +639,7 @@ router.route(config.UPDATE_CONFIRM_TO_REMOVE_URL + config.ROUTE_PARAM_BO_MO_TYPE
 router.route(config.UPDATE_FILING_DATE_URL)
   .all(
     authentication,
-    companyAuthentication,
+
     navigation.hasOverseasEntity
   )
   .get(updateFilingDate.get)
@@ -675,5 +676,10 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
   .all(authentication)
   .get(updateAnyTrustsInvolved.get)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
+
+router.route(config.UPDATE_REMOVE_ENTITY_URL)
+  .all(authentication)
+  .get(removeEntity.get)
+  .post(...validator.removeEntity, checkValidations, removeEntity.post);
 
 export default router;

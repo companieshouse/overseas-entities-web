@@ -78,7 +78,7 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
-  updateReviewStatement,
+  updateReviewStatement
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -662,7 +662,7 @@ router.route(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   .get(noChangeRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
 
-router.route(config.UPDATE_REVIEW_STATEMENT_BEFORE_SUBMITTING_URL)
+router.route(config.UPDATE_REVIEW_STATEMENT_URL)
   .all(
     authentication,
     companyAuthentication,

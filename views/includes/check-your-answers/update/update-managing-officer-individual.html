@@ -24,7 +24,7 @@
     text: moi.first_name
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -36,7 +36,7 @@
     text: moi.last_name
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 {% if moi.former_names | length %}
@@ -48,20 +48,20 @@
     text: moi.former_names
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 {% endif %}
 
 {% set rows = (rows.push({
   key: {
-    text: "Date of birth"
+    text: "Date of birth" if not pageParams.isNoChangeJourney else "Born" 
   },
   value: {
     text: moiDateOfBirth
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -73,7 +73,7 @@
     text: moi.nationality
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney ]
   }
 }), rows) %}
 
@@ -86,7 +86,7 @@
       text: moi.second_nationality
     },
     actions: {
-      items: [ undefined ]
+      items: [ undefined if not pageParams.isNoChangeJourney ]
     }
   }), rows) %}
 {% endif %}
@@ -101,7 +101,7 @@
     html: moi.occupation
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney  ]
   }
 }), rows) %}
 
@@ -113,7 +113,7 @@
     html: moi.role_and_responsibilities
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.isNoChangeJourney  ]
   }
 }), rows) %}
 

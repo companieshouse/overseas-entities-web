@@ -23,7 +23,7 @@ import {
 let changeLinkUrl: string;
 let overseasEntityHeading: string;
 let whoIsCompletingChangeLink: string;
-let isStatement: boolean;
+let isNoChangeJourney: boolean;
 
 export const getDataForReview = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
   try {
@@ -35,13 +35,12 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
     overseasEntityHeading = OVERSEAS_ENTITY_SECTION_HEADING;
 
     if (noChangeFlag) {
-      isStatement = true;
+      isNoChangeJourney = true;
     } else {
       changeLinkUrl = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
       whoIsCompletingChangeLink = WHO_IS_MAKING_UPDATE_URL;
-      isStatement = false;
+      isNoChangeJourney = false;
     }
-
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
@@ -51,7 +50,7 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
       appData,
       pageParams: {
         isRegistration: false,
-        isStatement
+        isNoChangeJourney
       },
     });
   } catch (error) {

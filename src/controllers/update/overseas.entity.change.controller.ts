@@ -32,7 +32,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     const noChangeStatement = req.body[NoChangeKey];
 
     if (appData.update){
-      appData.update.no_change = noChangeStatement;
+      appData.update.no_change = noChangeStatement === "1" ? true : false;
       setExtraData(session, appData);
     }
 

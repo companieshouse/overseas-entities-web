@@ -20,7 +20,7 @@ export const companyDetailsMock: CompanyProfile = {
     legalForm: "The Wild West",
     originatingRegistry: {
       name: "Sheriff Office",
-      country: "US"
+      country: "UNITED STATES"
     }
   },
   registeredOfficeAddress: {

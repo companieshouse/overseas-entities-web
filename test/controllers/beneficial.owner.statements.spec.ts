@@ -59,7 +59,6 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   });
 
   describe("GET tests", () => {
-
     test("renders the beneficial owner statements page with Registration data", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_REGISTRATION_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);

@@ -20,11 +20,6 @@ import {
   CHS_URL
 } from "../config";
 
-let changeLinkUrl: string;
-let overseasEntityHeading: string;
-let whoIsCompletingChangeLink: string;
-let isNoChangeJourney: boolean;
-
 export const getDataForReview = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -32,25 +27,16 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
 
-    overseasEntityHeading = OVERSEAS_ENTITY_SECTION_HEADING;
-
-    if (noChangeFlag) {
-      isNoChangeJourney = true;
-    } else {
-      changeLinkUrl = OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-      whoIsCompletingChangeLink = WHO_IS_MAKING_UPDATE_URL;
-      isNoChangeJourney = false;
-    }
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
-      changeLinkUrl,
-      overseasEntityHeading,
-      whoIsCompletingChangeLink,
+      changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+      overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
+      whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
       appData,
       pageParams: {
         isRegistration: false,
-        isNoChangeJourney
+        noChangeFlag
       },
     });
   } catch (error) {

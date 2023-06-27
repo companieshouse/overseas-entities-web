@@ -233,4 +233,9 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
   });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_PRESENTER_URL} when calling previousPage on ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL].previousPage();
+    expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
+  });
 });

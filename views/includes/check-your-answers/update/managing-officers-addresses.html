@@ -7,7 +7,7 @@
 {% endif %}
 
 {% set moFormattedResidentialOrPrincipalAddressHtml %}
-  {% if pageParams.isNoChangeJourney %}
+  {% if pageParams.noChangeFlag %}
     <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% else %}
     {% set address = moAddress %}
@@ -32,7 +32,7 @@
       html: moFormattedResidentialOrPrincipalAddressHtml
     },
     actions: {
-      items: [ undefined if not pageParams.isNoChangeJourney ]
+      items: [ undefined if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 
@@ -44,6 +44,6 @@
       html: moFormattedServiceAddressHtml
     },
     actions: {
-      items: [ undefined if not pageParams.isNoChangeJourney ]
+      items: [ undefined if not pageParams.noChangeFlag ]
     }
 }), rows) %}

@@ -7,7 +7,7 @@
         html: "No"
     },
     actions: {
-        items: [ undefined if not pageParams.isNoChangeJourney ]
+        items: [ undefined if not pageParams.noChangeFlag ]
     }
     }), rows) %}
     {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
@@ -19,7 +19,7 @@
         html: resignedOn
     },
     actions: {
-        items: [ undefined if not pageParams.isNoChangeJourney ]
+        items: [ undefined if not pageParams.noChangeFlag ]
     }
     }), rows) %}
 {% else %}
@@ -31,7 +31,7 @@
         html: "Yes"
     },
     actions: {
-        items: [ undefined if not pageParams.isNoChangeJourney ]
+        items: [ undefined if not pageParams.noChangeFlag ]
     }
     }), rows) %}
 {% endif %}

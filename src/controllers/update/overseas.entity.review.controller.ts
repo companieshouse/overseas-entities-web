@@ -17,21 +17,22 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
     const overseasEntityHeading: string = "Check the overseas entity details";
 
-    // Fetch OE email address if not already in session.
-    const overseasEntityId = appData.overseas_entity_id;
-    if (!appData.entity?.email && overseasEntityId !== undefined) {
-      if (appData.entity === undefined) {
-        appData.entity = {};
+    if (config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH) {
+
+      // Fetch OE email address if not already in session.
+      const overseasEntityId = appData.overseas_entity_id;
+      if (!appData.entity?.email && overseasEntityId !== undefined) {
+        if (appData.entity === undefined) {
+          appData.entity = {};
+        }
+
+        const privateOeDetails = await getPrivateOeDetails(req, overseasEntityId);
+        appData.entity.email = privateOeDetails?.email_address;
+
+        // Cache in session and save out for save&resume.
+        setExtraData(session, appData);
+        await updateOverseasEntity(req, session);
       }
-
-      // For testing:
-      // const privateOeDetails = { email_address: "tester@test.com" }
-      const privateOeDetails = await getPrivateOeDetails(req, overseasEntityId);
-      appData.entity.email = privateOeDetails?.email_address;
-
-      // Cache in session and save out for save&resume.
-      setExtraData(session, appData);
-      await updateOverseasEntity(req, session);
     }
 
     return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {

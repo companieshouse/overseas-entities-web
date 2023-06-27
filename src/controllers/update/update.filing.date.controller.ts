@@ -50,10 +50,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       await updateOverseasEntity(req, session);
     }
 
-    // Add overseas entity id to next page URL so that it can be picked up by automated testing.
-    const appData: ApplicationData = getApplicationData(session);
-    const nextPageUrl = config.OVERSEAS_ENTITY_PRESENTER_URL + "?overseas_entity_id=" + appData.overseas_entity_id;
-    return res.redirect(nextPageUrl);
+    return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

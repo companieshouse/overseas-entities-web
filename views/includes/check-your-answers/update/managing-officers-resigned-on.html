@@ -1,37 +1,49 @@
 {% if resigned_on | length %}
-    {% set rows = (rows.push({
+  {% set rows = (rows.push({
     key: {
-        text: "Are they still a managing officer?"
+      text: "Are they still a managing officer?"
     },
     value: {
-        html: "No"
+      html: "No"
     },
     actions: {
-        items: [ undefined ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
+      moChangeLinkText + " - is resigned", 
+      "change-managing-officer-is-resigned-button"
+    ) ]
     }
-    }), rows) %}
-    {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
-    {% set rows = (rows.push({
+  }), rows) %}
+  {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
+  {% set rows = (rows.push({
     key: {
-        text: "Resigned on"
+      text: "Resigned on"
     },
     value: {
-        html: resignedOn
+      html: resignedOn
     },
     actions: {
-        items: [ undefined ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.RESIGNED_DATE, 
+      moChangeLinkText + " - resigned on", 
+      "change-managing-officer-resigned-on-button"
+    ) ]
     }
-    }), rows) %}
+  }), rows) %}
 {% else %}
-    {% set rows = (rows.push({
+  {% set rows = (rows.push({
     key: {
-        text: "Are they still a managing officer?"
+      text: "Are they still a managing officer?"
     },
     value: {
-        html: "Yes"
+      html: "Yes"
     },
     actions: {
-        items: [ undefined ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
+      moChangeLinkText + " - is resigned", 
+      "change-managing-officer-is-resigned-button"
+    ) ]
     }
-    }), rows) %}
+  }), rows) %}
 {% endif %}

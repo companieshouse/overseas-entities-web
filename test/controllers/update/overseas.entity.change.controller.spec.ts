@@ -85,7 +85,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
+      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
         {
           update:
@@ -107,7 +107,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
       expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
         {
           update:

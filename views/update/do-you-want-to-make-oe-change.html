@@ -31,20 +31,20 @@
         },
         items: [
           {
-            value: 1,
+            value: 0,
             text: "Yes, I need to make changes",
             hint: {
               text: "All changes must have been verified by a UK-regulated agent no more than 3 months before the date of this update statement."
             },
-            checked: no_change == 1,
+            checked: no_change == 0,
             attributes: {
               "data-event-id": "yes-make-oe-change"
             }
           },
           {
-            value: 0,
+            value: 1,
             text: "No, I do not need to make changes",
-            checked: no_change == 0,
+            checked: no_change == 1,
             attributes: {
               "data-event-id": "no-do-not-make-oe-change"
             }

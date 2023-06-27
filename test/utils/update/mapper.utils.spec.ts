@@ -1,4 +1,4 @@
-import { mapInputDate } from "../../../src/utils/update/mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapInputDate } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -31,4 +31,18 @@ describe("Test mapping utils", () => {
     expect(InputDate).toEqual({ day: "", month: "7", year: "2022" });
   });
 
+  describe("lowerCaseAllWordsExceptFirstLetters", () => {
+    test.each([
+      ["FRANCE", "France"],
+      ["BOSNIA AND HERZEGOVINA", "Bosnia and Herzegovina"],
+      ["ISLE OF MAN", "Isle of Man"],
+      ["SAINT VINCENT AND THE GRENADINES", "Saint Vincent and the Grenadines"],
+      ["BRITISH INDIAN OCEAN TERRITORY", "British Indian Ocean Territory"],
+      ["SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA", "Saint Helena, Ascension and Tristan da Cunha"],
+      ["SINT MAARTEN (DUTCH PART)", "Sint Maarten (Dutch part)"],
+      ["GUINEA-BISSAU", "Guinea-Bissau"]
+    ])(`Correctly reformats %s`, (str, expectedResult) => {
+      expect(lowerCaseAllWordsExceptFirstLetters(str)).toEqual(expectedResult);
+    });
+  });
 });

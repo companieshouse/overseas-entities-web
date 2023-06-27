@@ -90,7 +90,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
         {
           update:
                 expect.objectContaining({
-                  no_change: "1"
+                  no_change: true
                 })
         }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
@@ -99,7 +99,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
     test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on NO selection`, async () => {
       if (APPLICATION_DATA_MOCK.update){
-        APPLICATION_DATA_MOCK.update.no_change = "0";
+        APPLICATION_DATA_MOCK.update.no_change = false;
       }
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -112,7 +112,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
         {
           update:
                 expect.objectContaining({
-                  no_change: "0"
+                  no_change: false
                 })
         }));
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);

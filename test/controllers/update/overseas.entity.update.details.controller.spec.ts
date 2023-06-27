@@ -15,7 +15,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 
-import { APPLICATION_DATA_MOCK, UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK, COMPANY_NUMBER } from "../../__mocks__/session.mock";
 
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -23,7 +23,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   ANY_MESSAGE_ERROR,
-  ENTITY_PAGE_TITLE,
+  UPDATE_ENTITY_PAGE_TITLE,
   PAGE_TITLE_ERROR,
   SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
@@ -31,6 +31,7 @@ import {
   from "../../__mocks__/text.mock";
 import { EntityKey } from "../../../src/model/entity.model";
 import {
+  EntityNumberKey,
   IsOnRegisterInCountryFormedInKey,
   PublicRegisterJurisdictionKey,
   PublicRegisterNameKey,
@@ -69,7 +70,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
@@ -85,8 +86,8 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
-      expect(resp.text).toContain("value=\"Afghanistan\" selected");
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain("Afghanistan");
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
@@ -117,7 +118,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
         .send(UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ENTITY_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.ENTITY_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE_1_INVALID_CHARACTERS);
@@ -134,7 +135,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
     });
 
     test("redirect to the next page page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page without the register option", async () => {
-      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "" } );
+      mockPrepareData.mockReturnValueOnce( { ...ENTITY_OBJECT_MOCK, [IsOnRegisterInCountryFormedInKey]: "", [EntityNumberKey]: COMPANY_NUMBER } );
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
         .send(UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);

@@ -3,6 +3,7 @@ export const STARTING_NEW_PAGE_TITLE = "Do you want to continue with a saved app
 export const SOLD_LAND_FILTER_PAGE_TITLE = "Has the entity disposed of any property or land in England, Wales or Scotland since 28 February 2022?";
 export const INTERRUPT_CARD_PAGE_TITLE = "Before you start";
 export const ENTITY_PAGE_TITLE = "Tell us about the overseas entity";
+export const UPDATE_ENTITY_PAGE_TITLE = "Review overseas entity information";
 export const WHO_IS_MAKING_FILING_PAGE_TITLE = "Who is completing this registration?";
 export const OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE_TITLE = "Tell us about the UK-regulated agent that carried out verification checks";
 export const DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";

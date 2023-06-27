@@ -10,11 +10,12 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
-{% include "includes/list/errors.html" %}
-
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+
+    {% include "includes/list/errors.html" %}
+
     <form class="form" method="post">
       {{ govukRadios({
          classes: "govuk-radios",
@@ -34,11 +35,13 @@
        items: [
         {
           value: "yes",
-          text: "Yes"
+          text: "Yes",
+          checked: removeEntity === "yes"
         },
         {
           value: "no",
-          text: "No"
+          text: "No",
+          checked: removeEntity === "no"
          }
        ]
       }) }}

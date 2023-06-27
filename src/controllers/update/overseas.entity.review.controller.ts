@@ -6,6 +6,7 @@ import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { Session } from "@companieshouse/node-session-handler";
 import { getPrivateOeDetails } from "../../service/private.overseas.entity.details";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
+import { isActiveFeature } from '../../utils/feature.flag';
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -17,7 +18,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
     const overseasEntityHeading: string = "Check the overseas entity details";
 
-    if (!config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH) {
+    if (!isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
 
       // Fetch OE email address if not already in session.
       const overseasEntityId = appData.overseas_entity_id;

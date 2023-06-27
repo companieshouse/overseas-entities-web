@@ -17,7 +17,7 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
     const overseasEntityHeading: string = "Check the overseas entity details";
 
-    if (config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH) {
+    if (!config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH) {
 
       // Fetch OE email address if not already in session.
       const overseasEntityId = appData.overseas_entity_id;

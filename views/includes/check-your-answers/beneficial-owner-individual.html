@@ -56,12 +56,17 @@
   {% endif %}
 {% endset %}
 
-{# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+  {% set changeLinkUrl = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id %}
 {% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+  {% if boi.ch_reference %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + loop.index0 %}
+  {% else %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL + "/" + boi.id %}
+  {% endif %}
 {% endif %}
+
+{# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
 
 {% set rows = (rows.push({
@@ -73,7 +78,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.FIRST_NAME,
+      changeLinkUrl + OE_CONFIGS.FIRST_NAME,
       "Individual beneficial owner " + boiFullName + " - first name",
       "change-individual-beneficial-owner-first-name-button"
    ) if not pageParams.noChangeFlag ]
@@ -89,7 +94,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.LAST_NAME,
+      changeLinkUrl + OE_CONFIGS.LAST_NAME,
       "Individual beneficial owner " + boiFullName + " - last name",
       "change-individual-beneficial-owner-last-name-button"
     ) if not pageParams.noChangeFlag ]
@@ -118,7 +123,7 @@
   },
   actions: {
   items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.DATE_OF_BIRTH,
+      changeLinkUrl + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual beneficial owner " + boiFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
     ) if not pageParams.noChangeFlag ]
@@ -135,7 +140,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.NATIONALITY,
+      changeLinkUrl + OE_CONFIGS.NATIONALITY,
       "Individual beneficial owner " + boiFullName + " - nationality",
       "change-individual-beneficial-owner-nationality-button"
     ) if not pageParams.noChangeFlag ]
@@ -152,7 +157,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.SECOND_NATIONALITY,
+        changeLinkUrl + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual beneficial owner " + boiFullName + " - second_nationality",
         "change-individual-beneficial-owner-second-nationality-button"
       ) if not pageParams.noChangeFlag ]
@@ -169,7 +174,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      changeLinkUrl + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual beneficial owner " + boiFullName + " - home address",
       "change-individual-beneficial-owner-residential-address-button"
     ) if not pageParams.noChangeFlag ]
@@ -185,7 +190,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + boiChangeServiceAddressHtml,
+      changeLinkUrl + boiChangeServiceAddressHtml,
       "Individual beneficial owner " + boiFullName + " - correspondence address",
       "change-individual-beneficial-owner-correspondence-address-button"
     ) if not pageParams.noChangeFlag ]
@@ -214,7 +219,7 @@
   },
   actions: {
   items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.START_DATE,
+      changeLinkUrl + OE_CONFIGS.START_DATE,
       "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
       "change-individual-beneficial-owner-start-date-button"
     ) if not pageParams.noChangeFlag ]
@@ -231,7 +236,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.NOC_TYPES,
+      changeLinkUrl + OE_CONFIGS.NOC_TYPES,
       "Individual beneficial owner " + boiFullName + " - nature of control",
       "change-individual-beneficial-owner-nature-of-control-button"
     ) if not pageParams.noChangeFlag ]
@@ -247,7 +252,7 @@
   },
   actions: {
   items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
+      changeLinkUrl + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
       "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
       "change-individual-beneficial-owner-sanctions-list-button"
     ) if not pageParams.noChangeFlag ]
@@ -265,7 +270,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
+        changeLinkUrl + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-still-beneficial-owner-button"
       ) if not pageParams.noChangeFlag ]
@@ -281,7 +286,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
+        changeLinkUrl + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - ceased date",
         "change-individual-beneficial-owner-ceased-date-button"
       ) if not pageParams.noChangeFlag ]
@@ -297,7 +302,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + boi.id + OE_CONFIGS.IS_CEASED,
+        changeLinkUrl + OE_CONFIGS.IS_CEASED,
         "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
         "change-individual-beneficial-owner-ceased-date-button"
       ) if not pageParams.noChangeFlag ]

@@ -56,6 +56,16 @@ export const companyDetailsMock: CompanyProfile = {
   links: {}
 };
 
+export const companyDetailsPublicRegisterTrue: CompanyProfile = {
+  ...companyDetailsMock,
+  isOnRegisterInCountryFormedIn: true
+};
+
+export const companyDetailsPublicRegisterFalse: CompanyProfile = {
+  ...companyDetailsMock,
+  isOnRegisterInCountryFormedIn: false
+};
+
 export const pscMock: CompanyPersonWithSignificantControl = {
   nameElements: {
     forename: "Random",

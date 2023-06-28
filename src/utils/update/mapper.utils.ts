@@ -1,5 +1,5 @@
 import { Address, InputDate } from "../../model/data.types.model";
-import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { CompanyProfile, OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";
@@ -120,4 +120,14 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
     return `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`;
   }
   );
+};
+
+export const hasPublicRegisterDetails = (cp: CompanyProfile): boolean => {
+  if (cp.isOnRegisterInCountryFormedIn !== undefined){
+    return cp.isOnRegisterInCountryFormedIn;
+  } else if (cp.foreignCompanyDetails?.originatingRegistry?.name && cp.foreignCompanyDetails?.registrationNumber) {
+    return true;
+  } else {
+    return false;
+  }
 };

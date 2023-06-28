@@ -4,7 +4,7 @@ import { mapCompanyProfileToOverseasEntity } from '../../../src/utils/update/com
 import { OVER_SEAS_ENTITY_MOCK_DATA } from "../../__mocks__/session.mock";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { companyDetailsMock } from './mocks';
-import { lowerCaseAllWordsExceptFirstLetters, mapAddress } from '../../../src/utils/update/mapper.utils';
+import { hasPublicRegisterDetails, lowerCaseAllWordsExceptFirstLetters, mapAddress } from '../../../src/utils/update/mapper.utils';
 
 describe("Test company profile details mapping", () => {
 
@@ -43,7 +43,7 @@ describe("Test company profile details mapping", () => {
       },
       public_register_jurisdiction: "",
       public_register_name: companyDetailsMock.foreignCompanyDetails?.originatingRegistry?.name,
-      is_on_register_in_country_formed_in: companyDetailsMock.isOnRegisterInCountryFormedIn ? yesNoResponse.Yes : yesNoResponse.No,
+      is_on_register_in_country_formed_in: hasPublicRegisterDetails(companyDetailsMock) ? yesNoResponse.Yes : yesNoResponse.No,
       is_service_address_same_as_principal_address: yesNoResponse.No
     });
   });

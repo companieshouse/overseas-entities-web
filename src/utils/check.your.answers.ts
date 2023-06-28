@@ -17,7 +17,8 @@ import {
   WHO_IS_MAKING_UPDATE_URL,
   FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
-  CHS_URL
+  CHS_URL,
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL
 } from "../config";
 
 let changeLinkUrl: string;
@@ -62,9 +63,13 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
 export const postDataForReview = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
+    const noChangeReviewStatement = req.body["no_change_review_statement"];
+
+    if (noChangeReviewStatement === "0") {
+      return res.redirect(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+    }
 
     let transactionID: string, overseasEntityID: string;
     if (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME)) {

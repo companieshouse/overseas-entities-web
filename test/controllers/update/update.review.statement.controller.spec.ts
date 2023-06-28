@@ -177,6 +177,22 @@ describe("Update review overseas entity information controller tests", () => {
       // expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
     });
 
+    test(`should redirect to UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL when noChangeReviewStatement is '0'`, async () => {
+      const mockData = {
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        [Transactionkey]: "",
+        [OverseasEntityKey]: "",
+      };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: '0' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+    });
+
     test(`catch error on POST action for ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);

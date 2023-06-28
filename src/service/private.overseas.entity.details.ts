@@ -3,10 +3,6 @@ import { Request } from "express";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import { OverseasEntityExtraDetails } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
-import { ApplicationData } from "../model/application.model";
-
-export const hasRetrievedPrivateOeDetails = (appData: ApplicationData): boolean =>
-  !!appData.entity?.email;
 
 export const getPrivateOeDetails = async (
   req: Request,

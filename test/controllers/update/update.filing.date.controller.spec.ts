@@ -20,8 +20,8 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { createOverseasEntity, updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
-import { getPrivateOeDetails, hasRetrievedPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
-import { getApplicationData, addPrivateOverseasEntityDetailsToAppData } from "../../../src/utils/application.data";
+import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
+import { getApplicationData } from "../../../src/utils/application.data";
 import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
@@ -60,7 +60,6 @@ mockCreateOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
 const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
-const mockHasRetrievedPrivateOeDetails = hasRetrievedPrivateOeDetails as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
@@ -77,14 +76,11 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
 
-const mockAddPrivateOverseasEntityDetailsToAppData = addPrivateOverseasEntityDetailsToAppData as jest.Mock;
-
 describe("Update Filing Date controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockGetPrivateOeDetails.mockReset();
-    mockAddPrivateOverseasEntityDetailsToAppData.mockReset();
   });
 
   describe("GET tests", () => {
@@ -131,7 +127,6 @@ describe("Update Filing Date controller", () => {
     test('does not fetch private overseas entity data to app data if already exists', async () => {
       const mockData = { ...APPLICATION_DATA_MOCK };
       mockGetApplicationData.mockReturnValueOnce(mockData);
-      mockHasRetrievedPrivateOeDetails.mockReturnValueOnce(true);
 
       const resp = await request(app).get(config.UPDATE_FILING_DATE_URL);
 
@@ -140,7 +135,6 @@ describe("Update Filing Date controller", () => {
       expect(resp.text).toContain(BACK_LINK_FOR_UPDATE_FILING_DATE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(mockAddPrivateOverseasEntityDetailsToAppData).not.toHaveBeenCalled();
       expect(mockGetPrivateOeDetails).not.toHaveBeenCalled();
     });
 

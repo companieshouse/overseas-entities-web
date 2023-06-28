@@ -7,7 +7,7 @@ import { Request } from "express";
 import { createAndLogErrorRequest } from "../../src/utils/logger";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import { ERROR, getSessionRequestWithExtraData } from "../__mocks__/session.mock";
-import { getPrivateOeDetails, hasRetrievedPrivateOeDetails } from "../../src/service/private.overseas.entity.details";
+import { getPrivateOeDetails } from "../../src/service/private.overseas.entity.details";
 
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue(ERROR);
@@ -25,26 +25,6 @@ const privateOeDetails = { email_address: 'private@overseasentities.test' };
 describe(`Get private overseas entity details service suite`, () => {
   beforeEach (() => {
     jest.clearAllMocks();
-  });
-
-  test('hasRetrievedPrivateOeDetails should return true when appData contains entity email address', () => {
-    const appData = { entity: { email: 'private@overseasentities.test' } };
-
-    const result = hasRetrievedPrivateOeDetails(appData);
-
-    expect(result).toBe(true);
-  });
-
-  test.each([
-    ['no entity exists', undefined ],
-    ['no email exists', {} ],
-    ['email is empty', { email: '' } ],
-  ])('hasRetrievedPrivateOeDetails should return false when %p', (_, entity) => {
-    const appData = { entity };
-
-    const result = hasRetrievedPrivateOeDetails(appData);
-
-    expect(result).toBe(false);
   });
 
   test('getPrivateOeDetails should return private OE details from response when api response status is 200', async () => {

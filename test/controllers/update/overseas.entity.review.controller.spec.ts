@@ -133,6 +133,25 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched when no entity`, async () => {
+
+      const mockAppData = getPrivateDataAppDataMock();
+      mockAppData.entity = undefined;
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
+      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+    });
+
     test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private date fetched`, async () => {
 
       const appDataMock = getPrivateDataAppDataMock();
@@ -177,6 +196,43 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning nothing`, async () => {
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
+      mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning no email`, async () => {
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
+      mockGetPrivateOeDetails.mockReturnValueOnce({ });
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning empty email`, async () => {
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
+      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "" });
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
     test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
@@ -188,7 +244,6 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
     test("catch service error when rendering the Overseas Entity Review page on GET method with failing private data fetch", async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
-
       mockGetPrivateOeDetails.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 

@@ -33,6 +33,7 @@ import { updateContinueSavedFiling } from "./update/update.continue.saved.filing
 import { updateFilingDate } from "./update/update.filing.date.validation";
 import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validation";
 import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
+import { removeEntity } from "./update/remove.entity.validation";
 
 export const validator = {
   soldLandFilter,
@@ -79,5 +80,6 @@ export const validator = {
   updateContinueSavedFiling,
   updateFilingDate,
   reviewManagingOfficerCorporate,
-  anyTrustsInvolved
+  anyTrustsInvolved,
+  removeEntity,
 };

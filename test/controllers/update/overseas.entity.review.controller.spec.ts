@@ -139,7 +139,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       mockAppData.entity = undefined;
 
       mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);

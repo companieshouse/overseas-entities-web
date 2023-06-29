@@ -71,27 +71,37 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
 };
 
 const mapNatureOfControl = (psc: CompanyPersonWithSignificantControl, beneficialOwner: BeneficialOwnerIndividual| BeneficialOwnerOther | BeneficialOwnerGov, isBeneficialGov: boolean) => {
+  beneficialOwner.beneficial_owner_nature_of_control_types = [];
+  beneficialOwner.non_legal_firm_members_nature_of_control_types = [];
+
+  if (!isBeneficialGov) {
+    beneficialOwner['trustees_nature_of_control_types'] = [];
+  }
+
   psc.naturesOfControl?.forEach(natureType => {
     const controlKind = natureTypeMap.get(natureType);
     if (!controlKind) {
       return;
     }
     const natureOfControlType = natureOfControlTypeMap.get(natureType);
-    switch (controlKind) {
-        case 'BoNatureOfControl':
-          beneficialOwner.beneficial_owner_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-          break;
-        case "NonLegalNatureOfControl":
-          beneficialOwner.non_legal_firm_members_nature_of_control_types = natureOfControlType ? [ natureOfControlType ] : [];
-          break;
-        case "TrustNatureOfControl":
-          if (!isBeneficialGov){
-            beneficialOwner['trustees_nature_of_control_types'] = natureOfControlType ? [ natureOfControlType ] : [];
-          }
-          break;
-        default:
-          logger.error("Unexpected nature of control for BO: " + controlKind);
-          break;
+
+    if (natureOfControlType) {
+      switch (controlKind) {
+          case 'BoNatureOfControl':
+            beneficialOwner.beneficial_owner_nature_of_control_types?.push(natureOfControlType);
+            break;
+          case "NonLegalNatureOfControl":
+            beneficialOwner.non_legal_firm_members_nature_of_control_types?.push(natureOfControlType);
+            break;
+          case "TrustNatureOfControl":
+            if (!isBeneficialGov){
+              beneficialOwner['trustees_nature_of_control_types'].push(natureOfControlType);
+            }
+            break;
+          default:
+            logger.error("Unexpected nature of control for BO: " + controlKind);
+            break;
+      }
     }
   });
 };

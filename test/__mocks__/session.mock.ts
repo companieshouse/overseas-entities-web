@@ -89,6 +89,7 @@ export const FULL_PAYMENT_REDIRECT_PATH = `${PAYMENT_URL}/11KlXILS123zoLXn22/pay
 export const TRANSACTION_POST_PARAMS = {
   reference: REFERENCE,
   companyName: "overseasEntityName",
+  companyNumber: "OE111129",
   description: DESCRIPTION
 };
 export const TRANSACTION_CLOSED_PARAMS = {
@@ -904,7 +905,7 @@ export const UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK: managingOfficerTyp
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "occupation",
-  role_and_responsibilities: "role"
+  role_and_responsibilities: ""
 };
 
 export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -921,7 +922,7 @@ export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "occupation",
-  role_and_responsibilities: "role"
+  role_and_responsibilities: ""
 };
 
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {
@@ -1166,7 +1167,7 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_government_or_public_authority: [],
   review_managing_officers_individual: [],
   review_managing_officers_corporate: [],
-  no_change: "1"
+  no_change: true
 };
 
 export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
@@ -1418,7 +1419,7 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
   name: "Jimmy Wabb",
   nationality: "country1",
   occupation: "occupation",
-  officerRole: "role",
+  officerRole: "",
   resignedOn: "resigned"
 };
 

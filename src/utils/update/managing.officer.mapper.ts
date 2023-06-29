@@ -26,7 +26,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     service_address: service_address,
     start_date: mapInputDate(officer.appointedOn),
     occupation: officer.occupation,
-    role_and_responsibilities: officer.officerRole,
+    role_and_responsibilities: "",
   };
 };
 
@@ -47,7 +47,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     is_on_register_in_country_formed_in: officer.identification !== undefined && officer.identification?.registrationNumber ? yesNoResponse.Yes : yesNoResponse.No,
     public_register_name: officer.identification?.placeRegistered,
     registration_number: officer.identification?.registrationNumber,
-    role_and_responsibilities: officer.officerRole,
+    role_and_responsibilities: "",
   };
 };
 

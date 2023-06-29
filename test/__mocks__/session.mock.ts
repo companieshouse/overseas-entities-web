@@ -89,6 +89,7 @@ export const FULL_PAYMENT_REDIRECT_PATH = `${PAYMENT_URL}/11KlXILS123zoLXn22/pay
 export const TRANSACTION_POST_PARAMS = {
   reference: REFERENCE,
   companyName: "overseasEntityName",
+  companyNumber: "OE111129",
   description: DESCRIPTION
 };
 export const TRANSACTION_CLOSED_PARAMS = {

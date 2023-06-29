@@ -1,20 +1,21 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set moiDateOfBirth = dateMacros.formatDate("",moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
+{% set moiDateOfBirth = dateMacros.formatDate("", moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
 {% set managing_officer_individual = true %}
 {% set moAddress = moi.usual_residential_address %}
 {% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
 {% set moServiceAddress = moi.service_address %}
 {% set resigned_on = moi.resigned_on %}
 
-{% set moiChangeFormerNamesHtml = "" %}
-{% if moi.has_former_names == 1 %}
-  {% set moiChangeFormerNamesHtml = "#former_names" %}
-{% else %}
-  {% set moiChangeFormerNamesHtml = "#has_former_names" %}
+{% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
+
+{% if not pageParams.noChangeFlag %}
+  {% set moIndex = appData.managing_officers_individual.indexOf(moi)  %}
 {% endif %}
 
-{% set rows= [] %}
+{% set moChangeLinkText =  "Individual managing officer " + moi.first_name + " " + moi.last_name %}
+
+{% set rows = [] %}
 
 {% set rows = (rows.push({
   key: {
@@ -24,7 +25,11 @@
     text: moi.first_name
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FIRST_NAME, 
+      moChangeLinkText + " - first name", 
+      "change-individual-managing-officer-first-name-button"
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -36,11 +41,15 @@
     text: moi.last_name
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAST_NAME,
+      moChangeLinkText + " - last name", 
+      "change-individual-managing-officer-last-name-button"
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 {% if moi.former_names | length %}
-{% set rows = (rows.push({
+  {% set rows = (rows.push({
   key: {
     text: "Former names"
   },
@@ -48,20 +57,24 @@
     text: moi.former_names
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FORMER_NAMES,
+      moChangeLinkText + " - former names", 
+      "change-individual-managing-officer-former-names-button"
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 {% endif %}
 
 {% set rows = (rows.push({
   key: {
-    text: "Date of birth" if not pageParams.isNoChangeJourney else "Born" 
+    text: "Date of birth" if not pageParams.noChangeFlag else "Born" 
   },
   value: {
     text: moiDateOfBirth
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney ]
+    items: [ undefined if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -73,7 +86,11 @@
     text: moi.nationality
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NATIONALITY,
+      moChangeLinkText + " - nationality", 
+      "change-individual-managing-officer-nationality-button"
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -86,7 +103,11 @@
       text: moi.second_nationality
     },
     actions: {
-      items: [ undefined if not pageParams.isNoChangeJourney ]
+      items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.SECOND_NATIONALITY,
+      moChangeLinkText + " - second nationality", 
+      "change-individual-managing-officer-second-nationality-button"
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 {% endif %}
@@ -101,7 +122,11 @@
     html: moi.occupation
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney  ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.OCCUPATION,
+      moChangeLinkText + " - occupation", 
+      "change-individual-managing-officer-occupation-button"
+    ) if not pageParams.noChangeFlag  ]
   }
 }), rows) %}
 
@@ -113,7 +138,11 @@
     html: moi.role_and_responsibilities
   },
   actions: {
-    items: [ undefined if not pageParams.isNoChangeJourney  ]
+    items: [ CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+      moChangeLinkText + " - roles and responsibilities", 
+      "change-individual-managing-officer-role-and-responsibilities-button"
+    ) if not pageParams.noChangeFlag  ]
   }
 }), rows) %}
 

@@ -34,7 +34,7 @@ import {
   getTransaction
 } from "../../src/service/transaction.service";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
-import { EntityNameKey } from "../../src/model/data.types.model";
+import { EntityNameKey, EntityNumberKey } from "../../src/model/data.types.model";
 import {
   MOCK_GET_ERROR_TRANSACTION_RESPONSE,
   MOCK_GET_TRANSACTION_RESPONSE,
@@ -60,12 +60,12 @@ describe('Transaction Service test suite', () => {
 
   describe('POST Transaction', () => {
     test(`Should successfully post a transaction when ${EntityNameKey} is blank`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: undefined } );
+      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: undefined, [EntityNumberKey]: undefined } );
       mockMakeApiCallWithRetry.mockReturnValueOnce( { httpStatusCode: 200, resource: TRANSACTION } );
       const response = await postTransaction(req, session);
 
       expect(mockMakeApiCallWithRetry).toBeCalledWith(
-        serviceNameTransaction, fnNamePostTransaction, req, session, { ...TRANSACTION_POST_PARAMS, companyName: undefined }
+        serviceNameTransaction, fnNamePostTransaction, req, session, { ...TRANSACTION_POST_PARAMS, companyName: undefined, companyNumber: undefined }
       );
 
       expect(response).toEqual(TRANSACTION_ID);
@@ -73,7 +73,7 @@ describe('Transaction Service test suite', () => {
     });
 
     test(`Should successfully post a transaction when ${EntityNameKey} is not blank`, async () => {
-      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: 'overseasEntityName' } );
+      mockGetApplicationData.mockReturnValueOnce( { ...APPLICATION_DATA_MOCK, [EntityNameKey]: 'overseasEntityName', [EntityNumberKey]: 'OE111129' } );
       mockMakeApiCallWithRetry.mockReturnValueOnce( { httpStatusCode: 200, resource: TRANSACTION } );
       const response = await postTransaction(req, session);
 

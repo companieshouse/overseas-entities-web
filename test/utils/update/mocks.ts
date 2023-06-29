@@ -20,7 +20,7 @@ export const companyDetailsMock: CompanyProfile = {
     legalForm: "The Wild West",
     originatingRegistry: {
       name: "Sheriff Office",
-      country: "US"
+      country: "UNITED STATES"
     }
   },
   registeredOfficeAddress: {
@@ -92,7 +92,9 @@ export const pscMock: CompanyPersonWithSignificantControl = {
   naturesOfControl: [
     'ownership-of-shares-more-than-25-percent-registered-overseas-entity',
     'ownership-of-shares-more-than-25-percent-as-trust-registered-overseas-entity',
-    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity'
+    'ownership-of-shares-more-than-25-percent-as-firm-registered-overseas-entity',
+    'right-to-appoint-and-remove-directors-as-firm-registered-overseas-entity',
+    'right-to-appoint-and-remove-directors-registered-overseas-entity',
   ],
   isSanctioned: true,
 };
@@ -174,7 +176,7 @@ export const managingOfficerMock: CompanyOfficer = {
   name: "Wabb, Jimmy John",
   nationality: "country1",
   occupation: "occupation",
-  officerRole: "role",
+  officerRole: "",
   resignedOn: "resigned"
 };
 
@@ -214,6 +216,6 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
   name: "Wabb, Jimmy John",
   nationality: "country1, country2",
   occupation: "occupation",
-  officerRole: "role",
+  officerRole: "",
   resignedOn: "resigned"
 };

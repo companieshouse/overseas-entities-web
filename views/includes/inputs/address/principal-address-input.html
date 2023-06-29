@@ -90,69 +90,69 @@
 {% endset -%}
 
 {% if principal_address | length %}
-{{ govukRadios({
-  errorMessage: errors.is_service_address_same_as_principal_address if errors,
-  classes: "govuk-radios",
-  idPrefix: "is_service_address_same_as_principal_address",
-  name: "is_service_address_same_as_principal_address",
-  fieldset: {
-    legend: {
-      text: "Is the correspondence address the same as the principal or registered office address?",
-      isPageHeading: false,
-      classes: "govuk-fieldset__legend--m"
-    }
-  },
-  items: [
-    {
-      value: 1,
-      text: "Yes",
-      checked: is_service_address_same_as_principal_address == 1,
-      attributes: {
-        "data-event-id": "is-service-address-same-as-principal-address-yes-radio-option"
+  {{ govukRadios({
+    errorMessage: errors.is_service_address_same_as_principal_address if errors,
+    classes: "govuk-radios",
+    idPrefix: "is_service_address_same_as_principal_address",
+    name: "is_service_address_same_as_principal_address",
+    fieldset: {
+      legend: {
+        text: "Is the correspondence address the same as the principal or registered office address?",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
       }
-    },   {
-      value: 0,
-      text: "No",
-      checked: is_service_address_same_as_principal_address == 0,
-      attributes: {
-        "data-event-id": "is-service-address-same-as-principal-address-no-radio-option"
-      },
-      conditional: {
-        html: serviceAddressHtml
+    },
+    items: [
+      {
+        value: 1,
+        text: "Yes",
+        checked: is_service_address_same_as_principal_address == 1,
+        attributes: {
+          "data-event-id": "is-service-address-same-as-principal-address-yes-radio-option"
+        }
+      },   {
+        value: 0,
+        text: "No",
+        checked: is_service_address_same_as_principal_address == 0,
+        attributes: {
+          "data-event-id": "is-service-address-same-as-principal-address-no-radio-option"
+        },
+        conditional: {
+          html: serviceAddressHtml
+        }
       }
-    }
-  ]
-}) }}
+    ]
+  }) }}
 {% else %}
-{{ govukRadios({
-  errorMessage: errors.is_service_address_same_as_principal_address if errors,
-  classes: "govuk-radios",
-  idPrefix: "is_service_address_same_as_principal_address",
-  name: "is_service_address_same_as_principal_address",
-  fieldset: {
-    legend: {
-      text: "Is the correspondence address the same as the principal or registered office address?",
-      isPageHeading: false,
-      classes: "govuk-fieldset__legend--m"
-    }
-  },
-  items: [
-    {
-      value: 1,
-      text: "Yes",
-      attributes: {
-        "data-event-id": "is-service-address-same-as-principal-address-yes-radio-option"
+  {{ govukRadios({
+    errorMessage: errors.is_service_address_same_as_principal_address if errors,
+    classes: "govuk-radios",
+    idPrefix: "is_service_address_same_as_principal_address",
+    name: "is_service_address_same_as_principal_address",
+    fieldset: {
+      legend: {
+        text: "Is the correspondence address the same as the principal or registered office address?",
+        isPageHeading: false,
+        classes: "govuk-fieldset__legend--m"
       }
-    },   {
-      value: 0,
-      text: "No",
-      attributes: {
-        "data-event-id": "is-service-address-same-as-principal-address-no-radio-option"
-      },
-      conditional: {
-        html: serviceAddressHtml
+    },
+    items: [
+      {
+        value: 1,
+        text: "Yes",
+        attributes: {
+          "data-event-id": "is-service-address-same-as-principal-address-yes-radio-option"
+        }
+      },   {
+        value: 0,
+        text: "No",
+        attributes: {
+          "data-event-id": "is-service-address-same-as-principal-address-no-radio-option"
+        },
+        conditional: {
+          html: serviceAddressHtml
+        }
       }
-    }
-  ]
-}) }}
+    ]
+  }) }}
 {% endif %}

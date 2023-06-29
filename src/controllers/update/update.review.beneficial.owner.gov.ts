@@ -22,7 +22,13 @@ export const get = (req: Request, res: Response) => {
   if (appData?.beneficial_owners_government_or_public_authority){
     dataToReview = appData?.beneficial_owners_government_or_public_authority[Number(index)];
     principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    let undefinedPrincipalAddressProperties;
+    if (principalAddress !== undefined) {
+      undefinedPrincipalAddressProperties = Object.values(principalAddress).every(value => value === undefined);
+    }
+    if (!undefinedPrincipalAddressProperties) {
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    }
   }
 
   const templateOptions = {

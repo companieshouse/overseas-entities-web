@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { CHS_URL, UPDATE_FILING_DATE_URL } from '../config';
+import { CHS_URL, UPDATE_REMOVE_ENTITY_URL } from '../config';
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
@@ -16,7 +16,7 @@ export const companyAuthentication = (req: Request, res: Response, next: NextFun
     if (entityNumber) {
       const authMiddlewareConfig: AuthOptions = {
         chsWebUrl: CHS_URL,
-        returnUrl: UPDATE_FILING_DATE_URL,
+        returnUrl: UPDATE_REMOVE_ENTITY_URL,
         companyNumber: entityNumber
       };
       logger.infoRequest(req, `Invoking company authentication with (${ entityNumber }) present in session`);

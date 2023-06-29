@@ -19,8 +19,8 @@
     <form class="form" method="post">
       {{ govukRadios({
          classes: "govuk-radios",
-         idPrefix: "removeEntity",
-         name: "removeEntity",
+         idPrefix: "remove_entity",
+         name: "remove_entity",
          error: errors.removeEntity if errors,
          fieldset: {
            legend: {
@@ -34,14 +34,14 @@
        },
        items: [
         {
-          value: "yes",
+          value: "true",
           text: "Yes",
-          checked: removeEntity === "yes"
+          checked: remove_entity === "true"
         },
         {
-          value: "no",
+          value: "false",
           text: "No",
-          checked: removeEntity === "no"
+          checked: remove_entity === "false"
          }
        ]
       }) }}

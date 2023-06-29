@@ -29,7 +29,7 @@
   "license": "MIT",
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "^2.0.85",
+    "@companieshouse/api-sdk-node": "github:companieshouse/api-sdk-node#roe-2275-remove-entity-poc",
     "@companieshouse/node-session-handler": "^4.1.9",
     "@companieshouse/structured-logging-node": "^1.0.8",
     "@companieshouse/web-security-node": "^2.0.3",
@@ -37,8 +37,10 @@
     "express": "^4.17.3",
     "express-validator": "^6.14.0",
     "govuk-frontend": "^4.0.1",
+    "install": "^0.13.0",
     "ioredis": "^4.28.5",
     "luxon": "^2.4.0",
+    "npm": "^9.7.2",
     "nunjucks": "^3.2.3",
     "uuid": "^8.3.2"
   },

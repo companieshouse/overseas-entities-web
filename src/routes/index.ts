@@ -80,6 +80,7 @@ import {
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
   removeEntity,
+  removeConfirmation,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -342,6 +343,7 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .post(updateInterruptCard.post);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
+router.get(config.REMOVE_CONFIRMATION_URL, authentication, companyAuthentication, removeConfirmation.get);
 
 router.get(config.OVERSEAS_ENTITY_QUERY_URL, authentication, overseasEntityQuery.get);
 router.post(config.OVERSEAS_ENTITY_QUERY_URL, authentication, ...validator.overseasEntityQuery, checkValidations, overseasEntityQuery.post);
@@ -657,7 +659,6 @@ router.route(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
 router.route(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   .all(
     authentication,
-    companyAuthentication,
     navigation.hasOverseasEntity
   )
   .get(noChangeRegistrableBeneficialOwner.get)
@@ -678,7 +679,7 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
 
 router.route(config.UPDATE_REMOVE_ENTITY_URL)
-  .all(authentication)
+  .all(authentication, companyAuthentication)
   .get(removeEntity.get)
   .post(...validator.removeEntity, checkValidations, removeEntity.post);
 

@@ -45,7 +45,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       setExtraData(session, { ...getApplicationData(req.session), [IsRemoveEntityKey]: isRemove });
       await updateOverseasEntity(req, session);
     }
-    return res.redirect(config.REMOVE_CONFIRMATION_URL);
+    return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

@@ -61,6 +61,9 @@
             value: {
               text: isProtectedInformation 
             },
+            attributes: {
+              "data-event-id": "nochange-changelink-beneficial-owner-review-statement-button"
+            },
             actions: {
               items: [ CREATE_CHANGE_LINK(
                 OE_CONFIGS.SECURE_UPDATE_FILTER_CHANGELINK,
@@ -76,6 +79,9 @@
             value: {
               text: updateStatementDate 
             },
+            attributes: {
+              "data-event-id":  "nochange-changelink-filingdate-review-statement-button"
+            },
             actions: {
               items: [ CREATE_CHANGE_LINK(
                 OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
@@ -90,6 +96,9 @@
             },
             value: {
               text: noChange
+            },
+            attributes: {
+              "data-event-id": "nochange-changelink-entity-review-statement-button"
             },
             actions: {
               items: [ CREATE_CHANGE_LINK(
@@ -126,6 +135,9 @@
           value: {
             text: identifiedStatementText
           },
+          attributes: {
+            "data-event-id": "nochange-changelink-registrable-beneficial-owner-statement-button"
+          },
           actions: {
             items: [ CREATE_CHANGE_LINK(
               OE_CONFIGS.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK,
@@ -147,6 +159,9 @@
           },
           value: {
             text: ceasedStatementText
+          },
+          attributes: {
+            "data-event-id": "nochange-changelink-ceased-beneficial-owner-statement-button"
           },
           actions: {
             items: [ CREATE_CHANGE_LINK(

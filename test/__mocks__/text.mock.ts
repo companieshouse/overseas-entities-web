@@ -193,7 +193,7 @@ export const UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT = "/update-an-overseas-en
 export const UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER = "/update-an-overseas-entity/review-beneficial-owner-other?index=";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/update-beneficial-owner-type";
-export const UPDATE_CONFIRMATION_PAGE_TITLE = "Application submitted";
+export const UPDATE_CONFIRMATION_PAGE_TITLE = "Update statement submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
 export const WHO_IS_MAKING_UPDATE_PAGE_TITLE = "Who is completing this update?";

@@ -33,7 +33,9 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
   appData.update.review_managing_officers_corporate = [];
 };
 
-const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
+
+
+export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs) {
     for (const psc of (pscs.items || [])) {
@@ -57,7 +59,7 @@ const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) 
   }
 };
 
-const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {

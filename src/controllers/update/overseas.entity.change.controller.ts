@@ -6,15 +6,16 @@ import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { NoChangeKey } from "../../model/update.type.model";
+import { retrieveBeneficialOwners, retrieveManagingOfficers } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
-
     return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
       templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+      [NoChangeKey]: appData.update?.no_change,
       ...appData,
     });
   } catch (error){
@@ -37,6 +38,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     }
 
     if (noChangeStatement === "1"){
+      await resetChangeData(req, appData)
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
@@ -49,3 +51,25 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     next(errors);
   }
 };
+
+export const resetChangeData = async (req: Request, appData: ApplicationData) => {
+  if(appData){
+    appData.who_is_registering = undefined;
+    appData.overseas_entity_due_diligence = undefined;
+    appData.beneficial_owners_individual = undefined;
+    appData.beneficial_owners_corporate =  undefined;
+    appData.beneficial_owners_government_or_public_authority = undefined;
+    appData.managing_officers_corporate = undefined;
+    appData.managing_officers_individual = undefined;
+    appData.beneficial_owners_statement = undefined;
+  }
+
+  await existingBoMoForNoChange(req, appData);
+  console.log(`*************** app data update is ${JSON.stringify(appData.update)}`)
+}
+
+
+const existingBoMoForNoChange = async (req: Request,  appData: ApplicationData) => {
+  await retrieveBeneficialOwners(req, appData);
+  await retrieveManagingOfficers(req, appData);
+}

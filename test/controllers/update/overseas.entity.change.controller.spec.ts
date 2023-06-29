@@ -23,6 +23,7 @@ import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { NoChangeKey } from '../../../src/model/update.type.model';
 import { hasOverseasEntity } from '../../../src/middleware/navigation/update/has.overseas.entity.middleware';
+import exp from 'constants';
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -136,4 +137,28 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
+
+  describe("RESET post data", () => {
+    // test("That session data reset when user choose no change from change journey", async() => {
+      
+    //   const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+    //   .send({ [NoChangeKey]: "0" });
+    //   mockGetApplicationData.mockReturnValueOnce({
+    //     ...APPLICATION_DATA_MOCK,
+    //   });
+    //   expect(resp.status).toEqual(302);
+    //   expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
+    //   // const noChangeResp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL).send({ [NoChangeKey]: "YES" })   
+    //   // console.log(`change resp is ${JSON.stringify(changeResp.text)}`)
+    //   // console.log(`no change resp is ${JSON.stringify(noChangeResp.text)}`)
+    //   expect(mockGetApplicationData).toReturnWith(expect.objectContaining(
+    //     {
+    //       update: {
+
+    //       }
+    //     }
+    //   ))
+    // })
+   
+  })
 });

@@ -228,12 +228,18 @@
             {
               value: "1",
               text: "Yes, the information is correct",
-              checked: no_change_review_statement == 1
+              checked: no_change_review_statement == 1,
+              attributes: {
+                "data-event-id": "no-change-review-statements-radio-option-yes"
+              }
             },
             {
               value: "0",
               text: "No, I need to make changes",
-              checked: no_change_review_statement == 0
+              checked: no_change_review_statement == 0,
+              attributes: {
+                "data-event-id": "no-change-review-statements-radio-option-no"
+              }
             }
           ]
           }) }}

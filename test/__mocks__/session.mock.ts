@@ -1176,6 +1176,7 @@ export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
 };
 
 export const UPDATE_OWNERS_DATA_WITH_VALUE: updateType.Update = {
+  date_of_creation: { day: "1", month: "1", year: "2011" },
   review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
   review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
   review_managing_officers_individual: [MANAGING_OFFICER_OBJECT_MOCK]

@@ -53,7 +53,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
 
 const noChangeHandler = (req: Request, res: Response, next: NextFunction, registrableOwnerChoice) => {
   if (registrableOwnerChoice === "0"){
-    return res.redirect(""); // UAR-584
+    return res.redirect(config.UPDATE_REVIEW_STATEMENT_URL);
   } else {
     return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
   }

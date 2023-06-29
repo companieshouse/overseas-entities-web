@@ -8,7 +8,11 @@
 {% set resigned_on = moi.resigned_on %}
 
 {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
-{% set moIndex = appData.managing_officers_individual.indexOf(moi) %}
+
+{% if not pageParams.noChangeFlag %}
+  {% set moIndex = appData.managing_officers_individual.indexOf(moi)  %}
+{% endif %}
+
 {% set moChangeLinkText =  "Individual managing officer " + moi.first_name + " " + moi.last_name %}
 
 {% set rows = [] %}
@@ -25,7 +29,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FIRST_NAME, 
       moChangeLinkText + " - first name", 
       "change-individual-managing-officer-first-name-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -41,7 +45,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAST_NAME,
       moChangeLinkText + " - last name", 
       "change-individual-managing-officer-last-name-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 {% if moi.former_names | length %}
@@ -57,20 +61,20 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FORMER_NAMES,
       moChangeLinkText + " - former names", 
       "change-individual-managing-officer-former-names-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 {% endif %}
 
 {% set rows = (rows.push({
   key: {
-    text: "Date of birth"
+    text: "Date of birth" if not pageParams.noChangeFlag else "Born" 
   },
   value: {
     text: moiDateOfBirth
   },
   actions: {
-    items: [ undefined ]
+    items: [ undefined if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -86,7 +90,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NATIONALITY,
       moChangeLinkText + " - nationality", 
       "change-individual-managing-officer-nationality-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -103,7 +107,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.SECOND_NATIONALITY,
       moChangeLinkText + " - second nationality", 
       "change-individual-managing-officer-second-nationality-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 {% endif %}
@@ -122,7 +126,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.OCCUPATION,
       moChangeLinkText + " - occupation", 
       "change-individual-managing-officer-occupation-button"
-    ) ]
+    ) if not pageParams.noChangeFlag  ]
   }
 }), rows) %}
 
@@ -138,7 +142,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
       moChangeLinkText + " - roles and responsibilities", 
       "change-individual-managing-officer-role-and-responsibilities-button"
-    ) ]
+    ) if not pageParams.noChangeFlag  ]
   }
 }), rows) %}
 

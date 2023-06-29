@@ -11,7 +11,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
       moChangeLinkText + " - is resigned", 
       "change-managing-officer-is-resigned-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
   {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
@@ -27,7 +27,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.RESIGNED_DATE, 
       moChangeLinkText + " - resigned on", 
       "change-managing-officer-resigned-on-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 {% else %}
@@ -43,7 +43,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
       moChangeLinkText + " - is resigned", 
       "change-managing-officer-is-resigned-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 {% endif %}

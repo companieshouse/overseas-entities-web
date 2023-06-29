@@ -34,6 +34,43 @@
   %}
 {% endif %}
 
+{% set isEmailPrivate %}
+    {% if not appData.entity.email and pageParams.noChangeFlag %}
+      <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+    {% elif appData.entity.email %}
+      {{ appData.entity.email }}
+    {% endif %}
+{% endset %}
+
+{% if pageParams.noChangeFlag %}
+  {% set jurisdiction = 
+    {
+      key: {
+        text: "Jurisdiction"
+      },
+      value: {
+        text: appData.entity.public_register_jurisdiction
+      },
+      actions: {
+        items : [" " if not pageParams.noChangeFlag]
+      }
+    }
+  %}
+  {% set registrationNumber = {
+    key: {
+      text: "Registration number"
+    },
+    value: {
+      text: appData.entity.registration_number
+    },
+    actions: {
+      items : [" " if not pageParams.noChangeFlag]
+    }
+  }
+  %}
+{% endif %}
+
+
 <h2 class="govuk-heading-l">{{ overseasEntityHeading }}</h2>
 
 {{ govukSummaryList({
@@ -46,7 +83,7 @@
           text: appData.entity_name
         },
         actions: {
-          items : [entityNameLink]
+              items : [entityNameLink if not pageParams.noChangeFlag]
         }
       },
       {
@@ -61,7 +98,7 @@
             changeLinkUrl + OE_CONFIGS.INCORPORATION_COUNTRY,
             "Country it was formed in",
             "change-entity-incorporation-country-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -76,7 +113,7 @@
             changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Principal or registered office address",
             "change-entity-principal-address-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -91,7 +128,7 @@
             changeLinkUrl + OE_CONFIGS.CHANGE_SERVICE_ADDRESS,
             "Correspondence address",
             "change-entity-correspondence-address-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -99,14 +136,14 @@
           text: "Email address at the overseas entity we should send communications to"
         },
         value: {
-          text: appData.entity.email
+          html: isEmailPrivate
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.EMAIL,
-            "Email address at the overseas entity should we send communications to",
+            "Email address at the overseas entity we should send communications to",
             "change-entity-email-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -121,7 +158,7 @@
             changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Legal form",
             "change-entity-legal-form-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -136,7 +173,7 @@
             changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Governing law",
             "change-entity-governing-law-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -151,8 +188,9 @@
             changeLinkUrl + OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN,
             "Already on a public register in the country it was formed in",
             "change-entity-public-register-button"
-          )]
+          ) if not pageParams.noChangeFlag]
         }
-      }
+      },
+      jurisdiction, registrationNumber
     ]
 }) }}

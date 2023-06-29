@@ -1,5 +1,4 @@
 import { Router } from "express";
-
 import * as config from "../config";
 import {
   beneficialOwnerGov,
@@ -79,6 +78,7 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
+  updateReviewStatement
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -661,6 +661,15 @@ router.route(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
   )
   .get(noChangeRegistrableBeneficialOwner.get)
   .post(...validator.registrableBeneficialOwner, checkValidations, noChangeRegistrableBeneficialOwner.post);
+
+router.route(config.UPDATE_REVIEW_STATEMENT_URL)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasOverseasEntity
+  )
+  .get(updateReviewStatement.get)
+  .post(updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

@@ -17,7 +17,9 @@
 {% endset %}
 
 {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
-{% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
+{% if not pageParams.noChangeFlag %}
+  {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
+{% endif %}
 {% set moChangeLinkText =  "Corporate managing officer " + moc.name %}
 
 {% set rows = [] %}
@@ -34,7 +36,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NAME, 
       moChangeLinkText + " - Name", 
       "change-corporate-managing-officer-name-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -52,7 +54,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LEGAL_FORM, 
       moChangeLinkText + " - Legal form", 
       "change-corporate-managing-officer-legal-form-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -68,7 +70,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAW_GOVERNED, 
       moChangeLinkText + " - Law governed", 
       "change-corporate-managing-officer-governing-law-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -84,7 +86,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + mocChangePublicregisterNameHtml, 
       moChangeLinkText + " - Public register", 
       "change-corporate-managing-officer-public-register-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 {% set rows = (rows.push({
@@ -99,7 +101,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES, 
       moChangeLinkText + " - Role and responsibilities", 
       "change-corporate-managing-officer-role-and-responsibilities-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -115,7 +117,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_FULL_NAME, 
       moChangeLinkText + " - Contact full name", 
       "change-corporate-managing-officer-contact-full-name-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
   }
 }), rows) %}
 
@@ -131,7 +133,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_EMAIL, 
       moChangeLinkText + " - Contact email", 
       "change-corporate-managing-officer-contact-email-address-button"
-    ) ]
+    ) if not pageParams.noChangeFlag]
   }
 }), rows) %}
 {% include "includes/check-your-answers/update/managing-officers-resigned-on.html" %}

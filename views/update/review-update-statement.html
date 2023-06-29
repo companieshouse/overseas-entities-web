@@ -1,0 +1,242 @@
+{% extends "layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% block pageTitle %}
+  Review update statement before submitting - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% set isProtectedInformation %}
+  {% if appData.is_secure_register == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set noChange %}
+  {% if appData.update.no_change == 1 %}
+    Yes
+  {% else %}
+    No, I do not need to make changes
+  {% endif %}
+{% endset %}
+
+{% set updateStatementDate = dateMacros.formatDate(appData.update.filing_date["day"], appData.update.filing_date["month"], appData.update.filing_date["year"]) %}
+
+{% set identifiedStatementText %}
+    {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
+      All beneficial owners have been identified and all required information has been provided.
+    {% elif appData.beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS" %}
+      Some beneficial owners have been identified and all required information has been provided.
+    {% elif appData.beneficial_owners_statement == "NONE_IDENTIFIED" %}
+      No beneficial owners have been identified
+    {% endif %}
+{% endset %}
+
+{% set beneficialOwerSectionHeading %}
+  {% if not pageParams.noChangeFlag %}
+    Beneficial owners you have added
+  {% else %}
+    Beneficial owners
+  {% endif %}
+{% endset %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
+      <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+            },
+            value: {
+              text: isProtectedInformation 
+            },
+            actions: {
+              items: [CREATE_CHANGE_LINK() ]
+            }          
+          },
+          {
+            key: {
+              text: "Date of the update statement"
+            },
+            value: {
+              text: updateStatementDate 
+            },
+            actions: {
+              items: [CREATE_CHANGE_LINK() ]
+            }    
+          },
+          {
+            key: {
+              text: "Do you need to make any changes to this overseas entity?"
+            },
+            value: {
+              text: noChange
+            },
+            actions: {
+              items: [CREATE_CHANGE_LINK() ]
+            }    
+          }
+        ]
+    }) }}
+
+    {% include "includes/check-your-answers/presenter.html" %}
+    <br>
+
+{% set ceasedStatementText %}
+    {% if appData.update.registrable_beneficial_owner == 0 %}
+    The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.
+    {% elif appData.update.registrable_beneficial_owner == 1%}
+    The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.
+    {% endif %}
+{% endset %}
+
+  <h2 class="govuk-heading-l">Beneficial owner statements</h2>
+  
+  <h2 class="govuk-heading-m">Has the overseas entity identified any registrable beneficial owners?</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: identifiedStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+              identifiedStatementText,
+              "update-change-registrable-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+  <h2 class="govuk-heading-m">Has anyone become or ceased to be a registrable beneficial owner during the update period?</h2>
+
+  {{ govukSummaryList({
+      rows: [
+        {
+          key: {
+            text: "Statement"
+          },
+          value: {
+            text: ceasedStatementText
+          },
+          actions: {
+            items: [ CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+              ceasedStatementText,
+              "update-change-ceased-beneficial-owner-statement-button"
+            ) ]
+          }
+        }
+      ]
+  }) }}
+
+      <br>
+      {% include "includes/entity.html" %}
+      
+      {% set boTextDisplayed = false %}
+      {% if (appData.update.review_beneficial_owners_individual and appData.update.review_beneficial_owners_individual.length > 0) %}
+        {% set hideChangeLinksForNonEditableFields = true %}
+        {% set existingIndividualBO = appData.update.review_beneficial_owners_individual %}
+        {% if (existingIndividualBO.length > 0)%}
+          {% set boTextDisplayed = true %}
+          <br>
+          <h2 class="govuk-heading-l">Beneficial owners</h2>
+        {% endif %}
+        {% for boi in existingIndividualBO %}
+          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+        {% endfor %}
+      {% endif %}
+      {% if (appData.update.review_beneficial_owners_corporate and appData.update.review_beneficial_owners_corporate.length > 0) %}
+        {% set existingCorporateBO = appData.update.review_beneficial_owners_corporate %}
+        {% for boc in existingCorporateBO %}
+          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+        {% endfor %}
+      {% endif %}
+      {% if (appData.update.review_beneficial_owners_government_or_public_authority and appData.update.review_beneficial_owners_government_or_public_authority.length > 0) %}
+        {% set existingGovernmentBO = appData.update.review_beneficial_owners_government_or_public_authority %}
+        {% for bog in existingGovernmentBO %}
+          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+        {% endfor %}
+      {% endif %}
+
+      {% set existingMoTextDisplayed = false %}
+      {% if (appData.update.review_managing_officers_individual and appData.update.review_managing_officers_individual.length > 0) %}
+      {% set hideChangeLinksForNonEditableFields = true %}
+        {% set existingIndividualMO =  appData.update.review_managing_officers_individual %}
+        {% if (existingIndividualMO.length > 0)%}
+          {% set existingMoTextDisplayed = true %}
+          <br>
+          <h2 class="govuk-heading-l">Managing officers</h2>
+        {% endif %}
+        {% for moi in existingIndividualMO %}
+          {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
+        {% endfor %}
+      {% endif %}
+      {% if (appData.update.review_managing_officers_corporate and appData.update.review_managing_officers_corporate.length > 0) %}
+      {% set existingCorporateMO = appData.update.review_managing_officers_corporate  %}
+      {% for moc in existingCorporateMO %}
+        {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
+      {% endfor %}
+    {% endif %}
+    
+
+
+      <br>
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.no_change_review_statement if errors,
+          classes: "govuk-radios--inline",
+          idPrefix: "no_change_review_statement",
+          name: "no_change_review_statement",
+          fieldset: {
+          legend: {
+            text: "Is all the information in this update statement correct?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+          }
+          },
+          items: [
+            {
+              value: "1",
+              text: "Yes, the information is correct",
+              checked: no_change_review_statement == 1
+            },
+            {
+              value: "0",
+              text: "No, I need to make changes",
+              checked: no_change_review_statement == 0
+            }
+          ]
+          }) }}
+
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Continue",
+            attributes: {
+              "id": "submit"
+            }
+          }) }}
+
+          {% include "includes/print-button.html" %}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

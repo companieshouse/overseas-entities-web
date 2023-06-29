@@ -11,8 +11,12 @@
 {% endif %}
 
 {% set moFormattedResidentialOrPrincipalAddressHtml %}
-  {% set address = moAddress %}
-  {% include "includes/display_address.html" %}
+  {% if pageParams.noChangeFlag %}
+    <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+  {% else %}
+    {% set address = moAddress %}
+    {% include "includes/display_address.html" %}
+  {% endif %}
 {% endset %}
 
 {% set moFormattedServiceAddressHtml %}
@@ -39,7 +43,7 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeResidentialOrPrincipalAddress, 
       moChangeLinkText + " - residential or principal address", 
       "change-managing-officer-residential-or-principal-address-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
   }), rows) %}
 
@@ -55,6 +59,6 @@
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeCorrespondenceAddress, 
       moChangeLinkText + " - correspondence address", 
       "change-managing-officer-correspondence-address-button"
-    ) ]
+    ) if not pageParams.noChangeFlag ]
     }
 }), rows) %}

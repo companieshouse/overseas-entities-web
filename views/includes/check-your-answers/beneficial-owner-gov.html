@@ -55,7 +55,7 @@
           items:
             [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.IS_CEASED,
             "Government or public authority beneficial owner " + bogFullName + " - are they still a beneficial owner?",
-            "change-government-or-public-authority-still-beneficial-owner-button" ) ] } } %}
+            "change-government-or-public-authority-still-beneficial-owner-button" ) if not pageParams.noChangeFlag ] } } %}
     {% set ceasedDate ={
       key: {
         text: "Ceased date" },
@@ -63,7 +63,7 @@
         actions: {
           items: [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.CEASED_DATE,
           "Government or public authority beneficial owner " + bogFullName + " - ceased date",
-          "change-government-or-public-authority-ceased-date-button" ) ] } } %}
+          "change-government-or-public-authority-ceased-date-button" ) if not pageParams.noChangeFlag ] } } %}
   {% else %}
     {% set isStillBeneficialOwner = {
       key: {
@@ -72,7 +72,7 @@
         actions: {
           items: [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.IS_CEASED,
           "Government or public authority beneficial owner " + bogFullName + " - are they still a beneficial owner?",
-          "change-government-or-public-authority-still-beneficial-owner-button" ) ] } } %}
+          "change-government-or-public-authority-still-beneficial-owner-button" ) if not pageParams.noChangeFlag ] } } %}
   {% endif %}
 {% endif %}
 
@@ -102,7 +102,7 @@
             changeLinkUrl + OE_CONFIGS.NAME,
             "Government or public authority beneficial owner " + bog.name + " - name",
             "change-government-or-public-authority-beneficial-owner-name-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -117,7 +117,7 @@
             changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Government or public authority beneficial owner " + bog.name + " - principal or registered office address",
             "change-government-or-public-authority-beneficial-owner-principal-address-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -132,7 +132,7 @@
             changeLinkUrl + bogChangeServiceAddressHtml,
             "Government or public authority beneficial owner " + bog.name + " - correspondence address",
             "change-government-or-public-authority-beneficial-owner-correspondence-address-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -147,7 +147,7 @@
             changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Government or public authority beneficial owner " + bog.name + " - legal form",
             "change-government-or-public-authority-beneficial-owner-legal-form-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -162,7 +162,7 @@
             changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Government or public authority beneficial owner " + bog.name + " - governing law",
             "change-government-or-public-authority-beneficial-owner-law-governed-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -173,7 +173,7 @@
           text: bogStartDate
         },
         actions: {
-          items: [ changeLink ]
+          items: [ changeLink if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -188,7 +188,7 @@
             changeLinkUrl + OE_CONFIGS.NOC_TYPES,
             "Government or public authority beneficial owner " + bog.name + " - nature of control",
             "change-government-or-public-authority-beneficial-owner-nature-of-control-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       {
@@ -203,7 +203,7 @@
             changeLinkUrl + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
             "Government or public authority beneficial owner " + bog.name + " - is it on the sanctions list?",
             "change-government-or-public-authority-beneficial-owner-sanctions-list-button"
-          ) ]
+          ) if not pageParams.noChangeFlag ]
         }
       },
       isStillBeneficialOwner, ceasedDate

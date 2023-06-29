@@ -16,7 +16,7 @@ export const postTransaction = async (req: Request, session: Session): Promise<s
   const companyName = applicationData[EntityNameKey];
   const companyNumber = applicationData[EntityNumberKey];
 
-  const transaction: Transaction = { reference: REFERENCE, companyName, companyNumber, description: DESCRIPTION };
+  const transaction: Transaction = companyNumber === undefined ? { reference: REFERENCE, companyName, description: DESCRIPTION } : { reference: REFERENCE, companyName, companyNumber, description: DESCRIPTION };
 
   const response = await makeApiCallWithRetry(
     "transaction",

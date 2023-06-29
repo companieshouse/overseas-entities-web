@@ -19,7 +19,8 @@ const req = { session } as Request;
 
 const serviceName = 'overseasEntity';
 const functionName = 'getOverseasEntityDetails';
-const companyNumber = 'OE111129';
+const transactionId = '13579';
+const overseasEntityId = '2468';
 const privateOeDetails = { email_address: 'private@overseasentities.test' };
 
 describe(`Get private overseas entity details service suite`, () => {
@@ -32,9 +33,9 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getPrivateOeDetails(req, companyNumber);
+    const response = await getPrivateOeDetails(req, transactionId, overseasEntityId);
 
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, companyNumber);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, transactionId, overseasEntityId);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(privateOeDetails);
   });
@@ -44,9 +45,9 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getPrivateOeDetails(req, companyNumber);
+    const response = await getPrivateOeDetails(req, transactionId, overseasEntityId);
 
-    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, companyNumber);
+    expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, functionName, req, session, transactionId, overseasEntityId);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(response).toEqual(undefined);
   });
@@ -56,7 +57,7 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
-    await expect(getPrivateOeDetails(req, companyNumber)).rejects.toThrow(ERROR);
+    await expect(getPrivateOeDetails(req, transactionId, overseasEntityId)).rejects.toThrow(ERROR);
 
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });

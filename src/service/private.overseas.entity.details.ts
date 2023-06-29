@@ -6,27 +6,27 @@ import { OverseasEntityExtraDetails } from "@companieshouse/api-sdk-node/dist/se
 
 export const getPrivateOeDetails = async (
   req: Request,
-  oeNumber: string,
+  transactionId: string,
+  overseasEntityId: string,
 ): Promise<OverseasEntityExtraDetails | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getOverseasEntityDetails",
     req,
     req.session as Session,
-    oeNumber,
+    transactionId,
+    overseasEntityId,
   );
 
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching company details = ${JSON.stringify(response)}`;
+    const errorMsg = `Something went wrong fetching overseas entity details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No company data found for ${oeNumber}`);
+    logger.debugRequest(req, `No overseas entity details found`);
     return undefined;
   }
 
-  const infoMsg = `OE NUMBER ID: ${oeNumber}`;
-  logger.debugRequest(req, `Overseas Entity Data Retrieved - ${infoMsg}`);
   return response.resource;
 };

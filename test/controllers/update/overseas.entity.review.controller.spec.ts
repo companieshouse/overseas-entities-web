@@ -65,7 +65,8 @@ const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 const getPrivateDataAppDataMock = () => {
   const appDataMock = {
-    overseas_entity_id: "123456",
+    overseas_entity_id: "2468",
+    transaction_id: "13579",
     entity_name: "Overseas Entity Name",
     entity: {
       incorporation_country: "incorporationCountry",
@@ -179,6 +180,27 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
 
       const appDataMock = getPrivateDataAppDataMock();
       appDataMock.overseas_entity_id = undefined;
+
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce(appDataMock);
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("Overseas Entity Name");
+      expect(resp.text).toContain("incorporationCountry");
+      expect(resp.text).not.toContain("tester@test.com");
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(0);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
+    });
+
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private date fetched when no transaction`, async () => {
+
+      const appDataMock = getPrivateDataAppDataMock();
+      appDataMock.transaction_id = undefined;
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(appDataMock);

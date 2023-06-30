@@ -10,7 +10,11 @@
 {% endblock %}
 
 {% block beforeContent %}
-  {% include "includes/phase_banner.html" %}
+  {% if isUpdate%}
+    {% include "includes/update_phase_banner.html" %}
+  {% else %}
+    {% include "includes/phase_banner.html" %}
+  {% endif %}
   {% include "includes/no-back-link.html" %}
   {% include "includes/sign-out-user-banner.html" %}
 {% endblock %}

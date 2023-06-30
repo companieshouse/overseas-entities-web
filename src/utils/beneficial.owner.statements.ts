@@ -6,6 +6,7 @@ import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { checkBOsDetailsEntered, checkMOsDetailsEntered, getApplicationData, setExtraData } from "../utils/application.data";
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
+import { EntityNumberKey } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
@@ -30,7 +31,8 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       backLinkUrl: BACK_LINK,
       templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
-      noChangeFlag
+      noChangeFlag,
+      entity_number: appData[EntityNumberKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);

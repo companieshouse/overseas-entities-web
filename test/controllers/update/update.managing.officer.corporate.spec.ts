@@ -27,7 +27,7 @@ import {
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
-  LANDING_PAGE_URL,
+  UPDATE_LANDING_PAGE_URL,
   UPDATE_MANAGING_OFFICER_CORPORATE_PAGE,
   UPDATE_MANAGING_OFFICER_CORPORATE_URL,
   REMOVE
@@ -121,7 +121,7 @@ describe("UPDATE MANAGING OFFICER CORPORATE controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_PAGE_TITLE);
-      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);

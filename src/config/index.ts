@@ -29,6 +29,7 @@ export const VF01_FORM_DOWNLOAD_URL = getEnvironmentValue("VF01_FORM_DOWNLOAD_UR
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
+export const UPDATE_SERVICE_NAME = 'File an overseas entity update statement';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";

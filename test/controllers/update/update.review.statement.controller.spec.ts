@@ -129,7 +129,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain("Individual managing officer");
     });
 
-    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page renders change links`, async () => {
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with change links`, async () => {
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
       expect(resp.status).toEqual(200);
@@ -152,16 +152,14 @@ describe("Update review overseas entity information controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id (and no_change_review_statement undefined)`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
 
-      // assertions dependent on UAR-587
-
-      // expect(resp.status).toEqual(302);
-      // expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
     });
 
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, if Save and Resume not enabled`, async () => {
@@ -169,12 +167,32 @@ describe("Update review overseas entity information controller tests", () => {
       const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
 
-      // assertions dependent on UAR-587
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+    });
 
-      // expect(resp.status).toEqual(302);
-      // expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
+    test(`should redirect to UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL when noChangeReviewStatement is '0'`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: '0' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+    });
+
+    test(`redirects to ${PAYMENT_LINK_JOURNEY}, when noChangeReviewStatement is '1'`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: "1" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
     });
 
     test(`catch error on POST action for ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {

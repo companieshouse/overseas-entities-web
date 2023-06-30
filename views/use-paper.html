@@ -1,4 +1,9 @@
-{% extends "layout.html" %}
+{% if pageParams.isRegistration %}
+  {% extends "layout.html" %}
+{% else %}
+  {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
+  {% extends "update-layout.html" %}
+{% endif %}
 
 {% block pageTitle %}
   {{ applyWithPaperFormHeading }} - {{ SERVICE_NAME }} - GOV.UK

@@ -7,5 +7,8 @@ export const get = (req: Request, res: Response) => {
     backLinkUrl: config.SECURE_REGISTER_FILTER_URL,
     templateName: config.USE_PAPER_PAGE,
     applyWithPaperFormHeading,
+    pageParams: {
+      isRegistration: true
+    }
   });
 };

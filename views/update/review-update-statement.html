@@ -1,6 +1,7 @@
-{% extends "layout.html" %}
+{% extends "update-layout.html" %}
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
 {% block pageTitle %}
   Review update statement before submitting - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}

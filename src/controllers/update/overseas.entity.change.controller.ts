@@ -77,6 +77,7 @@ export const resetNoChangeData = (appData: ApplicationData) => {
     appData.beneficial_owners_statement = undefined;
     appData.update.registrable_beneficial_owner = undefined;
   }
+  return appData;
 }
 
 const existingBoMoForNoChange = async (req: Request,  appData: ApplicationData) => {

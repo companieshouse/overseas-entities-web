@@ -115,7 +115,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
@@ -134,7 +134,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched when no entity`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched when no entity`, async () => {
 
       const mockAppData = getPrivateDataAppDataMock();
       mockAppData.entity = undefined;
@@ -153,7 +153,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private date fetched`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details re-fetched`, async () => {
 
       const appDataMock = getPrivateDataAppDataMock();
       if (appDataMock.entity) {
@@ -176,7 +176,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private date fetched when no submission`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details fetched when no submission`, async () => {
 
       const appDataMock = getPrivateDataAppDataMock();
       appDataMock.overseas_entity_id = undefined;
@@ -197,7 +197,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private date fetched when no transaction`, async () => {
+    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details fetched when no transaction`, async () => {
 
       const appDataMock = getPrivateDataAppDataMock();
       appDataMock.transaction_id = undefined;
@@ -218,7 +218,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning nothing`, async () => {
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning nothing`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
@@ -233,7 +233,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning no email`, async () => {
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning no email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
@@ -244,7 +244,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private date fetched returning empty email`, async () => {
+    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning empty email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());

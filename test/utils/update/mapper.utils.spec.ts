@@ -1,5 +1,4 @@
-import { hasPublicRegisterDetails, lowerCaseAllWordsExceptFirstLetters, mapInputDate } from "../../../src/utils/update/mapper.utils";
-import { companyDetailsMock, companyDetailsPublicRegisterFalse, companyDetailsPublicRegisterTrue } from './mocks';
+import { lowerCaseAllWordsExceptFirstLetters, mapInputDate } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -44,16 +43,6 @@ describe("Test mapping utils", () => {
       ["GUINEA-BISSAU", "Guinea-Bissau"]
     ])(`Correctly reformats %s`, (str, expectedResult) => {
       expect(lowerCaseAllWordsExceptFirstLetters(str)).toEqual(expectedResult);
-    });
-  });
-
-  describe("hasPublicRegisterDetails", () => {
-    test.each([
-      ["is_on_register_in_country_formed_in is not defined but has public register details", companyDetailsMock, true],
-      ["is_on_register_in_country_formed_in = false", companyDetailsPublicRegisterFalse, false],
-      ["is_on_register_in_country_formed_in = true", companyDetailsPublicRegisterTrue, true]
-    ])(`%s`, (_, companyProfileMock, expectedResult) => {
-      expect(hasPublicRegisterDetails(companyProfileMock)).toBe(expectedResult);
     });
   });
 });

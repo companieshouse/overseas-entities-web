@@ -41,8 +41,10 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       await resetChangeData(req, appData)
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {
+      resetNoChangeData(appData);
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     }
+    console.log(`after existing ${JSON.stringify(appData)}`);
     await saveAndContinue(req, session, false);
     return resp.redirect(redirectUrl);
 
@@ -54,6 +56,7 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
 
 export const resetChangeData = async (req: Request, appData: ApplicationData) => {
   if(appData){
+    console.log("inside of if")
     appData.who_is_registering = undefined;
     appData.overseas_entity_due_diligence = undefined;
     appData.beneficial_owners_individual = undefined;
@@ -62,12 +65,19 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     appData.managing_officers_corporate = undefined;
     appData.managing_officers_individual = undefined;
     appData.beneficial_owners_statement = undefined;
+    appData.payment = undefined;
+    await existingBoMoForNoChange(req, appData);
   }
-
-  await existingBoMoForNoChange(req, appData);
-  console.log(`*************** app data update is ${JSON.stringify(appData.update)}`)
+  return appData;
 }
 
+export const resetNoChangeData = (appData: ApplicationData) => {
+  if(appData.update){
+    appData.update.no_change = undefined;
+    appData.beneficial_owners_statement = undefined;
+    appData.update.registrable_beneficial_owner = undefined;
+  }
+}
 
 const existingBoMoForNoChange = async (req: Request,  appData: ApplicationData) => {
   await retrieveBeneficialOwners(req, appData);

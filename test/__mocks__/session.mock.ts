@@ -1179,7 +1179,9 @@ export const UPDATE_OWNERS_DATA_WITH_VALUE: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
   review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
-  review_managing_officers_individual: [MANAGING_OFFICER_OBJECT_MOCK]
+  review_beneficial_owners_corporate: [UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK],
+  review_managing_officers_individual: [MANAGING_OFFICER_OBJECT_MOCK],
+  review_managing_officers_corporate: [MANAGING_OFFICER_CORPORATE_OBJECT_MOCK]
 };
 
 export const UPDATE_OBJECT_MOCK_REVIEW_MODEL: updateType.Update = {
@@ -1721,3 +1723,25 @@ export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST = `${
 // get company psc mocks
 export const serviceNameGetCompanyPsc = "companyPsc";
 export const fnNameGetCompanyPsc = "getCompanyPsc";
+
+export const NO_CHANGE_RESPONSE = {
+    "beneficial_owners_corporate": undefined, 
+    "beneficial_owners_government_or_public_authority": undefined, 
+    "beneficial_owners_individual": undefined, 
+    "beneficial_owners_statement": undefined, 
+    "managing_officers_corporate": undefined,
+    "managing_officers_individual": undefined,
+    [EntityNameKey]: OVERSEAS_NAME_MOCK,
+    [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+    [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+    [PaymentKey]: undefined,
+    [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+    [Transactionkey]: TRANSACTION_ID,
+    [TrustKey]: [TRUST],
+    [WhoIsRegisteringKey]: undefined,
+    [HasSoldLandKey]: hasSoldLandKey,
+    [IsSecureRegisterKey]: isSecureRegisterKey,
+    [EntityNumberKey]: COMPANY_NUMBER,
+    UPDATE_OWNERS_DATA_WITH_VALUE,
+
+}

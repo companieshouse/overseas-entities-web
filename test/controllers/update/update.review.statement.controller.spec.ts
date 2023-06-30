@@ -129,7 +129,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain("Individual managing officer");
     });
 
-    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page renders change links`, async () => {
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with change links`, async () => {
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
       expect(resp.status).toEqual(200);

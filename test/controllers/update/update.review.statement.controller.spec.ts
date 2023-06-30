@@ -173,7 +173,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
     });
 
-    test(`should redirect to UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL when noChangeReviewStatement is '0'`, async () => {
+    test(`should redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} when noChangeReviewStatement is '0'`, async () => {
       const mockData = {
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         [Transactionkey]: "",

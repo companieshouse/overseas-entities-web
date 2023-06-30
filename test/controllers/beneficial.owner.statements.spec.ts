@@ -12,7 +12,11 @@ import { NextFunction, Request, Response } from "express";
 import app from "../../src/app";
 import * as config from "../../src/config";
 import {
-  APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+  APPLICATION_DATA_REGISTRATION_MOCK,
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_UPDATE_BO_MOCK,
+  BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
   ERROR
 } from "../__mocks__/session.mock";
 import {
@@ -55,14 +59,40 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
   });
 
   describe("GET tests", () => {
-    test("renders the beneficial owner statements page", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    test("renders the beneficial owner statements page with Registration data", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_REGISTRATION_MOCK);
       const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
       expect(resp.text).toContain(config.ENTITY_URL);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the beneficial owner statements page with undefined entity_number", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the beneficial owner statements page with Update data", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);

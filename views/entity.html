@@ -1,4 +1,8 @@
-{% extends "layout.html" %}
+{% if entity_number %}
+  {% extends "update-layout.html" %}
+{% else %}
+  {% extends "layout.html" %}
+{% endif %}
 
 {% set title = "Tell us about the overseas entity" %}
 

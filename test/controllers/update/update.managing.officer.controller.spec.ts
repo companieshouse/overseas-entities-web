@@ -18,7 +18,7 @@ import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
-  LANDING_PAGE_URL,
+  UPDATE_LANDING_PAGE_URL,
   UPDATE_MANAGING_OFFICER_PAGE,
   UPDATE_MANAGING_OFFICER_URL,
   REMOVE
@@ -118,7 +118,7 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       const resp = await request(app).get(UPDATE_MANAGING_OFFICER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
       expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(saveAndContinueButtonText);

@@ -239,6 +239,7 @@ export const UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS = {
   public_register_jurisdiction: PUBLIC_REGISTER_JURISDICTION,
   registration_number: REGISTRATION_NUMBER,
   is_on_register_in_country_formed_in: "1",
+  [EntityNumberKey]: COMPANY_NUMBER,
   ...PRINCIPAL_ADDRESS_MOCK,
   ...SERVICE_ADDRESS_MOCK
 };

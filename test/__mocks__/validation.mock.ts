@@ -1,10 +1,11 @@
-import { MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./session.mock";
+import { COMPANY_NUMBER, MO_IND_ID, PRINCIPAL_ADDRESS_MOCK, SERVICE_ADDRESS_MOCK } from "./session.mock";
 import { ADDRESS } from "./fields/address.mock";
 import * as maxLengthMocks from "./max.length.mock";
 import { trustType } from "../../src/model";
 import { DueDiligence } from "../../src/model/due.diligence.model";
 import { DATE } from "./fields/date.mock";
 import { OverseasEntityDueDiligence } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { EntityNumberKey } from "../../src/model/data.types.model";
 
 const NAME_SPECIAL_CHARS = "Kurt Gödel";
 
@@ -130,6 +131,7 @@ export const UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK = {
   public_register_jurisdiction: "Москва",
   registration_number: "Москва",
   is_on_register_in_country_formed_in: "1",
+  [EntityNumberKey]: COMPANY_NUMBER,
   ...PRINCIPAL_ADDRESS_WITH_INVALID_CHARACTERS_FIELDS_MOCK,
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };

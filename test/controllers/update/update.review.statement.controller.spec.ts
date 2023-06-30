@@ -25,7 +25,7 @@ import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA, APPLICATION_DATA_UPDATE_BO_MOCK, APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID } from "../../__mocks__/session.mock";
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING } from "../../../src/config";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING, SECURE_UPDATE_FILTER_CHANGELINK, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK, UPDATE_FILING_DATE_CHANGELINK, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK } from "../../../src/config";
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 
@@ -84,8 +84,6 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
-      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
-      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page overseas entity details section`, async () => {
@@ -129,6 +127,19 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Managing officers");
       expect(resp.text).toContain("Individual managing officer");
+    });
+
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page renders change links`, async () => {
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_FULL_NAME);
+      expect(resp.text).toContain(UPDATE_PRESENTER_CHANGE_EMAIL);
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_CHANGELINK);
+      expect(resp.text).toContain(UPDATE_FILING_DATE_CHANGELINK);
+      expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK);
+      expect(resp.text).toContain(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK);
+      expect(resp.text).toContain(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK);
     });
 
     test('catch error when rendering the page', async () => {

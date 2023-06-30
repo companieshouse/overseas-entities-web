@@ -31,7 +31,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 };
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): ManagingOfficerCorporate => {
-  const service_address = mapBOMOAddress(officer.address);
+  const service_address = mapBOMOAddress(undefined);
   const address = undefined;
 
   return {
@@ -39,7 +39,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     ch_reference: mapSelfLink(officer.links?.self),
     name: officer.name,
     principal_address: address,
-    is_service_address_same_as_principal_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
+    is_service_address_same_as_principal_address: undefined,
     service_address: service_address,
     start_date: mapInputDate(officer.appointedOn),
     legal_form: officer.identification?.legalForm,

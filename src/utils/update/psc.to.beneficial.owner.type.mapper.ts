@@ -28,7 +28,7 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
 };
 
 export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerOther => {
-  const service_address = mapBOMOAddress(psc.address);
+  const service_address = mapBOMOAddress(undefined);
   const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerOther = {
@@ -37,7 +37,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,
-    is_service_address_same_as_principal_address: isSameAddress(service_address, principal_address) ? yesNoResponse.Yes : yesNoResponse.No,
+    is_service_address_same_as_principal_address: undefined,
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
     public_register_name: psc.identification?.placeRegistered,
@@ -51,7 +51,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
 };
 
 export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerGov => {
-  const service_address = mapBOMOAddress(psc.address);
+  const service_address = mapBOMOAddress(undefined);
   const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerGov = {
@@ -60,7 +60,7 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
     name: psc.name,
     principal_address: principal_address,
     service_address: service_address,
-    is_service_address_same_as_principal_address: isSameAddress(service_address, principal_address) ? yesNoResponse.Yes : yesNoResponse.No,
+    is_service_address_same_as_principal_address: undefined,
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
     start_date: mapInputDate(psc.notifiedOn),

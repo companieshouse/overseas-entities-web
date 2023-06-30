@@ -33,13 +33,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     if (appData?.beneficial_owners_corporate){
       dataToReview = appData?.beneficial_owners_corporate[Number(index)];
       principalAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys) : {};
-      let undefinedPrincipalAddressProperties;
-      if (principalAddress !== undefined) {
-        undefinedPrincipalAddressProperties = Object.values(principalAddress).every(value => value === undefined);
-      }
-      if (!undefinedPrincipalAddressProperties) {
-        serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
-      }
+      serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
     }
 
     const templateOptions = {

@@ -24,7 +24,7 @@ export const getPrivateOeDetails = async (
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No overseas entity details found`);
+    logger.debugRequest(req, `No overseas entity details found ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 

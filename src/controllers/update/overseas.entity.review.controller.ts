@@ -30,8 +30,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
         const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
         if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
-          const message = "Private OE Details not found";
-          logger.error(message + " for overseas entity " + appData.entity_number);
+          const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
+          logger.error(message);
           throw new Error(message);
         }
         appData.entity.email = privateOeDetails.email_address;

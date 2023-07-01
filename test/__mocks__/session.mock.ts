@@ -1177,6 +1177,8 @@ export const UNDEFINED_UPDATE_OBJECT_MOCK: updateType.Update = {
 
 export const UPDATE_OWNERS_DATA_WITH_VALUE: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
+  filing_date: { day: "1", month: "1", year: "2022" },
+  registrable_beneficial_owner: undefined,
   review_beneficial_owners_individual: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
   review_beneficial_owners_government_or_public_authority: [REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA],
   review_beneficial_owners_corporate: [UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK],
@@ -1724,24 +1726,31 @@ export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST = `${
 export const serviceNameGetCompanyPsc = "companyPsc";
 export const fnNameGetCompanyPsc = "getCompanyPsc";
 
-export const NO_CHANGE_RESPONSE = {
-    "beneficial_owners_corporate": undefined, 
-    "beneficial_owners_government_or_public_authority": undefined, 
-    "beneficial_owners_individual": undefined, 
-    "beneficial_owners_statement": undefined, 
-    "managing_officers_corporate": undefined,
-    "managing_officers_individual": undefined,
-    [EntityNameKey]: OVERSEAS_NAME_MOCK,
-    [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
-    [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-    [PaymentKey]: undefined,
-    [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-    [Transactionkey]: TRANSACTION_ID,
-    [TrustKey]: [TRUST],
-    [WhoIsRegisteringKey]: undefined,
-    [HasSoldLandKey]: hasSoldLandKey,
-    [IsSecureRegisterKey]: isSecureRegisterKey,
-    [EntityNumberKey]: COMPANY_NUMBER,
-    UPDATE_OWNERS_DATA_WITH_VALUE,
+export const RESET_NO_CHANGE_RESPONSE = {
+  [PaymentKey]: undefined,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
+  [updateType.UpdateKey]: {
+    registrable_beneficial_owner: undefined
+  }
+};
 
-}
+export const RESET_CHANGE_RESPONSE = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: undefined,
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: undefined,
+  [managingOfficerType.ManagingOfficerKey]: undefined,
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: undefined,
+  [WhoIsRegisteringKey]: undefined,
+  [PaymentKey]: undefined,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+};

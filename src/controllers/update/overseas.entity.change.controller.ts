@@ -38,13 +38,12 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     }
 
     if (noChangeStatement === "1"){
-      await resetChangeData(req, appData)
+      await resetChangeData(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {
       resetNoChangeData(appData);
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     }
-    console.log(`after existing ${JSON.stringify(appData)}`);
     await saveAndContinue(req, session, false);
     return resp.redirect(redirectUrl);
 
@@ -55,12 +54,11 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
 };
 
 export const resetChangeData = async (req: Request, appData: ApplicationData) => {
-  if(appData){
-    console.log("inside of if")
+  if (appData){
     appData.who_is_registering = undefined;
     appData.overseas_entity_due_diligence = undefined;
     appData.beneficial_owners_individual = undefined;
-    appData.beneficial_owners_corporate =  undefined;
+    appData.beneficial_owners_corporate = undefined;
     appData.beneficial_owners_government_or_public_authority = undefined;
     appData.managing_officers_corporate = undefined;
     appData.managing_officers_individual = undefined;
@@ -69,18 +67,18 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     await existingBoMoForNoChange(req, appData);
   }
   return appData;
-}
+};
 
 export const resetNoChangeData = (appData: ApplicationData) => {
-  if(appData.update){
-    appData.update.no_change = undefined;
+  if (appData.update){
     appData.beneficial_owners_statement = undefined;
     appData.update.registrable_beneficial_owner = undefined;
+    appData.payment = undefined;
   }
   return appData;
-}
+};
 
-const existingBoMoForNoChange = async (req: Request,  appData: ApplicationData) => {
+export const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
   await retrieveBeneficialOwners(req, appData);
   await retrieveManagingOfficers(req, appData);
-}
+};

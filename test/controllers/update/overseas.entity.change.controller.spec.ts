@@ -18,7 +18,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, NO_CHANGE_RESPONSE, OVERSEAS_NAME_MOCK, UPDATE_OWNERS_DATA_WITH_VALUE } from '../../__mocks__/session.mock';
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, RESET_CHANGE_RESPONSE, OVERSEAS_NAME_MOCK, RESET_NO_CHANGE_RESPONSE } from '../../__mocks__/session.mock';
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
@@ -29,6 +29,7 @@ import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from '../../__mocks__/get.company.p
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { getCompanyPsc } from '../../../src/service/persons.with.signficant.control.service';
 import { getCompanyOfficers } from '../../../src/service/company.managing.officer.service';
+import { resetChangeData, resetNoChangeData } from '../../../src/controllers/update/overseas.entity.change.controller';
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -149,28 +150,26 @@ describe("Overseas entity do you want to change your OE controller", () => {
   });
 
   describe("RESET post data", () => {
-    test("That session data reset when user choose no change from change journey", async() => {
+
+    test("That application data reset when user choose no change from change journey", async () => {
+      const req = {} as Request;
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      expect(await resetChangeData(req, APPLICATION_DATA_MOCK)).toMatchObject(
+        {
+          ...RESET_CHANGE_RESPONSE
+        }
+      );
+    });
 
-      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-      .send({ [NoChangeKey]: "1" });
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-      });
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
-      // const noChangeResp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL).send({ [NoChangeKey]: "YES" })   
-      // console.log(`change resp is ${JSON.stringify(changeResp.text)}`)
-      // console.log(`no change resp is ${JSON.stringify(noChangeResp.text)}`)
-   
-      expect(mockGetApplicationData).toMatchObject(
-            {
-              ...NO_CHANGE_RESPONSE,
-              ...UPDATE_OWNERS_DATA_WITH_VALUE
-            }
-      )
-    })
-  })
+    test("That session data reset when user choose change journey from no change journey", () => {
+      mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+      mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+      expect(resetNoChangeData(APPLICATION_DATA_MOCK)).toMatchObject(
+        {
+          ...RESET_NO_CHANGE_RESPONSE
+        }
+      );
+    });
+  });
 });

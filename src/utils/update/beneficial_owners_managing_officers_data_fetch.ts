@@ -33,8 +33,6 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
   appData.update.review_managing_officers_corporate = [];
 };
 
-
-
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
   if (pscs) {

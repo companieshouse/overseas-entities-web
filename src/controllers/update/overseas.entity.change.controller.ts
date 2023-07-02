@@ -78,7 +78,7 @@ export const resetNoChangeData = (appData: ApplicationData) => {
   return appData;
 };
 
-export const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
+const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
   await retrieveBeneficialOwners(req, appData);
   await retrieveManagingOfficers(req, appData);
 };

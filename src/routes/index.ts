@@ -669,7 +669,7 @@ router.route(config.UPDATE_REVIEW_STATEMENT_URL)
     navigation.hasOverseasEntity
   )
   .get(updateReviewStatement.get)
-  .post(updateReviewStatement.post);
+  .post(...validator.reviewUpdateStatementChange, checkValidations, updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)

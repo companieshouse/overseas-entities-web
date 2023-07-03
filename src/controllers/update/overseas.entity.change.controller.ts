@@ -81,13 +81,11 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
 };
 
 export const resetNoChangeData = (appData: ApplicationData) => {
-  if (appData){
-    appData.beneficial_owners_statement = undefined;
-    appData.payment = undefined;
-  }
   if (appData.update){
     appData.update.registrable_beneficial_owner = undefined;
   }
+  appData.beneficial_owners_statement = undefined;
+  appData.payment = undefined;
   return appData;
 };
 

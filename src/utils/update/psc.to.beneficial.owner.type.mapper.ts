@@ -28,7 +28,7 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
 };
 
 export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerOther => {
-  const service_address = mapBOMOAddress(undefined);
+  const service_address = mapBOMOAddress(psc.address);
   const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerOther = {
@@ -51,7 +51,7 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
 };
 
 export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerGov => {
-  const service_address = mapBOMOAddress(undefined);
+  const service_address = mapBOMOAddress(psc.address);
   const principal_address = mapBOMOAddress(undefined);
 
   const result: BeneficialOwnerGov = {

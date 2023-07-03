@@ -31,7 +31,7 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
 };
 
 export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): ManagingOfficerCorporate => {
-  const service_address = mapBOMOAddress(undefined);
+  const service_address = mapBOMOAddress(officer.address);
   const address = undefined;
 
   return {

@@ -62,7 +62,7 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
     previousPage: () => config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-    nextPage: []
+    nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,

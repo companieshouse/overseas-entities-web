@@ -29,6 +29,7 @@ export const VF01_FORM_DOWNLOAD_URL = getEnvironmentValue("VF01_FORM_DOWNLOAD_UR
 
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
+export const UPDATE_SERVICE_NAME = 'File an overseas entity update statement';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
@@ -44,6 +45,7 @@ export const FEATURE_FLAG_ENABLE_TRUSTS_WEB = getEnvironmentValue('FEATURE_FLAG_
 export const FEATURE_FLAG_ENABLE_ROE_UPDATE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022', 'false');
 export const FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME = getEnvironmentValue('FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME_07032023', 'false');
 export const FEATURE_FLAG_ENABLE_ROE_REMOVE = getEnvironmentValue('FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022', 'false');
+export const FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH = getEnvironmentValue('FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023', 'false');
 
 // TEMPLATES
 export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";
@@ -309,6 +311,11 @@ export const TRUSTEE_END_DATE = "#endDate-endDateDay";
 export const CORPORATE_NAME = "#corporate_name";
 export const INDIVIDUAL_NAME = "#firstName";
 export const AGENT_CODE = "#agent_code";
+export const SECURE_FILTER = "#is_secure_register";
+export const FILING_DATE = "#filing_date";
+export const NO_CHANGE = "#no_change";
+export const BENEFICIAL_OWNERS_STATEMENT = "#beneficial_owners_statement";
+export const REGISTRABLE_BENEFICIAL_OWNER = "#registrable_beneficial_owner";
 
 export const ENTITY_CHANGE_NAME = OVERSEAS_NAME_URL + ENTITY_NAME;
 export const PRESENTER_CHANGE_FULL_NAME = PRESENTER_URL + "#full_name";
@@ -358,7 +365,13 @@ export const UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_SUPERVISORY_NAME = UPDA
 export const UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_AML_NUMBER = UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL + AML_NUMBER;
 export const UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME = UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL + PARTNER_NAME;
 
-// page sub-headings
-export const OVERSEAS_ENTITY_SECTION_HEADING = "Overseas entity details";
 export const UPDATE_PRESENTER_CHANGE_FULL_NAME = OVERSEAS_ENTITY_PRESENTER_URL + "#full_name";
 export const UPDATE_PRESENTER_CHANGE_EMAIL = OVERSEAS_ENTITY_PRESENTER_URL + "#email";
+export const SECURE_UPDATE_FILTER_CHANGELINK = SECURE_UPDATE_FILTER_URL + SECURE_FILTER;
+export const UPDATE_FILING_DATE_CHANGELINK = UPDATE_FILING_DATE_URL + FILING_DATE;
+export const UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK = UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL + NO_CHANGE;
+export const UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK = UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL + BENEFICIAL_OWNERS_STATEMENT;
+export const UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK = UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL + REGISTRABLE_BENEFICIAL_OWNER;
+
+// page sub-headings
+export const OVERSEAS_ENTITY_SECTION_HEADING = "Overseas entity details";

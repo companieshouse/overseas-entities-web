@@ -1,6 +1,17 @@
-{% extends "layout.html" %}
+{% if entity_number %}
+  {% extends "update-layout.html" %}
+{% else %}
+  {% extends "layout.html" %}
+{% endif %}
 
-{% set title = "Tell us about the overseas entity" %}
+{% if entity_number %}
+  {% set title = "Review overseas entity information"%}
+  {% set emailHintText = "We'll use this to send important information. If you request an authentication code in the future, we'll send it to this email address."%}
+{% else %}
+  {% set title = "Tell us about the overseas entity" %}
+  {% set emailHintText = ""%}
+{% endif %}
+
 
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
@@ -15,17 +26,24 @@
   <div class="govuk-grid-column-two-thirds">
 
     {% include "includes/list/errors.html" %}
-
-    <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entityName }}</span>
+    {% if entity_number %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entityName }} - {{ entity_number }}</span>
+    {% else %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entityName }}</span>
+    {% endif %}
     <h1 class="govuk-heading-xl">{{ title }}</h1>
-
-    {{ govukDetails({
-      summaryText: "What is an overseas entity?",
-      attributes: {
-        "data-event-id": "overseas-entity-details"
-      },
-      text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
-    }) }}
+    
+    {% if entity_number %}
+      <p class="govuk-body">If you need to update any overseas entity information, you can change the answers here.</p>
+    {% else %}
+      {{ govukDetails({
+            summaryText: "What is an overseas entity?",
+            attributes: {
+              "data-event-id": "overseas-entity-details"
+            },
+            text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
+          }) }}      
+    {% endif %}
 
     <form method="post">
       {% if entity_number %}
@@ -38,10 +56,25 @@
         {% include "includes/inputs/text-input.html" %}
       {% endif %}
       
-      {% set countryField = incorporation_country if incorporation_country else '' %}
-      {% set countryFieldNameId = "incorporation_country" %}
-      {% set countryFieldText = "Which country was it formed in?" %}
-      {% include "includes/inputs/country/country-select.html" %}
+      {% if entity_number %}
+        <h2 class="govuk-heading-m">Country it was formed in:</h2>
+        <p class="govuk-body">{{incorporation_country}}</p>
+        {{ govukInput({
+          label: {
+            text: "Hidden input, needed to submit incorporation_country",
+            classes: "govuk-visually-hidden"
+          },
+          id: "incorporation_country",
+          value: incorporation_country,
+          name: "incorporation_country",
+          classes: "govuk-visually-hidden"
+        }) }}
+      {% else %}
+        {% set countryField = incorporation_country if incorporation_country else '' %}
+        {% set countryFieldNameId = "incorporation_country" %}
+        {% set countryFieldText = "Which country was it formed in?" %}
+        {% include "includes/inputs/country/country-select.html" %}
+      {% endif %}
 
       {% include "includes/inputs/address/principal-address-input.html" %}
 
@@ -52,27 +85,32 @@
           classes: "govuk-label--m",
           isPageHeading: false
         },
+        hint: {
+          text: emailHintText
+        },
         id: "email",
         name: "email",
         value: email
       }) }}
-
-      <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-              What we'll use this email address for
-            </span>
-        </summary>
-        <div class="govuk-details__text">
-          <p class="govuk-body">We'll use this to send:</p>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>the Overseas Entity ID</li>
-            <li>the notice of registration</li>
-            <li>any other important information</li>
-          </ul>
-          <p>We’ll also send the Overseas Entity ID to the email you used to sign in.</p>
-        </div>
-      </details>
+        
+      {% if not entity_number %}
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+              <span class="govuk-details__summary-text">
+                What we'll use this email address for
+              </span>
+          </summary>
+          <div class="govuk-details__text">
+            <p class="govuk-body">We'll use this to send:</p>
+            <ul class="govuk-list govuk-list--bullet">
+              <li>the Overseas Entity ID</li>
+              <li>the notice of registration</li>
+              <li>any other important information</li>
+            </ul>
+            <p>We’ll also send the Overseas Entity ID to the email you used to sign in.</p>
+          </div>
+        </details>
+      {% endif %}
 
       {% set hintText = "For example, limited company" %}
       {% include "includes/inputs/legal-form-input.html" %}
@@ -87,13 +125,23 @@
 
       {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
 
-      {{ govukInsetText({
-        html: '
-         <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
-         <p>We will not show the email address.</p>
-         <p>We will show all the other information you provide on this screen on the public Register of Overseas Entities.</p>
-        '
-      }) }}
+      {% if entity_number %}
+        {{ govukInsetText({
+          html: '
+          <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+          <p>We will not show the email address.</p>
+          <p>We will show all the other information in this section on the public Register of Overseas Entities.</p>
+          '
+        }) }}
+      {% else %}
+        {{ govukInsetText({
+            html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show the email address.</p>
+            <p>We will show all the other information you provide on this screen on the public Register of Overseas Entities.</p>
+            '
+          }) }}
+      {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}
     </form>

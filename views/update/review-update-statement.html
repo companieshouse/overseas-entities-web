@@ -61,8 +61,15 @@
             value: {
               text: isProtectedInformation 
             },
+            attributes: {
+              "data-event-id": "nochange-changelink-beneficial-owner-review-statement-button"
+            },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.SECURE_UPDATE_FILTER_CHANGELINK,
+                isProtectedInformation,
+                "nochange-changelink-beneficial-owner-review-statement-button"
+              ) ]
             }          
           },
           {
@@ -72,8 +79,15 @@
             value: {
               text: updateStatementDate 
             },
+            attributes: {
+              "data-event-id":  "nochange-changelink-filingdate-review-statement-button"
+            },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.UPDATE_FILING_DATE_CHANGELINK,
+                updateStatementDate,
+                "nochange-changelink-filingdate-review-statement-button"
+              ) ]
             }    
           },
           {
@@ -83,8 +97,15 @@
             value: {
               text: noChange
             },
+            attributes: {
+              "data-event-id": "nochange-changelink-entity-review-statement-button"
+            },
             actions: {
-              items: [CREATE_CHANGE_LINK() ]
+              items: [ CREATE_CHANGE_LINK(
+                OE_CONFIGS.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK,
+                noChange,
+                "nochange-changelink-entity-review-statement-button"
+              ) ]
             }    
           }
         ]
@@ -114,11 +135,14 @@
           value: {
             text: identifiedStatementText
           },
+          attributes: {
+            "data-event-id": "nochange-changelink-registrable-beneficial-owner-statement-button"
+          },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+              OE_CONFIGS.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK,
               identifiedStatementText,
-              "update-change-registrable-beneficial-owner-statement-button"
+              "nochange-changelink-registrable-beneficial-owner-statement-button"
             ) ]
           }
         }
@@ -136,11 +160,14 @@
           value: {
             text: ceasedStatementText
           },
+          attributes: {
+            "data-event-id": "nochange-changelink-ceased-beneficial-owner-statement-button"
+          },
           actions: {
             items: [ CREATE_CHANGE_LINK(
-              OE_CONFIGS.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+              OE_CONFIGS.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK,
               ceasedStatementText,
-              "update-change-ceased-beneficial-owner-statement-button"
+              "nochange-changelink-ceased-beneficial-owner-statement-button"
             ) ]
           }
         }
@@ -216,12 +243,18 @@
             {
               value: "1",
               text: "Yes, the information is correct",
-              checked: no_change_review_statement == 1
+              checked: no_change_review_statement == 1,
+              attributes: {
+                "data-event-id": "no-change-review-statements-radio-option-yes"
+              }
             },
             {
               value: "0",
               text: "No, I need to make changes",
-              checked: no_change_review_statement == 0
+              checked: no_change_review_statement == 0,
+              attributes: {
+                "data-event-id": "no-change-review-statements-radio-option-no"
+              }
             }
           ]
           }) }}

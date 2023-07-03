@@ -1,4 +1,9 @@
-{% extends "layout.html" %}
+{% if isRegistration %}
+  {% extends "layout.html" %}
+{% else %}
+  {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
+  {% extends "update-layout.html" %}
+{% endif %}
 
 {% block signOutBanner %}
 {% endblock %}

@@ -1738,7 +1738,7 @@ export const RESET_CHANGE_RESPONSE = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
   [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: undefined,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
   [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: undefined,
@@ -1751,6 +1751,9 @@ export const RESET_CHANGE_RESPONSE = {
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
-  [TrustKey]: [TRUST],
+  [TrustKey]: undefined,
   [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: {
+    registrable_beneficial_owner: undefined
+  }
 };

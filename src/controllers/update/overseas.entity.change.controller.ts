@@ -54,8 +54,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
 };
 
 export const resetChangeData = async (req: Request, appData: ApplicationData) => {
-  if (appData){
+  if (appData && appData.update){
     appData.who_is_registering = undefined;
+    appData.due_diligence = undefined
     appData.overseas_entity_due_diligence = undefined;
     appData.beneficial_owners_individual = undefined;
     appData.beneficial_owners_corporate = undefined;
@@ -64,6 +65,9 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     appData.managing_officers_individual = undefined;
     appData.beneficial_owners_statement = undefined;
     appData.payment = undefined;
+    appData.trusts = undefined;
+    appData.update.registrable_beneficial_owner = undefined;
+    appData.update.bo_mo_data_fetched = false;
     await existingBoMoForNoChange(req, appData);
   }
   return appData;
@@ -79,6 +83,9 @@ export const resetNoChangeData = (appData: ApplicationData) => {
 };
 
 const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
-  await retrieveBeneficialOwners(req, appData);
-  await retrieveManagingOfficers(req, appData);
+  if(appData.update){
+    await retrieveBeneficialOwners(req, appData);
+    await retrieveManagingOfficers(req, appData);
+    appData.update.bo_mo_data_fetched = true;
+  }
 };

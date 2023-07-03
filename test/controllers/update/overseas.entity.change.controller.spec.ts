@@ -60,7 +60,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
-    test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radios selected to No`, async () => {
+    test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as No, I do not need to make changes`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [NoChangeKey]: "0" });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
 
@@ -68,7 +68,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(resp.text).toContain(RADIO_BUTTON_NO_SELECTED);
     });
 
-    test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radios selected to Yes`, async () => {
+    test(`renders the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page with radio button selected as Yes, I need to make changes`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [NoChangeKey]: "1" });
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
 
@@ -97,7 +97,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(setExtraData).not.toHaveBeenCalled();
     });
 
-    test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection`, async () => {
+    test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on Yes, I need to make changes selection`, async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
@@ -114,7 +114,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on NO selection`, async () => {
+    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection`, async () => {
       if (APPLICATION_DATA_MOCK.update){
         APPLICATION_DATA_MOCK.update.no_change = false;
       }

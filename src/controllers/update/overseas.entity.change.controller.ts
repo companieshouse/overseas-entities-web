@@ -7,6 +7,9 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { NoChangeKey } from "../../model/update.type.model";
 import { retrieveBeneficialOwners, retrieveManagingOfficers } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { getCompanyProfile } from "../../service/company.profile.service";
+import { reloadOE } from "./overseas.entity.query.controller";
+import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -54,9 +57,9 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
 };
 
 export const resetChangeData = async (req: Request, appData: ApplicationData) => {
-  if (appData && appData.update){
+  if (appData){
     appData.who_is_registering = undefined;
-    appData.due_diligence = undefined
+    appData.due_diligence = undefined;
     appData.overseas_entity_due_diligence = undefined;
     appData.beneficial_owners_individual = undefined;
     appData.beneficial_owners_corporate = undefined;
@@ -66,6 +69,10 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     appData.beneficial_owners_statement = undefined;
     appData.payment = undefined;
     appData.trusts = undefined;
+    const companyProfile = await getCompanyProfile(req, appData.entity_number as string) as CompanyProfile;
+    reloadOE(appData, appData.entity_number as string, companyProfile);
+  }
+  if (appData.update){
     appData.update.registrable_beneficial_owner = undefined;
     appData.update.bo_mo_data_fetched = false;
     await existingBoMoForNoChange(req, appData);
@@ -74,16 +81,18 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
 };
 
 export const resetNoChangeData = (appData: ApplicationData) => {
-  if (appData.update){
+  if (appData){
     appData.beneficial_owners_statement = undefined;
-    appData.update.registrable_beneficial_owner = undefined;
     appData.payment = undefined;
+  }
+  if (appData.update){
+    appData.update.registrable_beneficial_owner = undefined;
   }
   return appData;
 };
 
 const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
-  if(appData.update){
+  if (appData.update){
     await retrieveBeneficialOwners(req, appData);
     await retrieveManagingOfficers(req, appData);
     appData.update.bo_mo_data_fetched = true;

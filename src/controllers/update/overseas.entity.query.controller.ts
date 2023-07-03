@@ -71,14 +71,16 @@ const renderGetPageWithError = (res: Response, entityNumber: any) => {
 
 const addOeToApplicationData = async (req: Request, appData: ApplicationData, entityNumber: any, companyProfile: CompanyProfile) => {
   resetEntityUpdate(appData);
+  reloadOE(appData, entityNumber, companyProfile);
+  await retrieveBoAndMoData(req, appData);
+  setExtraData(req.session, appData);
+};
+
+export const reloadOE = (appData: ApplicationData, entityNumber: string, companyProfile: CompanyProfile) => {
   appData.entity_name = companyProfile.companyName;
   appData.entity_number = entityNumber;
   appData.entity = mapCompanyProfileToOverseasEntity(companyProfile);
   if (appData.update) {
     appData.update.date_of_creation = mapInputDate(companyProfile.dateOfCreation);
   }
-
-  await retrieveBoAndMoData(req, appData);
-
-  setExtraData(req.session, appData);
 };

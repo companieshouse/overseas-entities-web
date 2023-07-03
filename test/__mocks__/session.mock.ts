@@ -1735,9 +1735,8 @@ export const RESET_NO_CHANGE_RESPONSE = {
 };
 
 export const RESET_CHANGE_RESPONSE = {
-  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [EntityNameKey]: "Test1",
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
   [dueDiligenceType.DueDiligenceKey]: undefined,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
   [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,

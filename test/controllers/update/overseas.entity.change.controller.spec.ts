@@ -8,6 +8,7 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
+jest.mock("../../../src/service/company.profile.service");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -30,6 +31,10 @@ import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.
 import { getCompanyPsc } from '../../../src/service/persons.with.signficant.control.service';
 import { getCompanyOfficers } from '../../../src/service/company.managing.officer.service';
 import { resetChangeData, resetNoChangeData } from '../../../src/controllers/update/overseas.entity.change.controller';
+import { companyProfileQueryMock } from '../../__mocks__/update.entity.mocks';
+import { getCompanyProfile } from '../../../src/service/company.profile.service';
+
+const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -102,6 +107,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
@@ -163,6 +169,9 @@ describe("Overseas entity do you want to change your OE controller", () => {
       const req = {} as Request;
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
       expect(await resetChangeData(req, APPLICATION_DATA_MOCK)).toMatchObject(
         {
           ...RESET_CHANGE_RESPONSE

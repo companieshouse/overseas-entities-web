@@ -23,15 +23,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       // Fetch OE email address if not already in session.
       const overseasEntityId = appData.overseas_entity_id;
       const transactionId = appData.transaction_id;
-      if (!appData.entity?.email && overseasEntityId !== undefined && transactionId !== undefined) {
-        if (appData.entity === undefined) {
-          appData.entity = {};
-        }
-
+      if (appData.entity === undefined) {
+        appData.entity = {};
+      }
+      if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
         const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
         if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
           const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
-          logger.error(message);
+          logger.errorRequest(req, message);
           throw new Error(message);
         }
         appData.entity.email = privateOeDetails.email_address;

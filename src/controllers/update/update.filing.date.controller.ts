@@ -49,6 +49,7 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       setExtraData(req.session, appData);
       await updateOverseasEntity(req, session);
     }
+
     return res.redirect(config.OVERSEAS_ENTITY_PRESENTER_URL);
   } catch (error) {
     logger.errorRequest(req, error);

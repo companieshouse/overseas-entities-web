@@ -153,7 +153,7 @@ describe("Update review overseas entity information controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id (and no_change_review_statement undefined)`, async () => {
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);

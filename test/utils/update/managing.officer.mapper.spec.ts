@@ -100,7 +100,7 @@ describe("Test mapping to managing officer", () => {
       ch_reference: "selfLink",
       name: managingOfficerMock.name,
       principal_address: undefined,
-      is_service_address_same_as_principal_address: yesNoResponse.No,
+      is_service_address_same_as_principal_address: undefined,
       start_date: {
         day: "1",
         month: "4",

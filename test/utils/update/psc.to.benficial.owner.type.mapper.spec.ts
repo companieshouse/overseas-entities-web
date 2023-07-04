@@ -127,7 +127,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
         NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
       ],
-      is_service_address_same_as_principal_address: yesNoResponse.No,
+      is_service_address_same_as_principal_address: undefined,
       service_address: {
         line_1: pscMock.address.addressLine1,
         line_2: pscMock.address.addressLine2,
@@ -166,7 +166,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         NatureOfControlType.OVER_25_PERCENT_OF_SHARES,
         NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS
       ],
-      is_service_address_same_as_principal_address: yesNoResponse.No,
+      is_service_address_same_as_principal_address: undefined,
       service_address: {
         line_1: pscMock.address.addressLine1,
         line_2: pscMock.address.addressLine2,

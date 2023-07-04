@@ -28,6 +28,7 @@ import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_U
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING, SECURE_UPDATE_FILTER_CHANGELINK, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK, UPDATE_FILING_DATE_CHANGELINK, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK } from "../../../src/config";
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -152,11 +153,13 @@ describe("Update review overseas entity information controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id (and no_change_review_statement undefined)`, async () => {
+    test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: '1' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
@@ -167,7 +170,9 @@ describe("Update review overseas entity information controller tests", () => {
       const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
-      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: '1' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
@@ -195,13 +200,22 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.header.location).toEqual(PAYMENT_LINK_JOURNEY);
     });
 
+    test("validation error when posting", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT);
+    });
+
     test(`catch error on POST action for ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockCloseTransaction.mockImplementation(() => {
         throw ERROR;
       });
-      const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_STATEMENT_URL)
+        .send({ no_change_review_statement: "1" });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

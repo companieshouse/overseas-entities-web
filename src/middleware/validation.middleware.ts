@@ -19,7 +19,7 @@ import {
 } from "../model/date.model";
 
 import { logger } from '../utils/logger';
-import { EntityNameKey, ID } from "../model/data.types.model";
+import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 
@@ -49,11 +49,13 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       const id = req.params[ID];
       const appData: ApplicationData = getApplicationData(req.session);
       const entityName = appData?.[EntityNameKey];
+      const entityNumber = appData?.[EntityNumberKey];
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),
         templateName: NAVIGATION[routePath].currentPage,
         id,
         entityName,
+        entityNumber,
         ...appData,
         ...req.body,
         ...dates,

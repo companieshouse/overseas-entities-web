@@ -69,6 +69,7 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     appData.beneficial_owners_statement = undefined;
     appData.payment = undefined;
     appData.trusts = undefined;
+    appData.entity = undefined;
     const companyProfile = await getCompanyProfile(req, appData.entity_number as string) as CompanyProfile;
     reloadOE(appData, appData.entity_number as string, companyProfile);
   }

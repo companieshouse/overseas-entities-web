@@ -28,7 +28,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
         returnUrl = SECURE_UPDATE_FILTER_URL;
       }
 
-      return res.redirect(`/signin?return_to=${returnUrl}`);
+      return res.redirect( `/signin?return_to=${returnUrl}` );
     }
     const userEmail = getLoggedInUserEmail(req.session);
     logger.infoRequest(req, `User (${ userEmail }) is signed in`);

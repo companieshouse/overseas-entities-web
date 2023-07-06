@@ -49,15 +49,19 @@ import {
   overseasEntityUpdateDetails,
   overseasEntityPresenter,
   whoIsMakingUpdate,
-  updateCheckYourAnswers,
   updateDueDiligence,
   updateDueDiligenceOverseasEntity,
   updateConfirmation,
   paymentFailed,
-  updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
   updateBeneficialOwnerStatements,
+  updateBeneficialOwnerType,
+  updateTrustsSubmissionInterrupt,
+  updateTrustsTellUsAboutIt,
+  updateTrustsIndividualsOrEntitiesInvolved,
+  updateTrustsAssociatedWithEntity,
+  updateCheckYourAnswers,
   updateSignOut,
   updateBeneficialOwnerOther,
   confirmToRemove,
@@ -458,6 +462,46 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
+
+router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(updateTrustsSubmissionInterrupt.get)
+  .post(updateTrustsSubmissionInterrupt.post);
+
+router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(updateTrustsTellUsAboutIt.get)
+  .post(updateTrustsTellUsAboutIt.post);
+
+router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(updateTrustsIndividualsOrEntitiesInvolved.get)
+  .post(updateTrustsIndividualsOrEntitiesInvolved.post);
+
+router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(updateTrustsAssociatedWithEntity.get)
+  .post(updateTrustsAssociatedWithEntity.post);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
   .all(

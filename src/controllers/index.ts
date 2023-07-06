@@ -78,3 +78,7 @@ export * as updateContinueSavedFiling from "./update/update.continue.saved.filin
 export * as updateReviewOverseasEntityInformation from "./update/update.review.overseas.entity.information.controller";
 export * as updateTrustsSubmitByPaper from "./update/update.trusts.submit.by.paper.controller";
 export * as updateAnyTrustsInvolved from "./update/update.any.trusts.involved.controller";
+export * as updateTrustsSubmissionInterrupt from "./update/update.trusts.submission.interrupt.controller";
+export * as updateTrustsTellUsAboutIt from "./update/update.trusts.tell.us.about.it.controller";
+export * as updateTrustsIndividualsOrEntitiesInvolved from "./update/update.trusts.individuals.or.entities.involved.controller";
+export * as updateTrustsAssociatedWithEntity from "./update/update.trusts.associated.with.entity.controller";

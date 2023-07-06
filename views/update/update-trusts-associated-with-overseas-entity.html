@@ -1,0 +1,18 @@
+{% extends "update-layout.html" %}
+
+{% block pageTitle %}
+  Trusts associated with the overseas entity - {{ UPDATE_SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds-from-desktop">
+      <h1 class="govuk-heading-xl">Trusts associated with the overseas entity</h1>
+      <form method="post">{% include "includes/continue-button.html" %}</form>
+    </div>
+  </div>
+{% endblock %}

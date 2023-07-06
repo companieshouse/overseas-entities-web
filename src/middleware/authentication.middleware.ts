@@ -44,6 +44,9 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
 };
 
 export const testSonarAnalysis = (req: Request, res: Response, next: NextFunction): void => {
+
+  console.log("Extra log message to vary implementation");
+
   try {
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');

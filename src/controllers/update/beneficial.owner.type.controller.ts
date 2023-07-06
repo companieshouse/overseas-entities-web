@@ -16,6 +16,7 @@ import { checkAndReviewBeneficialOwner } from "../../utils/update/review.benefic
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -64,7 +65,11 @@ export const post = (req: Request, res: Response) => {
 export const postSubmit = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+  const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)
+    ? config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL
+    : config.UPDATE_CHECK_YOUR_ANSWERS_URL;
+
+  return res.redirect(redirectUrl);
 };
 
 const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {

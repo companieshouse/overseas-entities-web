@@ -15,6 +15,26 @@ import {
   getLoggedInUserEmail
 } from "../utils/session";
 
+const validTransactionIdChars = (() => {
+    const map: Map<string, string> = new Map();
+    "1234567890-".split('').forEach(d => map.set(d, d));
+    return map;
+})();
+
+const validOverseasEntityIdChars = (() => {
+    const map: Map<string, string> = new Map();
+    "1234567890abcdef".split('').forEach(d => map.set(d, d));
+    return map;
+})();
+
+const validateId = (id: string, map: Map<string, string>) => {
+  return id.split('').map(c => {
+    const c2 = map.get(c);
+    // Might want to throw an error rather than strip out but not needed for this testing
+    return c2;
+  }).join('');
+};
+
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
     if (!checkUserSignedIn(req.session)) {
@@ -22,8 +42,22 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
 
       let returnUrl = SOLD_LAND_FILTER_URL;
 
-      if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`) || req.path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
-        returnUrl = req.path;
+      if (req.path === STARTING_NEW_URL) {
+        returnUrl = STARTING_NEW_URL;
+      } else if (req.path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
+        req.path = UPDATE_CONTINUE_WITH_SAVED_FILING_URL;
+      } else if ( req.path.endsWith(`/${RESUME}`)) {
+        const path = req.path.split("/");
+        // Format must be like /update-an-overseas-entity|register-an-overseas-entity/transaction/106689-484116-885660/overseas-entity/64a5793f07d57a177c5fbe6b/resume
+        if (path.length !== 7 ||
+          (path[1] !== "update-an-overseas-entity" && path[1] !== "register-an-overseas-entity") ||
+          path[2] !== "transaction" || path[4] !== "overseas-entity") {
+          throw Error("Invalid auth path");
+        }
+        const journey = path[1] === "update-an-overseas-entity" ? "update-an-overseas-entity" : "register-an-overseas-entity";
+        const transactionId = validateId(path[3], validTransactionIdChars);
+        const overseasEntityId = validateId(path[5], validOverseasEntityIdChars);
+        returnUrl = `/${journey}/transaction/${transactionId}/overseas-entity/${overseasEntityId}/resume`;
       } else if (req.path.startsWith(UPDATE_LANDING_URL)) {
         returnUrl = SECURE_UPDATE_FILTER_URL;
       }

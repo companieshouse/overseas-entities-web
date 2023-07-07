@@ -7,6 +7,7 @@ import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerCorporate } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { isActiveFeature } from "../../utils/feature.flag";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,7 +35,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session as Session);
 
-    if (hasTrustsInvolved(appData)) {
+    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasTrustsInvolved(appData)) {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 

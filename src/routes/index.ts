@@ -90,6 +90,7 @@ import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
+import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
 
@@ -720,11 +721,17 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
-  .all(authentication)
+  .all(
+    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication
+  )
   .get(updateTrustsSubmitByPaper.get);
 
 router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
-  .all(authentication)
+  .all(
+    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication
+  )
   .get(updateAnyTrustsInvolved.get)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
 

@@ -134,7 +134,7 @@ describe("Sign Out controller", () => {
         .send({ sign_out: 'yes', previousPage });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.ACCOUNTS_SIGN_OUT_URL);
+      expect(resp.header.location).toEqual("TEST-" + config.ACCOUNTS_SIGN_OUT_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });

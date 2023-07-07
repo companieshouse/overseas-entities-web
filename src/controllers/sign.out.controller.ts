@@ -27,19 +27,35 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
-    const previousPage = req.body["previousPage"];
+    // const previousPage = req.body["previousPage"];
 
-    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
-      throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
-    }
+    // if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    //   throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
+    // }
 
-    if (req.body["sign_out"] === 'yes') {
-      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
-    }
+    // if (req.body["sign_out"] === 'yes') {
+    //   return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
+    // }
 
-    return res.redirect("TEST-" + previousPage);
+    const redirectUrl = getRedirectUrl(req);
+
+    return res.redirect("TEST-" + redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
+
+function getRedirectUrl(req: Request) {
+  const previousPage = req.body["previousPage"];
+
+  if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
+  }
+
+  if (req.body["sign_out"] === 'yes') {
+    return config.ACCOUNTS_SIGN_OUT_URL;
+  }
+
+  return previousPage;
+}

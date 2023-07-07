@@ -37,7 +37,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
     }
 
-    return res.redirect(previousPage);
+    return res.redirect("TEST-" + previousPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

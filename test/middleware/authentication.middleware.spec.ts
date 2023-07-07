@@ -60,7 +60,7 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${SOLD_LAND_FILTER_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin-TEST?return_to=${SOLD_LAND_FILTER_URL}`;
+    const signinRedirectPath = `/signin?return_to=${SOLD_LAND_FILTER_URL}`;
     req.session = undefined;
     req.path = `${LANDING_URL}`;
 
@@ -78,7 +78,7 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${SECURE_UPDATE_FILTER_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin-TEST?return_to=${SECURE_UPDATE_FILTER_URL}`;
+    const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
     req.session = undefined;
     req.path = `${UPDATE_LANDING_URL}`;
 
@@ -96,7 +96,7 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${STARTING_NEW_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin-TEST?return_to=${STARTING_NEW_URL}`;
+    const signinRedirectPath = `/signin?return_to=${STARTING_NEW_URL}`;
     req.session = undefined;
     req.path = `${STARTING_NEW_URL}`;
 
@@ -114,7 +114,7 @@ describe('Authentication middleware', () => {
   });
 
   test(`should redirect to signin page with ${RESUME_SUBMISSION_URL} page as return page`, () => {
-    const signinRedirectPath = `/signin-TEST?return_to=${RESUME_SUBMISSION_URL}`;
+    const signinRedirectPath = `/signin?return_to=${RESUME_SUBMISSION_URL}`;
     req.session = undefined;
     req.path = `${RESUME_SUBMISSION_URL}`;
 
@@ -159,7 +159,7 @@ describe('Authentication middleware', () => {
   });
 
   test("should redirect to signin page for update", async () => {
-    const signinRedirectPath = `/signin-TEST?return_to=${SECURE_UPDATE_FILTER_URL}`;
+    const signinRedirectPath = `/signin?return_to=${SECURE_UPDATE_FILTER_URL}`;
 
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true);

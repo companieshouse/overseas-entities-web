@@ -64,7 +64,7 @@ describe("service availability middleware tests", () => {
     const response = await request(app).get(STARTING_NEW_URL);
 
     expect(response.status).toEqual(302);
-    expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin-TEST?return_to=${STARTING_NEW_URL}`);
+    expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin?return_to=${STARTING_NEW_URL}`);
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
 
@@ -86,7 +86,7 @@ describe("service availability middleware tests", () => {
     const response = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(response.status).toEqual(302);
-    expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin-TEST?return_to=${RESUME_SUBMISSION_URL}`);
+    expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin?return_to=${RESUME_SUBMISSION_URL}`);
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
 });

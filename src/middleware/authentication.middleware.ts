@@ -22,7 +22,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
 
       const returnToUrl = getReturnToUrl(req.path);
 
-      return res.redirect(`/signin-TEST?return_to=${returnToUrl}`);
+      return res.redirect(`/signin?return_to=${returnToUrl}`);
     }
     const userEmail = getLoggedInUserEmail(req.session);
     logger.infoRequest(req, `User (${ userEmail }) is signed in`);

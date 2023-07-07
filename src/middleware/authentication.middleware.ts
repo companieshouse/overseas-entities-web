@@ -20,15 +20,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
 
-      // let returnUrl = SOLD_LAND_FILTER_URL;
-
-      // if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`) || req.path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
-      //   returnUrl = req.path;
-      // } else if (req.path.startsWith(UPDATE_LANDING_URL)) {
-      //   returnUrl = SECURE_UPDATE_FILTER_URL;
-      // }
-
-      const returnToUrl = getReturnToUrl(req.path); // , referringPageURL);
+      const returnToUrl = getReturnToUrl(req.path);
 
       return res.redirect(`/signin-TEST?return_to=${returnToUrl}`);
     }
@@ -45,8 +37,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
   }
 };
 
-function getReturnToUrl(path: string) { // }, referringPageURL: string) {
-
+function getReturnToUrl(path: string) {
   let returnToUrl = SOLD_LAND_FILTER_URL;
 
   if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
@@ -56,23 +47,4 @@ function getReturnToUrl(path: string) { // }, referringPageURL: string) {
   }
 
   return returnToUrl;
-
-  // let returnToUrl: string = pageURLs.EXTENSIONS;
-  // if (!activeFeature(process.env.ACCESSIBILITY_TEST_MODE)) {
-  //   if (isDownloadUrl(originalUrl)) {
-  //     // User has come here from clicking a download link
-
-  //     // This subterfuge is to satisfy a reported Sonar security vulnerability - the fact that this is a relative
-  //     // URL and has already been checked by the 'isDownloadUrl()' function also ensures that it is safe
-  //     const ALLOWED_DOWNLOAD_URL = {};
-  //     ALLOWED_DOWNLOAD_URL[originalUrl] = originalUrl;
-
-  //     returnToUrl = ALLOWED_DOWNLOAD_URL[originalUrl];
-  //   } else if (referringPageURL.endsWith(pageURLs.EXTENSIONS)) {
-  //     // User has come here from the start page - company number page is next, immediately after sign-in
-  //     returnToUrl = pageURLs.EXTENSIONS_COMPANY_NUMBER;
-  //   }
-  // }
-
-  // return returnToUrl;
 }

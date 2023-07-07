@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { expect, test, describe, jest } from "@jest/globals";
@@ -19,6 +20,10 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { APPLICATION_DATA_UPDATE_BO_MO_MOCK } from "../../__mocks__/session.mock";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -46,6 +51,13 @@ describe("Update trusts submit by paper controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING);
       expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+    });
+
+    test(`renders page not found if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const resp = await request(app).get(UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
+      expect(resp.status).toEqual(404);
     });
   });
 });

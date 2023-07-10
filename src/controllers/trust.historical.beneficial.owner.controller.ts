@@ -13,6 +13,7 @@ import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
+import { safeRedirect } from '../utils/http.ext';
 
 const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -128,7 +129,8 @@ const post = async (
 
     await saveAndContinue(req, session, true);
 
-    return res.redirect(`${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
+    return safeRedirect(res, `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`);
+
   } catch (error) {
     logger.errorRequest(req, error);
 

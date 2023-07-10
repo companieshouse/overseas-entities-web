@@ -10,38 +10,7 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
+{% set pageHeading = pageParams.title %}
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
-
-        <p class="govuk-body">At least one individual or entity you’ve told us
-           about is a beneficial owner of the overseas entity, due to being a trustee of a trust.</p>
-
-        <p class="govuk-body">
-          In the next section, you’ll need to tell us about the trust. 
-          This includes details about people or entities that are:</p>
-
-        <ul class="govuk-body">
-          <li>beneficiaries</li>
-          <li>settlors</li>
-          <li>grantors</li>
-          <li>interested persons</li>
-        </ul>
-        <p class="govuk-body">It also includes each person who has ever been a beneficial owner in relation to the
-           overseas entity, by being a trustee of the trust.</p>
-
-        <p class="govuk-body">You can add information about multiple trusts if needed.</p>
-
-      <form class="form" method="post">
-        {{ govukButton({
-          text: "Continue",
-          attributes: {
-            "id": "submit",
-            "data-event-id": "trust-interrupt-continue-button"
-          }
-        }) }}
-      </form>
-    </div>
-  </div>
+  {% include "includes/page-templates/trust-submission-interrupt.html" %}
 {% endblock %}

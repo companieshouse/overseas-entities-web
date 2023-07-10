@@ -4,9 +4,11 @@ import { logger } from '../utils/logger';
 import {
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
   RESUME,
   STARTING_NEW_URL,
   SECURE_UPDATE_FILTER_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../config';
 
@@ -41,6 +43,10 @@ function getReturnToUrl(path: string) {
   let returnToUrl = SOLD_LAND_FILTER_URL;
 
   if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
+    if (!path.startsWith(REGISTER_AN_OVERSEAS_ENTITY_URL) && !path.startsWith(UPDATE_AN_OVERSEAS_ENTITY_URL)) {
+      throw new Error('Security failure with the path URL ' + path);
+    }
+  
     returnToUrl = path;
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
     returnToUrl = SECURE_UPDATE_FILTER_URL;

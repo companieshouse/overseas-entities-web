@@ -79,13 +79,8 @@
 
       {% include "includes/save-and-continue-button.html" %}
 
-      {% if pageParams.isRegistration %}
-        {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REMOVE + "/" + id %}
-      {% else %}
-        {% set removePathURL = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REMOVE + "/" + id %}
-      {% endif %}
+      {% set removePathURL = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REMOVE + "/" + id %}    
       {% set nameToBeRemoved = name %}
-      
       {% if not entity_number %} 
         {% include "includes/remove-button.html" %}
       {% endif %}

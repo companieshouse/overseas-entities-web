@@ -129,7 +129,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
   describe("GET tests", () => {
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -151,7 +151,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section with (ceased) existing BO`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -171,7 +171,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -191,7 +191,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - Agent selected`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
       expect(resp.status).toEqual(200);
@@ -216,7 +216,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with verification checks - OE (Someone else) selected`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         [dueDiligenceType.DueDiligenceKey]: {},
         [overseasEntityDueDiligenceType.OverseasEntityDueDiligenceKey]: OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK,
@@ -255,7 +255,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
   describe("POST tests", () => {
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
@@ -266,7 +266,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, if Save and Resume not enabled`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
-      mockGetApplicationData.mockReturnValueOnce(mockData);
+      mockGetApplicationData.mockReturnValue(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app).post(UPDATE_CHECK_YOUR_ANSWERS_URL);
 

@@ -42,16 +42,12 @@
         {% set usual_residential_address_postcode = usual_residential_address.postcode %}
       {% endif %}
 
-      {% set first_name = first_name %}
       {% include "includes/inputs/fields/first-name-input.html" %}
       {% set hintLastNameText = "This is also known as your family name." %}
-      {% set last_name = last_name %}
       {% include "includes/inputs/fields/last-name-input.html" %}
 
-      {% set nationalityField = nationality %}
       {% include "includes/inputs/nationality/nationality.html" %}
 
-      {% set nationalityField = second_nationality %}
       {% include "includes/inputs/nationality/second-nationality.html" %}
 
       {% set hintResidentialAddress = "The beneficial owner’s home address would be shown on the public register as the correspondence address." %}
@@ -63,14 +59,10 @@
       {% include "includes/inputs/fields/is-still-a-beneficial-owner-input.html" %}
 
       {% set isBeneficialOwnerGov = false %}
-      {% set natureOfControlText = "What is their nature of control?" %}
-      {% set beneficial_owner_nature_of_control_types = beneficial_owner_nature_of_control_types %}
-      {% set non_legal_firm_members_nature_of_control_types = non_legal_firm_members_nature_of_control_types %}
       {% include "includes/page-templates/beneficial-owner-nature-of-control-types.html" %}
 
       {% set sanctionsPronoun = "they" %}
       {% set isReview = isOwnersReview %}
-      {% set is_on_sanctions_list = is_on_sanctions_list %}
       {% include "includes/inputs/fields/is-on-sanctions-list-input.html" %}
 
       {% set paragraphOne = '<p>We will not show the beneficial owner’s home address unless it is the same as their correspondence address. We’ll only show the month and year of their date of birth.</p>' %}

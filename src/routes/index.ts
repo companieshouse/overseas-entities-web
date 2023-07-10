@@ -472,7 +472,7 @@ router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
     companyAuthentication,
     navigation.hasUpdatePresenter,
   )
-  .get(updateTrustsSubmissionInterrupt.get)
+  .get(navigation.hasAnyBosWithTrusteeNocs, updateTrustsSubmissionInterrupt.get)
   .post(updateTrustsSubmissionInterrupt.post);
 
 router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL)

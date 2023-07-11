@@ -150,11 +150,11 @@ describe("Sign Out controller", () => {
       // expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
-    test(`should rejecting redirect, throw an error and render not found page`, async () => {
+    test(`should reject redirect, throw an error and render not found page`, async () => {
       const mockPreviousPage = "wrong/path";
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
-        .send({ sign_out: 'yes', previousPage: mockPreviousPage });
+        .send({ sign_out: 'no', previousPage: mockPreviousPage });
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);

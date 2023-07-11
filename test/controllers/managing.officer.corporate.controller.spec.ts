@@ -148,6 +148,7 @@ describe("MANAGING_OFFICER CORPORATE controller", () => {
       expect(resp.text).toContain("LegAuth");
       expect(resp.text).toContain("123456789");
       expect(resp.text).toContain("role and responsibilities text");
+      expect(resp.text).toContain(MANAGING_OFFICER_CORPORATE_URL);
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 

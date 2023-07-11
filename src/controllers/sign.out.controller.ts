@@ -49,17 +49,17 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 function getRedirectUrl(req: Request) {
   const previousPage = req.body["previousPage"];
 
-  if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
-    throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
-  }
-
   if (req.body["sign_out"] === 'yes') {
     return config.ACCOUNTS_SIGN_OUT_URL;
   }
 
-  if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL) && !previousPage.startsWith(config.UPDATE_AN_OVERSEAS_ENTITY_URL)) {
-    throw new Error('Security failure with the previous page URL ' + previousPage);
+  if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
   }
+
+  // if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)) {
+  //   throw new Error('Security failure with the previous page URL ' + previousPage);
+  // }
 
   return previousPage;
 }

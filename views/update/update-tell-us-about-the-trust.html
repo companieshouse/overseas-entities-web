@@ -1,6 +1,9 @@
 {% extends "update-layout.html" %}
 
 {% block pageTitle %}
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+  Error:
+  {% endif %}
   Tell us about the trust - {{ UPDATE_SERVICE_NAME }} - GOV.UK
 {% endblock %}
 
@@ -9,10 +12,5 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds-from-desktop">
-      <h1 class="govuk-heading-xl">Tell us about the trust</h1>
-      <form method="post">{% include "includes/continue-button.html" %}</form>
-    </div>
-  </div>
+  {% include "includes/page-templates/trust-details.html" %}
 {% endblock %}

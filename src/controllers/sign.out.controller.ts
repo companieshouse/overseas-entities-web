@@ -53,13 +53,14 @@ function getRedirectUrl(req: Request) {
     return config.ACCOUNTS_SIGN_OUT_URL;
   }
 
-  if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
-    throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
-  }
-
-  // if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)) {
-  //   throw new Error('Security failure with the previous page URL ' + previousPage);
+  // if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+  //   throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
   // }
+
+  if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)) {
+    throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
+    // throw new Error('Security failure with the previous page URL ' + previousPage);
+  }
 
   return previousPage;
 }

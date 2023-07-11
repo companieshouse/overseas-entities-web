@@ -138,6 +138,7 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(SECOND_NATIONALITY);
       expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+      expect(resp.text).toContain(MANAGING_OFFICER_URL);
     });
 
     test("catch error when rendering the page", async () => {

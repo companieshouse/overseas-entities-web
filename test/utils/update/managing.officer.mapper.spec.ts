@@ -120,7 +120,7 @@ describe("Test mapping to managing officer", () => {
       is_on_register_in_country_formed_in: yesNoResponse.Yes,
       public_register_name: managingOfficerMock.identification?.placeRegistered,
       registration_number: managingOfficerMock.identification?.registrationNumber,
-      role_and_responsibilities: managingOfficerMock.officerRole,
+      role_and_responsibilities: managingOfficerMock.responsibilities,
     });
   });
 });

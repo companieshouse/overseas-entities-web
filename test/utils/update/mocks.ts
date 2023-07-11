@@ -177,6 +177,7 @@ export const managingOfficerMock: CompanyOfficer = {
   nationality: "country1",
   occupation: "occupation",
   officerRole: "",
+  responsibilities: "role and responsibilities text",
   resignedOn: "resigned"
 };
 
@@ -217,5 +218,6 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
   nationality: "country1, country2",
   occupation: "occupation",
   officerRole: "",
+  responsibilities: "role and responsibilities text",
   resignedOn: "resigned"
 };

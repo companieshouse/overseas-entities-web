@@ -4,9 +4,11 @@ import { logger } from '../utils/logger';
 import {
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
   RESUME,
   STARTING_NEW_URL,
   SECURE_UPDATE_FILTER_URL,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../config';
 
@@ -20,15 +22,9 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
 
-      let returnUrl = SOLD_LAND_FILTER_URL;
+      const returnToUrl = getReturnToUrl(req.path);
 
-      if (req.path === STARTING_NEW_URL || req.path.endsWith(`/${RESUME}`) || req.path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
-        returnUrl = req.path;
-      } else if (req.path.startsWith(UPDATE_LANDING_URL)) {
-        returnUrl = SECURE_UPDATE_FILTER_URL;
-      }
-
-      return res.redirect(`/signin?return_to=${returnUrl}`);
+      return res.redirect(`/signin?return_to=${returnToUrl}`);
     }
     const userEmail = getLoggedInUserEmail(req.session);
     logger.infoRequest(req, `User (${ userEmail }) is signed in`);
@@ -42,3 +38,19 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     next(err);
   }
 };
+
+function getReturnToUrl(path: string) {
+  let returnToUrl = SOLD_LAND_FILTER_URL;
+
+  if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
+    if (!path.startsWith(REGISTER_AN_OVERSEAS_ENTITY_URL) && !path.startsWith(UPDATE_AN_OVERSEAS_ENTITY_URL)) {
+      throw new Error('Security failure with the path URL ' + path);
+    }
+  
+    returnToUrl = path;
+  } else if (path.startsWith(UPDATE_LANDING_URL)) {
+    returnToUrl = SECURE_UPDATE_FILTER_URL;
+  }
+
+  return returnToUrl;
+}

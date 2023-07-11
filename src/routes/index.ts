@@ -475,7 +475,7 @@ router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .get(navigation.hasAnyBosWithTrusteeNocs, updateTrustsSubmissionInterrupt.get)
   .post(updateTrustsSubmissionInterrupt.post);
 
-router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL)
+router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
@@ -483,7 +483,7 @@ router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL)
     navigation.hasUpdatePresenter,
   )
   .get(updateTrustsTellUsAboutIt.get)
-  .post(updateTrustsTellUsAboutIt.post);
+  .post(...validator.trustDetails, updateTrustsTellUsAboutIt.post);
 
 router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
   .all(

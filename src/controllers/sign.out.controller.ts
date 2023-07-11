@@ -57,5 +57,5 @@ function getRedirectUrl(req: Request) {
     return config.ACCOUNTS_SIGN_OUT_URL;
   }
 
-  return previousPage;
+  return config.ACCOUNTS_SIGN_OUT_URL; // previousPage;
 }

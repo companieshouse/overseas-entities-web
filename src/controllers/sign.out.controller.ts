@@ -57,5 +57,9 @@ function getRedirectUrl(req: Request) {
     return config.ACCOUNTS_SIGN_OUT_URL;
   }
 
-  return config.ACCOUNTS_SIGN_OUT_URL; // previousPage;
+  if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL) && !previousPage.startsWith(config.UPDATE_AN_OVERSEAS_ENTITY_URL)) {
+    throw new Error('Security failure with the previous page URL ' + previousPage);
+  }
+
+  return previousPage;
 }

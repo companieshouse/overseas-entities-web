@@ -16,6 +16,7 @@ import { logger } from '../../src/utils/logger';
 import {
   LANDING_URL,
   UPDATE_LANDING_URL,
+  RESUME,
   SOLD_LAND_FILTER_URL,
   STARTING_NEW_URL,
   SECURE_UPDATE_FILTER_URL
@@ -167,6 +168,22 @@ describe('Authentication middleware', () => {
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(signinRedirectPath);
+
+    expect(res.locals).toEqual({});
+  });
+
+  test(`should throw error when request path is invalid`, () => {
+    req.session = undefined;
+    req.path = `/INVALID/${RESUME}`;
+
+    authentication(req, res, next);
+
+    expect(res.redirect).not.toHaveBeenCalled();
+
+    expect(next).toHaveBeenCalledTimes(1);
+
+    expect(logger.infoRequest).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).toHaveBeenCalledTimes(1);
 
     expect(res.locals).toEqual({});
   });

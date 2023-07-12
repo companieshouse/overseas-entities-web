@@ -479,7 +479,7 @@ router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasUpdatePresenter
   )
   .get(updateTrustsTellUsAboutIt.get)
   .post(...validator.trustDetails, updateTrustsTellUsAboutIt.post);
@@ -500,9 +500,10 @@ router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
     authentication,
     companyAuthentication,
     navigation.hasUpdatePresenter,
+    navigation.hasTrustData
   )
   .get(updateTrustsAssociatedWithEntity.get)
-  .post(updateTrustsAssociatedWithEntity.post);
+  .post(...validator.addTrust, updateTrustsAssociatedWithEntity.post);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
   .all(

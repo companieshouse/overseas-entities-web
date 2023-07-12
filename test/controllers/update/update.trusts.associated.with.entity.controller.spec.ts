@@ -12,8 +12,9 @@ import { NextFunction } from 'express';
 import app from '../../../src/app';
 import {
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
-  UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
+  UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
 } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
@@ -53,7 +54,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain('Trusts associated with the overseas entity');
-      expect(resp.text).toContain(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
+      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
@@ -69,13 +70,22 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, redirect to trusts associated with the entity page', async () => {
+    test('when feature flag is on, and no trusts are to be added, redirect to trusts associated with the entity page', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
-      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '0' });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_CHECK_YOUR_ANSWERS_URL);
+    });
+
+    test('when feature flag is on, and trusts are to be added, redirect to trusts associated with the entity page', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).post(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL).send({ addTrust: '1' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

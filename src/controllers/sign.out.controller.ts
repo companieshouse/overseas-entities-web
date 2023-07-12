@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
-import { safeRedirect2 } from '../utils/http.ext';
+import { safeRedirect } from '../utils/http.ext';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -28,7 +28,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
-
     const previousPage = req.body["previousPage"];
 
     if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
@@ -36,10 +35,10 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     }
 
     if (req.body["sign_out"] === 'yes') {
-      return res.redirect("TEST-" + config.ACCOUNTS_SIGN_OUT_URL);
+      return res.redirect(config.ACCOUNTS_SIGN_OUT_URL);
     }
 
-    return safeRedirect2(res, "TEST-" + previousPage);
+    return safeRedirect(res, previousPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

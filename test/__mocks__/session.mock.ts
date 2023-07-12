@@ -906,7 +906,7 @@ export const UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK: managingOfficerTyp
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "occupation",
-  role_and_responsibilities: ""
+  role_and_responsibilities: "role and responsibilities text"
 };
 
 export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.ManagingOfficerIndividual = {
@@ -923,7 +923,7 @@ export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.
   service_address: ADDRESS,
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "occupation",
-  role_and_responsibilities: ""
+  role_and_responsibilities: "role and responsibilities text"
 };
 
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {

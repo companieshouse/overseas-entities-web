@@ -30,12 +30,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const previousPage = req.body["previousPage"];
 
-    if (req.body["sign_out"] === 'yes') {
-      return res.redirect("TEST-" + config.ACCOUNTS_SIGN_OUT_URL);
+    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+      throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
 
-    if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)) {
-      throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
+    if (req.body["sign_out"] === 'yes') {
+      return res.redirect("TEST-" + config.ACCOUNTS_SIGN_OUT_URL);
     }
 
     return res.redirect("TEST-" + previousPage);

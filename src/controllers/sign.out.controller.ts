@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
+import { safeRedirect2 } from '../utils/http.ext';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,7 +39,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect("TEST-" + config.ACCOUNTS_SIGN_OUT_URL);
     }
 
-    return res.redirect("TEST-" + previousPage);
+    return safeRedirect2(res, "TEST-" + previousPage);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

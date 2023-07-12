@@ -46,7 +46,7 @@ function getReturnToUrl(path: string) {
     if (!path.startsWith(REGISTER_AN_OVERSEAS_ENTITY_URL) && !path.startsWith(UPDATE_AN_OVERSEAS_ENTITY_URL)) {
       throw new Error('Security failure with the path URL ' + path);
     }
-  
+
     returnToUrl = path;
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
     returnToUrl = SECURE_UPDATE_FILTER_URL;

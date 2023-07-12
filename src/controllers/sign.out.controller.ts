@@ -12,8 +12,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const headers = req.rawHeaders;
     const previousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL));
 
+    console.log("\n\nFull URL = " + previousPageUrl[0] + "\n\n");
+
+    const locationIndex = previousPageUrl[0].indexOf(config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+    const relativePreviousPageUrl = previousPageUrl[0].substring(locationIndex);
+
+    console.log("\n\nRelative URL = " + relativePreviousPageUrl + "\n\n");
+
     return res.render(config.SIGN_OUT_PAGE, {
-      previousPage: previousPageUrl[0],
+      previousPage: relativePreviousPageUrl, // previousPageUrl[0],
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
       journey: "register"
@@ -29,7 +36,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.SIGN_OUT_PAGE}`);
     const previousPage = req.body["previousPage"];
 
-    if (!previousPage.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
+    if (!previousPage.startsWith(config.REGISTER_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }
 

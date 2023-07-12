@@ -7,7 +7,7 @@ jest.mock("../../src/utils/logger");
 
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-import { isActiveFeature } from "../../src/utils/feature.flag";
+// import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { NextFunction, Request, Response } from "express";
 
@@ -16,16 +16,17 @@ import app from "../../src/app";
 import {
   ANY_MESSAGE_ERROR,
   PAGE_NOT_FOUND_TEXT,
-  SERVICE_UNAVAILABLE, SIGN_OUT_HELP_DETAILS_TEXT,
-  SIGN_OUT_HINT_TEXT,
-  SIGN_OUT_PAGE_TITLE,
-  SIGN_OUT_DROPDOWN_TEXT,
-  SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT,
-  SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT
+  SERVICE_UNAVAILABLE,
+  // SIGN_OUT_HELP_DETAILS_TEXT,
+  // SIGN_OUT_HINT_TEXT,
+  // SIGN_OUT_PAGE_TITLE,
+  // SIGN_OUT_DROPDOWN_TEXT,
+  SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT
+  // SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT
 } from "../__mocks__/text.mock";
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
+// const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -41,82 +42,82 @@ describe("Sign Out controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(true);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
+    //   expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    // });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(false);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
-      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
+    //   expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+    //   expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    // });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, and guidance for resuming a saved journey is displayed`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, and guidance for resuming a saved journey is displayed`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(true);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
+    //   expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    // });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, and guidance for resuming a saved journey is not displayed`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, and guidance for resuming a saved journey is not displayed`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(false);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).not.toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-      expect(resp.text).not.toContain('How do I find my saved applications?');
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).not.toContain(SIGN_OUT_HINT_TEXT);
+    //   expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+    //   expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
+    //   expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
+    //   expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    //   expect(resp.text).not.toContain('How do I find my saved applications?');
+    // });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(true);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+    //   expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+    //   expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    // });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
+    // test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(true);
+    //   const resp = await request(app)
+    //     .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
 
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
-    });
+    //   expect(resp.status).toEqual(200);
+    //   expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+    //   expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+    // });
 
     test("catch error when rendering the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

@@ -173,17 +173,21 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 };
 
 const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData) => {
+  let backLinkUrl: string;
   if (isUpdate){
-    return config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
+    backLinkUrl = config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
+
+    if (containsTrustData(getTrustArray(appData))) {
+      backLinkUrl = `${config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL}`;
+    }
   } else {
-    let backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
+    backLinkUrl = `${config.TRUST_ENTRY_URL + config.TRUST_INTERRUPT_URL}`;
 
     if (containsTrustData(getTrustArray(appData))) {
       backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
     }
-
-    return backLinkUrl;
   }
+  return backLinkUrl;
 };
 
 const getPageTemplate = (isUpdate: boolean) => {

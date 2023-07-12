@@ -150,6 +150,7 @@ export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to san
 export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
 export const TRUSTS_NOC_HEADING = "The beneficial owner is a trustee of a trust";
 export const EMAIL_ADDRESS_USE_AUTH_CODE_TEXT = "the authentication code, if requested - you'll need this to file online for the entity in future";
+export const TRUST_SUMMARY_HEADING = "Trusts associated with the overseas entity";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";

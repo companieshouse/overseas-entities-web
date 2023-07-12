@@ -19,7 +19,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasTrustData } from "../../src/middleware/navigation/has.trust.middleware";
 import { Trust, TrustKey } from "../../src/model/trust.model";
 import { generateTrustId } from "../../src/utils/trust/details.mapper";
-import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.controller";
+import { get, post } from "../../src/controllers/add.trust.controller";
 import { constants } from "http2";
 import { ErrorMessages } from "../../src/validation/error.messages";
 
@@ -137,7 +137,7 @@ describe("Add Trust Controller Tests", () => {
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ADD_TRUST_TEXTS.title);
+      expect(resp.text).toContain('Trusts associated with the overseas entity');
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);

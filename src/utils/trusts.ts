@@ -1,6 +1,6 @@
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { v4 as uuidv4 } from "uuid";
-import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL, UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL, UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -45,13 +45,19 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  * @returns string URL to go to when starting the trust journey
  */
 const getTrustLandingUrl = (appData: ApplicationData): string => {
-
   if (containsTrustData(getTrustArray(appData))) {
     // Once naviation changes are agreed the following will change
-    return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
+    if (appData.entity_number !== undefined) {
+      return UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
+    } else {
+      return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
+    }
   }
-
-  return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+  if (appData.entity_number !== undefined) {
+    return UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
+  } else {
+    return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+  }
 };
 
 const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {

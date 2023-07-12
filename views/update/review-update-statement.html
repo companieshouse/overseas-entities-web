@@ -131,9 +131,9 @@
     <br>
 
 {% set ceasedStatementText %}
-    {% if appData.update.registrable_beneficial_owner == 0 %}
+    {% if appData.update.registrable_beneficial_owner == 1 %}
     The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.
-    {% elif appData.update.registrable_beneficial_owner == 1%}
+    {% elif appData.update.registrable_beneficial_owner == 0 %}
     The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.
     {% endif %}
 {% endset %}

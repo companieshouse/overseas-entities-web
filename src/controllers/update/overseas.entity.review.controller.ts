@@ -27,14 +27,14 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
         if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
           const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
-          logger.errorRequest(req, message);
-          throw new Error(message);
-        }
-        appData.entity.email = privateOeDetails.email_address;
+          logger.infoRequest(req, message);
+        } else {
+          appData.entity.email = privateOeDetails.email_address;
 
-        // Cache in session and save out for save&resume.
-        setExtraData(session, appData);
-        await updateOverseasEntity(req, session);
+          // Cache in session and save out for save&resume.
+          setExtraData(session, appData);
+          await updateOverseasEntity(req, session);
+        }
       }
     }
 

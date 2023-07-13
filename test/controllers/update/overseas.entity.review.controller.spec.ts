@@ -83,41 +83,40 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning nothing`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning nothing`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning no email`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning no email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce({ });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning empty email`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning empty email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "" });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
     test("catch error when rendering the Overseas Entity Review page on GET method", async () => {

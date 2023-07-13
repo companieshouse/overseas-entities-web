@@ -130,7 +130,7 @@ describe("Sign Out controller", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page and correctly sets the previousPage field value`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}`).set({key:`http://host-name${config.WHO_IS_MAKING_FILING_URL}`});
+        .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name${config.WHO_IS_MAKING_FILING_URL}` });
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);

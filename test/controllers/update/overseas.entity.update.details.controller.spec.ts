@@ -25,10 +25,8 @@ import {
   ANY_MESSAGE_ERROR,
   UPDATE_ENTITY_PAGE_TITLE,
   PAGE_TITLE_ERROR,
-  SAVE_AND_CONTINUE_BUTTON_TEXT,
   SERVICE_UNAVAILABLE
-}
-  from "../../__mocks__/text.mock";
+} from "../../__mocks__/text.mock";
 import { EntityKey } from "../../../src/model/entity.model";
 import {
   EntityNumberKey,
@@ -72,7 +70,6 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("renders the OVERSEAS ENTITY UPDATE DETAILS on GET method with Afghanistan as country field", async () => {
@@ -88,7 +85,6 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
       expect(resp.text).toContain("Afghanistan");
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
     });
 
     test("catch error when renders the entity page on GET method", async () => {
@@ -101,14 +97,14 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect to OVERSEAS ENTITY REVIEW page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
+    test("redirect to BENEFICIAL_OWNER_STATEMENTS_PAGE page after a successful post from OVERSEAS ENTITY UPDATE DETAILS page", async () => {
       mockPrepareData.mockReturnValueOnce(ENTITY_OBJECT_MOCK);
       const resp = await request(app)
         .post(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
         .send(UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 

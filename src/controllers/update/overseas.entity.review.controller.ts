@@ -14,9 +14,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL;
-    const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const overseasEntityHeading: string = "Check the overseas entity details";
 
     if (!isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
 
@@ -41,16 +38,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
       }
     }
 
-    return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
-      templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
-      backLinkUrl,
-      changeLinkUrl,
-      overseasEntityHeading,
-      appData,
-      pageParams: {
-        isRegistration: false
-      },
-    });
+    return res.redirect(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
@@ -66,3 +55,4 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     next(errors);
   }
 };
+

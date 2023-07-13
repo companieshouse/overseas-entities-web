@@ -87,7 +87,7 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_REVIEW_URL]: {
     currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
     previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
-    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL, config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {
     currentPage: config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE,
@@ -102,7 +102,7 @@ export const NAVIGATION: Navigation = {
   [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]: {
     currentPage: config.ENTITY_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
-    nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
+    nextPage: [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL, config.OVERSEAS_ENTITY_REVIEW_PAGE]
   },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,

@@ -141,6 +141,21 @@ describe("Sign Out controller", () => {
       // Check that the "http://host-name" absolute URL prefix has been stripped off when setting the previousPage URL
       expect(resp.text).toContain(`value="${config.WHO_IS_MAKING_FILING_URL}"`);
     });
+
+    test(`renders the ${config.SIGN_OUT_PAGE} page and does set a potentially malicious previous page URL`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name/illegal-path` });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
+      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+      // Check that the "http://host-name/illegal-path" absolute URL is not set on the previousPage URL
+      expect(resp.text).not.toContain("http://host-name/illegal-path");
+    });
   });
 
   describe("POST tests", () => {

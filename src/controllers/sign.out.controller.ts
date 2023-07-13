@@ -9,19 +9,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
-    // Get the trust link for the previous page from the raw header
-    const headers = req.rawHeaders;
-    const previousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL));
-
-    console.log("\n\nFull URL = " + previousPageUrl[0] + "\n\n");
-
-    const locationIndex = previousPageUrl[0].indexOf(config.REGISTER_AN_OVERSEAS_ENTITY_URL);
-    const relativePreviousPageUrl = previousPageUrl[0].substring(locationIndex);
-
-    console.log("\n\nRelative URL = " + relativePreviousPageUrl + "\n\n");
+    const previousPageUrl = getPreviousPageUrl(req);
 
     return res.render(config.SIGN_OUT_PAGE, {
-      previousPage: relativePreviousPageUrl, // previousPageUrl[0],
+      previousPage: previousPageUrl,
       url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
       journey: "register"
@@ -51,3 +42,17 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+
+function getPreviousPageUrl(req: Request) {
+  const headers = req.rawHeaders;
+  const absolutePreviousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL))[0];
+
+  if (!absolutePreviousPageUrl) {
+    return absolutePreviousPageUrl;
+  }
+
+  const startingIndexOfRelativePath = absolutePreviousPageUrl.indexOf(config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+  const relativePreviousPageUrl = absolutePreviousPageUrl.substring(startingIndexOfRelativePath);
+
+  return relativePreviousPageUrl;
+}

@@ -167,6 +167,9 @@ export const managingOfficerMock: CompanyOfficer = {
     placeRegistered: "place",
     registrationNumber: "0000"
   },
+  contactDetails: {
+    contactName: "Test User"
+  },
   links: {
     self: "selfLink",
     officer: {
@@ -207,6 +210,9 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
     identificationType: "identification type",
     placeRegistered: "place",
     registrationNumber: "0000"
+  },
+  contactDetails: {
+    contactName: "Test User",
   },
   links: {
     self: "selfLink",

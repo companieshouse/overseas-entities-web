@@ -1415,6 +1415,9 @@ export const MANAGING_OFFICER_MOCK_MAP_DATA: CompanyOfficer = {
     placeRegistered: "place",
     registrationNumber: "0000"
   },
+  contactDetails: {
+    contactName: "Test User"
+  },
   links: {
     self: "selfLink",
     officer: {

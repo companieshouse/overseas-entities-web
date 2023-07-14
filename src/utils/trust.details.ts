@@ -204,7 +204,7 @@ const getUrl = (isUpdate: boolean) => {
 
 const getNextPage = (isUpdate: boolean, trustId: string) => {
   if (isUpdate){
-    return config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
     return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   }

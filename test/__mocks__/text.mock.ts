@@ -87,6 +87,7 @@ export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
 export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
+export const TRUST_INVOLVED_TITLE = 'Individuals or entities involved in the trust';
 export const TRUSTS_URL = "trusts";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";

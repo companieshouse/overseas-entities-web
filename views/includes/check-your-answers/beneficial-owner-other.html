@@ -2,7 +2,7 @@
 
 {% set bocStartDate = dateMacros.formatDate(boc.start_date["day"], boc.start_date["month"], boc.start_date["year"]) %}
 {% set bocFormattedPrincipalAddressHtml %}
-  {% if (not boc.principal_address.length > 0  and pageParams.noChangeFlag) %}
+  {% if (not boc.principal_address|length > 0  and pageParams.noChangeFlag) %}
       <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% elif boc.principal_address %}
     {% set address = boc.principal_address %}

@@ -8,7 +8,6 @@ import { mapBeneficialOwnerToSession, mapFormerTrusteeFromSessionToPage } from '
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
-import { CommonTrustData } from '../model/trust.page.model';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
@@ -26,7 +25,7 @@ type TrustHistoricalBeneficialOwnerProperties = {
     title: string;
   },
   pageData: {
-    trustData: CommonTrustData,
+    trustData: PageModel.CommonTrustData,
     trusteeType: typeof TrusteeType;
   },
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,

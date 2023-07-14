@@ -24,16 +24,21 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         appData.entity = {};
       }
       if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
-        const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
-        if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
-          const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
-          logger.infoRequest(req, message);
-        } else {
-          appData.entity.email = privateOeDetails.email_address;
+        try {
+          const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
+          if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
+            const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
+            logger.infoRequest(req, message);
+          } else {
+            appData.entity.email = privateOeDetails.email_address;
 
-          // Cache in session and save out for save&resume.
-          setExtraData(session, appData);
-          await updateOverseasEntity(req, session);
+            // Cache in session and save out for save&resume.
+            setExtraData(session, appData);
+            await updateOverseasEntity(req, session);
+          }
+        } catch (error) {
+          const message = `Private OE Details could not be retrieved for overseas entity ${appData.entity_number}`;
+          logger.infoRequest(req, message);
         }
       }
     }

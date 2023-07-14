@@ -55,7 +55,7 @@ function getPreviousPageUrl(req: Request) {
   const startingIndexOfRelativePath = absolutePreviousPageUrl.indexOf(config.REGISTER_AN_OVERSEAS_ENTITY_URL);
   const relativePreviousPageUrl = absolutePreviousPageUrl.substring(startingIndexOfRelativePath);
 
-  logger.debug(`Relative previous page URL is ${relativePreviousPageUrl}`);
+  logger.debugRequest(req, `Relative previous page URL is ${relativePreviousPageUrl}`);
 
   return relativePreviousPageUrl;
 }

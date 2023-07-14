@@ -1,7 +1,9 @@
 {% extends "update-layout.html" %}
 
+{% set title = pageParams.title %}
+
 {% block pageTitle %}
-  Individuals or entities involved in the trust - {{ UPDATE_SERVICE_NAME }} - GOV.UK
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
@@ -9,10 +11,5 @@
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds-from-desktop">
-      <h1 class="govuk-heading-xl">Individuals or entities involved in the trust</h1>
-      <form method="post">{% include "includes/continue-button.html" %}</form>
-    </div>
-  </div>
+  {% include "includes/page-templates/trust-involved.html" %}
 {% endblock %}

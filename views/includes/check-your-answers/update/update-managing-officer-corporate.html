@@ -1,5 +1,8 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+{% set inChangeJourney = not inNoChangeJourney %}
+
 {% set moAddress = moc.principal_address %}
 {% set moSameAddresses = moc.is_service_address_same_as_principal_address %}
 {% set moServiceAddress = moc.service_address %}
@@ -7,17 +10,17 @@
 
 {% set mocChangePublicregisterNameHtml = "" %}
 {% set mocFormattedPublicRegister %}
-{% if moc.is_on_register_in_country_formed_in == 1 %}
-  {% set mocChangePublicregisterNameHtml = "#public_register_name" %}
-  {{ moc.public_register_name }} / {{ moc.registration_number }}
-{% else %}
-  {% set mocChangePublicregisterNameHtml = "#is_on_register_in_country_formed_in" %}
+  {% if moc.is_on_register_in_country_formed_in == 1 %}
+    {% set mocChangePublicregisterNameHtml = "#public_register_name" %}
+    {{ moc.public_register_name }} / {{ moc.registration_number }}
+  {% else %}
+    {% set mocChangePublicregisterNameHtml = "#is_on_register_in_country_formed_in" %}
     No
   {% endif %}
 {% endset %}
 
 {% set moFormattedContactEmailHtml %}
-  {% if pageParams.noChangeFlag %}
+  {% if inNoChangeJourney %}
     <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% else %}
     {{ moc.contact_email }}
@@ -25,7 +28,7 @@
 {% endset %}
 
 {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
-{% if not pageParams.noChangeFlag %}
+{% if inChangeJourney %}
   {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
 {% endif %}
 {% set moChangeLinkText =  "Corporate managing officer " + moc.name %}
@@ -40,12 +43,12 @@
     text: moc.name
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NAME, 
       moChangeLinkText + " - Name", 
       "change-corporate-managing-officer-name-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
@@ -58,12 +61,12 @@
     text: moc.legal_form
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LEGAL_FORM, 
       moChangeLinkText + " - Legal form", 
       "change-corporate-managing-officer-legal-form-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -74,12 +77,12 @@
     html: moc.law_governed
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAW_GOVERNED, 
       moChangeLinkText + " - Law governed", 
       "change-corporate-managing-officer-governing-law-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -90,12 +93,12 @@
     html: mocFormattedPublicRegister
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + mocChangePublicregisterNameHtml, 
       moChangeLinkText + " - Public register", 
       "change-corporate-managing-officer-public-register-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 {% set rows = (rows.push({
   key: {
@@ -105,12 +108,12 @@
     text: moc.role_and_responsibilities
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES, 
       moChangeLinkText + " - Role and responsibilities", 
       "change-corporate-managing-officer-role-and-responsibilities-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -121,12 +124,12 @@
     html: moc.contact_full_name
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_FULL_NAME, 
       moChangeLinkText + " - Contact full name", 
       "change-corporate-managing-officer-contact-full-name-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -137,16 +140,18 @@
     html: moFormattedContactEmailHtml
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_EMAIL, 
       moChangeLinkText + " - Contact email", 
       "change-corporate-managing-officer-contact-email-address-button"
-    ) if not pageParams.noChangeFlag]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
+
 {% include "includes/check-your-answers/update/managing-officers-resigned-on.html" %}
 
 <h3 class="govuk-heading-m">Corporate managing officer</h3>
+
 {{ govukSummaryList({
    rows: rows
 }) }}

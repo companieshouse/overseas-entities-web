@@ -1,9 +1,12 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+{% set inChangeJourney = not inNoChangeJourney %}
+
 {% set bocStartDate = dateMacros.formatDate(boc.start_date["day"], boc.start_date["month"], boc.start_date["year"]) %}
 {% set bocFormattedPrincipalAddressHtml %}
-  {% if (boc.principal_address|length === 0  and pageParams.noChangeFlag) %}
-      <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+  {% if (boc.principal_address|length === 0 and inNoChangeJourney) %}
+    <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% elif boc.principal_address %}
     {% set address = boc.principal_address %}
     {% include "includes/display_address.html" %}
@@ -67,42 +70,40 @@
   {% if boc.ceased_date | length %}
     {% set bocCeasedDate = dateMacros.formatDate(boc.ceased_date["day"], boc.ceased_date["month"], boc.ceased_date["year"]) %}
     {% set isStillBeneficialOwner = { 
-      key: {
-        text: "Are they still a beneficial owner?" },
-        value: { text: "No" },
-        actions: {
-          items:
-            [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.IS_CEASED,
-            "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
-            "change-corporate-beneficial-owner-still-beneficial-owner-button" ) if not pageParams.noChangeFlag ] } } %}
+      key: { text: "Are they still a beneficial owner?" },
+      value: { text: "No" },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.IS_CEASED,
+          "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
+          "change-corporate-beneficial-owner-still-beneficial-owner-button"
+        )]
+      } if inChangeJourney
+    } %}
     {% set ceasedDate ={
-      key: {
-        text: "Ceased date" },
-        value: { text: bocCeasedDate },
-        actions: {
-          items: [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.CEASED_DATE,
+      key: { text: "Ceased date" },
+      value: { text: bocCeasedDate },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.CEASED_DATE,
           "Corporate beneficial owner " + bocFullName + " - ceased date",
-          "change-corporate-beneficial-owner-ceased-date-button" ) if not pageParams.noChangeFlag ] } } %}
+          "change-corporate-beneficial-owner-ceased-date-button"
+        )]
+      } if inChangeJourney
+    } %}
   {% else %}
     {% set isStillBeneficialOwner = {
-      key: {
-        text: "Are they still a beneficial owner?" },
-        value: { text: "Yes" },
-        actions: {
-          items: [ CREATE_CHANGE_LINK( changeLinkUrl + OE_CONFIGS.IS_CEASED,
+      key: { text: "Are they still a beneficial owner?" },
+      value: { text: "Yes" },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.IS_CEASED,
           "Corporate beneficial owner " + bocFullName + " - are they still a beneficial owner?",
-          "change-corporate-beneficial-owner-still-beneficial-owner-button" ) if not pageParams.noChangeFlag ] } } %}
+          "change-corporate-beneficial-owner-still-beneficial-owner-button"
+        )]
+      } if inChangeJourney
+    } %}
   {% endif %}
-{% endif %}
-
-{% if hideChangeLinksForNonEditableFields == true %}
-  {% set changeLink = undefined %}
-{% else %}
-  {% set changeLink = CREATE_CHANGE_LINK(
-            changeLinkUrl + OE_CONFIGS.START_DATE,
-            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
-            "change-corporate-beneficial-owner-start-date-button"
-          )%}
 {% endif %}
 
 <h3 class="govuk-heading-m">Other legal entity beneficial owner</h3>
@@ -117,12 +118,12 @@
           text: boc.name
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.NAME,
             "Corporate beneficial owner " + boc.name + " - name",
             "change-corporate-beneficial-owner-name-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
@@ -132,12 +133,12 @@
           html: bocFormattedPrincipalAddressHtml
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Corporate beneficial owner " + boc.name + " - principal or registered office address",
             "change-corporate-beneficial-owner-principal-address-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
@@ -151,8 +152,8 @@
             changeLinkUrl + bocChangeServiceAddressHtml,
             "Corporate beneficial owner " + boc.name + " - correspondence address",
             "change-corporate-beneficial-owner-service-address-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
@@ -162,12 +163,12 @@
           text: boc.legal_form
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Corporate beneficial owner " + boc.name + " - legal form",
             "change-corporate-beneficial-owner-legal-form-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
@@ -177,27 +178,27 @@
           html: boc.law_governed
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Corporate beneficial owner " + boc.name + " - governing law",
             "change-corporate-beneficial-owner-law-governed-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
-          text: "On a public register in the country it was formed in" if not pageParams.noChangeFlag else "Is it on a public register in the country it was formed in?"
+          text: "On a public register in the country it was formed in" if inChangeJourney else "Is it on a public register in the country it was formed in?"
         },
         value: {
           html: bocFormattedPublicRegister
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + bocChangePublicRegister,
             "Corporate beneficial owner " + boc.name + " - public register",
             "change-corporate-beneficial-owner-public-register-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
@@ -207,8 +208,12 @@
           text: bocStartDate
         },
         actions: {
-          items: [ changeLink if not pageParams.noChangeFlag ]
-        }
+          items: [CREATE_CHANGE_LINK(
+            changeLinkUrl + OE_CONFIGS.START_DATE,
+            "Corporate beneficial owner " + boc.name + " - date it became a beneficial owner",
+            "change-corporate-beneficial-owner-start-date-button"
+          )]
+        } if inChangeJourney and not hideChangeLinksForNonEditableFields
       },
       {
         key: {
@@ -218,28 +223,29 @@
           html: bocBeneficialOwnerIndividualNOCs + bocBeneficialOwnerTrusteeNOCs + bocBeneficialOwnerNonLegalFirmNOCs
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.NOC_TYPES,
             "Corporate beneficial owner " + boc.name + " - nature of control",
             "change-corporate-beneficial-owner-nature-of-control-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
       {
         key: {
-          text: "Is it on the sanctions list?" if not pageParams.noChangeFlag else "Are they on the UK sanctions list?"
+          text: "Is it on the sanctions list?" if inChangeJourney else "Are they on the UK sanctions list?"
         },
         value: {
           html: bocIsOnSanctionsListHtml
         },
         actions: {
-          items: [ CREATE_CHANGE_LINK(
+          items: [CREATE_CHANGE_LINK(
             changeLinkUrl + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
             "Corporate beneficial owner " + boc.name + " - is it on the sanctions list?",
             "change-corporate-beneficial-owner-sanctions-list-button"
-          ) if not pageParams.noChangeFlag ]
-        }
+          )]
+        } if inChangeJourney
       },
-      isStillBeneficialOwner, ceasedDate
+      isStillBeneficialOwner,
+      ceasedDate
     ]
 }) }}

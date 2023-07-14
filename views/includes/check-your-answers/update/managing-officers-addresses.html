@@ -1,3 +1,6 @@
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+{% set inChangeJourney = not inNoChangeJourney %}
+
 {% if managing_officer_individual %}
   {% set residentialOrPrincipalAddressText = "Home address" %}
   {% set sameAddressText = "The correspondence address is the same as the home address" %}
@@ -11,7 +14,7 @@
 {% endif %}
 
 {% set moFormattedResidentialOrPrincipalAddressHtml %}
-  {% if pageParams.noChangeFlag %}
+  {% if inNoChangeJourney %}
     <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% else %}
     {% set address = moAddress %}
@@ -30,7 +33,6 @@
   {% endif %}
 {% endset %}
 
-
 {% set rows = (rows.push({
     key: {
       text: residentialOrPrincipalAddressText
@@ -39,12 +41,12 @@
       html: moFormattedResidentialOrPrincipalAddressHtml
     },
     actions: {
-      items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeResidentialOrPrincipalAddress, 
-      moChangeLinkText + " - residential or principal address", 
-      "change-managing-officer-residential-or-principal-address-button"
-    ) if not pageParams.noChangeFlag ]
-    }
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeResidentialOrPrincipalAddress, 
+        moChangeLinkText + " - residential or principal address", 
+        "change-managing-officer-residential-or-principal-address-button"
+      )]
+    } if inChangeJourney
   }), rows) %}
 
 {% set rows = (rows.push({
@@ -55,10 +57,10 @@
       html: moFormattedServiceAddressHtml
     },
     actions: {
-      items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeCorrespondenceAddress, 
-      moChangeLinkText + " - correspondence address", 
-      "change-managing-officer-correspondence-address-button"
-    ) if not pageParams.noChangeFlag ]
-    }
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + changeCorrespondenceAddress, 
+        moChangeLinkText + " - correspondence address", 
+        "change-managing-officer-correspondence-address-button"
+      )]
+    } if inChangeJourney
 }), rows) %}

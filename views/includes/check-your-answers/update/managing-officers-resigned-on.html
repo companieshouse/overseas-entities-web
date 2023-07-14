@@ -1,3 +1,5 @@
+{% set inChangeJourney = not pageParams.noChangeFlag %}
+
 {% if resigned_on | length %}
   {% set rows = (rows.push({
     key: {
@@ -7,12 +9,12 @@
       html: "No"
     },
     actions: {
-      items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
-      moChangeLinkText + " - is resigned", 
-      "change-managing-officer-is-resigned-button"
-    ) if not pageParams.noChangeFlag ]
-    }
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
+        moChangeLinkText + " - is resigned", 
+        "change-managing-officer-is-resigned-button"
+      )]
+    } if inChangeJourney
   }), rows) %}
   {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
   {% set rows = (rows.push({
@@ -23,12 +25,12 @@
       html: resignedOn
     },
     actions: {
-      items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.RESIGNED_DATE, 
-      moChangeLinkText + " - resigned on", 
-      "change-managing-officer-resigned-on-button"
-    ) if not pageParams.noChangeFlag ]
-    }
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.RESIGNED_DATE, 
+        moChangeLinkText + " - resigned on", 
+        "change-managing-officer-resigned-on-button"
+      )]
+    } if inChangeJourney
   }), rows) %}
 {% else %}
   {% set rows = (rows.push({
@@ -39,11 +41,11 @@
       html: "Yes"
     },
     actions: {
-      items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
-      moChangeLinkText + " - is resigned", 
-      "change-managing-officer-is-resigned-button"
-    ) if not pageParams.noChangeFlag ]
-    }
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
+        moChangeLinkText + " - is resigned", 
+        "change-managing-officer-is-resigned-button"
+      )]
+    } if inChangeJourney
   }), rows) %}
 {% endif %}

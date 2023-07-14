@@ -19,7 +19,14 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, COMPANY_NUMBER, RESET_CHANGE_RESPONSE, OVERSEAS_NAME_MOCK, RESET_NO_CHANGE_RESPONSE } from '../../__mocks__/session.mock';
+import {
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+  COMPANY_NUMBER,
+  RESET_DATA_FOR_NO_CHANGE_RESPONSE,
+  OVERSEAS_NAME_MOCK,
+  RESET_DATA_FOR_CHANGE_RESPONSE,
+} from '../../__mocks__/session.mock';
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
 import { ANY_MESSAGE_ERROR, RADIO_BUTTON_NO_SELECTED, RADIO_BUTTON_YES_SELECTED, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
@@ -30,7 +37,7 @@ import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from '../../__mocks__/get.company.p
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { getCompanyPsc } from '../../../src/service/persons.with.signficant.control.service';
 import { getCompanyOfficers } from '../../../src/service/company.managing.officer.service';
-import { resetChangeData, resetNoChangeData } from '../../../src/controllers/update/overseas.entity.change.controller';
+import { resetDataForNoChange, resetDataForChange } from '../../../src/controllers/update/overseas.entity.change.controller';
 import { companyProfileQueryMock } from '../../__mocks__/update.entity.mocks';
 import { getCompanyProfile } from '../../../src/service/company.profile.service';
 
@@ -121,36 +128,12 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
 
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection`, async () => {
-      mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
-      mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
-      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-        .send({ [NoChangeKey]: "1" });
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
-      expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
-        {
-          update:
-                expect.objectContaining({
-                  no_change: true
-                })
-        }));
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-
-    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection`, async () => {
-      if (APPLICATION_DATA_MOCK.update){
-        APPLICATION_DATA_MOCK.update.no_change = false;
-      }
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-      });
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "0" });
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(WHO_IS_MAKING_UPDATE_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
         {
           update:
@@ -158,7 +141,30 @@ describe("Overseas entity do you want to change your OE controller", () => {
                   no_change: false
                 })
         }));
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirect to ${UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE} on No, I do not need to make changes selection`, async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+      mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+        .send({ [NoChangeKey]: "1" });
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toBeCalledWith(undefined, expect.objectContaining(
+        {
+          update:
+                expect.objectContaining({
+                  no_change: true
+                })
+        }));
+      expect(mockGetCompanyProfile).toHaveBeenCalledTimes(1);
+      expect(mockGetCompanyPscService).toHaveBeenCalledTimes(1);
+      expect(mockGetCompanyOfficers).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -189,19 +195,17 @@ describe("Overseas entity do you want to change your OE controller", () => {
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
 
-      expect(await resetChangeData(req, APPLICATION_DATA_MOCK)).toMatchObject(
+      expect(await resetDataForNoChange(req, APPLICATION_DATA_MOCK)).toMatchObject(
         {
-          ...RESET_CHANGE_RESPONSE
+          ...RESET_DATA_FOR_NO_CHANGE_RESPONSE
         }
       );
     });
 
     test("That session data reset when user choose change journey from no change journey", () => {
-      mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
-      mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-      expect(resetNoChangeData(APPLICATION_DATA_MOCK)).toMatchObject(
+      expect(resetDataForChange(APPLICATION_DATA_MOCK)).toMatchObject(
         {
-          ...RESET_NO_CHANGE_RESPONSE
+          ...RESET_DATA_FOR_CHANGE_RESPONSE
         }
       );
     });

@@ -54,6 +54,8 @@ import { DUE_DILIGENCE_OBJECT_MOCK } from "./due.diligence.mock";
 import { ADDRESS } from "./fields/address.mock";
 import { DATE_OF_BIRTH, EMPTY_DATE, RESIGNED_ON_DATE, START_DATE } from "./fields/date.mock";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
+import { EntityKey } from "../../src/model/entity.model";
+import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1751,7 +1753,7 @@ export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST = `${
 export const serviceNameGetCompanyPsc = "companyPsc";
 export const fnNameGetCompanyPsc = "getCompanyPsc";
 
-export const RESET_NO_CHANGE_RESPONSE = {
+export const RESET_DATA_FOR_CHANGE_RESPONSE = {
   [PaymentKey]: undefined,
   [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
   [updateType.UpdateKey]: {
@@ -1759,25 +1761,172 @@ export const RESET_NO_CHANGE_RESPONSE = {
   }
 };
 
-export const RESET_CHANGE_RESPONSE = {
+export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
   [EntityNameKey]: "Test1",
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-  [dueDiligenceType.DueDiligenceKey]: undefined,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: undefined,
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: undefined,
-  [managingOfficerType.ManagingOfficerKey]: undefined,
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: undefined,
-  [WhoIsRegisteringKey]: undefined,
-  [PaymentKey]: undefined,
   [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
   [Transactionkey]: TRANSACTION_ID,
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
-  [TrustKey]: undefined,
   [EntityNumberKey]: COMPANY_NUMBER,
+  [WhoIsRegisteringKey]: undefined,
+  [dueDiligenceType.DueDiligenceKey]: undefined,
+  [OverseasEntityDueDiligenceKey]: undefined,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: undefined,
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: undefined,
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: undefined,
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: undefined,
+  [managingOfficerType.ManagingOfficerKey]: undefined,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: undefined,
+  [PaymentKey]: undefined,
+  [TrustKey]: undefined,
+  [EntityKey]: {
+    email: "",
+    incorporation_country: "",
+    is_on_register_in_country_formed_in: 0,
+    is_service_address_same_as_principal_address: 0,
+    law_governed: undefined,
+    legal_form: undefined,
+    principal_address: {},
+    public_register_name: undefined,
+    registration_number: undefined
+  },
   [updateType.UpdateKey]: {
-    registrable_beneficial_owner: undefined
+    registrable_beneficial_owner: undefined,
+    bo_mo_data_fetched: true,
+    review_beneficial_owners_individual: [
+      {
+        beneficial_owner_nature_of_control_types: [],
+        ch_reference: "RandomeaP1EB70SSD9SLmiK5Y",
+        date_of_birth: {
+          day: "01",
+          month: "undefined",
+          year: undefined,
+        },
+        first_name: undefined,
+        id: "/company/OE111129/persons-with-significant-control/individual/RandomeaP1EB70SSD9SLmiK5Y",
+        is_on_sanctions_list: 0,
+        is_service_address_same_as_usual_residential_address: 0,
+        last_name: undefined,
+        nationality: "British",
+        non_legal_firm_members_nature_of_control_types: [],
+        second_nationality: undefined,
+        service_address: {
+          country: "Wales",
+          county: undefined,
+          line_1: undefined,
+          line_2: undefined,
+          postcode: undefined,
+          property_name_number: "Companies House",
+          town: "Limavady",
+        },
+        start_date: undefined,
+        trustees_nature_of_control_types: [],
+        usual_residential_address: undefined,
+      }
+    ],
+    review_beneficial_owners_corporate: [
+      {
+        beneficial_owner_nature_of_control_types: [],
+        ch_reference: "OtherBOP1EB70SSD9SLmiK5Y",
+        id: "/company/OE111129/persons-with-significant-control/corporate-entity/OtherBOP1EB70SSD9SLmiK5Y",
+        is_on_register_in_country_formed_in: 0,
+        is_on_sanctions_list: 0,
+        is_service_address_same_as_principal_address: undefined,
+        law_governed: undefined,
+        legal_form: undefined,
+        name: "Mr Other Beneficial Owner",
+        non_legal_firm_members_nature_of_control_types: [],
+        principal_address: {},
+        public_register_name: undefined,
+        registration_number: undefined,
+        service_address: {
+          country: "Wales",
+          county: undefined,
+          line_1: undefined,
+          line_2: undefined,
+          postcode: undefined,
+          property_name_number: "Companies House",
+          town: "Limavady",
+        },
+        start_date: undefined,
+        trustees_nature_of_control_types: [],
+      }
+    ],
+    review_beneficial_owners_government_or_public_authority: [
+      {
+        beneficial_owner_nature_of_control_types: [],
+        ch_reference: "RandomeaP1EB70SSD9SLmiK5Y",
+        id: "/company/OE111129/persons-with-significant-control/legal-person/RandomeaP1EB70SSD9SLmiK5Y",
+        is_on_sanctions_list: 0,
+        is_service_address_same_as_principal_address: undefined,
+        law_governed: undefined,
+        legal_form: undefined,
+        name: "Mr Random Notreal Person",
+        non_legal_firm_members_nature_of_control_types: [],
+        principal_address: {},
+        service_address: {
+          country: "Wales",
+          county: undefined,
+          line_1: undefined,
+          line_2: undefined,
+          postcode: undefined,
+          property_name_number: "Companies House",
+          town: "Limavady",
+        },
+        start_date: undefined,
+      }
+    ],
+    review_managing_officers_corporate: [
+      {
+        ch_reference: "officers",
+        contact_full_name: undefined,
+        id: "/company/OE111129/officers",
+        is_on_register_in_country_formed_in: 0,
+        is_service_address_same_as_principal_address: undefined,
+        law_governed: undefined,
+        legal_form: undefined,
+        name: "Rev MO Corporate",
+        principal_address: undefined,
+        public_register_name: undefined,
+        registration_number: undefined,
+        role_and_responsibilities: undefined,
+        service_address: {
+          country: "England",
+          county: "Gloucestershire",
+          line_1: "Cerney House",
+          line_2: "North Cerney",
+          postcode: "GL7 7BX",
+          property_name_number: "Samron House",
+          town: "Cirencester",
+        },
+        start_date: {
+          day: "1",
+          month: "1",
+          year: "2023"
+        },
+      }
+    ],
+    review_managing_officers_individual: [
+      {
+        ch_reference: "officers",
+        id: "/company/OE111129/officers",
+        role_and_responsibilities: undefined,
+        service_address: {
+          country: "England",
+          county: "Gloucestershire",
+          line_1: "Cerney House",
+          line_2: "North Cerney",
+          postcode: "GL7 7BX",
+          property_name_number: "Samron House",
+          town: "Cirencester",
+        },
+        start_date: {
+          day: "1",
+          month: "1",
+          year: "2023"
+        },
+      }
+    ],
   }
 };

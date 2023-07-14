@@ -6,7 +6,7 @@ import { ApplicationData } from "../../model";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
 import { NoChangeKey } from "../../model/update.type.model";
-import { retrieveBeneficialOwners, retrieveManagingOfficers } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
@@ -35,16 +35,16 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
     const appData: ApplicationData = getApplicationData(req.session);
     const noChangeStatement = req.body[NoChangeKey];
 
-    if (appData.update){
-      appData.update.no_change = noChangeStatement === "1" ? true : false;
+    if (appData.update) {
+      appData.update.no_change = noChangeStatement === "1";
       setExtraData(session, appData);
     }
 
-    if (noChangeStatement === "1"){
-      await resetChangeData(req, appData);
+    if (noChangeStatement === "1") {
+      await resetDataForNoChange(req, appData);
       redirectUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL;
     } else {
-      resetNoChangeData(appData);
+      resetDataForChange(appData);
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     }
     await saveAndContinue(req, session, false);
@@ -56,8 +56,8 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
   }
 };
 
-export const resetChangeData = async (req: Request, appData: ApplicationData) => {
-  if (appData){
+export const resetDataForNoChange = async (req: Request, appData: ApplicationData) => {
+  if (appData) {
     appData.who_is_registering = undefined;
     appData.due_diligence = undefined;
     appData.overseas_entity_due_diligence = undefined;
@@ -73,27 +73,19 @@ export const resetChangeData = async (req: Request, appData: ApplicationData) =>
     const companyProfile = await getCompanyProfile(req, appData.entity_number as string) as CompanyProfile;
     reloadOE(appData, appData.entity_number as string, companyProfile);
   }
-  if (appData.update){
+  if (appData.update) {
     appData.update.registrable_beneficial_owner = undefined;
     appData.update.bo_mo_data_fetched = false;
-    await existingBoMoForNoChange(req, appData);
+    await retrieveBoAndMoData(req, appData);
   }
   return appData;
 };
 
-export const resetNoChangeData = (appData: ApplicationData) => {
+export const resetDataForChange = (appData: ApplicationData) => {
   if (appData.update){
     appData.update.registrable_beneficial_owner = undefined;
   }
   appData.beneficial_owners_statement = undefined;
   appData.payment = undefined;
   return appData;
-};
-
-const existingBoMoForNoChange = async (req: Request, appData: ApplicationData) => {
-  if (appData.update){
-    await retrieveBeneficialOwners(req, appData);
-    await retrieveManagingOfficers(req, appData);
-    appData.update.bo_mo_data_fetched = true;
-  }
 };

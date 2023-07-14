@@ -46,13 +46,3 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
-  } catch (errors) {
-    logger.errorRequest(req, errors);
-    next(errors);
-  }
-};
-

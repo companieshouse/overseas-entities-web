@@ -26,7 +26,6 @@ import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { logger } from "../../../src/utils/logger";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
@@ -46,7 +45,6 @@ const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
@@ -132,24 +130,6 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-  });
-
-  describe("POST tests", () => {
-    test(`redirect to ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
-    });
-
-    test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

@@ -1,9 +1,12 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+{% set inChangeJourney = not inNoChangeJourney %}
+
 {% set boiFullName = boi.first_name + " " + boi.last_name %}
 
 {% set boiDateOfBirth %}
-  {% if boi.date_of_birth and pageParams.noChangeFlag %}
+  {% if boi.date_of_birth and inNoChangeJourney %}
     {{ dateMacros.formatDate("", boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
   {% elif boi.date_of_birth %}
     {{ dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
@@ -13,7 +16,7 @@
 {% set boiStartDate = dateMacros.formatDate(boi.start_date["day"], boi.start_date["month"], boi.start_date["year"]) %}
 
 {% set boiFormattedResidentialAddressHtml %}
-  {% if not boi.usual_residential_address and pageParams.noChangeFlag %}
+  {% if not boi.usual_residential_address and inNoChangeJourney %}
       <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% elif boi.usual_residential_address %}
   {% set address = boi.usual_residential_address %}
@@ -77,12 +80,12 @@
     text: boi.first_name
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.FIRST_NAME,
       "Individual beneficial owner " + boiFullName + " - first name",
       "change-individual-beneficial-owner-first-name-button"
-   ) if not pageParams.noChangeFlag ]
-  }
+   )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -93,43 +96,29 @@
     text: boi.last_name
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.LAST_NAME,
       "Individual beneficial owner " + boiFullName + " - last name",
       "change-individual-beneficial-owner-last-name-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
-{% if hideChangeLinksForNonEditableFields == true %}
 {% set rows = (rows.push({
   key: {
-    text: "Date of birth" if not pageParams.noChangeFlag else "Born"
+    text: "Date of birth" if inChangeJourney else "Born"
   },
   value: {
     text: boiDateOfBirth
   },
   actions: {
-  items: [ undefined ]
-  }
-}), rows) %}
-{% else %}
-{% set rows = (rows.push({
-  key: {
-    text: "Date of birth" if not pageParams.noChangeFlag else "Born"
-  },
-  value: {
-    text: boiDateOfBirth
-  },
-  actions: {
-  items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual beneficial owner " + boiFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney and not hideChangeLinksForNonEditableFields
 }), rows) %}
-{% endif %}
 
 {% set rows = (rows.push({
   key: {
@@ -139,12 +128,12 @@
     text: boi.nationality
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.NATIONALITY,
       "Individual beneficial owner " + boiFullName + " - nationality",
       "change-individual-beneficial-owner-nationality-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% if boi.second_nationality %}
@@ -156,12 +145,12 @@
      text: boi.second_nationality
     },
     actions: {
-    items: [ CREATE_CHANGE_LINK(
+      items: [CREATE_CHANGE_LINK(
         changeLinkUrl + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual beneficial owner " + boiFullName + " - second_nationality",
         "change-individual-beneficial-owner-second-nationality-button"
-      ) if not pageParams.noChangeFlag ]
-    }
+      )]
+    } if inChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -173,12 +162,12 @@
       html: boiFormattedResidentialAddressHtml
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual beneficial owner " + boiFullName + " - home address",
       "change-individual-beneficial-owner-residential-address-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -189,15 +178,14 @@
     html: boiFormattedServiceAddressHtml
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + boiChangeServiceAddressHtml,
       "Individual beneficial owner " + boiFullName + " - correspondence address",
       "change-individual-beneficial-owner-correspondence-address-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
-{% if hideChangeLinksForNonEditableFields == true %}
 {% set rows = (rows.push({
   key: {
     text: "Date they became a beneficial owner"
@@ -206,26 +194,13 @@
    text: boiStartDate
   },
   actions: {
-  items: [ undefined ]
-  }
-}), rows) %}
-{% else %}
-{% set rows = (rows.push({
-  key: {
-    text: "Date they became a beneficial owner"
-  },
-  value: {
-   text: boiStartDate
-  },
-  actions: {
-  items: [CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.START_DATE,
       "Individual beneficial owner " + boiFullName + " - date they became a beneficial owner",
       "change-individual-beneficial-owner-start-date-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney and not hideChangeLinksForNonEditableFields
 }), rows) %}
-{% endif %}
 
 {% set rows = (rows.push({
   key: {
@@ -235,81 +210,84 @@
    html: boiBeneficialOwnerIndividualNOCs + boiBeneficialOwnerTrusteeNOCs + boiBeneficialOwnerNonLegalFirmNOCs
   },
   actions: {
-    items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.NOC_TYPES,
       "Individual beneficial owner " + boiFullName + " - nature of control",
       "change-individual-beneficial-owner-nature-of-control-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
   key: {
-    text: "Are they on the sanctions list?" if not pageParams.noChangeFlag else "Are they on the UK sanctions list?"
+    text: "Are they on the sanctions list?" if inChangeJourney else "Are they on the UK sanctions list?"
   },
   value: {
     html: boiIsOnSanctionsListHtml
   },
   actions: {
-  items: [ CREATE_CHANGE_LINK(
+    items: [CREATE_CHANGE_LINK(
       changeLinkUrl + OE_CONFIGS.IS_ON_SANCTIONS_LIST,
       "Individual beneficial owner " + boiFullName + " - are they on the sanctions list?",
       "change-individual-beneficial-owner-sanctions-list-button"
-    ) if not pageParams.noChangeFlag ]
-  }
+    )]
+  } if inChangeJourney
 }), rows) %}
 
 {% if pageParams.isRegistration == false %}
   {% if boi.ceased_date | length %}
-  {% set rows = (rows.push({
-    key: {
-      text: "Are they still a beneficial owner?"
-    },
-    value: {
-      text: "No"
-    },
-    actions: {
-      items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.IS_CEASED,
-        "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
-        "change-individual-beneficial-owner-still-beneficial-owner-button"
-      ) if not pageParams.noChangeFlag ]
-    }
-  }), rows) %}
-  {% set boiCeasedDate = dateMacros.formatDate(boi.ceased_date["day"], boi.ceased_date["month"], boi.ceased_date["year"]) %}
-  {% set rows = (rows.push({
-    key: {
-      text: "Ceased date"
-    },
-    value: {
-      html: boiCeasedDate
-    },
-    actions: {
-      items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.IS_CEASED,
-        "Individual beneficial owner " + boiFullName + " - ceased date",
-        "change-individual-beneficial-owner-ceased-date-button"
-      ) if not pageParams.noChangeFlag ]
-    }
-  }), rows) %}
+    {% set rows = (rows.push({
+      key: {
+        text: "Are they still a beneficial owner?"
+      },
+      value: {
+        text: "No"
+      },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.IS_CEASED,
+          "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
+          "change-individual-beneficial-owner-still-beneficial-owner-button"
+        )]
+      } if inChangeJourney
+    }), rows) %}
+
+    {% set boiCeasedDate = dateMacros.formatDate(boi.ceased_date["day"], boi.ceased_date["month"], boi.ceased_date["year"]) %}
+
+    {% set rows = (rows.push({
+      key: {
+        text: "Ceased date"
+      },
+      value: {
+        html: boiCeasedDate
+      },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.IS_CEASED,
+          "Individual beneficial owner " + boiFullName + " - ceased date",
+          "change-individual-beneficial-owner-ceased-date-button"
+        )]
+      } if inChangeJourney
+    }), rows) %}
   {% else %}
-  {% set rows = (rows.push({
-    key: {
-      text: "Are they still a benficial owner?"
-    },
-    value: {
-      text: "Yes"
-    },
-    actions: {
-      items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.IS_CEASED,
-        "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
-        "change-individual-beneficial-owner-ceased-date-button"
-      ) if not pageParams.noChangeFlag ]
-    }
-  }), rows) %}
+    {% set rows = (rows.push({
+      key: {
+        text: "Are they still a benficial owner?"
+      },
+      value: {
+        text: "Yes"
+      },
+      actions: {
+        items: [CREATE_CHANGE_LINK(
+          changeLinkUrl + OE_CONFIGS.IS_CEASED,
+          "Individual beneficial owner " + boiFullName + " - are they still a beneficial owner?",
+          "change-individual-beneficial-owner-ceased-date-button"
+        )]
+      } if inChangeJourney
+    }), rows) %}
   {% endif %}
 {% endif %}
+
 <h3 class="govuk-heading-m">Individual beneficial owner</h3>
 
 {{ govukSummaryList({

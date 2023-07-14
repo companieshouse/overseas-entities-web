@@ -18,7 +18,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData, prepareData } from "../../../src/utils/application.data";
 import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
-import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME, UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL } from '../../../src/config';
 
@@ -57,6 +57,7 @@ describe('Review managing officer corporate controller tests', () => {
       const resp = await request(app).get(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + "?index=0");
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING);
+      expect(resp.text).toContain(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME);
     });
 
     test("catch error when rendering the page", async () => {

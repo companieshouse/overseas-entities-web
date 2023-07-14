@@ -48,6 +48,7 @@ export const mapToManagingOfficerCorporate = (officer: CompanyOfficer): Managing
     public_register_name: officer.identification?.placeRegistered,
     registration_number: officer.identification?.registrationNumber,
     role_and_responsibilities: officer.responsibilities,
+    contact_full_name: officer.contactDetails?.contactName,
   };
 };
 

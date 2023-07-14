@@ -16,6 +16,14 @@
   {% endif %}
 {% endset %}
 
+{% set moFormattedContactEmailHtml %}
+  {% if pageParams.noChangeFlag %}
+    <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
+  {% else %}
+    {{ moc.contact_email }}
+  {% endif %}
+{% endset %}
+
 {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
 {% if not pageParams.noChangeFlag %}
   {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
@@ -126,7 +134,7 @@
     text: "Contact email address"
   },
   value: {
-    html: moc.contact_email
+    html: moFormattedContactEmailHtml
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(

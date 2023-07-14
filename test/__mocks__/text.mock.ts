@@ -213,6 +213,7 @@ export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the ind
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING = "Review the other legal entity beneficial owner";
 export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING = "Review the individual managing officer";
 export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING = "Review the corporate managing officer";
+export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME = "Joe Bloggs";
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING = "Review the government or public authority";
 export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
 export const ARE_YOU_SURE_YOU_WANT_TO_REMOVE = "Are you sure you want to remove";

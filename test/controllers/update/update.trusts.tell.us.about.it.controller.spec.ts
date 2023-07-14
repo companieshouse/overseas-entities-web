@@ -12,6 +12,7 @@ import { NextFunction } from 'express';
 
 import app from '../../../src/app';
 import {
+  TRUST_INVOLVED_URL,
   UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
   UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL,
   UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL,
@@ -100,7 +101,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
+      expect(resp.header.location).toEqual(UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/2" + TRUST_INVOLVED_URL);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

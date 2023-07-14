@@ -1,0 +1,6 @@
+{% block pageTitle %}
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+  Error:
+  {% endif %}
+  {{ title }} - {{ UPDATE_SERVICE_NAME }} - GOV.UK
+{% endblock %}

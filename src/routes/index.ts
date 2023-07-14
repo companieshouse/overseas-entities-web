@@ -484,7 +484,7 @@ router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
   .get(updateTrustsTellUsAboutIt.get)
   .post(...validator.trustDetails, updateTrustsTellUsAboutIt.post);
 
-router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
+router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
     authentication,
@@ -492,7 +492,7 @@ router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
     navigation.hasUpdatePresenter,
   )
   .get(updateTrustsIndividualsOrEntitiesInvolved.get)
-  .post(updateTrustsIndividualsOrEntitiesInvolved.post);
+  .post(...validator.trustInvolved, updateTrustsIndividualsOrEntitiesInvolved.post);
 
 router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
   .all(

@@ -9,7 +9,8 @@ import { Params } from 'express-serve-static-core';
 import {
   getSessionRequestWithExtraData,
   COMPANY_NUMBER,
-  getSessionRequestWithPermission
+  getSessionRequestWithPermission,
+  APPLICATION_DATA_REGISTRATION_MOCK
 } from '../__mocks__/session.mock';
 import { companyAuthentication } from "../../src/middleware/company.authentication.middleware";
 import { getTransaction } from "../../src/service/transaction.service";
@@ -69,7 +70,7 @@ describe('Company Authentication middleware', () => {
       headers: {},
       route: '',
       method: '',
-      path: '/user/transactions/' + transactionId + '/resume?link=LWEREbWU',
+      path: '/user/transactions/' + transactionId + '/resume',
       originalUrl: '/user/transactions/' + transactionId + '/resume',
       body: {}
     } as Request;
@@ -94,7 +95,7 @@ describe('Company Authentication middleware', () => {
       headers: {},
       route: '',
       method: '',
-      path: '/user/transactions/' + transactionId + '/resume?link=LWEREbWU',
+      path: '/user/transactions/' + transactionId + '/resume',
       originalUrl: '/user/transactions/' + transactionId + '/resume',
       body: {}
     } as Request;
@@ -127,9 +128,25 @@ describe('Company Authentication middleware', () => {
     expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
   });
 
-  test('should catch error when OE number is not present in session for update journey', async () => {
+  test('should catch error when appData is not present in session for update journey', async () => {
     req = {
       session: getSessionRequestWithPermission(),
+      headers: {},
+      route: '',
+      method: '',
+      path: '/update-an-overseas-entity/presenter',
+      body: {}
+    } as Request;
+
+    await companyAuthentication(req, res, next);
+
+    expect(next).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).toHaveBeenCalledTimes(2);
+  });
+
+  test('should catch error when appData is not present in session for update journey', async () => {
+    req = {
+      session: getSessionRequestWithExtraData(APPLICATION_DATA_REGISTRATION_MOCK),
       headers: {},
       route: '',
       method: '',

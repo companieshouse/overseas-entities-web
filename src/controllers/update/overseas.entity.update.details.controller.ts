@@ -34,7 +34,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       : {};
 
     return res.render(config.ENTITY_PAGE, {
-      backLinkUrl: config.OVERSEAS_ENTITY_REVIEW_PAGE,
+      backLinkUrl: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
       templateName: config.ENTITY_PAGE,
       entityName: appData?.[EntityNameKey],
       ...entity,
@@ -65,7 +65,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAndContinue(req, session, false);
 
-    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

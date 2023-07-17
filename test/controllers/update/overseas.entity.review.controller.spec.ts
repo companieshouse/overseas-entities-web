@@ -18,17 +18,7 @@ import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
   ANY_MESSAGE_ERROR,
-  PAGE_TITLE_ERROR,
-  SERVICE_UNAVAILABLE,
-  OVERSEAS_ENTITY_UPDATE_TITLE,
-  CHANGE_LINK,
-  CHANGE_LINK_ENTITY_NAME,
-  CHANGE_LINK_ENTITY_EMAIL,
-  CHANGE_LINK_ENTITY_GOVERNING_LAW,
-  CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY,
-  CHANGE_LINK_ENTITY_LEGAL_FORM,
-  CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS,
-  CHANGE_LINK_ENTITY_SERVICE_ADDRESS
+  SERVICE_UNAVAILABLE
 } from "../../__mocks__/text.mock";
 
 import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
@@ -36,7 +26,6 @@ import { APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
-import { logger } from "../../../src/utils/logger";
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
@@ -56,7 +45,6 @@ const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
@@ -83,209 +71,65 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
+    test(`redirects ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("Overseas Entity Name");
-      expect(resp.text).toContain("incorporationCountry");
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} with Change links`, async () => {
-
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(CHANGE_LINK);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_LEGAL_FORM);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_GOVERNING_LAW);
-    });
-
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched`, async () => {
-
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
-      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("Overseas Entity Name");
-      expect(resp.text).toContain("incorporationCountry");
-      expect(resp.text).toContain("tester@test.com");
-
-      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
-    });
-
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched when no entity`, async () => {
-
-      const mockAppData = getPrivateDataAppDataMock();
-      mockAppData.entity = undefined;
-
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(mockAppData);
-      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-
-      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
-    });
-
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details re-fetched`, async () => {
-
-      const appDataMock = getPrivateDataAppDataMock();
-      if (appDataMock.entity) {
-        appDataMock.entity.email = "dev@test.com";
-      }
-
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(appDataMock);
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("Overseas Entity Name");
-      expect(resp.text).toContain("incorporationCountry");
-      expect(resp.text).toContain("dev@test.com");
-
-      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(0);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
-    });
-
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details fetched when no submission`, async () => {
-
-      const appDataMock = getPrivateDataAppDataMock();
-      appDataMock.overseas_entity_id = undefined;
-
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(appDataMock);
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("Overseas Entity Name");
-      expect(resp.text).toContain("incorporationCountry");
-      expect(resp.text).not.toContain("tester@test.com");
-
-      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(0);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
-    });
-
-    test(`renders the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page without private details fetched when no transaction`, async () => {
-
-      const appDataMock = getPrivateDataAppDataMock();
-      appDataMock.transaction_id = undefined;
-
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      mockGetApplicationData.mockReturnValueOnce(appDataMock);
-
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_UPDATE_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("Overseas Entity Name");
-      expect(resp.text).toContain("incorporationCountry");
-      expect(resp.text).not.toContain("tester@test.com");
-
-      expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(0);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(0);
-      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
-    });
-
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning nothing`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning nothing`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning no email`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning no email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce({ });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test(`catch error when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning empty email`, async () => {
+    test(`redirect when ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page with private details fetched returning empty email`, async () => {
 
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "" });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test("catch error when rendering the Overseas Entity Review page on GET method", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
-    test("catch service error when rendering the Overseas Entity Review page on GET method with failing private data fetch", async () => {
+    test(`redirect when rendering the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method with failing private data fetch`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-  });
-
-  describe("POST tests", () => {
-    test(`redirect to ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
-
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test(`catch error on POST action for ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page`, async () => {
-      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
-      const resp = await request(app).post(config.OVERSEAS_ENTITY_REVIEW_URL);
+    test(`catch error when rendering ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method`, async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

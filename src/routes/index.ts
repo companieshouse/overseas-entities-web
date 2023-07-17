@@ -419,8 +419,7 @@ router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
     companyAuthentication,
     navigation.hasOverseasEntity
   )
-  .get(overseasEntityReview.get)
-  .post(overseasEntityReview.post);
+  .get(overseasEntityReview.get);
 
 router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
   .all(

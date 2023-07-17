@@ -14,9 +14,6 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
-    const backLinkUrl: string = config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL;
-    const changeLinkUrl: string = config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-    const overseasEntityHeading: string = "Check the overseas entity details";
 
     if (!isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
 
@@ -27,42 +24,30 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
         appData.entity = {};
       }
       if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
-        const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
-        if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
-          const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
-          logger.errorRequest(req, message);
-          throw new Error(message);
-        }
-        appData.entity.email = privateOeDetails.email_address;
+        try {
+          const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
+          if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
+            const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
+            logger.infoRequest(req, message);
+          } else {
+            appData.entity.email = privateOeDetails.email_address;
 
-        // Cache in session and save out for save&resume.
-        setExtraData(session, appData);
-        await updateOverseasEntity(req, session);
+            // Cache in session and save out for save&resume.
+            setExtraData(session, appData);
+            await updateOverseasEntity(req, session);
+          }
+        } catch (error) {
+          const message = `Private OE Details could not be retrieved for overseas entity ${appData.entity_number}`;
+          logger.infoRequest(req, message);
+        }
       }
     }
 
-    return res.render(config.OVERSEAS_ENTITY_REVIEW_PAGE, {
-      templateName: config.OVERSEAS_ENTITY_REVIEW_PAGE,
-      backLinkUrl,
-      changeLinkUrl,
-      overseasEntityHeading,
-      appData,
-      pageParams: {
-        isRegistration: false
-      },
-    });
+    return res.redirect(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `POST ${config.OVERSEAS_ENTITY_REVIEW_PAGE}`);
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
-  } catch (errors) {
-    logger.errorRequest(req, errors);
-    next(errors);
-  }
-};

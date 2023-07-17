@@ -117,7 +117,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test("redirect when rendering the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method with failing private data fetch", async () => {
+    test(`redirect when rendering the ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method with failing private data fetch`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(getPrivateDataAppDataMock());
       mockGetPrivateOeDetails.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -127,7 +127,7 @@ describe("OVERSEAS ENTITY REVIEW controller", () => {
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
-    test("catch error when rendering ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method", async () => {
+    test(`catch error when rendering ${config.OVERSEAS_ENTITY_REVIEW_PAGE} page on GET method`, async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_REVIEW_URL);
 

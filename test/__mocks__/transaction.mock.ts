@@ -46,9 +46,18 @@ export const MOCK_GET_TRANSACTION = {
   "resume_journey_uri": "/register-an-overseas-entity/transaction/075044-629416-739860/overseas-entity/63c6fff8151ae73c3f28002b/resume"
 };
 
+export const MOCK_GET_UPDATE_TRANSACTION = {
+  ...MOCK_GET_TRANSACTION,
+  companyNumber: 'OE111129'
+};
 export const MOCK_GET_TRANSACTION_RESPONSE: ApiResponse<Transaction> = {
   httpStatusCode: 200,
   resource: MOCK_GET_TRANSACTION
+};
+
+export const MOCK_GET_UPDATE_TRANSACTION_RESPONSE: ApiResponse<Transaction> = {
+  httpStatusCode: 200,
+  resource: MOCK_GET_UPDATE_TRANSACTION
 };
 
 export const MOCK_GET_ERROR_TRANSACTION_RESPONSE: ApiErrorResponse = {

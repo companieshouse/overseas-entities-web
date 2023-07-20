@@ -124,6 +124,7 @@ export const UPDATE_TRUSTS_SUBMISSION_INTERRUPT_PAGE = "update-trusts-submission
 export const UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE = "update-tell-us-about-the-trust";
 export const UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE = "update-trusts-individuals-or-entities-involved";
 export const UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_PAGE = "update-trusts-associated-with-overseas-entity";
+export const UPDATE_TRUSTS_TELL_US_ABOUT_FORMER_BO_PAGE = "update-trusts-tell-us-about-former-bo";
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";

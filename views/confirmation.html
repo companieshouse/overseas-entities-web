@@ -36,19 +36,19 @@
         We have sent a confirmation email to <strong>{{ userEmail }}</strong> which contains your reference number.
       </p>
 
-      {% if not isAgentRegistering %}
-        <h2 class="govuk-heading-m">What you need to do now</h2>
-        <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed {{ "verification" if isUpdate else "identity" }} checks. </p>
+      {% if not isAgentRegistering and not noChange %}
+          <h2 class="govuk-heading-m">What you need to do now</h2>
+          <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed {{ "verification" if isUpdate else "identity" }} checks. </p>
 
-        <p class="govuk-body">{{ "The agent must then" if isUpdate else "Then the agent needs to" }} complete an <a href="{{OE_CONFIGS.VF01_FORM_DOWNLOAD_URL}}" class="govuk-link">Overseas entity verification checks statement</a> and email it to agentcode@companieshouse.gov.uk.</p>
+          <p class="govuk-body">{{ "The agent must then" if isUpdate else "Then the agent needs to" }} complete an <a href="{{OE_CONFIGS.VF01_FORM_DOWNLOAD_URL}}" class="govuk-link">Overseas entity verification checks statement</a> and email it to agentcode@companieshouse.gov.uk.</p>
 
-        <p class="govuk-body">They must do this <strong>within {{ verificationCheckDays }} days</strong>. We cannot process this {{ "update statement filing" if isUpdate else "application" }} until we've received the statement.</p>
+          <p class="govuk-body">They must do this <strong>within {{ verificationCheckDays }} days</strong>. We cannot process this {{ "update statement filing" if isUpdate else "application" }} until we've received the statement.</p>
       {% endif %}
 
       <h2 class="govuk-heading-m">What happens next</h2>
 
       {% if isUpdate %}
-        {% if isAgentRegistering %}
+        {% if isAgentRegistering or noChange %}
           <p class="govuk-body">We'll email you to let you know if the update statement has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
         {% else %}
           <p class="govuk-body">Once we have received the statement from the agent, we'll process the application as soon as possible. We'll email you to let you know if the update statement has been accepted or rejected. As this is a new service, we're not yet able to tell you exactly how long this will take.</p>

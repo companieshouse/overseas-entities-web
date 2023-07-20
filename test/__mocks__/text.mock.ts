@@ -231,3 +231,5 @@ export const NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT = "Who can we contact
 export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT = "Has the overseas entity identified any registrable beneficial owners?";
 export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE = "Has anyone become or ceased to be a registrable beneficial owner during the update period?";
 export const BENEFICIAL_OWNER_HEADING = "Beneficial owners";
+export const CONFIRMATION_AGENT_SPECIFIC_TEXT = "Once we have received the statement from the agent";
+export const CONFIRMATION_UPDATE_TEXT = "if the update statement has been accepted or rejected";

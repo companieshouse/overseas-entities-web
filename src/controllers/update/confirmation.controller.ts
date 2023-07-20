@@ -25,6 +25,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       userEmail: getLoggedInUserEmail(req.session),
       verificationCheckDays: 14,
       isUpdate: true,
+      noChange: appData.update?.no_change,
       templateName: CONFIRMATION_PAGE
     });
   } catch (error) {

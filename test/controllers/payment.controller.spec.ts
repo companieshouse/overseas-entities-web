@@ -68,18 +68,7 @@ describe("Payment controller", () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-  });
-
-  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
+  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);

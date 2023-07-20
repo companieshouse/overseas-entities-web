@@ -22,15 +22,10 @@ describe("NAVIGATION utils", () => {
     expect(entityBackLink).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
   });
 
-  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_STARTING_NEW_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active`, () => {
+  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_STARTING_NEW_URL}`, () => {
     mockIsActiveFeature.mockReturnValueOnce(true);
     const soldLandFilterBackLink = getSoldLandFilterBackLink();
     expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_STARTING_NEW_URL);
-  });
-
-  test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active`, () => {
-    const soldLandFilterBackLink = getSoldLandFilterBackLink();
-    expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -40,7 +35,7 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.SOLD_LAND_FILTER_URL} object`, () => {
     const navigation = NAVIGATION[config.SOLD_LAND_FILTER_URL].previousPage();
-    expect(navigation).toEqual(config.LANDING_PAGE_URL);
+    expect(navigation).toEqual(config.LANDING_PAGE_STARTING_NEW_URL);
   });
 
   test(`NAVIGATION returns ${config.SOLD_LAND_FILTER_URL} when calling previousPage on ${config.SECURE_REGISTER_FILTER_URL} object`, () => {

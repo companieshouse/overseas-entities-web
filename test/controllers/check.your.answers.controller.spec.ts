@@ -97,7 +97,6 @@ import {
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
-import { createOverseasEntity } from "../../src/service/overseas.entities.service";
 import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
@@ -112,6 +111,7 @@ import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.mode
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { updateOverseasEntity } from "../../src/service/overseas.entities.service";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );
@@ -126,17 +126,13 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const mockTransactionService = postTransaction as jest.Mock;
-mockTransactionService.mockReturnValue( TRANSACTION_ID );
-
-const mockOverseasEntity = createOverseasEntity as jest.Mock;
-mockOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
-
 const mockCloseTransaction = closeTransaction as jest.Mock;
 mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
+
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
 
 describe("GET tests", () => {
 
@@ -647,28 +643,27 @@ describe("POST tests", () => {
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+    mockPaymentsSession.mockReturnValueOnce(CONFIRMATION_URL);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);
-    expect(mockTransactionService).toHaveBeenCalledTimes(1);
-    expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(resp.status).toEqual(302);    
+    expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
   });
 
   test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
+    mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);
-    expect(mockTransactionService).toHaveBeenCalledTimes(1);
-    expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(resp.status).toEqual(302);   
+    expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });
 
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-    mockOverseasEntity.mockImplementation(() => {
+    mockUpdateOverseasEntity.mockImplementation(() => {
       throw ERROR;
     });
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);

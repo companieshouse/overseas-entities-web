@@ -50,13 +50,13 @@ import { mapTrustApiReturnModelToWebModel } from '../../src/utils/trusts';
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue( false );
+
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockInfoRequest = logger.infoRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 mockCreateAndLogErrorRequest.mockReturnValue("Error on resuming OE");
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue( false );
 
 const mockGetTransactionService = getTransaction as jest.Mock;
 mockGetTransactionService.mockReturnValue( {} );
@@ -78,13 +78,24 @@ describe("Resume submission controller", () => {
   });
 
   test(`Redirect to ${SOLD_LAND_FILTER_PAGE} page`, async () => {
+
+    const mockAppData = {
+      ...APPLICATION_DATA_MOCK,
+      [OverseasEntityDueDiligenceKey]: {},
+      [WhoIsRegisteringKey]: "",
+      [OverseasEntityKey]: "",
+      [Transactionkey]: "",
+      [HasSoldLandKey]: "",
+      [IsSecureRegisterKey]: "",
+    };
+    mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
-    expect(mockGetOverseasEntity).not.toHaveBeenCalled();
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);   
+    expect(mockGetOverseasEntity).toBeCalledTimes(1);
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();   
+    expect(mockSetExtraData).toHaveBeenCalled();
   });
 
   test(`Redirect to ${SOLD_LAND_FILTER_PAGE} page after Resuming the OverseasEntity with DueDiligence object`, async () => {
@@ -97,7 +108,6 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
@@ -124,7 +134,6 @@ describe("Resume submission controller", () => {
       [HasSoldLandKey]: "",
       [IsSecureRegisterKey]: "",
     };
-    mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
@@ -141,7 +150,6 @@ describe("Resume submission controller", () => {
   });
 
   test(`Redirect to starting payment page after resuming the OverseasEntity object`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockReturnValueOnce( {
       ...APPLICATION_DATA_MOCK,
       [OverseasEntityDueDiligenceKey]: {}
@@ -169,7 +177,6 @@ describe("Resume submission controller", () => {
 
   test(`Redirect to starting payment page after resuming the OverseasEntity object and trusts feature flag on`, async () => {
     mockIsActiveFeature.mockReturnValueOnce( true );
-    mockIsActiveFeature.mockReturnValueOnce( true ); // needs twice both save and resume AND trusts
     mockGetOverseasEntity.mockReturnValueOnce( {
       ...APPLICATION_DATA_MOCK,
       [OverseasEntityDueDiligenceKey]: {}
@@ -197,7 +204,6 @@ describe("Resume submission controller", () => {
   });
 
   test(`Should throw an error on Resuming the OverseasEntity`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce( true );
     mockGetOverseasEntity.mockImplementationOnce( null as any );
 
     const errorMsg = `Error on resuming OE - Transaction ID: ${TRANSACTION_ID}, OverseasEntity ID: ${OVERSEAS_ENTITY_ID}`;

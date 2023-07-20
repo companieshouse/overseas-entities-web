@@ -36,7 +36,7 @@ describe("SIGN OUT controller", () => {
     jest.clearAllMocks();
   });
   describe("GET tests", () => {
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
+    test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
       mockIsActiveFeature.mockReturnValue(true);
       const resp = await request(app)
         .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
@@ -45,16 +45,6 @@ describe("SIGN OUT controller", () => {
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
-    });
-
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is not active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValue(false);
-      const resp = await request(app)
-        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SECURE_UPDATE_FILTER_PAGE}`);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to update an overseas entity and tell us about its beneficial owners.');
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`);
     });
 

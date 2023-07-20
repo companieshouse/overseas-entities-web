@@ -12,7 +12,7 @@ import { NextFunction } from "express";
 import app from "../../src/app";
 import { TRUST_ENTRY_URL, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE, TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL } from "../../src/config";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrustWithId } from "../../src/middleware/navigation/has.trust.middleware";
+import { hasTrustWithIdRegister } from "../../src/middleware/navigation/has.trust.middleware";
 import { Trust } from "../../src/model/trust.model";
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { getTrustByIdFromApp } from "../../src/utils/trusts";
@@ -35,7 +35,7 @@ describe("Legal entity beneficial owner integration tests", () => {
     legalEntityWithMissingFields = {};
     jest.clearAllMocks();
     (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-    (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+    (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
   });
 
   test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {

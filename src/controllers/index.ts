@@ -82,3 +82,4 @@ export * as updateTrustsSubmissionInterrupt from "./update/update.trusts.submiss
 export * as updateTrustsTellUsAboutIt from "./update/update.trusts.tell.us.about.it.controller";
 export * as updateTrustsIndividualsOrEntitiesInvolved from "./update/update.trusts.individuals.or.entities.involved.controller";
 export * as updateTrustsAssociatedWithEntity from "./update/update.trusts.associated.with.entity.controller";
+export * as updateTrustHistoricalBeneficialOwner from './update/update.trusts.historical.beneficial.owner.controller';

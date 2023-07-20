@@ -10,8 +10,8 @@ export const getEntityBackLink = (data: ApplicationData): string => {
     : config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
 };
 
-export const getSoldLandFilterBackLink = (): string => {  
-    return config.LANDING_PAGE_STARTING_NEW_URL;  
+export const getSoldLandFilterBackLink = (): string => {
+  return config.LANDING_PAGE_STARTING_NEW_URL;
 };
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {

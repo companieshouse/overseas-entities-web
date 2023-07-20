@@ -32,7 +32,6 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseaEntityId}`;
 
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
-   
     const appData: ApplicationData = await getOverseasEntity(req, transactionId, overseaEntityId);
 
     if (!Object.keys(appData || {}).length) {
@@ -55,7 +54,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
       logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
 
       return res.redirect(redirectPath);
-    }    
+    }
 
     return res.redirect(resumePage);
   } catch (error) {

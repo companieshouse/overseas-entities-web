@@ -92,9 +92,9 @@ describe("Resume submission controller", () => {
     const resp = await request(app).get(RESUME_SUBMISSION_URL);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);   
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SOLD_LAND_FILTER_URL}`);
     expect(mockGetOverseasEntity).toBeCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();   
+    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     expect(mockSetExtraData).toHaveBeenCalled();
   });
 

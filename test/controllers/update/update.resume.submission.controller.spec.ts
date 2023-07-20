@@ -94,7 +94,7 @@ describe("Update Resume submission controller", () => {
         [HasSoldLandKey]: "",
         [IsSecureRegisterKey]: "",
       };
-  
+
       mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
@@ -115,7 +115,7 @@ describe("Update Resume submission controller", () => {
         [HasSoldLandKey]: "",
         [IsSecureRegisterKey]: "",
       };
-  
+
       mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 

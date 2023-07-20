@@ -73,7 +73,6 @@ import {
 } from "../__mocks__/text.mock";
 import {
   ERROR,
-  OVERSEAS_ENTITY_ID,
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_NO_TRUSTS_MOCK,
   ENTITY_OBJECT_MOCK_WITH_SERVICE_ADDRESS,
@@ -84,7 +83,6 @@ import {
   BO_GOV_ID_URL,
   MO_IND_ID_URL,
   MO_CORP_ID_URL,
-  TRANSACTION_ID,
   PUBLIC_REGISTER_NAME,
   PUBLIC_REGISTER_JURISDICTION,
   REGISTRATION_NUMBER,
@@ -96,7 +94,7 @@ import {
 
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { postTransaction, closeTransaction } from "../../src/service/transaction.service";
+import { closeTransaction } from "../../src/service/transaction.service";
 import { startPaymentsSession } from "../../src/service/payment.service";
 import { getApplicationData } from "../../src/utils/application.data";
 
@@ -647,7 +645,7 @@ describe("POST tests", () => {
     mockPaymentsSession.mockReturnValueOnce(CONFIRMATION_URL);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);    
+    expect(resp.status).toEqual(302);
     expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
   });
@@ -657,7 +655,7 @@ describe("POST tests", () => {
     mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
     const resp = await request(app).post(CHECK_YOUR_ANSWERS_URL);
 
-    expect(resp.status).toEqual(302);   
+    expect(resp.status).toEqual(302);
     expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });

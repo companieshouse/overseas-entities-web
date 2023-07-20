@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
-import { isActiveFeature } from "../utils/feature.flag";
 import { safeRedirect } from '../utils/http.ext';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +12,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl,
-      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,      
+      url: config.REGISTER_AN_OVERSEAS_ENTITY_URL,
       journey: "register"
     });
   } catch (error) {

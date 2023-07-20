@@ -3,7 +3,6 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 
 import { logger, createAndLogErrorRequest } from "../utils/logger";
 import {
-  CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_URL,
 
   PAYMENT_FAILED_URL,
@@ -12,7 +11,6 @@ import {
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { OverseasEntityKey, PaymentKey } from "../model/data.types.model";
-import { isActiveFeature } from "../utils/feature.flag";
 
 // The Payment Platform will redirect the user's browser back to the `redirectUri` supplied when the payment session was created,
 // and this controller is dealing with the completion of the payment journey
@@ -40,7 +38,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     } else {
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
       logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
-      return res.redirect(PAYMENT_FAILED_URL);     
+      return res.redirect(PAYMENT_FAILED_URL);
     }
   } catch (error) {
     logger.errorRequest(req, error);

@@ -32,7 +32,7 @@ import {
 } from '../../src/config';
 import { get, post } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
+import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { TrusteeType } from '../../src/model/trustee.type.model';
 import { getApplicationData } from '../../src/utils/application.data';
@@ -290,7 +290,7 @@ describe('Trust Involved controller', () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -305,7 +305,7 @@ describe('Trust Involved controller', () => {
       expect(resp.text).toContain(TRUST_INVOLVED_TITLE);
       expect(resp.text).toContain(mockTrustData.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(hasTrustWithId).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
     });
 
     test(`successfully access POST method`, async () => {

@@ -6,7 +6,7 @@ import { hasPresenter } from "./has.presenter.middleware";
 import { hasSoldLand } from "./has.sold.land.middleware";
 import { isSecureRegister } from "./is.secure.register.middleware";
 import { hasOverseasName } from "./has.overseas.name.middleware";
-import { hasTrustWithId, hasTrustData } from "./has.trust.middleware";
+import { hasTrustWithIdRegister, hasTrustDataRegister, hasTrustWithIdUpdate, hasTrustDataUpdate } from "./has.trust.middleware";
 
 // UPDATE journey
 import { hasOverseasEntityNumber, hasOverseasEntity } from "./update/has.overseas.entity.middleware";
@@ -27,8 +27,10 @@ export const navigation = {
   hasBeneficialOwnersStatement,
   hasBOsOrMOs,
   hasOverseasName,
-  hasTrustWithId,
-  hasTrustData,
+  hasTrustWithIdRegister,
+  hasTrustDataRegister,
+  hasTrustWithIdUpdate,
+  hasTrustDataUpdate,
   hasOverseasEntityNumber,
   hasOverseasEntity,
   hasUpdatePresenter,

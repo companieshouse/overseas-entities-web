@@ -127,7 +127,9 @@ const postTrustInvolvedPage = (
     const typeOfTrustee = req.body.typeOfTrustee;
 
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
-    let url = `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
+    let url = isUpdate
+      ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`
+      : `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:

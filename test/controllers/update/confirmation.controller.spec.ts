@@ -25,7 +25,7 @@ import {
   CONFIRMATION_UPDATE_TEXT
 } from "../../__mocks__/text.mock";
 import { deleteApplicationData, getApplicationData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, getSessionRequestWithExtraData, userMail } from "../../__mocks__/session.mock";
+import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, getSessionRequestWithExtraData, userMail } from "../../__mocks__/session.mock";
 import { get } from "../../../src/controllers/confirmation.controller";
 import { getLoggedInUserEmail } from "../../../src/utils/session";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
@@ -113,7 +113,7 @@ describe("UPDATE CONFIRMATION controller", () => {
   test("agent related content is displayed for change submission", async () => {
     mockGetApplicationData.mockReturnValueOnce(
       {
-        ...APPLICATION_DATA_MOCK,
+        ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
         who_is_registering: undefined,
         update: { no_change: false }
       } );

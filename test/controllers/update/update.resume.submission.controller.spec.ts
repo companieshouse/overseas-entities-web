@@ -84,25 +84,13 @@ describe("Update Resume submission controller", () => {
 
   describe("GET tests", () => {
     test(`Redirect to ${SECURE_UPDATE_FILTER_URL} page`, async () => {
-
-      const mockAppData = {
-        ...APPLICATION_DATA_MOCK,
-        [OverseasEntityDueDiligenceKey]: {},
-        [WhoIsRegisteringKey]: "",
-        [OverseasEntityKey]: "",
-        [Transactionkey]: "",
-        [HasSoldLandKey]: "",
-        [IsSecureRegisterKey]: "",
-      };
-
-      mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${SECURE_UPDATE_FILTER_URL}`);
-      expect(mockGetOverseasEntity).toHaveBeenCalled();
+      expect(mockGetOverseasEntity).not.toHaveBeenCalled();
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSetExtraData).not.toHaveBeenCalled();
     });
 
     test(`Redirect to ${SECURE_UPDATE_FILTER_PAGE} page after Resuming the OverseasEntity with DueDiligence object`, async () => {
@@ -115,7 +103,7 @@ describe("Update Resume submission controller", () => {
         [HasSoldLandKey]: "",
         [IsSecureRegisterKey]: "",
       };
-
+      mockIsActiveFeature.mockReturnValueOnce( true );
       mockGetOverseasEntity.mockReturnValueOnce( mockAppData );
       const resp = await request(app).get(RESUME_UPDATE_SUBMISSION_URL);
 

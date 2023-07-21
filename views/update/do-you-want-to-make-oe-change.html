@@ -1,5 +1,11 @@
 {% extends "update-layout.html" %}
 
+{% set title = "Do you need to make any changes to this overseas entity?" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
@@ -10,8 +16,6 @@
 
     {% include "includes/list/errors.html" %}
     <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-    <h1 class="govuk-heading-xl govuk-!-margin-0">Do you need to make any changes to this overseas entity?</h1>
-    <br/>
 
     <form method="post">
       {{ govukRadios({

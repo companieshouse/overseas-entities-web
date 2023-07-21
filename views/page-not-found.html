@@ -1,13 +1,15 @@
+{% set title = "Page not found" %}
+
 {% if isRegistration %}
   {% extends "layout.html" %}
+  {% set titleTemplate = "includes/page-title.html" %}
 {% else %}
-  {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
   {% extends "update-layout.html" %}
+  {% set titleTemplate = "includes/update-page-title.html" %}
 {% endif %}
 
-
 {% block pageTitle %}
-  Page not found - {{ SERVICE_NAME }} - GOV.UK
+  {% include titleTemplate %}
 {% endblock %}
 
 {% block content %}

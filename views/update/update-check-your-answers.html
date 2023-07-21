@@ -1,7 +1,9 @@
 {% extends "update-layout.html" %}
 
+{% set title = "Check your answers before sending your application" %}
+
 {% block pageTitle %}
-  Check your answers before completing your update - {{ SERVICE_NAME }} - GOV.UK
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
@@ -12,7 +14,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
-      <h1 class="govuk-heading-xl">Check your answers before sending your application</h1>
+      <h1 class="govuk-heading-xl">{{ title }}</h1>
 
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}

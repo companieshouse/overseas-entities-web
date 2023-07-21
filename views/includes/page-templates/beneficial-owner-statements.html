@@ -1,13 +1,15 @@
-{% if entity_number %}
-  {% extends "update-layout.html" %}
-{% else %}
-  {% extends "layout.html" %}
-{% endif %}
-
 {% set title = "Has the overseas entity identified any registrable beneficial owners?" %}
 
+{% if entity_number %}
+  {% extends "update-layout.html" %}
+  {% set titleTemplate = "includes/update-page-title.html" %}
+{% else %}
+  {% extends "layout.html" %}
+  {% set titleTemplate = "includes/page-title.html" %}
+{% endif %}
+
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include titleTemplate %}
 {% endblock %}
 
 {% block backLink %}
@@ -84,7 +86,7 @@
               <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
               <p>We will show the information you provide in this section on the public Register of Overseas Entities.</p>
             '
-            }) 
+            })
           }}
         {% endif %}
 

@@ -3,7 +3,7 @@
 {% set title = "Do you want to continue with a saved filing?" %}
 
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
               text: title,
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
-            }  
+            }
           },
           hint: {
             text: "If you have saved filings, you can continue with one of these or start a new one. "

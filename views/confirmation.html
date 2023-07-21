@@ -1,12 +1,15 @@
+{% set title = "Confirmation" %}
+
 {% if isUpdate %}
   {% extends "update-layout.html" %}
-  {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
+  {% set titleTemplate = "includes/update-page-title.html" %}
 {% else %}
   {% extends "layout.html" %}
+  {% set titleTemplate = "includes/page-title.html" %}
 {% endif %}
 
 {% block pageTitle %}
-  Confirmation - {{ SERVICE_NAME }} - GOV.UK
+  {% include titleTemplate %}
 {% endblock %}
 
 {% block beforeContent %}

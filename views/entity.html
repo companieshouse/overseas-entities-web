@@ -6,15 +6,16 @@
 
 {% if entity_number %}
   {% set title = "Review overseas entity information"%}
+  {% set titleTemplate = "includes/update-page-title.html" %}
   {% set emailHintText = "We'll use this to send important information. If you request an authentication code in the future, we'll send it to this email address."%}
 {% else %}
   {% set title = "Tell us about the overseas entity" %}
+  {% set titleTemplate = "includes/page-title.html" %}
   {% set emailHintText = ""%}
 {% endif %}
 
-
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include titleTemplate %}
 {% endblock %}
 
 {% block backLink %}
@@ -32,7 +33,7 @@
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entityName }}</span>
     {% endif %}
     <h1 class="govuk-heading-xl">{{ title }}</h1>
-    
+
     {% if entity_number %}
       <p class="govuk-body">If you need to update any overseas entity information, you can change the answers here.</p>
     {% else %}
@@ -42,7 +43,7 @@
               "data-event-id": "overseas-entity-details"
             },
             text: "This is a legal entity, such as a company or organisation, that is governed by the law of a country or territory outside the UK."
-          }) }}      
+          }) }}
     {% endif %}
 
     <form method="post">
@@ -55,7 +56,7 @@
         } %}
         {% include "includes/inputs/text-input.html" %}
       {% endif %}
-      
+
       {% if entity_number %}
         <h2 class="govuk-heading-m">Country it was formed in:</h2>
         <p class="govuk-body">{{incorporation_country}}</p>
@@ -92,7 +93,7 @@
         name: "email",
         value: email
       }) }}
-        
+
       {% if not entity_number %}
         <details class="govuk-details" data-module="govuk-details">
           <summary class="govuk-details__summary">

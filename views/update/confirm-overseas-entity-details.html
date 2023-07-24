@@ -1,10 +1,10 @@
 {% extends "update-layout.html" %}
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set title = "Confirm Overseas Data" %}
+{% set title = "Confirm this is the correct overseas entity" %}
 
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %}
@@ -17,7 +17,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       {% include "includes/list/errors.html" %}
-        <h1 class="govuk-heading-xl">Confirm this is the correct overseas entity</h1>
+        <h1 class="govuk-heading-xl">{{ title }}</h1>
         {{ govukTable({
           captionClasses: "govuk-table__caption--m",
           firstCellIsHeader: true,
@@ -79,7 +79,7 @@
               }
             ]
           ]
-          }) 
+          })
         }}
       <br>
       <form method="post">
@@ -92,7 +92,7 @@
           }) }}
         </div>
         <br>
-          <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>  
+          <a href="/update-an-overseas-entity/overseas-entity-query" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>
       </form>
     </div>
   </div>

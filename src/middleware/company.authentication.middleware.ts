@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME } from '../config';
+import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME, CLOSED_PENDING_PAYMENT } from '../config';
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
-import * as config from "../config";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -16,25 +15,8 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     let entityNumber: string = appData?.[EntityNumberKey] as string;
     let returnURL: string = UPDATE_FILING_DATE_URL;
 
-    if (req.path.endsWith(`/${RESUME}`)) {
-      const { transactionId } = req.params;
+    [entityNumber, returnURL] = await processTransaction(entityNumber, returnURL, req);
 
-      if (transactionId) {
-        const transactionResource = await getTransaction(req, transactionId);
-        const entityNumberTransaction = transactionResource.companyNumber;
-
-        if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
-          entityNumber = entityNumberTransaction as string;
-          returnURL = req.originalUrl;
-        }
-        if (entityNumber && transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
-          returnURL = req.originalUrl;
-        }
-      } else {
-        logger.errorRequest(req, "Invalid transactionId");
-        throw new Error("Invalid transaction");
-      }
-    }
     if (entityNumber) {
       const authMiddlewareConfig: AuthOptions = {
         chsWebUrl: CHS_URL,
@@ -52,3 +34,26 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     next(err);
   }
 };
+
+async function processTransaction (entityNumber: string, returnURL: string, req: Request): Promise<[string, string]> {
+  if (req.path.endsWith(`/${RESUME}`)) {
+    const { transactionId } = req.params;
+
+    if (transactionId) {
+      const transactionResource = await getTransaction(req, transactionId);
+      const entityNumberTransaction = transactionResource.companyNumber;
+
+      if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
+        entityNumber = entityNumberTransaction as string;
+        returnURL = req.originalUrl;
+      }
+      if (entityNumber && transactionResource.status === CLOSED_PENDING_PAYMENT) {
+        returnURL = req.originalUrl;
+      }
+    } else {
+      logger.errorRequest(req, "Invalid transactionId");
+      throw new Error("Invalid transaction");
+    }
+  }
+  return [entityNumber, returnURL];
+}

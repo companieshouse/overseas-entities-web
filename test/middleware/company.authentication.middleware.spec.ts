@@ -160,12 +160,12 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).toHaveBeenCalledTimes(2);
   });
 
-  test('should call next(err) after catching error', () => {
+  test('should call next(err) after catching error', async () => {
     const error = new Error(ANY_MESSAGE_ERROR);
     mockCompanyAuthMiddleware.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
     req.session = getSessionRequestWithExtraData();
 
-    companyAuthentication(req, res, next);
+    await companyAuthentication(req, res, next);
 
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);

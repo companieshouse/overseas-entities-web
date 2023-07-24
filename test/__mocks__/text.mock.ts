@@ -238,3 +238,4 @@ export const CONFIRMATION_AGENT_SPECIFIC_TEXT = "Once we have received the state
 export const CONFIRMATION_UPDATE_TEXT = "if the update statement has been accepted or rejected";
 export const UPDATE_TELL_US_ABOUT_TRUST_HEADING = "Tell us about the trust";
 export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trust?";
+export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";

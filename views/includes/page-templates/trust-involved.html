@@ -53,7 +53,7 @@
           formerTrustees
         ) %}
       {% endfor %}
-
+      
       {% set individualTrustees = [] %}
       {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}

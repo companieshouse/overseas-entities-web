@@ -83,7 +83,8 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
-  updateReviewStatement
+  updateReviewStatement,
+  updateTrustsIndividualBeneficialOwner
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -517,6 +518,17 @@ router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
   )
   .get(updateTrustsAssociatedWithEntity.get)
   .post(...validator.addTrust, updateTrustsAssociatedWithEntity.post);
+
+router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+    navigation.hasTrustWithIdUpdate
+  )
+  .get(updateTrustsIndividualBeneficialOwner.get)
+  .post(...validator.trustIndividualBeneficialOwner, updateTrustsIndividualBeneficialOwner.post);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
   .all(

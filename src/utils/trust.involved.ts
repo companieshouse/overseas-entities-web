@@ -1,19 +1,19 @@
 import { NextFunction, Request, Response } from 'express';
-import * as config from '../../config';
-import { TrusteeType } from '../../model/trustee.type.model';
-import { BeneficialOwnerTypeChoice } from '../../model/beneficial.owner.type.model';
-import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../../model/trust.page.model';
+import * as config from '../config';
+import { TrusteeType } from '../model/trustee.type.model';
+import { BeneficialOwnerTypeChoice } from '../model/beneficial.owner.type.model';
+import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../model/trust.page.model';
 import { validationResult } from 'express-validator/src/validation-result';
-import { logger } from '../../utils/logger';
-import { safeRedirect } from '../../utils/http.ext';
-import { getApplicationData } from '../../utils/application.data';
-import { mapCommonTrustDataToPage } from '../../utils/trust/common.trust.data.mapper';
-import { mapTrustWhoIsInvolvedToPage } from '../../utils/trust/who.is.involved.mapper';
-import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
-import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../../model/trust.model';
-import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from '../../utils/trusts';
+import { logger } from './logger';
+import { safeRedirect } from './http.ext';
+import { getApplicationData } from './application.data';
+import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
+import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
+import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
+import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
+import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
 
-const TRUST_INVOLVED_TEXTS = {
+export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
   boTypeTitle: {
     [BeneficialOwnerTypeChoice.individual]: 'Individual beneficial owner',
@@ -41,6 +41,7 @@ type TrustInvolvedPageProperties = {
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,
+    isUpdate: boolean
   } & TrustWhoIsInvolved,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
@@ -53,13 +54,13 @@ const getPageProperties = (
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
 ): TrustInvolvedPageProperties => {
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
+  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
   const appData = getApplicationData(req.session);
 
   return {
-    backLinkUrl: getBackLink(isUpdate, trustId),
-    templateName: getTemplateName(isUpdate),
+    backLinkUrl: getBackLinkUrl(isUpdate, trustId),
+    templateName: getPageTemplate(isUpdate),
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
     },
@@ -73,14 +74,15 @@ const getPageProperties = (
       trusteeType: TrusteeType,
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
+      isUpdate: isUpdate
     },
     formData,
     errors,
-    url: getServiceUrl(isUpdate),
+    url: getUrl(isUpdate),
   };
 };
 
-const getTrustInvolvedPage = (
+export const getTrustInvolvedPage = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -98,7 +100,7 @@ const getTrustInvolvedPage = (
   }
 };
 
-const postTrustInvolvedPage = (
+export const postTrustInvolvedPage = (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -108,7 +110,7 @@ const postTrustInvolvedPage = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, getPostTemplateName(isUpdate));
+      return safeRedirect(res, getNextPage(isUpdate));
     }
     //  check on errors
     const errorList = validationResult(req);
@@ -153,13 +155,7 @@ const postTrustInvolvedPage = (
   }
 };
 
-export {
-  getTrustInvolvedPage as getTrustInvolvedPage,
-  postTrustInvolvedPage,
-  TRUST_INVOLVED_TEXTS,
-};
-
-const getTemplateName = (isUpdate: boolean) => {
+const getPageTemplate = (isUpdate: boolean) => {
   if (isUpdate) {
     return config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
   } else {
@@ -167,7 +163,7 @@ const getTemplateName = (isUpdate: boolean) => {
   }
 };
 
-const getBackLink = (isUpdate: boolean, trustId: string) => {
+const getBackLinkUrl = (isUpdate: boolean, trustId: string) => {
   if (isUpdate) {
     return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
   } else {
@@ -183,7 +179,7 @@ const getCheckYourAnswersUrl = (isUpdate: boolean) => {
   }
 };
 
-const getServiceUrl = (isUpdate: boolean) => {
+const getUrl = (isUpdate: boolean) => {
   if (isUpdate) {
     return config.UPDATE_AN_OVERSEAS_ENTITY_URL;
   } else {
@@ -191,7 +187,7 @@ const getServiceUrl = (isUpdate: boolean) => {
   }
 };
 
-const getPostTemplateName = (isUpdate: boolean) => {
+const getNextPage = (isUpdate: boolean) => {
   if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {

@@ -6,6 +6,7 @@ import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
+import * as config from "../config";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -24,6 +25,9 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
 
         if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
           entityNumber = entityNumberTransaction as string;
+          returnURL = req.originalUrl;
+        }
+        if (entityNumber && transactionResource.status === config.CLOSED_PENDING_PAYMENT) {
           returnURL = req.originalUrl;
         }
       } else {

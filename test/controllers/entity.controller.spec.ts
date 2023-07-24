@@ -39,6 +39,7 @@ import {
   INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER,
   OVERSEAS_ENTITY_NO_EMAIL_SHOWN_INFORMATION_ON_PUBLIC_REGISTER,
   SHOW_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
+  EMAIL_ADDRESS_USE_AUTH_CODE_TEXT,
 } from "../__mocks__/text.mock";
 import { ApplicationDataType } from '../../src/model';
 import {
@@ -92,6 +93,7 @@ describe("ENTITY controller", () => {
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(OVERSEAS_NAME_MOCK);
+      expect(resp.text).toContain(EMAIL_ADDRESS_USE_AUTH_CODE_TEXT);
     });
 
     test(`renders the ${ENTITY_PAGE} page with ${OVERSEAS_ENTITY_DUE_DILIGENCE_URL} back link`, async () => {

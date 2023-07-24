@@ -2,7 +2,6 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 
 import { NextFunction, Request, Response } from "express";
@@ -14,7 +13,6 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getApplicationData } from '../../src/utils/application.data';
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-import { isActiveFeature } from "../../src/utils/feature.flag";
 
 import {
   PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
@@ -39,7 +37,6 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("Payment controller", () => {
 
@@ -68,7 +65,6 @@ describe("Payment controller", () => {
   });
 
   test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
     mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 

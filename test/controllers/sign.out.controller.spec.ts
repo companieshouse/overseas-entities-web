@@ -1,4 +1,3 @@
-jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 import { ErrorMessages } from "../../src/validation/error.messages";
 
@@ -7,7 +6,6 @@ jest.mock("../../src/utils/logger");
 
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { NextFunction, Request, Response } from "express";
 
@@ -26,7 +24,6 @@ import {
 } from "../__mocks__/text.mock";
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -43,7 +40,6 @@ describe("Sign Out controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
@@ -56,7 +52,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page, and guidance for resuming a saved journey is displayed`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -71,7 +66,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -83,7 +77,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page,  with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
 
@@ -101,7 +94,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page and correctly sets the previousPage field value`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name${config.WHO_IS_MAKING_FILING_URL}` });
 
@@ -116,7 +108,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page and does set a potentially malicious previous page URL`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name/illegal-path` });
 

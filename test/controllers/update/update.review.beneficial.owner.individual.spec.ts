@@ -21,13 +21,14 @@ import {
 } from "../../__mocks__/text.mock";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_MOCK,
   REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
   REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY,
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
   REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
+  SERVICE_ADDRESS_MOCK,
 } from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
@@ -48,6 +49,8 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
 
+const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
+
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe(`Update review beneficial owner individual controller`, () => {
@@ -57,14 +60,15 @@ describe(`Update review beneficial owner individual controller`, () => {
   });
 
   describe("GET tests", () => {
-    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
-
+    test(`render the review-beneficial-owner-individual page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain("addressLine1");
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 

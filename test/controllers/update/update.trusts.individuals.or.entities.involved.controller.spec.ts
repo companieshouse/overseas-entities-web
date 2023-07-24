@@ -1,5 +1,5 @@
 jest.mock('ioredis');
-jest.mock('../../../src/utils/feature.flag' );
+jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
@@ -39,7 +39,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
 
 const mockMapCommonTrustDataToPage = mapCommonTrustDataToPage as jest.Mock;
 

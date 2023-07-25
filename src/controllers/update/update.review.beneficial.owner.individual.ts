@@ -4,7 +4,7 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE
 } from "../../config";
 import { NextFunction, Request, Response } from "express";
-import { getApplicationData, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
+import { getApplicationData, mapDataObjectToFields, removeFromApplicationData, setApplicationData } from "../../utils/application.data";
 import { logger } from "../../utils/logger";
 import { BeneficialOwnerIndividualKey } from "../../model/beneficial.owner.individual.model";
 import { ApplicationDataType } from "../../model";
@@ -12,18 +12,20 @@ import { setBeneficialOwnerData } from "../../utils/beneficial.owner.individual"
 import { v4 as uuidv4 } from "uuid";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { EntityNumberKey, InputDate } from "../../model/data.types.model";
+import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey } from "../../model/date.model";
+import { ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData = getApplicationData(req.session);
   const index = req.query.index;
 
-  let dataToReview = {};
+  let dataToReview = {}, serviceAddress = {};
   if (appData?.beneficial_owners_individual){
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
+    serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
   }
 
   const templateOptions = {
@@ -32,6 +34,7 @@ export const get = (req: Request, res: Response) => {
     ...dataToReview,
     isBeneficialOwnersReview: true,
     populateResidentialAddress: false,
+    ...serviceAddress,
     entity_number: appData[EntityNumberKey],
   };
 

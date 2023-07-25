@@ -43,16 +43,19 @@ async function processTransaction (entityNumber: string, returnURL: string, req:
     const transactionResource = await getTransaction(req, transactionId);
     const entityNumberTransaction = transactionResource.companyNumber;
 
-    if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
+    if (transactionResource.status === CLOSED_PENDING_PAYMENT) {
+      if (!entityNumber || entityNumber !== entityNumberTransaction) {
+        const msg = "Invalid entity number for closed transaction";
+        logger.errorRequest(req, msg);
+        throw new Error(msg);
+      }
+    } else if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
       entityNumber = entityNumberTransaction as string;
-      returnURL = req.originalUrl;
     }
-    if (entityNumber && transactionResource.status === CLOSED_PENDING_PAYMENT) {
-      returnURL = req.originalUrl;
-    }
-  } else {
-    logger.errorRequest(req, "Invalid transactionId");
-    throw new Error("Invalid transaction");
+
+    return [entityNumber, req.originalUrl];
   }
-  return [entityNumber, returnURL];
+
+  logger.errorRequest(req, "Invalid transactionId");
+  throw new Error("Invalid transaction");
 }

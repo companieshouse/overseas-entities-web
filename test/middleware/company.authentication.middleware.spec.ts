@@ -75,7 +75,9 @@ describe('Company Authentication middleware', () => {
       body: {}
     } as Request;
 
-    mockGetTransactionService.mockReturnValueOnce( MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource );
+    const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
+    transactionResponse.status = "open";
+    mockGetTransactionService.mockReturnValueOnce(transactionResponse);
 
     await companyAuthentication(req, res, next);
 
@@ -100,7 +102,9 @@ describe('Company Authentication middleware', () => {
       body: {}
     } as Request;
 
-    mockGetTransactionService.mockReturnValueOnce( MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource );
+    const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
+    transactionResponse.status = "open";
+    mockGetTransactionService.mockReturnValueOnce(transactionResponse);
 
     await companyAuthentication(req, res, next);
 

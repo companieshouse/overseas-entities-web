@@ -2,19 +2,31 @@
 
 {% set inNoChangeJourney = pageParams.noChangeFlag %}
 {% set inChangeJourney = not inNoChangeJourney %}
+{% set isNewMo = not (moc.ch_reference | length) %}
+{% set moIsOnRegisterInCountryFormedIn = moc.is_on_register_in_country_formed_in == 1 %}
 
+{% set moId = moc.id %}
+{% set moName = moc.name %}
 {% set moAddress = moc.principal_address %}
-{% set moSameAddresses = moc.is_service_address_same_as_principal_address %}
 {% set moServiceAddress = moc.service_address %}
-{% set resigned_on = moc.resigned_on %}
+{% set moSameAddresses = moc.is_service_address_same_as_principal_address %}
+{% set moLegalForm = moc.legal_form %}
+{% set moLawGoverned = moc.law_governed %}
+{% set moPublicRegisterName = moc.public_register_name %}
+{% set moRegistrationNumber = moc.registration_number %}
+{% set moRoleAndResponsibilities = moc.role_and_responsibilities %}
+{% set moContactFullName = moc.contact_full_name %}
+{% set moContactEmail = moc.contact_email %}
+{% set moStartDate = dateMacros.formatDate(moc.start_date["day"], moc.start_date["month"], moc.start_date["year"]) %}
+{% set moIsResigned = moc.resigned_on | length %}
+{% set moResignedOn = dateMacros.formatDate(moc.resigned_on["day"], moc.resigned_on["month"], moc.resigned_on["year"]) %}
 
-{% set mocChangePublicregisterNameHtml = "" %}
-{% set mocFormattedPublicRegister %}
-  {% if moc.is_on_register_in_country_formed_in == 1 %}
-    {% set mocChangePublicregisterNameHtml = "#public_register_name" %}
-    {{ moc.public_register_name }} / {{ moc.registration_number }}
+{% set moFormattedPublicRegister %}
+  {% if moIsOnRegisterInCountryFormedIn %}
+    {% set mocChangePublicRegisterNameHtml = OE_CONFIGS.PUBLIC_REGISTER_NAME %}
+    {{ moPublicRegisterName }} / {{ moRegistrationNumber }}
   {% else %}
-    {% set mocChangePublicregisterNameHtml = "#is_on_register_in_country_formed_in" %}
+    {% set mocChangePublicRegisterNameHtml = OE_CONFIGS.IS_ON_REGISTER_IN_COUNTRY_FORMED_IN %}
     No
   {% endif %}
 {% endset %}
@@ -23,29 +35,29 @@
   {% if inNoChangeJourney %}
     <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% else %}
-    {{ moc.contact_email }}
+    {{ moContactEmail }}
   {% endif %}
 {% endset %}
 
-{% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL %}
+{% set hiddenTextPrefix = "Corporate managing officer " + moName %}
 {% if inChangeJourney %}
-  {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
+  {% if isNewMo %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL + '/' + moId %}
+  {% else %}
+    {% set moIndex = appData.managing_officers_corporate.indexOf(moc) %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
+  {% endif %}
 {% endif %}
-{% set moChangeLinkText =  "Corporate managing officer " + moc.name %}
 
 {% set rows = [] %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Name"
-  },
-  value: {
-    text: moc.name
-  },
+  key: { text: "Name" },
+  value: { text: moName },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NAME, 
-      moChangeLinkText + " - Name", 
+      changeLinkUrl + OE_CONFIGS.NAME,
+      hiddenTextPrefix + " - Name",
       "change-corporate-managing-officer-name-button"
     )]
   } if inChangeJourney
@@ -54,95 +66,72 @@
 {% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Legal form"
-  },
-  value: {
-    text: moc.legal_form
-  },
+  key: { text: "Legal form" },
+  value: { text: moLegalForm },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LEGAL_FORM, 
-      moChangeLinkText + " - Legal form", 
+      changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
+      hiddenTextPrefix + " - Legal form",
       "change-corporate-managing-officer-legal-form-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Governing law"
-  },
-  value: {
-    html: moc.law_governed
-  },
+  key: { text: "Governing law" },
+  value: { html: moLawGoverned },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAW_GOVERNED, 
-      moChangeLinkText + " - Law governed", 
+      changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
+      hiddenTextPrefix + " - Law governed",
       "change-corporate-managing-officer-governing-law-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "On a public register in the country it was formed in"
-  },
-  value: {
-    html: mocFormattedPublicRegister
-  },
+  key: { text: "On a public register in the country it was formed in" },
+  value: { html: moFormattedPublicRegister },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + mocChangePublicregisterNameHtml, 
-      moChangeLinkText + " - Public register", 
+      changeLinkUrl + mocChangePublicRegisterNameHtml,
+      hiddenTextPrefix + " - Public register",
       "change-corporate-managing-officer-public-register-button"
     )]
   } if inChangeJourney
 }), rows) %}
+
 {% set rows = (rows.push({
-  key: {
-    text: "Role and responsibilities"
-  },
-  value: {
-    text: moc.role_and_responsibilities
-  },
+  key: { text: "Role and responsibilities" },
+  value: { text: moRoleAndResponsibilities },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES, 
-      moChangeLinkText + " - Role and responsibilities", 
+      changeLinkUrl + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+      moChangeLinkText + " - Role and responsibilities",
       "change-corporate-managing-officer-role-and-responsibilities-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Contact full name"
-  },
-  value: {
-    html: moc.contact_full_name
-  },
+  key: { text: "Contact full name" },
+  value: { html: moContactFullName },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_FULL_NAME, 
-      moChangeLinkText + " - Contact full name", 
+      changeLinkUrl + OE_CONFIGS.CONTACT_FULL_NAME,
+      moChangeLinkText + " - Contact full name",
       "change-corporate-managing-officer-contact-full-name-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Contact email address"
-  },
-  value: {
-    html: moFormattedContactEmailHtml
-  },
+  key: { text: "Contact email address" },
+  value: { html: moFormattedContactEmailHtml },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.CONTACT_EMAIL, 
-      moChangeLinkText + " - Contact email", 
+      changeLinkUrl + OE_CONFIGS.CONTACT_EMAIL,
+      moChangeLinkText + " - Contact email",
       "change-corporate-managing-officer-contact-email-address-button"
     )]
   } if inChangeJourney
@@ -152,6 +141,4 @@
 
 <h3 class="govuk-heading-m">Corporate managing officer</h3>
 
-{{ govukSummaryList({
-   rows: rows
-}) }}
+{{ govukSummaryList({ rows: rows }) }}

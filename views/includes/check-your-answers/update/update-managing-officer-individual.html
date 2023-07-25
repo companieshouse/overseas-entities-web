@@ -1,110 +1,107 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set inChangeJourney = not pageParams.noChangeFlag %}
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+{% set inChangeJourney = not inNoChangeJourney %}
+{% set isNewMo = not (moi.ch_reference | length) %}
+{% set isIndividualManagingOfficer = true %}
 
-{% set moiDateOfBirth = dateMacros.formatDate("", moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
-{% set managing_officer_individual = true %}
+{% set moId = moi.id %}
+{% set moFirstName = moi.first_name %}
+{% set moLastName = moi.last_name %}
+{% set moHasFormerNames = moi.has_former_names == 1 %}
+{% set moFormerNames = moi.former_names %}
+{% set moDateOfBirth = dateMacros.formatDate("", moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
+{% set moNationality = moi.nationality %}
+{% set moSecondNationality = moi.second_nationality %}
 {% set moAddress = moi.usual_residential_address %}
-{% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
 {% set moServiceAddress = moi.service_address %}
-{% set resigned_on = moi.resigned_on %}
+{% set moSameAddresses = moi.is_service_address_same_as_usual_residential_address %}
+{% set moOccupation = moi.occupation %}
+{% set moRoleAndResponsibilities = moi.role_and_responsibilities %}
+{% set moStartDate = dateMacros.formatDate(moi.start_date["day"], moi.start_date["month"], moi.start_date["year"]) %}
+{% set moIsResigned = moi.resigned_on | length %}
+{% set moResignedOn = dateMacros.formatDate(moi.resigned_on["day"], moi.resigned_on["month"], moi.resigned_on["year"]) %}
 
-{% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL %}
-
+{% set hiddenTextPrefix = "Individual managing officer " + moFirstName + " " + moLastName %}
 {% if inChangeJourney %}
-  {% set moIndex = appData.managing_officers_individual.indexOf(moi)  %}
+  {% if isNewMo %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL + '/' + moId %}
+  {% else %}
+    {% set moIndex = appData.managing_officers_individual.indexOf(moi) %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex %}
+  {% endif %}
 {% endif %}
-
-{% set moChangeLinkText =  "Individual managing officer " + moi.first_name + " " + moi.last_name %}
 
 {% set rows = [] %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "First name"
-  },
-  value: {
-    text: moi.first_name
-  },
+  key: { text: "First name" },
+  value: { text: moFirstName },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FIRST_NAME, 
-      moChangeLinkText + " - first name", 
+      changeLinkUrl + OE_CONFIGS.FIRST_NAME,
+      hiddenTextPrefix + " - first name",
       "change-individual-managing-officer-first-name-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Last name"
-  },
-  value: {
-    text: moi.last_name
-  },
+  key: { text: "Last name" },
+  value: { text: moLastName },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.LAST_NAME,
-      moChangeLinkText + " - last name", 
+      changeLinkUrl + OE_CONFIGS.LAST_NAME,
+      hiddenTextPrefix + " - last name",
       "change-individual-managing-officer-last-name-button"
     )]
   } if inChangeJourney
 }), rows) %}
-{% if moi.former_names | length %}
-  {% set rows = (rows.push({
-  key: {
-    text: "Former names"
-  },
-  value: {
-    text: moi.former_names
-  },
+
+{% set rows = (rows.push({
+  key: { text: "Former names" },
+  value: { text: moFormerNames },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.FORMER_NAMES,
-      moChangeLinkText + " - former names", 
+      changeLinkUrl + (OE_CONFIGS.FORMER_NAMES if moHasFormerNames else OE_CONFIGS.HAS_FORMER_NAMES),
+      hiddenTextPrefix + " - former names",
       "change-individual-managing-officer-former-names-button"
     )]
   } if inChangeJourney
 }), rows) %}
-{% endif %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Date of birth" if inChangeJourney else "Born" 
-  },
-  value: {
-    text: moiDateOfBirth
-  }
+  key: { text: "Date of birth" if inChangeJourney else "Born" },
+  value: { text: moDateOfBirth },
+  actions: {
+    items: [CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.DATE_OF_BIRTH,
+      hiddenTextPrefix + " - date of birth",
+      "change-individual-managing-officer-date-of-birth-button"
+    )]
+  } if inChangeJourney and isNewMo
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Nationality"
-  },
-  value: {
-    text: moi.nationality
-  },
+  key: { text: "Nationality" },
+  value: { text: moNationality },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.NATIONALITY,
-      moChangeLinkText + " - nationality", 
+      changeLinkUrl + OE_CONFIGS.NATIONALITY,
+      hiddenTextPrefix + " - nationality",
       "change-individual-managing-officer-nationality-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
-{% if moi.second_nationality %}
+{% if moSecondNationality | length %}
   {% set rows = (rows.push({
-    key: {
-      text: "Second nationality"
-    },
-    value: {
-      text: moi.second_nationality
-    },
+    key: { text: "Second nationality" },
+    value: { text: moSecondNationality },
     actions: {
       items: [CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.SECOND_NATIONALITY,
-        moChangeLinkText + " - second nationality", 
+        changeLinkUrl + OE_CONFIGS.SECOND_NATIONALITY,
+        hiddenTextPrefix + " - second nationality",
         "change-individual-managing-officer-second-nationality-button"
       )]
     } if inChangeJourney
@@ -114,32 +111,24 @@
 {% include "includes/check-your-answers/update/managing-officers-addresses.html" %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Occupation"
-  },
-  value: {
-    html: moi.occupation
-  },
+  key: { text: "Occupation" },
+  value: { html: moOccupation },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.OCCUPATION,
-      moChangeLinkText + " - occupation", 
+      changeLinkUrl + OE_CONFIGS.OCCUPATION,
+      hiddenTextPrefix + " - occupation",
       "change-individual-managing-officer-occupation-button"
     )]
   } if inChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
-  key: {
-    text: "Role and responsibilities"
-  },
-  value: {
-    html: moi.role_and_responsibilities
-  },
+  key: { text: "Role and responsibilities" },
+  value: { html: moRoleAndResponsibilities },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
-      moChangeLinkText + " - roles and responsibilities", 
+      changeLinkUrl + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+      hiddenTextPrefix + " - roles and responsibilities",
       "change-individual-managing-officer-role-and-responsibilities-button"
     )]
   } if inChangeJourney
@@ -149,6 +138,4 @@
 
 <h3 class="govuk-heading-m">Individual managing officer</h3>
 
-{{ govukSummaryList({
-   rows: rows
-}) }}
+{{ govukSummaryList({ rows: rows }) }}

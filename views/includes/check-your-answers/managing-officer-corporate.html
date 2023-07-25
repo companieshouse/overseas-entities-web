@@ -1,5 +1,3 @@
-{% set inChangeJourney = not pageParams.noChangeFlag %}
-
 {% set mocFormattedPrincipalAddressHtml %}
   {% set address = moc.principal_address %}
   {% include "includes/display_address.html" %}
@@ -28,13 +26,9 @@
   {% endif %}
 {% endset %}
 
-<h3 class="govuk-heading-m">Corporate managing officer</h3>
+{% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL + "/" + moc.id %}
 
-{% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL %}
-{% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_CORPORATE_URL %}
-{% endif %}
+<h3 class="govuk-heading-m">Corporate managing officer</h3>
 
 {{ govukSummaryList({
     rows: [
@@ -47,11 +41,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.NAME,
+            changeLinkUrl + OE_CONFIGS.NAME,
             "Corporate managing officer " + moc.name + " - name",
             "change-corporate-managing-officer-name-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -62,11 +56,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
+            changeLinkUrl + OE_CONFIGS.CHANGE_PRINCIPAL_ADDRESS,
             "Corporate managing officer " + moc.name + " - principal or registered office address",
             "change-corporate-managing-officer-principal-address-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -77,11 +71,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + mocChangeServiceAddressHtml,
+            changeLinkUrl + mocChangeServiceAddressHtml,
             "Corporate managing officer " + moc.name + " - correspondence address",
             "change-corporate-managing-officer-correspondence-address-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -92,11 +86,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.LEGAL_FORM,
+            changeLinkUrl + OE_CONFIGS.LEGAL_FORM,
             "Corporate managing officer " + moc.name + " - legal form",
             "change-corporate-managing-officer-legal-form-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -107,11 +101,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.LAW_GOVERNED,
+            changeLinkUrl + OE_CONFIGS.LAW_GOVERNED,
             "Corporate managing officer " + moc.name + " - governing law",
             "change-corporate-managing-officer-law-governed-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -122,11 +116,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + mocChangePublicregisterNameHtml,
+            changeLinkUrl + mocChangePublicregisterNameHtml,
             "Corporate managing officer " + moc.name + " - on a public register in the country it was formed in",
             "change-corporate-managing-officer-public-register-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -137,11 +131,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+            changeLinkUrl + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
             "Corporate managing officer " + moc.name + " - role and responsibilities",
             "change-corporate-managing-officer-role-and-responsibilities-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -152,11 +146,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.CONTACT_FULL_NAME,
+            changeLinkUrl + OE_CONFIGS.CONTACT_FULL_NAME,
             "Corporate managing officer " + moc.name + " - contact full name",
             "change-corporate-managing-officer-contact-name-button"
           )]
-        } if inChangeJourney
+        }
       },
       {
         key: {
@@ -167,11 +161,11 @@
         },
         actions: {
           items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + moc.id + OE_CONFIGS.CONTACT_EMAIL,
+            changeLinkUrl + OE_CONFIGS.CONTACT_EMAIL,
             "Corporate managing officer " + moc.name + " - contact email",
             "change-corporate-managing-officer-contact-email-button"
           )]
-        } if inChangeJourney
+        }
       }
     ]
 }) }}

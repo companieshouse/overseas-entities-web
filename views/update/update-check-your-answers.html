@@ -23,126 +23,77 @@
       <br>
       {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
 
-      {% set boTextDisplayed = false %}
-      {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
+      {% set bois = appData.beneficial_owners_individual or [] %}
+      {% set existingBOIs = bois | selectattr('ch_reference') %}
+      {% set newBOIs = bois | rejectattr('ch_reference') %}
+
+      {% set bocs = appData.beneficial_owners_corporate or [] %}
+      {% set existingBOCs = bocs | selectattr('ch_reference') %}
+      {% set newBOCs = bocs | rejectattr('ch_reference') %}
+
+      {% set bogs = appData.beneficial_owners_government_or_public_authority or [] %}
+      {% set existingBOGs = bogs | selectattr('ch_reference') %}
+      {% set newBOGs = bogs | rejectattr('ch_reference') %}
+
+      {% if existingBOIs | length or existingBOCs | length or existingBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = true %}
-        {% set existingIndividualBO = appData.beneficial_owners_individual | selectattr("ch_reference", "undefined") %}
-        {% if (existingIndividualBO.length > 0)%}
-          {% set boTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
-        {% endif %}
-        {% for boi in existingIndividualBO %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
+        {% for boi in existingBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}
-      {% endif %}
-      {% if (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0) %}
-        {% set existingCorporateBO = appData.beneficial_owners_corporate | selectattr("ch_reference", "undefined") %}
-        {% if (existingCorporateBO.length > 0 and boTextDisplayed == false) %}
-          {% set boTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
-        {% endif %}
-        {% for boc in existingCorporateBO %}
+        {% for boc in existingBOCs %}
           {% include "includes/check-your-answers/beneficial-owner-other.html" %}
         {% endfor %}
-      {% endif %}
-      {% if (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
-        {% set existingGovernmentBO = appData.beneficial_owners_government_or_public_authority | selectattr("ch_reference", "undefined") %}
-        {% if (existingGovernmentBO.length > 0 and boTextDisplayed == false) %}
-          {% set boTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have reviewed</h2>
-        {% endif %}
-        {% for bog in existingGovernmentBO %}
+        {% for bog in existingBOGs %}
           {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
         {% endfor %}
       {% endif %}
 
-      {% set newBoTextDisplayed = false %}
-      {% if (appData.beneficial_owners_individual and appData.beneficial_owners_individual.length > 0) %}
+      {% if newBOIs | length or newBOCs | length or newBOGs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
-        {% set savedIndividualBO = appData.beneficial_owners_individual | rejectattr("ch_reference", "undefined") %}
-        {% if (savedIndividualBO.length > 0)%}
-          {% set newBoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
-        {% endif %}
-        {% for boi in savedIndividualBO %}
+        <br>
+        <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
+        {% for boi in newBOIs %}
           {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
         {% endfor %}
-      {% endif %}
-
-      {% if (appData.beneficial_owners_corporate and appData.beneficial_owners_corporate.length > 0) %}
-        {% set savedCorporateBO = appData.beneficial_owners_corporate | rejectattr("ch_reference", "undefined") %}
-        {% if (savedCorporateBO.length > 0 and newBoTextDisplayed == false) %}
-          {% set newBoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
-        {% endif %}
-        {% for boc in savedCorporateBO %}
+        {% for boc in newBOCs %}
           {% include "includes/check-your-answers/beneficial-owner-other.html" %}
         {% endfor %}
-      {% endif %}
-      {% if (appData.beneficial_owners_government_or_public_authority and appData.beneficial_owners_government_or_public_authority.length > 0) %}
-        {% set savedGovernmentBO = appData.beneficial_owners_government_or_public_authority | rejectattr("ch_reference", "undefined") %}
-        {% if (savedGovernmentBO.length > 0 and newBoTextDisplayed == false) %}
-          {% set newBoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners you have added</h2>
-        {% endif %}
-        {% for bog in savedGovernmentBO %}
+        {% for bog in newBOGs %}
           {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
         {% endfor %}
       {% endif %}
 
-      {% set existingMoTextDisplayed = false %}
-      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0) %}
+      {% set mois = appData.managing_officers_individual or [] %}
+      {% set existingMOIs = mois | selectattr('ch_reference') %}
+      {% set newMOIs = mois | rejectattr('ch_reference') %}
+
+      {% set mocs = appData.managing_officers_corporate or [] %}
+      {% set existingMOCs = mocs | selectattr('ch_reference') %}
+      {% set newMOCs = mocs | rejectattr('ch_reference') %}
+
+      {% if existingMOIs | length or existingMOCs | length %}
         {% set hideChangeLinksForNonEditableFields = true %}
-        {% set existingIndividualMO = appData.managing_officers_individual | selectattr("ch_reference", "undefined") %}
-        {% if (existingIndividualMO.length > 0)%}
-          {% set existingMoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Managing officers you have reviewed</h2>
-        {% endif %}
-        {% for moi in existingIndividualMO %}
+        <br>
+        <h2 class="govuk-heading-l">Managing officers you have reviewed</h2>
+        {% for moi in existingMOIs %}
           {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
         {% endfor %}
-      {% endif %}
-      {% if (appData.managing_officers_corporate and appData.managing_officers_corporate.length > 0) %}
-        {% set existingCorporateMO = appData.managing_officers_corporate | selectattr("ch_reference", "undefined") %}
-        {% if (existingCorporateMO.length > 0 and existingMoTextDisplayed == false) %}
-          {% set existingMoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Managing officers you have reviewed</h2>
-        {% endif %}
-        {% for moc in existingCorporateMO %}
+        {% for moc in existingMOCs %}
           {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
 
-      {% set newMoTextDisplayed = false %}
-      {% if (appData.managing_officers_individual and appData.managing_officers_individual.length > 0) %}
+      {% if newMOIs | length or newMOCs | length %}
         {% set hideChangeLinksForNonEditableFields = false %}
-        {% set savedIndividualMO = appData.managing_officers_individual | rejectattr("ch_reference", "undefined") %}
-        {% if (savedIndividualMO.length > 0)%}
-          {% set newMoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Managing officers you have added</h2>
-        {% endif %}
-        {% for moi in savedIndividualMO %}
-          {% include "includes/check-your-answers/managing-officer-individual.html" %}
+        <br>
+        <h2 class="govuk-heading-l">Managing officers you have added</h2>
+        {% for moi in newMOIs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
         {% endfor %}
-      {% endif %}
-      {% if (appData.managing_officers_corporate and appData.managing_officers_corporate.length > 0) %}
-        {% set savedCorporateMO = appData.managing_officers_corporate | rejectattr("ch_reference", "undefined") %}
-        {% if (savedCorporateMO.length > 0 and newMoTextDisplayed == false) %}
-          {% set newoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Managing officers you have added</h2>
-        {% endif %}
-        {% for moc in savedCorporateMO %}
-          {% include "includes/check-your-answers/managing-officer-corporate.html" %}
+        {% for moc in newMOCs %}
+          {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
 

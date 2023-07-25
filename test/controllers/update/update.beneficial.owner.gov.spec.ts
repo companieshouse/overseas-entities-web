@@ -394,28 +394,40 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing DAY error when day is zero`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
-      beneficialOwnerGov["start_date-day"] = "0";
+      beneficialOwnerGov["start_date-day"] = "00";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyDayErrors(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing MONTH error when month is zero`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "30";
-      beneficialOwnerGov["start_date-month"] = "0";
+      beneficialOwnerGov["start_date-month"] = "00";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing YEAR error when year is zero`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "30";
+      beneficialOwnerGov["start_date-month"] = "11";
+      beneficialOwnerGov["start_date-year"] = "00";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {

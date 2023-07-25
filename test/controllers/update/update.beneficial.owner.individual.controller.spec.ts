@@ -429,26 +429,37 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing DAY error when start date day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerIndividual["start_date-day"] = "0";
+      beneficialOwnerIndividual["start_date-day"] = "00";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyDayErrors(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing MONTH error when start date month is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
-      beneficialOwnerIndividual["start_date-month"] = "0";
+      beneficialOwnerIndividual["start_date-month"] = "00";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing YEAR error when start date year is zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerIndividual["start_date-day"] = "30";
+      beneficialOwnerIndividual["start_date-month"] = "11";
+      beneficialOwnerIndividual["start_date-year"] = "00";
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start_date is in the future`, async () => {

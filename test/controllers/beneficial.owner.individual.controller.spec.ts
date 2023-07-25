@@ -471,9 +471,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing DAY error when start date day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerIndividual["start_date-day"] = "0";
+      beneficialOwnerIndividual["start_date-day"] = "00";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -481,17 +481,17 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing MONTH error when start date month is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
-      beneficialOwnerIndividual["start_date-month"] = "0";
+      beneficialOwnerIndividual["start_date-month"] = "00";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
@@ -499,9 +499,26 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing YEAR error when start date year is zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerIndividual["start_date-day"] = "30";
+      beneficialOwnerIndividual["start_date-month"] = "11";
+      beneficialOwnerIndividual["start_date-year"] = "00";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 

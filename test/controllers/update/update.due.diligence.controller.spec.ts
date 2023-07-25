@@ -440,9 +440,9 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is zero`, async () => {
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only missing DAY error when identity date day is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
-      dueDiligenceData["identity_date-day"] = "0";
+      dueDiligenceData["identity_date-day"] = "00";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
@@ -450,18 +450,18 @@ describe("Update due diligence controller tests", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
-    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is zero`, async () => {
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only missing MONTH error when identity date month is zero`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] = "30";
-      dueDiligenceData["identity_date-month"] = "0";
+      dueDiligenceData["identity_date-month"] = "00";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
@@ -469,9 +469,27 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only missing YEAR error when identity date year is zero`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-day"] = "30";
+      dueDiligenceData["identity_date-month"] = "11";
+      dueDiligenceData["identity_date-year"] = "00";
+      const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });

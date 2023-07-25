@@ -26,6 +26,12 @@ import { conditionalDateValidations, dateContext, dateContextWithCondition, date
 // This means that the year check is checked before some others
 export const start_date_validations = [
   body("start_date-day")
+    .ltrim("0"),
+  body("start_date-month")
+    .ltrim("0"),
+  body("start_date-year")
+    .ltrim("0"),
+  body("start_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-month")
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
@@ -75,6 +81,12 @@ export const date_of_birth_validations = [
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const identity_check_date_validations = [
+  body("identity_date-day")
+    .ltrim("0"),
+  body("identity_date-month")
+    .ltrim("0"),
+  body("identity_date-year")
+    .ltrim("0"),
   body("identity_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")

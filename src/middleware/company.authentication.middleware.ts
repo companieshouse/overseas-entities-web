@@ -45,8 +45,7 @@ async function processTransaction (entityNumber: string, returnURL: string, req:
 
     if (transactionResource.status === CLOSED_PENDING_PAYMENT) {
       if (!entityNumber || entityNumber !== entityNumberTransaction) {
-        const msg = "Invalid entity number for closed transaction";
-        logger.errorRequest(req, msg);
+        const msg = "Invalid entity number for closed/pending-payment transaction";
         throw new Error(msg);
       }
     } else if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
@@ -56,6 +55,5 @@ async function processTransaction (entityNumber: string, returnURL: string, req:
     return [entityNumber, req.originalUrl];
   }
 
-  logger.errorRequest(req, "Invalid transactionId");
   throw new Error("Invalid transaction");
 }

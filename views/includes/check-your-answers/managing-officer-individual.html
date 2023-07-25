@@ -1,7 +1,5 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set inChangeJourney = not pageParams.noChangeFlag %}
-
 {% set moiDateOfBirth = dateMacros.formatDate(moi.date_of_birth["day"], moi.date_of_birth["month"], moi.date_of_birth["year"]) %}
 
 {% set moiFormattedResidentialAddressHtml %}
@@ -28,11 +26,7 @@
   {% endif %}
 {% endset %}
 
-{% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_URL %}
-{% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGING_OFFICER_URL %}
-{% endif %}
+{% set changeLinkUrl = OE_CONFIGS.MANAGING_OFFICER_URL + "/" + moi.id %}
 
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
@@ -46,11 +40,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.FIRST_NAME,
+      changeLinkUrl + OE_CONFIGS.FIRST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - first name",
       "change-individual-managing-officer-first-name-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -62,11 +56,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.LAST_NAME,
+      changeLinkUrl + OE_CONFIGS.LAST_NAME,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - last name",
       "change-individual-managing-officer-last-name-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -78,11 +72,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + moiChangeFormerNamesHtml,
+      changeLinkUrl + moiChangeFormerNamesHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - former names",
       "change-individual-managing-officer-former-names-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -94,11 +88,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.DATE_OF_BIRTH,
+      changeLinkUrl + OE_CONFIGS.DATE_OF_BIRTH,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - date of birth",
       "change-individual-managing-officer-date-of-birth-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -110,11 +104,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.NATIONALITY,
+      changeLinkUrl + OE_CONFIGS.NATIONALITY,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - nationality",
       "change-individual-managing-officer-nationality-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% if moi.second_nationality %}
@@ -127,11 +121,11 @@
     },
     actions: {
       items: [CREATE_CHANGE_LINK(
-        changeLinkUrl + "/" + moi.id + OE_CONFIGS.SECOND_NATIONALITY,
+        changeLinkUrl  + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual managing officer " + moi.first_name + " " + moi.last_name + " - second_nationality",
         "change-individual-managing-officer-second-nationality-button"
       )]
-    } if inChangeJourney
+    }
   }), rows) %}
 {% endif %}
 
@@ -144,11 +138,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      changeLinkUrl + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - home address",
       "change-individual-managing-officer-residential-address-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -160,11 +154,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + moiChangeServiceAddressHtml,
+      changeLinkUrl + moiChangeServiceAddressHtml,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - correspondence address",
       "change-individual-managing-officer-correspondence-address-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -176,11 +170,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.OCCUPATION,
+      changeLinkUrl + OE_CONFIGS.OCCUPATION,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - occupation",
       "change-individual-managing-officer-occupation-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -192,11 +186,11 @@
   },
   actions: {
     items: [CREATE_CHANGE_LINK(
-      changeLinkUrl + "/" + moi.id + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
+      changeLinkUrl + OE_CONFIGS.ROLE_AND_RESPONSIBILITIES,
       "Individual managing officer " + moi.first_name + " " + moi.last_name + " - role and responsibilities",
       "change-individual-managing-officer-role-and-responsibilities-button"
     )]
-  } if inChangeJourney
+  }
 }), rows) %}
 
 <h3 class="govuk-heading-m">Individual managing officer</h3>

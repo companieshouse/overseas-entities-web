@@ -189,55 +189,42 @@
       ]
   }) }}
 
-      <br>
-      {% include "includes/entity.html" %}
-      {% set boTextDisplayed = false %}
-      {% if (appData.update.review_beneficial_owners_individual and appData.update.review_beneficial_owners_individual.length > 0) %}
-        {% set hideChangeLinksForNonEditableFields = true %}
-        {% set existingIndividualBO = appData.update.review_beneficial_owners_individual %}
-        {% if (existingIndividualBO.length > 0)%}
-          {% set boTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Beneficial owners</h2>
-        {% endif %}
-        {% for boi in existingIndividualBO %}
-          {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
-        {% endfor %}
-      {% endif %}
-      {% if (appData.update.review_beneficial_owners_corporate and appData.update.review_beneficial_owners_corporate.length > 0) %}
-        {% set existingCorporateBO = appData.update.review_beneficial_owners_corporate %}
-        {% for boc in existingCorporateBO %}
-          {% include "includes/check-your-answers/beneficial-owner-other.html" %}
-        {% endfor %}
-      {% endif %}
-      {% if (appData.update.review_beneficial_owners_government_or_public_authority and appData.update.review_beneficial_owners_government_or_public_authority.length > 0) %}
-        {% set existingGovernmentBO = appData.update.review_beneficial_owners_government_or_public_authority %}
-        {% for bog in existingGovernmentBO %}
-          {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
-        {% endfor %}
-      {% endif %}
+  <br>
+  {% include "includes/entity.html" %}
 
-      {% set existingMoTextDisplayed = false %}
-      {% if (appData.update.review_managing_officers_individual and appData.update.review_managing_officers_individual.length > 0) %}
-      {% set hideChangeLinksForNonEditableFields = true %}
-        {% set existingIndividualMO =  appData.update.review_managing_officers_individual %}
-        {% if (existingIndividualMO.length > 0)%}
-          {% set existingMoTextDisplayed = true %}
-          <br>
-          <h2 class="govuk-heading-l">Managing officers</h2>
-        {% endif %}
-        {% for moi in existingIndividualMO %}
-          {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
-        {% endfor %}
-      {% endif %}
-      {% if (appData.update.review_managing_officers_corporate and appData.update.review_managing_officers_corporate.length > 0) %}
-      {% set existingCorporateMO = appData.update.review_managing_officers_corporate  %}
-      {% for moc in existingCorporateMO %}
-        {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
-      {% endfor %}
-    {% endif %}
+  {% set hideChangeLinksForNonEditableFields = true %}
 
+  {% set bois = appData.update.review_beneficial_owners_individual or [] %}
+  {% set bocs = appData.update.review_beneficial_owners_corporate or [] %}
+  {% set bogs = appData.update.review_beneficial_owners_government_or_public_authority or [] %}
 
+  {% if bois | length or bocs | length or bogs | length %}
+    <br>
+    <h2 class="govuk-heading-l">Beneficial owners</h2>
+    {% for boi in bois %}
+      {% include "includes/check-your-answers/beneficial-owner-individual.html" %}
+    {% endfor %}
+    {% for boc in bocs %}
+      {% include "includes/check-your-answers/beneficial-owner-other.html" %}
+    {% endfor %}
+    {% for bog in bogs %}
+      {% include "includes/check-your-answers/beneficial-owner-gov.html" %}
+    {% endfor %}
+  {% endif %}
+
+  {% set mois = appData.update.review_managing_officers_individual or [] %}
+  {% set mocs = appData.update.review_managing_officers_corporate or [] %}
+
+  {% if mois | length or mocs | length %}
+    <br>
+    <h2 class="govuk-heading-l">Managing officers</h2>
+    {% for moi in mois %}
+      {% include "includes/check-your-answers/update/update-managing-officer-individual.html" %}
+    {% endfor %}
+    {% for moc in mocs %}
+      {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
+    {% endfor %}
+  {% endif %}
 
       <br>
       <form method="post">

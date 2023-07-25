@@ -1,50 +1,42 @@
-{% set inChangeJourney = not pageParams.noChangeFlag %}
+{% set startDateKey = "Date they became a managing officer" if isIndividualManagingOfficer else "Date it became a managing officer" %}
+{% set isResignedKey = "Are they still a managing officer?" if isIndividualManagingOfficer else "Is it still a managing officer?" %}
+{% set isResignedValue = "No" if moIsResigned else "Yes" %}
 
-{% if resigned_on | length %}
+{% if isNewMo %}
   {% set rows = (rows.push({
-    key: {
-      text: "Are they still a managing officer?"
-    },
-    value: {
-      html: "No"
-    },
+    key: { text: startDateKey },
+    value: { html: moStartDate },
     actions: {
       items: [CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
-        moChangeLinkText + " - is resigned", 
-        "change-managing-officer-is-resigned-button"
+        changeLinkUrl + OE_CONFIGS.START_DATE,
+        hiddenTextPrefix + " - start date",
+        "change-managing-officer-start-date-button"
       )]
     } if inChangeJourney
   }), rows) %}
-  {% set resignedOn = dateMacros.formatDate(resigned_on["day"], resigned_on["month"], resigned_on["year"]) %}
+{% endif %}
+
+{% set rows = (rows.push({
+  key: { text: isResignedKey },
+  value: { text: isResignedValue },
+  actions: {
+    items: [CREATE_CHANGE_LINK(
+      changeLinkUrl + OE_CONFIGS.IS_RESIGNED,
+      hiddenTextPrefix + " - is resigned",
+      "change-managing-officer-is-resigned-button"
+    )]
+  } if inChangeJourney
+}), rows) %}
+
+{% if moIsResigned %}
   {% set rows = (rows.push({
-    key: {
-      text: "Resigned on"
-    },
-    value: {
-      html: resignedOn
-    },
+    key: { text: "Resigned on" },
+    value: { html: moResignedOn },
     actions: {
       items: [CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.RESIGNED_DATE, 
-        moChangeLinkText + " - resigned on", 
+        changeLinkUrl + OE_CONFIGS.RESIGNED_DATE,
+        hiddenTextPrefix + " - resigned on",
         "change-managing-officer-resigned-on-button"
-      )]
-    } if inChangeJourney
-  }), rows) %}
-{% else %}
-  {% set rows = (rows.push({
-    key: {
-      text: "Are they still a managing officer?"
-    },
-    value: {
-      html: "Yes"
-    },
-    actions: {
-      items: [CREATE_CHANGE_LINK(
-        changeLinkUrl + OE_CONFIGS.REVIEW_OWNER_INDEX_PARAM + moIndex + OE_CONFIGS.IS_RESIGNED, 
-        moChangeLinkText + " - is resigned", 
-        "change-managing-officer-is-resigned-button"
       )]
     } if inChangeJourney
   }), rows) %}

@@ -140,8 +140,8 @@ describe('Company Authentication middleware', () => {
 
     await companyAuthentication(req, res, next);
 
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(logger.errorRequest).toHaveBeenCalledTimes(2);
+    expect(res.redirect).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
   test('should catch error when appData is not present in session for update journey', async () => {
@@ -156,8 +156,8 @@ describe('Company Authentication middleware', () => {
 
     await companyAuthentication(req, res, next);
 
-    expect(next).toHaveBeenCalledTimes(1);
-    expect(logger.errorRequest).toHaveBeenCalledTimes(2);
+    expect(res.redirect).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
   test('should call next(err) after catching error', async () => {

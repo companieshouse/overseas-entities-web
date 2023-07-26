@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME, CLOSED_PENDING_PAYMENT, UPDATE_LANDING_URL } from '../config';
+import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME, UPDATE_LANDING_URL } from '../config';
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";

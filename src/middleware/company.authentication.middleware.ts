@@ -12,10 +12,11 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     logger.debugRequest(req, `Company Authentication Request`);
 
     const appData: ApplicationData = getApplicationData(req.session);
-    let entityNumber: string = appData?.[EntityNumberKey] as string;
+    let entityNumber: string | undefined = appData?.[EntityNumberKey];
     let returnURL: string = UPDATE_FILING_DATE_URL;
+
     if (req.path.endsWith(`/${RESUME}`)) {
-      [entityNumber, returnURL] = await processTransaction(entityNumber, returnURL, req);
+      [entityNumber, returnURL] = await processTransaction(req);
     }
 
     if (entityNumber) {
@@ -36,24 +37,18 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
   }
 };
 
-async function processTransaction (entityNumber: string, returnURL: string, req: Request): Promise<[string, string]> {
+async function processTransaction (req: Request): Promise<[string, string]> {
   const { transactionId } = req.params;
 
   if (transactionId) {
     const transactionResource = await getTransaction(req, transactionId);
     const entityNumberTransaction = transactionResource.companyNumber;
 
-    if (transactionResource.status === CLOSED_PENDING_PAYMENT) {
-      if (!entityNumber || entityNumber !== entityNumberTransaction) {
-        const msg = "Invalid entity number for closed/pending-payment transaction";
-        throw new Error(msg);
-      }
-    } else if (!entityNumber || (entityNumberTransaction && entityNumber !== entityNumberTransaction)) {
-      entityNumber = entityNumberTransaction as string;
+    if (entityNumberTransaction === undefined) {
+      throw new Error("No company number in transaction to resume");
     }
-
-    return [entityNumber, req.originalUrl];
+    return [entityNumberTransaction, req.originalUrl];
   }
 
-  throw new Error("Invalid transaction");
+  throw new Error("Invalid transaction for resume");
 }

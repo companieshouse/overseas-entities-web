@@ -60,61 +60,8 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
-  test("should call company authentication for resume journey with no session data when transaction open", async () => {
-    const mockLogInfoMsg = `Invoking company authentication with (OE111129) present in session`;
-    req = {
-      session: getSessionRequestWithPermission(),
-      params: {
-        transactionId: transactionId,
-      } as Params,
-      headers: {},
-      route: '',
-      method: '',
-      path: '/user/transactions/' + transactionId + '/resume',
-      originalUrl: '/user/transactions/' + transactionId + '/resume',
-      body: {}
-    } as Request;
-
-    const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
-    transactionResponse.status = "open";
-    mockGetTransactionService.mockReturnValueOnce(transactionResponse);
-
-    await companyAuthentication(req, res, next);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
-    expect(mockCompanyAuthMiddleware).toBeCalled();
-    expect(mockLoggerErrorRequest).not.toHaveBeenCalled();
-  });
-
-  test("should call company authentication for resume journey with another OE in session data when transaction open", async () => {
-    const mockLogInfoMsg = `Invoking company authentication with (OE111129) present in session`;
-    req = {
-      session: getSessionRequestWithExtraData(),
-      params: {
-        transactionId: transactionId,
-      } as Params,
-      headers: {},
-      route: '',
-      method: '',
-      path: '/user/transactions/' + transactionId + '/resume',
-      originalUrl: '/user/transactions/' + transactionId + '/resume',
-      body: {}
-    } as Request;
-
-    const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
-    transactionResponse.status = "open";
-    mockGetTransactionService.mockReturnValueOnce(transactionResponse);
-
-    await companyAuthentication(req, res, next);
-
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
-    expect(mockCompanyAuthMiddleware).toBeCalled();
-    expect(mockLoggerErrorRequest).not.toHaveBeenCalled();
-  });
-
   test("should call company authentication for resume journey with no session data", async () => {
+    const mockLogInfoMsg = `Invoking company authentication with (OE111129) present in session`;
     req = {
       session: getSessionRequestWithPermission(),
       params: {
@@ -133,10 +80,14 @@ describe('Company Authentication middleware', () => {
 
     await companyAuthentication(req, res, next);
 
-    expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(mockCompanyAuthMiddleware).toBeCalled();
+    expect(mockLoggerErrorRequest).not.toHaveBeenCalled();
   });
 
   test("should call company authentication for resume journey with another OE in session data", async () => {
+    const mockLogInfoMsg = `Invoking company authentication with (OE111129) present in session`;
     req = {
       session: getSessionRequestWithExtraData(),
       params: {
@@ -155,8 +106,10 @@ describe('Company Authentication middleware', () => {
 
     await companyAuthentication(req, res, next);
 
-    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
-    expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(mockCompanyAuthMiddleware).toBeCalled();
+    expect(mockLoggerErrorRequest).not.toHaveBeenCalled();
   });
 
   test("should catch error if transactionId is undefined", async () => {

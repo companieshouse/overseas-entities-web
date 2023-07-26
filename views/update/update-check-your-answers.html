@@ -96,6 +96,14 @@
           {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
+      {% if (appData.trusts and appData.trusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts</h2>
+        {% set trust_count = 0 %}
+        {% for trust in appData.trusts %}
+          {% set trust_count = trust_count + 1 %}
+          {% include "includes/check-your-answers/trusts.html" %}
+        {% endfor %}
+      {% endif %}
 
       <br>
       <form method="post">

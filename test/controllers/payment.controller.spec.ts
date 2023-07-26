@@ -2,7 +2,6 @@ jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/utils/application.data');
-jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 
 import { NextFunction, Request, Response } from "express";
@@ -14,7 +13,6 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getApplicationData } from '../../src/utils/application.data';
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-import { isActiveFeature } from "../../src/utils/feature.flag";
 
 import {
   PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
@@ -22,7 +20,6 @@ import {
   PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING
 } from "../__mocks__/session.mock";
 import {
-  CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
   PAYMENT_FAILED_PAGE,
@@ -40,7 +37,6 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("Payment controller", () => {
 
@@ -68,19 +64,7 @@ describe("Payment controller", () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-  });
-
-  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
+  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow`, async () => {
     mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 

@@ -3,7 +3,6 @@ import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
-import { isActiveFeature } from "./feature.flag";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
@@ -12,11 +11,7 @@ export const getEntityBackLink = (data: ApplicationData): string => {
 };
 
 export const getSoldLandFilterBackLink = (): string => {
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-    return config.LANDING_PAGE_STARTING_NEW_URL;
-  } else {
-    return config.LANDING_PAGE_URL;
-  }
+  return config.LANDING_PAGE_STARTING_NEW_URL;
 };
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {

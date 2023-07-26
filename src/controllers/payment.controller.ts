@@ -3,16 +3,14 @@ import { CreatePaymentRequest } from "@companieshouse/api-sdk-node/dist/services
 
 import { logger, createAndLogErrorRequest } from "../utils/logger";
 import {
-  CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_URL,
-  FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
+
   PAYMENT_FAILED_URL,
   PAYMENT_PAID
 } from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
 import { OverseasEntityKey, PaymentKey } from "../model/data.types.model";
-import { isActiveFeature } from "../utils/feature.flag";
 
 // The Payment Platform will redirect the user's browser back to the `redirectUri` supplied when the payment session was created,
 // and this controller is dealing with the completion of the payment journey
@@ -38,16 +36,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       // Payment Successful, redirect to confirmation page
       return res.redirect(CONFIRMATION_URL);
     } else {
-
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
-      if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
-        return res.redirect(PAYMENT_FAILED_URL);
-      } else {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
-        // Redirect to CHECK_YOUR_ANSWERS. Try again eventually
-        return res.redirect(CHECK_YOUR_ANSWERS_URL);
-      }
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
+      return res.redirect(PAYMENT_FAILED_URL);
     }
   } catch (error) {
     logger.errorRequest(req, error);

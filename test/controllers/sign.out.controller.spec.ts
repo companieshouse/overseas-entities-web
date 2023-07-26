@@ -1,4 +1,3 @@
-jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
 import { ErrorMessages } from "../../src/validation/error.messages";
 
@@ -7,7 +6,6 @@ jest.mock("../../src/utils/logger");
 
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
-import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { NextFunction, Request, Response } from "express";
 
@@ -26,7 +24,6 @@ import {
 } from "../__mocks__/text.mock";
 
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -42,8 +39,7 @@ describe("Sign Out controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
 
@@ -55,20 +51,7 @@ describe("Sign Out controller", () => {
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).toContain('Your answers will not be saved. You will need to start again if you want to register an overseas entity and tell us about its beneficial owners.');
-      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-    });
-
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, and guidance for resuming a saved journey is displayed`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test(`renders the ${config.SIGN_OUT_PAGE} page, and guidance for resuming a saved journey is displayed`, async () => {
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -82,23 +65,7 @@ describe("Sign Out controller", () => {
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active, and guidance for resuming a saved journey is not displayed`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
-      const resp = await request(app)
-        .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
-      expect(resp.text).not.toContain(SIGN_OUT_HINT_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_HELP_DETAILS_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
-      expect(resp.text).not.toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
-      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
-      expect(resp.text).not.toContain('How do I find my saved applications?');
-    });
-
     test(`renders the ${config.SIGN_OUT_PAGE} page, with ${config.SOLD_LAND_FILTER_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}`);
 
@@ -109,8 +76,7 @@ describe("Sign Out controller", () => {
       expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
     });
 
-    test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is active, with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test(`renders the ${config.SIGN_OUT_PAGE} page,  with ${config.TRUST_INTERRUPT_PAGE} as back link`, async () => {
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}?page=${config.TRUST_INTERRUPT_PAGE}`);
 
@@ -128,7 +94,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page and correctly sets the previousPage field value`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name${config.WHO_IS_MAKING_FILING_URL}` });
 
@@ -143,7 +108,6 @@ describe("Sign Out controller", () => {
     });
 
     test(`renders the ${config.SIGN_OUT_PAGE} page and does set a potentially malicious previous page URL`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app)
         .get(`${config.SIGN_OUT_URL}`).set({ key: `http://host-name/illegal-path` });
 

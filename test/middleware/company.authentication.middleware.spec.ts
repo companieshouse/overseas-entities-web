@@ -10,7 +10,8 @@ import {
   getSessionRequestWithExtraData,
   COMPANY_NUMBER,
   getSessionRequestWithPermission,
-  APPLICATION_DATA_REGISTRATION_MOCK
+  APPLICATION_DATA_REGISTRATION_MOCK,
+  APPLICATION_DATA_MOCK
 } from '../__mocks__/session.mock';
 import { companyAuthentication } from "../../src/middleware/company.authentication.middleware";
 import { getTransaction } from "../../src/service/transaction.service";
@@ -58,6 +59,24 @@ describe('Company Authentication middleware', () => {
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
     expect(mockCompanyAuthMiddleware).toBeCalled();
     expect(logger.errorRequest).not.toHaveBeenCalled();
+  });
+
+  test("should call company authentication when no company number in session", async () => {
+    const appData = { ...APPLICATION_DATA_MOCK };
+    appData.entity_number = undefined;
+    req = {
+      session: getSessionRequestWithExtraData(appData),
+      headers: {},
+      route: '',
+      method: '',
+      path: '/update-an-overseas-entity/presenter',
+      body: {}
+    } as Request;
+
+    await companyAuthentication(req, res, next);
+
+    expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerErrorRequest).toHaveBeenCalledWith(req, "No entity number to authenticate against -- redirecting to start of Journey: /update-an-overseas-entity");
   });
 
   test("should call company authentication for resume journey with no session data", async () => {
@@ -171,5 +190,28 @@ describe('Company Authentication middleware', () => {
     expect(next).toHaveBeenCalledTimes(1);
     expect(next).toHaveBeenCalledWith(error);
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
+  });
+
+  test("should log error if no companuy number in trsansaction", async () => {
+    req = {
+      session: getSessionRequestWithExtraData(),
+      params: { transactionId: "123" } as Params,
+      headers: {},
+      route: '',
+      method: '',
+      path: '/user/transactions//resume',
+      body: {}
+    } as Request;
+
+    const transactionResponse = { ...MOCK_GET_UPDATE_TRANSACTION_RESPONSE.resource };
+    transactionResponse.companyNumber = undefined;
+
+    mockGetTransactionService.mockReturnValueOnce(transactionResponse);
+
+    await companyAuthentication(req, res, next);
+
+    expect(mockCompanyAuthMiddleware).not.toHaveBeenCalled();
+    expect(mockLoggerErrorRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerErrorRequest).toHaveBeenCalledWith(req, Error("No company number in transaction to resume"));
   });
 });

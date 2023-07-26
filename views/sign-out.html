@@ -32,8 +32,7 @@
 
     <form method="post">
 
-      {# Need to have hidden fields for the journey and saveAndResume values so that when the template gets rendered by
-         the validation middleware, #}
+      {# Need to have hidden fields for the journey and saveAndResume values so that when the template gets rendered by the validation middleware, #}
       {# the journey and saveAndResume values are not lost and passed back into the template for rendering #}
       <input type="hidden" name="journey" value="{{ journey }}" />
       <input type="hidden" name="saveAndResume" value="{{ saveAndResume }}" />
@@ -58,23 +57,23 @@
             value: "yes",
             text: "Yes",
             attributes: {
-            "data-event-id": "yes-sign-out"
-          }
+              "data-event-id": "yes-sign-out"
+            }
           },
           {
             value: "no",
             text: "No",
             attributes: {
-            "data-event-id": "no-sign-out"
+              "data-event-id": "no-sign-out"
+            }
           }
-        }
         ]
       }) }}
 
       {{ govukInput({
-      value: previousPage,
-      name: "previousPage",
-      classes: "govuk-visually-hidden"
+        value: previousPage,
+        name: "previousPage",
+        classes: "govuk-visually-hidden"
       }) }}
 
       {% if saveAndResume %}

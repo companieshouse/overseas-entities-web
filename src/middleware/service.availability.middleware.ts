@@ -23,6 +23,6 @@ export const serviceAvailabilityMiddleware = (req: Request, res: Response, next:
     logger.infoRequest(req, "Feature update is disabled - displaying service offline page");
     return res.render(SERVICE_OFFLINE_PAGE);
   }
-
+  // feature flag SHOW_SERVICE_OFFLINE_PAGE is false and not service offline for other reasons - carry on as normal
   return next();
 };

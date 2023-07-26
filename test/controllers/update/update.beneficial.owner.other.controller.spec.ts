@@ -494,6 +494,26 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       assertOnlyEmptyYearErrors(resp);
     });
 
+    test(`leading zeros are stripped from start date`, async () => {
+      const beneficialOwnerOtherMock = { ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, [IsOnSanctionsListKey]: "0" };
+      mockPrepareData.mockReturnValueOnce(beneficialOwnerOtherMock);
+
+      const beneficialOwnerOther = { ...UPDATE_BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      beneficialOwnerOther["start_date-day"] = "0030";
+      beneficialOwnerOther["start_date-month"] = "0011";
+      beneficialOwnerOther["start_date-year"] = "002019";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(beneficialOwnerOther);
+
+      expect(resp.status).toEqual(302);
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["start_date-day"]).toEqual("30");
+      expect(reqBody["start_date-month"]).toEqual("11");
+      expect(reqBody["start_date-year"]).toEqual("2019");
+    });
+
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start date is in the future`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       const inTheFuture = DateTime.now().plus({ days: 1 });

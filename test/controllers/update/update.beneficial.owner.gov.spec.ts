@@ -430,6 +430,24 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyEmptyYearErrors(resp);
     });
 
+    test(`leading zeros are stripped from start date`, async () => {
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      beneficialOwnerGov["start_date-day"] = "0030";
+      beneficialOwnerGov["start_date-month"] = "0011";
+      beneficialOwnerGov["start_date-year"] = "002019";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      expect(resp.status).toEqual(302);
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["start_date-day"]).toEqual("30");
+      expect(reqBody["start_date-month"]).toEqual("11");
+      expect(reqBody["start_date-year"]).toEqual("2019");
+    });
+
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "a";

@@ -562,6 +562,25 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
+    test(`leading zeros are stripped from identity date`, async () => {
+      const dueDiligenceMock = { ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK };
+      const twoMonthOldDate = getTwoMonthOldDate();
+      dueDiligenceMock["identity_date-day"] = "00" + twoMonthOldDate.day.toString();
+      dueDiligenceMock["identity_date-month"] = "00" + twoMonthOldDate.month.toString();
+      dueDiligenceMock["identity_date-year"] = "00" + twoMonthOldDate.year.toString();
+      mockPrepareData.mockReturnValueOnce( dueDiligenceMock );
+
+      const resp = await request(app)
+        .post(OVERSEAS_ENTITY_DUE_DILIGENCE_URL)
+        .send(dueDiligenceMock);
+
+      expect(resp.status).toEqual(302);
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["identity_date-day"]).toEqual(twoMonthOldDate.day.toString());
+      expect(reqBody["identity_date-month"]).toEqual(twoMonthOldDate.month.toString());
+      expect(reqBody["identity_date-year"]).toEqual(twoMonthOldDate.year.toString());
+    });
+
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page with no date errors when identity date is today`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       const today = DateTime.now();

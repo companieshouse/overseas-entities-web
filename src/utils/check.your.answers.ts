@@ -18,8 +18,10 @@ import {
   FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME,
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   CHS_URL,
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  FEATURE_FLAG_ENABLE_TRUSTS_WEB
 } from "../config";
+import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
 export const getDataForReview = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
   try {
@@ -34,10 +36,12 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
       changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
       overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
       whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
+      roleTypes: RoleWithinTrustType,
       appData,
       pageParams: {
         isRegistration: false,
-        noChangeFlag
+        noChangeFlag,
+        isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
       },
     });
   } catch (error) {

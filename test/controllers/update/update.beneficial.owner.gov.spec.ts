@@ -479,6 +479,18 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyYearLengthError(resp);
     });
 
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR_LENGTH error when year length is not 4 digits with leading zeroes`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "10";
+      beneficialOwnerGov["start_date-month"] = "12";
+      beneficialOwnerGov["start_date-year"] = "0020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyYearLengthError(resp);
+    });
+
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start date is not in the past`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       const inTheFuture = DateTime.now().plus({ days: 1 });

@@ -343,11 +343,48 @@ describe("Update due diligence controller tests", () => {
       expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
     });
 
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date day is outside valid numbers with leading zeroes`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-day"] = "0032";
+      dueDiligenceData["identity_date-month"] = "11";
+      dueDiligenceData["identity_date-year"] = "2020";
+      const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
     test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only YEAR_LENGTH error when identity date year is not 4 digits`, async () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "11";
       dueDiligenceData["identity_date-year"] = "20";
+      const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only YEAR_LENGTH error when identity date year is not 4 digits with leading zeroes`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-day"] = "30";
+      dueDiligenceData["identity_date-month"] = "11";
+      dueDiligenceData["identity_date-year"] = "0020";
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);
       expect(resp.status).toEqual(200);
@@ -426,6 +463,24 @@ describe("Update due diligence controller tests", () => {
       const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
       dueDiligenceData["identity_date-day"] = "30";
       dueDiligenceData["identity_date-month"] = "13";
+      dueDiligenceData["identity_date-year"] = "2020";
+      const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
+        .send(dueDiligenceData);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_DUE_DILIGENCE_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+      expect(resp.text).not.toContain(ErrorMessages.IDENTITY_CHECK_DATE_NOT_WITHIN_PAST_3_MONTHS);
+    });
+
+    test(`renders the ${UPDATE_DUE_DILIGENCE_PAGE} page with only INVALID_DATE error when identity date month is outside valid numbers with leading zeroes`, async () => {
+      const dueDiligenceData = { ...DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK_FOR_IDENTITY_DATE };
+      dueDiligenceData["identity_date-day"] = "30";
+      dueDiligenceData["identity_date-month"] = "0013";
       dueDiligenceData["identity_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_DUE_DILIGENCE_URL)
         .send(dueDiligenceData);

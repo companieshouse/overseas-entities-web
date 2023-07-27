@@ -439,6 +439,17 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date day is outside valid numbers with leading zeroes`, async () => {
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerOther["start_date-day"] = "0032";
+      beneficialOwnerOther["start_date-month"] = "11";
+      beneficialOwnerOther["start_date-year"] = "2020";
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(beneficialOwnerOther);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "30";
@@ -450,10 +461,32 @@ describe("UPDATE BENEFICIAL OWNER OTHER controller", () => {
       assertOnlyYearLengthError(resp);
     });
 
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only YEAR_LENGTH error when start date year is not 4 digits with leading zeroes`, async () => {
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerOther["start_date-day"] = "30";
+      beneficialOwnerOther["start_date-month"] = "11";
+      beneficialOwnerOther["start_date-year"] = "0020";
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(beneficialOwnerOther);
+
+      assertOnlyYearLengthError(resp);
+    });
+
     test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers`, async () => {
       const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerOther["start_date-day"] = "30";
       beneficialOwnerOther["start_date-month"] = "13";
+      beneficialOwnerOther["start_date-year"] = "2020";
+      const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
+        .send(beneficialOwnerOther);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
+    test(`Renders the ${UPDATE_BENEFICIAL_OWNER_OTHER_PAGE} page with only INVALID_DATE error when start date month is outside valid numbers with leading zeroes`, async () => {
+      const beneficialOwnerOther = { ...BENEFICIAL_OWNER_OTHER_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerOther["start_date-day"] = "30";
+      beneficialOwnerOther["start_date-month"] = "0013";
       beneficialOwnerOther["start_date-year"] = "2020";
       const resp = await request(app).post(UPDATE_BENEFICIAL_OWNER_OTHER_URL)
         .send(beneficialOwnerOther);

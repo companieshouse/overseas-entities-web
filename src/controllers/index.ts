@@ -84,3 +84,4 @@ export * as updateTrustsIndividualsOrEntitiesInvolved from "./update/update.trus
 export * as updateTrustsAssociatedWithEntity from "./update/update.trusts.associated.with.entity.controller";
 export * as updateTrustsIndividualBeneficialOwner from "./update/update.trusts.individual.beneficial.owner.controller";
 export * as updateTrustHistoricalBeneficialOwner from './update/update.trusts.historical.beneficial.owner.controller';
+export * as updateTrustsLegalEntityBeneficialOwner from './update/update.trusts.legal.entity.beneficial.owner.controller';

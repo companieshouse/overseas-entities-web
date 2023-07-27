@@ -24,8 +24,8 @@ import app from "../../src/app";
 import {
   get,
   post,
-  LEGAL_ENTITY_BO_TEXTS,
 } from "../../src/controllers/trust.legal.entity.beneficial.owner.controller";
+import { LEGAL_ENTITY_BO_TEXTS } from "../../src/utils/trust.legal.entity.bo";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasTrustWithIdRegister } from "../../src/middleware/navigation/has.trust.middleware";

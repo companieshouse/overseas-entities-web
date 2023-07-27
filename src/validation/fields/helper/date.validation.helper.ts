@@ -1,8 +1,15 @@
 import { body } from "express-validator";
 import { DayFieldErrors, MonthFieldErrors, YearFieldErrors, checkDayFieldForErrors, checkMonthFieldForErrors, checkYearFieldForErrors } from "../../custom.validation";
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const dateValidations = (dateContext: dateContext) => {
   return [
+    body(dateContext.dayInput.name)
+      .ltrim("0"),
+    body(dateContext.monthInput.name)
+      .ltrim("0"),
+    body(dateContext.yearInput.name)
+      .ltrim("0"),
     body(dateContext.dayInput.name)
       .if(body(dateContext.monthInput.name).notEmpty({ ignore_whitespace: true }))
       .if(body(dateContext.yearInput.name).notEmpty({ ignore_whitespace: true }))
@@ -20,8 +27,15 @@ export const dateValidations = (dateContext: dateContext) => {
   ];
 };
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const conditionalDateValidations = (dateContextWithCondition: dateContextWithCondition) => {
   return [
+    body(dateContextWithCondition.dayInput.name)
+      .ltrim("0"),
+    body(dateContextWithCondition.monthInput.name)
+      .ltrim("0"),
+    body(dateContextWithCondition.yearInput.name)
+      .ltrim("0"),
     body(dateContextWithCondition.dayInput.name)
       .if(body(dateContextWithCondition.condition.elementName).equals(dateContextWithCondition.condition.expectedValue))
       .if(body(dateContextWithCondition.monthInput.name).notEmpty({ ignore_whitespace: true }))

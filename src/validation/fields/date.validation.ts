@@ -108,6 +108,12 @@ export const identity_check_date_validations = [
 
 export const filing_date_validations = [
   body("filing_date-day")
+    .ltrim("0"),
+  body("filing_date-month")
+    .ltrim("0"),
+  body("filing_date-year")
+    .ltrim("0"),
+  body("filing_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-month")
     .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),

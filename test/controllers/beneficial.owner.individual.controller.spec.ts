@@ -797,6 +797,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
+
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);

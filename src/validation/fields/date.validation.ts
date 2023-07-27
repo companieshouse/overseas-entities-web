@@ -42,7 +42,14 @@ export const start_date_validations = [
     .custom((value, { req }) => checkDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
 ];
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [
+  body(date_field_id + "-day")
+    .ltrim("0"),
+  body(date_field_id + "-month")
+    .ltrim("0"),
+  body(date_field_id + "-year")
+    .ltrim("0"),
   body(date_field_id + "-day")
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDateFieldDay(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
@@ -106,6 +113,7 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const filing_date_validations = [
   body("filing_date-day")
     .ltrim("0"),

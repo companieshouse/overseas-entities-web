@@ -67,8 +67,15 @@ export const ceased_date_validations = is_still_active_validations("ceased_date"
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that the year check is checked before some others
+// This means that the year check is checked before some others.
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const date_of_birth_validations = [
+  body("date_of_birth-day")
+    .ltrim("0"),
+  body("date_of_birth-month")
+    .ltrim("0"),
+  body("date_of_birth-year")
+    .ltrim("0"),
   body("date_of_birth-day")
     .custom((value, { req }) => checkDateFieldDayOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-month")

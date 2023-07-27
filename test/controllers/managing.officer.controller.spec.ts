@@ -546,9 +546,9 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when day is zero`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only missing DAY error when day is zero`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
-      managingOfficer["date_of_birth-day"] = "0";
+      managingOfficer["date_of_birth-day"] = "00";
       managingOfficer["date_of_birth-month"] = "12";
       managingOfficer["date_of_birth-year"] = "2020";
       const resp = await request(app)
@@ -557,18 +557,18 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when month is zero`, async () => {
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only missing MONTH error when month is zero`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
       managingOfficer["date_of_birth-day"] = "30";
-      managingOfficer["date_of_birth-month"] = "0";
+      managingOfficer["date_of_birth-month"] = "00";
       managingOfficer["date_of_birth-year"] = "2020";
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL)
@@ -577,9 +577,28 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only missing YEAR error when year is zero`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "30";
+      managingOfficer["date_of_birth-month"] = "11";
+      managingOfficer["date_of_birth-year"] = "0000";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
@@ -589,6 +608,26 @@ describe("MANAGING_OFFICER controller", () => {
       managingOfficer["date_of_birth-day"] = "30";
       managingOfficer["date_of_birth-month"] = "10";
       managingOfficer["date_of_birth-year"] = "20";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only YEAR_LENGTH error when year is not 4 digits with leading zeroes`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "30";
+      managingOfficer["date_of_birth-month"] = "10";
+      managingOfficer["date_of_birth-year"] = "0020";
       const resp = await request(app)
         .post(MANAGING_OFFICER_URL)
         .send(managingOfficer);
@@ -642,6 +681,25 @@ describe("MANAGING_OFFICER controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only INVALID_DATE_OF_BIRTH error when invalid date is used with leading zeroes`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "0035";
+      managingOfficer["date_of_birth-month"] = "0015";
+      managingOfficer["date_of_birth-year"] = "2022";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with only DATE_NOT_IN_PAST error when date of birth is in the future`, async () => {
       const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
       const today = DateTime.now().plus({ days: 1 });
@@ -680,6 +738,43 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
       expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} with only DATE_NOT_IN_PAST error when date of birth is today with leading zeroes`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      const today = DateTime.now();
+      managingOfficer["date_of_birth-day"] = "00" + today.day.toString();
+      managingOfficer["date_of_birth-month"] = "00" + today.month.toString();
+      managingOfficer["date_of_birth-year"] = "00" + today.year.toString();
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`leading zeros are stripped from date of birth`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_OBJECT_MOCK );
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS };
+      managingOfficer["date_of_birth-day"] = "0030";
+      managingOfficer["date_of_birth-month"] = "0011";
+      managingOfficer["date_of_birth-year"] = "001234";
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(302);
+
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["date_of_birth-day"]).toEqual("30");
+      expect(reqBody["date_of_birth-month"]).toEqual("11");
+      expect(reqBody["date_of_birth-year"]).toEqual("1234");
     });
 
     test(`renders the current page ${MANAGING_OFFICER_PAGE} with second nationality error when same as nationality`, async () => {

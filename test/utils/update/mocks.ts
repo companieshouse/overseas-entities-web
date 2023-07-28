@@ -61,7 +61,7 @@ export const pscMock: CompanyPersonWithSignificantControl = {
     forename: "Random",
     surname: "Person"
   },
-  name: "Mr Random Notreal Person",
+  name: "Random Person",
   notifiedOn: "2016-04-06",
   nationality: "British",
   address: {
@@ -104,7 +104,7 @@ export const pscDualNationalityMock: CompanyPersonWithSignificantControl = {
     forename: "Random",
     surname: "Person"
   },
-  name: "Mr Random Notreal Person",
+  name: "Random Person",
   notifiedOn: "2016-04-06",
   nationality: "British, Italian",
   address: {

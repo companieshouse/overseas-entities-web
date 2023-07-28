@@ -9,11 +9,12 @@ import { logger } from "../../utils/logger";
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
   const nationalities = splitNationalities(psc.nationality);
+  const nameParts = splitFullName(psc.name);
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
     ch_reference: mapSelfLink(psc.links?.self),
-    first_name: psc.nameElements?.forename,
-    last_name: psc.nameElements?.surname,
+    first_name: nameParts[0],
+    last_name: nameParts[1],
     nationality: nationalities[0],
     second_nationality: nationalities[1],
     date_of_birth: mapDateOfBirth(psc.dateOfBirth),
@@ -157,3 +158,15 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
 
+const splitFullName = (fullName: string | undefined) => {
+  if (fullName === undefined) {
+    return ["", ""];
+  }
+  const i = fullName.lastIndexOf(" ");
+  if (i < 0) {
+    return [ "", fullName ];
+  }
+  const surname = fullName.substring(i).trim();
+  const fornames = fullName.substring(0, i).trim();
+  return [ fornames, surname];
+};

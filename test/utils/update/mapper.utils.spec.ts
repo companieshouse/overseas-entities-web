@@ -1,4 +1,4 @@
-import { lowerCaseAllWordsExceptFirstLetters, mapInputDate } from "../../../src/utils/update/mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapInputDate } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -29,6 +29,24 @@ describe("Test mapping utils", () => {
   test("returns empty string for date with month and year", () => {
     const InputDate = mapInputDate("2022-07");
     expect(InputDate).toEqual({ day: "", month: "7", year: "2022" });
+  });
+
+  test("returns string for name with forename and middlename", () => {
+    const nameElements = { forename: "First", middleName: "middle", surname: "surname" };
+    const firstName = mapBOIndividualName(nameElements);
+    expect(firstName).toEqual("First middle");
+  });
+
+  test("returns string for name with forename and empty middlename", () => {
+    const nameElements = { forename: "First", middleName: " ", surname: "surname" };
+    const firstName = mapBOIndividualName(nameElements);
+    expect(firstName).toEqual("First");
+  });
+
+  test("returns string for name with forename and undefined middlename", () => {
+    const nameElements = { forename: "First", surname: "surname" };
+    const firstName = mapBOIndividualName(nameElements);
+    expect(firstName).toEqual("First");
   });
 
   describe("lowerCaseAllWordsExceptFirstLetters", () => {

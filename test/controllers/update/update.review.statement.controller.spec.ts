@@ -65,6 +65,7 @@ describe("Update review overseas entity information controller tests", () => {
 
   describe("GET tests", () => {
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
@@ -75,6 +76,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with contact details section and beneficial owner statements`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
@@ -88,6 +90,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page overseas entity details section`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
       expect(resp.status).toEqual(200);
@@ -97,6 +100,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page beneficial owner section is not rendered if no BO data`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
       });
@@ -108,6 +112,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is not rendered if no MO data`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
       });
@@ -120,6 +125,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is rendered if MO data exists`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA
       });
@@ -131,6 +137,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with change links`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
 
       expect(resp.status).toEqual(200);
@@ -144,6 +151,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test('catch error when rendering the page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);

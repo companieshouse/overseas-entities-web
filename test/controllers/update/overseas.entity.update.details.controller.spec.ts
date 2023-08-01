@@ -6,6 +6,9 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/service/private.overseas.entity.details");
+jest.mock("../../../src/service/overseas.entities.service");
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -17,7 +20,7 @@ import app from "../../../src/app";
 
 import { APPLICATION_DATA_MOCK, UPDATE_ENTITY_BODY_OBJECT_MOCK_WITH_ADDRESS, ENTITY_OBJECT_MOCK, COMPANY_NUMBER } from "../../__mocks__/session.mock";
 
-import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, prepareData, setApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
@@ -38,6 +41,9 @@ import {
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { UPDATE_ENTITY_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
 import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
+import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -56,6 +62,11 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetPrivateOeDetails = getPrivateOeDetails as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockUpdateOverseasEntity = updateOverseasEntity as jest.Mock;
+
 describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
   beforeEach(() => {
@@ -64,6 +75,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
 
   describe("GET tests", () => {
     test(`renders the OVERSEAS ENTITY UPDATE DETAILS page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
 
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
@@ -73,6 +85,7 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
     });
 
     test("renders the OVERSEAS ENTITY UPDATE DETAILS on GET method with Afghanistan as country field", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce( {
         ...APPLICATION_DATA_MOCK,
         [EntityKey]: {
@@ -88,12 +101,108 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
     });
 
     test("catch error when renders the entity page on GET method", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address in session`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).not.toHaveBeenCalled();
+    });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = getMockAppDataWithoutEmail();
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(resp.text).toContain("tester@test.com");
+    });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch returning nothing`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = getMockAppDataWithoutEmail();
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(resp.text).not.toContain("tester@test.com");
+    });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch returning no email`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = getMockAppDataWithoutEmail();
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockReturnValueOnce({ });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(resp.text).not.toContain("tester@test.com");
+    });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch returning empty email`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = getMockAppDataWithoutEmail();
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "" });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(resp.text).not.toContain("tester@test.com");
+    });
+
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch failing`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = getMockAppDataWithoutEmail();
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(resp.text).not.toContain("tester@test.com");
+    });
+
   });
 
   describe("POST tests", () => {
@@ -155,3 +264,10 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
     });
   });
 });
+
+function getMockAppDataWithoutEmail() {
+  const appData = { ...APPLICATION_DATA_MOCK };
+  appData.entity = { ...ENTITY_OBJECT_MOCK };
+  appData.entity.email = undefined;
+  return appData;
+}

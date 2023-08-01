@@ -82,11 +82,6 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL]: {
     currentPage: config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_PAGE,
-    nextPage: [config.OVERSEAS_ENTITY_REVIEW_PAGE]
-  },
-  [config.OVERSEAS_ENTITY_REVIEW_URL]: {
-    currentPage: config.OVERSEAS_ENTITY_REVIEW_PAGE,
-    previousPage: () => config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
     nextPage: [config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL]
   },
   [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]: {
@@ -106,7 +101,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_CHECK_YOUR_ANSWERS_URL]: {
     currentPage: config.UPDATE_CHECK_YOUR_ANSWERS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
     nextPage: []
   },
   [config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
@@ -116,7 +111,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
     nextPage: [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]
   },
   [config.SECURE_REGISTER_FILTER_URL]: {
@@ -351,7 +346,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {
     currentPage: config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_REVIEW_URL,
+    previousPage: () => config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL]
   },
   [config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL]: {

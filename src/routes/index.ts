@@ -18,7 +18,6 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
-  overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -412,14 +411,6 @@ router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
   )
   .get(updateDueDiligenceOverseasEntity.get)
   .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
-
-router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
-  .all(
-    authentication,
-    companyAuthentication,
-    navigation.hasOverseasEntity
-  )
-  .get(overseasEntityReview.get);
 
 router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
   .all(

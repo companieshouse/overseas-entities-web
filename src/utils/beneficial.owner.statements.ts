@@ -22,7 +22,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       noChangeFlag = true;
     } else {
-      BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+      BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
 

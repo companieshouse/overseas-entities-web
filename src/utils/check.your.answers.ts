@@ -10,6 +10,7 @@ import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
+import { fetchOverseasEntityEmailAddress } from "../utils/update/fetchOverseasEntityEmail";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -21,12 +22,16 @@ import {
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL
 } from "../config";
 
-export const getDataForReview = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
+export const getDataForReview = async (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
+
+    if (noChangeFlag) {
+      await fetchOverseasEntityEmailAddress(appData, req, session);
+    }
 
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,

@@ -10,7 +10,7 @@ import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
-import { fetchOverseasEntityEmailAddress } from "../utils/update/fetchOverseasEntityEmail";
+import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,

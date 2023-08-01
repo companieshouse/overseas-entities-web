@@ -18,7 +18,7 @@ import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
-import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetchOverseasEntityEmail";
+import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

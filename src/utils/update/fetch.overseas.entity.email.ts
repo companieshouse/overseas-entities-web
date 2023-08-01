@@ -1,10 +1,10 @@
 import * as config from "../../config";
-import { logger } from "../../utils/logger";
+import { logger } from "../logger";
 import { Session } from "@companieshouse/node-session-handler";
-import { setExtraData } from "../../utils/application.data";
+import { setExtraData } from "../application.data";
 import { getPrivateOeDetails } from "../../service/private.overseas.entity.details";
 import { updateOverseasEntity } from "../../service/overseas.entities.service";
-import { isActiveFeature } from '../../utils/feature.flag';
+import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
 
 export const fetchOverseasEntityEmailAddress = async (appData: ApplicationData, req, session: Session) => {

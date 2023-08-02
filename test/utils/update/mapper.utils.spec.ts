@@ -1,4 +1,4 @@
-import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapInputDate } from "../../../src/utils/update/mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -61,6 +61,44 @@ describe("Test mapping utils", () => {
       ["GUINEA-BISSAU", "Guinea-Bissau"]
     ])(`Correctly reformats %s`, (str, expectedResult) => {
       expect(lowerCaseAllWordsExceptFirstLetters(str)).toEqual(expectedResult);
+    });
+  });
+
+  describe("splitOriginatingRegistryName", () => {
+    test.each([
+      [
+        "Undefined returns empty strings",
+        undefined,
+        { registryName: "", jurisdiction: "" }
+      ],
+      [
+        "Empty string returns empty strings",
+        "",
+        { registryName: "", jurisdiction: "" }
+      ],
+      [
+        "No comma returns correctly",
+        "Public Register Name",
+        { registryName: "Public Register Name", jurisdiction: "" }
+      ],
+      [
+        "One comma occurence splits correctly",
+        "Public Register Name,Country",
+        { registryName: "Public Register Name", jurisdiction: "Country" }
+      ],
+      [
+        "Multiple comma occurences in country splits correctly",
+        "Public Register Name, Virgin Islands, U.S.",
+        { registryName: "Public Register Name", jurisdiction: "Virgin Islands, U.S." }
+      ],
+      [
+        "Leading whitespace on country is removed",
+        "Public Register Name, Country",
+        { registryName: "Public Register Name", jurisdiction: "Country" }
+      ]
+    ])(`%s`, (_, stringToSplit, expectedResult) => {
+
+      expect(splitOriginatingRegistryName(stringToSplit as string)).toEqual(expectedResult);
     });
   });
 });

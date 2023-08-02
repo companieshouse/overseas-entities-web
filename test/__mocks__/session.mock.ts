@@ -1788,7 +1788,7 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
     law_governed: undefined,
     legal_form: undefined,
     principal_address: {},
-    public_register_name: undefined,
+    public_register_name: "",
     registration_number: undefined
   },
   [updateType.UpdateKey]: {

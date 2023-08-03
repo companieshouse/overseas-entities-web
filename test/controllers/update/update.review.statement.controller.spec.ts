@@ -209,7 +209,6 @@ describe("Update review overseas entity information controller tests", () => {
 
   describe("POST tests", () => {
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, with transaction and OE id`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app)
@@ -221,7 +220,7 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`redirect to ${PAYMENT_LINK_JOURNEY}, if Save and Resume not enabled`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false);
       const mockData = { ...APPLICATION_DATA_UPDATE_BO_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
       mockGetApplicationData.mockReturnValueOnce(mockData);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
@@ -234,7 +233,6 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`should redirect to UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL when noChangeReviewStatement is '0'`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app)
         .post(UPDATE_REVIEW_STATEMENT_URL)
@@ -245,7 +243,6 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`redirects to ${PAYMENT_LINK_JOURNEY}, when noChangeReviewStatement is '1'`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
       const resp = await request(app)
@@ -257,7 +254,6 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test("validation error when posting", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
       const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
@@ -265,7 +261,6 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test(`catch error on POST action for ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_CH_REF_UPDATE_MOCK);
       mockCloseTransaction.mockImplementation(() => {
         throw ERROR;

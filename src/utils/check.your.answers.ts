@@ -10,6 +10,7 @@ import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
+import { checkHasAnyBosWithTrusteeNocs } from "./update/trusts";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -19,11 +20,21 @@ import {
   UPDATE_AN_OVERSEAS_ENTITY_URL,
   CHS_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
-  FEATURE_FLAG_ENABLE_TRUSTS_WEB
+  FEATURE_FLAG_ENABLE_TRUSTS_WEB,
+  FEATURE_FLAG_ENABLE_UPDATE_TRUSTS,
+  UPDATE_CHECK_YOUR_ANSWERS_PAGE,
+  UPDATE_REVIEW_STATEMENT_PAGE,
+  UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
+  UPDATE_BENEFICIAL_OWNER_TYPE_URL,
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
-export const getDataForReview = (req: Request, res: Response, next: NextFunction, templateName: string, backLinkUrl: string, noChangeFlag?: boolean) => {
+export const getDataForReview = (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
+  const hasAnyBosWithTrusteeNocs = checkHasAnyBosWithTrusteeNocs(getApplicationData(req.session));
+
+  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs);
+  const templateName = getTemplateName(isNoChangeJourney);
+
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -40,8 +51,9 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
       appData,
       pageParams: {
         isRegistration: false,
-        noChangeFlag,
+        noChangeFlag: isNoChangeJourney,
         isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+        hasAnyBosWithTrusteeNocs,
       },
     });
   } catch (error) {
@@ -92,3 +104,21 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
     next(error);
   }
 };
+
+const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean) => {
+  if (isNoChangeJourney) {
+    return UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL;
+  } else {
+    const updateTrustsEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS);
+
+    return updateTrustsEnabled && hasAnyBosWithTrusteeNocs
+      ? UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL
+      : UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+  }
+};
+
+const getTemplateName = (isNoChangeJourney: boolean) => (
+  isNoChangeJourney
+    ? UPDATE_REVIEW_STATEMENT_PAGE
+    : UPDATE_CHECK_YOUR_ANSWERS_PAGE
+);

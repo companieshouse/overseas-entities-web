@@ -128,3 +128,20 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
   }
   );
 };
+
+export const splitOriginatingRegistryName = (registryName: string | undefined) => {
+  if (!registryName){
+    return { registryName: "", jurisdiction: "" };
+  }
+
+  const firstComma = registryName.indexOf(",");
+
+  if (firstComma >= 0) {
+    return {
+      registryName: registryName.substring(0, firstComma),
+      jurisdiction: registryName.substring(firstComma + 1, registryName.length).trim()
+    };
+  }
+
+  return { registryName: registryName, jurisdiction: "" };
+};

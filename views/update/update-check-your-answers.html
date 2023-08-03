@@ -21,6 +21,11 @@
       <br>
       {% include "includes/entity.html" %}
 
+      {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "false" %}
+        <br>
+        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
+
       {% set bois = appData.beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
       {% set newBOIs = bois | rejectattr('ch_reference') %}
@@ -95,8 +100,10 @@
         {% endfor %}
       {% endif %}
 
-      <br>
-      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
+        <br>
+        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
 
       <br>
       <form method="post">

@@ -44,6 +44,7 @@ import { hasOverseasEntityNumber } from "../../../src/middleware/navigation/upda
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { NAVIGATION } from "../../../src/utils/navigation";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -280,6 +281,13 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+  });
+
+  describe("Navigation tests", () => {
+     test(`Back links for follow on pages should return to ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL}`, () => {
+         expect(NAVIGATION[config.UPDATE_CHECK_YOUR_ANSWERS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+         expect(NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL].previousPage()).toEqual(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+     });
   });
 });
 

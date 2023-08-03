@@ -139,6 +139,24 @@ describe("OVERSEAS ENTITY UPDATE DETAILS controller", () => {
       expect(resp.text).toContain("tester@test.com");
     });
 
+    test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch when no entity`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const appData = { ...APPLICATION_DATA_MOCK };
+      appData.entity = undefined;
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
+
+      const resp = await request(app).get(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_ENTITY_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(mockGetPrivateOeDetails).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(resp.text).toContain("tester@test.com");
+    });
+
     test(`renders the OVERSEAS ENTITY UPDATE DETAILS page with email address fetch returning nothing`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const appData = getMockAppDataWithoutEmail();

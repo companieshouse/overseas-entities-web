@@ -119,6 +119,17 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).not.toContain("Corporate managing officer");
     });
 
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page and doesnt display the trusts section as the feature flag is off`, async () => {
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK
+      });
+
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain("Trusts");
+    });
+
     test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page managing officer section is rendered if MO data exists`, async () => {
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA

@@ -1,7 +1,7 @@
 {% extends "update-layout.html" %}
 
 {% set title = "Check your answers before sending your application" %}
-{% set updateTrustsEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
+{% set updateStatementValidationEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -22,7 +22,7 @@
       <br>
       {% include "includes/entity.html" %}
 
-      {% if not updateTrustsEnabled %}
+      {% if not updateStatementValidationEnabled %}
         <br>
         {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
       {% endif %}
@@ -101,7 +101,7 @@
         {% endfor %}
       {% endif %}
 
-      {% if updateTrustsEnabled %}
+      {% if updateStatementValidationEnabled %}
         <br>
         {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
       {% endif %}

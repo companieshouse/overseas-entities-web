@@ -42,7 +42,7 @@ const getPageProperties = (
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, trustId),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId),
     templateName: getPageTemplate(isUpdate),
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
@@ -119,7 +119,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getNextPage(isUpdate, trustId));
+    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId));
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);
@@ -134,7 +134,7 @@ const getPageTemplate = (isUpdate: boolean) => {
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, trustId: string) => {
+const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string) => {
   if (isUpdate) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
@@ -147,13 +147,5 @@ const getUrl = (isUpdate: boolean) => {
     return config.UPDATE_AN_OVERSEAS_ENTITY_URL;
   } else {
     return config.REGISTER_AN_OVERSEAS_ENTITY_URL;
-  }
-};
-
-const getNextPage = (isUpdate: boolean, trustId: string) => {
-  if (isUpdate) {
-    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
-  } else {
-    return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   }
 };

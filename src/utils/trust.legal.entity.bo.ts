@@ -42,7 +42,7 @@ const getPageProperties = (
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, trustId),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId),
     templateName: getPageTemplate(isUpdate),
     pageParams: {
       title: LEGAL_ENTITY_BO_TEXTS.title,
@@ -121,7 +121,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getNextPage(isUpdate, trustId));
+    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId));
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -129,7 +129,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, trustId: String) => (
+const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string) => (
   isUpdate
     ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
     : `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
@@ -145,10 +145,4 @@ const getUrl = (isUpdate: boolean) => (
   isUpdate
     ? config.UPDATE_AN_OVERSEAS_ENTITY_URL
     : config.REGISTER_AN_OVERSEAS_ENTITY_URL
-);
-
-const getNextPage = (isUpdate: boolean, trustId: string) => (
-  isUpdate
-    ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
-    : `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
 );

@@ -53,12 +53,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
           }
         };
 
-        let baseURL: string;
-        if (isRegistration){
-          baseURL = `${config.CHS_URL}${config.REGISTER_AN_OVERSEAS_ENTITY_URL}`;
-        } else {
-          baseURL = `${config.CHS_URL}${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
-        }
+        const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
 
         const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl, baseURL);
 

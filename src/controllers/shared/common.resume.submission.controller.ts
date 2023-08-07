@@ -53,7 +53,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
           }
         };
 
-        let baseURL: any;
+        let baseURL: string;
         if (isRegistration){
           baseURL = `${config.CHS_URL}${config.REGISTER_AN_OVERSEAS_ENTITY_URL}`;
         } else {

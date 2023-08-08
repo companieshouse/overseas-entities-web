@@ -978,6 +978,13 @@ describe('Trust Utils method tests', () => {
       expect(result).toBe(false);
     });
 
+    test('when no app data returns false', () => {
+      const appData = undefined;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toBe(false);
+    });
+
     test('when corporate BOs have trustee of a trust noc returns true', () => {
       const appData = {
         beneficial_owners_corporate: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES] }]
@@ -1006,11 +1013,18 @@ describe('Trust Utils method tests', () => {
       expect(result).toBe(false);
     });
 
-    test('when no BOs to review as not update have trustee of a trust noc returns false', () => {
+    test('when no BOs to review as no update in app data returns false', () => {
       const appData = {
       };
 
       const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(false);
+    });
+
+    test('when no BOs to review as no app data returns false', () => {
+      const appData = undefined;
+
+      const result = checkEntityReviewRequiresTrusts(appData);
       expect(result).toBe(false);
     });
 

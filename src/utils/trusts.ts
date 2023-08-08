@@ -22,7 +22,7 @@ import { yesNoResponse } from "../model/data.types.model";
  * @param appData Application Data
  * @returns 'true' if any BO has a trustee "nature of control"
  */
-const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
+const checkEntityRequiresTrusts = (appData: ApplicationData | undefined): boolean => {
   if (!appData) {
     return false;
   }
@@ -37,7 +37,7 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  * @param appData Application Data
  * @returns @returns 'true' if any BO requring review has a trustee "nature of control"
  */
-const checkEntityReviewRequiresTrusts = (appData: ApplicationData): boolean => {
+const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): boolean => {
   if (!appData?.update) {
     return false;
   }

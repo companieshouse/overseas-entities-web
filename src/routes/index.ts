@@ -97,6 +97,7 @@ import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
+import { hasValidStatements } from "../middleware/statement.validation.middleware";
 
 const router = Router();
 
@@ -782,7 +783,7 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
     companyAuthentication,
     navigation.hasUpdatePresenter,
   )
-  .get(updateStatementValidationErrors.get)
+  .get(hasValidStatements, updateStatementValidationErrors.get)
   .post(...validator.statementResolution, updateStatementValidationErrors.post);
 
 export default router;

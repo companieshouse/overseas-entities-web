@@ -46,7 +46,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
       noChangeHandler(req, res, next, isRegistrableBeneficialOwner);
     } else {
       const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_CHECK_YOUR_ANSWERS_URL
+        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
         : config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
       return res.redirect(redirectUrl);
     }
@@ -57,7 +57,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
 
 const noChangeHandler = (req: Request, res: Response, next: NextFunction, registrableOwnerChoice) => {
   if (registrableOwnerChoice === "0"){
-    return res.redirect(config.UPDATE_REVIEW_STATEMENT_URL);
+    return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
   } else {
     return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
   }

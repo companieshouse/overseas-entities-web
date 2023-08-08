@@ -35,15 +35,15 @@
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
-    
+
     <span class="govuk-caption-l">{{ entityName }} - {{ entityNumber }}</span>
     <h1 class="govuk-heading-xl">{{ title }}</h1>
 
     {% set notificationBannerHtml %}
       <p class="govuk-notification-banner__heading">
-        You have added or ceased a beneficial owner as part of this update statement.
-        <br><br>
-        There are currently no registered beneficial owners.
+        {% for statementError in statementErrorList %}
+          {{ statementError }} <br><br>
+        {% endfor %}
       </p>
     {% endset %}
 
@@ -93,6 +93,9 @@
       }) }}
 
       {% include "includes/continue-button.html" %}
+      {% for statementError in statementErrorList %}
+        <input type="hidden" name="statementErrorList[]" value="{{ statementError }}" />
+      {% endfor %}
     </form>
   </div>
 </div>

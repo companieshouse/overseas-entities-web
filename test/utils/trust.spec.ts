@@ -1006,6 +1006,14 @@ describe('Trust Utils method tests', () => {
       expect(result).toBe(false);
     });
 
+    test('when no BOs to review as not update have trustee of a trust noc returns false', () => {
+      const appData = {
+      };
+
+      const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(false);
+    });
+
     test('when corporate BOs to review have trustee of a trust noc returns true', () => {
       const appData = {
         update: {

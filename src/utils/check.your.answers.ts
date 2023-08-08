@@ -10,7 +10,7 @@ import { createOverseasEntity } from "../service/overseas.entities.service";
 import { OverseasEntityKey, Transactionkey } from "../model/data.types.model";
 import { closeTransaction, postTransaction } from "../service/transaction.service";
 import { startPaymentsSession } from "../service/payment.service";
-import { checkHasAnyBosWithTrusteeNocs } from "./update/trusts";
+import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -30,7 +30,8 @@ import {
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
 export const getDataForReview = (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
-  const hasAnyBosWithTrusteeNocs = checkHasAnyBosWithTrusteeNocs(getApplicationData(req.session));
+  const appData = getApplicationData(req.session);
+  const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
 
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs);
   const templateName = getTemplateName(isNoChangeJourney);

@@ -23,18 +23,26 @@ import { yesNoResponse } from "../model/data.types.model";
  * @returns 'true' if any BO has a trustee "nature of control"
  */
 const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
-  if (appData) {
-    const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
-
-    for (const benficialOwners of allBenficialOwnersToCheck) {
-      if (benficialOwners) {
-        if (containsTrusteeNatureOfControl(benficialOwners)) {
-          return true;
-        }
-      }
-    }
+  if (!appData) {
+    return false;
   }
-  return false;
+  return containsTrusteeNatureOfControl(appData.beneficial_owners_individual ?? []) ||
+    containsTrusteeNatureOfControl(appData.beneficial_owners_corporate ?? []);
+};
+
+/**
+ * Checks whether any beneficial owners requires trust data to review due to at least one of them
+ * having a trustee "nature of control" of the overseas entity
+ *
+ * @param appData Application Data
+ * @returns @returns 'true' if any BO requring review has a trustee "nature of control"
+ */
+const checkEntityReviewRequiresTrusts = (appData: ApplicationData): boolean => {
+  if (!appData?.update) {
+    return false;
+  }
+  return containsTrusteeNatureOfControl(appData.update.review_beneficial_owners_individual ?? []) ||
+    containsTrusteeNatureOfControl(appData.update.review_beneficial_owners_corporate ?? []);
 };
 
 /**
@@ -58,13 +66,6 @@ const getTrustLandingUrl = (appData: ApplicationData): string => {
   } else {
     return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
   }
-};
-
-const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {
-  return [
-    appData.beneficial_owners_individual,
-    appData.beneficial_owners_corporate,
-  ];
 };
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
@@ -463,6 +464,7 @@ function convertBooleanToYesNoResponse(apiYesNoResponse: yesNoResponse): yesNoRe
 
 export {
   checkEntityRequiresTrusts,
+  checkEntityReviewRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
   getTrustArray,

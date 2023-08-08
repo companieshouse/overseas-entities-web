@@ -26,6 +26,9 @@ import {
   UPDATE_REVIEW_STATEMENT_PAGE,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+  FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
+  UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
@@ -107,13 +110,12 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
 
 const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean) => {
   if (isNoChangeJourney) {
-    return UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL;
+    return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   } else {
-    const updateTrustsEnabled = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS);
-
-    return updateTrustsEnabled && hasAnyBosWithTrusteeNocs
-      ? UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL
-      : UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+    let backLinkUrl: string;
+    backLinkUrl = (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasAnyBosWithTrusteeNocs) ? UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+    backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL : backLinkUrl;
+    return backLinkUrl;
   }
 };
 

@@ -1,0 +1,1 @@
+# Define all hardcoded local variable and local variables looked up from data resources

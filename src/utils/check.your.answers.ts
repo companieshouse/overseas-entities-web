@@ -39,9 +39,6 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
-
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,

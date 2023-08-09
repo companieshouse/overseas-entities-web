@@ -1,0 +1,40 @@
+aws_bucket = "development-eu-west-2.terraform-state.ch.gov.uk"
+remote_state_bucket = "ch-development-terraform-state-london"
+environment = "cidev"
+deploy_to = "development"
+state_prefix = "env:/development"
+aws_profile = "development-eu-west-2"
+kms_alias = "alias/development-eu-west-2/environment-services-kms"
+
+# service configs
+# Commented params moved to vault service secrets
+# cache_server 
+# oauth2_redirect_uri 
+# oauth2_auth_uri 
+# account_test_url 
+# account_url 
+log_level = "debug"
+chs_url = "https://cidev.aws.chdev.org"
+piwik_url = "https://matomo.platform.aws.chdev.org/"
+piwik_site_id = "7"
+cdn_host = "d3uvya5a8a1ncx.cloudfront.net"
+cookie_domain = "cidev.aws.chdev.org"
+account_local_url = "https://account.cidev.aws.chdev.org"
+piwik_start_goal_id = "20"
+piwik_update_start_goal_id = "23"
+show_service_offline_page = "false"
+feature_flag_enable_update_statement_validation_05072023 = "false"
+feature_flag_enable_save_and_resume_17102022 = "true"
+feature_flag_enable_roe_update_24112022 = "true"
+feature_flag_enable_roe_remove_24112022 = "false"
+feature_flag_enable_trusts_web_07112022 = "true"
+feature_flag_enable_update_save_and_resume_07032023 = "true"
+feature_flag_disable_update_private_data_fetch_28062023 = "true"
+feature_flag_enable_update_trusts_30062023 = "false"
+landing_page_url = "/register-an-overseas-entity/sold-land-filter?start=0"
+landing_page_starting_new_url = "/register-an-overseas-entity/starting-new"
+payment_fee = "100"
+update_landing_page_url = "/update-an-overseas-entity/continue-with-saved-filing"
+update_payment_fee = "120.00"
+vf01_form_download_url = "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf"
+api_url = "https://api.cidev.aws.chdev.org"

@@ -131,7 +131,7 @@ variable "piwik_start_goal_id" {
 variable "piwik_update_start_goal_id" {
   type        = string
 }
-variable "feature_flag_enable_refresh_token_29092022" {
+variable "feature_flag_enable_update_statement_validation_05072023" {
   type        = string
 }
 variable "feature_flag_enable_save_and_resume_17102022" {

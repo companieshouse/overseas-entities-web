@@ -65,7 +65,7 @@ locals {
   ]
 
   task_environment = [
-    { "name": "NODE_PORT", "value": "${local.container_port}" },  # TODO Is this needed?
+    { "name": "NODE_PORT", "value": "${local.container_port}" },
     { "name": "LOG_LEVEL", "value": "${var.log_level}" },
     { "name": "CHS_URL", "value": "${var.chs_url}" },
     { "name": "PIWIK_URL", "value": "${var.piwik_url}" },
@@ -75,13 +75,13 @@ locals {
     { "name": "CACHE_POOL_SIZE", "value": "${var.cache_pool_size}" }, # TODO Is this needed?
     { "name": "COOKIE_DOMAIN", "value": "${var.cookie_domain}" },
     { "name": "COOKIE_NAME", "value": "${var.cookie_name}" },
-    { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" }, # TODO Does this match COOKIE_SECRET in docker yaml file.
+    { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" }, # TODO Does this match COOKIE_SECRET in docker yaml file. Should this be SECURE_COOKIE like in global env?
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" }, # TODO Is this needed?
     { "name": "APPLICATIONS_API_URL", "value": "${var.account_local_url}" }, # TODO Is this needed?
     { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
     { "name": "PIWIK_UPDATE_START_GOAL_ID", "value": "${var.piwik_update_start_goal_id}" },
     { "name": "SHOW_SERVICE_OFFLINE_PAGE", "value": "${var.show_service_offline_page}" },
-    { "name": "FEATURE_FLAG_ENABLE_REFRESH_TOKEN_29092022", "value": "${var.feature_flag_enable_refresh_token_29092022}" },
+    { "name": "FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION_05072023", "value": "${var.feature_flag_enable_update_statement_validation_05072023}" },
     { "name": "FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "value": "${var.feature_flag_enable_save_and_resume_17102022}" },
     { "name": "FEATURE_FLAG_ENABLE_ROE_UPDATE_24112022", "value": "${var.feature_flag_enable_roe_update_24112022}" },
     { "name": "FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022", "value": "${var.feature_flag_enable_roe_remove_24112022}" },

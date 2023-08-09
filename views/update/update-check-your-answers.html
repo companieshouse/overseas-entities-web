@@ -1,6 +1,7 @@
 {% extends "update-layout.html" %}
 
 {% set title = "Check your answers before sending your application" %}
+{% set updateStatementValidationEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -20,8 +21,11 @@
       {% include "includes/check-your-answers/verification-checks.html" %}
       <br>
       {% include "includes/entity.html" %}
-      <br>
-      {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+
+      {% if not updateStatementValidationEnabled %}
+        <br>
+        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
 
       {% set bois = appData.beneficial_owners_individual or [] %}
       {% set existingBOIs = bois | selectattr('ch_reference') %}
@@ -103,6 +107,11 @@
           {% set trust_count = trust_count + 1 %}
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
+      {% endif %}
+
+      {% if updateStatementValidationEnabled %}
+        <br>
+        {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
       {% endif %}
 
       <br>

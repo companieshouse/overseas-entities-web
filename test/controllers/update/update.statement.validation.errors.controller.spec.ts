@@ -33,6 +33,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/has.presenter.middleware';
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -195,6 +196,23 @@ describe("Update statement validation errors controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+    });
+
+    test('renders the Update statement validation errors page with validator failure when no radio button selected', async () => {
+      mockGetApplicationData.mockReturnValue({
+        entity_name: 'Potato',
+        entity_number: 'OE991992',
+        beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
+        update: {
+          no_change: true,
+          registrable_beneficial_owner: 0,
+        },
+      });
+      const resp = await request(app)
+        .post(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION);
     });
 
     test.each([

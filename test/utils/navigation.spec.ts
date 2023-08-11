@@ -238,4 +238,59 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL].previousPage();
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
   });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_PRESENTER_URL} when calling previousPage on ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL].previousPage();
+    expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.WHO_IS_MAKING_UPDATE_PAGE} when calling previousPage on ${config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL].previousPage();
+    expect(navigation).toEqual(config.WHO_IS_MAKING_UPDATE_PAGE);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_REVIEW_URL} object`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_REVIEW_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_BENEFICIAL_OWNER_TYPE_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_REVIEW_URL} when calling previousPage on ${config.UPDATE_CHECK_YOUR_ANSWERS_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_CHECK_YOUR_ANSWERS_URL].previousPage();
+    expect(navigation).toEqual(config.OVERSEAS_ENTITY_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URLWITH_PARAM_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URLWITH_PARAM_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL_WITH_PARAM_URL} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL_WITH_PARAM_URL].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_MANAGING_OFFICER_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_MANAGING_OFFICER_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID} object`, () => {
+    const navigation = NAVIGATION[config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID].previousPage();
+    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+  });
 });

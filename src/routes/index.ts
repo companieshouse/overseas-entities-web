@@ -85,7 +85,8 @@ import {
   noChangeRegistrableBeneficialOwner,
   updateReviewStatement,
   updateTrustsIndividualBeneficialOwner,
-  updateTrustsLegalEntityBeneficialOwner
+  updateTrustsLegalEntityBeneficialOwner,
+  updateStatementValidationErrors
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -773,5 +774,15 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
   )
   .get(updateAnyTrustsInvolved.get)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
+
+router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(updateStatementValidationErrors.get)
+  .post(...validator.statementResolution, updateStatementValidationErrors.post);
 
 export default router;

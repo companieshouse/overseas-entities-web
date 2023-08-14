@@ -16,7 +16,6 @@ locals {
     "vpc_name"                  = local.service_secrets["vpc_name"]
     "chs_api_key"               = local.service_secrets["chs_api_key"]
     "internal_api_url"          = local.service_secrets["internal_api_url"]
-    "cdn_host"                  = local.service_secrets["cdn_host"]
     "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
     "oauth2_redirect_uri"       = local.service_secrets["oauth2_redirect_uri"]
     "account_test_url"          = local.service_secrets["account_test_url"]
@@ -27,7 +26,6 @@ locals {
   vpc_name                  = local.service_secrets["vpc_name"]
   chs_api_key               = local.service_secrets["chs_api_key"]
   internal_api_url          = local.service_secrets["internal_api_url"]
-  cdn_host                  = local.service_secrets["cdn_host"] #TODO: Defined both as a secret and non-secret 
   oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
   oauth2_redirect_uri       = local.service_secrets["oauth2_redirect_uri"]
   account_test_url          = local.service_secrets["account_test_url"]
@@ -48,18 +46,12 @@ locals {
 
   # TODO: task_secrets don't seem to correspond with 'parameter_store_secrets'. What is the difference?
   task_secrets = [
-    { "name": "CHS_DEVELOPER_CLIENT_ID", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-id}" },  # TODO Where is this used?
-    { "name": "CHS_DEVELOPER_CLIENT_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-client-secret}" }, # TODO Where is this used?
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
-    { "name": "DEVELOPER_OAUTH2_REQUEST_KEY", "valueFrom": "${local.secrets_arn_map.web-oauth2-request-key}" }, # TODO Where is this used?
     { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },
     { "name": "CACHE_SERVER", "valueFrom": "${local.service_secrets_arn_map.cache_server}" },
-    { "name": "OAUTH2_REDIRECT_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_redirect_uri}" },  # TODO Not found in OE or CS Web config. Is this needed? 
-    { "name": "OAUTH2_AUTH_URI", "valueFrom": "${local.service_secrets_arn_map.oauth2_auth_uri}" }, # TODO Not found in OE or CS Web config. Is this needed? 
     { "name": "OAUTH2_CLIENT_ID", "valueFrom": "${local.service_secrets_arn_map.oauth2_client_id}" },  
     { "name": "OAUTH2_CLIENT_SECRET", "valueFrom": "${local.service_secrets_arn_map.oauth2_client_secret}" },
     { "name": "ACCOUNT_URL", "valueFrom": "${local.service_secrets_arn_map.account_url}" },
-    { "name": "ACCOUNT_TEST_URL", "valueFrom": "${local.service_secrets_arn_map.account_test_url}" }, # TODO Not found in OE or CS Web config. Is this needed? 
     { "name": "INTERNAL_API_URL", "valueFrom": "${local.service_secrets_arn_map.internal_api_url}" },
     { "name": "PAYMENTS_API_URL", "valueFrom": "${local.service_secrets_arn_map.payments_api_url}" }
   ]
@@ -70,14 +62,11 @@ locals {
     { "name": "CHS_URL", "value": "${var.chs_url}" },
     { "name": "PIWIK_URL", "value": "${var.piwik_url}" },
     { "name": "PIWIK_SITE_ID", "value": "${var.piwik_site_id}" },
-    { "name": "REDIRECT_URI", "value": "${var.redirect_uri}" }, # TODO Is this needed?
     { "name": "CDN_HOST", "value": "//${var.cdn_host}" },
-    { "name": "CACHE_POOL_SIZE", "value": "${var.cache_pool_size}" }, # TODO Is this needed?
     { "name": "COOKIE_DOMAIN", "value": "${var.cookie_domain}" },
     { "name": "COOKIE_NAME", "value": "${var.cookie_name}" },
-    { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" }, # TODO Does this match COOKIE_SECRET in docker yaml file. Should this be SECURE_COOKIE like in global env?
+    { "name": "COOKIE_SECURE_ONLY", "value": "${var.cookie_secure_only}" },
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" }, # TODO Is this needed?
-    { "name": "APPLICATIONS_API_URL", "value": "${var.account_local_url}" }, # TODO Is this needed?
     { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
     { "name": "PIWIK_UPDATE_START_GOAL_ID", "value": "${var.piwik_update_start_goal_id}" },
     { "name": "SHOW_SERVICE_OFFLINE_PAGE", "value": "${var.show_service_offline_page}" },

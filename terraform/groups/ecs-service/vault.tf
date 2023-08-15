@@ -1,1 +1,1 @@
-/vault-providers/userpass
+vault-providers/userpass

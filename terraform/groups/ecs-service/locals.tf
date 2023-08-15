@@ -21,6 +21,9 @@ locals {
     "account_test_url"          = local.service_secrets["account_test_url"]
     "account_url"               = local.service_secrets["account_url"]
     "cache_server"              = local.service_secrets["cache_server"]
+    "oauth2_client_id"          = local.service_secrets["oauth2_client_id"]
+    "oauth2_client_secret"      = local.service_secrets["oauth2_client_secret"]
+    "payments_api_url"          = local.service_secrets["payments_api_url"]
   }
 
   vpc_name                  = local.service_secrets["vpc_name"]
@@ -31,6 +34,9 @@ locals {
   account_test_url          = local.service_secrets["account_test_url"]
   account_url               = local.service_secrets["account_url"]
   cache_server              = local.service_secrets["cache_server"]
+  oauth2_client_id          = local.service_secrets["oauth2_client_id"]
+  oauth2_client_secret      = local.service_secrets["oauth2_client_secret"]
+  payments_api_url          = local.service_secrets["payments_api_url"]
 
   # create a map of secret name => secret arn to pass into ecs service module
   # using the trimprefix function to remove the prefixed path from the secret name

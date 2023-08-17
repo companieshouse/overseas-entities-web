@@ -1217,6 +1217,8 @@ export const TRUST_DATA: string = `[{
   "CORPORATES": []
 }]`;
 
+export const TRUST_DATA_INVALID: string = "abc";
+
 export const TRUST_DATA_NO_NAME: string = `[{
   "creation_date_day": "31",
   "creation_date_month": "12",
@@ -1286,26 +1288,38 @@ export const TRUSTS_SUBMIT = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_MULTIPLE_BENEFICIAL_OWNERS = {
-  submit: "submit",
+export const TRUSTS_ADD = {
+  add: "add",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA
+};
+
+export const TRUSTS_ADD_MULTIPLE_BENEFICIAL_OWNERS = {
+  add: "add",
   beneficialOwners: ["123", "456"],
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_NO_NAME = {
-  submit: "submit",
+export const TRUSTS_ADD_INVALID = {
+  add: "add",
+  beneficialOwners: "123",
+  [trustType.TrustKey]: TRUST_DATA_INVALID
+};
+
+export const TRUSTS_ADD_NO_NAME = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_NO_NAME
 };
 
-export const TRUSTS_SUBMIT_NO_CREATION_DATE = {
-  submit: "submit",
+export const TRUSTS_ADD_NO_CREATION_DATE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_NO_CREATION_DATE
 };
 
-export const TRUSTS_SUBMIT_PARTIAL_CREATION_DATE = {
-  submit: "submit",
+export const TRUSTS_ADD_PARTIAL_CREATION_DATE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_PARTIAL_CREATION_DATE
 };
@@ -1326,8 +1340,8 @@ export const TRUSTS_EMPTY_CHECKBOX = {
   [trustType.TrustKey]: TRUST_DATA
 };
 
-export const TRUSTS_SUBMIT_LEADING_AND_TRAILING_WHITESPACE = {
-  submit: "submit",
+export const TRUSTS_ADD_LEADING_AND_TRAILING_WHITESPACE = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: TRUST_DATA_LEADING_AND_TRAILING_SPACES
 };

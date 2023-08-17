@@ -53,6 +53,7 @@ export const SIGN_OUT_DROPDOWN_TEXT = "Sign in to your Companies House account a
 export const SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT = "We will save your application.";
 export const SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT = "How do I find my saved applications?";
 export const TRUST_INFO_PAGE_TITLE = "Add trust information for the beneficial owners";
+export const TRUST_INFO_NO_MORE_TO_ADD_BUTTON = "No more";
 export const CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before sending your application";
 export const VERIFICATION_CHECKS = "Verification checks";
 export const VERIFICATION_CHECKS_DATE = "Date the verification checks were completed";

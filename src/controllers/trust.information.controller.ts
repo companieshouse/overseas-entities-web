@@ -34,6 +34,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.TRUST_INFO_PAGE}`);
 
+    if (req.body.submit) {
+      return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
+    }
+
     // If only one BO is selected, data is a string.
     // If multiple selected, data is an array.
     const beneficialOwnerIds = (typeof req.body.beneficialOwners === 'string') ? [req.body.beneficialOwners] : req.body.beneficialOwners;
@@ -63,12 +67,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAndContinue(req, session, true);
 
-    if (req.body.add) {
-      return res.redirect(config.TRUST_INFO_URL);
-    }
-    if (req.body.submit) {
-      return res.redirect(config.CHECK_YOUR_ANSWERS_PAGE);
-    }
+    return res.redirect(config.TRUST_INFO_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

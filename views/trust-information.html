@@ -14,6 +14,20 @@
   No more <span class="govuk-visually-hidden"> trust information</span> to add
 {% endset %}
 
+{% set trustAdded %}
+  {% if errors %}
+    {% if trustsAddedSoFar > 0 %}
+        ({{trustsAddedSoFar}} Trust information added so far)
+    {% else %}
+      (No Trust information added so far)
+    {% endif %}
+  {% elif trusts.length %}
+    ({{trusts.length}} Trust information added so far)
+  {% else %}
+    (No Trust information added so far)
+  {% endif %}
+{% endset %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -43,20 +57,23 @@
             }) }}
         </div>
 
-        <h2 class="govuk-heading-m">Enter trust information from the Excel document</h2>
         <div class="govuk-form-group">
           {{ govukTextarea({
             errorMessage: errors.trusts if errors,
             name: "trusts",
             id: "trusts",
             label: {
-              text: "If you've already completed the trust Excel document, follow the instructions in the document to paste the data into the box:",
-              classes: "govuk-body",
+              text: "Enter trust information from the Excel document",
+              classes: "govuk-label--m",
               isPageHeading: false
+            },
+            hint: {
+              text: "If you've already completed the trust Excel document, follow the instructions in the document to paste the data into the box:"
             },
             value: trusts_input
           }) }}
         </div>
+
         <details class="govuk-details" data-module="govuk-details">
           <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
@@ -75,7 +92,7 @@
           '
         }) }}
         {{ govukButton({
-          text: "Add another trust",
+          text: "Add trust",
           attributes: {
             "id": "add",
             "name": "add",
@@ -83,17 +100,21 @@
           }
         }) }}
 
-        <p>
-          {{ govukButton({
-            html: noMoreToAddHtml,
-            attributes: {
-              "id": "submit",
-              "name": "submit",
-              "value": "submit"
-            },
-            classes: "govuk-button--secondary"
-          }) }}
-        </p>
+        {% if trustsAddedSoFar > 0 or (not errors and trusts.length) %}
+          <div class="govuk-button-group">
+             {{ govukButton({
+              html: noMoreToAddHtml,
+              attributes: {
+                "id": "submit",
+                "name": "submit",
+                "value": "submit"
+              },
+              classes: "govuk-button--secondary"
+            }) }}
+          </div>
+        {% endif %}
+
+        {{trustAdded}}
 
       </form>
 

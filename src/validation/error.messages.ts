@@ -62,6 +62,7 @@ export enum ErrorMessages {
 
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
+  TRUST_DATA_INVALID_FORMAT = "Format of trust information is invalid",
   TRUST_NAME = "Enter the trust name",
   TRUST_NAME_2 = "Enter the name of the trust",
   TRUST_CREATION_DATE = "Enter the trust creation date",

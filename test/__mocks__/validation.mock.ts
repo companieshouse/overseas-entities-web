@@ -339,8 +339,8 @@ export const MANAGING_OFFICER_CORPORATE_WITH_INVALID_CHARS_SERVICE_ADDRESS_MOCK 
   ...SERVICE_ADDRESS_WITH_INVALID_CHAR_FIELDS_MOCK
 };
 
-export const TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG = {
-  submit: "submit",
+export const TRUSTS_ADD_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: `[{
     "trust_name": "name of trust",
@@ -370,8 +370,8 @@ export const TRUSTS_SUBMIT_CORPORATE_SA_ADDRESS_PREMISES_TOO_LONG = {
   }]`
 };
 
-export const TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG = {
-  submit: "submit",
+export const TRUSTS_ADD_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: `[{
     "trust_name": "name of trust",
@@ -401,8 +401,8 @@ export const TRUSTS_SUBMIT_CORPORATE_RO_ADDRESS_PREMISES_TOO_LONG = {
   }]`
 };
 
-export const TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG = {
-  submit: "submit",
+export const TRUSTS_ADD_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: `[{
     "trust_name": "my trust",
@@ -433,8 +433,8 @@ export const TRUSTS_SUBMIT_INDIVIDUAL_URA_ADDRESS_PREMISES_TOO_LONG = {
   }]`
 };
 
-export const TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG = {
-  submit: "submit",
+export const TRUSTS_ADD_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: `[{
     "trust_name": "my trust",
@@ -465,8 +465,8 @@ export const TRUSTS_SUBMIT_INDIVIDUAL_SA_ADDRESS_PREMISES_TOO_LONG = {
   }]`
 };
 
-export const TRUSTS_SUBMIT_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES = {
-  submit: "submit",
+export const TRUSTS_ADD_INDIVIDUAL_AND_CORPORATE_NO_ADDRESS_PREMISES = {
+  add: "add",
   beneficialOwners: "123",
   [trustType.TrustKey]: `[{
     "trust_name": "my trust",

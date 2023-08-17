@@ -1,5 +1,7 @@
 // Custom validation utils - For now checking is not empty
 
+import { Session } from '@companieshouse/node-session-handler';
+
 import { VALID_CHARACTERS, VALID_EMAIL_FORMAT } from "./regex/regex.validation";
 import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
@@ -463,18 +465,51 @@ export const checkAtLeastOneFieldHasValue = (errMsg: string, ...fields: any[]) =
   throw new Error(errMsg);
 };
 
-export const checkTrustFields = (trustsJson: string) => {
+const isSubmitTrustSelected = (session: Session, action: string = ""): boolean => {
+  const appData: ApplicationData = getApplicationData(session);
+  return action === "submit" && (appData.trusts || [] ).length > 0;
+};
+
+export const checkTrustBOs = (req) => {
+  if (isSubmitTrustSelected(req.session, req.body.submit)) {
+    return true;
+  }
+  return checkAtLeastOneFieldHasValue(ErrorMessages.TRUST_BO_CHECKBOX, req.body.beneficialOwners);
+};
+
+export const checkTrustFields = (req) => {
+
+  if (isSubmitTrustSelected(req.session, req.body.submit)) {
+    return true;
+  }
+
+  const trustsJson = (req.body.trusts || "").trim();
+
+  if (!trustsJson) {
+    throw new Error(ErrorMessages.TRUST_DATA_EMPTY);
+  }
+
+  if (!isValidJson(trustsJson)) {
+    throw new Error(ErrorMessages.TRUST_DATA_INVALID_FORMAT);
+  }
+
   const trusts: trustType.Trust[] = JSON.parse(trustsJson);
   const addressMaxLength = 50;
 
   for (const trust of trusts) {
     checkTrustCreationDate(trust);
-
     checkTrustName(trust);
-
     checkIndividualsAddress(trust, addressMaxLength);
-
     checkCorporatesAddress(trust, addressMaxLength);
+  }
+  return true;
+};
+
+const isValidJson = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
   }
   return true;
 };

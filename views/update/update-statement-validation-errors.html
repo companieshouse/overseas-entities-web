@@ -93,6 +93,8 @@
       }) }}
 
       {% include "includes/continue-button.html" %}
+      <!-- If page validation fails and re-renders the page, we need to forward the
+      statementErrorList so it is not lost -->
       {% for statementError in statementErrorList %}
         <input type="hidden" name="statementErrorList[]" value="{{ statementError }}" />
       {% endfor %}

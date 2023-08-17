@@ -5,16 +5,19 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import app from "../../../src/app";
 
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+import {
+  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  UPDATE_REVIEW_STATEMENT_URL,
   UPDATE_STATEMENT_VALIDATION_ERRORS_URL
 } from "../../../src/config";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
@@ -34,6 +37,7 @@ import {
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_TITLE } from "../../__mocks__/text.mock";
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -46,6 +50,9 @@ mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Respo
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -120,8 +127,21 @@ describe("No change registrable beneficial owner", () => {
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected`, async () => {
+    test(`with statement validation flag off, redirects to the review-update-statement page when 'has reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      const resp = await request(app)
+        .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+        .send({ [RegistrableBeneficialOwnerKey]: "0" });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`with statement validation flag on, redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: "0" });

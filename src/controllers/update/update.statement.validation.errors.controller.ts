@@ -43,7 +43,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     return req.body[StatementResolutionKey] === StatementResolutionType.CHANGE_INFORMATION
       ? res.redirect(getChangeInformationRedirectUrl(inNoChangeJourney))
-      : res.redirect(getFirstBOStatementsUrl(inNoChangeJourney));
+      : res.redirect(identifiedBOStatement(inNoChangeJourney));
   } catch (error) {
     next(error);
   }
@@ -51,7 +51,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
 const renderPage = (res: Response, appData: ApplicationData, inNoChangeJourney: boolean, statementErrorList: string[], errors?: FormattedValidationErrors) => (
   res.render(UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE, {
-    backLinkUrl: getSecondBOStatementsUrl(inNoChangeJourney),
+    backLinkUrl: ceasedBOStatement(inNoChangeJourney),
     templateName: UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE,
     appData,
     statementErrorList,
@@ -65,13 +65,13 @@ const getChangeInformationRedirectUrl = (inNoChangeJourney: boolean) => (
     : UPDATE_BENEFICIAL_OWNER_TYPE_URL
 );
 
-const getFirstBOStatementsUrl = (inNoChangeJourney: boolean) => (
+const identifiedBOStatement = (inNoChangeJourney: boolean) => (
   inNoChangeJourney
     ? UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL
     : UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
 );
 
-const getSecondBOStatementsUrl = (inNoChangeJourney: boolean) => (
+const ceasedBOStatement = (inNoChangeJourney: boolean) => (
   inNoChangeJourney
     ? UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL
     : UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL

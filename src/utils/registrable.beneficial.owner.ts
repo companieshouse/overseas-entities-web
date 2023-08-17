@@ -57,7 +57,11 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
 
 const noChangeHandler = (req: Request, res: Response, next: NextFunction, registrableOwnerChoice) => {
   if (registrableOwnerChoice === "0"){
-    return res.redirect(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
+    const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+      ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
+      : config.UPDATE_REVIEW_STATEMENT_URL;
+
+    return res.redirect(redirectUrl);
   } else {
     return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
   }

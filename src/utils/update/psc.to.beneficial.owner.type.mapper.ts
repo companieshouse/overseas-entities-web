@@ -21,7 +21,6 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     usual_residential_address: undefined,
     service_address: service_address,
     start_date: mapInputDate(psc.notifiedOn),
-    ceased_date: psc.ceasedOn ? mapInputDate(psc.ceasedOn) : undefined,
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -45,7 +44,6 @@ export const mapPscToBeneficialOwnerOther = (psc: CompanyPersonWithSignificantCo
     registration_number: psc.identification?.registrationNumber,
     is_on_register_in_country_formed_in: psc.identification !== undefined && psc.identification?.registrationNumber ? yesNoResponse.Yes : yesNoResponse.No,
     start_date: mapInputDate(psc.notifiedOn),
-    ceased_date: psc.ceasedOn ? mapInputDate(psc.ceasedOn) : undefined,
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, false);
@@ -66,7 +64,6 @@ export const mapPscToBeneficialOwnerGov = (psc: CompanyPersonWithSignificantCont
     legal_form: psc.identification?.legalForm,
     law_governed: psc.identification?.legalAuthority,
     start_date: mapInputDate(psc.notifiedOn),
-    ceased_date: psc.ceasedOn ? mapInputDate(psc.ceasedOn) : undefined,
     is_on_sanctions_list: psc.isSanctioned === true ? yesNoResponse.Yes : yesNoResponse.No,
   };
   mapNatureOfControl(psc, result, true);

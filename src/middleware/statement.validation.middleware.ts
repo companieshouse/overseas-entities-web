@@ -35,6 +35,11 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
     return false;
   }
 
+  if (!allOrSomeBOsIdentified && checkActiveBOExists(appData)) {
+    errorList.push(ErrorMessages.ACTIVE_REGISTRABLE_BO);
+    return false;
+  }
+
   return true;
 };
 

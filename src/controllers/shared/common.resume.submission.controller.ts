@@ -30,6 +30,7 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
 
     const { transactionId, overseaEntityId } = req.params;
     const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseaEntityId}`;
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
 
     logger.infoRequest(req, `Resuming OE - ${infoMsg}`);
 
@@ -51,7 +52,10 @@ export const getResumePage = async (req: Request, res: Response, next: NextFunct
             [config.PAYMENT_REQUIRED_HEADER]: config.PAYMENTS_API_URL + config.PAYMENTS
           }
         };
-        const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl);
+
+        const baseURL = `${config.CHS_URL}${isRegistration ? config.REGISTER_AN_OVERSEAS_ENTITY_URL : config.UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+
+        const redirectPath = await startPaymentsSession(req, session, transactionId, overseaEntityId, headersPaymentUrl, baseURL);
 
         logger.infoRequest(req, `Payments Session created on Resume link with, Trans_ID: ${transactionId}, OE_ID: ${overseaEntityId}. Redirect to: ${redirectPath}`);
 

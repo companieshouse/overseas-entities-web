@@ -1,6 +1,6 @@
 import { Address, InputDate } from "../../model/data.types.model";
 import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
-import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth, NameElements } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";
 
@@ -92,6 +92,13 @@ export const splitNationalities = (officerNationalities: string | undefined): st
   return officerNationalities.split(/\s*,\s*/).slice(0, 2);
 };
 
+export const mapBOIndividualName = (name: NameElements) => {
+  if (name?.middleName && name.middleName.trim() !== "") {
+    return name.forename + " " + name.middleName;
+  }
+  return name?.forename;
+};
+
 type AddressMatches = {
   (address1: Address, address2?: Address): boolean;
   (address1: OfficeAddress, address2?: OfficeAddress): boolean;
@@ -120,4 +127,21 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
     return `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`;
   }
   );
+};
+
+export const splitOriginatingRegistryName = (registryName: string | undefined) => {
+  if (!registryName){
+    return { registryName: "", jurisdiction: "" };
+  }
+
+  const firstComma = registryName.indexOf(",");
+
+  if (firstComma >= 0) {
+    return {
+      registryName: registryName.substring(0, firstComma),
+      jurisdiction: registryName.substring(firstComma + 1, registryName.length).trim()
+    };
+  }
+
+  return { registryName: registryName, jurisdiction: "" };
 };

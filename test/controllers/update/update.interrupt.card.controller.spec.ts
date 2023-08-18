@@ -2,13 +2,14 @@ jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../../src/app";
-import { UPDATE_INTERRUPT_CARD_URL, UPDATE_INTERRUPT_CARD_PAGE, OVERSEAS_ENTITY_QUERY_URL } from "../../../src/config";
+import { UPDATE_INTERRUPT_CARD_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_ANY_TRUSTS_INVOLVED_URL, SECURE_UPDATE_FILTER_URL } from "../../../src/config";
 import { INTERRUPT_CARD_PAGE_TITLE } from "../../__mocks__/text.mock";
 
 import {
@@ -20,6 +21,10 @@ import {
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(true);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -30,12 +35,25 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 describe("UPDATE INTERRUPT CARD controller", () => {
   describe("GET tests", () => {
-    test(`renders the ${UPDATE_INTERRUPT_CARD_PAGE} page`, async () => {
+    test(`renders the update-interrupt-card page`, async () => {
       const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      // back link
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+    });
+
+    test(`renders the update-interrupt-card page with back link to update-any-trusts-involved if flag off`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app).get(UPDATE_INTERRUPT_CARD_URL);
+
+      expect(resp.status).toEqual(200);
+      // back link
+      expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(resp.text).not.toContain(SECURE_UPDATE_FILTER_URL);
     });
 
     test("catch error when rendering the page", async () => {

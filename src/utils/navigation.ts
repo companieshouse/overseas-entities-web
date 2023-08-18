@@ -374,4 +374,16 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.UPDATE_ANY_TRUSTS_INVOLVED_URL,
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
+  [config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL]: {
+    currentPage: config.UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE,
+    previousPage: (appData?: ApplicationData) => appData?.update?.no_change
+      ? config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL
+      : config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [
+      config.UPDATE_BENEFICIAL_OWNER_TYPE_URL,
+      config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+      config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL,
+      config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
+    ],
+  },
 };

@@ -12,7 +12,7 @@ import request from "supertest";
 import {
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
-  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
+  UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
 } from "../../../src/config";
 import app from "../../../src/app";
 import {

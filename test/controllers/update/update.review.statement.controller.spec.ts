@@ -86,7 +86,7 @@ describe("Update review overseas entity information controller tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const mockAppData = getMockAppDataWithoutEmail();
 
-      mockGetApplicationData.mockReturnValueOnce(mockAppData).mockReturnValueOnce(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockGetPrivateOeDetails.mockReturnValueOnce({ email_address: "tester@test.com" });
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
@@ -95,7 +95,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(1);
@@ -106,7 +106,7 @@ describe("Update review overseas entity information controller tests", () => {
       mockIsActiveFeature.mockReturnValueOnce(false);
       const mockAppData = getMockAppDataWithoutEmail();
 
-      mockGetApplicationData.mockReturnValueOnce(mockAppData).mockReturnValueOnce(mockAppData);
+      mockGetApplicationData.mockReturnValue(mockAppData);
       mockGetPrivateOeDetails.mockReturnValueOnce(undefined);
 
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
@@ -115,7 +115,7 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
       expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-      expect(mockIsActiveFeature).toHaveBeenCalledTimes(1);
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
       expect(mockGetPrivateOeDetails).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(0);
       expect(mockUpdateOverseasEntity).toHaveBeenCalledTimes(0);

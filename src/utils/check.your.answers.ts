@@ -33,8 +33,9 @@ import {
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 
-export const getDataForReview = (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
-  const appData = getApplicationData(req.session);
+export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
+  const session = req.session as Session;
+  const appData = getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
 
   const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs);
@@ -43,10 +44,7 @@ export const getDataForReview = (req: Request, res: Response, next: NextFunction
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const session = req.session as Session;
-    const appData: ApplicationData = getApplicationData(session);
-
-    if (noChangeFlag) {
+    if (isNoChangeJourney) {
       await fetchOverseasEntityEmailAddress(appData, req, session);
     }
 

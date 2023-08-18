@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock("../../../src/utils/feature.flag");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
+jest.mock('../../../src/middleware/statement.validation.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
@@ -16,6 +17,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_STATEMENT_VALIDATION_ERRORS_URL
@@ -34,6 +36,7 @@ import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { hasValidStatements } from "../../../src/middleware/statement.validation.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -43,6 +46,12 @@ mockCompanyAuthentication.mockImplementation((_: Request, __: Response, next: Ne
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+
+const mockhasValidStatements = hasValidStatements as jest.Mock;
+mockhasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
+  req['statementErrorList'] = ["There are no active registrable beneficial owners."];
+  next();
+});
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -77,8 +86,7 @@ describe("Update statement validation errors controller", () => {
       expect(resp.text).toContain("The statements you&#39;ve chosen do not match the information provided in this update");
       expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.text).toContain("Potato - OE991992");
-      expect(resp.text).toContain("You have added or ceased a beneficial owner as part of this update statement.");
-      expect(resp.text).toContain("There are currently no registered beneficial owners.");
+      expect(resp.text).toContain("There are no active registrable beneficial owners.");
       expect(resp.text).toContain('All beneficial owners have been identified and I can provide all the required information');
       expect(resp.text).toContain('The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period');
 
@@ -160,7 +168,7 @@ describe("Update statement validation errors controller", () => {
       expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
     });
 
-    test("in a change journey, redirect to BO review page if user chooses to change their statement", async () => {
+    test("in a change journey, redirect to beneficial-owner-statements if user chooses to change their statement", async () => {
       mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
@@ -176,10 +184,10 @@ describe("Update statement validation errors controller", () => {
         .send({ statement_resolution: 'statement-resolution-change-statement' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+      expect(resp.header.location).toEqual(UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
-    test("in a no-change journey, redirect to do you need to make a change page if user chooses to change their statement", async () => {
+    test("in a no-change journey, redirect to update-no-change-beneficial-owner-statements if user chooses to change their statement", async () => {
       mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
@@ -195,7 +203,7 @@ describe("Update statement validation errors controller", () => {
         .send({ statement_resolution: 'statement-resolution-change-statement' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+      expect(resp.header.location).toEqual(UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL);
     });
 
     test('renders the Update statement validation errors page with validator failure when no radio button selected', async () => {

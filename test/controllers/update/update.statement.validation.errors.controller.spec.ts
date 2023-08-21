@@ -113,7 +113,7 @@ describe("Update statement validation errors controller", () => {
 
     test(`in a change journey, renders the Update statement validation errors page when there is at least one registrable BO`, async () => {
       mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
-        req['statementErrorList'] = ["There is at least one active registrable beneficial owner."];
+        req['statementErrorList'] = ["There is at least one active registrable beneficial owner.", "There are no active managing officers."];
         next();
       });
       mockGetApplicationData.mockReturnValue({
@@ -134,6 +134,7 @@ describe("Update statement validation errors controller", () => {
       expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.text).toContain('Potato - OE991992');
       expect(resp.text).toContain('There is at least one active registrable beneficial owner.');
+      expect(resp.text).toContain('There are no active managing officers');
       expect(resp.text).toContain('No beneficial owners have been identified');
       expect(resp.text).toContain('The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period');
 
@@ -145,7 +146,7 @@ describe("Update statement validation errors controller", () => {
 
     test(`in a no change journey, renders the Update statement validation errors page when there is at least one registrable BO`, async () => {
       mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
-        req['statementErrorList'] = ['There is at least one active registrable beneficial owner.'];
+        req['statementErrorList'] = ["There is at least one active registrable beneficial owner.", "There are no active managing officers."];
         next();
       });
       mockGetApplicationData.mockReturnValue({
@@ -166,6 +167,7 @@ describe("Update statement validation errors controller", () => {
       expect(resp.text).toContain(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
       expect(resp.text).toContain('Potato - OE991992');
       expect(resp.text).toContain('There is at least one active registrable beneficial owner.');
+      expect(resp.text).toContain('There are no active managing officers');
       expect(resp.text).toContain('No beneficial owners have been identified');
       expect(resp.text).toContain('The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period');
 

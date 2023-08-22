@@ -64,8 +64,21 @@ export const allBeneficialOwners = (appData: ApplicationData) => {
   ];
 };
 
+export const allManagingOfficers = (appData: ApplicationData) => {
+  return [
+    ...(appData[ManagingOfficerKey] ?? []),
+    ...(appData[ManagingOfficerCorporateKey] ?? []),
+    ...(appData.update?.review_managing_officers_individual ?? []),
+    ...(appData.update?.review_managing_officers_corporate ?? []),
+  ];
+};
+
 export const checkActiveBOExists = (appData: ApplicationData): boolean => {
   return allBeneficialOwners(appData).some((bo) => !bo.ceased_date || Object.keys(bo.ceased_date).length === 0);
+};
+
+export const checkActiveMOExists = (appData: ApplicationData): boolean => {
+  return allManagingOfficers(appData).some((mo) => !mo.resigned_on || Object.keys(mo.resigned_on).length === 0);
 };
 
 export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {

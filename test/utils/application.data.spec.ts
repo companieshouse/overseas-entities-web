@@ -15,7 +15,9 @@ import {
   findBoOrMo,
   checkGivenBoOrMoDetailsExist,
   allBeneficialOwners,
-  checkActiveBOExists
+  checkActiveBOExists,
+  allManagingOfficers,
+  checkActiveMOExists
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -42,6 +44,10 @@ import {
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
+  MANAGING_OFFICER_OBJECT_MOCK,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF,
 } from "../__mocks__/session.mock";
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
@@ -437,5 +443,75 @@ describe("Application data utils", () => {
     ]
   ])(`checkActiveBOExists with %s returns expected array`, (_, appData, expectedResult) => {
     expect(checkActiveBOExists(appData)).toBe(expectedResult);
+  });
+
+  test.each([
+    [
+      "1 individual MO",
+      ManagingOfficerKey,
+      MANAGING_OFFICER_OBJECT_MOCK
+    ],
+    [
+      "1 corporate MO",
+      ManagingOfficerCorporateKey,
+      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+    ]
+  ])(`allManagingOfficers with %s returns expected`, (_, moKey, moMock) => {
+    const allMOs = allManagingOfficers({ [moKey]: [moMock] });
+
+    expect(allMOs).toEqual([moMock]);
+  });
+
+  test.each([
+    [
+      "1 individual MO for review",
+      "review_managing_officers_individual",
+      MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
+    ],
+    [
+      "1 corporate MO for review",
+      "review_managing_officers_corporate",
+      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF
+    ]
+  ])(`allManagingOfficers with %s returns expected array`, (_, moKey, moMock) => {
+    const allMOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
+
+    expect(allMOs).toEqual([moMock]);
+  });
+
+  test("allManagingOfficers with 1 of each MO type returns array of all", () => {
+    const allMOs = allManagingOfficers({ ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OWNERS_DATA_WITH_VALUE });
+
+    expect(allMOs).toEqual([
+      MANAGING_OFFICER_OBJECT_MOCK,
+      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+      MANAGING_OFFICER_OBJECT_MOCK,
+      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
+    ]);
+  });
+
+  test.each([
+    [
+      "no beneficial owner returns false",
+      APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+      false
+    ],
+    [
+      "no active beneficial owners returns false",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF] },
+      false
+    ],
+    [
+      "1 active beneficial owner, with no ceased_date key, returns true",
+      APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+      true
+    ],
+    [
+      "1 active beneficial owner, with empty ceased_date, returns true",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK] },
+      true
+    ]
+  ])(`checkActiveMOExists with %s returns expected array`, (_, appData, expectedResult) => {
+    expect(checkActiveMOExists(appData)).toBe(expectedResult);
   });
 });

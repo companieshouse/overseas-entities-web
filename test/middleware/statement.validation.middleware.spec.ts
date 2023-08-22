@@ -99,6 +99,10 @@ describe("hasValidStatements", () => {
         [
           "when some BOs identified and no active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        ],
+        [
+          "when all BOs identified and 1 active MO exists",
+          BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
         ]
       ])(`%s`, (_, statementValue) => {
         const appData = {

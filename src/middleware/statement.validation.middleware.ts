@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { checkActiveBOExists, getApplicationData } from "../utils/application.data";
+import { checkActiveBOExists, checkActiveMOExists, getApplicationData } from "../utils/application.data";
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -32,6 +32,11 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
 
   if (allOrSomeBOsIdentified && !checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.NO_ACTIVE_REGISTRABLE_BO);
+    return false;
+  }
+
+  if (allOrSomeBOsIdentified && checkActiveMOExists(appData)) {
+    errorList.push(ErrorMessages.ACTIVE_MO);
     return false;
   }
 

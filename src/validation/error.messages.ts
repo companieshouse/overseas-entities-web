@@ -62,6 +62,7 @@ export enum ErrorMessages {
 
   // Statements
   NO_ACTIVE_REGISTRABLE_BO = "There are no active registrable beneficial owners.",
+  ACTIVE_REGISTRABLE_BO = "There is at least one active registrable beneficial owner.",
   ACTIVE_MO = "There is at least one active managing officer.",
 
   // Trusts

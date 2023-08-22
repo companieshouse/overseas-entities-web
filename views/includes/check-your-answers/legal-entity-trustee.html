@@ -49,6 +49,12 @@
   {% endif %}
 {% endset %}
 
+{% if isRegistration %}
+  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
+{% else %}
+  {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL %}
+{% endif %}
+
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
 
@@ -61,7 +67,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
       "Legal entity " + legalEntity.name + " - name",
       "change-legal-entity-name-button"
    ) ]
@@ -77,7 +83,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.ROLE_WITHIN_TRUST,
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.ROLE_WITHIN_TRUST,
       "Legal entity " + legalEntity.name + " - type",
       "change-legal-entity-type-button"
     ) ]
@@ -94,7 +100,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#interestedPersonStartDate-interestedPersonStartDateDay",
+        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#interestedPersonStartDate-interestedPersonStartDateDay",
         "Legal entity " + legalEntity.name + " - date became an interested person",
         "change-legal-entity-beneficial-owner-became-interested-person-date-button"
       ) ]
@@ -111,7 +117,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#principal_address_property_name_number",
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#principal_address_property_name_number",
       "Legal entity " + legalEntity.name + " - home address",
       "change-legal-entity-residential-address-button"
     ) ]
@@ -128,7 +134,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangeServiceAddressHtml,
+        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangeServiceAddressHtml,
         "Legal entity " + legalEntity.name + " - correspondence address",
         "change-legal-entity-correspondence-address-button"
       ) ]
@@ -146,7 +152,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.PUBLIC_REGISTER_JURISDICTION,
+        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.PUBLIC_REGISTER_JURISDICTION,
         "Legal entity " + legalEntity.name + " - country formed in",
         "change-legal-entity-country-formed-in-button"
       ) ]
@@ -163,7 +169,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalForm",
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#legalForm",
       "Legal entity " + legalEntity.name + " - legal form",
       "change-legal-entity-legal-form-button"
     ) ]
@@ -179,7 +185,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#governingLaw",
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#governingLaw",
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-governing-law-button"
     ) ]
@@ -195,7 +201,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangePublicRegisterName,
+      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + legalEntityChangePublicRegisterName,
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-identification-registration-number-button"
     ) ]

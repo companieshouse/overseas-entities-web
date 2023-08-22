@@ -471,7 +471,7 @@ describe("GET tests", () => {
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page with trust data and feature flag on`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB flag returning true twice
-
+    APPLICATION_DATA_MOCK.entity_number = undefined;
     const mockAppData = {
       ...APPLICATION_DATA_MOCK,
       [TrustKey]: [

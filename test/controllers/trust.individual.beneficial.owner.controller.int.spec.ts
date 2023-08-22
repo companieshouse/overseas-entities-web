@@ -14,7 +14,7 @@ import request from "supertest";
 import { constants } from 'http2';
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
+import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
 import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { getTrustByIdFromApp } from '../../src/utils/trusts';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
@@ -37,7 +37,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
   beforeEach(() => {
     jest.clearAllMocks();
     (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-    (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+    (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
   });
 
   describe("POST tests", () => {

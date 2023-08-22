@@ -70,7 +70,7 @@ describe("hasValidStatements", () => {
         [
           "when some BOs identified and 1 active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
-        ]
+        ],
       ])(`%s`, (_, statementValue) => {
         const appData = {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
@@ -99,6 +99,10 @@ describe("hasValidStatements", () => {
         [
           "when some BOs identified and no active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        ],
+        [
+          "when no BOs identified and 1 active BO exists",
+          BeneficialOwnersStatementType.NONE_IDENTIFIED,
         ]
       ])(`%s`, (_, statementValue) => {
         const appData = {
@@ -112,7 +116,11 @@ describe("hasValidStatements", () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockCheckActiveBOExists.mockReturnValueOnce(false);
+        if (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED) {
+          mockCheckActiveBOExists.mockReturnValueOnce(true);
+        } else {
+          mockCheckActiveBOExists.mockReturnValueOnce(false);
+        }
 
         hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();

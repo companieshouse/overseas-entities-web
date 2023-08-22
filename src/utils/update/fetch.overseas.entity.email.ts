@@ -20,7 +20,7 @@ export const fetchOverseasEntityEmailAddress = async (appData: ApplicationData, 
   if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
     try {
       const privateOeDetails = await getPrivateOeDetails(req, transactionId, overseasEntityId);
-      if (privateOeDetails === undefined || privateOeDetails.email_address === undefined || privateOeDetails.email_address.length === 0) {
+      if (!privateOeDetails?.email_address?.length) {
         const message = `Private OE Details not found for overseas entity ${appData.entity_number}`;
         logger.infoRequest(req, message);
       } else {
@@ -32,7 +32,7 @@ export const fetchOverseasEntityEmailAddress = async (appData: ApplicationData, 
       }
     } catch (error) {
       const message = `Private OE Details could not be retrieved for overseas entity ${appData.entity_number}`;
-      logger.infoRequest(req, message);
+      logger.errorRequest(req, message);
     }
   }
 };

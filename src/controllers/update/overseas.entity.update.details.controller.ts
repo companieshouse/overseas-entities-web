@@ -24,9 +24,9 @@ import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overse
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-    const appData: ApplicationData = getApplicationData(req.session);
     const session = req.session as Session;
+
+    const appData: ApplicationData = getApplicationData(session);
 
     await fetchOverseasEntityEmailAddress(appData, req, session);
 

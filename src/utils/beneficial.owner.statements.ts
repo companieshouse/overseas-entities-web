@@ -33,7 +33,7 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
           backLinkUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
         }
       } else {
-        backLinkUrl = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+        backLinkUrl = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
       }
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }

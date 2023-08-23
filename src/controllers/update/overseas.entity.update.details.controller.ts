@@ -19,17 +19,22 @@ import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAd
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const session = req.session as Session;
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(session);
+
+    await fetchOverseasEntityEmailAddress(appData, req, session);
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
       : {};
+
     const serviceAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
       : {};

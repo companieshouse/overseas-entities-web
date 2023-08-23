@@ -12,7 +12,7 @@ import request from "supertest";
 import {
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE,
   UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL,
-  OVERSEAS_ENTITY_REVIEW_PAGE
+  OVERSEAS_ENTITY_UPDATE_DETAILS_URL
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -88,13 +88,13 @@ describe("Update review overseas entity information controller tests", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${OVERSEAS_ENTITY_REVIEW_PAGE} page after a successful post from ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page`, async () => {
+    test(`redirect to ${OVERSEAS_ENTITY_UPDATE_DETAILS_URL} page after a successful post from ${UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_REVIEW_PAGE);
+      expect(resp.header.location).toEqual(OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
     });
 
     test("catch error when posting the page", async () => {

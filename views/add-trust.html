@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
-{% set title = "Do you want to add another trust?" %}
-
+{% set title = pageParams.title %}
 {% block pageTitle %}
   {% include "includes/page-title.html" %}
 {% endblock %}
@@ -11,63 +10,5 @@
 {% endblock %}
 
 {% block content %}
-
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-      {% include "includes/list/errors.html" %}
-
-      <h1 class="govuk-heading-xl govuk-!-margin-10">{{ pageParams.title }}</h1>
-
-      {% for trust in pageData.trustData %}
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: trust.trust_name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.NAME,
-                "Trust " + trust.trust_name,
-                "change-trust-button"
-                ) ]
-              }
-            }
-          ]
-        }) 
-      }}
-    {% endfor %}
-
-      <form method="post">
-
-        {% set fieldParam = {
-          label: pageParams.subtitle,
-          name: 'addTrust',
-          error: errors.addTrust,
-          items: [
-            {
-              value: 1,
-              text: "Yes",
-              attributes: {
-                "data-event-id": "add-trust-yes-radio-option"
-              },
-              checked: formData.addTrust == 1
-            }, {
-              value: 0,
-              text: "No",
-              attributes: {
-                "data-event-id": "add-trust-no-radio-option"
-              },
-              checked: formData.addTrust == 0
-            }
-          ]
-        } %}
-        {% include "includes/inputs/radio-input.html" %}
-
-        {% include "includes/continue-button.html" %}
-
-      </form>
-    </div>
-  </div>
+  {% include "includes/page-templates/add-trust.html" %}
 {% endblock %}

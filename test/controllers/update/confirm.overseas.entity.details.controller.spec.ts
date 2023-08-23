@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { beforeEach, jest, describe } from "@jest/globals";
 import * as config from "../../../src/config";
@@ -34,6 +35,10 @@ import {
   UPDATE_OBJECT_MOCK
 } from "../../__mocks__/session.mock";
 import { UpdateKey } from "../../../src/model/update.type.model";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -155,6 +160,26 @@ describe("Confirm company data", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
+    });
+
+    test.each([
+      ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+      ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
+    ])(`redirect to update-filing-date if %s has trusts NOC but FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async (_, key, mockObject) => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      let appData = {};
+      appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
+      appData[UpdateKey] = {
+        ...UPDATE_OBJECT_MOCK,
+        [key]: [ mockObject ]
+      };
+
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW);
+      const resp = await request(app).post(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL).send({});
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.UPDATE_FILING_DATE_URL);
     });
 
     test('catch error when posting to the page', async () => {

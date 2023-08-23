@@ -3,6 +3,7 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
+jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -13,6 +14,7 @@ import {
   SECURE_UPDATE_FILTER_PAGE,
   SECURE_UPDATE_FILTER_URL,
   UPDATE_ANY_TRUSTS_INVOLVED_URL,
+  UPDATE_INTERRUPT_CARD_URL,
   UPDATE_LANDING_PAGE_URL
 } from "../../../src/config";
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -29,6 +31,9 @@ import { getApplicationData, setExtraData } from "../../../src/utils/application
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -83,12 +88,18 @@ describe("SECURE UPDATE FILTER controller", () => {
   });
 
   describe("POST tests", () => {
-    test("redirect to update interrupt card page if user selects no", async () => {
+    test.each([
+      ["update-any-trusts-involved if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = false", UPDATE_ANY_TRUSTS_INVOLVED_URL, false],
+      ["update-interrupt-card if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true", UPDATE_INTERRUPT_CARD_URL, true]
+    ])(`redirect to %s`, async (_, url, flagValue) => {
+      mockIsActiveFeature.mockReturnValueOnce(flagValue);
+
       const resp = await request(app)
         .post(SECURE_UPDATE_FILTER_URL)
         .send({ is_secure_register: '0' });
+
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(resp.header.location).toEqual(url);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

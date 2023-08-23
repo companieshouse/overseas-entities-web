@@ -1,6 +1,6 @@
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { v4 as uuidv4 } from "uuid";
-import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL, UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL, UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL } from "../config";
 import { ApplicationData } from "../model";
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
@@ -22,19 +22,27 @@ import { yesNoResponse } from "../model/data.types.model";
  * @param appData Application Data
  * @returns 'true' if any BO has a trustee "nature of control"
  */
-const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
-  if (appData) {
-    const allBenficialOwnersToCheck = beneficialOwnersThatCanBeTrustees(appData);
-
-    for (const benficialOwners of allBenficialOwnersToCheck) {
-      if (benficialOwners) {
-        if (containsTrusteeNatureOfControl(benficialOwners)) {
-          return true;
-        }
-      }
-    }
+const checkEntityRequiresTrusts = (appData: ApplicationData | undefined): boolean => {
+  if (!appData) {
+    return false;
   }
-  return false;
+  return containsTrusteeNatureOfControl(appData.beneficial_owners_individual ?? []) ||
+    containsTrusteeNatureOfControl(appData.beneficial_owners_corporate ?? []);
+};
+
+/**
+ * Checks whether any beneficial owners requires trust data to review due to at least one of them
+ * having a trustee "nature of control" of the overseas entity
+ *
+ * @param appData Application Data
+ * @returns @returns 'true' if any BO requring review has a trustee "nature of control"
+ */
+const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): boolean => {
+  if (!appData?.update) {
+    return false;
+  }
+  return containsTrusteeNatureOfControl(appData.update.review_beneficial_owners_individual ?? []) ||
+    containsTrusteeNatureOfControl(appData.update.review_beneficial_owners_corporate ?? []);
 };
 
 /**
@@ -45,20 +53,19 @@ const checkEntityRequiresTrusts = (appData: ApplicationData): boolean => {
  * @returns string URL to go to when starting the trust journey
  */
 const getTrustLandingUrl = (appData: ApplicationData): string => {
-
   if (containsTrustData(getTrustArray(appData))) {
     // Once naviation changes are agreed the following will change
-    return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
+    if (appData.entity_number !== undefined) {
+      return UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
+    } else {
+      return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
+    }
   }
-
-  return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
-};
-
-const beneficialOwnersThatCanBeTrustees = (appData: ApplicationData): (BeneficialOwnerIndividual[] | BeneficialOwnerOther[] | undefined)[] => {
-  return [
-    appData.beneficial_owners_individual,
-    appData.beneficial_owners_corporate,
-  ];
+  if (appData.entity_number !== undefined) {
+    return UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
+  } else {
+    return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;
+  }
 };
 
 const getBeneficialOwnerList = (appData: ApplicationData): BeneficialOwnerItem[] => {
@@ -457,6 +464,7 @@ function convertBooleanToYesNoResponse(apiYesNoResponse: yesNoResponse): yesNoRe
 
 export {
   checkEntityRequiresTrusts,
+  checkEntityReviewRequiresTrusts,
   getBeneficialOwnerList,
   getTrustByIdFromApp,
   getTrustArray,

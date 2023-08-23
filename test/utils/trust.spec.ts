@@ -16,6 +16,7 @@ import {
   getIndividualTrustee,
   getFormerTrusteesFromTrust,
   checkEntityRequiresTrusts,
+  checkEntityReviewRequiresTrusts,
   getTrustLandingUrl,
   getLegalEntityBosInTrust,
   getLegalEntityTrustee,
@@ -965,5 +966,88 @@ describe('Trust Utils method tests', () => {
   });
   test("no trust data so nothing happens in mapTrustApiReturnModelToWebModel", () => {
     mapTrustApiReturnModelToWebModel({});
+  });
+
+  describe('test checking for natures of control that imply trusts', () => {
+
+    test('when no BOs have trustee of a trust noc returns false', () => {
+      const appData = {
+      };
+
+      const result = checkEntityRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(false);
+    });
+
+    test('when no app data returns false', () => {
+      const appData = undefined;
+
+      const result = checkEntityRequiresTrusts(appData);
+      expect(result).toBe(false);
+    });
+
+    test('when corporate BOs have trustee of a trust noc returns true', () => {
+      const appData = {
+        beneficial_owners_corporate: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES] }]
+      };
+
+      const result = checkEntityRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(true);
+    });
+
+    test('when individual BOs have trustee of a trust noc returns true', () => {
+      const appData = {
+        beneficial_owners_individual: [{ trustees_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS, NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS] }]
+      };
+
+      const result = checkEntityRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(true);
+    });
+
+    test('when no BOs to review have trustee of a trust noc returns false', () => {
+      const appData = {
+        update: {
+        }
+      };
+
+      const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(false);
+    });
+
+    test('when no BOs to review as no update in app data returns false', () => {
+      const appData = {
+      };
+
+      const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(false);
+    });
+
+    test('when no BOs to review as no app data returns false', () => {
+      const appData = undefined;
+
+      const result = checkEntityReviewRequiresTrusts(appData);
+      expect(result).toBe(false);
+    });
+
+    test('when corporate BOs to review have trustee of a trust noc returns true', () => {
+      const appData = {
+        update: {
+          review_beneficial_owners_corporate: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL] }]
+        }
+      };
+
+      const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(true);
+    });
+
+    test('when individual BOs to review have trustee of a trust noc returns true', () => {
+      const appData = {
+        update: {
+          review_beneficial_owners_individual: [{ trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES] }]
+        }
+      };
+
+      const result = checkEntityReviewRequiresTrusts(appData as ApplicationData);
+      expect(result).toBe(true);
+    });
   });
 });

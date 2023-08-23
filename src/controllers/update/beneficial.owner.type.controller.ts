@@ -16,6 +16,8 @@ import { checkAndReviewBeneficialOwner } from "../../utils/update/review.benefic
 import { checkAndReviewManagingOfficers } from "../../utils/update/review.managing.officer";
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,8 +65,15 @@ export const post = (req: Request, res: Response) => {
 
 export const postSubmit = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
-  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+  const appData: ApplicationData = getApplicationData(req.session);
+  const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
+  let redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+    ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
+    : config.UPDATE_CHECK_YOUR_ANSWERS_URL;
+  if (requiresTrusts && isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)) {
+    redirectUrl = getTrustLandingUrl(appData);
+  }
+  return res.redirect(redirectUrl);
 };
 
 const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {

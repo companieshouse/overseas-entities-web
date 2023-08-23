@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { checkActiveBOExists, getApplicationData, hasNotAddedOrCeasedBos } from "../utils/application.data";
+import { checkActiveBOExists, getApplicationData, hasAddedOrCeasedABO } from "../utils/application.data";
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -35,11 +35,6 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
     return false;
   }
 
-  if (hasNotAddedOrCeasedBos(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
-    errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
-    return false;
-  }
-
   if (!allOrSomeBOsIdentified && checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.ACTIVE_REGISTRABLE_BO);
     return false;
@@ -48,6 +43,14 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
   return true;
 };
 
+const validateRegistrableBOStatements = (appData: ApplicationData, errorList: string[]): boolean => {
+  if (!hasAddedOrCeasedABO(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
+    errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
+    return false;
+  }
+  return true;
+};
+
 const checkStatementsValid = (appData: ApplicationData, errorList: string[]): boolean => {
-  return validateIdentifiedBOsStatement(appData, errorList);
+  return validateIdentifiedBOsStatement(appData, errorList) && validateRegistrableBOStatements(appData, errorList);
 };

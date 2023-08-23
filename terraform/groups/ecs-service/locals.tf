@@ -19,7 +19,7 @@ locals {
     "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
     "oauth2_redirect_uri"       = local.service_secrets["oauth2_redirect_uri"]
     "account_test_url"          = local.service_secrets["account_test_url"]
-    "account_url"               = "https://account.cidev.aws.chdev.org" #local.service_secrets["account_url"]
+    "account_url"               = local.service_secrets["account_url"]
     "cache_server"              = local.service_secrets["cache_server"]
     "oauth2_client_id"          = local.service_secrets["oauth2_client_id"]
     "oauth2_client_secret"      = local.service_secrets["oauth2_client_secret"]

@@ -48,6 +48,7 @@ import {
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
@@ -492,23 +493,25 @@ describe("Application data utils", () => {
 
   test.each([
     [
-      "no beneficial owner returns false",
+      "no managing officers returns false",
       APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
       false
     ],
     [
-      "no active beneficial owners returns false",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF] },
+      "no active managing officer returns false",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [UPDATE_MANAGING_OFFICER_OBJECT_MOCK] },
       false
     ],
     [
-      "1 active beneficial owner, with no ceased_date key, returns true",
-      APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+      "1 active managing officer, with no resigned_on key, returns true",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK] },
       true
     ],
     [
-      "1 active beneficial owner, with empty ceased_date, returns true",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK] },
+      "1 active managing officer, with empty resigned_on, returns true",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]:
+        [{ ...MANAGING_OFFICER_OBJECT_MOCK, resigned_on: {} }]
+      },
       true
     ]
   ])(`checkActiveMOExists with %s returns expected array`, (_, appData, expectedResult) => {

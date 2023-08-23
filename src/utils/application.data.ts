@@ -69,7 +69,7 @@ export const allManagingOfficers = (appData: ApplicationData) => {
     ...(appData[ManagingOfficerKey] ?? []),
     ...(appData[ManagingOfficerCorporateKey] ?? []),
     ...(appData.update?.review_managing_officers_individual ?? []),
-    ...(appData.update?.review_managing_officers_corporate ?? []),
+    ...(appData.update?.review_managing_officers_corporate ?? [])
   ];
 };
 

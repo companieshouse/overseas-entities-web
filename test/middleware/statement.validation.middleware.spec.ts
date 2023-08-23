@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { hasValidStatements } from '../../src/middleware/statement.validation.middleware';
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getApplicationData, checkActiveBOExists } from "../../src/utils/application.data";
+import { getApplicationData, checkActiveBOExists, hasNotAddedOrCeasedBos } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
@@ -25,6 +25,7 @@ const next = jest.fn();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
+const mockHasNotAddedOrCeasedBOs = hasNotAddedOrCeasedBos as jest.Mock;
 
 describe("hasValidStatements", () => {
 
@@ -70,7 +71,7 @@ describe("hasValidStatements", () => {
         [
           "when some BOs identified and 1 active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
-        ]
+        ],
       ])(`%s`, (_, statementValue) => {
         const appData = {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
@@ -84,6 +85,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
+        mockHasNotAddedOrCeasedBOs.mockReturnValueOnce(false);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();
@@ -99,6 +101,10 @@ describe("hasValidStatements", () => {
         [
           "when some BOs identified and no active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+        ],
+        [
+          "when no BOs identified and 1 active BO exists",
+          BeneficialOwnersStatementType.NONE_IDENTIFIED,
         ]
       ])(`%s`, (_, statementValue) => {
         const appData = {
@@ -112,7 +118,12 @@ describe("hasValidStatements", () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
-        mockCheckActiveBOExists.mockReturnValueOnce(false);
+        if (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED) {
+          mockCheckActiveBOExists.mockReturnValueOnce(true);
+        } else {
+          mockCheckActiveBOExists.mockReturnValueOnce(false);
+        }
+        mockHasNotAddedOrCeasedBOs.mockReturnValueOnce(false);
 
         hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();

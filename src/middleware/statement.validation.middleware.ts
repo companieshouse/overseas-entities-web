@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { allBeneficialOwners, checkActiveBOExists, getApplicationData } from "../utils/application.data";
+import { checkActiveBOExists, getApplicationData, hasNotAddedOrCeasedBos } from "../utils/application.data";
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -15,7 +15,6 @@ import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 export const hasValidStatements = (req: Request, res: Response, next: NextFunction) => {
   const errorList: string[] = [];
   const appData: ApplicationData = getApplicationData(req.session as Session);
-
   if (
     isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) &&
     !checkStatementsValid(appData, errorList)
@@ -41,19 +40,14 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
     return false;
   }
 
+  if (!allOrSomeBOsIdentified && checkActiveBOExists(appData)) {
+    errorList.push(ErrorMessages.ACTIVE_REGISTRABLE_BO);
+    return false;
+  }
+
   return true;
 };
 
 const checkStatementsValid = (appData: ApplicationData, errorList: string[]): boolean => {
   return validateIdentifiedBOsStatement(appData, errorList);
-};
-
-const hasNotAddedOrCeasedBos = (appData: ApplicationData): boolean => {
-  if (allBeneficialOwners(appData).some((bo) => (!bo.ceased_date || Object.keys(bo.ceased_date).length !== 0))) {
-    return false;
-  }
-  if (allBeneficialOwners(appData).some(bo => bo.ch_reference === undefined)) {
-    return false;
-  }
-  return true;
 };

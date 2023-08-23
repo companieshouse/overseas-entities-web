@@ -1724,28 +1724,6 @@ export const APPLICATION_DATA_MANAGING_INDIVIDUAL_UPDATE_REVIEW_MO: ApplicationD
   ...APPLICATION_DATA_UPDATE_MO_MOCK[updateType.UpdateKey] = UPDATE_OWNERS_DATA_WITH_VALUE,
 };
 
-export const APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK: ApplicationData = {
-  [EntityNameKey]: OVERSEAS_NAME_MOCK,
-  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
-  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
-  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
-  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
-  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
-  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
-  [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
-  [PaymentKey]: PAYMENT_OBJECT_MOCK,
-  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
-  [Transactionkey]: TRANSACTION_ID,
-  [HasSoldLandKey]: hasSoldLandKey,
-  [IsSecureRegisterKey]: isSecureRegisterKey,
-  [TrustKey]: [],
-  [EntityNumberKey]: COMPANY_NUMBER,
-  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
-};
-
 export const serviceNameOE = "overseasEntity";
 export const fnNamePutOE = "putOverseasEntity";
 export const fnNamePostOE = "postOverseasEntity";

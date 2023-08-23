@@ -4,7 +4,6 @@ import * as config from "../config";
 import { ApplicationData } from "../model/application.model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
-import { isActiveFeature } from "./feature.flag";
 
 export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
@@ -12,6 +11,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
     const appData: ApplicationData = getApplicationData(req.session);
     let templateName: string;
     let backLinkUrl: string;
+
     if (noChangeFlag){
       backLinkUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       templateName = config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE;
@@ -24,8 +24,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
       templateName: templateName,
       appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
-      noChangeFlag,
-      statementValidationFlag: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+      noChangeFlag
     });
   } catch (error) {
     next(error);
@@ -45,10 +44,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
     if (noChangeFlag){
       noChangeHandler(req, res, next, isRegistrableBeneficialOwner);
     } else {
-      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-        : config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-      return res.redirect(redirectUrl);
+      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
     }
   } catch (error) {
     next(error);
@@ -57,11 +53,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
 
 const noChangeHandler = (req: Request, res: Response, next: NextFunction, registrableOwnerChoice) => {
   if (registrableOwnerChoice === "0"){
-    const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-      ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-      : config.UPDATE_REVIEW_STATEMENT_URL;
-
-    return res.redirect(redirectUrl);
+    return res.redirect(config.UPDATE_REVIEW_STATEMENT_URL);
   } else {
     return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
   }

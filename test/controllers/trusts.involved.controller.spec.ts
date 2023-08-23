@@ -20,7 +20,7 @@ import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE } from '../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import {
   ADD_TRUST_URL,
   TRUST_ENTRY_URL,
@@ -30,9 +30,9 @@ import {
   TRUST_INVOLVED_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
 } from '../../src/config';
-import { get, post } from "../../src/controllers/trust.involved.controller";
+import { get, post, TRUST_INVOLVED_TEXTS } from "../../src/controllers/trust.involved.controller";
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
+import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { TrusteeType } from '../../src/model/trustee.type.model';
 import { getApplicationData } from '../../src/utils/application.data';
@@ -290,7 +290,7 @@ describe('Trust Involved controller', () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -302,10 +302,10 @@ describe('Trust Involved controller', () => {
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
-      expect(resp.text).toContain(TRUST_INVOLVED_TITLE);
+      expect(resp.text).toContain(TRUST_INVOLVED_TEXTS.title);
       expect(resp.text).toContain(mockTrustData.trustName);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
 
     test(`successfully access POST method`, async () => {

@@ -1,5 +1,4 @@
 jest.mock('../../src/utils/feature.flag');
-jest.mock('../../src/utils/application.data');
 
 import { describe, expect, jest, test } from '@jest/globals';
 
@@ -8,10 +7,8 @@ import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.i
 
 import { NAVIGATION, getEntityBackLink, getSoldLandFilterBackLink } from "../../src/utils/navigation";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-const mockGetApplicationData = getApplicationData as jest.Mock;
 
 describe("NAVIGATION utils", () => {
 
@@ -240,13 +237,5 @@ describe("NAVIGATION utils", () => {
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_PRESENTER_URL} when calling previousPage on ${config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL].previousPage();
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
-  });
-
-  test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL} when in change journey and calling previousPage on ${config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL} object`, () => {
-    mockGetApplicationData.mockReturnValue({
-      update: { no_change: false },
-    });
-    const navigation = NAVIGATION[config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL].previousPage();
-    expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
   });
 });

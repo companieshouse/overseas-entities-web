@@ -31,7 +31,6 @@ import {
   FULL_PAYMENT_REDIRECT_PATH,
   PAYMENT_HEADER
 } from '../__mocks__/session.mock';
-import * as config from '../../src/config';
 import { createAndLogErrorRequest, logger } from "../../src/utils/logger";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { authentication } from "../../src/middleware/authentication.middleware";
@@ -71,8 +70,6 @@ const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockMapTrustApiReturnModelToWebModel = mapTrustApiReturnModelToWebModel as jest.Mock;
-
-const baseURL = `${config.CHS_URL}${config.REGISTER_AN_OVERSEAS_ENTITY_URL}`;
 
 describe("Resume submission controller", () => {
 
@@ -162,8 +159,7 @@ describe("Resume submission controller", () => {
       undefined,
       TRANSACTION_ID,
       OVERSEAS_ENTITY_ID,
-      { headers: PAYMENT_HEADER },
-      baseURL
+      { headers: PAYMENT_HEADER }
     );
     expect(mockInfoRequest).toHaveBeenCalledWith( expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
     expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);
@@ -191,8 +187,7 @@ describe("Resume submission controller", () => {
       undefined,
       TRANSACTION_ID,
       OVERSEAS_ENTITY_ID,
-      { headers: PAYMENT_HEADER },
-      baseURL
+      { headers: PAYMENT_HEADER }
     );
     expect(mockInfoRequest).toHaveBeenCalledWith( expect.anything(), `Payments Session created on Resume link with, ${errorMsg}`);
     expect(mockGetOverseasEntity).toHaveBeenCalledTimes(1);

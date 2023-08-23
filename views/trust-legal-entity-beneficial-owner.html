@@ -11,5 +11,143 @@
 {% endblock %}
 
 {% block content %}
-  {% include "includes/page-templates/trust-legal-entity-bo.html" %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <br> <p class="govuk-body">You can add more later.</p> <br>
+
+      <form class="form" method="post">
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+        {% set interestedPersonDateHtml %}
+          <br>
+          {% set fieldParam = {
+            name: 'interestedPersonStartDate',
+            label: 'What date did it become an interested person?',
+            value: {
+              'Day': formData.interestedPersonStartDateDay,
+              'Month': formData.interestedPersonStartDateMonth,
+              'Year': formData.interestedPersonStartDateYear
+            },
+            classes: 'govuk-fieldset__legend--s',
+            error: errors.interestedPersonStartDate if errors
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endset -%}
+
+        {% set fieldParam = {
+          name: 'legalEntityName',
+          label: 'What is its name?',
+          value: formData.legalEntityName,
+          error: errors.legalEntityName if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'roleWithinTrust',
+          label: 'What is its role within the trust?',
+          value: formData.roleWithinTrust,
+          error: errors.roleWithinTrust if errors,
+          items: [
+            {
+              value: pageData.roleWithinTrustType.BENEFICIARY,
+              text: "Beneficiary",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
+              attributes: {
+                "data-event-id": "beneficiaries-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.SETTLOR,
+              text: "Settlor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
+              attributes: {
+                "data-event-id": "settlors-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.GRANTOR,
+              text: "Grantor",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
+              attributes: {
+                "data-event-id": "grantors-type-radio-option"
+              }
+            }, {
+              value: pageData.roleWithinTrustType.INTERESTED_PERSON,
+              text: "Interested Person",
+              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
+              attributes: {
+                "data-event-id": "interested-persons-type-radio-option"
+              },
+              conditional: {
+                html: interestedPersonDateHtml
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {% set principal_address_property_name_number = formData.principal_address_property_name_number %}
+        {% set principal_address_line_1 = formData.principal_address_line_1 %}
+        {% set principal_address_line_2 = formData.principal_address_line_2 %}
+        {% set principal_address_town = formData.principal_address_town %}
+        {% set principal_address_county = formData.principal_address_county %}
+        {% set principal_address_country = formData.principal_address_country %}
+        {% set principal_address_postcode = formData.principal_address_postcode %}
+        {% set is_service_address_same_as_principal_address = formData.is_service_address_same_as_principal_address %}
+
+        {% set service_address_property_name_number = formData.service_address_property_name_number %}
+        {% set service_address_line_1 = formData.service_address_line_1 %}
+        {% set service_address_line_2 = formData.service_address_line_2 %}
+        {% set service_address_town = formData.service_address_town %}
+        {% set service_address_county = formData.service_address_county %}
+        {% set service_address_country = formData.service_address_country %}
+        {% set service_address_postcode = formData.service_address_postcode %}
+        {% include "includes/inputs/address/principal-address-input.html" %}
+
+        {% set fieldParam = {
+          name: 'legalForm',
+          label: 'What is its legal form?',
+          value: formData.legalForm,
+          hint: 'For example, limited company',
+          error: errors.legalForm if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'governingLaw',
+          label: 'What is the governing law?',
+          value: formData.governingLaw,
+          hint: 'This is the law that the entity operates under.',
+          error: errors.governingLaw if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set registerInCountryFormedText = "Is it already on a public register in the country it was formed in?" %}
+        {% set registerHintText = "Include the full name. For example, Jersey Financial Services Commission." %}
+        {% set includeJurisdiction = true %}
+        {% set registrationNumberText = "Entity’s registration number" %}
+        {% set is_on_register_in_country_formed_in = formData.is_on_register_in_country_formed_in %}
+        {% set public_register_name = formData.public_register_name %}
+        {% set public_register_jurisdiction = formData.public_register_jurisdiction %}
+        {% set registration_number = formData.registration_number %}
+        {% include "includes/inputs/fields/is-on-register-in-country-formed-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="legalEntityId" value="{{ formData.legalEntityId }}"/>
+
+        {% include "includes/save-and-continue-button.html" %}
+      </form>
+    </div>
+  </div>
 {% endblock %}

@@ -6,13 +6,6 @@
 {% endset %}
 
 {% if pageParams.isTrustFeatureEnabled %}
-
-  {% if pageParams.isRegistration %}
-    {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
-  {% else %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL %}
-  {% endif %}
-
   {% set trustCreationDate = dateMacros.formatDate(trust.creation_date_day, trust.creation_date_month, trust.creation_date_year) %}
   {{ govukSummaryList({
     rows: [
@@ -25,7 +18,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.NAME,
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.NAME,
             "Trust " + trust.trust_name + " -  name",
             "change-trust-name-button"
           ) ]
@@ -40,7 +33,7 @@
         },
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.CREATED_DATE,
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.CREATED_DATE,
             "Trust " + trust.trust_name + " -  created date",
             "change-trust-created-date-button"
           ) ]
@@ -55,7 +48,7 @@
         },  
         actions: {
           items: [ CREATE_CHANGE_LINK(
-            changeLinkUrl + "/" + trust.trust_id + OE_CONFIGS.TRUST_BENEFICIAL_OWNERS,
+            OE_CONFIGS.TRUST_DETAILS_URL + "/" + trust.trust_id + OE_CONFIGS.TRUST_BENEFICIAL_OWNERS,
             "Trust " + trust.trust_name + " -  Beneficial Owner",
             "change-beneficial-owner-button"
           ) ]

@@ -29,6 +29,7 @@ export const hasValidStatements = (req: Request, res: Response, next: NextFuncti
 
 const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: string[]): boolean => {
   const allOrSomeBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS);
+  const someOrNoneBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED);
 
   if (allOrSomeBOsIdentified && !checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.NO_ACTIVE_REGISTRABLE_BO);
@@ -42,7 +43,11 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
     errorList.push(ErrorMessages.ACTIVE_MO);
   }
 
-  if (errorList.length) {
+  if (someOrNoneBOsIdentified && !checkActiveMOExists(appData)) {
+    errorList.push(ErrorMessages.NO_ACTIVE_MO);
+  }
+
+  if (errorList.length){
     return false;
   }
 

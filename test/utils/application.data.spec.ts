@@ -16,8 +16,8 @@ import {
   checkGivenBoOrMoDetailsExist,
   allBeneficialOwners,
   checkActiveBOExists,
-  allManagingOfficers,
-  checkActiveMOExists
+  checkActiveMOExists,
+  allManagingOfficers
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -46,8 +46,6 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 import {
@@ -448,47 +446,36 @@ describe("Application data utils", () => {
 
   test.each([
     [
-      "1 individual MO",
+      "1 managing officer",
       ManagingOfficerKey,
       MANAGING_OFFICER_OBJECT_MOCK
     ],
     [
-      "1 corporate MO",
+      "1 managing officer corporate",
       ManagingOfficerCorporateKey,
       MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
     ]
   ])(`allManagingOfficers with %s returns expected`, (_, moKey, moMock) => {
-    const allMOs = allManagingOfficers({ [moKey]: [moMock] });
+    const allBOs = allManagingOfficers({ [moKey]: [moMock] });
 
-    expect(allMOs).toEqual([moMock]);
+    expect(allBOs).toEqual([moMock]);
   });
 
   test.each([
     [
-      "1 individual MO for review",
+      "1 managing officer for review",
       "review_managing_officers_individual",
-      MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
+      MANAGING_OFFICER_OBJECT_MOCK
     ],
     [
-      "1 corporate MO for review",
+      "1 managing officer corporate for review",
       "review_managing_officers_corporate",
-      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF
+      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
     ]
   ])(`allManagingOfficers with %s returns expected array`, (_, moKey, moMock) => {
-    const allMOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
+    const allBOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
 
-    expect(allMOs).toEqual([moMock]);
-  });
-
-  test("allManagingOfficers with 1 of each MO type returns array of all", () => {
-    const allMOs = allManagingOfficers({ ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OWNERS_DATA_WITH_VALUE });
-
-    expect(allMOs).toEqual([
-      MANAGING_OFFICER_OBJECT_MOCK,
-      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-      MANAGING_OFFICER_OBJECT_MOCK,
-      MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
-    ]);
+    expect(allBOs).toEqual([moMock]);
   });
 
   test.each([

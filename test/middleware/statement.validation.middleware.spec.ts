@@ -72,7 +72,7 @@ describe("hasValidStatements", () => {
           BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
         ],
         [
-          "when some BOs identified and 1 active BO exists",
+          "when some BOs identified and 1 active BO and MO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
         ]
       ])(`%s`, (_, statementValue) => {
@@ -80,6 +80,7 @@ describe("hasValidStatements", () => {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
           [BeneficialOwnerStatementKey]: statementValue,
           [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+          [ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF],
           [UpdateKey]: {
             ...UPDATE_OBJECT_MOCK,
             [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
@@ -88,6 +89,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
+        mockCheckActiveMOExists.mockReturnValueOnce(true);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();
@@ -101,14 +103,42 @@ describe("hasValidStatements", () => {
           BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
           false,
           false,
-          ["There are no active registrable beneficial owners."],
+          ["There are no active registrable beneficial owners."]
         ],
         [
           "when some BOs identified and 0 active BO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
           false,
           false,
+          ["There are no active registrable beneficial owners.", "There are no active managing officers."]
+        ],
+        [
+          "when some BOs identified, 1 active BO exists and 0 active MO exists",
+          BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+          true,
+          false,
+          ["There are no active managing officers."]
+        ],
+        [
+          "when some BOs identified, 0 active BO exists and 1 active MO exists",
+          BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
+          false,
+          true,
           ["There are no active registrable beneficial owners."]
+        ],
+        [
+          "when no BOs identified, 1 active BO exists and 0 active MO exists",
+          BeneficialOwnersStatementType.NONE_IDENTIFIED,
+          true,
+          false,
+          ["There is at least one active registrable beneficial owner.", "There are no active managing officers."]
+        ],
+        [
+          "when no BOs identified, 1 active BO exists and 1 active MO exists",
+          BeneficialOwnersStatementType.NONE_IDENTIFIED,
+          true,
+          true,
+          ["There is at least one active registrable beneficial owner."]
         ],
         [
           "when all BOs identified and 1 active MO exists",

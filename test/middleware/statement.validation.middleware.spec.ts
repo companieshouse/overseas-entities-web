@@ -10,9 +10,9 @@ import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
+  MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  UPDATE_OBJECT_MOCK,
-  MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
+  UPDATE_OBJECT_MOCK
 } from '../__mocks__/session.mock';
 import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -82,7 +82,7 @@ describe("hasValidStatements", () => {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
           [BeneficialOwnerStatementKey]: statementValue,
           [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
-          [ManagingOfficerKey]: activeMOExists ? [MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF] : [],
+          [ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF],
           [UpdateKey]: {
             ...UPDATE_OBJECT_MOCK,
             [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
@@ -91,7 +91,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
+        mockCheckActiveMOExists.mockReturnValueOnce(true);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();

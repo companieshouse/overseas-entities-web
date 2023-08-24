@@ -30,7 +30,6 @@ export const hasValidStatements = (req: Request, res: Response, next: NextFuncti
 const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: string[]): boolean => {
   const allOrSomeBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS);
   const someOrNoneBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED);
-
   const allBOs: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
 
   if (allOrSomeBOsIdentified && !checkActiveBOExists(appData)) {

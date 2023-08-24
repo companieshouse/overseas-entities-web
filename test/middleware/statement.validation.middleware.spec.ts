@@ -91,7 +91,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockCheckActiveMOExists.mockReturnValueOnce(true);
+        mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();

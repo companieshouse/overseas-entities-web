@@ -12,13 +12,6 @@
 {% set formerTrusteeEndDate = dateMacros.formatDate(formerTrustee.ceased_date_day, formerTrustee.ceased_date_month, formerTrustee.ceased_date_year) %}
 
 
-{% if isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
-{% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL%}
-{% endif %}
-
-
 {# Build and add each govukSummaryList row separately so that some rows can be optional #}
 {% set rows=[] %}
 
@@ -31,7 +24,7 @@
   },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + formerTrusteeChangeName,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + formerTrusteeChangeName,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
@@ -47,7 +40,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_START_DATE,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_START_DATE,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
@@ -63,7 +56,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_END_DATE,
+      OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_END_DATE,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]

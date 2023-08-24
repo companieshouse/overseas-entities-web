@@ -6,7 +6,6 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/utils/save.and.continue');
-jest.mock('../../../src/utils/feature.flag');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -24,7 +23,6 @@ import {
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
   CONTINUE_BUTTON_TEXT,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
 } from "../../__mocks__/text.mock";
 import {
   BeneficialOwnerStatementKey,
@@ -38,7 +36,6 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import * as config from "../../../src/config";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -55,8 +52,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
@@ -75,22 +70,6 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
-      // TODO: UAR-369 control
-      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
-    });
-
-    test("renders the beneficial owner statements page with statement validation flag on and trusts flag on ", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
-      expect(resp.text).toContain(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
-      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
-      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_BACK_LINK);
       // TODO: UAR-369 control
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
     });

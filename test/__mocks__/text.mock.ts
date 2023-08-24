@@ -87,7 +87,6 @@ export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";
 export const TRUST_INTERRUPT_PAGE = 'trust-interrupt';
-export const TRUST_INVOLVED_TITLE = 'Individuals or entities involved in the trust';
 export const TRUSTS_URL = "trusts";
 export const RADIO_BUTTON_YES_SELECTED = "value=\"1\" checked";
 export const RADIO_BUTTON_NO_SELECTED = "value=\"0\" checked";
@@ -150,7 +149,6 @@ export const SANCTIONS_HINT_TEXT_THEY = "This means that they are subject to san
 export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanctions under the Sanctions and Anti-Money Laundering Act 2018";
 export const TRUSTS_NOC_HEADING = "The beneficial owner is a trustee of a trust";
 export const EMAIL_ADDRESS_USE_AUTH_CODE_TEXT = "the authentication code, if requested - you'll need this to file online for the entity in future";
-export const TRUST_SUMMARY_HEADING = "Trusts associated with the overseas entity";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
@@ -197,7 +195,6 @@ export const UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT = "/update-an-overseas-en
 export const UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER = "/update-an-overseas-entity/review-beneficial-owner-other?index=";
 export const UPDATE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers";
 export const UPDATE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/update-beneficial-owner-type";
-export const UPDATE_CHECK_YOUR_ANSWERS_WITH_STATEMENT_VALIDATION_BACK_LINK = "/update-an-overseas-entity/update-registrable-beneficial-owner";
 export const UPDATE_CONFIRMATION_PAGE_TITLE = "Update statement submitted";
 export const UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER = "Your application reference number:";
 export const UPDATE_DUE_DILIGENCE_PAGE_TITLE = "Complete this statement to confirm that verification checks have been completed";
@@ -237,7 +234,3 @@ export const NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE
 export const BENEFICIAL_OWNER_HEADING = "Beneficial owners";
 export const CONFIRMATION_AGENT_SPECIFIC_TEXT = "Once we have received the statement from the agent";
 export const CONFIRMATION_UPDATE_TEXT = "if the update statement has been accepted or rejected";
-export const UPDATE_TELL_US_ABOUT_TRUST_HEADING = "Tell us about the trust";
-export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trust?";
-export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";
-export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/update-trusts-associated-with-overseas-entity";

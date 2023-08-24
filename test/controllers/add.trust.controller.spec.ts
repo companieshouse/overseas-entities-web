@@ -16,10 +16,10 @@ import { Session } from '@companieshouse/node-session-handler';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
 import { getApplicationData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
-import { hasTrustDataRegister } from "../../src/middleware/navigation/has.trust.middleware";
+import { hasTrustData } from "../../src/middleware/navigation/has.trust.middleware";
 import { Trust, TrustKey } from "../../src/model/trust.model";
 import { generateTrustId } from "../../src/utils/trust/details.mapper";
-import { get, post } from "../../src/controllers/add.trust.controller";
+import { get, ADD_TRUST_TEXTS, post } from "../../src/controllers/add.trust.controller";
 import { constants } from "http2";
 import { ErrorMessages } from "../../src/validation/error.messages";
 
@@ -129,7 +129,7 @@ describe("Add Trust Controller Tests", () => {
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrustDataRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustData as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test(`successfully access GET method`, async () => {
@@ -137,11 +137,11 @@ describe("Add Trust Controller Tests", () => {
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain('Trusts associated with the overseas entity');
+      expect(resp.text).toContain(ADD_TRUST_TEXTS.title);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrustDataRegister).toBeCalledTimes(1);
+      expect(hasTrustData).toBeCalledTimes(1);
     });
 
     test(`successfully access POST method`, async () => {

@@ -49,20 +49,15 @@ import {
   overseasEntityUpdateDetails,
   overseasEntityPresenter,
   whoIsMakingUpdate,
+  updateCheckYourAnswers,
   updateDueDiligence,
   updateDueDiligenceOverseasEntity,
   updateConfirmation,
   paymentFailed,
+  updateBeneficialOwnerType,
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
   updateBeneficialOwnerStatements,
-  updateBeneficialOwnerType,
-  updateTrustsSubmissionInterrupt,
-  updateTrustsTellUsAboutIt,
-  updateTrustsIndividualsOrEntitiesInvolved,
-  updateTrustsAssociatedWithEntity,
-  updateTrustHistoricalBeneficialOwner,
-  updateCheckYourAnswers,
   updateSignOut,
   updateBeneficialOwnerOther,
   confirmToRemove,
@@ -83,10 +78,7 @@ import {
   doYouWantToMakeOeChange,
   noChangeBeneficialOwnerStatement,
   noChangeRegistrableBeneficialOwner,
-  updateReviewStatement,
-  updateTrustsIndividualBeneficialOwner,
-  updateTrustsLegalEntityBeneficialOwner,
-  updateStatementValidationErrors
+  updateReviewStatement
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -94,10 +86,8 @@ import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
 import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
-import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
-import { hasValidStatements } from "../middleware/statement.validation.middleware";
 
 const router = Router();
 
@@ -240,7 +230,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrustDataRegister,
+    navigation.hasTrustData,
   )
   .get(addTrust.get)
   .post(...validator.addTrust, addTrust.post);
@@ -260,7 +250,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrustWithIdRegister,
+    navigation.hasTrustWithId,
   )
   .get(trustInvolved.get)
   .post(
@@ -273,7 +263,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrustWithIdRegister,
+    navigation.hasTrustWithId,
   )
   .get(trustHistoricalbeneficialOwner.get)
   .post(...validator.trustHistoricalBeneficialOwner, trustHistoricalbeneficialOwner.post);
@@ -283,7 +273,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrustWithIdRegister,
+    navigation.hasTrustWithId,
   )
   .get(trustIndividualbeneficialOwner.get)
   .post(...validator.trustIndividualBeneficialOwner, trustIndividualbeneficialOwner.post);
@@ -293,7 +283,7 @@ router
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
-    navigation.hasTrustWithIdRegister,
+    navigation.hasTrustWithId,
   )
   .get(trustLegalEntitybeneficialOwner.get)
   .post(...validator.trustLegalEntityBeneficialOwnerValidator, trustLegalEntitybeneficialOwner.post);
@@ -468,82 +458,6 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
-
-router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-  )
-  .get(navigation.hasAnyBosWithTrusteeNocs, updateTrustsSubmissionInterrupt.get)
-  .post(updateTrustsSubmissionInterrupt.post);
-
-router.route(config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL + config.TRUST_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter
-  )
-  .get(updateTrustsTellUsAboutIt.get)
-  .post(...validator.trustDetails, updateTrustsTellUsAboutIt.post);
-
-router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-  )
-  .get(updateTrustsIndividualsOrEntitiesInvolved.get)
-  .post(...validator.trustInvolved, updateTrustsIndividualsOrEntitiesInvolved.post);
-
-router
-  .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-    navigation.hasTrustWithIdUpdate,
-  )
-  .get(updateTrustHistoricalBeneficialOwner.get)
-  .post(...validator.trustHistoricalBeneficialOwner, updateTrustHistoricalBeneficialOwner.post);
-
-router
-  .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-    navigation.hasTrustWithIdUpdate,
-  )
-  .get(updateTrustsLegalEntityBeneficialOwner.get)
-  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateTrustsLegalEntityBeneficialOwner.post);
-
-router.route(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-    navigation.hasTrustDataUpdate,
-  )
-  .get(updateTrustsAssociatedWithEntity.get)
-  .post(...validator.addTrust, updateTrustsAssociatedWithEntity.post);
-
-router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-    navigation.hasTrustWithIdUpdate
-  )
-  .get(updateTrustsIndividualBeneficialOwner.get)
-  .post(...validator.trustIndividualBeneficialOwner, updateTrustsIndividualBeneficialOwner.post);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
   .all(
@@ -762,28 +676,12 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
-  .all(
-    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication
-  )
+  .all(authentication)
   .get(updateTrustsSubmitByPaper.get);
 
 router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
-  .all(
-    isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
-    authentication
-  )
+  .all(authentication)
   .get(updateAnyTrustsInvolved.get)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
-
-router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION),
-    authentication,
-    companyAuthentication,
-    navigation.hasUpdatePresenter,
-  )
-  .get(hasValidStatements, updateStatementValidationErrors.get)
-  .post(...validator.statementResolution, updateStatementValidationErrors.post);
 
 export default router;

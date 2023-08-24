@@ -13,9 +13,7 @@ import {
   checkBOsDetailsEntered,
   checkMOsDetailsEntered,
   findBoOrMo,
-  checkGivenBoOrMoDetailsExist,
-  allBeneficialOwners,
-  checkActiveBOExists
+  checkGivenBoOrMoDetailsExist
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -30,18 +28,6 @@ import {
   getSessionRequestWithPermission,
   MO_IND_ID,
   MO_CORP_ID,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
-  UPDATE_OWNERS_DATA_WITH_VALUE,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-  REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
-  UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK,
-  APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
-  APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
 } from "../__mocks__/session.mock";
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
@@ -58,7 +44,6 @@ import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.i
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-import { UpdateKey } from "../../src/model/update.type.model";
 
 let req: Request;
 
@@ -355,87 +340,5 @@ describe("Application data utils", () => {
     req.session = session;
     const bo: BeneficialOwnerGov = getFromApplicationData(req, BeneficialOwnerGovKey, undefined as unknown as string, false);
     expect(bo).toBeUndefined;
-  });
-
-  test.each([
-    [
-      "1 individual BO",
-      BeneficialOwnerIndividualKey,
-      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK
-    ],
-    [
-      "1 other BO",
-      BeneficialOwnerOtherKey,
-      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-    ],
-    [
-      "1 gov BO",
-      BeneficialOwnerGovKey,
-      BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-    ]
-  ])(`allBeneficialOwners with %s returns expected`, (_, boKey, boMock) => {
-    const allBOs = allBeneficialOwners({ [boKey]: [boMock] });
-
-    expect(allBOs).toEqual([boMock]);
-  });
-
-  test.each([
-    [
-      "1 individual BO for review",
-      "review_beneficial_owners_individual",
-      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF
-    ],
-    [
-      "1 other BO for review",
-      "review_beneficial_owners_corporate",
-      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF
-    ],
-    [
-      "1 gov BO for review",
-      "review_beneficial_owners_government_or_public_authority",
-      BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF
-    ],
-  ])(`allBeneficialOwners with %s returns expected array`, (_, boKey, boMock) => {
-    const allBOs = allBeneficialOwners({ [UpdateKey]: { [boKey]: [boMock] } });
-
-    expect(allBOs).toEqual([boMock]);
-  });
-
-  test("allBeneficialOwners with 1 of each BO type returns array of all", () => {
-    const allBOs = allBeneficialOwners({ ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OWNERS_DATA_WITH_VALUE });
-
-    expect(allBOs).toEqual([
-      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
-      BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
-      UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK,
-      REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA
-    ]);
-  });
-
-  test.each([
-    [
-      "no beneficial owners returns false",
-      APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
-      false
-    ],
-    [
-      "no active beneficial owners returns false",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF] },
-      false
-    ],
-    [
-      "1 active beneficial owner, with no ceased_date key, returns true",
-      APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
-      true
-    ],
-    [
-      "1 active beneficial owner, with empty ceased_date, returns true",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK] },
-      true
-    ]
-  ])(`checkActiveBOExists with %s returns expected array`, (_, appData, expectedResult) => {
-    expect(checkActiveBOExists(appData)).toBe(expectedResult);
   });
 });

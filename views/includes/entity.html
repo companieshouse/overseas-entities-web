@@ -17,11 +17,7 @@
 
 {% set formattedPublicRegister %}
   {% if appData.entity.is_on_register_in_country_formed_in == 1 %}
-    {% if inNoChangeJourney %}
-      {{ appData.entity.public_register_name | safe }}
-    {% else %}
-      {{ appData.entity.public_register_name | safe }} / {{ appData.entity.public_register_jurisdiction | safe }} / {{ appData.entity.registration_number | safe }}
-    {% endif %}
+     {{ appData.entity.public_register_name | safe}} / {{ appData.entity.public_register_jurisdiction | safe }} / {{ appData.entity.registration_number | safe }}
   {% else %}
     No
   {% endif %}
@@ -50,7 +46,7 @@
 {% endset %}
 
 {% if inNoChangeJourney %}
-  {% set jurisdiction =
+  {% set jurisdiction = 
     {
       key: {
         text: "Jurisdiction"

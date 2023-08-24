@@ -85,10 +85,6 @@ export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[BeneficialOwnerIndividualKey]?.length || appData[BeneficialOwnerOtherKey]?.length || appData[BeneficialOwnerGovKey]?.length );
 };
 
-export const checkActiveMOExists = (appData: ApplicationData): boolean => {
-  return allManagingOfficers(appData).some((mo) => !mo.resigned_on || Object.keys(mo.resigned_on).length === 0);
-};
-
 export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
 };

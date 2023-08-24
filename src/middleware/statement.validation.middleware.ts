@@ -31,6 +31,8 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
   const allOrSomeBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS);
   const someOrNoneBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED);
 
+  const allBOs: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+
   if (allOrSomeBOsIdentified && !checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.NO_ACTIVE_REGISTRABLE_BO);
   }
@@ -39,7 +41,7 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
     errorList.push(ErrorMessages.ACTIVE_REGISTRABLE_BO);
   }
 
-  if (allOrSomeBOsIdentified && checkActiveMOExists(appData)) {
+  if (allBOs && checkActiveMOExists(appData)) {
     errorList.push(ErrorMessages.ACTIVE_MO);
   }
 

@@ -42,7 +42,15 @@
     {% set notificationBannerHtml %}
       <p class="govuk-notification-banner__heading">
         {% for statementError in statementErrorList %}
-          {{ statementError }} <br>
+          {% if loop.length == 1 %}
+            {{ statementError }}
+          {% else %}
+            {{ statementError }}
+            <!-- avoid spacing after last error message -->
+            {% if loop.index !== loop.length %}
+              <br><br>
+            {% endif %}
+          {% endif %}
         {% endfor %}
       </p>
     {% endset %}

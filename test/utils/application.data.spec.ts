@@ -456,9 +456,9 @@ describe("Application data utils", () => {
       MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
     ]
   ])(`allManagingOfficers with %s returns expected`, (_, moKey, moMock) => {
-    const allBOs = allManagingOfficers({ [moKey]: [moMock] });
+    const allMOs = allManagingOfficers({ [moKey]: [moMock] });
 
-    expect(allBOs).toEqual([moMock]);
+    expect(allMOs).toEqual([moMock]);
   });
 
   test.each([
@@ -473,9 +473,9 @@ describe("Application data utils", () => {
       MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
     ]
   ])(`allManagingOfficers with %s returns expected array`, (_, moKey, moMock) => {
-    const allBOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
+    const allMOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
 
-    expect(allBOs).toEqual([moMock]);
+    expect(allMOs).toEqual([moMock]);
   });
 
   test.each([

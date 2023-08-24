@@ -54,6 +54,8 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
 const validateRegistrableBOStatements = (appData: ApplicationData, errorList: string[]): boolean => {
   if (!hasAddedOrCeasedABO(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
     errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
+  }
+  if (errorList.length) {
     return false;
   }
   return true;

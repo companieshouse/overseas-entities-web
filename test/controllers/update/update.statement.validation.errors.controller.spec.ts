@@ -37,8 +37,6 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { hasValidStatements } from "../../../src/middleware/statement.validation.middleware";
-import { beneficialOwnerIndividualType } from "../../../src/model";
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK } from "../../__mocks__/session.mock";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -174,41 +172,6 @@ describe("Update statement validation errors controller", () => {
       expect(resp.text).toContain('The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period');
 
       expect(resp.text).not.toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
-      expect(resp.text).not.toContain('value="statement-resolution-change-information" checked');
-      expect(resp.text).not.toContain('value="statement-resolution-change-statement" checked');
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-    });
-
-    test(`in a change journey, renders the Update statement validation errors page when there are no added or ceased BOs`, async () => {
-      mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
-        req['statementErrorList'] = ['There is at least one active registrable beneficial owner.'];
-        next();
-      });
-      const BOI_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
-      BOI_MOCK.ceased_date = undefined;
-      BOI_MOCK.ch_reference = "test";
-      console.log("TESST " + BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
-      mockGetApplicationData.mockReturnValue({
-        entity_name: 'Potato',
-        entity_number: 'OE991992',
-        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-        beneficial_owners_statement: 'ALL_IDENTIFIED_ALL_DETAILS',
-        update: {
-          no_change: false,
-          registrable_beneficial_owner: 1,
-        },
-      });
-
-      const resp = await request(app).get(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
-
-      expect(resp.status).toEqual(200);
-
-      expect(resp.text).toContain('The statements you&#39;ve chosen do not match the information provided in this update');
-      expect(resp.text).toContain(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
-      expect(resp.text).toContain('Potato - OE991992');
-      expect(resp.text).toContain('There is at least one active registrable beneficial owner.');
-      expect(resp.text).toContain('The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.');
-
       expect(resp.text).not.toContain('value="statement-resolution-change-information" checked');
       expect(resp.text).not.toContain('value="statement-resolution-change-statement" checked');
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

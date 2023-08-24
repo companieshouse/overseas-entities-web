@@ -27,7 +27,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-    return res.redirect(config.OVERSEAS_ENTITY_REVIEW_PAGE);
+    return res.redirect(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

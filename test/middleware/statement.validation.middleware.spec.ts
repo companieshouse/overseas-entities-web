@@ -202,7 +202,7 @@ describe("hasValidStatements", () => {
     describe("fails and calls next() to continue to error page", () => {
       const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
       BOI_MOCK.ceased_date = undefined;
-      BOI_MOCK.ch_reference = undefined;
+      BOI_MOCK.ch_reference = "test";
       test.each([
         [
           "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
@@ -210,7 +210,7 @@ describe("hasValidStatements", () => {
       ])(`%s`, (_) => {
         const appData = {
           [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-          [BeneficialOwnerIndividualKey]: [],
+          [BeneficialOwnerIndividualKey]: [BOI_MOCK],
           [UpdateKey]: {
             ...UPDATE_OBJECT_MOCK,
             [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,

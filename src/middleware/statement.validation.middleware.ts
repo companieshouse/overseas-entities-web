@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { checkActiveBOExists, checkActiveMOExists, getApplicationData } from "../utils/application.data";
+import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedABO } from "../utils/application.data";
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -10,14 +10,14 @@ import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from "../m
 import { ApplicationData } from "../model";
 import { ErrorMessages } from "../validation/error.messages";
 import { Session } from "@companieshouse/node-session-handler";
+import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 
 export const hasValidStatements = (req: Request, res: Response, next: NextFunction) => {
   const errorList: string[] = [];
   const appData: ApplicationData = getApplicationData(req.session as Session);
-
   if (
     isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) &&
-      !checkStatementsValid(appData, errorList)
+    !checkStatementsValid(appData, errorList)
   ) {
     req['statementErrorList'] = errorList;
     return next();
@@ -51,6 +51,16 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
   return true;
 };
 
+const validateRegistrableBOStatements = (appData: ApplicationData, errorList: string[]): boolean => {
+  if (!hasAddedOrCeasedABO(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
+    errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
+  }
+  if (errorList.length) {
+    return false;
+  }
+  return true;
+};
+
 const checkStatementsValid = (appData: ApplicationData, errorList: string[]): boolean => {
-  return validateIdentifiedBOsStatement(appData, errorList);
+  return validateIdentifiedBOsStatement(appData, errorList) && validateRegistrableBOStatements(appData, errorList);
 };

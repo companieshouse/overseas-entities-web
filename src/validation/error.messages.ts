@@ -65,6 +65,8 @@ export enum ErrorMessages {
   ACTIVE_REGISTRABLE_BO = "There is at least one active registrable beneficial owner.",
   NO_ACTIVE_MO = "There are no active managing officers.",
 
+  NOT_ADDED_OR_CEASED_BO = "You have not added or ceased a beneficial owner as part of this update statement.",
+
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
   TRUST_NAME = "Enter the trust name",

@@ -767,7 +767,7 @@ export const BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF: beneficialOwnerGovTyp
   beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
   non_legal_firm_members_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
   is_on_sanctions_list: 1,
-  ceased_date: { day: "1", month: "3", year: "2001" }
+  ceased_date: undefined
 };
 
 export const UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK: beneficialOwnerGovType.BeneficialOwnerGov = {

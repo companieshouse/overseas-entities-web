@@ -16,7 +16,7 @@ import {
   checkGivenBoOrMoDetailsExist,
   allBeneficialOwners,
   checkActiveBOExists,
-  hasAddedOrCeasedABO,
+  hasAddedOrCeasedBO,
   checkActiveMOExists,
   allManagingOfficers
 } from "../../src/utils/application.data";
@@ -427,7 +427,7 @@ describe("Application data utils", () => {
       true
     ]
   ])(`hasNotAddedOrCeasedBos with %s`, (_, boKey, boMock, expectedReturn) => {
-    const notAddedOrCeasedBos = hasAddedOrCeasedABO({ [boKey]: [boMock] });
+    const notAddedOrCeasedBos = hasAddedOrCeasedBO({ [boKey]: [boMock] });
 
     expect(notAddedOrCeasedBos).toEqual(expectedReturn);
   });

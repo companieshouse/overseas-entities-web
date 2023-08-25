@@ -89,7 +89,7 @@ export const checkMOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[ManagingOfficerKey]?.length || appData[ManagingOfficerCorporateKey]?.length ) ;
 };
 
-export const hasAddedOrCeasedABO = (appData: ApplicationData): boolean => {
+export const hasAddedOrCeasedBO = (appData: ApplicationData): boolean => {
   return allBeneficialOwners(appData).some((bo) => (bo.ceased_date && Object.keys(bo.ceased_date).length !== 0) || !bo.ch_reference);
 };
 

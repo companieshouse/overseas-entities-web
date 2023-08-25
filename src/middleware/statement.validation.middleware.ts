@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedABO } from "../utils/application.data";
+import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedBO } from "../utils/application.data";
+
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -28,7 +29,11 @@ export const hasValidStatements = (req: Request, res: Response, next: NextFuncti
 };
 
 const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: string[]): boolean => {
-  const allOrSomeBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS);
+  const allOrSomeBOsIdentified: boolean =
+  (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS);
+
+  const someOrNoneBOsIdentified: boolean =
+  (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED);
 
   if (allOrSomeBOsIdentified && !checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.NO_ACTIVE_REGISTRABLE_BO);
@@ -37,8 +42,6 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
   if (!allOrSomeBOsIdentified && checkActiveBOExists(appData)) {
     errorList.push(ErrorMessages.ACTIVE_REGISTRABLE_BO);
   }
-
-  const someOrNoneBOsIdentified: boolean = (appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS || appData[BeneficialOwnerStatementKey] === BeneficialOwnersStatementType.NONE_IDENTIFIED);
 
   if (someOrNoneBOsIdentified && !checkActiveMOExists(appData)) {
     errorList.push(ErrorMessages.NO_ACTIVE_MO);
@@ -52,12 +55,19 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
 };
 
 const validateRegistrableBOStatements = (appData: ApplicationData, errorList: string[]): boolean => {
-  if (!hasAddedOrCeasedABO(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
+  const addedOrCeasedBO = hasAddedOrCeasedBO(appData);
+  if (!addedOrCeasedBO && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
     errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
   }
+
+  if (addedOrCeasedBO && appData.update?.[RegistrableBeneficialOwnerKey] === 0) {
+    errorList.push(ErrorMessages.ADDED_OR_CEASED_BO);
+  }
+
   if (errorList.length) {
     return false;
   }
+
   return true;
 };
 

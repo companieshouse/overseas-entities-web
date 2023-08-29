@@ -67,7 +67,9 @@ export const postSubmit = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData: ApplicationData = getApplicationData(req.session);
   const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
-  let redirectUrl = config.UPDATE_CHECK_YOUR_ANSWERS_URL;
+  let redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+    ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
+    : config.UPDATE_CHECK_YOUR_ANSWERS_URL;
   if (requiresTrusts && isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)) {
     redirectUrl = getTrustLandingUrl(appData);
   }

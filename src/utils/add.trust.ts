@@ -8,6 +8,7 @@ import { Trust } from '../model/trust.model';
 import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
+import { isActiveFeature } from './feature.flag';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -122,7 +123,11 @@ const newTrustPage = (isUpdate: boolean) => {
 
 const nextPage = (isUpdate: boolean) => {
   if (isUpdate){
-    return config.UPDATE_CHECK_YOUR_ANSWERS_URL;
+    return (
+      isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+        ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
+        : config.UPDATE_CHECK_YOUR_ANSWERS_URL
+    );
   } else {
     return config.CHECK_YOUR_ANSWERS_URL;
   }

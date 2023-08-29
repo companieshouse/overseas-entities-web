@@ -6,33 +6,45 @@ import { logger } from "../utils/logger";
 import { ApplicationData } from "../model";
 import { checkBOsDetailsEntered, checkMOsDetailsEntered, getApplicationData, setExtraData } from "../utils/application.data";
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
-import { EntityNumberKey } from "../model/data.types.model";
+import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { isActiveFeature } from "./feature.flag";
+import { containsTrustData, getTrustArray } from "./trusts";
 
 export const getBeneficialOwnerStatements = (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeBackLink?: string) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    let BACK_LINK: string;
+    let backLinkUrl: string;
     let noChangeFlag: boolean = false;
+    let statementValidationFlag: boolean = false;
     let templateName: string;
-
+    const appData = getApplicationData(req.session);
+    statementValidationFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
     if (noChangeBackLink){
-      BACK_LINK = noChangeBackLink;
+      backLinkUrl = noChangeBackLink;
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       noChangeFlag = true;
     } else {
-      BACK_LINK = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_REVIEW_URL;
+      if (statementValidationFlag) {
+        if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData))) {
+          backLinkUrl = config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
+        } else {
+          backLinkUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
+        }
+      } else {
+        backLinkUrl = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+      }
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
-
-    const appData: ApplicationData = getApplicationData(req.session);
     return res.render(templateName, {
-      backLinkUrl: BACK_LINK,
+      backLinkUrl: backLinkUrl,
       templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
       noChangeFlag,
-      entity_number: appData[EntityNumberKey]
+      statementValidationFlag,
+      entity_number: appData[EntityNumberKey],
+      entity_name: appData[EntityNameKey]
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -47,7 +59,9 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
     if (noChangeRedirectUrl){
       REDIRECT_URL = noChangeRedirectUrl;
     } else {
-      REDIRECT_URL = registrationFlag ? config.BENEFICIAL_OWNER_TYPE_URL : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+      REDIRECT_URL = registrationFlag
+        ? config.BENEFICIAL_OWNER_TYPE_URL
+        : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
     }
 
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);

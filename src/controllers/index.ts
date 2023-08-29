@@ -54,7 +54,6 @@ export * as updateDueDiligenceOverseasEntity from "./update/due.diligence.overse
 export * as updateCheckYourAnswers from "./update/check.your.answers.controller";
 export * as overseasEntityPayment from './update/payment.controller';
 export * as updateConfirmation from "./update/confirmation.controller";
-export * as overseasEntityReview from "./update/overseas.entity.review.controller";
 export * as updateBeneficialOwnerBoMoReview from "./update/update.beneficial.owner.bo.mo.review.controller";
 export * as overseasEntityUpdateDetails from "./update/overseas.entity.update.details.controller";
 export * as updateBeneficialOwnerStatements from "./update/update.beneficial.owner.statements.controller";
@@ -85,3 +84,4 @@ export * as updateTrustsAssociatedWithEntity from "./update/update.trusts.associ
 export * as updateTrustsIndividualBeneficialOwner from "./update/update.trusts.individual.beneficial.owner.controller";
 export * as updateTrustHistoricalBeneficialOwner from './update/update.trusts.historical.beneficial.owner.controller';
 export * as updateTrustsLegalEntityBeneficialOwner from './update/update.trusts.legal.entity.beneficial.owner.controller';
+export * as updateStatementValidationErrors from './update/update.statement.validation.errors.controller';

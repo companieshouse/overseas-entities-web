@@ -60,6 +60,14 @@ export enum ErrorMessages {
   UK_COUNTRY = "Select a country",
   POSTCODE = "Enter a postcode",
 
+  // Statements
+  NO_ACTIVE_REGISTRABLE_BO = "There are no active registrable beneficial owners.",
+  ACTIVE_REGISTRABLE_BO = "There is at least one active registrable beneficial owner.",
+  NO_ACTIVE_MO = "There are no active managing officers.",
+  ACTIVE_MO = "There is at least one active managing officer.",
+
+  NOT_ADDED_OR_CEASED_BO = "You have not added or ceased a beneficial owner as part of this update statement.",
+
   // Trusts
   TRUST_DATA_EMPTY = "Paste the trust information from the Excel document into the box",
   TRUST_NAME = "Enter the trust name",
@@ -183,6 +191,7 @@ export enum ErrorMessages {
   SELECT_IF_ANY_TRUSTS_INVOLVED = "Select yes if there are any trusts involved in this overseas entity",
   SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity",
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT = "Select yes if all the information in this update statement is correct",
+  SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION = "Select if you want to change your statements or change the information provided in this update",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

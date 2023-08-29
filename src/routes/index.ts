@@ -18,7 +18,6 @@ import {
   landing,
   updateLanding,
   overseasEntityQuery,
-  overseasEntityReview,
   managingOfficerIndividual,
   managingOfficerCorporate,
   presenter,
@@ -85,7 +84,8 @@ import {
   noChangeRegistrableBeneficialOwner,
   updateReviewStatement,
   updateTrustsIndividualBeneficialOwner,
-  updateTrustsLegalEntityBeneficialOwner
+  updateTrustsLegalEntityBeneficialOwner,
+  updateStatementValidationErrors
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -96,6 +96,7 @@ import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
+import { hasValidStatements } from "../middleware/statement.validation.middleware";
 
 const router = Router();
 
@@ -420,14 +421,6 @@ router.route(config.UPDATE_DUE_DILIGENCE_OVERSEAS_ENTITY_URL)
   )
   .get(updateDueDiligenceOverseasEntity.get)
   .post(...validator.overseasEntityDueDiligence, checkValidations, updateDueDiligenceOverseasEntity.post);
-
-router.route(config.OVERSEAS_ENTITY_REVIEW_URL)
-  .all(
-    authentication,
-    companyAuthentication,
-    navigation.hasOverseasEntity
-  )
-  .get(overseasEntityReview.get);
 
 router.route(config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL)
   .all(
@@ -773,5 +766,15 @@ router.route(config.UPDATE_ANY_TRUSTS_INVOLVED_URL)
   )
   .get(updateAnyTrustsInvolved.get)
   .post(...validator.anyTrustsInvolved, checkValidations, updateAnyTrustsInvolved.post);
+
+router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION),
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter,
+  )
+  .get(hasValidStatements, updateStatementValidationErrors.get)
+  .post(...validator.statementResolution, updateStatementValidationErrors.post);
 
 export default router;

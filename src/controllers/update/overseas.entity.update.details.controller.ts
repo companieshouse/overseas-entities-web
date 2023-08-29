@@ -18,17 +18,23 @@ import * as config from "../../config";
 import { PrincipalAddressKey, PrincipalAddressKeys, ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
 
-export const get = (req: Request, res: Response, next: NextFunction) => {
+export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const session = req.session as Session;
 
-    const appData: ApplicationData = getApplicationData(req.session);
+    const appData: ApplicationData = getApplicationData(session);
+
+    await fetchOverseasEntityEmailAddress(appData, req, session);
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[PrincipalAddressKey], PrincipalAddressKeys, AddressKeys)
       : {};
+
     const serviceAddress = (entity && Object.keys(entity).length)
       ? mapDataObjectToFields(entity[ServiceAddressKey], ServiceAddressKeys, AddressKeys)
       : {};
@@ -64,8 +70,10 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     await saveAndContinue(req, session, false);
-
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_PAGE);
+    const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+      ? config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL
+      : config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
+    return res.redirect(redirectUrl);
 
   } catch (error) {
     logger.errorRequest(req, error);

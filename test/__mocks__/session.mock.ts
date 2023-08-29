@@ -479,6 +479,26 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF: beneficialOwne
   ceased_date: { day: "1", month: "3", year: "2001" }
 };
 
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  ch_reference: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Russian",
+  second_nationality: "",
+  usual_residential_address: undefined,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 1,
+  trust_ids: [],
+  ceased_date: { day: "1", month: "3", year: "2001" }
+};
+
 export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
   id: BO_IND_ID,
   ch_reference: "",
@@ -1522,6 +1542,68 @@ export const APPLICATION_DATA_REGISTRATION_MOCK: ApplicationData = {
   [HasSoldLandKey]: hasSoldLandKey,
   [IsSecureRegisterKey]: isSecureRegisterKey,
   [TrustKey]: [TRUST]
+};
+
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
+  pscId: "9001809816",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  usualResidentialAddress: {
+    addressLine1: "72 COWLEY AVENUE",
+    addressLine2: "QUIA EX ESSE SINT EU",
+    care_of: "",
+    country: "KUWAIT",
+    locality: "AD EUM DEBITIS EST E",
+    po_box: "FGdg",
+    postalCode: "76022",
+    premises: "REAGAN HICKMAN",
+    region: "ULLAM DOLORUM CUPIDA"
+  },
+  principalAddress: {
+    address_line_1: undefined,
+    address_line_2: undefined,
+    care_of: undefined,
+    country: undefined,
+    locality: undefined,
+    po_box: undefined,
+    post_code: undefined,
+    premises: undefined,
+    region: undefined
+  }
+};
+
+export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
+  pscId: "9034422861",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  usualResidentialAddress: {
+    address_line_1: "72 COWLEY AVENUE",
+    address_line_2: "QUIA EX ESSE SINT EU",
+    care_of: "",
+    country: "KUWAIT",
+    locality: "AD EUM DEBITIS EST E",
+    po_box: "FGdg",
+    post_code: "76022",
+    premises: "REAGAN HICKMAN",
+    region: "ULLAM DOLORUM CUPIDA"
+  },
+  principalAddress: {
+    address_line_1: undefined,
+    address_line_2: undefined,
+    care_of: undefined,
+    country: undefined,
+    locality: undefined,
+    po_box: undefined,
+    post_code: undefined,
+    premises: undefined,
+    region: undefined
+  }
+};
+
+export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateDataResource = {
+  boPrivateData: [PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA]
 };
 
 export const APPLICATION_DATA_MOCK_WITHOUT_UPDATE: ApplicationData = {

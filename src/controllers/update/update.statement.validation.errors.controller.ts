@@ -38,7 +38,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     const inNoChangeJourney = !!appData.update?.no_change;
 
     if (!errors.isEmpty()) {
-      return renderPage(res, appData, inNoChangeJourney, req.body['statementErrorList[]'], formatValidationError(errors.array()));
+      return renderPage(res, appData, inNoChangeJourney, req['statementErrorList'], formatValidationError(errors.array()));
     }
 
     return req.body[StatementResolutionKey] === StatementResolutionType.CHANGE_INFORMATION

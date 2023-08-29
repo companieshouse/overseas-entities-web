@@ -24,8 +24,9 @@ export const UpdateKeys: string[] = [
 
 export interface Update {
   date_of_creation?: InputDate;
-    // used to indicate that data is fetched from the endpoint and saved into DB hence does not need to be fetched again
+  // used to indicate that data is fetched from the endpoint and saved into DB hence does not need to be fetched again
   bo_mo_data_fetched?: boolean;
+  // Flag for whether a person has become or ceased to be a registrable BO in the update period or not
   registrable_beneficial_owner?: yesNoResponse;
   review_beneficial_owners_individual?: BeneficialOwnerIndividual[];
   review_beneficial_owners_corporate?: BeneficialOwnerOther[];

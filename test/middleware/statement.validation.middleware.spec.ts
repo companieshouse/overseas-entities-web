@@ -5,7 +5,8 @@ import { Request, Response } from 'express';
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { hasValidStatements } from '../../src/middleware/statement.validation.middleware';
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getApplicationData, checkActiveBOExists, checkActiveMOExists } from "../../src/utils/application.data";
+import { getApplicationData, checkActiveBOExists, checkActiveMOExists, hasAddedOrCeasedABO } from "../../src/utils/application.data";
+
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
@@ -28,6 +29,7 @@ const next = jest.fn();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
+const mockHasAddedOrCeasedABO = hasAddedOrCeasedABO as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 
 describe("hasValidStatements", () => {
@@ -91,6 +93,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
         hasValidStatements(req, res, next);
@@ -162,12 +165,74 @@ describe("hasValidStatements", () => {
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
+
         mockCheckActiveBOExists.mockReturnValueOnce(activeBOExists);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
+        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
 
         hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();
         expect(req['statementErrorList']).toEqual(expectedErrorList);
+      });
+    });
+  });
+
+  describe("validateNoBosCeasedOrAdded", () => {
+    describe("passes and redirects to next page", () => {
+
+      const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      BOI_MOCK.ceased_date = { day: "1", month: "1", year: "2023" };
+      BOI_MOCK.ch_reference = "test";
+      test.each([
+        [
+          "The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.",
+        ],
+        [
+          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
+        ],
+      ])(`%s`, (_) => {
+        const appData = {
+          [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+          [BeneficialOwnerIndividualKey]: [BOI_MOCK],
+          [UpdateKey]: {
+            ...UPDATE_OBJECT_MOCK,
+            [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
+          }
+        };
+        mockIsActiveFeature.mockReturnValueOnce(true);
+        mockGetApplicationData.mockReturnValueOnce(appData);
+        mockCheckActiveBOExists.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
+
+        hasValidStatements(req, res, next);
+        expect(res.redirect).toHaveBeenCalled();
+      });
+    });
+
+    describe("fails and calls next() to continue to error page", () => {
+      const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
+      BOI_MOCK.ceased_date = undefined;
+      BOI_MOCK.ch_reference = undefined;
+      test.each([
+        [
+          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
+        ],
+      ])(`%s`, (_) => {
+        const appData = {
+          [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+          [BeneficialOwnerIndividualKey]: [],
+          [UpdateKey]: {
+            ...UPDATE_OBJECT_MOCK,
+            [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
+          }
+        };
+        mockIsActiveFeature.mockReturnValueOnce(true);
+        mockGetApplicationData.mockReturnValueOnce(appData);
+        mockCheckActiveBOExists.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedABO.mockReturnValueOnce(false);
+
+        hasValidStatements(req, res, next);
+        expect(next).toHaveBeenCalled();
       });
     });
   });

@@ -12,7 +12,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
     const appData: ApplicationData = getApplicationData(req.session);
     let templateName: string;
     let backLinkUrl: string;
-    if (noChangeFlag){
+    if (noChangeFlag) {
       backLinkUrl = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       templateName = config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE;
     } else {
@@ -42,8 +42,8 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
     }
     setExtraData(req.session, appData);
 
-    if (noChangeFlag){
-      noChangeHandler(req, res, next, isRegistrableBeneficialOwner);
+    if (noChangeFlag) {
+      noChangeHandler(req, res);
     } else {
       const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
         ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
@@ -55,14 +55,11 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
   }
 };
 
-const noChangeHandler = (req: Request, res: Response, next: NextFunction, registrableOwnerChoice) => {
-  if (registrableOwnerChoice === "0"){
-    const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-      ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-      : config.UPDATE_REVIEW_STATEMENT_URL;
+const noChangeHandler = (req: Request, res: Response) => {
+  const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+    ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
+    : config.UPDATE_REVIEW_STATEMENT_URL;
 
-    return res.redirect(redirectUrl);
-  } else {
-    return res.redirect(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
-  }
+  return res.redirect(redirectUrl);
+
 };

@@ -13,8 +13,6 @@ import request from "supertest";
 import app from "../../../src/app";
 
 import {
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_REVIEW_STATEMENT_URL,
@@ -116,14 +114,14 @@ describe("No change registrable beneficial owner", () => {
   });
 
   describe("POST tests", () => {
-    test(`Test redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page when 'no reasonable cause' is selected`, async () => {
+    test(`Test redirect to ${UPDATE_REVIEW_STATEMENT_URL} page when 'no reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: "1" });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.header.location).toEqual(UPDATE_REVIEW_STATEMENT_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

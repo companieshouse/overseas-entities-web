@@ -16,6 +16,7 @@ import {
   checkGivenBoOrMoDetailsExist,
   allBeneficialOwners,
   checkActiveBOExists,
+  hasAddedOrCeasedABO,
   checkActiveMOExists,
   allManagingOfficers
 } from "../../src/utils/application.data";
@@ -46,7 +47,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK,
   MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
-  UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK
 } from "../__mocks__/session.mock";
 import {
   PARAM_BENEFICIAL_OWNER_GOV,
@@ -404,6 +405,31 @@ describe("Application data utils", () => {
     const allBOs = allBeneficialOwners({ [UpdateKey]: { [boKey]: [boMock] } });
 
     expect(allBOs).toEqual([boMock]);
+  });
+
+  test.each([
+    [
+      "1 reviewed BO returns true",
+      BeneficialOwnerGovKey,
+      BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
+      false
+    ],
+    [
+      "1 added BO returns false",
+      BeneficialOwnerIndividualKey,
+      BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+      true
+    ],
+    [
+      "1 ceased BO returns false",
+      BeneficialOwnerOtherKey,
+      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
+      true
+    ]
+  ])(`hasNotAddedOrCeasedBos with %s`, (_, boKey, boMock, expectedReturn) => {
+    const notAddedOrCeasedBos = hasAddedOrCeasedABO({ [boKey]: [boMock] });
+
+    expect(notAddedOrCeasedBos).toEqual(expectedReturn);
   });
 
   test("allBeneficialOwners with 1 of each BO type returns array of all", () => {

@@ -3,7 +3,7 @@ jest.mock('../../src/utils/application.data');
 
 import { Request, Response } from 'express';
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
-import { hasValidStatements } from '../../src/middleware/statement.validation.middleware';
+import { validateStatements, statementValidationErrorsGuard } from '../../src/middleware/statement.validation.middleware';
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData, checkActiveBOExists, checkActiveMOExists, hasAddedOrCeasedBO } from "../../src/utils/application.data";
 
@@ -32,42 +32,59 @@ const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
 const mockHasAddedOrCeasedBO = hasAddedOrCeasedBO as jest.Mock;
 
-describe("hasValidStatements", () => {
-
+describe('statement validation middleware', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
-  test("when feature flag is off and in change journey redirects to update-beneficial-owner-bo-mo-review", () => {
-    mockIsActiveFeature.mockReturnValueOnce(false);
-    mockGetApplicationData.mockReturnValueOnce({
-      ...APPLICATION_DATA_MOCK,
-      [UpdateKey]: {
-        ...UPDATE_OBJECT_MOCK,
-        no_change: false
-      }
+  describe("statementValidationErrorsGuard", () => {
+    test.each([
+      ['off', 'change', 'no errors', 'check your answers', false, false, undefined, UPDATE_CHECK_YOUR_ANSWERS_URL],
+      ['off', 'no change', 'no errors', 'review update statement', false, true, undefined, UPDATE_REVIEW_STATEMENT_URL],
+      ['on', 'change', 'no errors', 'check your answers', true, false, undefined, UPDATE_CHECK_YOUR_ANSWERS_URL],
+      ['on', 'no change', 'no errors', 'review update statement', true, true, undefined, UPDATE_REVIEW_STATEMENT_URL],
+      ['off', 'change', 'errors', 'check your answers', false, false, ['This is an error'], UPDATE_CHECK_YOUR_ANSWERS_URL],
+      ['off', 'no change', 'errors', 'review update statement', false, true, ['This is an error'], UPDATE_REVIEW_STATEMENT_URL],
+    ])('when the feature flag is %s, on %s journey, with %s, redirects to %s', (_, __, ___, ____, flag, noChange, errors, redirectUrl) => {
+      mockIsActiveFeature.mockReturnValueOnce(flag);
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [UpdateKey]: {
+          ...UPDATE_OBJECT_MOCK,
+          no_change: noChange
+        }
+      });
+      req['statementErrorList'] = errors;
+
+      statementValidationErrorsGuard(req, res, next);
+
+      expect(next).not.toHaveBeenCalled();
+      expect(res.redirect).toHaveBeenCalledWith(redirectUrl);
     });
 
-    hasValidStatements(req, res, next);
-    expect(res.redirect).toHaveBeenCalledWith(UPDATE_CHECK_YOUR_ANSWERS_URL);
-  });
+    test.each([
+      ['change', false ],
+      ['no change', true ],
+    ])('when the feature flag is on, on %s journey, with errors, continue to next middleware', (_, noChange) => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [UpdateKey]: {
+          ...UPDATE_OBJECT_MOCK,
+          no_change: noChange
+        }
+      });
+      req['statementErrorList'] = ['This is an error'];
 
-  test("when feature flag is off and in no change journey redirects to review-update-statement", () => {
-    mockIsActiveFeature.mockReturnValueOnce(false);
-    mockGetApplicationData.mockReturnValueOnce({
-      ...APPLICATION_DATA_MOCK,
-      [UpdateKey]: {
-        ...UPDATE_OBJECT_MOCK,
-        no_change: true
-      }
+      statementValidationErrorsGuard(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(res.redirect).not.toHaveBeenCalled();
     });
-
-    hasValidStatements(req, res, next);
-    expect(res.redirect).toHaveBeenCalledWith(UPDATE_REVIEW_STATEMENT_URL);
   });
 
-  describe("validateIdentifiedBOsStatement", () => {
-    describe("passes and redirects to next page", () => {
+  describe("validateStatements", () => {
+    describe("validation passes, no errors added to request, moves onto next middleware", () => {
       test.each([
         [
           "when all BOs identified and 1 active BO exists",
@@ -96,12 +113,56 @@ describe("hasValidStatements", () => {
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
-        hasValidStatements(req, res, next);
-        expect(res.redirect).toHaveBeenCalled();
+        validateStatements(req, res, next);
+
+        expect(next).toHaveBeenCalled();
+        expect(req['statementErrorList']).toEqual([]);
       });
     });
 
-    describe("fails and calls next() to continue to error page", () => {
+    test.each([
+      [
+        "when reason to believe someone has become or ceased to be a BO, with a new BO",
+        true,
+        yesNoResponse.Yes,
+        undefined,
+        undefined,
+      ],
+      [
+        "when reason to believe someone has become or ceased to be a BO, with a ceased BO",
+        true,
+        yesNoResponse.Yes,
+        'test-ch-reference',
+        { day: '1', month: '3', year: '2023' },
+      ],
+    ])(`%s`, (_, addedOrCeased, response, ch_reference, ceased_date) => {
+      const BOI_MOCK = {
+        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        ceased_date,
+        ch_reference,
+      };
+
+      const appData = {
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+        [BeneficialOwnerIndividualKey]: [BOI_MOCK],
+        [UpdateKey]: {
+          ...UPDATE_OBJECT_MOCK,
+          [RegistrableBeneficialOwnerKey]: response,
+        }
+      };
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockCheckActiveBOExists.mockReturnValueOnce(true);
+      mockHasAddedOrCeasedBO.mockReturnValueOnce(addedOrCeased);
+
+      validateStatements(req, res, next);
+
+      expect(next).toHaveBeenCalled();
+      expect(req['statementErrorList']).toEqual([]);
+    });
+
+    describe("validation fails on initial statement, adds errors to request, moves onto next middleware", () => {
       test.each([
         [
           "when all BOs identified and 0 active BO exists",
@@ -170,82 +231,64 @@ describe("hasValidStatements", () => {
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
         mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
 
-        hasValidStatements(req, res, next);
+        validateStatements(req, res, next);
+
         expect(next).toHaveBeenCalled();
         expect(req['statementErrorList']).toEqual(expectedErrorList);
       });
     });
-  });
 
-  describe("validateRegistrableBOStatements", () => {
-
-    describe("passes and redirects to next page", () => {
-
-      const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
-      BOI_MOCK.ceased_date = { day: "1", month: "1", year: "2023" };
-      BOI_MOCK.ch_reference = "test";
+    describe("validation fails on second statement, adds errors to request, moves onto next middleware", () => {
       test.each([
         [
-          "The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.",
+          "when reason to believe someone has become or ceased to be a BO, with no new BO and no ceased BO",
+          yesNoResponse.Yes,
+          false,
+          'test-ch-reference',
+          undefined,
+          ['You have not added or ceased a beneficial owner as part of this update statement.'],
         ],
         [
-          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
+          "when no reason to believe someone has become or ceased to be a BO, with a new BO",
+          yesNoResponse.No,
+          true,
+          undefined,
+          undefined,
+          ['You have added or ceased a beneficial owner as part of this update statement.'],
         ],
-      ])(`%s`, (_) => {
+        [
+          "when no reason to believe someone has become or ceased to be a BO, with a ceased BO",
+          yesNoResponse.No,
+          true,
+          'test-ch-reference',
+          { day: '1', month: '3', year: '2023' },
+          ['You have added or ceased a beneficial owner as part of this update statement.'],
+        ],
+      ])(`%s`, (_, response, hasAddedOrCeased, ch_reference, ceased_date, expectedErrorList) => {
+        const BOI_MOCK = {
+          ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          ceased_date,
+          ch_reference,
+        };
+
         const appData = {
           [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
           [BeneficialOwnerIndividualKey]: [BOI_MOCK],
           [UpdateKey]: {
             ...UPDATE_OBJECT_MOCK,
-            [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
+            [RegistrableBeneficialOwnerKey]: response,
           }
         };
+
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeased);
 
-        hasValidStatements(req, res, next);
-        expect(res.redirect).toHaveBeenCalled();
-      });
-    });
+        validateStatements(req, res, next);
 
-    describe("fails and calls next() to continue to error page", () => {
-      test.each([
-        [
-          "The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.",
-          yesNoResponse.No,
-          UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-          { day: "1", month: "3", year: "2001" },
-          "testref",
-          true
-        ],
-        [
-          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
-          yesNoResponse.Yes,
-          UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-          undefined,
-          "testref",
-          false
-        ]
-      ])(`%s`, (_, statementValue, boi_mock, ceased_date, ch_reference, hasAddedOrCeasedBO) => {
-        boi_mock.ceased_date = ceased_date;
-        boi_mock.ch_reference = ch_reference;
-        const appData = {
-          [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-          [BeneficialOwnerIndividualKey]: [boi_mock],
-          [UpdateKey]: {
-            ...UPDATE_OBJECT_MOCK,
-            [RegistrableBeneficialOwnerKey]: statementValue,
-          }
-        };
-        mockIsActiveFeature.mockReturnValueOnce(true);
-        mockGetApplicationData.mockReturnValueOnce(appData);
-        mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeasedBO);
-
-        hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();
+        expect(req['statementErrorList']).toEqual(expectedErrorList);
       });
     });
   });

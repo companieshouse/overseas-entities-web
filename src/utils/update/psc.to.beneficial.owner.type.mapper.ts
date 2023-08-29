@@ -5,6 +5,7 @@ import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
 import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate, splitNationalities, mapBOIndividualName } from "./mapper.utils";
 import { logger } from "../../utils/logger";
+import { encode } from "../../utils/hash.helper";
 
 export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSignificantControl): BeneficialOwnerIndividual => {
   const service_address = mapBOMOAddress(psc.address);
@@ -157,3 +158,21 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
 
+export const mapPrivateAddress = (boData: BeneficialOwnersPrivateDataResource, ch_reference: string) => {
+  if (!boData?.boPrivateData?.length) {
+    return;
+  }
+
+  for (const private_bo_data of boData.boPrivateData!) {
+    const unhashed_ch_reference = private_bo_data.pscId;
+    const hashed_ch_reference = encode(unhashed_ch_reference!);
+
+    if (hashed_ch_reference === ch_reference){
+      if (private_bo_data.usualResidentialAddress){
+        return mapBOMOAddress(private_bo_data.usualResidentialAddress);
+      } else {
+        return mapBOMOAddress(private_bo_data.principalAddress);
+      }
+    }
+  }
+};

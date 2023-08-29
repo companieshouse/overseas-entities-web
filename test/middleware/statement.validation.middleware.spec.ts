@@ -12,7 +12,8 @@ import {
   APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
   MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, UPDATE_OBJECT_MOCK
+  UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+  UPDATE_OBJECT_MOCK
 } from '../__mocks__/session.mock';
 import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from '../../src/model/beneficial.owner.statement.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -71,12 +72,14 @@ describe("hasValidStatements", () => {
         [
           "when all BOs identified and 1 active BO exists",
           BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+          false
         ],
         [
           "when some BOs identified and 1 active BO and MO exists",
           BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS,
-        ],
-      ])(`%s`, (_, statementValue) => {
+          true
+        ]
+      ])(`%s`, (_, statementValue, activeMOExists) => {
         const appData = {
           ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
           [BeneficialOwnerStatementKey]: statementValue,
@@ -91,7 +94,7 @@ describe("hasValidStatements", () => {
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
         mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
-        mockCheckActiveMOExists.mockReturnValueOnce(true);
+        mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();
@@ -141,6 +144,13 @@ describe("hasValidStatements", () => {
           true,
           true,
           ["There is at least one active registrable beneficial owner."]
+        ],
+        [
+          "when all BOs identified and 1 active MO exists",
+          BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
+          true,
+          true,
+          ["There is at least one active managing officer."]
         ]
       ])(`%s`, (_, statementValue, activeBOExists, activeMOExists, expectedErrorList) => {
         const appData = {

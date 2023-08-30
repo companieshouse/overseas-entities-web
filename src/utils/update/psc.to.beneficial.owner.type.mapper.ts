@@ -159,6 +159,14 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
 ]);
 
 export const mapPrivateAddress = (boData: BeneficialOwnersPrivateDataResource, ch_reference: string) => {
+  if (matchBoToChReference(boData, ch_reference).usualResidentialAddress){
+    return mapBOMOAddress(matchBoToChReference(boData, ch_reference).usualResidentialAddress);
+  } else {
+    return mapBOMOAddress(matchBoToChReference(boData, ch_reference).principalAddress);
+  }
+};
+
+export const matchBoToChReference = (boData: BeneficialOwnersPrivateDataResource, ch_reference: string) => {
   if (!boData?.boPrivateData?.length) {
     return;
   }
@@ -168,11 +176,7 @@ export const mapPrivateAddress = (boData: BeneficialOwnersPrivateDataResource, c
     const hashed_ch_reference = encode(unhashed_ch_reference!);
 
     if (hashed_ch_reference === ch_reference){
-      if (private_bo_data.usualResidentialAddress){
-        return mapBOMOAddress(private_bo_data.usualResidentialAddress);
-      } else {
-        return mapBOMOAddress(private_bo_data.principalAddress);
-      }
+      return private_bo_data;
     }
   }
 };

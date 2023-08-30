@@ -18,15 +18,7 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
-  if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching overseas entity details = ${JSON.stringify(response)}`;
-    throw createAndLogErrorRequest(req, errorMsg);
-  }
-
-  if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No overseas entity details found ${overseasEntityId} under ${transactionId}`);
-    return undefined;
-  }
+  checkErrorResponse(req, response, overseasEntityId, transactionId);
 
   return response.resource;
 };
@@ -45,17 +37,21 @@ export const getBeneficialOwnerPrivateData = async (
     overseasEntityId
   );
 
+  checkErrorResponse(req, response, overseasEntityId, transactionId);
+
+  return response.resource;
+};
+
+const checkErrorResponse = (req: Request, response, overseasEntityId: string, transactionId: string) => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching private bo details = ${JSON.stringify(response)}`;
+    const errorMsg = `Something went wrong fetching private details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No private bo details found ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No private details found ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 
   logger.debugRequest(req, `${response}`);
-
-  return response.resource;
 };

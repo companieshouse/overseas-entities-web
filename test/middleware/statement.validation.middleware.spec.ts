@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { hasValidStatements } from '../../src/middleware/statement.validation.middleware';
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getApplicationData, checkActiveBOExists, checkActiveMOExists, hasAddedOrCeasedABO } from "../../src/utils/application.data";
+import { getApplicationData, checkActiveBOExists, checkActiveMOExists, hasAddedOrCeasedBO } from "../../src/utils/application.data";
 
 import {
   APPLICATION_DATA_MOCK,
@@ -29,8 +29,8 @@ const next = jest.fn();
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckActiveBOExists = checkActiveBOExists as jest.Mock;
-const mockHasAddedOrCeasedABO = hasAddedOrCeasedABO as jest.Mock;
 const mockCheckActiveMOExists = checkActiveMOExists as jest.Mock;
+const mockHasAddedOrCeasedBO = hasAddedOrCeasedBO as jest.Mock;
 
 describe("hasValidStatements", () => {
 
@@ -38,7 +38,7 @@ describe("hasValidStatements", () => {
     jest.resetAllMocks();
   });
 
-  test("when feature flag is off and on change journey redirects to update-beneficial-owner-bo-mo-review", () => {
+  test("when feature flag is off and in change journey redirects to update-beneficial-owner-bo-mo-review", () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
@@ -52,7 +52,7 @@ describe("hasValidStatements", () => {
     expect(res.redirect).toHaveBeenCalledWith(UPDATE_CHECK_YOUR_ANSWERS_URL);
   });
 
-  test("when feature flag is off and on no change journey redirects to review-update-statement", () => {
+  test("when feature flag is off and in no change journey redirects to review-update-statement", () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockGetApplicationData.mockReturnValueOnce({
       ...APPLICATION_DATA_MOCK,
@@ -93,7 +93,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
 
         hasValidStatements(req, res, next);
@@ -168,7 +168,7 @@ describe("hasValidStatements", () => {
 
         mockCheckActiveBOExists.mockReturnValueOnce(activeBOExists);
         mockCheckActiveMOExists.mockReturnValueOnce(activeMOExists);
-        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
 
         hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();
@@ -177,7 +177,8 @@ describe("hasValidStatements", () => {
     });
   });
 
-  describe("validateNoBosCeasedOrAdded", () => {
+  describe("validateRegistrableBOStatements", () => {
+
     describe("passes and redirects to next page", () => {
 
       const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
@@ -202,7 +203,7 @@ describe("hasValidStatements", () => {
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockHasAddedOrCeasedABO.mockReturnValueOnce(true);
+        mockHasAddedOrCeasedBO.mockReturnValueOnce(true);
 
         hasValidStatements(req, res, next);
         expect(res.redirect).toHaveBeenCalled();
@@ -210,26 +211,38 @@ describe("hasValidStatements", () => {
     });
 
     describe("fails and calls next() to continue to error page", () => {
-      const BOI_MOCK = UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK;
-      BOI_MOCK.ceased_date = undefined;
-      BOI_MOCK.ch_reference = undefined;
       test.each([
         [
-          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
+          "The entity has no reasonable cause to believe that anyone has become or ceased to be a registrable beneficial owner during the update period.",
+          yesNoResponse.No,
+          UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          { day: "1", month: "3", year: "2001" },
+          "testref",
+          true
         ],
-      ])(`%s`, (_) => {
+        [
+          "The entity has reasonable cause to believe that at least one person has become or ceased to be a registrable beneficial owner during the update period.",
+          yesNoResponse.Yes,
+          UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+          undefined,
+          "testref",
+          false
+        ]
+      ])(`%s`, (_, statementValue, boi_mock, ceased_date, ch_reference, hasAddedOrCeasedBO) => {
+        boi_mock.ceased_date = ceased_date;
+        boi_mock.ch_reference = ch_reference;
         const appData = {
           [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS,
-          [BeneficialOwnerIndividualKey]: [],
+          [BeneficialOwnerIndividualKey]: [boi_mock],
           [UpdateKey]: {
             ...UPDATE_OBJECT_MOCK,
-            [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes,
+            [RegistrableBeneficialOwnerKey]: statementValue,
           }
         };
         mockIsActiveFeature.mockReturnValueOnce(true);
         mockGetApplicationData.mockReturnValueOnce(appData);
         mockCheckActiveBOExists.mockReturnValueOnce(true);
-        mockHasAddedOrCeasedABO.mockReturnValueOnce(false);
+        mockHasAddedOrCeasedBO.mockReturnValueOnce(hasAddedOrCeasedBO);
 
         hasValidStatements(req, res, next);
         expect(next).toHaveBeenCalled();

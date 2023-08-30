@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
-import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedABO } from "../utils/application.data";
+import { checkActiveBOExists, checkActiveMOExists, getApplicationData, hasAddedOrCeasedBO } from "../utils/application.data";
+
 import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
@@ -11,6 +12,7 @@ import { ApplicationData } from "../model";
 import { ErrorMessages } from "../validation/error.messages";
 import { Session } from "@companieshouse/node-session-handler";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
+import { yesNoResponse } from "../model/data.types.model";
 
 export const hasValidStatements = (req: Request, res: Response, next: NextFunction) => {
   const errorList: string[] = [];
@@ -56,12 +58,19 @@ const validateIdentifiedBOsStatement = (appData: ApplicationData, errorList: str
 };
 
 const validateRegistrableBOStatements = (appData: ApplicationData, errorList: string[]): boolean => {
-  if (!hasAddedOrCeasedABO(appData) && appData.update?.[RegistrableBeneficialOwnerKey] === 1) {
+  const addedOrCeasedBO = hasAddedOrCeasedBO(appData);
+  if (!addedOrCeasedBO && appData.update?.[RegistrableBeneficialOwnerKey] === yesNoResponse.Yes) {
     errorList.push(ErrorMessages.NOT_ADDED_OR_CEASED_BO);
   }
+
+  if (addedOrCeasedBO && appData.update?.[RegistrableBeneficialOwnerKey] === yesNoResponse.No) {
+    errorList.push(ErrorMessages.ADDED_OR_CEASED_BO);
+  }
+
   if (errorList.length) {
     return false;
   }
+
   return true;
 };
 

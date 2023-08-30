@@ -286,7 +286,7 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_MANAGING_OFFICER_CORPORATE_URL + config.ID].previousPage();
     expect(navigation).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
   });
-  
+
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL} when in change journey and calling previousPage on ${config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL} object`, () => {
     mockGetApplicationData.mockReturnValue({
       update: { no_change: false },

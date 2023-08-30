@@ -35,10 +35,10 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 };
 
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const transactionId = appData.transaction_id;
-  const overseasEntityId = appData.overseas_entity_id;
+  const transactionId: string = appData.transaction_id as string;
+  const overseasEntityId: string = appData.overseas_entity_id as string;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const boPrivateData: BeneficialOwnersPrivateDataResource = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateDataResource;
+  const boPrivateData: BeneficialOwnersPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       logger.info("Loaded psc " + psc.kind);
@@ -50,12 +50,10 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
           appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
         } else if (psc.kind === "corporate-entity-beneficial-owner") {
           const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-          beneficialOwnerOther.principal_address = mapPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference as string);
           logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
           appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
         } else if (psc.kind === "legal-person-beneficial-owner") {
           const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-          beneficialOwnerGov.principal_address = mapPrivateAddress(boPrivateData, beneficialOwnerGov.ch_reference as string);
           logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
           appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
         }

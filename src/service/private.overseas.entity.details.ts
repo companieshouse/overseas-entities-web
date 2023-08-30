@@ -27,7 +27,7 @@ export const getBeneficialOwnerPrivateData = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string
-): Promise<BeneficialOwnersPrivateDataResource | undefined> => {
+): Promise<BeneficialOwnersPrivateData | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getBeneficialOwnerPrivateData",

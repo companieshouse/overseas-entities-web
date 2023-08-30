@@ -1649,7 +1649,7 @@ export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
   }
 };
 
-export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateDataResource = {
+export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateData = {
   boPrivateData: [PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA]
 };
 

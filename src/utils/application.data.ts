@@ -55,10 +55,7 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
 };
 
 export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialOwnerIndividual | BeneficialOwnerCorporate | BeneficialOwnerGov> => {
-  if (appData.update === undefined) {
-    return [];
-  }
-  if (!appData.update.no_change) {
+  if (!appData.update?.no_change) {
     return (appData.beneficial_owners_individual ?? [])
       .concat(
         appData.beneficial_owners_government_or_public_authority ?? [],
@@ -72,10 +69,7 @@ export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialO
 };
 
 export const allManagingOfficers = (appData: ApplicationData) => {
-  if (appData.update === undefined) {
-    return [];
-  }
-  if (!appData.update.no_change) {
+  if (!appData.update?.no_change) {
     return (appData.managing_officers_individual ?? []).concat(appData.managing_officers_corporate ?? []);
   } else {
     return (appData.update.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);

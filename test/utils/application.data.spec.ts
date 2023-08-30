@@ -64,7 +64,7 @@ import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.i
 import { BeneficialOwnerOtherKey } from "../../src/model/beneficial.owner.other.model";
 import { ManagingOfficerCorporateKey } from "../../src/model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
-import { UpdateKey } from "../../src/model/update.type.model";
+import { NoChangeKey, UpdateKey } from "../../src/model/update.type.model";
 
 let req: Request;
 
@@ -402,7 +402,7 @@ describe("Application data utils", () => {
       BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF
     ],
   ])(`allBeneficialOwners with %s returns expected array`, (_, boKey, boMock) => {
-    const allBOs = allBeneficialOwners({ [UpdateKey]: { [boKey]: [boMock] } });
+    const allBOs = allBeneficialOwners({ [UpdateKey]: { [boKey]: [boMock], [NoChangeKey]: true } });
 
     expect(allBOs).toEqual([boMock]);
   });
@@ -432,16 +432,26 @@ describe("Application data utils", () => {
     expect(notAddedOrCeasedBos).toEqual(expectedReturn);
   });
 
-  test("allBeneficialOwners with 1 of each BO type returns array of all", () => {
-    const allBOs = allBeneficialOwners({ ...APPLICATION_DATA_MOCK, [UpdateKey]: UPDATE_OWNERS_DATA_WITH_VALUE });
+  test("allBeneficialOwners with 1 of each BO type returns array of all for update", () => {
+    const mockAppData = { ...APPLICATION_DATA_MOCK };
+    mockAppData.update = { ...APPLICATION_DATA_MOCK.update, [NoChangeKey]: false };
+    const allBOs = allBeneficialOwners(mockAppData);
 
     expect(allBOs).toEqual([
       BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
       BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
+      BENEFICIAL_OWNER_OTHER_OBJECT_MOCK
+    ]);
+  });
+
+  test("allBeneficialOwners with 1 of each BO type returns array of all for no change", () => {
+    const mockAppData = { [UpdateKey]: { ...UPDATE_OWNERS_DATA_WITH_VALUE, [NoChangeKey]: true } };
+    const allBOs = allBeneficialOwners(mockAppData);
+
+    expect(allBOs).toEqual([
       UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
-      UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK,
-      REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA
+      REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
+      UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK
     ]);
   });
 
@@ -458,12 +468,12 @@ describe("Application data utils", () => {
     ],
     [
       "1 active beneficial owner, with no ceased_date key, returns true",
-      APPLICATION_DATA_MOCK_NEWLY_ADDED_BO,
+      { ...APPLICATION_DATA_MOCK_NEWLY_ADDED_BO, [UpdateKey]: { [NoChangeKey]: false } },
       true
     ],
     [
       "1 active beneficial owner, with empty ceased_date, returns true",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK] },
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK], [UpdateKey]: { [NoChangeKey]: false } },
       true
     ]
   ])(`checkActiveBOExists with %s returns expected array`, (_, appData, expectedResult) => {
@@ -499,7 +509,7 @@ describe("Application data utils", () => {
       MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
     ]
   ])(`allManagingOfficers with %s returns expected array`, (_, moKey, moMock) => {
-    const allMOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock] } });
+    const allMOs = allManagingOfficers({ [UpdateKey]: { [moKey]: [moMock], [NoChangeKey]: true } });
 
     expect(allMOs).toEqual([moMock]);
   });
@@ -512,18 +522,19 @@ describe("Application data utils", () => {
     ],
     [
       "no active managing officer returns false",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [UPDATE_MANAGING_OFFICER_OBJECT_MOCK] },
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [UPDATE_MANAGING_OFFICER_OBJECT_MOCK], [UpdateKey]: { [NoChangeKey]: false } },
       false
     ],
     [
       "1 active managing officer, with no resigned_on key, returns true",
-      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK] },
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]: [MANAGING_OFFICER_OBJECT_MOCK], [UpdateKey]: { [NoChangeKey]: false } },
       true
     ],
     [
       "1 active managing officer, with empty resigned_on, returns true",
       { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [ManagingOfficerKey]:
-        [{ ...MANAGING_OFFICER_OBJECT_MOCK, resigned_on: {} }]
+        [{ ...MANAGING_OFFICER_OBJECT_MOCK, resigned_on: {} }],
+      [UpdateKey]: { [NoChangeKey]: false }
       },
       true
     ]

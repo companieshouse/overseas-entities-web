@@ -12,8 +12,8 @@ import {
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
-import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
-import { ManagingOfficerKey } from '../model/managing.officer.model';
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
+import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
@@ -68,7 +68,7 @@ export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialO
   }
 };
 
-export const allManagingOfficers = (appData: ApplicationData) => {
+export const allManagingOfficers = (appData: ApplicationData): Array<ManagingOfficerIndividual | ManagingOfficerCorporate> => {
   if (!appData.update?.no_change) {
     return (appData.managing_officers_individual ?? []).concat(appData.managing_officers_corporate ?? []);
   } else {

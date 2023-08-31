@@ -16,33 +16,26 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     let backLinkUrl: string;
-    let noChangeFlag: boolean = false;
     let statementValidationFlag: boolean = false;
+    let noChangeFlag: boolean = false;
     let templateName: string;
     const appData = getApplicationData(req.session);
-    statementValidationFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
-    if (noChangeBackLink){
+    if (noChangeBackLink) {
       backLinkUrl = noChangeBackLink;
       templateName = config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE;
       noChangeFlag = true;
     } else {
-      if (statementValidationFlag) {
-        if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData))) {
-          backLinkUrl = config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
-        } else {
-          backLinkUrl = config.UPDATE_BENEFICIAL_OWNER_TYPE_URL;
-        }
-      } else {
-        backLinkUrl = registrationFlag ? config.ENTITY_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
-      }
+      statementValidationFlag = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION);
+      backLinkUrl = getChangeBackLinkUrl(registrationFlag, statementValidationFlag, appData);
       templateName = config.BENEFICIAL_OWNER_STATEMENTS_PAGE;
     }
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
       [BeneficialOwnerStatementKey]: appData[BeneficialOwnerStatementKey],
-      noChangeFlag,
+      registrationFlag,
       statementValidationFlag,
+      noChangeFlag,
       entity_number: appData[EntityNumberKey],
       entity_name: appData[EntityNameKey]
     });
@@ -52,11 +45,21 @@ export const getBeneficialOwnerStatements = (req: Request, res: Response, next: 
   }
 };
 
+const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag: boolean, appData: ApplicationData) => {
+  if (registrationFlag) {
+    return config.ENTITY_URL;
+  } else {
+    const containsTrusts = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && containsTrustData(getTrustArray(appData));
+    const noTrustsUrl = statementValidationFlag ? config.UPDATE_BENEFICIAL_OWNER_TYPE_URL : config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL;
+    return containsTrusts ? config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : noTrustsUrl;
+  }
+};
+
 export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   try {
     let REDIRECT_URL: string;
 
-    if (noChangeRedirectUrl){
+    if (noChangeRedirectUrl) {
       REDIRECT_URL = noChangeRedirectUrl;
     } else {
       REDIRECT_URL = registrationFlag
@@ -72,11 +75,11 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
 
     if (
       registrationFlag &&
-            appData[BeneficialOwnerStatementKey] &&
-            (
-              (boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED && checkBOsDetailsEntered(appData)) ||
-                (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS && checkMOsDetailsEntered(appData))
-            )
+      appData[BeneficialOwnerStatementKey] &&
+      (
+        (boStatement === BeneficialOwnersStatementType.NONE_IDENTIFIED && checkBOsDetailsEntered(appData)) ||
+        (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS && checkMOsDetailsEntered(appData))
+      )
     ) {
       return res.redirect(`${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=${boStatement}`);
     }

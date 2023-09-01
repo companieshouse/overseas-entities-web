@@ -50,7 +50,6 @@ locals {
       trimprefix(sec.name, "/${local.service_name}-${var.environment}/") => sec.arn
   }
 
-  # TODO: task_secrets don't seem to correspond with 'parameter_store_secrets'. What is the difference?
   task_secrets = [
     { "name": "COOKIE_SECRET", "valueFrom": "${local.secrets_arn_map.web-oauth2-cookie-secret}" },
     { "name": "CHS_API_KEY", "valueFrom": "${local.service_secrets_arn_map.chs_api_key}" },

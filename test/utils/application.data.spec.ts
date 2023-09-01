@@ -541,4 +541,32 @@ describe("Application data utils", () => {
   ])(`checkActiveMOExists with %s returns expected array`, (_, appData, expectedResult) => {
     expect(checkActiveMOExists(appData)).toBe(expectedResult);
   });
+
+  test.each([
+    [
+      "no managing officers returns false",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [UpdateKey]: { [NoChangeKey]: true } },
+      false
+    ],
+    [
+      "no active managing officer returns false",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [UpdateKey]: { [NoChangeKey]: true, ["review_managing_officers_individual"]: [UPDATE_MANAGING_OFFICER_OBJECT_MOCK] } },
+      false
+    ],
+    [
+      "1 active managing officer, with no resigned_on key, returns true",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, [UpdateKey]: { [NoChangeKey]: true, ["review_managing_officers_individual"]: [MANAGING_OFFICER_OBJECT_MOCK] } },
+      true
+    ],
+    [
+      "1 active managing officer, with empty resigned_on, returns true",
+      { ...APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW,
+        [UpdateKey]: { [NoChangeKey]: true, ["review_managing_officers_individual"]: [{ ...MANAGING_OFFICER_OBJECT_MOCK, resigned_on: {} }] }
+      },
+      true
+    ]
+  ])(`checkActiveMOExists when in no change with %s returns expected array`, (_, appData, expectedResult) => {
+    expect(checkActiveMOExists(appData)).toBe(expectedResult);
+  });
+
 });

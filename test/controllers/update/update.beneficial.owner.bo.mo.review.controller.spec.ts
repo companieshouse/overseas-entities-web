@@ -5,7 +5,6 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock('../../../src/utils/feature.flag');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -29,7 +28,6 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { logger } from "../../../src/utils/logger";
 import { UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE } from "../../__mocks__/text.mock";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -45,7 +43,6 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
 
@@ -56,18 +53,6 @@ describe("BENEFICIAL OWNER BO MO REVIEW controller", () => {
   describe("GET tests", () => {
     test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page`, async () => {
       mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-
-      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_TITLE);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
-      expect(resp.text).toContain("SA000392");
-    });
-
-    test(`renders the ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_PAGE} page when statement validation flag is on`, async () => {
-      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_MOCK });
-      mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.status).toEqual(200);

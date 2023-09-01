@@ -5,8 +5,8 @@ import * as config from "../../config";
 import { getApplicationData } from "../../utils/application.data";
 import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
-import { isActiveFeature } from "../../utils/feature.flag";
-import { checkEntityReviewRequiresTrusts } from "../../utils/trusts";
+import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerCorporate } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -34,7 +34,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(req.session as Session);
 
-    if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityReviewRequiresTrusts(appData)) {
+    if (hasTrustsInvolved(appData)) {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 
@@ -43,4 +43,24 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.errorRequest(req, errors);
     next(errors);
   }
+};
+
+const trusteeNatureOfControlTypesExist = (bo: (BeneficialOwnerIndividual | BeneficialOwnerCorporate)) => {
+  if (bo.trustees_nature_of_control_types){
+    return bo.trustees_nature_of_control_types.length > 0;
+  }
+};
+
+const hasTrustsInvolved = (appData: ApplicationData) => {
+
+  if (appData?.update){
+    const beneficialOwnersIndividualOrCorporate = [
+      ...(appData.update['review_beneficial_owners_individual'] ?? []),
+      ...(appData.update['review_beneficial_owners_corporate'] ?? [])
+    ];
+
+    return beneficialOwnersIndividualOrCorporate.some(trusteeNatureOfControlTypesExist);
+  }
+
+  return false;
 };

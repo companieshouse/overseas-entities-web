@@ -5,7 +5,6 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
-jest.mock("../../../src/utils/feature.flag" );
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -29,10 +28,6 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { AnyTrustsInvolvedKey } from "../../../src/model/data.types.model";
-import { isActiveFeature } from "../../../src/utils/feature.flag";
-
-const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(false);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -56,13 +51,6 @@ describe("Update any trusts involved controller tests", () => {
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-    });
-
-    test(`renders page not found if FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
-      const resp = await request(app).get(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.status).toEqual(404);
     });
 
     test("catch error when rendering the page", async () => {
@@ -99,13 +87,6 @@ describe("Update any trusts involved controller tests", () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_HEADING);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ANY_TRUSTS_INVOLVED);
-    });
-
-    test("POST with FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true returns 404", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-
-      const resp = await request(app).post(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.status).toEqual(404);
     });
 
     test("catch error when posting the page", async () => {

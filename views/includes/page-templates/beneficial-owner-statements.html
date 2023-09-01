@@ -21,16 +21,8 @@
     <div class="govuk-grid-column-two-thirds">
 
         {% include "includes/list/errors.html" %}
-        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
-        <h1 class="govuk-heading-xl">{{ title }}</h1>
-        
-        {% set someIdentifiedAllDetailsText = "You'll also need to provide" %}
-        {% set noneIdentifiedText = "You'll need to provide" %}
-        {% if statementValidationFlag %}
-          {% set someIdentifiedAllDetailsText = "You have also provided" %}
-          {% set noneIdentifiedText = "You have provided " %}
-        {% endif %}
 
+        <h1 class="govuk-heading-xl">{{ title }}</h1>
 
         <form method="post">
 
@@ -58,7 +50,7 @@
               value: "SOME_IDENTIFIED_ALL_DETAILS",
               text: "Some beneficial owners have been identified and I can provide all required information",
               hint: {
-                text: someIdentifiedAllDetailsText + " information about each managing officer."
+                text: "You'll also need to provide information about each managing officer."
               },
               checked: beneficial_owners_statement == "SOME_IDENTIFIED_ALL_DETAILS",
               attributes: {
@@ -69,7 +61,7 @@
               value: "NONE_IDENTIFIED",
               text: "No beneficial owners have been identified",
               hint: {
-                text: noneIdentifiedText + " information about each managing officer."
+                text:"You'll need to provide information about each managing officer."
               },
               checked: beneficial_owners_statement == "NONE_IDENTIFIED",
               attributes: {
@@ -78,7 +70,8 @@
             }
           ]
         }) }}
-        {% if not noChangeFlag and not statementValidationFlag %}
+
+        {% if not noChangeFlag %}
           {{ govukDetails({
             summaryText: "What are registrable beneficial owners and managing officers?",
             attributes: {

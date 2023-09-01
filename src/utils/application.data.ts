@@ -53,21 +53,6 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
   return (data) ? htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {}) : {};
 };
 
-export const allBeneficialOwners = (appData: ApplicationData) => {
-  return [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? []),
-    ...(appData.update?.review_beneficial_owners_individual ?? []),
-    ...(appData.update?.review_beneficial_owners_corporate ?? []),
-    ...(appData.update?.review_beneficial_owners_government_or_public_authority ?? [])
-  ];
-};
-
-export const checkActiveBOExists = (appData: ApplicationData): boolean => {
-  return allBeneficialOwners(appData).some((bo) => !bo.ceased_date || Object.keys(bo.ceased_date).length === 0);
-};
-
 export const checkBOsDetailsEntered = (appData: ApplicationData): boolean => {
   return Boolean( appData[BeneficialOwnerIndividualKey]?.length || appData[BeneficialOwnerOtherKey]?.length || appData[BeneficialOwnerGovKey]?.length );
 };

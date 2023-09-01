@@ -17,11 +17,10 @@ import { Params } from 'express-serve-static-core';
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
 import app from "../../src/app";
-import { get, post } from "../../src/controllers/trust.historical.beneficial.owner.controller";
-import { HISTORICAL_BO_TEXTS } from '../../src/utils/trust.former.bo';
+import { get, HISTORICAL_BO_TEXTS, post } from "../../src/controllers/trust.historical.beneficial.owner.controller";
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
-import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
+import { hasTrustWithId } from '../../src/middleware/navigation/has.trust.middleware';
 import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
@@ -149,7 +148,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   describe('Endpoint Access tests', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithId as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
     });
 
     test('successfully access GET method and render', async () => {
@@ -167,7 +166,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
 
     test('successfully access POST method', async () => {
@@ -178,7 +177,7 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
 
       expect(authentication).toBeCalledTimes(1);
-      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(hasTrustWithId).toBeCalledTimes(1);
     });
   });
 });

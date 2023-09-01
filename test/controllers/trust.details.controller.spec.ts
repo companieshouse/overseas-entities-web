@@ -24,8 +24,7 @@ import app from "../../src/app";
 import { TRUST_DETAILS_PAGE, TRUST_DETAILS_URL } from '../../src/config';
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasBOsOrMOs } from '../../src/middleware/navigation/has.beneficial.owners.or.managing.officers.middleware';
-import { get, post } from '../../src/controllers/trust.details.controller';
-import { TRUST_DETAILS_TEXTS } from '../../src/utils/trust.details';
+import { get, post, TRUST_DETAILS_TEXTS } from '../../src/controllers/trust.details.controller';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import {
   generateTrustId,

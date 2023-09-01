@@ -11,5 +11,119 @@
 {% endblock %}
 
 {% block content %}
-  {% include "includes/page-templates/trust-historical-bo.html" %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      {% include "includes/list/errors.html" %}
+
+      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
+      <br> <p class="govuk-body">You can add more later.</p> <br>
+
+      <form class="form" method="post">
+        {% set legalEntityHtml %}
+        <br>
+        {% set fieldParam = {
+          name: 'corporate_name',
+          label: 'Name',
+          value: formData.corporate_name,
+          classes: 'govuk-!-width-two-thirds',
+          error: errors.corporate_name if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+        {% endset -%}
+
+        {% set individualBoHtml %}
+        <br>
+        {% set fieldParam = {
+          name: 'firstName',
+          label: 'First Name',
+          value: formData.firstName,
+          classes: 'govuk-!-width-two-thirds',
+          error: errors.firstName if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+
+        {% set fieldParam = {
+          name: 'lastName',
+          label: 'Last Name',
+          classes: 'govuk-!-width-two-thirds',
+          value: formData.lastName,
+          error: errors.lastName if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+        {% endset -%}
+
+        {% set fieldParam = {
+          name: 'type',
+          label: 'Is the former beneficial owner an individual or a legal entity?',
+          error: errors.type if errors,
+          value: formData.type,
+          items: [
+            {
+              value: pageData.trusteeType.LEGAL_ENTITY,
+              text: "Legal Entity",
+              checked: formData.type == pageData.trusteeType.LEGAL_ENTITY,
+              conditional: {
+                html: legalEntityHtml
+              }
+            },
+            {
+              value: pageData.trusteeType.INDIVIDUAL,
+              text: "Individual",
+              checked: formData.type == pageData.trusteeType.INDIVIDUAL,
+              conditional: {
+                html: individualBoHtml
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+        {% set fieldParam = {
+          name: 'startDate',
+          label: 'When did they become a beneficial owner?',
+          value: {
+            'Day': formData.startDateDay,
+            'Month': formData.startDateMonth,
+            'Year': formData.startDateYear
+          },
+          hint: 'For example, 27 3 2007',
+          error: errors.startDate if errors
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+        {% set fieldParam = {
+          name: 'endDate',
+          label: 'When did they stop being a beneficial owner?',
+          value: {
+            'Day': formData.endDateDay,
+            'Month': formData.endDateMonth,
+            'Year': formData.endDateYear
+          },
+          hint: 'For example, 28 5 2011',
+          error: errors.endDate if errors
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="boId" value="{{ formData.boId }}"/>
+
+        {% include "includes/save-and-continue-button.html" %}
+      </form>
+    </div>
+  </div>
 {% endblock %}

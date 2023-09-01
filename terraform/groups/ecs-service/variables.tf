@@ -149,9 +149,6 @@ variable "feature_flag_enable_trusts_web_07112022" {
 variable "feature_flag_enable_update_save_and_resume_07032023" {
   type        = string
 }
-variable "feature_flag_disable_update_private_data_fetch_28062023" {
-  type        = string
-}
 variable "feature_flag_enable_update_trusts_30062023" {
   type        = string
 }

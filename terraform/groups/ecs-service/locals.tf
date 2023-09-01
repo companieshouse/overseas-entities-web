@@ -16,9 +16,6 @@ locals {
     "vpc_name"                  = local.service_secrets["vpc_name"]
     "chs_api_key"               = local.service_secrets["chs_api_key"]
     "internal_api_url"          = local.service_secrets["internal_api_url"]
-    "oauth2_auth_uri"           = local.service_secrets["oauth2_auth_uri"]
-    "oauth2_redirect_uri"       = local.service_secrets["oauth2_redirect_uri"]
-    "account_test_url"          = local.service_secrets["account_test_url"]
     "account_url"               = local.service_secrets["account_url"]
     "cache_server"              = local.service_secrets["cache_server"]
     "oauth2_client_id"          = local.service_secrets["oauth2_client_id"]
@@ -29,9 +26,6 @@ locals {
   vpc_name                  = local.service_secrets["vpc_name"]
   chs_api_key               = local.service_secrets["chs_api_key"]
   internal_api_url          = local.service_secrets["internal_api_url"]
-  oauth2_auth_uri           = local.service_secrets["oauth2_auth_uri"]
-  oauth2_redirect_uri       = local.service_secrets["oauth2_redirect_uri"]
-  account_test_url          = local.service_secrets["account_test_url"]
   account_url               = local.service_secrets["account_url"]
   cache_server              = local.service_secrets["cache_server"]
   oauth2_client_id          = local.service_secrets["oauth2_client_id"]
@@ -81,7 +75,6 @@ locals {
     { "name": "FEATURE_FLAG_ENABLE_ROE_REMOVE_24112022", "value": "${var.feature_flag_enable_roe_remove_24112022}" },
     { "name": "FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022", "value": "${var.feature_flag_enable_trusts_web_07112022}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME_07032023", "value": "${var.feature_flag_enable_update_save_and_resume_07032023}" },
-    { "name": "FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023", "value": "${var.feature_flag_disable_update_private_data_fetch_28062023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_TRUSTS_30062023", "value": "${var.feature_flag_enable_update_trusts_30062023}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },

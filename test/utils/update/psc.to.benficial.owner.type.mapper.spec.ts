@@ -1,7 +1,7 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
-import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
-import { PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
+import { mapPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
+import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_MOCK_DATA, PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
@@ -193,5 +193,21 @@ describe("Test Mapping person of significant control to beneficial owner type", 
   test('that error is empty pcsc nature of control', () => {
     pscMock.naturesOfControl = [];
     expect(mapPscToBeneficialOwnerOther(pscMock)).toBeUndefined;
+  });
+});
+
+describe("Private address retrieval", () => {
+  const mockResult = {
+    property_name_number: "REAGAN HICKMAN",
+    line_1: "72 COWLEY AVENUE",
+    line_2: "QUIA EX ESSE SINT EU",
+    county: "ULLAM DOLORUM CUPIDA",
+    country: "KUWAIT",
+    postcode: "76022",
+    town: "AD EUM DEBITIS EST E"
+  };
+  test('that usual residential address for beneficial owner individual is correctly mapped', () => {
+    const address = mapPrivateAddress(PRIVATE_BO_MOCK_DATA, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
+    expect(address).toEqual(mockResult);
   });
 });

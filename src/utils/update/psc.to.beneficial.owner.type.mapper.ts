@@ -157,3 +157,18 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
 
+export const mapPrivateAddress = (boData: BeneficialOwnersPrivateData, ch_reference: string) => {
+  if (!boData?.boPrivateData?.length) {
+    return;
+  }
+
+  for (const private_bo_data of boData.boPrivateData!) {
+    if (private_bo_data.pscId === ch_reference){
+      if (private_bo_data.usualResidentialAddress){
+        return mapBOMOAddress(private_bo_data.usualResidentialAddress);
+      } else {
+        return mapBOMOAddress(private_bo_data.principalAddress);
+      }
+    }
+  }
+};

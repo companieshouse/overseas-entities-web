@@ -3,10 +3,12 @@ import { Request } from "express";
 import { logger } from "../../utils/logger";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
+import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { mapToManagingOfficer, mapToManagingOfficerCorporate, mapMoPrivateAddress } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
+import { getManagingOfficerPrivateData } from "../../service/private.overseas.entity.details";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -58,17 +60,22 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
 };
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+  const transactionId = appData.transaction_id;
+  const overseasEntityId = appData.overseas_entity_id;
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
+  const moPrivateData: ManagingOfficersPrivateData = await getManagingOfficerPrivateData(req, transactionId, overseasEntityId) as ManagingOfficersPrivateData;
   if (companyOfficers) {
     for (const officer of (companyOfficers.items || [])) {
       logger.info("Loaded officer " + officer.officerRole);
       if (officer.resignedOn === undefined) {
         if (officer.officerRole === "managing-officer") {
           const managingOfficer = mapToManagingOfficer(officer);
+          managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference as string);
           logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
           appData.update?.review_managing_officers_individual?.push(managingOfficer);
         } else if (officer.officerRole === "corporate-managing-officer") {
           const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+          managingOfficerCorporate.service_address = mapMoPrivateAddress(moPrivateData, managingOfficerCorporate.ch_reference as string);
           logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
           appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
         }

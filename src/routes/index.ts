@@ -85,7 +85,8 @@ import {
   updateReviewStatement,
   updateTrustsIndividualBeneficialOwner,
   updateTrustsLegalEntityBeneficialOwner,
-  updateStatementValidationErrors
+  updateStatementValidationErrors,
+  updatePaymentFailed
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -385,6 +386,8 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL)
   .post(...validator.updateBeneficialOwnerStatements, checkValidations, updateBeneficialOwnerStatements.post);
 
 router.get(config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL, authentication, companyAuthentication, overseasEntityPayment.get);
+
+router.get(config.UPDATE_PAYMENT_FAILED_URL, authentication, updatePaymentFailed.get);
 
 router.route(config.OVERSEAS_ENTITY_UPDATE_DETAILS_URL)
   .all(

@@ -97,7 +97,7 @@ import { isFeatureEnabled } from '../middleware/is.feature.enabled.middleware';
 import { isFeatureDisabled } from '../middleware/is.feature.disabled.middleware';
 import { validator } from "../validation";
 import { companyAuthentication } from "../middleware/company.authentication.middleware";
-import { hasValidStatements } from "../middleware/statement.validation.middleware";
+import { validateStatements, statementValidationErrorsGuard, summaryPagesGuard } from "../middleware/statement.validation.middleware";
 
 const router = Router();
 
@@ -449,7 +449,7 @@ router.route(config.UPDATE_CHECK_YOUR_ANSWERS_URL)
     companyAuthentication,
     navigation.hasBOsOrMOsUpdate
   )
-  .get(updateCheckYourAnswers.get)
+  .get(validateStatements, summaryPagesGuard, updateCheckYourAnswers.get)
   .post(updateCheckYourAnswers.post);
 
 router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
@@ -747,7 +747,7 @@ router.route(config.UPDATE_REVIEW_STATEMENT_URL)
     companyAuthentication,
     navigation.hasOverseasEntity
   )
-  .get(updateReviewStatement.get)
+  .get(validateStatements, summaryPagesGuard, updateReviewStatement.get)
   .post(...validator.reviewUpdateStatementChange, checkValidations, updateReviewStatement.post);
 
 router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
@@ -777,7 +777,7 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
     companyAuthentication,
     navigation.hasUpdatePresenter,
   )
-  .get(hasValidStatements, updateStatementValidationErrors.get)
-  .post(...validator.statementResolution, updateStatementValidationErrors.post);
+  .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
+  .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
 
 export default router;

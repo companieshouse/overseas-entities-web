@@ -14,6 +14,7 @@ import request from "supertest";
 
 import app from "../../../src/app";
 import {
+  SECURE_UPDATE_FILTER_URL,
   UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
@@ -36,7 +37,7 @@ import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { hasValidStatements } from "../../../src/middleware/statement.validation.middleware";
+import { validateStatements, statementValidationErrorsGuard } from "../../../src/middleware/statement.validation.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -47,11 +48,11 @@ mockCompanyAuthentication.mockImplementation((_: Request, __: Response, next: Ne
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
 
-const mockHasValidStatements = hasValidStatements as jest.Mock;
-mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
-  req['statementErrorList'] = ["There are no active registrable beneficial owners."];
-  next();
-});
+const mockValidateStatements = validateStatements as jest.Mock;
+mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+
+const mockStatementValidationErrorsGuard = statementValidationErrorsGuard as jest.Mock;
+mockStatementValidationErrorsGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
@@ -64,11 +65,35 @@ describe("Update statement validation errors controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+
     mockIsActiveFeature.mockReturnValue(true);
+    mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+    mockStatementValidationErrorsGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
   });
 
   describe("GET tests", () => {
+    test('runs statementValidationErrorsGuard middleware', async () => {
+      mockValidateStatements.mockImplementation((req: Request, _: Response, next: NextFunction) => {
+        req['statementErrorList'] = ["There are no active registrable beneficial owners."];
+        next();
+      });
+
+      mockStatementValidationErrorsGuard.mockImplementation((_: Request, res: Response, __: NextFunction) => {
+        res.redirect(SECURE_UPDATE_FILTER_URL);
+      });
+
+      const resp = await request(app).get(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(SECURE_UPDATE_FILTER_URL);
+    });
+
     test(`renders the Update statement validation errors page`, async () => {
+      mockValidateStatements.mockImplementation((req: Request, _: Response, next: NextFunction) => {
+        req['statementErrorList'] = ["There are no active registrable beneficial owners."];
+        next();
+      });
+
       mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
@@ -112,10 +137,11 @@ describe("Update statement validation errors controller", () => {
     });
 
     test(`in a change journey, renders the Update statement validation errors page when there is at least one registrable BO`, async () => {
-      mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
+      mockValidateStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
         req['statementErrorList'] = ["There is at least one active registrable beneficial owner.", "There are no active managing officers."];
         next();
       });
+
       mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',
@@ -145,10 +171,11 @@ describe("Update statement validation errors controller", () => {
     });
 
     test(`in a no change journey, renders the Update statement validation errors page when there is at least one registrable BO`, async () => {
-      mockHasValidStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
+      mockValidateStatements.mockImplementation((req: Request, __: Response, next: NextFunction) => {
         req['statementErrorList'] = ["There is at least one active registrable beneficial owner.", "There are no active managing officers."];
         next();
       });
+
       mockGetApplicationData.mockReturnValue({
         entity_name: 'Potato',
         entity_number: 'OE991992',

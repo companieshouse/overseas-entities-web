@@ -8,19 +8,22 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
-jest.mock("../../../src/utils/feature.flag" );
+jest.mock("../../../src/utils/feature.flag");
+jest.mock('../../../src/middleware/statement.validation.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import { logger } from "../../../src/utils/logger";
 import request from "supertest";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+import { validateStatements, summaryPagesGuard } from "../../../src/middleware/statement.validation.middleware";
 
 import {
   UPDATE_CHECK_YOUR_ANSWERS_PAGE,
   UPDATE_CHECK_YOUR_ANSWERS_URL,
   UPDATE_PRESENTER_CHANGE_FULL_NAME,
-  UPDATE_PRESENTER_CHANGE_EMAIL
+  UPDATE_PRESENTER_CHANGE_EMAIL,
+  SECURE_UPDATE_FILTER_URL,
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -112,6 +115,12 @@ mockHasBOsOrMOsUpdateMiddleware.mockImplementation((req: Request, res: Response,
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockValidateStatements = validateStatements as jest.Mock;
+mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+
+const mockSummaryPagesGuard = summaryPagesGuard as jest.Mock;
+mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+
 const mockTransactionService = postTransaction as jest.Mock;
 mockTransactionService.mockReturnValue( TRANSACTION_ID );
 
@@ -127,9 +136,27 @@ mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 describe("CHECK YOUR ANSWERS controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+
+    mockValidateStatements.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
+    mockSummaryPagesGuard.mockImplementation((_: Request, __: Response, next: NextFunction) => next());
   });
 
   describe("GET tests", () => {
+    test('runs summaryPagesGuard middleware', async () => {
+      mockValidateStatements.mockImplementation((req: Request, _: Response, next: NextFunction) => {
+        req['statementErrorList'] = ["There are no active registrable beneficial owners."];
+        next();
+      });
+
+      mockSummaryPagesGuard.mockImplementation((_: Request, res: Response, __: NextFunction) => {
+        res.redirect(SECURE_UPDATE_FILTER_URL);
+      });
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(SECURE_UPDATE_FILTER_URL);
+    });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with contact details section`, async () => {
       mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);

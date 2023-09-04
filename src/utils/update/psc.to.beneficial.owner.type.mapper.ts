@@ -163,12 +163,10 @@ export const mapPrivateAddress = (boData: BeneficialOwnersPrivateData, ch_refere
   }
 
   for (const private_bo_data of boData.boPrivateData!) {
-    if (private_bo_data.pscId === ch_reference){
-      if (private_bo_data.usualResidentialAddress){
-        return mapBOMOAddress(private_bo_data.usualResidentialAddress);
-      } else {
-        return mapBOMOAddress(private_bo_data.principalAddress);
-      }
+    if (private_bo_data.hashedId === ch_reference) {
+      return private_bo_data.usualResidentialAddress
+        ? mapBOMOAddress(private_bo_data.usualResidentialAddress)
+        : mapBOMOAddress(private_bo_data.principalAddress);
     }
   }
 };

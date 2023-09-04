@@ -1614,7 +1614,7 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
 };
 
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
-  pscId: "9001809816",
+  hashedId: "9001809816",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",
@@ -1643,7 +1643,7 @@ export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateDataResource
 };
 
 export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
-  pscId: "9034422861",
+  hashedId: "9034422861",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",

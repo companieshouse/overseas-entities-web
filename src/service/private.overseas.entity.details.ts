@@ -18,7 +18,7 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId);
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity details");
 
   return response.resource;
 };
@@ -37,14 +37,14 @@ export const getBeneficialOwnerPrivateData = async (
     overseasEntityId
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId);
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner details");
 
   return response.resource;
 };
 
-const checkErrorResponse = (req: Request, response, overseasEntityId: string, transactionId: string) => {
+const checkErrorResponse = (req: Request, response, overseasEntityId: string, transactionId: string, dataToRetrieve?: string) => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching private details = ${JSON.stringify(response)}`;
+    const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 

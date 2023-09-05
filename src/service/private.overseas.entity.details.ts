@@ -25,8 +25,8 @@ export const getPrivateOeDetails = async (
 
 export const getBeneficialOwnerPrivateData = async (
   req: Request,
-  transactionId: string,
-  overseasEntityId: string
+  transactionId?: string,
+  overseasEntityId?: string
 ): Promise<BeneficialOwnersPrivateData | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -42,14 +42,14 @@ export const getBeneficialOwnerPrivateData = async (
   return response.resource;
 };
 
-const checkErrorResponse = (req: Request, response, overseasEntityId: string, transactionId: string, dataToRetrieve?: string) => {
+const checkErrorResponse = (req: Request, response, overseasEntityId?: string, transactionId?: string, dataToRetrieve: string = "") => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No private details found ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No ${dataToRetrieve} found ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 

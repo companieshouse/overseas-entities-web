@@ -2,7 +2,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { OverseasEntityExtraDetails } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { OverseasEntityExtraDetails, BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 
 export const getPrivateOeDetails = async (
   req: Request,
@@ -25,8 +25,8 @@ export const getPrivateOeDetails = async (
 
 export const getBeneficialOwnerPrivateData = async (
   req: Request,
-  transactionId?: string,
-  overseasEntityId?: string
+  transactionId: string,
+  overseasEntityId: string
 ): Promise<BeneficialOwnersPrivateData | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
@@ -49,7 +49,7 @@ const checkErrorResponse = (req: Request, response, overseasEntityId?: string, t
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No private ${dataToRetrieve} found ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No private ${dataToRetrieve} found for ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 

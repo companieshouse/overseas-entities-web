@@ -1,5 +1,6 @@
 import { Address, InputDate } from "../../model/data.types.model";
 import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { PrivateAddress } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth, NameElements } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";

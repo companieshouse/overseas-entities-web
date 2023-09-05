@@ -7,7 +7,7 @@ import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { getBeneficialOwnerPrivateData } from "service/private.overseas.entity.details";
+import { getBeneficialOwnerPrivateData } from "../../service/private.overseas.entity.details";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -35,10 +35,10 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 };
 
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const transactionId = appData.transaction_id;
-  const overseasEntityId = appData.overseas_entity_id;
+  const transactionId = appData.transaction_id!;
+  const overseasEntityId = appData.overseas_entity_id!;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const boPrivateData: BeneficialOwnersPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
+  const boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       logger.info("Loaded psc " + psc.kind);
@@ -46,7 +46,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
         if (psc.kind === "individual-beneficial-owner") {
           const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
           if (individualBeneficialOwner.ch_reference !== undefined){
-            individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference);
+            individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference);
           }
           logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
           appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);

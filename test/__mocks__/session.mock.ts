@@ -56,6 +56,7 @@ import { DATE_OF_BIRTH, EMPTY_DATE, RESIGNED_ON_DATE, START_DATE } from "./field
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
+import { BeneficialOwnerPrivateData, BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1613,7 +1614,7 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
-export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
   hashedId: "9001809816",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
@@ -1621,51 +1622,51 @@ export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateDataResource
   usualResidentialAddress: {
     addressLine1: "72 COWLEY AVENUE",
     addressLine2: "QUIA EX ESSE SINT EU",
-    care_of: "",
+    careOf: "",
     country: "KUWAIT",
     locality: "AD EUM DEBITIS EST E",
-    po_box: "FGdg",
+    poBox: "FGdg",
     postalCode: "76022",
     premises: "REAGAN HICKMAN",
     region: "ULLAM DOLORUM CUPIDA"
   },
   principalAddress: {
-    address_line_1: undefined,
-    address_line_2: undefined,
-    care_of: undefined,
+    addressLine1: undefined,
+    addressLine2: undefined,
+    careOf: undefined,
     country: undefined,
     locality: undefined,
-    po_box: undefined,
-    post_code: undefined,
+    poBox: undefined,
+    postalCode: undefined,
     premises: undefined,
     region: undefined
   }
 };
 
-export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateDataResource = {
+export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
   hashedId: "9034422861",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",
   usualResidentialAddress: {
-    address_line_1: "72 COWLEY AVENUE",
-    address_line_2: "QUIA EX ESSE SINT EU",
-    care_of: "",
+    addressLine1: "72 COWLEY AVENUE",
+    addressLine2: "QUIA EX ESSE SINT EU",
+    careOf: "",
     country: "KUWAIT",
     locality: "AD EUM DEBITIS EST E",
-    po_box: "FGdg",
-    post_code: "76022",
+    poBox: "FGdg",
+    postalCode: "76022",
     premises: "REAGAN HICKMAN",
     region: "ULLAM DOLORUM CUPIDA"
   },
   principalAddress: {
-    address_line_1: undefined,
-    address_line_2: undefined,
-    care_of: undefined,
+    addressLine1: undefined,
+    addressLine2: undefined,
+    careOf: undefined,
     country: undefined,
     locality: undefined,
-    po_box: undefined,
-    post_code: undefined,
+    poBox: undefined,
+    postalCode: undefined,
     premises: undefined,
     region: undefined
   }

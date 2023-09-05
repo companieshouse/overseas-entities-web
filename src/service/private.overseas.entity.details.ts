@@ -65,7 +65,7 @@ export const getManagingOfficerPrivateData = async (
   return response.resource;
 };
 
-const checkErrorResponse = (req, response, overseasEntityId, transactionId, dataToRetrieve) => {
+const checkErrorResponse = (req: Request, response: any, overseasEntityId: string, transactionId: string, dataToRetrieve: string) => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);

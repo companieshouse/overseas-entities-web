@@ -23,8 +23,7 @@ import {
   PAGE_TITLE_ERROR,
   BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING,
   SERVICE_UNAVAILABLE,
-  CONTINUE_BUTTON_TEXT,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
+  CONTINUE_BUTTON_TEXT
 } from "../../__mocks__/text.mock";
 import {
   BeneficialOwnerStatementKey,
@@ -39,6 +38,7 @@ import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has
 import * as config from "../../../src/config";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { TrustKey } from "../../../src/model/trust.model";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -90,7 +90,36 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
-      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_BACK_LINK);
+      // TODO: UAR-369 control
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the beneficial owner statements page with statement validation flag on and trusts flag on with no trusts", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, [TrustKey]: {} });
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      // TODO: UAR-369 control
+      expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the trusts associated page with statement validation flag off and trusts flag on ", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(false).mockReturnValueOnce(true);
+      const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
       // TODO: UAR-369 control
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
     });

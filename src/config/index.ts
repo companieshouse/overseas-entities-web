@@ -129,7 +129,6 @@ export const UPDATE_TRUSTS_INDIVIDUAL_BENEFICIAL_OWNER_PAGE = "update-trusts-tel
 export const UPDATE_TRUSTS_TELL_US_ABOUT_FORMER_BO_PAGE = "update-trusts-tell-us-about-former-bo";
 export const UPDATE_TRUSTS_TELL_US_ABOUT_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE = "update-trusts-tell-us-about-legal-entity";
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validation-errors";
-export const UPDATE_PAYMENT_FAILED_PAGE = "update-payment-failed";
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";

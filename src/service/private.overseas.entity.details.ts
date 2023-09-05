@@ -22,7 +22,7 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity details");
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity");
 
   return response.resource;
 };
@@ -41,7 +41,7 @@ export const getBeneficialOwnerPrivateData = async (
     overseasEntityId
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner details");
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner");
 
   return response.resource;
 };
@@ -65,16 +65,14 @@ export const getManagingOfficerPrivateData = async (
   return response.resource;
 };
 
-const checkErrorResponse = (req: Request, response, overseasEntityId?: string, transactionId?: string, dataToRetrieve: string = "") => {
+const checkErrorResponse = (req: Request, response, overseasEntityId, transactionId, dataToRetrieve: string = "") => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No private ${dataToRetrieve} found for ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No private ${dataToRetrieve} details found for ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
-
-  logger.debugRequest(req, `${response}`);
 };

@@ -1,16 +1,25 @@
+{% set title = "Payment failed" %}
+
 {% if isUpdate %}
-  {% extends "update/update-layout.html" %}
+  {% extends "update-layout.html" %}
   {% set titleTemplate = "includes/update-page-title.html" %}
 {% else %}
   {% extends "layout.html" %}
   {% set titleTemplate = "includes/page-title.html" %}
 {% endif %}
-<!-- {% extends "layout.html" %} -->
-
-{% set title = "Payment failed" %}
 
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include titleTemplate %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% if isUpdate%}
+    {% include "includes/update_phase_banner.html" %}
+  {% else %}
+    {% include "includes/phase_banner.html" %}
+  {% endif %}
+  {% include "includes/no-back-link.html" %}
+  {% include "includes/sign-out-user-banner.html" %}
 {% endblock %}
 
 {% block content %}

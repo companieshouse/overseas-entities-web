@@ -1,13 +1,13 @@
 jest.mock("ioredis");
-jest.mock("../../src/utils/logger");
-jest.mock('../../src/middleware/authentication.middleware');
+jest.mock("../../../src/utils/logger");
+jest.mock('../../../src/middleware/authentication.middleware');
 
 import { NextFunction, Request, Response } from "express";
 import { expect, jest, test } from "@jest/globals";
 import request from "supertest";
 
 import {
-  UPDATE_PAYMENT_FAILED_PAGE,
+  PAYMENT_FAILED_PAGE,
   UPDATE_PAYMENT_FAILED_URL,
   YOUR_FILINGS_PATH
 } from "../../../src/config";
@@ -21,7 +21,7 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 describe("Payment failed controller tests", () => {
 
-  test(`renders the ${UPDATE_PAYMENT_FAILED_PAGE} page`, async () => {
+  test(`renders the ${PAYMENT_FAILED_PAGE} page`, async () => {
     const resp = await request(app).get(UPDATE_PAYMENT_FAILED_URL);
 
     expect(resp.status).toEqual(200);

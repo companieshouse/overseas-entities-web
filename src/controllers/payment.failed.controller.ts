@@ -6,6 +6,7 @@ export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `GET ${PAYMENT_FAILED_PAGE}`);
 
   return res.render(PAYMENT_FAILED_PAGE, {
-    templateName: PAYMENT_FAILED_PAGE
+    templateName: PAYMENT_FAILED_PAGE,
+    isUpdate: false
   });
 };

@@ -68,7 +68,7 @@ export const mapAddress = (address: ServiceAddress | undefined): Address => {
 type BOMOAddressMapTypes = {
   (address: PSCAddress | undefined): Address;
   (address: OfficerAddress | undefined): Address;
-  (address: PrivateADDRESS | undefined): PrivateADDRESS;
+  (address: PrivateAddress | undefined): PrivateAddress;
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {

@@ -57,7 +57,8 @@ import {
   UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER,
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   UPDATE_CHECK_YOUR_ANSWERS_WITH_STATEMENT_VALIDATION_BACK_LINK,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK
+  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
+  HOME_ADDRESS_LINE1
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -246,6 +247,8 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_INDIVIDUAL);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_GOVERNMENT);
       expect(resp.text).toContain(UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER);
+      expect(resp.text).toContain(HOME_ADDRESS_LINE1);
+
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {

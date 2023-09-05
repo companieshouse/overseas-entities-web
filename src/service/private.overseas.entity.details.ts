@@ -2,7 +2,11 @@ import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
-import { OverseasEntityExtraDetails } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import {
+  BeneficialOwnersPrivateData,
+  ManagingOfficersPrivateData,
+  OverseasEntityExtraDetails
+} from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 
 export const getPrivateOeDetails = async (
   req: Request,
@@ -18,15 +22,59 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity details");
+
+  return response.resource;
+};
+
+export const getBeneficialOwnerPrivateData = async (
+  req: Request,
+  transactionId: string,
+  overseasEntityId: string
+): Promise<BeneficialOwnersPrivateData | undefined> => {
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
+    "getBeneficialOwnerPrivateData",
+    req,
+      req.session as Session,
+    transactionId,
+    overseasEntityId
+  );
+
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner details");
+
+  return response.resource;
+};
+
+export const getManagingOfficerPrivateData = async (
+  req: Request,
+  transactionId: string,
+  overseasEntityId: string
+): Promise<ManagingOfficersPrivateData | undefined> => {
+  const response = await makeApiCallWithRetry(
+    "overseasEntity",
+    "getManagingOfficersPrivateData",
+    req,
+      req.session as Session,
+    transactionId,
+    overseasEntityId
+  );
+
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "managing officer details");
+
+  return response.resource;
+};
+
+const checkErrorResponse = (req: Request, response, overseasEntityId?: string, transactionId?: string, dataToRetrieve: string = "") => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
-    const errorMsg = `Something went wrong fetching overseas entity details = ${JSON.stringify(response)}`;
+    const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No overseas entity details found ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No private ${dataToRetrieve} found for ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 
-  return response.resource;
+  logger.debugRequest(req, `${response}`);
 };

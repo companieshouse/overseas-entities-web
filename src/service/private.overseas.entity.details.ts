@@ -60,7 +60,7 @@ export const getManagingOfficerPrivateData = async (
     overseasEntityId
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "managing officer details");
+  checkErrorResponse(req, response, overseasEntityId, transactionId, "managing officer");
 
   return response.resource;
 };

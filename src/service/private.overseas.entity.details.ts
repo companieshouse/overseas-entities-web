@@ -49,7 +49,7 @@ const checkErrorResponse = (req: Request, response, overseasEntityId?: string, t
   }
 
   if (response.httpStatusCode === 404) {
-    logger.debugRequest(req, `No ${dataToRetrieve} found ${overseasEntityId} under ${transactionId}`);
+    logger.debugRequest(req, `No private ${dataToRetrieve} found ${overseasEntityId} under ${transactionId}`);
     return undefined;
   }
 

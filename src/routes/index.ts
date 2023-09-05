@@ -471,7 +471,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsInterrupt.get)
   .post(updateManageTrustsInterrupt.post);
@@ -481,7 +481,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsReviewTheTrust.get)
   .post(updateManageTrustsReviewTheTrust.post);
@@ -491,7 +491,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsReviewFormerBo.get)
   .post(updateManageTrustsReviewFormerBo.post);
@@ -501,7 +501,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsReviewIndividuals.get)
   .post(updateManageTrustsReviewIndividuals.post);
@@ -511,7 +511,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsReviewLegalEntities.get)
   .post(updateManageTrustsReviewLegalEntities.post);
@@ -521,7 +521,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasUpdatePresenter,
+    navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
   .post(updateManageTrustsIndividualsOrEntitiesInvolved.post);

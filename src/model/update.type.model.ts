@@ -39,3 +39,4 @@ export interface Update {
   trust_data_fetched?: boolean;
   review_trusts?: Trust[];
 }
+

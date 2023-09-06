@@ -42,23 +42,21 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       logger.info("Loaded psc " + psc.kind);
-      if (psc.ceasedOn === undefined) {
-        if (psc.kind === "individual-beneficial-owner") {
-          const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-          if (individualBeneficialOwner.ch_reference !== undefined){
-            individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference);
-          }
-          logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
-          appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
-        } else if (psc.kind === "corporate-entity-beneficial-owner") {
-          const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-          logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
-          appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
-        } else if (psc.kind === "legal-person-beneficial-owner") {
-          const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-          logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
-          appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
+      if (psc.ceasedOn === undefined && psc.kind === "individual-beneficial-owner") {
+        const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
+        if (individualBeneficialOwner.ch_reference !== undefined){
+          individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference!);
         }
+        logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+        appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
+      } else if (psc.ceasedOn === undefined && psc.kind === "corporate-entity-beneficial-owner"){
+        const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+        logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+        appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
+      } else if (psc.kind === "legal-person-beneficial-owner") {
+        const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+        logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+        appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
       }
     }
   }

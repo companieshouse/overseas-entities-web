@@ -5,7 +5,7 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 import { describe, expect, test } from '@jest/globals';
 import { Request } from "express";
 import { ApplicationData } from '../../../src/model';
-import { retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
+import { getBoPrivateData, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
@@ -37,6 +37,13 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_corporate?.length).toEqual(1);
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
+  });
+
+  test("retrieveBoAndMoData sets BO & MO data in appData.update, sets appData.update.bo_mo_data_fetched", async () => {
+    appData = {};
+    const mockReq = {} as Request;
+    const privateData = await getBoPrivateData(mockReq, appData);
+    expect(privateData).toThrowError;
   });
 
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {

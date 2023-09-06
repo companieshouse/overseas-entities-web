@@ -67,6 +67,7 @@ import {
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID,
+  // MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -322,19 +323,20 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
     });
 
-    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with private MO data displayed`, async () => {
-      // mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK);
-      // const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+    // TODO: Fix this test
+    // test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with private MO data displayed`, async () => {
+    // mockGetApplicationData.mockReturnValue(MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK);
+    // const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
 
-      // expect(resp.status).toEqual(200);
-      // expect(resp.text).toContain("URA 1");
-      // expect(resp.text).toContain("URA addressLine1");
-      // expect(resp.text).toContain("URA addressLine2");
-      // expect(resp.text).toContain("URA town");
-      // expect(resp.text).toContain("URA country");
-      // expect(resp.text).toContain("URA county");
-      // expect(resp.text).toContain("URA postcode");
-    });
+    // expect(resp.status).toEqual(200);
+    // expect(resp.text).toContain("URA 1");
+    // expect(resp.text).toContain("URA addressLine1");
+    // expect(resp.text).toContain("URA addressLine2");
+    // expect(resp.text).toContain("URA town");
+    // expect(resp.text).toContain("URA country");
+    // expect(resp.text).toContain("URA county");
+    // expect(resp.text).toContain("URA postcode");
+    // });
 
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

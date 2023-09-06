@@ -1,6 +1,7 @@
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -853,6 +854,44 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "Some Occupation",
   role_and_responsibilities: "Some role and responsibilities"
+};
+
+export const MOCKED_PRIVATE_ADDRESS = {
+  addressLine1: "private_addressLine1",
+  addressLine2: "private_addressLine2",
+  careOf: "private_careOf",
+  country: "private_country",
+  locality: "private_locality",
+  poBox: "private_poBox",
+  postalCode: "private_postalCode",
+  premises: "private_premises",
+  region: "private_region"
+};
+
+export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficersPrivateData = {
+  moPrivateData: [
+    {
+      managingOfficerAppointmentId: "MO1",
+      residentialAddress: MOCKED_PRIVATE_ADDRESS,
+      principalAddress: ADDRESS,
+      dateOfBirth: "1990-01-01",
+      contactNameFull: "John Doe",
+      contactEmailAddress: "john.doe@example.com",
+      hashedId: "mo-individual-ch-ref",
+    },
+    {
+      managingOfficerAppointmentId: "MO2",
+      residentialAddress: {
+        ...MOCKED_PRIVATE_ADDRESS,
+        addressLine1: "Residential Line1 MO2",
+      },
+      principalAddress: ADDRESS,
+      dateOfBirth: "1985-02-01",
+      contactNameFull: "Jane Doe",
+      contactEmailAddress: "jane.doe@example.com",
+      hashedId: "hashedId2",
+    },
+  ],
 };
 
 export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.ManagingOfficerIndividual = {

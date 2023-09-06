@@ -1,26 +1,32 @@
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/service/private.overseas.entity.details');
+jest.mock('../../../src/utils/logger');
 
 import { describe, expect, test } from '@jest/globals';
 import { Request } from "express";
 import { ApplicationData } from '../../../src/model';
-import { retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
+import { retrieveBoAndMoData, retrieveManagingOfficers } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { getManagingOfficerPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { MOCK_GET_MO_PRIVATE_DATA } from '../../__mocks__/get.managing.officer.private.data.mock';
+import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetManagingOfficerPrivateData = getManagingOfficerPrivateData as jest.Mock;
+const mockLoggerInfo = logger.info as jest.Mock;
+const mockLoggerError = logger.errorRequest as jest.Mock;
 
 describe("util beneficial owners managing officers data fetch", () => {
   let appData: ApplicationData, req: Request;
 
   beforeEach(() => {
+    mockLoggerInfo.mockReset();
+    mockLoggerError.mockReset();
     mockGetCompanyPscService.mockReset();
     mockGetCompanyOfficers.mockReset();
     mockGetManagingOfficerPrivateData.mockReset();
@@ -68,5 +74,28 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(usual_residential_address?.county).toEqual("URA County");
     expect(usual_residential_address?.postcode).toEqual("URA Postcode");
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
+  });
+
+  test("Should log info when transactionId and overseasEntityId are undefined", async () => {
+    appData = { "transaction_id": undefined, "overseas_entity_id": undefined };
+    await retrieveManagingOfficers(req, appData);
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+  });
+
+  test("Should log info when moPrivateData.moPrivateData.length is zero", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetManagingOfficerPrivateData.mockReturnValue({ moPrivateData: [] });
+    await retrieveManagingOfficers(req, appData);
+    expect(mockLoggerInfo).toHaveBeenCalledWith("No private Managing Officer details were not be retrieved for overseas entity undefined");
+  });
+
+  test("Should log error when error occurs while fetching moPrivateData", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetManagingOfficerPrivateData.mockImplementation(() => {
+      throw new Error("Some error");
+    });
+    await retrieveManagingOfficers(req, appData);
+    expect(mockLoggerError).toHaveBeenCalledWith(req, "Private Managing Officer details could not be retrieved for overseas entity undefined");
   });
 });

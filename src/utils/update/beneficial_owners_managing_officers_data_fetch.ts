@@ -8,6 +8,8 @@ import { getCompanyOfficers } from "../../service/company.managing.officer.servi
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { getBeneficialOwnerPrivateData } from "../../service/private.overseas.entity.details";
+import { BeneficialOwnerIndividual } from "model/beneficial.owner.individual.model";
+import { BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -44,9 +46,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       logger.info("Loaded psc " + psc.kind);
       if (psc.ceasedOn === undefined && psc.kind === "individual-beneficial-owner") {
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-        if (individualBeneficialOwner.ch_reference !== undefined){
-          individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference);
-        }
+        mapBeneficialOwnerDetails(individualBeneficialOwner, boPrivateData!);
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
         appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
       } else if (psc.ceasedOn === undefined && psc.kind === "corporate-entity-beneficial-owner"){
@@ -79,5 +79,11 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
         }
       }
     }
+  }
+};
+
+export const mapBeneficialOwnerDetails = (individualBeneficialOwner: BeneficialOwnerIndividual, boPrivateData: BeneficialOwnersPrivateData) => {
+  if (individualBeneficialOwner.ch_reference !== undefined){
+    individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference);
   }
 };

@@ -1676,6 +1676,10 @@ export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateData = {
   boPrivateData: [PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA]
 };
 
+export const PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS: BeneficialOwnersPrivateData = {
+  boPrivateData: [PRIVATE_BO_CORP_MOCK_DATA]
+};
+
 export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

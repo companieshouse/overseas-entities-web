@@ -1,5 +1,5 @@
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { BeneficialOwnersPrivateData, PrivateAddress } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
@@ -165,9 +165,15 @@ export const mapPrivateAddress = (boData: BeneficialOwnersPrivateData, ch_refere
 
   for (const private_bo_data of boData.boPrivateData) {
     if (private_bo_data.hashedId === ch_reference) {
-      return private_bo_data.usualResidentialAddress
+      const usualResidentialAddress = (private_bo_data.usualResidentialAddress
+                                      && checkAddressValues(private_bo_data.usualResidentialAddress));
+      return usualResidentialAddress
         ? mapBOMOAddress(private_bo_data.usualResidentialAddress)
         : mapBOMOAddress(private_bo_data.principalAddress);
     }
   }
+};
+
+const checkAddressValues = (address: PrivateAddress) => {
+  return Object.values(address).some(values => !!values);
 };

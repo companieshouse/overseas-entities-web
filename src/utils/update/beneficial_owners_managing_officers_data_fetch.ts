@@ -37,18 +37,20 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 };
 
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const transactionId = appData.transaction_id!;
-  const overseasEntityId = appData.overseas_entity_id!;
+  const transactionId = appData.transaction_id;
+  const overseasEntityId = appData.overseas_entity_id;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
   let boPrivateData: BeneficialOwnersPrivateData = {
     boPrivateData: []
   };
 
-  try {
-    boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
-  } catch (error) {
-    logger.errorRequest(req, "Private Beneficial Owner details could not be retrieved for overseas entity " + appData.entity_number);
+  if (overseasEntityId && transactionId){
+    try {
+      boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
+    } catch (error) {
+      logger.errorRequest(req, "Private Beneficial Owner details could not be retrieved for overseas entity " + appData.entity_number);
+    }
   }
 
   if (pscs) {

@@ -1,18 +1,6 @@
-aws_bucket = "development-eu-west-2.terraform-state.ch.gov.uk"
-remote_state_bucket = "ch-development-terraform-state-london"
 environment = "cidev"
-deploy_to = "development"
-state_prefix = "env:/development"
 aws_profile = "development-eu-west-2"
-kms_alias = "alias/development-eu-west-2/environment-services-kms"
 
-# service configs
-# Commented params moved to vault service secrets
-# cache_server 
-# oauth2_redirect_uri 
-# oauth2_auth_uri 
-# account_test_url 
-# account_url 
 log_level = "debug"
 chs_url = "https://cidev.aws.chdev.org"
 piwik_url = "https://matomo.platform.aws.chdev.org/"

@@ -10,6 +10,7 @@ locals {
   healthcheck_path          = "/register-an-overseas-entity/healthcheck" #healthcheck path for overseas entities web
   healthcheck_matcher       = "200"
 
+  kms_alias                 = "alias/${var.aws_profile}/environment-services-kms"
   service_secrets           = jsondecode(data.vault_generic_secret.service_secrets.data_json)
 
   parameter_store_secrets    = {

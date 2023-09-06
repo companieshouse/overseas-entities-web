@@ -8,6 +8,7 @@ jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 jest.mock('../../../src/utils/feature.flag');
+jest.mock('../../../src/utils/trusts');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -56,6 +57,7 @@ import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.m
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -69,6 +71,10 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
+
+const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
@@ -81,6 +87,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockGetApplicationData.mockReset();
+    mockCheckEntityRequiresTrusts.mockReturnValue(false);
   });
 
   describe("GET tests", () => {
@@ -179,21 +186,70 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   });
 
   describe("POST Submit tests", () => {
-    test(`redirects to the ${config.UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-      const resp = await request(app)
-        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+    test('redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_PAGE);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
     });
 
-    test(`redirects to the ${config.UPDATE_CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('redirects to add trusts if manage trusts flag is off, add trusts flag is on, and trusts are required', async () => {
+      const mockLandingUrl = 'update/mock-get-trust-landing-url';
+
+      mockIsActiveFeature
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true);
+      mockCheckEntityRequiresTrusts.mockReturnValueOnce(true);
+      mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(mockLandingUrl);
+    });
+
+    test('does not redirect to add trusts if manage trusts flag is off, add trusts flag is on, and trusts are not required', async () => {
+      const mockLandingUrl = 'update/mock-get-trust-landing-url';
+
+      mockIsActiveFeature
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true);
+
+      mockCheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      mockGetTrustLandingUrl.mockReturnValueOnce(mockLandingUrl);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).not.toContain(mockLandingUrl);
+    });
+
+    test('redirects to statement validation if statement validation flag is on, both trusts flags are off', async () => {
+      mockIsActiveFeature
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true);
+
       const resp = await request(app)
         .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+    });
+
+    test('redirects to check your answers if all flags are off', async () => {
+      mockIsActiveFeature
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(false);
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     });
   });
 });

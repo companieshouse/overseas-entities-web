@@ -86,6 +86,12 @@ import {
   updateTrustsIndividualBeneficialOwner,
   updateTrustsLegalEntityBeneficialOwner,
   updateStatementValidationErrors,
+  updateManageTrustsInterrupt,
+  updateManageTrustsReviewTheTrust,
+  updateManageTrustsReviewFormerBo,
+  updateManageTrustsReviewIndividuals,
+  updateManageTrustsReviewLegalEntities,
+  updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed
 } from "../controllers";
 
@@ -462,6 +468,66 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
   .post(...validator.updateBeneficialOwnerAndManagingOfficerType, checkValidations, updateBeneficialOwnerType.post);
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsInterrupt.get)
+  .post(updateManageTrustsInterrupt.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsReviewTheTrust.get)
+  .post(updateManageTrustsReviewTheTrust.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsReviewFormerBo.get)
+  .post(updateManageTrustsReviewFormerBo.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsReviewIndividuals.get)
+  .post(updateManageTrustsReviewIndividuals.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsReviewLegalEntities.get)
+  .post(updateManageTrustsReviewLegalEntities.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
+  .post(updateManageTrustsIndividualsOrEntitiesInvolved.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(

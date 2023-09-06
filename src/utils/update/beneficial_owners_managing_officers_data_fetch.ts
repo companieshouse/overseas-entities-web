@@ -53,7 +53,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
         const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
         logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
         appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
-      } else if (psc.kind === "legal-person-beneficial-owner") {
+      } else if (psc.ceasedOn === undefined && psc.kind === "legal-person-beneficial-owner") {
         const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
         logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
         appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);

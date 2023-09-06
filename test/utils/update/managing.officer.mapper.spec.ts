@@ -174,7 +174,7 @@ describe("Test mapping to managing officer", () => {
         ],
       };
       const address = mapMoPrivateAddress(mockDataWithPrincipalAddressOnly, 'mo-principal-ch-ref');
-      expect(address).toEqual(mapBOMOAddress(MOCKED_PRIVATE_ADDRESS)); // Assuming mapBOMOAddress maps correctly
+      expect(address).toEqual(mapBOMOAddress(MOCKED_PRIVATE_ADDRESS));
     });
 
     test('that undefined is returned when both residential and principal addresses are undefined', () => {

@@ -40,7 +40,17 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
   const transactionId = appData.transaction_id!;
   const overseasEntityId = appData.overseas_entity_id!;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
-  const boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
+
+  let boPrivateData: BeneficialOwnersPrivateData = {
+    boPrivateData: []
+  };
+
+  try {
+    boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
+  } catch (error) {
+    logger.errorRequest(req, "Private Beneficial Owner details could not be retrieved for overseas entity " + appData.entity_number);
+  }
+
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       logger.info("Loaded psc " + psc.kind);

@@ -1,0 +1,21 @@
+{% if isUpdate %}
+  {% extends "update-layout.html" %}
+  {% set titleTemplate = "../update-page-title.html" %}
+{% else %}
+  {% extends "layout.html" %}
+  {% set titleTemplate = "../page-title.html" %}
+{% endif %}
+
+{% block pageTitle %}
+  {% include titleTemplate %}
+{% endblock %}
+
+{% block beforeContent %}
+  {% if isUpdate%}
+    {% include "../update_phase_banner.html" %}
+  {% else %}
+    {% include "../phase_banner.html" %}
+  {% endif %}
+  {% include "../no-back-link.html" %}
+  {% include "../sign-out-user-banner.html" %}
+{% endblock %}

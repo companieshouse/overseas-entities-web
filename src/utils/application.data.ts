@@ -9,12 +9,13 @@ import {
   ApplicationDataType,
   ApplicationDataArrayType
 } from "../model";
-import { BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
-import { BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
+import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../model/beneficial.owner.gov.model';
+import { BeneficialOwnerIndividual, BeneficialOwnerIndividualKey } from '../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../model/beneficial.owner.other.model';
-import { ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
-import { ManagingOfficerKey } from '../model/managing.officer.model';
+import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/managing.officer.corporate.model';
+import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
+import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -53,24 +54,26 @@ export const mapDataObjectToFields = (data: any, htmlFields: string[], dataModel
   return (data) ? htmlFields.reduce((o, key, i) => Object.assign(o, { [key]: data[dataModelKeys[i]] }), {}) : {};
 };
 
-export const allBeneficialOwners = (appData: ApplicationData) => {
-  return [
-    ...(appData[BeneficialOwnerIndividualKey] ?? []),
-    ...(appData[BeneficialOwnerOtherKey] ?? []),
-    ...(appData[BeneficialOwnerGovKey] ?? []),
-    ...(appData.update?.review_beneficial_owners_individual ?? []),
-    ...(appData.update?.review_beneficial_owners_corporate ?? []),
-    ...(appData.update?.review_beneficial_owners_government_or_public_authority ?? [])
-  ];
+export const allBeneficialOwners = (appData: ApplicationData): Array<BeneficialOwnerIndividual | BeneficialOwnerCorporate | BeneficialOwnerGov> => {
+  if (!appData.update?.no_change) {
+    return (appData.beneficial_owners_individual ?? [])
+      .concat(
+        appData.beneficial_owners_government_or_public_authority ?? [],
+        appData.beneficial_owners_corporate ?? []);
+  } else {
+    return (appData.update.review_beneficial_owners_individual ?? [])
+      .concat(
+        appData.update.review_beneficial_owners_government_or_public_authority ?? [],
+        appData.update.review_beneficial_owners_corporate ?? []);
+  }
 };
 
-export const allManagingOfficers = (appData: ApplicationData) => {
-  return [
-    ...(appData[ManagingOfficerKey] ?? []),
-    ...(appData[ManagingOfficerCorporateKey] ?? []),
-    ...(appData.update?.review_managing_officers_individual ?? []),
-    ...(appData.update?.review_managing_officers_corporate ?? [])
-  ];
+export const allManagingOfficers = (appData: ApplicationData): Array<ManagingOfficerIndividual | ManagingOfficerCorporate> => {
+  if (!appData.update?.no_change) {
+    return (appData.managing_officers_individual ?? []).concat(appData.managing_officers_corporate ?? []);
+  } else {
+    return (appData.update.review_managing_officers_individual ?? []).concat(appData.update?.review_managing_officers_corporate ?? []);
+  }
 };
 
 export const checkActiveBOExists = (appData: ApplicationData): boolean => {

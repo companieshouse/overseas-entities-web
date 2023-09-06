@@ -14,7 +14,7 @@ const MO_MOCK = {
   },
   "appointedOn": "2023-01-01",
   "links": {
-    "self": "/company/OE111129/officers",
+    "self": "/company/OE111129/officers1",
     "officer": {
       "appointments": "/officers/secretary1/appointments"
     }
@@ -35,7 +35,7 @@ const MO_CORPORATE_MOCK = {
   },
   "appointedOn": "2023-01-01",
   "links": {
-    "self": "/company/OE111129/officers",
+    "self": "/company/OE111129/officers2",
     "officer": {
       "appointments": "/officers/secretary1/appointments"
     }

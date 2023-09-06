@@ -3,7 +3,7 @@ import { OfficeAddress, ServiceAddress } from "@companieshouse/api-sdk-node/dist
 import { Address as PSCAddress, DateOfBirth as PSCDateOfBirth, NameElements } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { Address as OfficerAddress, DateOfBirth as OfficerDateOfBirth } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { padWithZero } from "../../controllers/update/update.review.beneficial.owner.individual";
-import { privateADDRESS } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { PrivateAddress } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 type DateOfBirthTypes = {
   (dateOfBirth: PSCDateOfBirth | undefined): InputDate;
@@ -69,7 +69,7 @@ export const mapAddress = (address: ServiceAddress | undefined): Address => {
 type BOMOAddressMapTypes = {
   (address: PSCAddress | undefined): Address;
   (address: OfficerAddress | undefined): Address;
-  (address: privateADDRESS | undefined): privateADDRESS;
+  (address: PrivateAddress | undefined): PrivateAddress;
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {

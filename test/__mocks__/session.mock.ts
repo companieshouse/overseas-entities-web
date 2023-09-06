@@ -855,6 +855,37 @@ export const MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIn
   role_and_responsibilities: "Some role and responsibilities"
 };
 
+export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  first_name: "Joe",
+  last_name: "Bloggs",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Some name",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Malawian",
+  usual_residential_address: {
+    property_name_number: "URA 1",
+    line_1: "URA addressLine1",
+    line_2: "URA addressLine2",
+    town: "URA town",
+    county: "URA county",
+    country: "URA country",
+    postcode: "URA postcode"
+  },
+  service_address: {
+    property_name_number: "SERVICE 1",
+    line_1: "SERVICE addressLine1",
+    line_2: "SERVICE addressLine2",
+    town: "SERVICE town",
+    county: "SERVICE county",
+    country: "SERVICE country",
+    postcode: "SERVICE postcode"
+  },
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "Some Occupation",
+  role_and_responsibilities: "Some role and responsibilities"
+};
+
 export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.ManagingOfficerIndividual = {
   ...MANAGING_OFFICER_OBJECT_MOCK,
   ch_reference: 'mo-individual-ch-ref',
@@ -1169,6 +1200,20 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_corporate: [],
   review_beneficial_owners_government_or_public_authority: [],
   review_managing_officers_individual: [],
+  review_managing_officers_corporate: [],
+  no_change: true
+};
+
+export const UPDATE_OBJECT_PRIVATE_DATA_MOCK: updateType.Update = {
+  date_of_creation: { day: "1", month: "1", year: "2011" },
+  filing_date: { day: "1", month: "1", year: "2022" },
+  registrable_beneficial_owner: undefined,
+  review_beneficial_owners_individual: [],
+  review_beneficial_owners_corporate: [],
+  review_beneficial_owners_government_or_public_authority: [],
+  review_managing_officers_individual: [
+    MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK
+  ],
   review_managing_officers_corporate: [],
   no_change: true
 };
@@ -1714,6 +1759,11 @@ export const APPLICATION_DATA_UPDATE_MO_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_MO_MOCK,
+  [updateType.UpdateKey]: UPDATE_OBJECT_PRIVATE_DATA_MOCK
+};
+
 export const APPLICATION_DATA_UNSUBMITTED_UPDATE_REVIEW_MO: ApplicationData = {
   ...APPLICATION_DATA_UPDATE_MO_MOCK_UNSUBMITTED,
   ...APPLICATION_DATA_UPDATE_MO_MOCK_UNSUBMITTED[updateType.UpdateKey] = UNDEFINED_UPDATE_OBJECT_MOCK
@@ -1901,9 +1951,9 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
     ],
     review_managing_officers_corporate: [
       {
-        ch_reference: "officers",
+        ch_reference: "officers2",
         contact_full_name: undefined,
-        id: "/company/OE111129/officers",
+        id: "/company/OE111129/officers2",
         is_on_register_in_country_formed_in: 0,
         is_service_address_same_as_principal_address: undefined,
         law_governed: undefined,
@@ -1931,8 +1981,8 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
     ],
     review_managing_officers_individual: [
       {
-        ch_reference: "officers",
-        id: "/company/OE111129/officers",
+        ch_reference: "officers1",
+        id: "/company/OE111129/officers1",
         role_and_responsibilities: undefined,
         service_address: {
           country: "England",

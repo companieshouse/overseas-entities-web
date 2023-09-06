@@ -3,6 +3,7 @@ import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.type
 import { mapPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_MOCK_DATA, PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
+import { BeneficialOwnersPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
 
@@ -209,5 +210,10 @@ describe("Private address retrieval", () => {
   test('that usual residential address for beneficial owner individual is correctly mapped', () => {
     const address = mapPrivateAddress(PRIVATE_BO_MOCK_DATA, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
     expect(address).toEqual(mockResult);
+  });
+
+  test('that map private address return undefined when there is no private bo data', () => {
+    const address = mapPrivateAddress({} as BeneficialOwnersPrivateData, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
+    expect(address).toEqual(undefined);
   });
 });

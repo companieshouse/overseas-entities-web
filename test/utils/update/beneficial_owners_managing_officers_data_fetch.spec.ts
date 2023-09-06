@@ -29,7 +29,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     appData = {};
     mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetBeneficialOwnersPrivateData.mockReturnValue({});
+    mockGetBeneficialOwnersPrivateData.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     await retrieveBoAndMoData(req, appData);
     expect(appData.update?.review_beneficial_owners_individual?.length).toEqual(1);
     expect(appData.update?.review_beneficial_owners_corporate?.length).toEqual(1);

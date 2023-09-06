@@ -45,7 +45,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
       if (psc.ceasedOn === undefined && psc.kind === "individual-beneficial-owner") {
         const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
         if (individualBeneficialOwner.ch_reference !== undefined){
-          individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference!);
+          individualBeneficialOwner.usual_residential_address = mapPrivateAddress(boPrivateData!, individualBeneficialOwner.ch_reference);
         }
         logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
         appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);

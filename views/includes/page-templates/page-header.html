@@ -9,13 +9,3 @@
 {% block pageTitle %}
   {% include titleTemplate %}
 {% endblock %}
-
-{% block beforeContent %}
-  {% if isUpdate%}
-    {% include "../update_phase_banner.html" %}
-  {% else %}
-    {% include "../phase_banner.html" %}
-  {% endif %}
-  {% include "../no-back-link.html" %}
-  {% include "../sign-out-user-banner.html" %}
-{% endblock %}

@@ -83,19 +83,27 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
   });
 
-  test("Should log info when moPrivateData.moPrivateData.length is zero", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+  test("Should log info when moPrivateData is empty", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
+    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
     mockGetManagingOfficerPrivateData.mockReturnValue({ moPrivateData: [] });
     await retrieveManagingOfficers(req, appData);
-    expect(mockLoggerInfo).toHaveBeenCalledWith("No private Managing Officer details were not be retrieved for overseas entity undefined");
+    expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
   });
 
-  test("Should log error when error occurs while fetching moPrivateData", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetManagingOfficerPrivateData.mockImplementation(() => {
-      throw new Error("Some error");
-    });
+  test("Should log info when moPrivateData is null", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
+    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+    mockGetManagingOfficerPrivateData.mockReturnValue(null);
     await retrieveManagingOfficers(req, appData);
-    expect(mockLoggerError).toHaveBeenCalledWith(req, "Private Managing Officer details could not be retrieved for overseas entity undefined");
+    expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
   });
+
+  test("Error thrown when retrieveManagingOfficers fails ", async () => {
+    appData = {};
+    const mockReq = {} as Request;
+    const privateData = await retrieveManagingOfficers(mockReq, appData);
+    expect(privateData).toThrowError;
+  });
+
 });

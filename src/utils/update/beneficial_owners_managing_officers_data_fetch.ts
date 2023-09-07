@@ -63,38 +63,50 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   const transactionId = appData.transaction_id;
   const overseasEntityId = appData.overseas_entity_id;
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  let moPrivateData: ManagingOfficersPrivateData = {
-    moPrivateData: []
-  };
+  if (!companyOfficers) {return;}
+
+  let moPrivateData: ManagingOfficersPrivateData = { moPrivateData: [] };
 
   try {
     if (transactionId && overseasEntityId) {
       moPrivateData = await getManagingOfficerPrivateData(req, transactionId, overseasEntityId) as ManagingOfficersPrivateData;
-      if (moPrivateData.moPrivateData.length === 0) {
-        logger.info("No private Managing Officer details were not be retrieved for overseas entity " + appData.entity_number);
+      if (!moPrivateData || moPrivateData.moPrivateData.length === 0) {
+        logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
       }
     }
   } catch (error) {
-    logger.errorRequest(req, "Private Managing Officer details could not be retrieved for overseas entity " + appData.entity_number);
+    logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
   }
 
-  if (companyOfficers) {
-    for (const officer of (companyOfficers.items || [])) {
-      logger.info("Loaded officer " + officer.officerRole);
-      if (officer.resignedOn === undefined) {
-        if (officer.officerRole === "managing-officer") {
-          const managingOfficer = mapToManagingOfficer(officer);
-          if (managingOfficer.ch_reference !== undefined && moPrivateData.moPrivateData.length > 0) {
-            managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference as string);
-          }
-          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-          appData.update?.review_managing_officers_individual?.push(managingOfficer);
-        } else if (officer.officerRole === "corporate-managing-officer") {
-          const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
-          appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
-        }
-      }
+  for (const officer of (companyOfficers.items || [])) {
+    logger.info(`Loaded officer ${officer.officerRole}`);
+
+    if (officer.resignedOn) {continue;} // Skip over resigned officers
+
+    switch (officer.officerRole) {
+        case "managing-officer":
+          handleIndividualManagingOfficer(officer, moPrivateData, appData);
+          break;
+        case "corporate-managing-officer":
+          handleCorporateManagingOfficer(officer, appData);
+          break;
+        default:
+          break;
     }
   }
+};
+
+const handleIndividualManagingOfficer = (officer: any, moPrivateData: ManagingOfficersPrivateData, appData: ApplicationData) => {
+  const managingOfficer = mapToManagingOfficer(officer);
+  if (managingOfficer.ch_reference && moPrivateData?.moPrivateData?.length > 0) {
+    managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference);
+  }
+  logger.info(`Loaded Managing Officer ${managingOfficer.id} is ${managingOfficer.first_name}, ${managingOfficer.last_name}`);
+  appData.update?.review_managing_officers_individual?.push(managingOfficer);
+};
+
+const handleCorporateManagingOfficer = (officer: any, appData: ApplicationData) => {
+  const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+  logger.info(`Loaded Corporate Managing Officer ${managingOfficerCorporate.id} is ${managingOfficerCorporate.name}`);
+  appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
 };

@@ -80,10 +80,6 @@ export const getFormerNames = (formerNames?: FormerNameResource[]): string => {
 };
 
 export const mapMoPrivateAddress = (moPrivateData: ManagingOfficersPrivateData, ch_reference: string) => {
-  if (!moPrivateData || moPrivateData.moPrivateData.length === 0) {
-    return;
-  }
-
   for (const managingOfficerData of moPrivateData.moPrivateData) {
     if (managingOfficerData.hashedId === ch_reference) {
       return managingOfficerData.residentialAddress

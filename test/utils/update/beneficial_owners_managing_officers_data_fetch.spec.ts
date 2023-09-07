@@ -1,11 +1,12 @@
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock("../../../src/service/private.overseas.entity.details");
+jest.mock('../../../src/utils/logger');
 
 import { describe, expect, test } from '@jest/globals';
 import { Request } from "express";
 import { ApplicationData } from '../../../src/model';
-import { getBoPrivateData, retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
+import { retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
@@ -68,7 +69,7 @@ describe("util beneficial owners managing officers data fetch", () => {
 
   test("Should log info when boPrivateData is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+    mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetBeneficialOwnersPrivateData.mockReturnValue({ boPrivateData: [] });
     await retrieveBeneficialOwners(req, appData);
     expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
@@ -76,17 +77,26 @@ describe("util beneficial owners managing officers data fetch", () => {
 
   test("Should log info when boPrivateData is null", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+    mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetBeneficialOwnersPrivateData.mockReturnValue(null);
     await retrieveBeneficialOwners(req, appData);
     expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
   });
 
-  test("expect an error retrieving privateData if req is empty", async () => {
-    appData = {};
-    const mockReq = {} as Request;
-    const privateData = await getBoPrivateData(mockReq, appData);
-    expect(privateData).toThrowError;
+  test("should log error when getBeneficialOwnerPrivateData fails", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+    await retrieveBoAndMoData(req, appData);
+
+    const mockError = new Error("An error occurred");
+    mockGetBeneficialOwnersPrivateData.mockRejectedValue(mockError);
+
+    await retrieveBeneficialOwners(req, appData);
+
+    expect(logger.errorRequest).toHaveBeenCalledWith(
+      req,
+      `No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`
+    );
   });
 
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {

@@ -54,7 +54,6 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
           logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
           beneficialOwnerOther.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference!);
           appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
-
         } else if (psc.kind === "legal-person-beneficial-owner") {
           const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
           logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);

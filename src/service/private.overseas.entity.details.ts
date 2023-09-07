@@ -22,7 +22,9 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity");
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity")) {
+    return undefined;
+  }
 
   return response.resource;
 };
@@ -36,12 +38,14 @@ export const getBeneficialOwnerPrivateData = async (
     "overseasEntity",
     "getBeneficialOwnerPrivateData",
     req,
-      req.session as Session,
+    req.session as Session,
     transactionId,
     overseasEntityId
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner");
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner")) {
+    return undefined;
+  }
 
   return response.resource;
 };
@@ -55,17 +59,19 @@ export const getManagingOfficerPrivateData = async (
     "overseasEntity",
     "getManagingOfficersPrivateData",
     req,
-      req.session as Session,
+    req.session as Session,
     transactionId,
     overseasEntityId
   );
 
-  checkErrorResponse(req, response, overseasEntityId, transactionId, "managing officer");
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "managing officer")) {
+    return undefined;
+  }
 
   return response.resource;
 };
 
-const checkErrorResponse = (req: Request, response: any, overseasEntityId: string, transactionId: string, dataToRetrieve: string) => {
+const hasErrorResponse = (req: Request, response: any, overseasEntityId: string, transactionId: string, dataToRetrieve: string): boolean => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
@@ -73,6 +79,8 @@ const checkErrorResponse = (req: Request, response: any, overseasEntityId: strin
 
   if (response.httpStatusCode === 404) {
     logger.debugRequest(req, `No private ${dataToRetrieve} details found for ${overseasEntityId} under ${transactionId}`);
-    return undefined;
+    return true;
   }
+
+  return false;
 };

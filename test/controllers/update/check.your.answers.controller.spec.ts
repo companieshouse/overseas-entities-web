@@ -57,7 +57,7 @@ import {
   UPDATE_CHANGE_LINK_REVIEWED_BO_OTHER,
   CHECK_YOUR_ANSWERS_PAGE_TRUST_TITLE,
   UPDATE_CHECK_YOUR_ANSWERS_WITH_STATEMENT_VALIDATION_BACK_LINK,
-  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK
+  UPDATE_TRUSTS_ASSOCIATED_BACK_LINK,
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -67,6 +67,7 @@ import {
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID,
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
   // MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
@@ -97,9 +98,10 @@ import { updateOverseasEntity } from "../../../src/service/overseas.entities.ser
 import { startPaymentsSession } from "../../../src/service/payment.service";
 import { getApplicationData } from "../../../src/utils/application.data";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
-import { dueDiligenceType, overseasEntityDueDiligenceType } from "../../../src/model";
+import { dueDiligenceType, managingOfficerType, overseasEntityDueDiligenceType } from "../../../src/model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
+import { ADDRESS } from "../../__mocks__/fields/address.mock";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -323,20 +325,26 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_OVERSEAS_ENTITY_DUE_DILIGENCE_CHANGE_PARTNER_NAME);
     });
 
-    // TODO: Fix this test
-    // test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with private MO data displayed`, async () => {
-    // mockGetApplicationData.mockReturnValue(MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK);
-    // const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+    test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with private MO data displayed`, async () => {
+      const updatedMockDataForMo = {
+        ...APPLICATION_DATA_CH_REF_UPDATE_MOCK, [managingOfficerType.ManagingOfficerKey]:
+          [
+            {
+              ...UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+              usual_residential_address: { ...ADDRESS, line_1: "Private MO addressLine1" }
+            }
+          ]
+      };
 
-    // expect(resp.status).toEqual(200);
-    // expect(resp.text).toContain("URA 1");
-    // expect(resp.text).toContain("URA addressLine1");
-    // expect(resp.text).toContain("URA addressLine2");
-    // expect(resp.text).toContain("URA town");
-    // expect(resp.text).toContain("URA country");
-    // expect(resp.text).toContain("URA county");
-    // expect(resp.text).toContain("URA postcode");
-    // });
+      mockGetApplicationData.mockReturnValue(updatedMockDataForMo);
+
+      const resp = await request(app).get(UPDATE_CHECK_YOUR_ANSWERS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("Private MO addressLine1");
+
+    });
 
     test('catch error when rendering the page', async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });

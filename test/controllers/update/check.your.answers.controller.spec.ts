@@ -67,8 +67,7 @@ import {
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
   TRANSACTION_ID,
-  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  // MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK
+  UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -343,7 +342,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain("Private MO addressLine1");
-
     });
 
     test('catch error when rendering the page', async () => {

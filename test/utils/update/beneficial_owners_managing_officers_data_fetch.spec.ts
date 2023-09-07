@@ -76,11 +76,17 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
-  test("Should log info when transactionId and overseasEntityId are undefined", async () => {
-    appData = { "transaction_id": undefined, "overseas_entity_id": undefined };
+  test("Should not call getManagingOfficerPrivateData when transactionId and overseasEntityId are undefined", async () => {
+    appData = { "transaction_id": undefined, "overseas_entity_id": undefined, "entity_number": "1234" };
+
+    mockGetCompanyOfficers.mockReturnValue(Promise.resolve({ items: [] }));
+
     await retrieveManagingOfficers(req, appData);
+
     expect(mockLoggerInfo).not.toHaveBeenCalled();
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
   });
 
   test("Should log info when moPrivateData is empty", async () => {

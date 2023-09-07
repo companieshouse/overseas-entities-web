@@ -1,7 +1,8 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Review the trust" %}
+{% import "includes/date-macros.html" as dateMacros %}
 
+{% set title = "Review the trust" %}
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
@@ -16,11 +17,98 @@
 
       {% include "includes/list/errors.html" %}
 
-      <h1 class="govuk-heading-xl">{{ title }}</h1>
+      {% set formatted_creation_date = dateMacros.formatDate(formData.createdDateDay, formData.createdDateMonth, formData.createdDateYear) %}
+      {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
+      {% set beneficialOwners = pageData.beneficialOwners %}
 
-      <form method="post">
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
+      <h1 class="govuk-heading-xl govuk-!-margin-0">Review the trust</h1>
+      <br><br>
+
+      <label class="govuk-label govuk-!-margin-bottom-7">If you need to update this information, you can change the answers here.</label>
+
+      <form class="form" data-event-id="review-trust" method="post">
+        {% set fieldParam = {
+          name: 'name',
+          label: 'What is the name of the trust?',
+          hint: 'If the trust does not have a name, give a description that it can be identified by.',
+          value: formData.name | truncate(160),
+          error: errors.name if errors
+        } %}
+        {% include "includes/inputs/text-input.html" %}
+        <br>
+
+        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+
+        <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
+        <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
+        <br>
+
+        {% set boItems = [] %}
+        {% for bo in beneficialOwners %}
+          {% set boItems = (
+            boItems.push({
+              id: "trustBeneficialOwners",
+              value: bo.id,
+              text: bo.name,
+              checked: true if bo.id in beneficialOwnersIds
+            }),
+            boItems
+            ) %}
+        {% endfor %}
+        {% if boItems | length %}
+          {% set fieldParam = {
+            name: 'beneficialOwnersIds',
+            label: 'Which of the overseas entity’s beneficial owners are trustees of this trust?',
+            hint: 'Select all that apply. You can add more later.',
+            error: errors.beneficialOwnersIds if errors,
+            items: boItems
+          } %}
+        {% include "includes/inputs/checkbox-input.html" %}
+        {% endif %}
+
+        {% set fieldParam = {
+          name: 'hasAllInfo',
+          label: 'To the best of their knowledge, does the entity have all the required information about the trust?',
+          error: errors.hasAllInfo if errors,
+          items: [
+            {
+              value: '1',
+              text: 'Yes',
+              checked: formData.hasAllInfo == '1',
+              attributes: {
+                "data-event-id": "hasAllInfo-yes-radio-option"
+              }
+            },
+            {
+              value: '0',
+              text: 'No',
+              checked: formData.hasAllInfo == '0',
+              attributes: {
+                "data-event-id": "hasAllInfo-no-radio-option"
+              }
+            }
+          ]
+        } %}
+        {% include "includes/inputs/radio-input.html" %}
+
+        {{ govukInsetText({
+          html: '
+            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+          '
+        }) }}
+
+        <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
+        <input type="hidden" name="createdDateDay" value="{{ formData.createdDateDay }}"/>
+        <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
+        <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
+        <input type="hidden" name="beneficialOwnersIds" value="{{ formData.beneficialOwnersIds }}"/>
+        <input type="hidden" name="trustBeneficialOwners" value="{{ pageData.beneficialOwners }}"/>
+
         {% include "includes/save-and-continue-button.html" %}
-      </form>
     </div>
   </div>
 {% endblock %}

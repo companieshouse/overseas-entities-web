@@ -7,5 +7,5 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postTrustDetails(req, res, next, false);
+  postTrustDetails(req, res, next, false, false);
 };

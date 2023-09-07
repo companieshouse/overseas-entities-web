@@ -39,6 +39,7 @@ const getPageProperties = (
   req: Request,
   formData: PageModel.TrustDetailsForm,
   isUpdate: boolean,
+  isReview?: boolean,
   errors?: FormattedValidationErrors,
 ): TrustDetailPageProperties => {
   const appData: ApplicationData = getApplicationData(req.session);
@@ -51,8 +52,8 @@ const getPageProperties = (
   ];
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, appData),
-    templateName: getPageTemplate(isUpdate),
+    backLinkUrl: getBackLinkUrl(isUpdate, appData, isReview),
+    templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
       title: TRUST_DETAILS_TEXTS.title,
       subtitle: TRUST_DETAILS_TEXTS.subtitle,
@@ -66,13 +67,19 @@ const getPageProperties = (
   };
 };
 
-export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, trustId?): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    console.log("****** ROUTE PARAM ID");
+    console.log(req.params[config.ROUTE_PARAM_TRUST_ID]);
+
+    if (!trustId) {
+      trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    }
+
     const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,
       trustId,
@@ -87,7 +94,7 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
   }
 };
 
-export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
+export const postTrustDetails = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview?: boolean) => {
   /**
    * Set/remove trust id to/from beneficial owner in Application data
    *
@@ -134,6 +141,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
         req,
         formData,
         isUpdate,
+        isReview,
         formatValidationError(errorList.array()),
       );
 
@@ -147,7 +155,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     }
 
     //  if present, get existing trust from session (as it might have attached trustees)
-    const trust = getTrustByIdFromApp(appData, details.trust_id);
+    const trust = getTrustByIdFromApp(appData, details.trust_id, isReview);
     Object.keys(details).forEach(key => trust[key] = details[key]);
 
     //  update trust  in application data at session
@@ -163,7 +171,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getNextPage(isUpdate, details.trust_id));
+    return safeRedirect(res, getNextPage(isUpdate, details.trust_id, isReview));
 
   } catch (error) {
     logger.errorRequest(req, error);
@@ -172,7 +180,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData) => {
+const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData, isReview?: boolean,) => {
   let backLinkUrl: string;
   if (isUpdate){
     backLinkUrl = config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
@@ -187,10 +195,19 @@ const getBackLinkUrl = (isUpdate: boolean, appData: ApplicationData) => {
       backLinkUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
     }
   }
+
+  if (isReview){
+    backLinkUrl = config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL;
+  }
+
   return backLinkUrl;
 };
 
-const getPageTemplate = (isUpdate: boolean) => {
+const getPageTemplate = (isUpdate: boolean, isReview?: boolean) => {
+  if (isReview){
+    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE;
+  }
+
   if (isUpdate){
     return config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE;
   } else {
@@ -206,7 +223,11 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean, trustId: string) => {
+const getNextPage = (isUpdate: boolean, trustId: string, isReview?: boolean,) => {
+  if (isReview){
+    return config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL;
+  }
+
   if (isUpdate){
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {

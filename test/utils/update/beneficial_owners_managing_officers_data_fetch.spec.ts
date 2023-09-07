@@ -105,11 +105,19 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
   });
 
-  test("Error thrown when retrieveManagingOfficers fails ", async () => {
-    appData = {};
-    const mockReq = {} as Request;
-    const privateData = await retrieveManagingOfficers(mockReq, appData);
-    expect(privateData).toThrowError;
-  });
+  test("should log error when getManagingOfficerPrivateData fails", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+    await retrieveBoAndMoData(req, appData);
 
+    const mockError = new Error("An error occurred");
+    mockGetManagingOfficerPrivateData.mockRejectedValue(mockError);
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(logger.errorRequest).toHaveBeenCalledWith(
+      req,
+      `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`
+    );
+  });
 });

@@ -11,6 +11,8 @@ import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.pr
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { isFeatureEnabled } from "../../middleware/is.feature.enabled.middleware";
+import { retrieveTrustsData } from "../../utils/update/trusts_data_fetch";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -73,6 +75,9 @@ const addOeToApplicationData = async (req: Request, appData: ApplicationData, en
   resetEntityUpdate(appData);
   reloadOE(appData, entityNumber, companyProfile);
   await retrieveBoAndMoData(req, appData);
+  if (isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+    retrieveTrustsData(appData);
+  }
   setExtraData(req.session, appData);
 };
 

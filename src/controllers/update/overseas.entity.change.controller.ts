@@ -10,6 +10,8 @@ import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managi
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { retrieveTrustsData } from "../../utils/update/trusts_data_fetch";
+import { isFeatureEnabled } from "../../middleware/is.feature.enabled.middleware";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -77,6 +79,9 @@ export const resetDataForNoChange = async (req: Request, appData: ApplicationDat
     appData.update.registrable_beneficial_owner = undefined;
     appData.update.bo_mo_data_fetched = false;
     await retrieveBoAndMoData(req, appData);
+    if (isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+      retrieveTrustsData(appData);
+    }
   }
   return appData;
 };

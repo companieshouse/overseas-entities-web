@@ -38,7 +38,7 @@ export interface Trust {
 
 export interface TrustIndividual {
   id?: string;
-  ch_references?: string;
+  ch_reference?: string;
   type: RoleWithinTrustType;
   forename: string;
   other_forenames: string;
@@ -70,7 +70,7 @@ export interface TrustIndividual {
 
 interface TrustHistoricalBeneficialOwnerCommon {
   id?: string;
-  ch_references?: string;
+  ch_reference?: string;
   corporate_indicator: yesNoResponse;
   ceased_date_day: string;
   ceased_date_month: string;
@@ -109,7 +109,7 @@ export type TrustHistoricalBeneficialOwner =
 
 export type TrustCorporate = {
   id?: string
-  ch_references?: string;
+  ch_reference?: string;
   type: string;
   name: string;
   date_became_interested_person_day?: string;

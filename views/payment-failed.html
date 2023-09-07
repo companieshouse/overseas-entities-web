@@ -1,6 +1,16 @@
 {% set title = "Payment failed" %}
 
-{% extends "includes/page-templates/page-header.html" %}
+{% if isUpdate %}
+  {% extends "update-layout.html" %}
+  {% set titleTemplate = "../update-page-title.html" %}
+{% else %}
+  {% extends "layout.html" %}
+  {% set titleTemplate = "../page-title.html" %}
+{% endif %}
+
+{% block pageTitle %}
+  {% include titleTemplate %}
+{% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">

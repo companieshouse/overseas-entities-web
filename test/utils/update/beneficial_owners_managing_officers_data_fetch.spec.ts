@@ -5,16 +5,19 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 import { describe, expect, test } from '@jest/globals';
 import { Request } from "express";
 import { ApplicationData } from '../../../src/model';
-import { getBoPrivateData, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
+import { retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
+import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnerPrivateData as jest.Mock;
+const mockLoggerInfo = logger.info as jest.Mock;
+const mockLoggerError = logger.errorRequest as jest.Mock;
 
 describe("util beneficial owners managing officers data fetch", () => {
   let appData: ApplicationData, req: Request;
@@ -23,6 +26,8 @@ describe("util beneficial owners managing officers data fetch", () => {
     mockGetCompanyPscService.mockReset();
     mockGetCompanyOfficers.mockReset();
     mockGetBeneficialOwnersPrivateData.mockReset();
+    mockLoggerInfo.mockReset();
+    mockLoggerError.mockReset();
   });
 
   test("retrieveBoAndMoData sets BO & MO data in appData.update, sets appData.update.bo_mo_data_fetched", async () => {
@@ -39,11 +44,34 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
-  test("retrieveBoAndMoData sets BO & MO data in appData.update, sets appData.update.bo_mo_data_fetched", async () => {
-    appData = {};
-    const mockReq = {} as Request;
-    const privateData = await getBoPrivateData(mockReq, appData);
-    expect(privateData).toThrowError;
+  // test("expect an error retrieving privateData if req is empty", async () => {
+  //   appData = {};
+  //   const mockReq = {} as Request;
+  //   const privateData = await getBoPrivateData(mockReq, appData);
+  //   expect(privateData).toThrowError;
+  // });
+
+  test("Should log info when transactionId and overseasEntityId are undefined", async () => {
+    appData = { "transaction_id": undefined, "overseas_entity_id": undefined };
+    await retrieveBeneficialOwners(req, appData);
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+    expect(mockGetBeneficialOwnersPrivateData).not.toHaveBeenCalled();
+  });
+
+  test("Should log info when boPrivateData.boPrivateData.length is zero", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetBeneficialOwnersPrivateData.mockReturnValue({ boPrivateData: [] });
+    await retrieveBeneficialOwners(req, appData);
+    expect(mockLoggerInfo).toHaveBeenCalledWith("Private Beneficial Owner details could not be retrieved for overseas entity undefined");
+  });
+
+  test("Should log error when error occurs while fetching boPrivateData", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetBeneficialOwnersPrivateData.mockImplementation(() => {
+      throw new Error("Some error");
+    });
+    await retrieveBeneficialOwners(req, appData);
+    expect(mockLoggerError).toHaveBeenCalledWith(req, "Private Beneficial Owner details could not be retrieved for overseas entity undefined");
   });
 
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {

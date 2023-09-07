@@ -2,10 +2,10 @@
 
 {% if isUpdate %}
   {% extends "update-layout.html" %}
-  {% set titleTemplate = "../update-page-title.html" %}
+  {% set titleTemplate = "includes/update-page-title.html" %}
 {% else %}
   {% extends "layout.html" %}
-  {% set titleTemplate = "../page-title.html" %}
+  {% set titleTemplate = "includes/page-title.html" %}
 {% endif %}
 
 {% block pageTitle %}

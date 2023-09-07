@@ -38,15 +38,15 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
-  if (pscs) {
+  if (pscs && pscs.items.length > 0) {
     const boPrivateData = await getBoPrivateData(req, appData);
-    for (const psc of (pscs.items || [])) {
+    for (const psc of pscs.items) {
       logger.info("Loaded psc " + psc.kind);
-      if (psc.ceasedOn === undefined){
+      if (psc.ceasedOn !== undefined){
         continue;
       }
       if (psc.kind === "individual-beneficial-owner") {
-        mapIndividualBeneficialOwner(psc, boPrivateData, appData);
+        mapBeneficialOwnerIndvidual(psc, boPrivateData, appData);
       } else if (psc.kind === "corporate-entity-beneficial-owner"){
         mapBeneficialOwnerOther(psc, boPrivateData, appData);
       } else if (psc.kind === "legal-person-beneficial-owner"){
@@ -93,7 +93,7 @@ export const getBoPrivateData = async (req: Request, appData: ApplicationData): 
   return boPrivateData;
 };
 
-export const mapIndividualBeneficialOwner = (psc: CompanyPersonWithSignificantControl, boPrivateData: BeneficialOwnersPrivateData, appData: ApplicationData) => {
+export const mapBeneficialOwnerIndvidual = (psc: CompanyPersonWithSignificantControl, boPrivateData: BeneficialOwnersPrivateData, appData: ApplicationData) => {
   const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
   individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference!);
   logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);

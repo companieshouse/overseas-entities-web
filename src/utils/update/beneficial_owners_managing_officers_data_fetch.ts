@@ -43,21 +43,22 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
   if (pscs) {
     for (const psc of (pscs.items || [])) {
       logger.info("Loaded psc " + psc.kind);
-      if (psc.ceasedOn === undefined){
+      if (psc.ceasedOn === undefined) {
         if (psc.kind === "individual-beneficial-owner") {
           const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
           individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference!);
           logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
           appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
-
-        } else if (psc.ceasedOn === undefined && psc.kind === "corporate-entity-beneficial-owner"){
+        } else if (psc.kind === "corporate-entity-beneficial-owner") {
           const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
           logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+          beneficialOwnerOther.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference!);
           appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
 
-        } else if (psc.ceasedOn === undefined && psc.kind === "legal-person-beneficial-owner"){
+        } else if (psc.kind === "legal-person-beneficial-owner") {
           const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
           logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+          beneficialOwnerGov.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerGov.ch_reference!);
           appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
         }
       }

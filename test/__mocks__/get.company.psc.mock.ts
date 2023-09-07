@@ -30,7 +30,7 @@ const BO_INDIVIDUAL_MOCK = {
     "year": '1983'
   },
   "links": {
-    "self": "/company/OE111129/persons-with-significant-control/individual/owner1"
+    "self": "/company/OE111129/persons-with-significant-control/individual/RandomeaP1EB70SSD9SLmiK5Y"
   },
   "etag": "8cb9d4c9ba82059ff01ed123405bc41c1bc4db40"
 };

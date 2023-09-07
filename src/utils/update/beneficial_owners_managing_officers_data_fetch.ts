@@ -89,7 +89,7 @@ export const getBoPrivateData = async (req: Request, appData: ApplicationData): 
     try {
       boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
     } catch (error) {
-      logger.errorRequest(req, "Private Beneficial Owner details could not be retrieved for overseas entity " + appData.entity_number);
+      logger.errorRequest(req, "No private Beneficial Owner details were retrieved for overseas entity " + appData.entity_number);
     }
   }
   return boPrivateData;

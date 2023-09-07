@@ -1615,7 +1615,7 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
 };
 
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
-  hashedId: "owner1",
+  hashedId: "RandomeaP1EB70SSD9SLmiK5Y",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",

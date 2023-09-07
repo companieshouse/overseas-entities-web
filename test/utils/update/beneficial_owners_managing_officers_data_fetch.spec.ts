@@ -11,21 +11,16 @@ import { getCompanyOfficers } from "../../../src/service/company.managing.office
 import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
-import { logger } from '../../../src/utils/logger';
 import { PRIVATE_BO_MOCK_DATA } from '../../__mocks__/session.mock';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnerPrivateData as jest.Mock;
-const mockLoggerInfo = logger.info as jest.Mock;
-const mockLoggerError = logger.errorRequest as jest.Mock;
 
 describe("util beneficial owners managing officers data fetch", () => {
   let appData: ApplicationData, req: Request;
 
   beforeEach(() => {
-    mockLoggerInfo.mockReset();
-    mockLoggerError.mockReset();
     mockGetCompanyPscService.mockReset();
     mockGetCompanyOfficers.mockReset();
     mockGetBeneficialOwnersPrivateData.mockReset();

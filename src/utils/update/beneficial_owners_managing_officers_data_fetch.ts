@@ -43,12 +43,16 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
     for (const psc of pscs.items) {
       logger.info("Loaded psc " + psc.kind);
       if (psc.ceasedOn !== undefined){continue;}
-      if (psc.kind === "individual-beneficial-owner") {
-        mapBeneficialOwnerIndividual(psc, boPrivateData, appData);
-      } else if (psc.kind === "corporate-entity-beneficial-owner"){
-        mapBeneficialOwnerOther(psc, appData);
-      } else if (psc.kind === "legal-person-beneficial-owner"){
-        mapBeneficialOwnerGov(psc, appData);
+      switch (psc.kind) {
+          case "individual-beneficial-owner":
+            mapBeneficialOwnerIndividual(psc, appData, boPrivateData);
+            break;
+          case "corporate-entity-beneficial-owner":
+            mapBeneficialOwnerOther(psc, appData);
+            break;
+          case "legal-person-beneficial-owner":
+            mapBeneficialOwnerGov(psc, appData);
+            break;
       }
     }
   }
@@ -91,7 +95,7 @@ export const getBoPrivateData = async (req: Request, appData: ApplicationData): 
   return boPrivateData;
 };
 
-export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, boPrivateData: BeneficialOwnersPrivateData, appData: ApplicationData) => {
+export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnersPrivateData) => {
   const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
   if (individualBeneficialOwner.ch_reference && boPrivateData?.boPrivateData?.length > 0){
     individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference);

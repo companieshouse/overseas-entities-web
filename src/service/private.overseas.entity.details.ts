@@ -22,7 +22,7 @@ export const getPrivateOeDetails = async (
     overseasEntityId,
   );
 
-  if (checkErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity")) {
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "overseas entity")) {
     return undefined;
   }
 
@@ -43,7 +43,7 @@ export const getBeneficialOwnerPrivateData = async (
     overseasEntityId
   );
 
-  if (checkErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner")) {
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "beneficial owner")) {
     return undefined;
   }
 
@@ -64,14 +64,14 @@ export const getManagingOfficerPrivateData = async (
     overseasEntityId
   );
 
-  if (checkErrorResponse(req, response, overseasEntityId, transactionId, "managing officer")) {
+  if (hasErrorResponse(req, response, overseasEntityId, transactionId, "managing officer")) {
     return undefined;
   }
 
   return response.resource;
 };
 
-const checkErrorResponse = (req: Request, response: any, overseasEntityId: string, transactionId: string, dataToRetrieve: string): boolean => {
+const hasErrorResponse = (req: Request, response: any, overseasEntityId: string, transactionId: string, dataToRetrieve: string): boolean => {
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching private ${dataToRetrieve} details = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);

@@ -120,4 +120,15 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyPscService).not.toHaveBeenCalled();
     expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
   });
+
+  test("Should not set BO data in appData if no Company PSCs returned", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetCompanyPscService.mockReturnValue({ "items": [] });
+
+    await retrieveBoAndMoData(req, appData);
+    await retrieveBeneficialOwners(req, appData);
+
+    expect(appData.beneficial_owners_individual?.[0].usual_residential_address?.line_1).toEqual(undefined);
+    expect(appData.beneficial_owners_individual?.[0].usual_residential_address?.line_2).toEqual(undefined);
+  });
 });

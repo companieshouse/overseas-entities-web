@@ -208,15 +208,14 @@ describe("Private address retrieval", () => {
     town: "AD EUM DEBITIS EST E"
   };
   test('that usual residential address for beneficial owner individual is correctly mapped', () => {
-    PRIVATE_BO_MOCK_DATA.boPrivateData[0].hashedId = "9TeildEUMY5Xnw2gbPxGO3jCod8";
     const address = mapBoPrivateAddress(PRIVATE_BO_MOCK_DATA, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
     expect(address).toEqual(mockResult);
   });
 
-  test('that map private address return undefined when there is no private bo data', () => {
+  test('that an undefined is returned when boPrivateData is empty', () => {
     const emptyPrivateData: BeneficialOwnersPrivateData = { boPrivateData: [] };
     const address = mapBoPrivateAddress(emptyPrivateData, 'some_ch_ref');
-    expect(address).toEqual(undefined);
+    expect(address).toBeUndefined();
   });
 
   test('that principal residential address is returned and mapped correctly when bo private data without usual residential address', () => {

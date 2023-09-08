@@ -82,7 +82,7 @@ describe('Test review managing officer', () => {
       expect(resp.text).toContain("residential address addressLine1");
     });
 
-    test(`residential address not displayed when no address returned`, async () => {
+    test('residential address not displayed when no address returned', async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_EMPTY_BO_MOCK,
       });

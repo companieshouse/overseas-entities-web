@@ -2,14 +2,14 @@
 
 {% if isUpdate %}
   {% extends "update-layout.html" %}
-  {% set titleTemplate = "includes/update-page-title.html" %}
+  {% set pageTitleTemplate = "includes/update-page-title.html" %}
 {% else %}
   {% extends "layout.html" %}
-  {% set titleTemplate = "includes/page-title.html" %}
+  {% set pageTitleTemplate = "includes/page-title.html" %}
 {% endif %}
 
 {% block pageTitle %}
-  {% include titleTemplate %}
+  {% include pageTitleTemplate %}
 {% endblock %}
 
 {% block content %}

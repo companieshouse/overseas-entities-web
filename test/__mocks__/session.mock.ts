@@ -1614,8 +1614,10 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE = "RandomeaP1EB70SSD9SLmiK5Y";
+
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
-  hashedId: "RandomeaP1EB70SSD9SLmiK5Y",
+  hashedId: PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE,
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",

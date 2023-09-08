@@ -75,7 +75,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
-    test(`return empty object when no address in data to review`, async () => {
+    test('return empty object when no address in data to review', async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
 

@@ -1659,17 +1659,7 @@ export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
     premises: "REAGAN HICKMAN",
     region: "ULLAM DOLORUM CUPIDA"
   },
-  usualResidentialAddress: {
-    addressLine1: undefined,
-    addressLine2: undefined,
-    careOf: undefined,
-    country: undefined,
-    locality: undefined,
-    poBox: undefined,
-    postalCode: undefined,
-    premises: undefined,
-    region: undefined
-  }
+  usualResidentialAddress: undefined
 };
 
 export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateData = {

@@ -161,9 +161,10 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
 export const mapBoPrivateAddress = (boData: BeneficialOwnersPrivateData, ch_reference: string) => {
   for (const private_bo_data of boData.boPrivateData) {
     if (private_bo_data.hashedId === ch_reference) {
-      return Object.keys(private_bo_data.usualResidentialAddress || {}).length !== 0
+      const mappedAddress = Object.keys(private_bo_data.usualResidentialAddress || {}).length !== 0
         ? mapBOMOAddress(private_bo_data.usualResidentialAddress)
         : mapBOMOAddress(private_bo_data.principalAddress);
+      return mappedAddress;
     }
   }
 };

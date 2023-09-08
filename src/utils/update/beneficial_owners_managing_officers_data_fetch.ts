@@ -77,7 +77,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
 export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnersPrivateData | undefined) => {
   const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
   if (individualBeneficialOwner.ch_reference && boPrivateData?.boPrivateData?.length !== undefined && boPrivateData.boPrivateData.length > 0) {
-    individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference);
+    individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference, false);
   }
   logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
   appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);

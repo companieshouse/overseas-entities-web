@@ -8,7 +8,7 @@ import { createAndLogErrorRequest } from "../../src/utils/logger";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
 import { ERROR, getSessionRequestWithExtraData } from "../__mocks__/session.mock";
 import {
-  getBeneficialOwnerPrivateData, getManagingOfficerPrivateData,
+  getBeneficialOwnersPrivateData, getManagingOfficerPrivateData,
   getPrivateOeDetails
 } from "../../src/service/private.overseas.entity.details";
 
@@ -22,7 +22,7 @@ const req = { session } as Request;
 
 const serviceName = 'overseasEntity';
 const oeFunctionName = 'getOverseasEntityDetails';
-const boFunctionName = 'getBeneficialOwnerPrivateData';
+const boFunctionName = 'getBeneficialOwnersPrivateData';
 const moFunctionName = 'getManagingOfficersPrivateData';
 const transactionId = '13579';
 const overseasEntityId = '2468';
@@ -107,7 +107,7 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
+    const response = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, boFunctionName, req, session, transactionId, overseasEntityId);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce(mockResponse);
 
-    const response = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
+    const response = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
 
     expect(mockMakeApiCallWithRetry).toBeCalledWith(serviceName, boFunctionName, req, session, transactionId, overseasEntityId);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
@@ -131,7 +131,7 @@ describe(`Get private overseas entity details service suite`, () => {
 
     mockMakeApiCallWithRetry.mockResolvedValueOnce( mockResponse);
 
-    await expect(getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId)).rejects.toThrow(ERROR);
+    await expect(getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId)).rejects.toThrow(ERROR);
 
     expect(mockCreateAndLogErrorRequest).toHaveBeenCalled();
   });

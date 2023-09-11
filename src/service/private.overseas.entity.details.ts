@@ -3,8 +3,8 @@ import { Request } from "express";
 import { makeApiCallWithRetry } from "./retry.handler.service";
 import { createAndLogErrorRequest, logger } from "../utils/logger";
 import {
-  BeneficialOwnersPrivateData,
-  ManagingOfficersPrivateData,
+  BeneficialOwnerPrivateData,
+  ManagingOfficerPrivateData,
   OverseasEntityExtraDetails
 } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 
@@ -29,14 +29,14 @@ export const getPrivateOeDetails = async (
   return response.resource;
 };
 
-export const getBeneficialOwnerPrivateData = async (
+export const getBeneficialOwnersPrivateData = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string
-): Promise<BeneficialOwnersPrivateData | undefined> => {
+): Promise<BeneficialOwnerPrivateData[] | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
-    "getBeneficialOwnerPrivateData",
+    "getBeneficialOwnersPrivateData",
     req,
     req.session as Session,
     transactionId,
@@ -54,7 +54,7 @@ export const getManagingOfficerPrivateData = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string
-): Promise<ManagingOfficersPrivateData | undefined> => {
+): Promise<ManagingOfficerPrivateData[] | undefined> => {
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getManagingOfficersPrivateData",

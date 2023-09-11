@@ -152,7 +152,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-      mockGetBeneficialOwnersPrivateData.mockReturnValue({});
+      mockGetBeneficialOwnersPrivateData.mockReturnValue([{}]);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);

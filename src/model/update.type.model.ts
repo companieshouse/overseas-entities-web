@@ -4,6 +4,7 @@ import { BeneficialOwnerOther } from "./beneficial.owner.other.model";
 import { yesNoResponse, InputDate } from "./data.types.model";
 import { ManagingOfficerCorporate } from "./managing.officer.corporate.model";
 import { ManagingOfficerIndividual } from "./managing.officer.model";
+import { Trust } from "./trust.model";
 
 export const UpdateKey = "update";
 export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
@@ -35,5 +36,7 @@ export interface Update {
   review_managing_officers_corporate?: ManagingOfficerCorporate[];
   filing_date?: InputDate;
   no_change?: boolean;
+  trust_data_fetched?: boolean;
+  review_trusts?: Trust[];
 }
 

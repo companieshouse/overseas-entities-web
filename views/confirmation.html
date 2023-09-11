@@ -12,16 +12,6 @@
   {% include titleTemplate %}
 {% endblock %}
 
-{% block beforeContent %}
-  {% if isUpdate%}
-    {% include "includes/update_phase_banner.html" %}
-  {% else %}
-    {% include "includes/phase_banner.html" %}
-  {% endif %}
-  {% include "includes/no-back-link.html" %}
-  {% include "includes/sign-out-user-banner.html" %}
-{% endblock %}
-
 {% block content %}
 
   <div class="govuk-grid-row">

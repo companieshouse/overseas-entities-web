@@ -1,9 +1,15 @@
-{% extends "layout.html" %}
-
 {% set title = "Payment failed" %}
 
+{% if isUpdate %}
+  {% extends "update-layout.html" %}
+  {% set pageTitleTemplate = "includes/update-page-title.html" %}
+{% else %}
+  {% extends "layout.html" %}
+  {% set pageTitleTemplate = "includes/page-title.html" %}
+{% endif %}
+
 {% block pageTitle %}
-  {% include "includes/page-title.html" %}
+  {% include pageTitleTemplate %}
 {% endblock %}
 
 {% block content %}

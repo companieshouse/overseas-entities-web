@@ -9,7 +9,7 @@ import { ApplicationData } from '../../../src/model';
 import { retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
-import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
+import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { PRIVATE_BO_MOCK_DATA } from '../../__mocks__/session.mock';
@@ -17,7 +17,7 @@ import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
-const mockGetBeneficialOwnersPrivateData = getBeneficialOwnerPrivateData as jest.Mock;
+const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
 const mockLoggerError = logger.errorRequest as jest.Mock;
 
@@ -79,7 +79,7 @@ describe("util beneficial owners managing officers data fetch", () => {
   test("Should log info when boPrivateData is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
     mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
-    mockGetBeneficialOwnersPrivateData.mockReturnValue({ boPrivateData: [] });
+    mockGetBeneficialOwnersPrivateData.mockReturnValue([]);
     await retrieveBeneficialOwners(req, appData);
     expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
   });

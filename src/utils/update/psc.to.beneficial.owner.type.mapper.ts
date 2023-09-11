@@ -1,5 +1,5 @@
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
@@ -158,8 +158,8 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
 
-export const mapBoPrivateAddress = (boPrivateData: BeneficialOwnersPrivateData, ch_reference: string, hasOffice: boolean) => {
-  for (const private_bo_data of boPrivateData.boPrivateData) {
+export const mapBoPrivateAddress = (boPrivateData: BeneficialOwnerPrivateData[], ch_reference: string, hasOffice: boolean) => {
+  for (const private_bo_data of boPrivateData) {
     if (private_bo_data.hashedId === ch_reference) {
       return hasOffice
         ? mapBOMOAddress(private_bo_data.principalAddress)

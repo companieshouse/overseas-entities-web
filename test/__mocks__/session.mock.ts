@@ -56,7 +56,7 @@ import { DATE_OF_BIRTH, EMPTY_DATE, RESIGNED_ON_DATE, START_DATE } from "./field
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
-import { BeneficialOwnerPrivateData, BeneficialOwnersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -1664,17 +1664,15 @@ export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
   usualResidentialAddress: undefined
 };
 
-export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateData = {
-  boPrivateData: [PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA]
-};
+export const PRIVATE_BO_MOCK_DATA: BeneficialOwnerPrivateData[] = [
+  PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA
+];
 
-export const PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS: BeneficialOwnersPrivateData = {
-  boPrivateData: [PRIVATE_BO_CORP_MOCK_DATA]
-};
+export const PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS: BeneficialOwnerPrivateData[] = [
+  PRIVATE_BO_CORP_MOCK_DATA
+];
 
-export const PRIVATE_BO_MOCK_DATA_UNDEFINED: BeneficialOwnersPrivateData = {
-  boPrivateData: [{}]
-};
+export const PRIVATE_BO_MOCK_DATA_UNDEFINED: BeneficialOwnerPrivateData[] = [{}];
 
 export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,

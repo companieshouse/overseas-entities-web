@@ -163,7 +163,7 @@ describe("Test mapping to managing officer", () => {
     });
 
     test('that principal address is used when residential address is undefined', () => {
-      const mockDataWithPrincipalAddressOnly: ManagingOfficerPrivateData[] = 
+      const mockDataWithPrincipalAddressOnly: ManagingOfficerPrivateData[] =
         [
           {
             ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
@@ -177,7 +177,7 @@ describe("Test mapping to managing officer", () => {
     });
 
     test('that undefined is returned when both residential and principal addresses are undefined', () => {
-      const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] = 
+      const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] =
       [
         {
           ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],

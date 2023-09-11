@@ -9,7 +9,7 @@ import { getCompanyOfficers } from "../../service/company.managing.officer.servi
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
 import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
-import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
+// import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -61,8 +61,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
 };
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
-  const transactionId = appData.transaction_id;
-  const overseasEntityId = appData.overseas_entity_id;
+
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
 
   if (!companyOfficers || companyOfficers.items?.length === 0) {
@@ -70,7 +69,9 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   }
 
   let moPrivateData: ManagingOfficerPrivateData[] | undefined;
-/*
+  /*
+  const transactionId = appData.transaction_id;
+  const overseasEntityId = appData.overseas_entity_id;
   try {
     if (transactionId && overseasEntityId) {
       moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
@@ -81,7 +82,7 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   } catch (error) {
     logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
   }
-*/
+  */
   for (const officer of companyOfficers.items) {
     logger.info(`Loaded officer ${officer.officerRole}`);
 

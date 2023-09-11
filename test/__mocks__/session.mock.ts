@@ -869,7 +869,7 @@ export const MOCKED_PRIVATE_ADDRESS = {
 };
 
 export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
-[ 
+  [
     {
       managingOfficerAppointmentId: "MO1",
       residentialAddress: MOCKED_PRIVATE_ADDRESS,
@@ -891,7 +891,7 @@ export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
       contactEmailAddress: "jane.doe@example.com",
       hashedId: "hashedId2",
     },
-];
+  ];
 
 export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,

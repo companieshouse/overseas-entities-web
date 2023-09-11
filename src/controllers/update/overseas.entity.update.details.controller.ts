@@ -20,7 +20,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
-import { fetchManagingOfficerPrivateData } from "utils/update/fetch.managing.officers.private.data";
+import { fetchManagingOfficerPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {

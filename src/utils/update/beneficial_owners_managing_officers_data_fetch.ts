@@ -3,7 +3,7 @@ import { Request } from "express";
 import { logger } from "../../utils/logger";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate, mapMoPrivateAddress } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
@@ -69,12 +69,12 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
     return;
   }
 
-  let moPrivateData: ManagingOfficersPrivateData | undefined;
+  let moPrivateData: ManagingOfficerPrivateData[] | undefined;
 
   try {
     if (transactionId && overseasEntityId) {
       moPrivateData = await getManagingOfficerPrivateData(req, transactionId, overseasEntityId);
-      if (!moPrivateData || moPrivateData.moPrivateData.length === 0) {
+      if (!moPrivateData || moPrivateData.length === 0) {
         logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
       }
     }
@@ -100,12 +100,12 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
 
 const handleIndividualManagingOfficer = (
   officer: CompanyOfficer,
-  moPrivateData: ManagingOfficersPrivateData | undefined,
+  moPrivateData: ManagingOfficerPrivateData[] | undefined,
   appData: ApplicationData
 ) => {
   const managingOfficer = mapToManagingOfficer(officer);
 
-  if (managingOfficer.ch_reference && moPrivateData?.moPrivateData?.length !== undefined && moPrivateData.moPrivateData.length > 0) {
+  if (managingOfficer.ch_reference && moPrivateData?.length !== undefined && moPrivateData.length > 0) {
     managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference);
   }
 

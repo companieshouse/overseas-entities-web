@@ -3,13 +3,13 @@ import { Request } from "express";
 import { logger } from "../../utils/logger";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate, mapMoPrivateAddress } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { getManagingOfficerPrivateData } from "../../service/private.overseas.entity.details";
 import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
+import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -69,19 +69,19 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
     return;
   }
 
-  let moPrivateData: ManagingOfficersPrivateData | undefined;
-
+  let moPrivateData: ManagingOfficerPrivateData[] | undefined;
+/*
   try {
     if (transactionId && overseasEntityId) {
-      moPrivateData = await getManagingOfficerPrivateData(req, transactionId, overseasEntityId);
-      if (!moPrivateData || moPrivateData.moPrivateData.length === 0) {
+      moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
+      if (!moPrivateData || moPrivateData.length === 0) {
         logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
       }
     }
   } catch (error) {
     logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
   }
-
+*/
   for (const officer of companyOfficers.items) {
     logger.info(`Loaded officer ${officer.officerRole}`);
 
@@ -100,12 +100,12 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
 
 const handleIndividualManagingOfficer = (
   officer: CompanyOfficer,
-  moPrivateData: ManagingOfficersPrivateData | undefined,
+  moPrivateData: ManagingOfficerPrivateData[] | undefined,
   appData: ApplicationData
 ) => {
   const managingOfficer = mapToManagingOfficer(officer);
 
-  if (managingOfficer.ch_reference && moPrivateData?.moPrivateData?.length !== undefined && moPrivateData.moPrivateData.length > 0) {
+  if (managingOfficer.ch_reference && moPrivateData?.length !== undefined && moPrivateData.length > 0) {
     managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference);
   }
 

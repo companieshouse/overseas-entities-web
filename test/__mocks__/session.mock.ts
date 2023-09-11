@@ -1,7 +1,7 @@
 import { Accounts, CompanyProfile, Links, RegisteredOfficeAddress } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { CompanyPersonWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
-import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { CreatePaymentRequest, Payment } from "@companieshouse/api-sdk-node/dist/services/payment";
 import { Session } from "@companieshouse/node-session-handler";
 import { AccessTokenKeys } from '@companieshouse/node-session-handler/lib/session/keys/AccessTokenKeys';
@@ -868,8 +868,8 @@ export const MOCKED_PRIVATE_ADDRESS = {
   region: "private_region"
 };
 
-export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficersPrivateData = {
-  moPrivateData: [
+export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
+[ 
     {
       managingOfficerAppointmentId: "MO1",
       residentialAddress: MOCKED_PRIVATE_ADDRESS,
@@ -891,8 +891,7 @@ export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficersPrivateData = 
       contactEmailAddress: "jane.doe@example.com",
       hashedId: "hashedId2",
     },
-  ],
-};
+];
 
 export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,

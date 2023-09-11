@@ -20,6 +20,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
+import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,6 +31,25 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(session);
 
     await fetchOverseasEntityEmailAddress(appData, req, session);
+
+
+    const overseasEntityId = appData.overseas_entity_id;
+    const transactionId = appData.transaction_id;
+
+    let moPrivateData: ManagingOfficerPrivateData[] | undefined = undefined;
+
+    try {
+      logger.info("AKDEBUG fetch MO private data");
+      if (transactionId && overseasEntityId) {
+        moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
+        logger.info("AKDEBUG fetched MO private data " + JSON.stringify(moPrivateData));
+        if (!moPrivateData || moPrivateData.length === 0) {
+          logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
+        }
+      }
+    } catch (error) {
+      logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
+    }
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)

@@ -11,13 +11,13 @@ import { getCompanyPsc } from "../../../src/service/persons.with.signficant.cont
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
-import { getManagingOfficerPrivateData } from '../../../src/service/private.overseas.entity.details';
+import { getManagingOfficersPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { MOCK_GET_MO_PRIVATE_DATA } from '../../__mocks__/get.managing.officer.private.data.mock';
 import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
-const mockGetManagingOfficerPrivateData = getManagingOfficerPrivateData as jest.Mock;
+const mockGetManagingOfficerPrivateData = getManagingOfficersPrivateData as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
 const mockLoggerError = logger.errorRequest as jest.Mock;
 

@@ -2,7 +2,7 @@ import { ApplicationData } from "../../model";
 import { Request } from "express";
 import { logger } from "../../utils/logger";
 import { EntityNumberKey } from "../../model/data.types.model";
-import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
+import { CompanyPersonWithSignificantControl, CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
@@ -36,33 +36,69 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 };
 
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
+  const transactionId = appData.transaction_id;
+  const overseasEntityId = appData.overseas_entity_id;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
-  const boPrivateData = await getBoPrivateData(req, appData);
+  if (!pscs || pscs.items?.length === 0) {
+    return;
+  }
 
-  if (pscs) {
-    for (const psc of (pscs.items || [])) {
-      logger.info("Loaded psc " + psc.kind);
-      if (psc.ceasedOn === undefined) {
-        if (psc.kind === "individual-beneficial-owner") {
-          const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-          individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference!);
-          logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
-          appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
-        } else if (psc.kind === "corporate-entity-beneficial-owner") {
-          const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-          logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
-          beneficialOwnerOther.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference!);
-          appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
-        } else if (psc.kind === "legal-person-beneficial-owner") {
-          const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-          logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
-          beneficialOwnerGov.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerGov.ch_reference!);
-          appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
-        }
+  let boPrivateData: BeneficialOwnersPrivateData | undefined;
+
+  try {
+    if (transactionId && overseasEntityId) {
+      boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId);
+      if (!boPrivateData || boPrivateData.boPrivateData.length === 0) {
+        logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
       }
     }
+  } catch (error) {
+    logger.errorRequest(req, "No private Beneficial Owner details were retrieved for overseas entity " + appData.entity_number);
   }
+
+  for (const psc of pscs.items) {
+    logger.info("Loaded psc " + psc.kind);
+    if (psc.ceasedOn !== undefined) { continue; }
+    switch (psc.kind) {
+        case "individual-beneficial-owner":
+          mapBeneficialOwnerIndividual(psc, appData, boPrivateData);
+          break;
+        case "corporate-entity-beneficial-owner":
+          mapBeneficialOwnerOther(psc, appData, boPrivateData);
+          break;
+        case "legal-person-beneficial-owner":
+          mapBeneficialOwnerGov(psc, appData, boPrivateData);
+          break;
+    }
+  }
+};
+
+export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnersPrivateData | undefined) => {
+  const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
+  if (individualBeneficialOwner.ch_reference && boPrivateData?.boPrivateData?.length !== undefined && boPrivateData.boPrivateData.length > 0) {
+    individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference, false);
+  }
+  logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
+  appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
+};
+
+export const mapBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnersPrivateData | undefined) => {
+  const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
+  if (beneficialOwnerOther.ch_reference && boPrivateData?.boPrivateData?.length !== undefined && boPrivateData.boPrivateData.length > 0) {
+    beneficialOwnerOther.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference, true);
+  }
+  logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
+  appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
+};
+
+export const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnersPrivateData | undefined) => {
+  const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
+  if (beneficialOwnerGov.ch_reference && boPrivateData?.boPrivateData?.length !== undefined && boPrivateData.boPrivateData.length > 0) {
+    beneficialOwnerGov.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerGov.ch_reference, true);
+  }
+  logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
+  appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
 };
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
@@ -83,21 +119,4 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
       }
     }
   }
-};
-
-export const getBoPrivateData = async (req: Request, appData: ApplicationData): Promise<BeneficialOwnersPrivateData> => {
-  const transactionId = appData.transaction_id;
-  const overseasEntityId = appData.overseas_entity_id;
-  let boPrivateData: BeneficialOwnersPrivateData = {
-    boPrivateData: []
-  };
-
-  if (transactionId && overseasEntityId){
-    try {
-      boPrivateData = await getBeneficialOwnerPrivateData(req, transactionId, overseasEntityId) as BeneficialOwnersPrivateData;
-    } catch (error) {
-      logger.errorRequest(req, "Private Beneficial Owner details could not be retrieved for overseas entity " + appData.entity_number);
-    }
-  }
-  return boPrivateData;
 };

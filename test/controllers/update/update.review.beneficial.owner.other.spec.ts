@@ -74,6 +74,19 @@ describe(`Update review beneficial owner other`, () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page with service address`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_UPDATE_BO_MOCK,
+        ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
+      });
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("addressLine2");
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+    });
   });
 
   describe(`POST tests`, () => {

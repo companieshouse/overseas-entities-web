@@ -1614,8 +1614,10 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE = "RandomeaP1EB70SSD9SLmiK5Y";
+
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
-  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  hashedId: PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE,
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",
@@ -1644,7 +1646,8 @@ export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
 };
 
 export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
-  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  // hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  hashedId: "OtherBOP1EB70SSD9SLmiK5Y",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
   dateOfBirth: "02-06-1998",
@@ -1659,17 +1662,7 @@ export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
     premises: "REAGAN HICKMAN",
     region: "ULLAM DOLORUM CUPIDA"
   },
-  usualResidentialAddress: {
-    addressLine1: undefined,
-    addressLine2: undefined,
-    careOf: undefined,
-    country: undefined,
-    locality: undefined,
-    poBox: undefined,
-    postalCode: undefined,
-    premises: undefined,
-    region: undefined
-  }
+  usualResidentialAddress: undefined
 };
 
 export const PRIVATE_BO_MOCK_DATA: BeneficialOwnersPrivateData = {

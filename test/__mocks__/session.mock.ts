@@ -892,7 +892,6 @@ export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
   },
 ];
 
-
 export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.ManagingOfficerIndividual = {
   id: MO_IND_ID,
   first_name: "Joe",

@@ -65,15 +65,24 @@ export const post = (req: Request, res: Response) => {
 
 export const postSubmit = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
   const appData: ApplicationData = getApplicationData(req.session);
-  const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
-  let redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-    ? config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL
-    : config.UPDATE_CHECK_YOUR_ANSWERS_URL;
-  if (requiresTrusts && isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS)) {
-    redirectUrl = getTrustLandingUrl(appData);
+
+  // Currently only based on flag being on. Will eventually be
+  // updated to include 'requiresManageTrusts' similar to add trusts below
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+    return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
   }
-  return res.redirect(redirectUrl);
+
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+    return res.redirect(getTrustLandingUrl(appData));
+  }
+
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
+    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+  }
+
+  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
 const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {

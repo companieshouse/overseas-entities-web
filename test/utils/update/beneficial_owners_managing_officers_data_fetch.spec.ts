@@ -12,7 +12,7 @@ import { getCompanyOfficers } from "../../../src/service/company.managing.office
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { getManagingOfficerPrivateData } from '../../../src/service/private.overseas.entity.details';
-import { MOCK_GET_MO_PRIVATE_DATA } from '../../__mocks__/get.managing.officer.private.data.mock';
+import { INDIVIDUAL_MO_MOCK } from '../../__mocks__/get.managing.officer.private.data.mock';
 import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
@@ -36,7 +36,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     appData = {};
     mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue(MOCK_GET_MO_PRIVATE_DATA);
+    mockGetManagingOfficerPrivateData.mockReturnValue(INDIVIDUAL_MO_MOCK);
     await retrieveBoAndMoData(req, appData);
     expect(appData.update?.review_beneficial_owners_individual?.length).toEqual(1);
     expect(appData.update?.review_beneficial_owners_corporate?.length).toEqual(1);
@@ -62,7 +62,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456" };
     mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue(MOCK_GET_MO_PRIVATE_DATA);
+    mockGetManagingOfficerPrivateData.mockReturnValue(INDIVIDUAL_MO_MOCK);
     await retrieveBoAndMoData(req, appData);
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
     const usual_residential_address = appData.update?.review_managing_officers_individual?.[0].usual_residential_address;
@@ -104,7 +104,7 @@ describe("util beneficial owners managing officers data fetch", () => {
   test("Should log info when moPrivateData is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
     mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue({ moPrivateData: [] });
+    mockGetManagingOfficerPrivateData.mockReturnValue([]);
     await retrieveManagingOfficers(req, appData);
     expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
   });

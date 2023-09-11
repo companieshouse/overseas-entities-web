@@ -1,5 +1,5 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
-import { ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { mapToManagingOfficer, mapToManagingOfficerCorporate, getFormerNames, mapMoPrivateAddress } from '../../../src/utils/update/managing.officer.mapper';
 import {
@@ -152,7 +152,7 @@ describe("Test mapping to managing officer", () => {
     });
 
     test('that an undefined is returned when moPrivateData is empty', () => {
-      const emptyPrivateData: ManagingOfficersPrivateData = { moPrivateData: [] };
+      const emptyPrivateData: ManagingOfficerPrivateData[] = [];
       const address = mapMoPrivateAddress(emptyPrivateData, 'some_ch_ref');
       expect(address).toBeUndefined();
     });
@@ -163,31 +163,27 @@ describe("Test mapping to managing officer", () => {
     });
 
     test('that principal address is used when residential address is undefined', () => {
-      const mockDataWithPrincipalAddressOnly: ManagingOfficersPrivateData = {
-        moPrivateData: [
-          {
-            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA.moPrivateData[0],
-            residentialAddress: undefined,
-            principalAddress: MOCKED_PRIVATE_ADDRESS,
-            hashedId: 'mo-principal-ch-ref',
-          },
-        ],
-      };
+      const mockDataWithPrincipalAddressOnly: ManagingOfficerPrivateData[] = [
+        {
+          ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+          residentialAddress: undefined,
+          principalAddress: MOCKED_PRIVATE_ADDRESS,
+          hashedId: 'mo-principal-ch-ref',
+        }
+      ];
       const address = mapMoPrivateAddress(mockDataWithPrincipalAddressOnly, 'mo-principal-ch-ref');
       expect(address).toEqual(mapBOMOAddress(MOCKED_PRIVATE_ADDRESS));
     });
 
     test('that undefined is returned when both residential and principal addresses are undefined', () => {
-      const mockDataWithUndefinedAddresses: ManagingOfficersPrivateData = {
-        moPrivateData: [
-          {
-            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA.moPrivateData[0],
-            residentialAddress: undefined,
-            principalAddress: undefined,
-            hashedId: 'mo-individual-ch-ref',
-          },
-        ],
-      };
+      const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] = [
+        {
+          ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+          residentialAddress: undefined,
+          principalAddress: undefined,
+          hashedId: 'mo-individual-ch-ref',
+        },
+      ];
       const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref');
       expect(address).toBeUndefined();
     });

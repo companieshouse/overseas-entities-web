@@ -3,7 +3,7 @@ import { Request } from "express";
 import { logger } from "../../utils/logger";
 import { EntityNumberKey } from "../../model/data.types.model";
 import { CompanyPersonsWithSignificantControl } from "@companieshouse/api-sdk-node/dist/services/company-psc/types";
-import { mapToManagingOfficer, mapToManagingOfficerCorporate, mapMoPrivateAddress } from "../../utils/update/managing.officer.mapper";
+import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
@@ -65,7 +65,7 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   if (!companyOfficers || companyOfficers.items?.length === 0) {
     return;
   }
-  
+
   for (const officer of companyOfficers.items) {
     logger.info(`Loaded officer ${officer.officerRole}`);
 
@@ -82,10 +82,7 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   }
 };
 
-const handleIndividualManagingOfficer = (
-  officer: CompanyOfficer,
-  appData: ApplicationData
-) => {
+const handleIndividualManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
   const managingOfficer = mapToManagingOfficer(officer);
   logger.info(`Loaded Managing Officer ${managingOfficer.id} is ${managingOfficer.first_name}, ${managingOfficer.last_name}`);
   appData.update?.review_managing_officers_individual?.push(managingOfficer);

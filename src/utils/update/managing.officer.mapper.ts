@@ -82,9 +82,9 @@ export const getFormerNames = (formerNames?: FormerNameResource[]): string => {
 export const mapMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string, hasOffice: boolean) => {
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === ch_reference) {
-      return hasOffice 
+      return hasOffice
         ? mapBOMOAddress(managingOfficerData.principalAddress)
-        : mapBOMOAddress(managingOfficerData.residentialAddress)
+        : mapBOMOAddress(managingOfficerData.residentialAddress);
     }
   }
 };

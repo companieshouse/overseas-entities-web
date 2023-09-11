@@ -20,9 +20,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
-import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
-import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
-import { mapMoPrivateAddress } from "../../utils/update/managing.officer.mapper";
+import { fetchManagingOfficerPrivateData } from "utils/update/fetch.managing.officers.private.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -31,36 +29,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(session);
 
+    await fetchManagingOfficerPrivateData(appData, req);
+
     await fetchOverseasEntityEmailAddress(appData, req, session);
-
-    const overseasEntityId = appData.overseas_entity_id;
-    const transactionId = appData.transaction_id;
-
-    let moPrivateData: ManagingOfficerPrivateData[] | undefined = undefined;
-
-    try {
-      if (transactionId && overseasEntityId) {
-        moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
-        if (!moPrivateData || moPrivateData.length === 0) {
-          logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
-        }
-      }
-    } catch (error) {
-      logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
-    }
-
-    if (moPrivateData !== undefined && moPrivateData.length > 0) {
-      appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
-        if (managingOfficer.ch_reference) {
-          managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData ?? [], managingOfficer.ch_reference, false);
-        }
-      });
-      appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
-        if (managingOfficer.ch_reference) {
-          managingOfficer.principal_address = mapMoPrivateAddress(moPrivateData ?? [], managingOfficer.ch_reference, true);
-        }
-      });
-    }
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)

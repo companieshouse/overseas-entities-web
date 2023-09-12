@@ -3,10 +3,10 @@ import { logger } from "../logger";
 import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { mapBoPrivateAddress } from "./psc.to.beneficial.owner.type.mapper";
 
 export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {
+
   if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
     return;
   }
@@ -18,14 +18,9 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
   }
   if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
     try {
-
-      let boPrivateData: BeneficialOwnerPrivateData[] | undefined = undefined;
-
-      if (transactionId && overseasEntityId) {
-        boPrivateData = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
-        if (!boPrivateData || boPrivateData.length === 0) {
-          logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
-        }
+      const boPrivateData = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
+      if (!boPrivateData || boPrivateData.length === 0) {
+        logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
       }
 
       if (boPrivateData !== undefined && boPrivateData.length > 0) {

@@ -3,10 +3,10 @@ import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { mapMoPrivateAddress } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
+
   if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
     return;
   }
@@ -18,14 +18,9 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
   }
   if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
     try {
-
-      let moPrivateData: ManagingOfficerPrivateData[] | undefined = undefined;
-
-      if (transactionId && overseasEntityId) {
-        moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
-        if (!moPrivateData || moPrivateData.length === 0) {
-          logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
-        }
+      const moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
+      if (!moPrivateData || moPrivateData.length === 0) {
+        logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
       }
 
       if (moPrivateData !== undefined && moPrivateData.length > 0) {

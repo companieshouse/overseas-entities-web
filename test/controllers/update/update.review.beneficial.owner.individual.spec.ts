@@ -29,6 +29,7 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
   REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
   SERVICE_ADDRESS_MOCK,
+  RESIDENTIAL_ADDRESS_MOCK
 } from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
@@ -63,13 +64,27 @@ describe(`Update review beneficial owner individual controller`, () => {
     test(`render the review-beneficial-owner-individual page`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
+      mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
 
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("residential address addressLine1");
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+    });
+
+    test("return empty object when no address in data to review", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockMapDataObjectToFields.mockReturnValueOnce(SERVICE_ADDRESS_MOCK);
+
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).not.toContain("residential address addressLine1");
     });
 
     test("catch error when rendering the page", async () => {
@@ -79,7 +94,6 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
-  });
 
   describe("POST tests", () => {
 
@@ -147,4 +161,4 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
   });
 });
-
+});

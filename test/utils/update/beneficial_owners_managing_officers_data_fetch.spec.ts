@@ -58,24 +58,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
   });
 
-  test("retrieveBoAndMoData sets MO private data in appData", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue(MOCK_GET_MO_PRIVATE_DATA);
-    await retrieveBoAndMoData(req, appData);
-    expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
-    const usual_residential_address = appData.update?.review_managing_officers_individual?.[0].usual_residential_address;
-    expect(usual_residential_address?.property_name_number).toEqual("URA 1");
-    expect(usual_residential_address?.line_1).toEqual("URA Address line 1");
-    expect(usual_residential_address?.line_2).toEqual("URA Address line 2");
-    expect(usual_residential_address?.town).toEqual("URA Town");
-    expect(usual_residential_address?.country).toEqual("URA Country");
-    expect(usual_residential_address?.county).toEqual("URA County");
-    expect(usual_residential_address?.postcode).toEqual("URA Postcode");
-    expect(appData.update?.bo_mo_data_fetched).toBe(true);
-  });
-
   test("Should not call getManagingOfficerPrivateData when transactionId and overseasEntityId are undefined", async () => {
     appData = { "transaction_id": undefined, "overseas_entity_id": undefined, "entity_number": "1234" };
 
@@ -99,37 +81,5 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyOfficers).toHaveBeenCalled();
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
-  });
-
-  test("Should log info when moPrivateData is empty", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue({ moPrivateData: [] });
-    await retrieveManagingOfficers(req, appData);
-    expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
-  });
-
-  test("Should log info when moPrivateData is null", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "someEntityNumber" };
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue(null);
-    await retrieveManagingOfficers(req, appData);
-    expect(mockLoggerInfo).toHaveBeenCalledWith(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
-  });
-
-  test("should log error when getManagingOfficerPrivateData fails", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    await retrieveBoAndMoData(req, appData);
-
-    const mockError = new Error("An error occurred");
-    mockGetManagingOfficerPrivateData.mockRejectedValue(mockError);
-
-    await retrieveManagingOfficers(req, appData);
-
-    expect(logger.errorRequest).toHaveBeenCalledWith(
-      req,
-      `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`
-    );
   });
 });

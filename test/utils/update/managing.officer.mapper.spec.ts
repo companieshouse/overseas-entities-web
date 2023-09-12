@@ -147,18 +147,18 @@ describe("Test mapping to managing officer", () => {
     };
 
     test('that usual residential address for Individual Managing Officer is correctly mapped', () => {
-      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string);
+      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string, false);
       expect(address).toEqual(mappedAddress);
     });
 
     test('that an undefined is returned when moPrivateData is empty', () => {
       const emptyPrivateData: ManagingOfficerPrivateData[] = [];
-      const address = mapMoPrivateAddress(emptyPrivateData, 'some_ch_ref');
+      const address = mapMoPrivateAddress(emptyPrivateData, 'some_ch_ref', false);
       expect(address).toBeUndefined();
     });
 
     test('that an undefined is returned when no matching hashedId is found', () => {
-      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref');
+      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref', false);
       expect(address).toBeUndefined();
     });
 
@@ -172,7 +172,7 @@ describe("Test mapping to managing officer", () => {
             hashedId: 'mo-principal-ch-ref',
           },
         ];
-      const address = mapMoPrivateAddress(mockDataWithPrincipalAddressOnly, 'mo-principal-ch-ref');
+      const address = mapMoPrivateAddress(mockDataWithPrincipalAddressOnly, 'mo-principal-ch-ref', true);
       expect(address).toEqual(mapBOMOAddress(MOCKED_PRIVATE_ADDRESS));
     });
 
@@ -186,7 +186,7 @@ describe("Test mapping to managing officer", () => {
           hashedId: 'mo-individual-ch-ref',
         },
       ];
-      const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref');
+      const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref', false);
       expect(address).toBeUndefined();
     });
   });

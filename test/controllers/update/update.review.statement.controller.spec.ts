@@ -194,6 +194,32 @@ describe("Update review overseas entity information controller tests", () => {
       expect(resp.text).toContain("Individual managing officer");
     });
 
+    test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page beneficial owner other section is rendered with principal address`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA
+      });
+
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Other legal entity beneficial owner");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("addressLine2");
+    });
+
+    test(`that the ${UPDATE_REVIEW_STATEMENT_PAGE} page beneficial owner gov section is rendered with principal address`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA
+      });
+      const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Government or public authority beneficial owner");
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("addressLine2");
+      expect(resp.text).toContain("BY 2");
+    });
+
     test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page with change links`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);

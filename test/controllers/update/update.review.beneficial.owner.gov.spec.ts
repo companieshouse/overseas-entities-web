@@ -8,11 +8,12 @@ jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
 import * as config from "../../../src/config";
-import { getApplicationData, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_MOCK,
   APPLICATION_DATA_UPDATE_BO_MOCK,
   REVIEW_BENEFICIAL_OWNER_GOV_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA,
+  UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST,
   UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA,
 } from "../../__mocks__/session.mock";
@@ -33,6 +34,7 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { PRINCIPAL_ADDRESS } from "../../__mocks__/fields/address.mock";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -52,6 +54,7 @@ const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 
 describe(`Update review beneficial owner Gov`, () => {
 
@@ -66,6 +69,19 @@ describe(`Update review beneficial owner Gov`, () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+    });
+
+    test(`render the ${config.UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_PAGE} page with principal address`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
+      });
+      mockMapDataObjectToFields.mockReturnValueOnce(PRINCIPAL_ADDRESS);
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);
+      expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
+      expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("addressLine2");
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 

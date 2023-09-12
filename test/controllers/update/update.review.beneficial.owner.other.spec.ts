@@ -11,7 +11,7 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL
 } from "../../../src/config";
-import { getApplicationData, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
@@ -34,6 +34,7 @@ import { NextFunction } from "express";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { PRINCIPAL_ADDRESS } from "../../__mocks__/fields/address.mock";
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -48,6 +49,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
+const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 
 describe(`Update review beneficial owner other`, () => {
 
@@ -75,11 +77,12 @@ describe(`Update review beneficial owner other`, () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page with service address`, async () => {
+    test(`render the ${UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE} page with service and principal address`, async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
+      mockMapDataObjectToFields.mockReturnValueOnce(PRINCIPAL_ADDRESS);
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);

@@ -3,7 +3,7 @@ import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.type
 import { mapBoPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
 import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
-import { BeneficialOwnersPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { BeneficialOwnerPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
 
@@ -213,13 +213,13 @@ describe("Private address retrieval", () => {
   });
 
   test('that an undefined is returned when boPrivateData is empty', () => {
-    const emptyPrivateData: BeneficialOwnersPrivateData = { boPrivateData: [] };
+    const emptyPrivateData: BeneficialOwnerPrivateData[] = [{}];
     const address = mapBoPrivateAddress(emptyPrivateData, 'some_ch_ref', false);
     expect(address).toBeUndefined();
   });
 
   test('that principal residential address is returned and mapped correctly when bo has an office address', () => {
-    const address = mapBoPrivateAddress(PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string, true);
+    const address = mapBoPrivateAddress(PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference = "OtherBOP1EB70SSD9SLmiK5Y" as string, true);
     expect(address).toEqual(mockResult);
   });
 

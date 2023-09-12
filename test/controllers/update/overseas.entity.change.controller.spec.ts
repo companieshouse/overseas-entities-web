@@ -41,10 +41,10 @@ import { getCompanyOfficers } from '../../../src/service/company.managing.office
 import { resetDataForNoChange, resetDataForChange } from '../../../src/controllers/update/overseas.entity.change.controller';
 import { companyProfileQueryMock } from '../../__mocks__/update.entity.mocks';
 import { getCompanyProfile } from '../../../src/service/company.profile.service';
-import { getBeneficialOwnerPrivateData } from '../../../src/service/private.overseas.entity.details';
+import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
-const mockGetBeneficialOwnersPrivateData = getBeneficialOwnerPrivateData as jest.Mock;
+const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

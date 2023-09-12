@@ -21,23 +21,27 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
       const moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
       if (!moPrivateData || moPrivateData.length === 0) {
         logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
+      } else {
+        mapManaginOfficersPrivateData(moPrivateData, appData);
+        // Note: saved to persistent session when appData.entity.email is fetched.
       }
-
-      if (moPrivateData !== undefined && moPrivateData.length > 0) {
-        appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
-          if (managingOfficer.ch_reference) {
-            managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData ?? [], managingOfficer.ch_reference, false);
-          }
-        });
-        appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
-          if (managingOfficer.ch_reference) {
-            managingOfficer.principal_address = mapMoPrivateAddress(moPrivateData ?? [], managingOfficer.ch_reference, true);
-          }
-        });
-      }
-      // Note: saved to persistent session when appData.entity.email is fetched.
     } catch (error) {
       logger.errorRequest(req, `Private Managing Officer details could not be retrieved for overseas entity ${appData.entity_number}`);
     }
+  }
+};
+
+const mapManaginOfficersPrivateData = (moPrivateData, appData: ApplicationData) => {
+  if (moPrivateData !== undefined && moPrivateData.length > 0) {
+    appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
+      if (managingOfficer.ch_reference) {
+        managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, false);
+      }
+    });
+    appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
+      if (managingOfficer.ch_reference) {
+        managingOfficer.principal_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, true);
+      }
+    });
   }
 };

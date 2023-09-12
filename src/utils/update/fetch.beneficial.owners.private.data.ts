@@ -21,28 +21,32 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
       const boPrivateData = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
       if (!boPrivateData || boPrivateData.length === 0) {
         logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
+      } else {
+        mapBeneficialOwnersPrivateData(boPrivateData, appData);
+        // Note: saved to persistent session when appData.entity.email is fetched.
       }
-
-      if (boPrivateData !== undefined && boPrivateData.length > 0) {
-        appData.update?.review_beneficial_owners_individual?.forEach(beneficialOwner => {
-          if (beneficialOwner.ch_reference) {
-            beneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData ?? [], beneficialOwner.ch_reference, false);
-          }
-        });
-        appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(beneficialOwner => {
-          if (beneficialOwner.ch_reference) {
-            beneficialOwner.principal_address = mapBoPrivateAddress(boPrivateData ?? [], beneficialOwner.ch_reference, true);
-          }
-        });
-        appData.update?.review_beneficial_owners_corporate?.forEach(beneficialOwner => {
-          if (beneficialOwner.ch_reference) {
-            beneficialOwner.principal_address = mapBoPrivateAddress(boPrivateData ?? [], beneficialOwner.ch_reference, true);
-          }
-        });
-      }
-      // Note: saved to persistent session when appData.entity.email is fetched.
     } catch (error) {
       logger.errorRequest(req, `Private Beneficial Owner details could not be retrieved for overseas entity ${appData.entity_number}`);
     }
+  }
+};
+
+const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData) => {
+  if (boPrivateData !== undefined && boPrivateData.length > 0) {
+    appData.update?.review_beneficial_owners_individual?.forEach(beneficialOwner => {
+      if (beneficialOwner.ch_reference) {
+        beneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, beneficialOwner.ch_reference, false);
+      }
+    });
+    appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(beneficialOwner => {
+      if (beneficialOwner.ch_reference) {
+        beneficialOwner.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwner.ch_reference, true);
+      }
+    });
+    appData.update?.review_beneficial_owners_corporate?.forEach(beneficialOwner => {
+      if (beneficialOwner.ch_reference) {
+        beneficialOwner.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwner.ch_reference, true);
+      }
+    });
   }
 };

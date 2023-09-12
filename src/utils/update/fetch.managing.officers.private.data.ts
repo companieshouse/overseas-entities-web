@@ -6,7 +6,7 @@ import { ApplicationData } from "../../model";
 import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { mapMoPrivateAddress } from "./managing.officer.mapper";
 
-export const fetchManagingOfficerPrivateData = async (appData: ApplicationData, req) => {
+export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
   if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
     return;
   }

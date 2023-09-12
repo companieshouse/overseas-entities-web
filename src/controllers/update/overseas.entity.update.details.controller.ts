@@ -20,7 +20,8 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
-import { fetchManagingOfficerPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
+import { fetchManagingOfficersPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
+import { fetchBeneficialOwnersPrivateData } from "../../utils/update/fetch.beneficial.owners.private.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -29,7 +30,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(session);
 
-    await fetchManagingOfficerPrivateData(appData, req);
+    await fetchBeneficialOwnersPrivateData(appData, req);
+
+    await fetchManagingOfficersPrivateData(appData, req);
 
     await fetchOverseasEntityEmailAddress(appData, req, session);
 

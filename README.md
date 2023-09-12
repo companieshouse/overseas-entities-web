@@ -103,7 +103,7 @@ The configuration is contained in 5 files:
 - data: Specifies the resources to be read as input into the configuration
 - locals: Contains internal configuration variables including the docker config variable keys mapped to the variable names
 - main: The main configuration file
-- variables: Contains variable names and types - the values are contained in the profiles
+- variables: Contains variable names and types - the values are contained in the profiles for each environment
 - vault: Credentials for the hashicorp vault
 
 ### Terraform Config variables

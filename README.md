@@ -106,6 +106,8 @@ The configuration is contained in 5 files:
 - variables: Contains variable names and types - the values are contained in the profiles for each environment
 - vault: Credentials for the hashicorp vault
 
+NB: All variables under the headings below are based on the contents of the variables file and do not include locals.
+
 ### Terraform Config variables
 
 Key             |  Description                

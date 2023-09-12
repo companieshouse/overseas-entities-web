@@ -159,12 +159,11 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
 ]);
 
 export const mapBoPrivateAddress = (boPrivateData: BeneficialOwnerPrivateData[], ch_reference: string, hasOffice: boolean) => {
-  for (const private_bo_data of boPrivateData) {
-    if (private_bo_data.hashedId === ch_reference) {
+  for (const beneficialOwnerPrivateData of boPrivateData) {
+    if (beneficialOwnerPrivateData.hashedId === ch_reference) {
       return hasOffice
-        ? mapBOMOAddress(private_bo_data.principalAddress)
-        : mapBOMOAddress(private_bo_data.usualResidentialAddress);
+        ? mapBOMOAddress(beneficialOwnerPrivateData.principalAddress)
+        : mapBOMOAddress(beneficialOwnerPrivateData.usualResidentialAddress);
     }
   }
 };
-

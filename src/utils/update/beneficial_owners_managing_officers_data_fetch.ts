@@ -6,9 +6,8 @@ import { CompanyPersonWithSignificantControl, CompanyPersonsWithSignificantContr
 import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils/update/managing.officer.mapper";
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
-import { mapBoPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
-import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
-import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
+import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -36,25 +35,10 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 };
 
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
-  const transactionId = appData.transaction_id;
-  const overseasEntityId = appData.overseas_entity_id;
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
   if (!pscs || pscs.items?.length === 0) {
     return;
-  }
-
-  let boPrivateData: BeneficialOwnerPrivateData[] | undefined;
-
-  try {
-    if (transactionId && overseasEntityId) {
-      boPrivateData = await getBeneficialOwnersPrivateData(req, transactionId, overseasEntityId);
-      if (!boPrivateData || boPrivateData.length === 0) {
-        logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
-      }
-    }
-  } catch (error) {
-    logger.errorRequest(req, "No private Beneficial Owner details were retrieved for overseas entity " + appData.entity_number);
   }
 
   for (const psc of pscs.items) {
@@ -62,61 +46,68 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
     if (psc.ceasedOn !== undefined) { continue; }
     switch (psc.kind) {
         case "individual-beneficial-owner":
-          mapBeneficialOwnerIndividual(psc, appData, boPrivateData);
+          mapBeneficialOwnerIndividual(psc, appData);
           break;
         case "corporate-entity-beneficial-owner":
-          mapBeneficialOwnerOther(psc, appData, boPrivateData);
+          mapBeneficialOwnerOther(psc, appData);
           break;
         case "legal-person-beneficial-owner":
-          mapBeneficialOwnerGov(psc, appData, boPrivateData);
+          mapBeneficialOwnerGov(psc, appData);
           break;
     }
   }
 };
 
-export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnerPrivateData[] | undefined) => {
+export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
-  if (individualBeneficialOwner.ch_reference && boPrivateData?.length !== undefined && boPrivateData.length > 0) {
-    individualBeneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, individualBeneficialOwner.ch_reference, false);
-  }
   logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id + " is " + individualBeneficialOwner.first_name + ", " + individualBeneficialOwner.last_name);
   appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
 };
 
-export const mapBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnerPrivateData[] | undefined) => {
+export const mapBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
-  if (beneficialOwnerOther.ch_reference && boPrivateData?.length !== undefined && boPrivateData?.length > 0) {
-    beneficialOwnerOther.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerOther.ch_reference, true);
-  }
   logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id + " is " + beneficialOwnerOther.name);
   appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
 };
 
-export const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData, boPrivateData: BeneficialOwnerPrivateData[] | undefined) => {
+export const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
-  if (beneficialOwnerGov.ch_reference && boPrivateData?.length !== undefined && boPrivateData.length > 0) {
-    beneficialOwnerGov.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwnerGov.ch_reference, true);
-  }
   logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id + " is " + beneficialOwnerGov.name);
   appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
 };
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  if (companyOfficers) {
-    for (const officer of (companyOfficers.items || [])) {
-      logger.info("Loaded officer " + officer.officerRole);
-      if (officer.resignedOn === undefined) {
-        if (officer.officerRole === "managing-officer") {
-          const managingOfficer = mapToManagingOfficer(officer);
-          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-          appData.update?.review_managing_officers_individual?.push(managingOfficer);
-        } else if (officer.officerRole === "corporate-managing-officer") {
-          const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
-          appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
-        }
-      }
+
+  if (!companyOfficers || companyOfficers.items?.length === 0) {
+    return;
+  }
+
+  for (const officer of companyOfficers.items) {
+    logger.info(`Loaded officer ${officer.officerRole}`);
+
+    if (officer.resignedOn) {continue;} // Skip over resigned officers
+
+    switch (officer.officerRole) {
+        case "managing-officer":
+          handleIndividualManagingOfficer(officer, appData);
+          break;
+        case "corporate-managing-officer":
+          handleCorporateManagingOfficer(officer, appData);
+          break;
     }
   }
+};
+
+const handleIndividualManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
+  const managingOfficer = mapToManagingOfficer(officer);
+  logger.info(`Loaded Managing Officer ${managingOfficer.id} is ${managingOfficer.first_name}, ${managingOfficer.last_name}`);
+  appData.update?.review_managing_officers_individual?.push(managingOfficer);
+};
+
+const handleCorporateManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
+  const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+  logger.info(`Loaded Corporate Managing Officer ${managingOfficerCorporate.id} is ${managingOfficerCorporate.name}`);
+  appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
 };

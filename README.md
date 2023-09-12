@@ -95,7 +95,7 @@ VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `ht
 
 ## Terraform and variables required
 
-Terraform is run via a concourse ci pipeline is used in place of AWS Cloud Formation to deploy the cluster and services.
+Terraform is run via a concourse ci pipeline and is used in place of AWS Cloud Formation for both provisioning and for deploying the cluster and services.
 
 See: https://companieshouse.atlassian.net/wiki/spaces/COM/pages/4243718151/confirmation-statement-web+service+-+ECS+-+Devs+Test+-+Capture+Share+What+We+have+Learnt.
 

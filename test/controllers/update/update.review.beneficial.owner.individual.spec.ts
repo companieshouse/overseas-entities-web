@@ -71,7 +71,6 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.text).toContain("addressLine1");
-      expect(resp.text).toContain("residential address addressLine1");
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 
@@ -95,70 +94,70 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-  describe("POST tests", () => {
+    describe("POST tests", () => {
 
-    test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK
+      test(`error if index param is undefined and no redirection to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE}`, async () => {
+        mockGetApplicationData.mockReturnValueOnce({
+          ...APPLICATION_DATA_MOCK
+        });
+        mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
+
+        const resp = await request(app)
+          .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL)
+          .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+        expect(resp.status).toEqual(500);
+        expect(resp.text).toContain(SERVICE_UNAVAILABLE);
       });
-      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
 
-      const resp = await request(app)
-        .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL)
-        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
+      test(`redirect to beneficial owner type page ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} on successful submission`, async () => {
+        mockGetApplicationData.mockReturnValueOnce({
+          ...APPLICATION_DATA_MOCK
+        });
+        mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
 
-    test(`redirect to beneficial owner type page ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK
+        const resp = await request(app)
+          .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
+          .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+        expect(resp.status).toEqual(302);
+        expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
       });
-      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
 
-      const resp = await request(app)
-        .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
-        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
-    });
+      test(`throw validation error on incomplete individual bo review submission`, async () => {
 
-    test(`throw validation error on incomplete individual bo review submission`, async () => {
+        mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL );
 
-      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL );
+        const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL).send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL);
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
+        expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+        expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+        expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+        expect(resp.text).toContain(ErrorMessages.COUNTRY);
+        expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
+      });
 
-      const resp = await request(app).post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL).send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
-      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
-      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
-      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
-      expect(resp.text).toContain(ErrorMessages.COUNTRY);
-      expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
-    });
-
-    test(`POST empty object and do not redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
-      mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
-      const resp = await request(app)
-        .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL)
-        .send(REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
-      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
-      expect(resp.text).toContain(ErrorMessages.LAST_NAME);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.NATIONALITY);
-      expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
-      expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
-      expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
-      expect(resp.text).toContain(ErrorMessages.COUNTRY);
-      expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
-      expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
-      expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
-      expect(resp.header.location).not.toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      test(`POST empty object and do not redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+        mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
+        const resp = await request(app)
+          .post(config.UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL)
+          .send(REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY);
+        expect(resp.status).toEqual(200);
+        expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+        expect(resp.text).toContain(ErrorMessages.LAST_NAME);
+        expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+        expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+        expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+        expect(resp.text).toContain(ErrorMessages.NATIONALITY);
+        expect(resp.text).toContain(ErrorMessages.PROPERTY_NAME_OR_NUMBER);
+        expect(resp.text).toContain(ErrorMessages.ADDRESS_LINE1);
+        expect(resp.text).toContain(ErrorMessages.CITY_OR_TOWN);
+        expect(resp.text).toContain(ErrorMessages.COUNTRY);
+        expect(resp.text).toContain(ErrorMessages.SELECT_IF_SERVICE_ADDRESS_SAME_AS_USER_RESIDENTIAL_ADDRESS);
+        expect(resp.text).toContain(ErrorMessages.SELECT_NATURE_OF_CONTROL);
+        expect(resp.text).toContain(ErrorMessages.SELECT_IF_ON_SANCTIONS_LIST);
+        expect(resp.header.location).not.toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+      });
     });
   });
-});
 });

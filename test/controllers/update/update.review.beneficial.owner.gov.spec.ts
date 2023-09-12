@@ -76,6 +76,7 @@ describe(`Update review beneficial owner Gov`, () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK, ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
       mockMapDataObjectToFields.mockReturnValueOnce(PRINCIPAL_ADDRESS);
+
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_URL_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING);

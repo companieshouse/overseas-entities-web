@@ -16,7 +16,7 @@ import { NextFunction } from "express";
 import { logger } from "../../../src/utils/logger";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
-import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, prepareData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   APPLICATION_DATA_EMPTY_BO_MOCK,
@@ -24,8 +24,7 @@ import {
   REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY,
   UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST,
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
-  UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO,
-  RESIDENTIAL_ADDRESS_MOCK,
+  UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO
 } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING } from '../../__mocks__/text.mock';
@@ -49,7 +48,6 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockPrepareData = prepareData as jest.Mock;
-const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
 
 describe('Test review managing officer', () => {
 
@@ -73,22 +71,11 @@ describe('Test review managing officer', () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_EMPTY_BO_MOCK,
       });
-      mockMapDataObjectToFields.mockReturnValueOnce(RESIDENTIAL_ADDRESS_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.text).toContain("Bloggs");
-      expect(resp.text).toContain("residential address addressLine1");
-    });
-
-    test('residential address not displayed when no address returned', async () => {
-      mockGetApplicationData.mockReturnValueOnce({
-        ...APPLICATION_DATA_EMPTY_BO_MOCK,
-      });
-      const resp = await request(app).get(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST);
-      expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain("residential address addressLine1");
     });
 
     test("catch error when rendering the page", async () => {

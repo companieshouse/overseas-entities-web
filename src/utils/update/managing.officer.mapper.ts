@@ -1,6 +1,5 @@
 import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink, splitNationalities } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
-import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
 import { ManagingOfficerCorporate } from "../../model/managing.officer.corporate.model";
 import { yesNoResponse } from "../../model/data.types.model";
@@ -77,14 +76,4 @@ export const getFormerNames = (formerNames?: FormerNameResource[]): string => {
     }
   }
   return allFormerNames;
-};
-
-export const mapMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string, hasOffice: boolean) => {
-  for (const managingOfficerData of moPrivateData) {
-    if (managingOfficerData.hashedId === ch_reference) {
-      return hasOffice
-        ? mapBOMOAddress(managingOfficerData.principalAddress)
-        : mapBOMOAddress(managingOfficerData.residentialAddress);
-    }
-  }
 };

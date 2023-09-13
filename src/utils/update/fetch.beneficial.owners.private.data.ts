@@ -4,9 +4,10 @@ import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.e
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
 import { mapBoPrivateAddress } from "./psc.to.beneficial.owner.type.mapper";
+import { Request } from "express";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
-export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {
-
+export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req: Request) => {
   if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
     return;
   }
@@ -23,7 +24,6 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
         logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
       } else {
         mapBeneficialOwnersPrivateData(boPrivateData, appData);
-        // Note: saved to persistent session when appData.entity.email is fetched.
       }
     } catch (error) {
       logger.errorRequest(req, `Private Beneficial Owner details could not be retrieved for overseas entity ${appData.entity_number}`);
@@ -31,7 +31,7 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
   }
 };
 
-const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData) => {
+const mapBeneficialOwnersPrivateData = (boPrivateData: BeneficialOwnerPrivateData[], appData: ApplicationData) => {
   if (boPrivateData !== undefined && boPrivateData.length > 0) {
     appData.update?.review_beneficial_owners_individual?.forEach(beneficialOwner => {
       if (beneficialOwner.ch_reference) {

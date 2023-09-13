@@ -71,6 +71,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING);
       expect(resp.text).toContain(config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL);
       expect(resp.text).toContain("addressLine1");
+      expect(resp.text).toContain("residential address addressLine1");
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
     });
 

@@ -54,7 +54,18 @@ Environment variables used to configure this service in docker are located in th
 
 ### To build the Docker container
 
-1. `DOCKER_BUILDKIT=0 docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" --build-arg SSH_PRIVATE_KEY_PASSPHRASE -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/overseas-entities-web .`
+As of the node 18 upgrade, the app is NO longer built in the eu-west-1 region with:
+
+`DOCKER_BUILDKIT=0 docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" --build-arg SSH_PRIVATE_KEY_PASSPHRASE -t 169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/overseas-entities-web .`
+
+INSTEAD, ensure that you are logged into the AWS eu-west2 region:
+
+`aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin 416670754337.dkr.ecr.eu-west-2.amazonaws.com`
+
+and then run:
+
+`DOCKER_BUILDKIT=0 docker build --build-arg SSH_PRIVATE_KEY="$(cat ~/.ssh/id_rsa)" --build-arg SSH_PRIVATE_KEY_PASSPHRASE -t 416670754337.dkr.ecr.eu-west-2.amazonaws.com/local/overseas-entities-web .`
+
 
 ### Endpoints
 

@@ -17,7 +17,7 @@ import { checkAndReviewManagingOfficers } from "../../utils/update/review.managi
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { checkEntityRequiresTrusts, getTrustLandingUrl, checkEntityRequiresManageTrusts } from "../../utils/trusts";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -68,7 +68,9 @@ export const postSubmit = (req: Request, res: Response) => {
 
   const appData: ApplicationData = getApplicationData(req.session);
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS) && checkEntityRequiresManageTrusts(appData)) {
+  // Currently only based on flag being on. Will eventually be
+  // updated to include 'requiresManageTrusts' similar to add trusts below
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
     return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
   }
 

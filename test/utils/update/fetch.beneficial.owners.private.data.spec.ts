@@ -183,7 +183,6 @@ describe("Test fetching and mapping BO private data", () => {
     expect(appData.update?.review_beneficial_owners_individual?.length).toBeUndefined();
     expect(appData.update?.review_beneficial_owners_corporate?.length).toBeUndefined();
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toBeUndefined();
-    // expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
   test("should not map BO private data if retrieved BO private data is empty", async () => {
@@ -200,7 +199,6 @@ describe("Test fetching and mapping BO private data", () => {
     expect(appData.update?.review_beneficial_owners_individual?.length).toBeUndefined();
     expect(appData.update?.review_beneficial_owners_corporate?.length).toBeUndefined();
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toBeUndefined();
-    // expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
   test("should not map BO private data if appdata does not already contain BO data", async () => {

@@ -77,6 +77,8 @@ locals {
     { "name": "FEATURE_FLAG_ENABLE_TRUSTS_WEB_07112022", "value": "${var.feature_flag_enable_trusts_web_07112022}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME_07032023", "value": "${var.feature_flag_enable_update_save_and_resume_07032023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_TRUSTS_30062023", "value": "${var.feature_flag_enable_update_trusts_30062023}" },
+    { "name": "FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023", "value": "${var.feature_flag_disable_update_private_data_fetch_28062023}" },
+    { "name": "FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023", "value": "${var.feature_flag_enable_update_manage_trusts_29082023}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },

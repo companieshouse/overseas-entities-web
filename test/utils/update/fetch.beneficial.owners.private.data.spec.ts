@@ -34,8 +34,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
       update: {
         review_beneficial_owners_individual: [
           {
@@ -109,8 +107,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
     };
     const mockError = new Error("An error occurred");
     mockGetBeneficialOwnersPrivateData.mockRejectedValue(mockError);
@@ -174,8 +170,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
     };
     mockGetBeneficialOwnersPrivateData.mockReturnValue(undefined);
     await fetchBeneficialOwnersPrivateData(appData, req);
@@ -190,8 +184,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
     };
     mockGetBeneficialOwnersPrivateData.mockReturnValue([]);
     await fetchBeneficialOwnersPrivateData(appData, req);
@@ -206,8 +198,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
     };
     mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
     await fetchBeneficialOwnersPrivateData(appData, req);
@@ -221,8 +211,6 @@ describe("Test fetching and mapping BO private data", () => {
       overseas_entity_id: '123',
       transaction_id: '345',
       entity_number: '1',
-      entity: {
-      },
       update: {
         review_beneficial_owners_individual: [
           {

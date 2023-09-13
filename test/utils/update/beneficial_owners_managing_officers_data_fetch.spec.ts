@@ -9,7 +9,7 @@ import { ApplicationData } from '../../../src/model';
 import { retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
-import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
+import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES, BO_INDIVIDUAL_MOCK_CEASED } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { logger } from '../../../src/utils/logger';
 
@@ -51,6 +51,26 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.beneficial_owners_corporate?.[0].name).toEqual(undefined);
     expect(appData.beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
   });
+
+  test("Should not set BO data in appData if no Company PSCs exist", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetCompanyPscService.mockReturnValue(null);
+    await retrieveBeneficialOwners(req, appData);
+
+    expect(appData.beneficial_owners_individual?.[0].first_name).toEqual(undefined);
+    expect(appData.beneficial_owners_corporate?.[0].name).toEqual(undefined);
+    expect(appData.beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
+  });
+  // will take out if doesn't cover code
+
+  test("Ceased on test ", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    mockGetCompanyPscService.mockReturnValue( { "items": [ BO_INDIVIDUAL_MOCK_CEASED ] });
+    await retrieveBeneficialOwners(req, appData);
+
+    expect(appData.beneficial_owners_individual?.length).toEqual(undefined);
+  });
+  // will take out if doesn't cover code
 
   test("Should not set MO data in appData if no Company Officers returned", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456" };

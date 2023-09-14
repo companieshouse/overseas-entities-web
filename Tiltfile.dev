@@ -1,6 +1,6 @@
 local_resource(
   name = 'dev:overseas-entities-web',
-  cmd = 'npm install && npm run build',
+  cmd = 'rm -rf ./dist && npm install && npm run build',
   deps = ['src', 'views']
 )
 

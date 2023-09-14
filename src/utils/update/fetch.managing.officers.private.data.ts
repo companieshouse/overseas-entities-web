@@ -22,7 +22,7 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
       if (!moPrivateData || moPrivateData.length === 0) {
         logger.info(`No private Managing Officer details were retrieved for overseas entity ${appData.entity_number}`);
       } else {
-        mapManaginOfficersPrivateData(moPrivateData, appData);
+        mapManagingOfficersPrivateData(moPrivateData, appData);
         // Note: saved to persistent session when appData.entity.email is fetched.
       }
     } catch (error) {
@@ -31,7 +31,7 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
   }
 };
 
-const mapManaginOfficersPrivateData = (moPrivateData, appData: ApplicationData) => {
+const mapManagingOfficersPrivateData = (moPrivateData, appData: ApplicationData) => {
   if (moPrivateData !== undefined && moPrivateData.length > 0) {
     appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
       if (managingOfficer.ch_reference) {

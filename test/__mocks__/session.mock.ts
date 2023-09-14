@@ -1614,6 +1614,62 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
+  overseas_entity_id: '123',
+  transaction_id: '345',
+  entity_number: '1',
+  update: {
+    review_beneficial_owners_individual: [
+      {
+        id: '9999',
+        ch_reference: '111',
+        first_name: 'dummyFirst',
+        last_name: 'dummy Last',
+      }
+    ],
+    review_beneficial_owners_corporate: [
+      {
+        id: '9999',
+        ch_reference: '222',
+        name: 'corp'
+      }
+    ],
+    review_beneficial_owners_government_or_public_authority: [
+      {
+        id: '9999',
+        ch_reference: '333',
+        name: 'gov'
+      }
+    ]
+  }
+};
+
+export const FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF: ApplicationData = {
+  overseas_entity_id: '123',
+  transaction_id: '345',
+  entity_number: '1',
+  update: {
+    review_beneficial_owners_individual: [
+      {
+        id: '9999',
+        first_name: 'dummyFirst',
+        last_name: 'dummy Last',
+      }
+    ],
+    review_beneficial_owners_corporate: [
+      {
+        id: '9999',
+        name: 'corp'
+      }
+    ],
+    review_beneficial_owners_government_or_public_authority: [
+      {
+        id: '9999',
+        name: 'gov'
+      }
+    ]
+  }
+};
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE = "RandomeaP1EB70SSD9SLmiK5Y";
 
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {

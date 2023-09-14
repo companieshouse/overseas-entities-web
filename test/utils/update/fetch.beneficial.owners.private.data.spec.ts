@@ -16,6 +16,7 @@ import {
   PRIVATE_BO_ADDRESS
 } from "../../__mocks__/get.beneficial.owner.private.data.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { FETCH_BO_APPLICATION_DATA_MOCK, FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF } from "../../__mocks__/session.mock";
 
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
@@ -30,35 +31,8 @@ describe("Test fetching and mapping BO private data", () => {
   });
 
   test("should fetch and map BO private data", async () => {
-    appData = {
-      overseas_entity_id: '123',
-      transaction_id: '345',
-      entity_number: '1',
-      update: {
-        review_beneficial_owners_individual: [
-          {
-            id: '9999',
-            ch_reference: '111',
-            first_name: 'dummyFirst',
-            last_name: 'dummy Last',
-          }
-        ],
-        review_beneficial_owners_corporate: [
-          {
-            id: '9999',
-            ch_reference: '222',
-            name: 'corp'
-          }
-        ],
-        review_beneficial_owners_government_or_public_authority: [
-          {
-            id: '9999',
-            ch_reference: '333',
-            name: 'gov'
-          }
-        ]
-      }
-    };
+    appData = FETCH_BO_APPLICATION_DATA_MOCK;
+
     mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
     await fetchBeneficialOwnersPrivateData(appData, req);
     expect(appData.update?.review_beneficial_owners_individual?.length).toEqual(1);
@@ -207,32 +181,8 @@ describe("Test fetching and mapping BO private data", () => {
   });
 
   test("should not map BO private data if existing BO data does not contain a ch reference", async () => {
-    appData = {
-      overseas_entity_id: '123',
-      transaction_id: '345',
-      entity_number: '1',
-      update: {
-        review_beneficial_owners_individual: [
-          {
-            id: '9999',
-            first_name: 'dummyFirst',
-            last_name: 'dummy Last',
-          }
-        ],
-        review_beneficial_owners_corporate: [
-          {
-            id: '9999',
-            name: 'corp'
-          }
-        ],
-        review_beneficial_owners_government_or_public_authority: [
-          {
-            id: '9999',
-            name: 'gov'
-          }
-        ]
-      }
-    };
+    appData = FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF;
+
     mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
     await fetchBeneficialOwnersPrivateData(appData, req);
     expect(appData.update?.review_beneficial_owners_individual?.length).toEqual(1);

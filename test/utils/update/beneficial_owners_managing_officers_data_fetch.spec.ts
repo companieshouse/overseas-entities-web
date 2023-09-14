@@ -12,7 +12,7 @@ import { getCompanyOfficers } from "../../../src/service/company.managing.office
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
 import { getManagingOfficersPrivateData } from '../../../src/service/private.overseas.entity.details';
-import { MOCK_GET_MO_PRIVATE_DATA } from '../../__mocks__/get.managing.officer.private.data.mock';
+import { MOCK_MO_PRIVATE_DATA } from '../../__mocks__/get.managing.officer.private.data.mock';
 import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
@@ -36,7 +36,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     appData = {};
     mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
     mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-    mockGetManagingOfficerPrivateData.mockReturnValue(MOCK_GET_MO_PRIVATE_DATA);
+    mockGetManagingOfficerPrivateData.mockReturnValue(MOCK_MO_PRIVATE_DATA);
     await retrieveBoAndMoData(req, appData);
     expect(appData.update?.review_beneficial_owners_individual?.length).toEqual(1);
     expect(appData.update?.review_beneficial_owners_corporate?.length).toEqual(1);

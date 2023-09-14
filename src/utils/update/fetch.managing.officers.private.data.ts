@@ -1,4 +1,4 @@
-import * as config from "../../config";
+import { FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH } from "../../config";
 import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
@@ -7,7 +7,7 @@ import { mapMoPrivateAddress } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
 
-  if (isActiveFeature(config.FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
+  if (isActiveFeature(FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH)) {
     return;
   }
 

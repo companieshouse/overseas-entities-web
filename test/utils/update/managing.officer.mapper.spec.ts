@@ -183,7 +183,7 @@ describe("Test mapping to managing officer", () => {
           ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
           residentialAddress: undefined,
           principalAddress: undefined,
-          hashedId: 'mo-individual-ch-ref',
+          hashedId: 'hashedId1',
         },
       ];
       const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref', false);

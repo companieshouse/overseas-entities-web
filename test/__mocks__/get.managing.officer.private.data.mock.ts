@@ -1,6 +1,6 @@
-import { ManagingOfficerData, ManagingOfficersPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 
-const INDIVIDUAL_MO_MOCK: ManagingOfficerData = {
+export const INDIVIDUAL_MO_MOCK: ManagingOfficerPrivateData = {
   residentialAddress: {
     addressLine1: "URA Address line 1",
     addressLine2: "URA Address line 2",
@@ -18,8 +18,6 @@ const INDIVIDUAL_MO_MOCK: ManagingOfficerData = {
   contactEmailAddress: ""
 };
 
-export const MOCK_GET_MO_PRIVATE_DATA: ManagingOfficersPrivateData = {
-  moPrivateData: [
-    INDIVIDUAL_MO_MOCK
-  ]
-};
+export const MOCK_MO_PRIVATE_DATA: ManagingOfficerPrivateData[] = [
+  INDIVIDUAL_MO_MOCK
+];

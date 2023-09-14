@@ -877,15 +877,16 @@ export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
       dateOfBirth: "1990-01-01",
       contactNameFull: "John Doe",
       contactEmailAddress: "john.doe@example.com",
-      hashedId: "mo-individual-ch-ref",
+      hashedId: "hashedId1",
     },
     {
       managingOfficerAppointmentId: "MO2",
-      residentialAddress: {
+      residentialAddress: MOCKED_PRIVATE_ADDRESS,
+      principalAddress: {
         ...MOCKED_PRIVATE_ADDRESS,
-        addressLine1: "Residential Line1 MO2",
+        premises: "M02 premises",
+        addressLine1: "M02 principalAddress Ln1",
       },
-      principalAddress: ADDRESS,
       dateOfBirth: "1985-02-01",
       contactNameFull: "Jane Doe",
       contactEmailAddress: "jane.doe@example.com",
@@ -926,7 +927,7 @@ export const MANAGING_OFFICER_OBJECT_PRIVATE_DATA_MOCK: managingOfficerType.Mana
 
 export const MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF: managingOfficerType.ManagingOfficerIndividual = {
   ...MANAGING_OFFICER_OBJECT_MOCK,
-  ch_reference: 'mo-individual-ch-ref',
+  ch_reference: 'hashedId1',
 };
 
 export const UPDATE_MANAGING_OFFICER_OBJECT_MOCK: managingOfficerType.ManagingOfficerIndividual = {

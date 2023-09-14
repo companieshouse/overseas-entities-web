@@ -4,7 +4,7 @@ import { getManagingOfficersPrivateData } from "../../../src/service/private.ove
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { logger } from "../../../src/utils/logger";
 import { ApplicationData } from "../../../src/model";
-import { MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MOCK_APP_DATA_MOS } from "../../../test/__mocks__/session.mock";
+import { MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MOCK_APP_DATA_MOS } from "../../__mocks__/session.mock";
 
 jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/service/private.overseas.entity.details");
@@ -19,7 +19,7 @@ describe("fetchManagingOfficersPrivateData", () => {
   let appData: ApplicationData, req: Request;
 
   beforeEach(() => {
-    appData = MOCK_APP_DATA_MOS;
+    appData = JSON.parse(JSON.stringify(MOCK_APP_DATA_MOS));
     jest.clearAllMocks();
   });
 
@@ -105,7 +105,7 @@ describe("fetchManagingOfficersPrivateData", () => {
 
   test("should not map MO private data if existing MO does not have ch_reference", async () => {
     if (appData.update && appData.update.review_managing_officers_individual) {
-      appData.update.review_managing_officers_individual[0].ch_reference = '';
+      appData.update.review_managing_officers_individual[0].ch_reference = undefined;
     }
 
     mockIsActiveFeature.mockReturnValue(false);
@@ -113,7 +113,7 @@ describe("fetchManagingOfficersPrivateData", () => {
 
     await fetchManagingOfficersPrivateData(appData, req);
     expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
-    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined;
+    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeFalsy();
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
     expect(principal_address?.property_name_number).toEqual("M02 premises");

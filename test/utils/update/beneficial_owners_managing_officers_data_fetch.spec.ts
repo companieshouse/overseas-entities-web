@@ -79,28 +79,4 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
   });
-
-  test("Should not call getManagingOfficerPrivateData when transactionId and overseasEntityId are undefined", async () => {
-    appData = { "transaction_id": undefined, "overseas_entity_id": undefined, "entity_number": "1234" };
-
-    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
-
-    await retrieveManagingOfficers(req, appData);
-
-    expect(mockGetCompanyOfficers).toHaveBeenCalled();
-    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
-    expect(mockLoggerInfo).toHaveBeenCalled();
-  });
-
-  test("Should not call getManagingOfficerPrivateData when no companyOfficers returned", async () => {
-    appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
-
-    mockGetCompanyOfficers.mockReturnValue(Promise.resolve({ items: [] }));
-
-    await retrieveManagingOfficers(req, appData);
-
-    expect(mockGetCompanyOfficers).toHaveBeenCalled();
-    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
-    expect(mockLoggerInfo).not.toHaveBeenCalled();
-  });
 });

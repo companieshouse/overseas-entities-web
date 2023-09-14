@@ -29,9 +29,9 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
 
     const appData: ApplicationData = getApplicationData(session);
 
-    await fetchOverseasEntityEmailAddress(appData, req, session);
-
     await fetchBeneficialOwnersPrivateData(appData, req);
+
+    await fetchOverseasEntityEmailAddress(appData, req, session);
 
     const entity = appData[EntityKey];
     const principalAddress = (entity && Object.keys(entity).length)

@@ -38,7 +38,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_corporate?.length).toEqual(1);
-    expect(appData.update?.review_managing_officers_corporate?.length).toEqual(1);
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 

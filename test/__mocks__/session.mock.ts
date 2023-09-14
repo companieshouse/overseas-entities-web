@@ -1664,8 +1664,27 @@ export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
   usualResidentialAddress: undefined
 };
 
-export const PRIVATE_BO_MOCK_DATA: BeneficialOwnerPrivateData[] = [
-  PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA
+export const PRIVATE_BO_GOV_MOCK_DATA: BeneficialOwnerPrivateData = {
+  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  principalAddress: {
+    addressLine1: "GOV LINE 1",
+    addressLine2: "GOV LINE 2",
+    careOf: "",
+    country: "UK",
+    locality: "GOV LOCALITY",
+    poBox: "GOV PO",
+    postalCode: "3333",
+    premises: "GOV PREMISES",
+    region: "GOV REGION"
+  },
+  usualResidentialAddress: undefined
+};
+
+export const PRIVATE_BENEFICAL_OWNERS_MOCK_DATA: BeneficialOwnerPrivateData[] = [
+  PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA
 ];
 
 export const PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS: BeneficialOwnerPrivateData[] = [

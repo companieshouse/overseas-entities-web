@@ -67,7 +67,7 @@ import {
   APPLICATION_DATA_CH_REF_UPDATE_MOCK,
   TRANSACTION_CLOSED_RESPONSE,
   PAYMENT_LINK_JOURNEY,
-  TRANSACTION_ID,
+  TRANSACTION_ID
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";

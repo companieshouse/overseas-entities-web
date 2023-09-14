@@ -47,9 +47,10 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
     if (isNoChangeJourney) {
 
+      await fetchBeneficialOwnersPrivateData(appData, req);
+
       await fetchOverseasEntityEmailAddress(appData, req, session);
 
-      await fetchBeneficialOwnersPrivateData(appData, req);
     }
 
     return res.render(templateName, {

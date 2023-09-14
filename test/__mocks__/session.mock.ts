@@ -1621,7 +1621,7 @@ export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
   update: {
     review_beneficial_owners_individual: [
       {
-        id: '9999',
+        id: '1111',
         ch_reference: '111',
         first_name: 'dummyFirst',
         last_name: 'dummy Last',
@@ -1629,14 +1629,14 @@ export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
     ],
     review_beneficial_owners_corporate: [
       {
-        id: '9999',
+        id: '2222',
         ch_reference: '222',
         name: 'corp'
       }
     ],
     review_beneficial_owners_government_or_public_authority: [
       {
-        id: '9999',
+        id: '3333',
         ch_reference: '333',
         name: 'gov'
       }
@@ -1651,20 +1651,20 @@ export const FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF: ApplicationData = {
   update: {
     review_beneficial_owners_individual: [
       {
-        id: '9999',
+        id: '1111',
         first_name: 'dummyFirst',
         last_name: 'dummy Last',
       }
     ],
     review_beneficial_owners_corporate: [
       {
-        id: '9999',
+        id: '2222',
         name: 'corp'
       }
     ],
     review_beneficial_owners_government_or_public_authority: [
       {
-        id: '9999',
+        id: '3333',
         name: 'gov'
       }
     ]

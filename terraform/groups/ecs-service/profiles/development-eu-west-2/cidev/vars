@@ -19,7 +19,7 @@ update_payment_fee = "120.00"
 vf01_form_download_url = "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf"
 api_url = "https://api.cidev.aws.chdev.org"
 
-feature_flag_enable_update_statement_validation_05072023 = "false"
+feature_flag_enable_update_statement_validation_05072023 = "true"
 feature_flag_enable_save_and_resume_17102022 = "true"
 feature_flag_enable_roe_update_24112022 = "true"
 feature_flag_enable_roe_remove_24112022 = "false"

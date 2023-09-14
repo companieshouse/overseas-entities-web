@@ -157,6 +157,29 @@ export function getSessionRequestWithExtraData(appData: ApplicationData = APPLIC
   return session;
 }
 
+export const MOCK_APP_DATA_MOS = {
+  entity: { email: undefined },
+  overseas_entity_id: "OE123",
+  transaction_id: "123",
+  update: {
+    review_managing_officers_individual: [
+      {
+        id: 'MO1',
+        ch_reference: 'hashedId1',
+        first_name: 'MO firstName',
+        last_name: 'MO lastName',
+      }
+    ],
+    review_managing_officers_corporate: [
+      {
+        id: 'MO2',
+        ch_reference: 'hashedId2',
+        name: 'MoCorporateName'
+      }
+    ]
+  }
+};
+
 export const SERVICE_ADDRESS = {
   property_name_number: "service1",
   line_1: "serviceAddressLine1",

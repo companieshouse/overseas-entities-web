@@ -68,7 +68,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyOfficers).toHaveBeenCalled();
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
     expect(mockLoggerInfo).toHaveBeenCalled();
-
   });
 
   test("Should not call getManagingOfficerPrivateData when no companyOfficers returned", async () => {

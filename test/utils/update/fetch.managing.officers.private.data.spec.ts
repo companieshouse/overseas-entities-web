@@ -4,7 +4,7 @@ import { getManagingOfficersPrivateData } from "../../../src/service/private.ove
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { logger } from "../../../src/utils/logger";
 import { ApplicationData } from "../../../src/model";
-import { MOCK_MANAGING_OFFICERS_PRIVATE_DATA } from "../../../test/__mocks__/session.mock";
+import { MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MOCK_APP_DATA_MOS } from "../../../test/__mocks__/session.mock";
 
 jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/service/private.overseas.entity.details");
@@ -19,28 +19,7 @@ describe("fetchManagingOfficersPrivateData", () => {
   let appData: ApplicationData, req: Request;
 
   beforeEach(() => {
-    appData = {
-      entity: { email: undefined },
-      overseas_entity_id: "OE123",
-      transaction_id: "123",
-      update: {
-        review_managing_officers_individual: [
-          {
-            id: 'MO1',
-            ch_reference: 'hashedId1',
-            first_name: 'MO firstName',
-            last_name: 'MO lastName',
-          }
-        ],
-        review_managing_officers_corporate: [
-          {
-            id: 'MO2',
-            ch_reference: 'hashedId2',
-            name: 'MoCorporateName'
-          }
-        ]
-      }
-    };
+    appData = MOCK_APP_DATA_MOS;
     jest.clearAllMocks();
   });
 

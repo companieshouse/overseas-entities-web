@@ -29,7 +29,7 @@ describe("fetchManagingOfficersPrivateData", () => {
 
     await fetchManagingOfficersPrivateData(appData, req);
 
-    expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
+    expect(appData.update?.review_managing_officers_individual?.length).toEqual(2);
 
     const usual_residential_address = appData.update?.review_managing_officers_individual?.[0].usual_residential_address;
     expect(usual_residential_address?.property_name_number).toEqual("private_premises");

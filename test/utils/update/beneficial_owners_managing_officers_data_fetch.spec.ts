@@ -46,6 +46,28 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
+  test('Should return early if companyOfficers is null', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue(null);
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  test('Should return early if companyOfficers.items is empty', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue({ items: [] });
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {
     appData = {
       update: {

@@ -166,15 +166,21 @@ export const MOCK_APP_DATA_MOS = {
       {
         id: 'MO1',
         ch_reference: 'hashedId1',
-        first_name: 'MO firstName',
-        last_name: 'MO lastName',
+        first_name: 'MO1 firstName',
+        last_name: 'MO1 lastName',
+      },
+      {
+        id: 'MO1B',
+        ch_reference: 'hashedId1B',
+        first_name: 'MO1B firstName',
+        last_name: 'MO1B lastName',
       }
     ],
     review_managing_officers_corporate: [
       {
         id: 'MO2',
         ch_reference: 'hashedId2',
-        name: 'MoCorporateName'
+        name: 'Mo2CorporateName'
       }
     ]
   }

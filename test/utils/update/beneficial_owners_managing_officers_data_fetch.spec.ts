@@ -60,7 +60,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.beneficial_owners_corporate?.[0].name).toEqual(undefined);
     expect(appData.beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
   });
-  // will take out if doesn't cover code
 
   test("Ceased on test ", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456" };
@@ -69,7 +68,6 @@ describe("util beneficial owners managing officers data fetch", () => {
 
     expect(appData.beneficial_owners_individual?.length).toEqual(undefined);
   });
-  // will take out if doesn't cover code
 
   test("Should not set MO data in appData if no Company Officers returned", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456" };

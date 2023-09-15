@@ -48,7 +48,11 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       // that don't use id will just ignore it.
       const id = req.params[ID];
       const appData: ApplicationData = getApplicationData(req.session);
-      const entityName = appData?.[EntityNameKey];
+      let entityName = req.body[EntityNameKey];
+
+      if (req.body[EntityNameKey] === undefined) {
+        entityName = appData?.[EntityNameKey];
+      }
       const entityNumber = appData?.[EntityNumberKey];
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData),

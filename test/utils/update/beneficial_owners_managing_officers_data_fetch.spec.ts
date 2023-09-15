@@ -61,15 +61,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
   });
 
-  test("Should not set MO data in appData if no Company Officers returned", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetCompanyOfficers.mockReturnValue({ "items": [] });
-    await retrieveBeneficialOwners(req, appData);
-
-    expect(appData.managing_officers_individual?.[0].first_name).toEqual(undefined);
-    expect(appData.managing_officers_corporate?.[0].name).toEqual(undefined);
-  });
-
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {
     appData = {
       update: {

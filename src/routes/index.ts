@@ -92,7 +92,10 @@ import {
   updateManageTrustsReviewIndividuals,
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
-  updatePaymentFailed
+  updatePaymentFailed,
+  updateManageTrustsTellUsAboutTheFormerBo,
+  updateManageTrustsTellUsAboutTheIndividual,
+  updateManageTrustsTellUsAboutTheLegalEntity
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -518,6 +521,36 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
   )
   .get(updateManageTrustsReviewLegalEntities.get)
   .post(updateManageTrustsReviewLegalEntities.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsTellUsAboutTheFormerBo.get)
+  .post(updateManageTrustsTellUsAboutTheFormerBo.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsTellUsAboutTheIndividual.get)
+  .post(updateManageTrustsTellUsAboutTheIndividual.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
+  .post(updateManageTrustsTellUsAboutTheLegalEntity.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
   .all(

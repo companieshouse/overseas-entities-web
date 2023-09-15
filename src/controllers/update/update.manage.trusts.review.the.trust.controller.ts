@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import {
   UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE,
 } from '../../config';
 
@@ -24,7 +24,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    // take submitted form, update appData as appropriate, and save.
+
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
   }

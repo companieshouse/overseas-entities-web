@@ -42,7 +42,7 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
 
   for (const psc of pscs.items) {
     logger.info("Loaded psc " + psc.kind);
-    if (psc.ceasedOn !== undefined) { continue; }
+    if (psc.ceasedOn) { continue; }
     switch (psc.kind) {
         case "individual-beneficial-owner":
           mapBeneficialOwnerIndividual(psc, appData);

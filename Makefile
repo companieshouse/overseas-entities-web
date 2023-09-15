@@ -24,8 +24,8 @@ lint:
 sonar:
 	npm run sonarqube
 
-.PHONY: test
-test: clean
+.PHONY: test-unit
+test-unit: clean
 	npm run coverage
 
 .PHONY: security-check
@@ -50,5 +50,5 @@ endif
 	rm -rf $(tmpdir)
 
 .PHONY: dist
-dist: lint test clean package
+dist: lint test-unit clean package
 

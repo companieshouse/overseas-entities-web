@@ -77,19 +77,19 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
   }
 };
 
-export const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
+const mapBeneficialOwnerIndividual = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const individualBeneficialOwner = mapPscToBeneficialOwnerTypeIndividual(psc);
   logger.info("Loaded individual Beneficial Owner " + individualBeneficialOwner.id);
   appData.update?.review_beneficial_owners_individual?.push(individualBeneficialOwner);
 };
 
-export const mapBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
+const mapBeneficialOwnerOther = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const beneficialOwnerOther = mapPscToBeneficialOwnerOther(psc);
   logger.info("Loaded Beneficial Owner Other " + beneficialOwnerOther.id);
   appData.update?.review_beneficial_owners_corporate?.push(beneficialOwnerOther);
 };
 
-export const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
+const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData: ApplicationData) => {
   const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
   logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id);
   appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);

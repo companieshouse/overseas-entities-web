@@ -6,28 +6,20 @@ jest.mock('../../../src/utils/logger');
 import { describe, expect, test } from '@jest/globals';
 import { Request } from "express";
 import { ApplicationData } from '../../../src/model';
-import { mapBeneficialOwnerIndividual, retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
+import { retrieveBeneficialOwners, retrieveBoAndMoData } from '../../../src/utils/update/beneficial_owners_managing_officers_data_fetch';
 import { getCompanyPsc } from "../../../src/service/persons.with.signficant.control.service";
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
-import { BO_INDIVIDUAL_MOCK_CEASED, MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
+import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
-import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
-const mockMapBeneficialOwnerIndividual = mapBeneficialOwnerIndividual as jest.Mock;
-const mockLoggerInfo = logger.info as jest.Mock;
-const mockLoggerError = logger.errorRequest as jest.Mock;
 
 describe("util beneficial owners managing officers data fetch", () => {
   let appData: ApplicationData, req: Request;
 
   beforeEach(() => {
-    mockLoggerInfo.mockReset();
-    mockLoggerError.mockReset();
-    mockGetCompanyPscService.mockReset();
-    mockGetCompanyOfficers.mockReset();
-    // mockMapBeneficialOwnerIndividual.mockReset();
+    jest.clearAllMocks();
   });
 
   test("retrieveBoAndMoData sets BO & MO data in appData.update, sets appData.update.bo_mo_data_fetched", async () => {
@@ -40,29 +32,39 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_corporate?.length).toEqual(1);
+    expect(appData.update?.review_beneficial_owners_individual?.some(item => item.id === "/company/OE111129/persons-with-significant-control/individual/RandomeaP1EB70SSD9SLmiK5Y")).toBe(true);
+    expect(appData.update?.review_beneficial_owners_corporate?.some(item => item.id === "/company/OE111129/persons-with-significant-control/corporate-entity/OtherBOP1EB70SSD9SLmiK5Y")).toBe(true);
+    expect(appData.update?.review_beneficial_owners_government_or_public_authority?.some(item => item.id === "/company/OE111129/persons-with-significant-control/legal-person/RandomeaP1EB70SSD9SLmiK5Y")).toBe(true);
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
   test("Should not set BO data in appData if no Company PSCs exist", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetCompanyPscService.mockReturnValue(null);
+    mockGetCompanyPscService.mockReturnValue({ items: [] });
     await retrieveBeneficialOwners(req, appData);
 
-    expect(mockMapBeneficialOwnerIndividual).not.toHaveBeenCalled();
     expect(appData.update?.review_beneficial_owners_individual?.[0].first_name).toEqual(undefined);
     expect(appData.update?.review_beneficial_owners_corporate?.[0].name).toEqual(undefined);
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
   });
 
-  test("Should not set BO data in appData if BO is ceased", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
-    mockGetCompanyPscService.mockReturnValue( { "items": [ BO_INDIVIDUAL_MOCK_CEASED ] });
-    await retrieveBeneficialOwners(req, appData);
+  test("test beneficial owners with ceasedOn date are not mapped", async () => {
+    appData = {};
 
-    expect(mockMapBeneficialOwnerIndividual).not.toHaveBeenCalled();
-    expect(appData.update?.review_beneficial_owners_individual?.[0].first_name).toEqual(undefined);
-    expect(appData.update?.review_beneficial_owners_corporate?.[0].name).toEqual(undefined);
-    expect(appData.update?.review_beneficial_owners_government_or_public_authority?.[0].name).toEqual(undefined);
+    const individualBoResignedOn2023 = { ...MOCK_GET_COMPANY_PSC_ALL_BO_TYPES.items[0], ceasedOn: "01/01/2023" };
+    const corporateBoResignedOn2022 = { ...MOCK_GET_COMPANY_PSC_ALL_BO_TYPES.items[1], ceasedOn: "01/01/2022" };
+    const governmentBoResignedOn2022 = { ...MOCK_GET_COMPANY_PSC_ALL_BO_TYPES.items[2], ceasedOn: "01/01/2022" };
+
+    const modifiedPscs = [individualBoResignedOn2023, corporateBoResignedOn2022, governmentBoResignedOn2022];
+
+    mockGetCompanyPscService.mockReturnValue({ items: modifiedPscs });
+    mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+
+    await retrieveBoAndMoData(req, appData);
+
+    expect(appData.update?.review_beneficial_owners_individual?.some(item => item.id === "/company/OE111129/persons-with-significant-control/individual/RandomeaP1EB70SSD9SLmiK5Y")).toBe(false);
+    expect(appData.update?.review_beneficial_owners_corporate?.some(item => item.id === "/company/OE111129/persons-with-significant-control/corporate-entity/OtherBOP1EB70SSD9SLmiK5Y")).toBe(false);
+    expect(appData.update?.review_beneficial_owners_government_or_public_authority?.some(item => item.id === "/company/OE111129/persons-with-significant-control/legal-person/RandomeaP1EB70SSD9SLmiK5Y")).toBe(false);
   });
 
   test("data fetch does not occur if appData.update.bo_mo_data_fetched set to true", () => {

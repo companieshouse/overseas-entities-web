@@ -84,12 +84,12 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
 
 const handleIndividualManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
   const managingOfficer = mapToManagingOfficer(officer);
-  logger.info(`Loaded Managing Officer ${managingOfficer.id} is ${managingOfficer.first_name}, ${managingOfficer.last_name}`);
+  logger.info(`Loaded Managing Officer ${managingOfficer.id}`);
   appData.update?.review_managing_officers_individual?.push(managingOfficer);
 };
 
 const handleCorporateManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
   const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-  logger.info(`Loaded Corporate Managing Officer ${managingOfficerCorporate.id} is ${managingOfficerCorporate.name}`);
+  logger.info(`Loaded Corporate Managing Officer ${managingOfficerCorporate.id}`);
   appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
 };

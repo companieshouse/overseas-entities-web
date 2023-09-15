@@ -77,7 +77,6 @@ describe("util beneficial owners managing officers data fetch", () => {
 
   test("test officers with resignedOn date are not mapped", async () => {
     appData = {};
-
     const individualMoResignedOn2023 = { ...MOCK_GET_COMPANY_OFFICERS.items[0], resignedOn: "01/01/2023" };
     const corporateMoResignedOn2022 = { ...MOCK_GET_COMPANY_OFFICERS.items[1], resignedOn: "01/01/2022" };
 

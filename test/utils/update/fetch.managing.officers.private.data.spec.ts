@@ -113,7 +113,7 @@ describe("fetchManagingOfficersPrivateData", () => {
 
     await fetchManagingOfficersPrivateData(appData, req);
     expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
-    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeFalsy();
+    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined();
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
     expect(principal_address?.property_name_number).toEqual("M02 premises");

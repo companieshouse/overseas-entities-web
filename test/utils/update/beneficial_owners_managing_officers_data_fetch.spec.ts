@@ -22,7 +22,6 @@ describe("util beneficial owners managing officers data fetch", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    // dummy change for sonarQube
   });
 
   test("retrieveBoAndMoData sets BO & MO data in appData.update, sets appData.update.bo_mo_data_fetched", async () => {

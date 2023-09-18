@@ -32,6 +32,7 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(2);
 
     const usual_residential_address = appData.update?.review_managing_officers_individual?.[0].usual_residential_address;
+    const dob = appData.update?.review_managing_officers_individual?.[0].date_of_birth;
     expect(usual_residential_address?.property_name_number).toEqual("private_premises");
     expect(usual_residential_address?.line_1).toEqual("private_addressLine1");
     expect(usual_residential_address?.line_2).toEqual("private_addressLine2");
@@ -39,6 +40,8 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(usual_residential_address?.county).toEqual("private_region");
     expect(usual_residential_address?.country).toEqual("private_country");
     expect(usual_residential_address?.postcode).toEqual("private_postalCode");
+    expect(usual_residential_address?.postcode).toEqual("private_postalCode");
+    expect(dob).toEqual({ day: '1', month: '1', year: '1990' });
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
     expect(principal_address?.property_name_number).toEqual("M02 premises");
@@ -113,7 +116,8 @@ describe("fetchManagingOfficersPrivateData", () => {
 
     await fetchManagingOfficersPrivateData(appData, req);
     expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
-    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeFalsy();
+    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined();
+    expect(appData.update?.review_managing_officers_individual?.[0].date_of_birth).toBeUndefined();
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
     expect(principal_address?.property_name_number).toEqual("M02 premises");

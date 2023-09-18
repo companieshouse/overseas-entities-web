@@ -1,7 +1,7 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { mapToManagingOfficer, mapToManagingOfficerCorporate, getFormerNames, mapMoPrivateAddress } from '../../../src/utils/update/managing.officer.mapper';
+import { mapToManagingOfficer, mapToManagingOfficerCorporate, getFormerNames, mapMoPrivateAddress, mapMoPrivateDOB } from '../../../src/utils/update/managing.officer.mapper';
 import {
   MANAGING_OFFICER_MOCK_MAP_DATA,
   MOCK_MANAGING_OFFICERS_PRIVATE_DATA,
@@ -178,16 +178,48 @@ describe("Test mapping to managing officer", () => {
 
     test('that undefined is returned when both residential and principal addresses are undefined', () => {
       const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] =
-      [
-        {
-          ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
-          residentialAddress: undefined,
-          principalAddress: undefined,
-          hashedId: 'hashedId1',
-        },
-      ];
-      const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref', false);
-      expect(address).toBeUndefined();
+        [
+          {
+            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+            residentialAddress: undefined,
+            principalAddress: undefined,
+            hashedId: 'hashedId1',
+          },
+        ];
+      const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'hashedId1', false);
+      expect(address).toEqual({});
+    });
+
+    describe('Test mapping for private Date Of Birth', () => {
+
+      test('Date Of Birth for Individual Managing Officer is correctly mapped', () => {
+        const dob = mapMoPrivateDOB(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string);
+        expect(dob).toEqual({ day: "1", month: "1", year: "1990" });
+      });
+
+      test('Undefined is returned when moPrivateData is empty', () => {
+        const emptyPrivateData: ManagingOfficerPrivateData[] = [];
+        const dob = mapMoPrivateDOB(emptyPrivateData, 'some_ch_ref');
+        expect(dob).toBeUndefined();
+      });
+
+      test('Undefined is returned when no matching hashedId is found', () => {
+        const dob = mapMoPrivateDOB(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref');
+        expect(dob).toBeUndefined();
+      });
+
+      test('Undefined is returned when managingOfficerData.dateOfBirth is undefined', () => {
+        const mockDataWithUndefinedDOB: ManagingOfficerPrivateData[] =
+          [
+            {
+              ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+              dateOfBirth: undefined,
+              hashedId: 'hashedId1',
+            },
+          ];
+        const dob = mapMoPrivateDOB(mockDataWithUndefinedDOB, 'hashedId1');
+        expect(dob).toBeUndefined();
+      });
     });
   });
 });

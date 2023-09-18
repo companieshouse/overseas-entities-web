@@ -32,6 +32,7 @@ import {
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
+import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
@@ -45,6 +46,9 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (isNoChangeJourney) {
+
+      await fetchManagingOfficersPrivateData(appData, req);
+
       await fetchOverseasEntityEmailAddress(appData, req, session);
     }
 

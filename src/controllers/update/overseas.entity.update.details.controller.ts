@@ -20,6 +20,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { fetchOverseasEntityEmailAddress } from "../../utils/update/fetch.overseas.entity.email";
+import { fetchManagingOfficersPrivateData } from "../../utils/update/fetch.managing.officers.private.data";
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -27,6 +28,8 @@ export const get = async (req: Request, res: Response, next: NextFunction) => {
     const session = req.session as Session;
 
     const appData: ApplicationData = getApplicationData(session);
+
+    await fetchManagingOfficersPrivateData(appData, req);
 
     await fetchOverseasEntityEmailAddress(appData, req, session);
 

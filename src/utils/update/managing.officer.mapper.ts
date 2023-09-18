@@ -92,7 +92,7 @@ export const mapMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[],
 export const mapMoPrivateDOB = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string) => {
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === ch_reference) {
-      return managingOfficerData.dateOfBirth ? mapInputDate(managingOfficerData.dateOfBirth) : undefined;
+      return mapInputDate(managingOfficerData.dateOfBirth);
     }
   }
 };

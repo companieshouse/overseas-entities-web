@@ -1,7 +1,13 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { mapToManagingOfficer, mapToManagingOfficerCorporate, getFormerNames, mapMoPrivateAddress, mapMoPrivateDOB } from '../../../src/utils/update/managing.officer.mapper';
+import {
+  mapToManagingOfficer,
+  mapToManagingOfficerCorporate,
+  getFormerNames,
+  mapMoPrivateAddress,
+  mapMoPrivateDOB
+} from '../../../src/utils/update/managing.officer.mapper';
 import {
   MANAGING_OFFICER_MOCK_MAP_DATA,
   MOCK_MANAGING_OFFICERS_PRIVATE_DATA,
@@ -187,7 +193,7 @@ describe("Test mapping to managing officer", () => {
           },
         ];
       const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'hashedId1', false);
-      expect(address).toEqual({});
+      expect(address).toEqual(undefined);
     });
 
     describe('Test mapping for private Date Of Birth', () => {

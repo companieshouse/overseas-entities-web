@@ -69,14 +69,14 @@ export const mapAddress = (address: ServiceAddress | undefined): Address => {
 };
 
 type BOMOAddressMapTypes = {
-  (address: PSCAddress | undefined): Address;
-  (address: OfficerAddress | undefined): Address;
-  (address: PrivateAddress | undefined): PrivateAddress;
+  (address: PSCAddress | undefined): Address | undefined;
+  (address: OfficerAddress | undefined): Address | undefined;
+  (address: PrivateAddress | undefined): PrivateAddress | undefined;
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
   if (!address) {
-    return {};
+    return undefined;
   }
   return {
     property_name_number: address.premises,

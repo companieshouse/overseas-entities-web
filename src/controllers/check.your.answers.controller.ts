@@ -18,6 +18,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
+    logger.debugRequest(req, `TEST`);
+
     const appData: ApplicationData = getApplicationData(req.session);
 
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);

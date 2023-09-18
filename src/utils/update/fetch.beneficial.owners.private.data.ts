@@ -23,6 +23,7 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
         logger.info(`No private Beneficial Owner details were retrieved for overseas entity ${appData.entity_number}`);
       } else {
         mapBeneficialOwnersPrivateData(boPrivateData, appData);
+        // push test
       }
     } catch (error) {
       logger.errorRequest(req, `Private Beneficial Owner details could not be retrieved for overseas entity ${appData.entity_number}`);

@@ -2,7 +2,7 @@ import { ApiErrorResponse, ApiResponse } from "@companieshouse/api-sdk-node/dist
 import { CompanyOfficers } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 
-const MO_MOCK = {
+export const MO_MOCK = {
   "address": {
     "region": "Gloucestershire",
     "postalCode": "GL7 7BX",
@@ -14,7 +14,7 @@ const MO_MOCK = {
   },
   "appointedOn": "2023-01-01",
   "links": {
-    "self": "/company/OE111129/officers",
+    "self": "/company/OE111129/officers1",
     "officer": {
       "appointments": "/officers/secretary1/appointments"
     }
@@ -23,7 +23,7 @@ const MO_MOCK = {
   "officerRole": "managing-officer"
 };
 
-const MO_CORPORATE_MOCK = {
+export const MO_CORPORATE_MOCK = {
   "address": {
     "region": "Gloucestershire",
     "postalCode": "GL7 7BX",
@@ -35,7 +35,7 @@ const MO_CORPORATE_MOCK = {
   },
   "appointedOn": "2023-01-01",
   "links": {
-    "self": "/company/OE111129/officers",
+    "self": "/company/OE111129/officers2",
     "officer": {
       "appointments": "/officers/secretary1/appointments"
     }

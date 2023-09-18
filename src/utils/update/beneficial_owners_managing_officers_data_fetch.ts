@@ -7,6 +7,7 @@ import { mapToManagingOfficer, mapToManagingOfficerCorporate } from "../../utils
 import { getCompanyOfficers } from "../../service/company.managing.officer.service";
 import { getCompanyPsc } from "../../service/persons.with.signficant.control.service";
 import { mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from "../../utils/update/psc.to.beneficial.owner.type.mapper";
+import { CompanyOfficer } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 
 export const retrieveBoAndMoData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedBoAndMoData(appData)) {
@@ -58,21 +59,25 @@ export const retrieveBeneficialOwners = async (req: Request, appData: Applicatio
 };
 
 export const retrieveManagingOfficers = async (req: Request, appData: ApplicationData) => {
+
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
-  if (companyOfficers) {
-    for (const officer of (companyOfficers.items || [])) {
-      logger.info("Loaded officer " + officer.officerRole);
-      if (officer.resignedOn === undefined) {
-        if (officer.officerRole === "managing-officer") {
-          const managingOfficer = mapToManagingOfficer(officer);
-          logger.info("Loaded Managing Officer " + managingOfficer.id + " is " + managingOfficer.first_name + ", " + managingOfficer.last_name);
-          appData.update?.review_managing_officers_individual?.push(managingOfficer);
-        } else if (officer.officerRole === "corporate-managing-officer") {
-          const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
-          logger.info("Loaded Corporate Managing Officer " + managingOfficerCorporate.id + " is " + managingOfficerCorporate.name);
-          appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
-        }
-      }
+
+  if (!companyOfficers || companyOfficers.items?.length === 0) {
+    return;
+  }
+
+  for (const officer of companyOfficers.items) {
+    logger.info(`Loaded officer ${officer.officerRole}`);
+
+    if (officer.resignedOn) {continue;} // Skip over resigned officers
+
+    switch (officer.officerRole) {
+        case "managing-officer":
+          handleIndividualManagingOfficer(officer, appData);
+          break;
+        case "corporate-managing-officer":
+          handleCorporateManagingOfficer(officer, appData);
+          break;
     }
   }
 };
@@ -93,4 +98,16 @@ const mapBeneficialOwnerGov = (psc: CompanyPersonWithSignificantControl, appData
   const beneficialOwnerGov = mapPscToBeneficialOwnerGov(psc);
   logger.info("Loaded Beneficial Owner Gov " + beneficialOwnerGov.id);
   appData.update?.review_beneficial_owners_government_or_public_authority?.push(beneficialOwnerGov);
+};
+
+const handleIndividualManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
+  const managingOfficer = mapToManagingOfficer(officer);
+  logger.info(`Loaded Managing Officer ${managingOfficer.id}`);
+  appData.update?.review_managing_officers_individual?.push(managingOfficer);
+};
+
+const handleCorporateManagingOfficer = (officer: CompanyOfficer, appData: ApplicationData) => {
+  const managingOfficerCorporate = mapToManagingOfficerCorporate(officer);
+  logger.info(`Loaded Corporate Managing Officer ${managingOfficerCorporate.id}`);
+  appData.update?.review_managing_officers_corporate?.push(managingOfficerCorporate);
 };

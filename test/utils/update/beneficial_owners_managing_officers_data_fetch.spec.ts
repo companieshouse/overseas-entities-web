@@ -44,6 +44,29 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.review_managing_officers_individual?.length).toEqual(1);
     expect(appData.update?.review_managing_officers_corporate?.length).toEqual(1);
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
+
+    expect(appData.update?.review_managing_officers_individual?.some(item => item.id === "/company/OE111129/officers1")).toBe(true);
+    expect(appData.update?.review_managing_officers_corporate?.some(item => item.id === "/company/OE111129/officers2")).toBe(true);
+  });
+
+  test('Should return early if companyOfficers is null', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue(null);
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  test('Should return early if companyOfficers.items is empty', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue({ items: [] });
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
   test('Should return early if companyOfficers is null', async () => {
@@ -78,5 +101,22 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyPscService).not.toHaveBeenCalled();
     expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
     expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+  });
+
+  test("test officers with resignedOn date are not mapped", async () => {
+    appData = {};
+    const individualMoResignedOn2023 = { ...MOCK_GET_COMPANY_OFFICERS.items[0], resignedOn: "01/01/2023" };
+    const corporateMoResignedOn2022 = { ...MOCK_GET_COMPANY_OFFICERS.items[1], resignedOn: "01/01/2022" };
+
+    const modifiedOfficers = [individualMoResignedOn2023, corporateMoResignedOn2022];
+
+    mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
+    mockGetCompanyOfficers.mockReturnValue({ items: modifiedOfficers });
+
+    await retrieveBoAndMoData(req, appData);
+
+    // Officer self links usually map to IDs
+    expect(appData.update?.review_managing_officers_individual?.some(item => item.id === "/company/OE111129/officers1")).toBe(false);
+    expect(appData.update?.review_managing_officers_individual?.some(item => item.id === "/company/OE111129/officers2")).toBe(false);
   });
 });

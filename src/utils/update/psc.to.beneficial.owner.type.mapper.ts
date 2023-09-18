@@ -156,4 +156,3 @@ const natureOfControlTypeMap = new Map<string, NatureOfControlType>([
   [natureOfControl.RIGHT_TO_APPOINT_AND_REMOVE_DIRECTORS_AS_FIRM, NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
   [natureOfControl.SIGNIFICANT_INFLUENCE_OR_CONTROL_AS_FIRM, NatureOfControlType.SIGNIFICANT_INFLUENCE_OR_CONTROL]
 ]);
-

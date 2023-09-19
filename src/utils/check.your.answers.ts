@@ -12,6 +12,7 @@ import { closeTransaction, postTransaction } from "../service/transaction.servic
 import { startPaymentsSession } from "../service/payment.service";
 import { checkEntityRequiresTrusts, checkEntityReviewRequiresTrusts } from "./trusts";
 import { fetchOverseasEntityEmailAddress } from "./update/fetch.overseas.entity.email";
+import { fetchBeneficialOwnersPrivateData } from "./update/fetch.beneficial.owners.private.data";
 
 import {
   OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
@@ -32,6 +33,7 @@ import {
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
+import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
@@ -45,7 +47,13 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (isNoChangeJourney) {
+
+      await fetchBeneficialOwnersPrivateData(appData, req);
+
+      await fetchManagingOfficersPrivateData(appData, req);
+
       await fetchOverseasEntityEmailAddress(appData, req, session);
+
     }
 
     return res.render(templateName, {

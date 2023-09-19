@@ -9,7 +9,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
-import { PAYMENT_PAID, UPDATE_CHECK_YOUR_ANSWERS_URL, UPDATE_CONFIRMATION_PAGE, UPDATE_CONFIRMATION_URL, UPDATE_REVIEW_STATEMENT_PAGE, UPDATE_REVIEW_STATEMENT_URL } from "../../../src/config";
+import { PAYMENT_PAID, UPDATE_CONFIRMATION_PAGE, UPDATE_CONFIRMATION_URL, PAYMENT_FAILED_PAGE, UPDATE_PAYMENT_FAILED_URL } from "../../../src/config";
 import app from "../../../src/app";
 import { PaymentKey } from "../../../src/model/data.types.model";
 import { PAYMENT_OBJECT_MOCK, PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING, UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING, UPDATE_PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING } from "../../__mocks__/session.mock";
@@ -57,18 +57,18 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to ${UPDATE_CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
+  test(`should redirect to ${UPDATE_PAYMENT_FAILED_URL} page, Payment failed somehow`, async () => {
     mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
     const resp = await request(app).get(UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_CHECK_YOUR_ANSWERS_URL}`);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_PAYMENT_FAILED_URL}`);
     expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
   });
 
-  test(`should redirect to ${UPDATE_REVIEW_STATEMENT_PAGE} page, if Payment failed through no change`, async () => {
+  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, if Payment failed through no change`, async () => {
     mockGetApplicationData.mockReturnValueOnce(
       {
         [PaymentKey]: PAYMENT_OBJECT_MOCK,
@@ -79,7 +79,7 @@ describe('OVERSEAS ENTITY PAYMENT controller suit', () => {
 
     const resp = await request(app).get(UPDATE_PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
     expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_REVIEW_STATEMENT_URL}`);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${UPDATE_PAYMENT_FAILED_URL}`);
     expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
     expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();

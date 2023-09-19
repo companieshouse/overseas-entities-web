@@ -91,3 +91,4 @@ export * as updateManageTrustsReviewFormerBo from './update/update.manage.trusts
 export * as updateManageTrustsReviewIndividuals from './update/update.manage.trusts.review.individuals.controller';
 export * as updateManageTrustsReviewLegalEntities from './update/update.manage.trusts.review.legal.entities.controller';
 export * as updateManageTrustsIndividualsOrEntitiesInvolved from './update/update.manage.trusts.individuals.or.entities.involved.controller';
+export * as updatePaymentFailed from './update/update.payment.failed.controller';

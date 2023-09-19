@@ -15,17 +15,18 @@ import { saveAndContinue } from "../../utils/save.and.continue";
 import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { CeasedDateKey } from "../../model/date.model";
-import { ServiceAddressKey, ServiceAddressKeys } from "../../model/address.model";
+import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 
 export const get = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
   const appData = getApplicationData(req.session);
   const index = req.query.index;
 
-  let dataToReview = {}, serviceAddress = {};
+  let dataToReview = {}, serviceAddress = {}, usual_residential_address = {};
   if (appData?.beneficial_owners_individual){
     dataToReview = appData?.beneficial_owners_individual[Number(index)];
     serviceAddress = (dataToReview) ? mapDataObjectToFields(dataToReview[ServiceAddressKey], ServiceAddressKeys, AddressKeys) : {};
+    usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
   }
 
   const templateOptions = {
@@ -35,7 +36,8 @@ export const get = (req: Request, res: Response) => {
     isBeneficialOwnersReview: true,
     populateResidentialAddress: false,
     ...serviceAddress,
-    entity_number: appData[EntityNumberKey],
+    ...usual_residential_address,
+    entity_number: appData[EntityNumberKey]
   };
 
   // Ceased date is undefined and residential address is private for initial review of BO - don't set ceased date data or residential address in this scenario

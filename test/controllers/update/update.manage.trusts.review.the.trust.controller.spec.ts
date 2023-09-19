@@ -66,11 +66,14 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
   describe('POST tests', () => {
     test('when feature flag is on, redirect to review former bo page', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
-        .send({ name: "TEST TRUST",
-          hasAllInfo: "No"
+        .send({
+          name: 'Trust name',
+          beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+          hasAllInfo: '0',
+          trustId: ''
         });
 
       expect(resp.status).toEqual(302);

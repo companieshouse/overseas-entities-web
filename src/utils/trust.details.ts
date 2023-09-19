@@ -67,18 +67,13 @@ const getPageProperties = (
   };
 };
 
-export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, trustId?): void => {
+export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    console.log("****** ROUTE PARAM ID");
-    console.log(req.params[config.ROUTE_PARAM_TRUST_ID]);
-
-    if (!trustId) {
-      trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
-    }
+    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,

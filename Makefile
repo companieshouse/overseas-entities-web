@@ -28,6 +28,9 @@ sonar:
 test-unit: clean
 	npm run coverage
 
+.PHONY: test
+test: test-unit
+
 .PHONY: security-check
 security-check:
 	npm audit --audit-level=high

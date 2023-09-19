@@ -9,6 +9,7 @@ jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middlew
 jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock("../../../src/service/company.profile.service");
+jest.mock("../../../src/service/private.overseas.entity.details");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -40,8 +41,10 @@ import { getCompanyOfficers } from '../../../src/service/company.managing.office
 import { resetDataForNoChange, resetDataForChange } from '../../../src/controllers/update/overseas.entity.change.controller';
 import { companyProfileQueryMock } from '../../__mocks__/update.entity.mocks';
 import { getCompanyProfile } from '../../../src/service/company.profile.service';
+import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
+const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -149,6 +152,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
+      mockGetBeneficialOwnersPrivateData.mockReturnValue([{}]);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
         .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);

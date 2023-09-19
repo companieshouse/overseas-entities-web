@@ -41,6 +41,7 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(usual_residential_address?.postcode).toEqual("private_postalCode");
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
+    const email_address = appData.update?.review_managing_officers_corporate?.[0].contact_email;
     expect(principal_address?.property_name_number).toEqual("M02 premises");
     expect(principal_address?.line_1).toEqual("M02 principalAddress Ln1");
     expect(principal_address?.line_2).toEqual("private_addressLine2");
@@ -48,6 +49,7 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(principal_address?.county).toEqual("private_region");
     expect(principal_address?.country).toEqual("private_country");
     expect(principal_address?.postcode).toEqual("private_postalCode");
+    expect(email_address).toEqual("jane.doe@example.com");
   });
 
   test("should return early when feature flag is active", async () => {
@@ -116,6 +118,7 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined();
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
+    const email_address = appData.update?.review_managing_officers_corporate?.[0].contact_email;
     expect(principal_address?.property_name_number).toEqual("M02 premises");
     expect(principal_address?.line_1).toEqual("M02 principalAddress Ln1");
     expect(principal_address?.line_2).toEqual("private_addressLine2");
@@ -123,5 +126,20 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(principal_address?.county).toEqual("private_region");
     expect(principal_address?.country).toEqual("private_country");
     expect(principal_address?.postcode).toEqual("private_postalCode");
+    expect(email_address).toEqual("jane.doe@example.com");
+  });
+
+  test("should not call map Corporate MO private data if MO does not have ch_reference", async () => {
+    if (appData.update && appData.update.review_managing_officers_corporate) {
+      appData.update.review_managing_officers_corporate[0].ch_reference = undefined;
+    }
+
+    mockIsActiveFeature.mockReturnValue(false);
+    mockGetManagingOfficersPrivateData.mockResolvedValue(MOCK_MANAGING_OFFICERS_PRIVATE_DATA);
+
+    await fetchManagingOfficersPrivateData(appData, req);
+    expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
+    expect(appData.update?.review_managing_officers_corporate?.[0].principal_address).toBeUndefined();
+    expect(appData.update?.review_managing_officers_corporate?.[0].contact_email).toBeUndefined();
   });
 });

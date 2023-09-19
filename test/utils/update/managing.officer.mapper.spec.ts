@@ -1,7 +1,13 @@
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { yesNoResponse } from '../../../src/model/data.types.model';
-import { mapToManagingOfficer, mapToManagingOfficerCorporate, getFormerNames, mapMoPrivateAddress } from '../../../src/utils/update/managing.officer.mapper';
+import {
+  mapToManagingOfficer,
+  mapToManagingOfficerCorporate,
+  getFormerNames,
+  mapMoPrivateAddress,
+  mapMoPrivateEmailAddress
+} from '../../../src/utils/update/managing.officer.mapper';
 import {
   MANAGING_OFFICER_MOCK_MAP_DATA,
   MOCK_MANAGING_OFFICERS_PRIVATE_DATA,
@@ -190,4 +196,37 @@ describe("Test mapping to managing officer", () => {
       expect(address).toBeUndefined();
     });
   });
+
+  describe('Test mapping for private Corporate Email', () => {
+
+    test('Email for Corporate Managing Officer is correctly mapped', () => {
+      const email = mapMoPrivateEmailAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string);
+      expect(email).toEqual( "john.doe@example.com" );
+    });
+
+    test('Undefined is returned when moPrivateData is empty', () => {
+      const emptyPrivateData: ManagingOfficerPrivateData[] = [];
+      const email = mapMoPrivateEmailAddress(emptyPrivateData, 'hashedId1');
+      expect(email).toBeUndefined();
+    });
+
+    test('Undefined is returned when no matching hashedId is found', () => {
+      const email = mapMoPrivateEmailAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref');
+      expect(email).toBeUndefined();
+    });
+
+    test('Undefined is returned when managingOfficerData.contactEmailAddress is undefined', () => {
+      const mockDataWithUndefinedEmail: ManagingOfficerPrivateData[] =
+        [
+          {
+            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+            contactEmailAddress: undefined,
+            hashedId: 'hashedId1',
+          },
+        ];
+      const email = mapMoPrivateEmailAddress(mockDataWithUndefinedEmail, 'hashedId1');
+      expect(email).toBeUndefined();
+    });
+  });
 });
+

@@ -34,6 +34,14 @@ export interface Trust {
   INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];
   CORPORATES?: TrustCorporate[];
+  review?: TrustReview;
+}
+
+export interface TrustReview {
+  in_review: boolean;
+  reviewed_former_bos: boolean;
+  reviewed_individuals: boolean;
+  reviewed_legal_entities: boolean;
 }
 
 export interface TrustIndividual {
@@ -82,6 +90,7 @@ interface TrustHistoricalBeneficialOwnerCommon {
 
 export type IndividualTrustee = (NonInterestedIndividualPersonTrustee | InterestedIndividualPersonTrustee) &
 { is_service_address_same_as_usual_residential_address: yesNoResponse };
+
 interface NonInterestedIndividualPersonTrustee extends TrustIndividual{
   type: RoleWithinTrustType.BENEFICIARY | RoleWithinTrustType.GRANTOR | RoleWithinTrustType.SETTLOR;
 }

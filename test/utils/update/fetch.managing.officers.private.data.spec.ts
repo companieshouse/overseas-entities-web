@@ -23,7 +23,7 @@ describe("fetchManagingOfficersPrivateData", () => {
     jest.clearAllMocks();
   });
 
-  test("should map Managing Officers Private Data when data is available", async () => {
+  test("should map Individual Managing Officers Private Data when data is available", async () => {
     mockIsActiveFeature.mockReturnValue(false);
     mockGetManagingOfficersPrivateData.mockResolvedValue(MOCK_MANAGING_OFFICERS_PRIVATE_DATA);
 
@@ -42,6 +42,15 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(usual_residential_address?.postcode).toEqual("private_postalCode");
     expect(usual_residential_address?.postcode).toEqual("private_postalCode");
     expect(dob).toEqual({ day: '1', month: '1', year: '1990' });
+  });
+
+  test("should map Corporate Managing Officer Principal Address when data is available", async () => {
+    mockIsActiveFeature.mockReturnValue(false);
+    mockGetManagingOfficersPrivateData.mockResolvedValue(MOCK_MANAGING_OFFICERS_PRIVATE_DATA);
+
+    await fetchManagingOfficersPrivateData(appData, req);
+
+    expect(appData.update?.review_managing_officers_corporate?.length).toBeGreaterThan(0);
 
     const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
     expect(principal_address?.property_name_number).toEqual("M02 premises");
@@ -118,14 +127,5 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
     expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined();
     expect(appData.update?.review_managing_officers_individual?.[0].date_of_birth).toBeUndefined();
-
-    const principal_address = appData.update?.review_managing_officers_corporate?.[0].principal_address;
-    expect(principal_address?.property_name_number).toEqual("M02 premises");
-    expect(principal_address?.line_1).toEqual("M02 principalAddress Ln1");
-    expect(principal_address?.line_2).toEqual("private_addressLine2");
-    expect(principal_address?.town).toEqual("private_locality");
-    expect(principal_address?.county).toEqual("private_region");
-    expect(principal_address?.country).toEqual("private_country");
-    expect(principal_address?.postcode).toEqual("private_postalCode");
   });
 });

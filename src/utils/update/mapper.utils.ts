@@ -104,8 +104,8 @@ export const mapBOIndividualName = (name: NameElements) => {
 };
 
 type AddressMatches = {
-  (address1: Address, address2?: Address): boolean;
-  (address1: OfficeAddress, address2?: OfficeAddress): boolean;
+  (address1: Address | undefined, address2?: Address | undefined): boolean;
+  (address1: OfficeAddress | undefined, address2?: OfficeAddress | undefined): boolean;
 };
 
 export const isSameAddress: AddressMatches = (address1: any, address2?: any) => {

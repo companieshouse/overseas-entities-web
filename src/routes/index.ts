@@ -522,7 +522,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
   .get(updateManageTrustsReviewLegalEntities.get)
   .post(updateManageTrustsReviewLegalEntities.post);
 
-  router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL)
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,

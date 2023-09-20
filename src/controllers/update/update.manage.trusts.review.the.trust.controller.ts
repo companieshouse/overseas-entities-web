@@ -6,7 +6,7 @@ import { logger } from '../../utils/logger';
 import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '../../utils/trusts';
 import * as mapperDetails from '../../utils/trust/details.mapper';
 import * as mapperBo from '../../utils/trust/beneficial.owner.mapper';
-import { UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE } from '../../config';
+import { UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE } from '../../config';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const appData = getApplicationData(req.session);
     retrieveTrustsData(appData);
-    // TO-DO: Need to handle getting the id from previous controller
+    // const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
     const trustId = "1";
     const formData = mapperDetails.mapDetailToPage(appData, trustId, true);
 

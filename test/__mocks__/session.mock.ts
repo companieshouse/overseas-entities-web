@@ -57,6 +57,7 @@ import { DATE_OF_BIRTH, EMPTY_DATE, RESIGNED_ON_DATE, START_DATE } from "./field
 import { ANY_MESSAGE_ERROR } from "./text.mock";
 import { EntityKey } from "../../src/model/entity.model";
 import { OverseasEntityDueDiligenceKey } from "../../src/model/overseas.entity.due.diligence.model";
+import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
 export const BO_GOV_ID = "10722c3c-9301-4f46-ad8b-b30f5dcd76a0";
 export const BO_GOV_ID_URL = "/" + BO_GOV_ID;
@@ -498,6 +499,26 @@ export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF: beneficialOwne
   nationality: "Russian",
   second_nationality: "",
   usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 1,
+  trust_ids: [],
+  ceased_date: { day: "1", month: "3", year: "2001" }
+};
+
+export const BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  ch_reference: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
+  nationality: "Russian",
+  second_nationality: "",
+  usual_residential_address: undefined,
   is_service_address_same_as_usual_residential_address: 1,
   service_address: ADDRESS,
   start_date: { day: "1", month: "3", year: "1999" },
@@ -1705,6 +1726,141 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
+
+export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
+  overseas_entity_id: '123',
+  transaction_id: '345',
+  entity_number: '1',
+  update: {
+    review_beneficial_owners_individual: [
+      {
+        id: '1111',
+        ch_reference: '111',
+        first_name: 'dummyFirst',
+        last_name: 'dummy Last',
+      }
+    ],
+    review_beneficial_owners_corporate: [
+      {
+        id: '2222',
+        ch_reference: '222',
+        name: 'corp'
+      }
+    ],
+    review_beneficial_owners_government_or_public_authority: [
+      {
+        id: '3333',
+        ch_reference: '333',
+        name: 'gov'
+      }
+    ]
+  }
+};
+
+export const FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF: ApplicationData = {
+  overseas_entity_id: '123',
+  transaction_id: '345',
+  entity_number: '1',
+  update: {
+    review_beneficial_owners_individual: [
+      {
+        id: '1111',
+        first_name: 'dummyFirst',
+        last_name: 'dummy Last',
+      }
+    ],
+    review_beneficial_owners_corporate: [
+      {
+        id: '2222',
+        name: 'corp'
+      }
+    ],
+    review_beneficial_owners_government_or_public_authority: [
+      {
+        id: '3333',
+        name: 'gov'
+      }
+    ]
+  }
+};
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE = "RandomeaP1EB70SSD9SLmiK5Y";
+
+export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
+  hashedId: PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE,
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  usualResidentialAddress: {
+    addressLine1: "72 COWLEY AVENUE",
+    addressLine2: "QUIA EX ESSE SINT EU",
+    careOf: "",
+    country: "KUWAIT",
+    locality: "AD EUM DEBITIS EST E",
+    poBox: "FGdg",
+    postalCode: "76022",
+    premises: "REAGAN HICKMAN",
+    region: "ULLAM DOLORUM CUPIDA"
+  },
+  principalAddress: {
+    addressLine1: undefined,
+    addressLine2: undefined,
+    careOf: undefined,
+    country: undefined,
+    locality: undefined,
+    poBox: undefined,
+    postalCode: undefined,
+    premises: undefined,
+    region: undefined
+  }
+};
+
+export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
+  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  principalAddress: {
+    addressLine1: "72 COWLEY AVENUE",
+    addressLine2: "QUIA EX ESSE SINT EU",
+    careOf: "",
+    country: "KUWAIT",
+    locality: "AD EUM DEBITIS EST E",
+    poBox: "FGdg",
+    postalCode: "76022",
+    premises: "REAGAN HICKMAN",
+    region: "ULLAM DOLORUM CUPIDA"
+  },
+  usualResidentialAddress: undefined
+};
+
+export const PRIVATE_BO_GOV_MOCK_DATA: BeneficialOwnerPrivateData = {
+  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "02-06-1998",
+  principalAddress: {
+    addressLine1: "GOV LINE 1",
+    addressLine2: "GOV LINE 2",
+    careOf: "",
+    country: "UK",
+    locality: "GOV LOCALITY",
+    poBox: "GOV PO",
+    postalCode: "3333",
+    premises: "GOV PREMISES",
+    region: "GOV REGION"
+  },
+  usualResidentialAddress: undefined
+};
+
+export const PRIVATE_BENEFICAL_OWNERS_MOCK_DATA: BeneficialOwnerPrivateData[] = [
+  PRIVATE_BO_INDIVIDUAL_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA
+];
+
+export const PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS: BeneficialOwnerPrivateData[] = [
+  PRIVATE_BO_CORP_MOCK_DATA
+];
+
+export const PRIVATE_BO_MOCK_DATA_UNDEFINED: BeneficialOwnerPrivateData[] = [{}];
 
 export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,

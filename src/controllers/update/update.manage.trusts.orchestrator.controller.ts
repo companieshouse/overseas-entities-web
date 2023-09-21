@@ -10,12 +10,12 @@ import {
   UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
 } from '../../config';
-import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { ApplicationData } from '../../model';
 import { Trust } from '../../model/trust.model';
+import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { saveAndContinue } from '../../utils/save.and.continue';
 
-const handler = async (req: Request, res: Response, next: NextFunction) => {
+export const handler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   try {
@@ -26,25 +26,25 @@ const handler = async (req: Request, res: Response, next: NextFunction) => {
       trustInReview = putTrustInReview(appData);
       if (trustInReview) {
         await saveAppData(req, appData);
-        return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL + trustInReview.trust_id);
+        return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
       } else {
         return res.redirect(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
       }
     }
 
     if (shouldGoToReviewFormerBOs(trustInReview)) {
-      return res.redirect(`${UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL}`);
+      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
     }
 
     if (shouldGoToReviewIndividuals(trustInReview)) {
-      return res.redirect(`${UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL}`);
+      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
     }
 
     if (shouldGoToReviewLegalEntities(trustInReview)) {
-      return res.redirect(`${UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL}`);
+      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
     }
 
-    return res.redirect(`${UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustInReview.trust_id}`);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
   } catch (error) {
     next(error);
     return;
@@ -98,6 +98,3 @@ const saveAppData = async(req: Request, appData: ApplicationData) => {
   setExtraData(req.session, appData);
   await saveAndContinue(req, req.session as Session, false);
 };
-
-export const get = handler;
-export const post = handler;

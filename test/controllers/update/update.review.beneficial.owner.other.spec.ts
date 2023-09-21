@@ -11,9 +11,10 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL
 } from "../../../src/config";
-import { getApplicationData, prepareData } from "../../../src/utils/application.data";
+import { getApplicationData, mapDataObjectToFields, prepareData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
+  DISTINCT_PRINCIPAL_ADDRESS_MOCK,
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_REQ_MOCK
@@ -44,6 +45,8 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
+const mockMapDataObjectToFields = mapDataObjectToFields as jest.Mock;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
@@ -61,10 +64,12 @@ describe(`Update review beneficial owner other`, () => {
         ...APPLICATION_DATA_UPDATE_BO_MOCK,
         ...UPDATE_OBJECT_MOCK_REVIEW_BO_OTHER_MODEL
       });
+      mockMapDataObjectToFields.mockReturnValueOnce(DISTINCT_PRINCIPAL_ADDRESS_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
       expect(resp.text).not.toContain(TRUSTS_NOC_HEADING);
+      expect(resp.text).toContain("principal addressLine1");
     });
 
     test("catch error when rendering the page", async () => {
@@ -73,6 +78,15 @@ describe(`Update review beneficial owner other`, () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("return empty object when no address in data to review", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_UPDATE_BO_MOCK });
+
+      const resp = await request(app).get(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + '?index=0');
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING);
+      expect(resp.text).not.toContain("principal addressLine1");
     });
   });
 

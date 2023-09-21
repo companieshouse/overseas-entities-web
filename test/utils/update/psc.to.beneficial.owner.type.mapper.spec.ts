@@ -1,7 +1,7 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapBoPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE } from '../../__mocks__/session.mock';
+import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 import { BeneficialOwnerPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
@@ -214,6 +214,11 @@ describe("Private address retrieval", () => {
 
   test('that principal/office address for beneficial owner gov is correctly mapped', () => {
     const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, true);
+    expect(address).toEqual(mockResult);
+  });
+
+  test('that principal/office address for beneficial owner corp is correctly mapped', () => {
+    const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE, true);
     expect(address).toEqual(mockResult);
   });
 

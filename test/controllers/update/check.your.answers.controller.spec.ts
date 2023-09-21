@@ -70,7 +70,8 @@ import {
   TRANSACTION_ID,
   BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF
+  BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
+  BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -106,6 +107,7 @@ import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has
 import { BeneficialOwnerIndividualKey } from "../../../src/model/beneficial.owner.individual.model";
 import { BeneficialOwnerGovKey } from "../../../src/model/beneficial.owner.gov.model";
 import { ADDRESS } from "../../__mocks__/fields/address.mock";
+import { BeneficialOwnerOtherKey } from "../../../src/model/beneficial.owner.other.model";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -345,6 +347,12 @@ describe("CHECK YOUR ANSWERS controller", () => {
               ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
               principal_address: { ...ADDRESS, line_1: "Private BO Gov Line1" }
             }
+          ], [BeneficialOwnerOtherKey]:
+          [
+            {
+              ...BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
+              principal_address: { ...ADDRESS, line_1: "Private BO Other Line1" }
+            }
           ]
       };
 
@@ -356,6 +364,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain("Private BO addressLine1");
       expect(resp.text).toContain("Private BO Gov Line1");
+      expect(resp.text).toContain("Private BO Other Line1");
     });
 
     test(`renders the ${UPDATE_CHECK_YOUR_ANSWERS_PAGE} page with private MO data displayed`, async () => {

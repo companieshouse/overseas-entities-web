@@ -560,7 +560,17 @@ router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL)
     navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
-  .post(updateManageTrustsTellUsAboutTheLegalEntity.post);
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.TRUSTEE_ID)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
   .all(

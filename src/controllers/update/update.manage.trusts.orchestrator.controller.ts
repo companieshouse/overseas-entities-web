@@ -41,7 +41,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
     }
 
     if (shouldGoToReviewLegalEntities(trustInReview)) {
-      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+      return res.redirect(`${UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL}`);
     }
 
     return res.redirect(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);

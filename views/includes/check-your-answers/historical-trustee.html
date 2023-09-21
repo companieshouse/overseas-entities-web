@@ -12,7 +12,7 @@
 {% set formerTrusteeEndDate = dateMacros.formatDate(formerTrustee.ceased_date_day, formerTrustee.ceased_date_month, formerTrustee.ceased_date_year) %}
 
 
-{% if isRegistration %}
+{% if pageParams.isRegistration %}
   {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
 {% else %}
   {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL%}

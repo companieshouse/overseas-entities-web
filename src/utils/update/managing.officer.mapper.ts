@@ -88,11 +88,11 @@ export const mapIndividualMoPrivateData = (moPrivateData: ManagingOfficerPrivate
   }
 };
 
-export const mapCorporateMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[], managingOfficer: ManagingOfficerCorporate) => {
+export const mapCorporateMoPrivateData = (moPrivateData: ManagingOfficerPrivateData[], managingOfficer: ManagingOfficerCorporate) => {
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === managingOfficer.ch_reference) {
       managingOfficer.principal_address = mapBOMOAddress(managingOfficerData.principalAddress);
+      managingOfficer.contact_email = managingOfficerData.contactEmailAddress;
     }
   }
 };
-

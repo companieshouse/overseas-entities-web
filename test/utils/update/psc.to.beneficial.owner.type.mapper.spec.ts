@@ -1,9 +1,23 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
-import { mapBoPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
+import {
+  mapIndividualBoPrivateData,
+  mapPrivateBoPrincipalAddress,
+  mapPscToBeneficialOwnerGov,
+  mapPscToBeneficialOwnerOther,
+  mapPscToBeneficialOwnerTypeIndividual
+} from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
+import {
+  BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL,
+  PRIVATE_BO_IND_MOCK_DATA,
+  PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS,
+  PRIVATE_BO_MOCK_DATA_UNDEFINED,
+  PSC_BENEFICIAL_OWNER_MOCK_DATA
+} from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 import { BeneficialOwnerPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { beforeEach, expect, jest } from "@jest/globals";
+import { BeneficialOwnerIndividual } from "../../../src/model/beneficial.owner.individual.model";
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
 
@@ -198,6 +212,10 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 });
 
 describe("Private address retrieval", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockResult = {
     property_name_number: "REAGAN HICKMAN",
     line_1: "72 COWLEY AVENUE",
@@ -207,24 +225,75 @@ describe("Private address retrieval", () => {
     postcode: "76022",
     town: "AD EUM DEBITIS EST E"
   };
-  test('that usual residential address for beneficial owner individual is correctly mapped', () => {
-    const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, false);
-    expect(address).toEqual(mockResult);
+
+  test('that individual BO private data is correctly mapped', () => {
+    const beneficialOwnerPrivateData = [PRIVATE_BO_IND_MOCK_DATA];
+    const beneficialOwner = {
+      ch_reference: '9TeildEUMY5Xnw2gbPxGO3jCod8',
+      usual_residential_address: undefined,
+      date_of_birth: undefined
+    } as BeneficialOwnerIndividual;
+
+    mapIndividualBoPrivateData(beneficialOwnerPrivateData, beneficialOwner);
+
+    const boIndividualResidentialAddress = beneficialOwner.usual_residential_address;
+    const privateBoIndividualResidentialAddress = beneficialOwnerPrivateData[0].usualResidentialAddress;
+    expect(boIndividualResidentialAddress).not.toBeUndefined();
+    expect(boIndividualResidentialAddress?.line_1).toEqual(privateBoIndividualResidentialAddress?.addressLine1);
+    expect(boIndividualResidentialAddress?.line_2).toEqual(privateBoIndividualResidentialAddress?.addressLine2);
+    expect(boIndividualResidentialAddress?.town).toEqual(privateBoIndividualResidentialAddress?.locality);
+    expect(boIndividualResidentialAddress?.postcode).toEqual(privateBoIndividualResidentialAddress?.postalCode);
+    expect(boIndividualResidentialAddress?.county).toEqual(privateBoIndividualResidentialAddress?.region);
+    expect(boIndividualResidentialAddress?.country).toEqual(privateBoIndividualResidentialAddress?.country);
+
+    expect(beneficialOwner.date_of_birth).not.toBeUndefined();
+    expect(beneficialOwner.date_of_birth?.day).toEqual('1');
+    expect(beneficialOwner.date_of_birth?.month).toEqual('2');
+    expect(beneficialOwner.date_of_birth?.year).toEqual('1985');
+  });
+
+  test('that individual BO private data is not mapped when mismatch in references', () => {
+    const beneficialOwnerPrivateData = [PRIVATE_BO_IND_MOCK_DATA];
+    const beneficialOwner = {
+      id: 'some_id',
+      ch_reference: 'some_ch_ref',
+      usual_residential_address: undefined,
+      date_of_birth: undefined
+    };
+
+    mapIndividualBoPrivateData(beneficialOwnerPrivateData, beneficialOwner);
+
+    expect(beneficialOwner.usual_residential_address).toBeUndefined();
+    expect(beneficialOwner.date_of_birth).toBeUndefined();
+  });
+
+  test('that individual BO private data is not mapped when boPrivateData is empty', () => {
+    const beneficialOwner = {
+      id: 'some_id',
+      ch_reference: 'some_ch_ref',
+      usual_residential_address: undefined,
+      date_of_birth: undefined
+    };
+
+    mapIndividualBoPrivateData([], beneficialOwner);
+
+    expect(beneficialOwner.usual_residential_address).toBeUndefined();
+    expect(beneficialOwner.date_of_birth).toBeUndefined();
   });
 
   test('that an undefined is returned when boPrivateData is empty', () => {
     const emptyPrivateData: BeneficialOwnerPrivateData[] = [];
-    const address = mapBoPrivateAddress(emptyPrivateData, 'some_ch_ref', false);
+    const address = mapPrivateBoPrincipalAddress(emptyPrivateData, 'some_ch_ref');
     expect(address).toBeUndefined();
   });
 
   test('that principal residential address is returned and mapped correctly when bo has an office address', () => {
-    const address = mapBoPrivateAddress(PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string, true);
+    const address = mapPrivateBoPrincipalAddress(PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
     expect(address).toEqual(mockResult);
   });
 
   test('private bo data does not exist, nothing is returned', () => {
-    const address = mapBoPrivateAddress(PRIVATE_BO_MOCK_DATA_UNDEFINED, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string, true);
-    expect(address).toEqual(undefined);
+    const address = mapPrivateBoPrincipalAddress(PRIVATE_BO_MOCK_DATA_UNDEFINED, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL.ch_reference as string);
+    expect(address).toBeUndefined();
   });
 });

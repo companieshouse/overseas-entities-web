@@ -1814,6 +1814,25 @@ export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
   }
 };
 
+export const PRIVATE_BO_IND_MOCK_DATA: BeneficialOwnerPrivateData = {
+  hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
+  dateBecameRegistrable: "2023-04-17 00:00:00.0",
+  isServiceAddressSameAsUsualAddress: "N",
+  dateOfBirth: "1985-02-01",
+  principalAddress: undefined,
+  usualResidentialAddress: {
+    addressLine1: "72 COWLEY AVENUE",
+    addressLine2: "QUIA EX ESSE SINT EU",
+    careOf: "",
+    country: "KUWAIT",
+    locality: "AD EUM DEBITIS EST E",
+    poBox: "FGdg",
+    postalCode: "76022",
+    premises: "REAGAN HICKMAN",
+    region: "ULLAM DOLORUM CUPIDA"
+  }
+};
+
 export const PRIVATE_BO_CORP_MOCK_DATA: BeneficialOwnerPrivateData = {
   hashedId: "9TeildEUMY5Xnw2gbPxGO3jCod8",
   dateBecameRegistrable: "2023-04-17 00:00:00.0",

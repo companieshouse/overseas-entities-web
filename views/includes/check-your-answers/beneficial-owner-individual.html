@@ -7,7 +7,7 @@
 
 {% set boiDateOfBirth %}
   {% if boi.date_of_birth and inNoChangeJourney %}
-    {{ dateMacros.formatDate("", boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
+    {{ dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
   {% elif boi.date_of_birth %}
     {{ dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
   {% endif %}

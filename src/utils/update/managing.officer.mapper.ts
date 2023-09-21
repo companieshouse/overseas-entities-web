@@ -92,7 +92,7 @@ export const mapMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[],
 export const mapMoPrivateEmailAddress = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string) => {
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === ch_reference) {
-      return managingOfficerData.contactEmailAddress ?? undefined;
+      return managingOfficerData.contactEmailAddress;
     }
   }
 };

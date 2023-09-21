@@ -16,7 +16,7 @@ import {
 } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 import { BeneficialOwnerPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
-import { beforeEach, expect, jest } from "@jest/globals";
+import { expect } from "@jest/globals";
 import { BeneficialOwnerIndividual } from "../../../src/model/beneficial.owner.individual.model";
 
 describe("Test Mapping person of significant control to beneficial owner type", () => {
@@ -212,9 +212,6 @@ describe("Test Mapping person of significant control to beneficial owner type", 
 });
 
 describe("Private address retrieval", () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
 
   const mockResult = {
     property_name_number: "REAGAN HICKMAN",

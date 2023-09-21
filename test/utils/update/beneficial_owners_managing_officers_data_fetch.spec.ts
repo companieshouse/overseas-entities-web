@@ -11,10 +11,12 @@ import { getCompanyPsc } from "../../../src/service/persons.with.signficant.cont
 import { getCompanyOfficers } from "../../../src/service/company.managing.officer.service";
 import { MOCK_GET_COMPANY_PSC_ALL_BO_TYPES } from "../../__mocks__/get.company.psc.mock";
 import { MOCK_GET_COMPANY_OFFICERS } from '../../__mocks__/get.company.officers.mock';
+import { getManagingOfficersPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { logger } from '../../../src/utils/logger';
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
+const mockGetManagingOfficerPrivateData = getManagingOfficersPrivateData as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
 
 describe("util beneficial owners managing officers data fetch", () => {
@@ -59,6 +61,28 @@ describe("util beneficial owners managing officers data fetch", () => {
     await retrieveManagingOfficers(req, appData);
 
     expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  test('Should return early if companyOfficers is null', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue(null);
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  test('Should return early if companyOfficers.items is empty', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue({ items: [] });
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
@@ -129,6 +153,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     retrieveBoAndMoData(req, appData);
     expect(mockGetCompanyPscService).not.toHaveBeenCalled();
     expect(mockGetCompanyOfficers).not.toHaveBeenCalled();
+    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
   });
 
   test("test officers with resignedOn date are not mapped", async () => {

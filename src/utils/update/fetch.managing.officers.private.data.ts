@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { mapMoPrivateAddress, mapMoPrivateEmailAddress } from "./managing.officer.mapper";
+import { mapIndividualMoPrivateData, mapCorporateMoPrivateAddress } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
 
@@ -35,13 +35,12 @@ const mapManagingOfficersPrivateData = (moPrivateData, appData: ApplicationData)
   if (moPrivateData !== undefined && moPrivateData.length > 0) {
     appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
       if (managingOfficer.ch_reference) {
-        managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, false);
+        mapIndividualMoPrivateData(moPrivateData, managingOfficer);
       }
     });
     appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
       if (managingOfficer.ch_reference) {
-        managingOfficer.principal_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, true);
-        managingOfficer.contact_email = mapMoPrivateEmailAddress(moPrivateData, managingOfficer.ch_reference);
+        mapCorporateMoPrivateAddress(moPrivateData, managingOfficer);
       }
     });
   }

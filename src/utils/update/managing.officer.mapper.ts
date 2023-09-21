@@ -79,20 +79,20 @@ export const getFormerNames = (formerNames?: FormerNameResource[]): string => {
   return allFormerNames;
 };
 
-export const mapMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string, hasOffice: boolean) => {
+export const mapIndividualMoPrivateData = (moPrivateData: ManagingOfficerPrivateData[], managingOfficer: ManagingOfficerIndividual) => {
   for (const managingOfficerData of moPrivateData) {
-    if (managingOfficerData.hashedId === ch_reference) {
-      return hasOffice
-        ? mapBOMOAddress(managingOfficerData.principalAddress)
-        : mapBOMOAddress(managingOfficerData.residentialAddress);
+    if (managingOfficerData.hashedId === managingOfficer.ch_reference) {
+      managingOfficer.usual_residential_address = mapBOMOAddress(managingOfficerData.residentialAddress);
+      managingOfficer.date_of_birth = mapInputDate(managingOfficerData.dateOfBirth);
     }
   }
 };
 
-export const mapMoPrivateEmailAddress = (moPrivateData: ManagingOfficerPrivateData[], ch_reference: string) => {
+export const mapCorporateMoPrivateAddress = (moPrivateData: ManagingOfficerPrivateData[], managingOfficer: ManagingOfficerCorporate) => {
   for (const managingOfficerData of moPrivateData) {
-    if (managingOfficerData.hashedId === ch_reference) {
-      return managingOfficerData.contactEmailAddress;
+    if (managingOfficerData.hashedId === managingOfficer.ch_reference) {
+      managingOfficer.principal_address = mapBOMOAddress(managingOfficerData.principalAddress);
     }
   }
 };
+

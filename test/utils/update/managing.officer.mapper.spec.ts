@@ -5,8 +5,8 @@ import {
   mapToManagingOfficer,
   mapToManagingOfficerCorporate,
   getFormerNames,
-  mapMoPrivateAddress,
-  mapMoPrivateEmailAddress
+  mapIndividualMoPrivateData,
+  mapCorporateMoPrivateAddress
 } from '../../../src/utils/update/managing.officer.mapper';
 import {
   MANAGING_OFFICER_MOCK_MAP_DATA,
@@ -14,10 +14,19 @@ import {
   UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK,
   UPDATE_MANAGING_OFFICER_SINGLE_NATIONALITY_MOCK,
   MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
-  MOCKED_PRIVATE_ADDRESS
+  MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF
 } from '../../__mocks__/session.mock';
 import { managingOfficerMock, managingOfficerMockDualNationality } from './mocks';
-import { mapBOMOAddress } from '../../../src/utils/update/mapper.utils';
+
+const mappedAddress = {
+  property_name_number: "private_premises",
+  line_1: "private_addressLine1",
+  line_2: "private_addressLine2",
+  town: "private_locality",
+  county: "private_region",
+  country: "private_country",
+  postcode: "private_postalCode"
+};
 
 describe("Test mapping to managing officer", () => {
 
@@ -140,93 +149,125 @@ describe("Test mapping to managing officer", () => {
     });
   });
 
-  describe('Test mapping for private addresses', () => {
+  describe('Test mapping for Individual MO Private Data', () => {
 
-    const mappedAddress = {
-      property_name_number: "private_premises",
-      line_1: "private_addressLine1",
-      line_2: "private_addressLine2",
-      town: "private_locality",
-      county: "private_region",
-      country: "private_country",
-      postcode: "private_postalCode"
-    };
+    test('Usual residential address for Individual Managing Officer is correctly mapped and set on managingOfficer object', () => {
+      const managingOfficer = {
+        id: 'some_id',
+        ch_reference: 'hashedId1',
+        usual_residential_address: undefined,
+        date_of_birth: undefined
+      };
 
-    test('that usual residential address for Individual Managing Officer is correctly mapped', () => {
-      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string, false);
-      expect(address).toEqual(mappedAddress);
+      mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, managingOfficer);
+
+      expect(managingOfficer.usual_residential_address).toEqual(mappedAddress);
+
+      expect(managingOfficer.date_of_birth).toEqual({ day: "1", month: "1", year: "1990" });
     });
 
-    test('that an undefined is returned when moPrivateData is empty', () => {
-      const emptyPrivateData: ManagingOfficerPrivateData[] = [];
-      const address = mapMoPrivateAddress(emptyPrivateData, 'some_ch_ref', false);
-      expect(address).toBeUndefined();
-    });
-
-    test('that an undefined is returned when no matching hashedId is found', () => {
-      const address = mapMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref', false);
-      expect(address).toBeUndefined();
-    });
-
-    test('that principal address is used when residential address is undefined', () => {
-      const mockDataWithPrincipalAddressOnly: ManagingOfficerPrivateData[] =
+    test('that undefined is returned when residential address is undefined', () => {
+      const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] =
         [
           {
             ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
             residentialAddress: undefined,
-            principalAddress: MOCKED_PRIVATE_ADDRESS,
-            hashedId: 'mo-principal-ch-ref',
-          },
-        ];
-      const address = mapMoPrivateAddress(mockDataWithPrincipalAddressOnly, 'mo-principal-ch-ref', true);
-      expect(address).toEqual(mapBOMOAddress(MOCKED_PRIVATE_ADDRESS));
-    });
-
-    test('that undefined is returned when both residential and principal addresses are undefined', () => {
-      const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] =
-      [
-        {
-          ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
-          residentialAddress: undefined,
-          principalAddress: undefined,
-          hashedId: 'hashedId1',
-        },
-      ];
-      const address = mapMoPrivateAddress(mockDataWithUndefinedAddresses, 'mo-undefined-ch-ref', false);
-      expect(address).toBeUndefined();
-    });
-  });
-
-  describe('Test mapping for private Corporate Email', () => {
-
-    test('Email for Corporate Managing Officer is correctly mapped', () => {
-      const email = mapMoPrivateEmailAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.ch_reference as string);
-      expect(email).toEqual( "john.doe@example.com" );
-    });
-
-    test('Undefined is returned when moPrivateData is empty', () => {
-      const emptyPrivateData: ManagingOfficerPrivateData[] = [];
-      const email = mapMoPrivateEmailAddress(emptyPrivateData, 'hashedId1');
-      expect(email).toBeUndefined();
-    });
-
-    test('Undefined is returned when no matching hashedId is found', () => {
-      const email = mapMoPrivateEmailAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, 'non_existent_ch_ref');
-      expect(email).toBeUndefined();
-    });
-
-    test('Undefined is returned when managingOfficerData.contactEmailAddress is undefined', () => {
-      const mockDataWithUndefinedEmail: ManagingOfficerPrivateData[] =
-        [
-          {
-            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
-            contactEmailAddress: undefined,
             hashedId: 'hashedId1',
           },
         ];
-      const email = mapMoPrivateEmailAddress(mockDataWithUndefinedEmail, 'hashedId1');
-      expect(email).toBeUndefined();
+      const address = mapIndividualMoPrivateData(mockDataWithUndefinedAddresses, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF);
+      expect(address).toEqual(undefined);
+    });
+
+    test('mapIndividualMoPrivateData does nothing when moPrivateData is an empty array', () => {
+      const managingOfficer = {
+        id: 'some_id',
+        ch_reference: 'some_ch_ref',
+        usual_residential_address: undefined,
+        date_of_birth: undefined
+      };
+
+      mapIndividualMoPrivateData([], managingOfficer);
+
+      expect(managingOfficer.usual_residential_address).toBeUndefined();
+      expect(managingOfficer.date_of_birth).toBeUndefined();
+    });
+
+    test('that an undefined is returned when no matching hashedId is found', () => {
+      const NoMatchingCHRef = {
+        ...MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+        ch_reference: 'non_existent_ch_ref'
+      };
+      const address = mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, NoMatchingCHRef);
+      expect(address).toBeUndefined();
+    });
+
+    test('Date Of Birth for Individual Managing Officer is correctly mapped', () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+        date_of_birth: undefined
+      };
+
+      mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, managingOfficer);
+      expect(managingOfficer.date_of_birth).toEqual({ day: "1", month: "1", year: "1990" });
+    });
+
+    test('DOB Undefined when no matching hashedId is found', () => {
+      const NoMatchingCHRef = {
+        ...MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
+        ch_reference: 'non_existent_ch_ref'
+      };
+
+      const dob = mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, NoMatchingCHRef);
+      expect(dob).toBeUndefined();
+    });
+
+    test('DOB Undefined when managingOfficerData.dateOfBirth is undefined', () => {
+      const mockDataWithUndefinedDOB: ManagingOfficerPrivateData[] =
+        [
+          {
+            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+            dateOfBirth: undefined,
+            hashedId: 'hashedId1',
+          },
+        ];
+      const dob = mapIndividualMoPrivateData(mockDataWithUndefinedDOB, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF);
+      expect(dob).toBeUndefined();
+    });
+
+    describe('Test mapping for Corporate MO Principal Address', () => {
+      test('Principal address for Corporate Managing Officer is correctly mapped and set on managingOfficer object', () => {
+        const EXPECTED_PRINCIPAL_ADDRESS = {
+          property_name_number: "M02 premises",
+          line_1: "M02 principalAddress Ln1",
+          line_2: "private_addressLine2",
+          town: "private_locality",
+          county: "private_region",
+          country: "private_country",
+          postcode: "private_postalCode"
+        };
+
+        const managingOfficer = {
+          ...MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF,
+          ch_reference: 'hashedId2',
+        };
+
+        mapCorporateMoPrivateAddress(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, managingOfficer);
+
+        expect(managingOfficer.principal_address).toEqual(EXPECTED_PRINCIPAL_ADDRESS);
+      });
+
+      test('that undefined is returned when principal addresses is undefined', () => {
+        const mockDataWithUndefinedAddresses: ManagingOfficerPrivateData[] = [
+          {
+            ...MOCK_MANAGING_OFFICERS_PRIVATE_DATA[0],
+            principalAddress: undefined,
+            hashedId: 'mo-corporate-ch-ref',
+          },
+        ];
+        const address = mapCorporateMoPrivateAddress(mockDataWithUndefinedAddresses, MANAGING_OFFICER_CORPORATE_OBJECT_MOCK_WITH_CH_REF);
+        expect(address).toEqual(undefined);
+      });
     });
   });
 });
-

@@ -138,8 +138,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         country: pscMock.address.country,
         county: undefined
       },
-      principal_address: {
-      },
+      principal_address: undefined,
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
       public_register_name: pscMock.identification?.placeRegistered,
@@ -176,7 +175,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         town: pscMock.address.locality,
         country: pscMock.address.country,
       },
-      principal_address: {},
+      principal_address: undefined,
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
       is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0

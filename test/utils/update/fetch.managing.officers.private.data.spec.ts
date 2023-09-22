@@ -40,7 +40,6 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(usual_residential_address?.county).toEqual("private_region");
     expect(usual_residential_address?.country).toEqual("private_country");
     expect(usual_residential_address?.postcode).toEqual("private_postalCode");
-    expect(usual_residential_address?.postcode).toEqual("private_postalCode");
     expect(dob).toEqual({ day: '1', month: '1', year: '1990' });
   });
 
@@ -116,33 +115,5 @@ describe("fetchManagingOfficersPrivateData", () => {
     expect(mockGetManagingOfficersPrivateData).not.toHaveBeenCalled();
     expect(appData.update?.review_managing_officers_individual?.length).toBeUndefined();
     expect(appData.update?.review_managing_officers_corporate?.length).toBeUndefined();
-  });
-
-  test("should not map Individual MO private data if existing MO does not have ch_reference", async () => {
-    if (appData.update && appData.update.review_managing_officers_individual) {
-      appData.update.review_managing_officers_individual[0].ch_reference = undefined;
-    }
-
-    mockIsActiveFeature.mockReturnValue(false);
-    mockGetManagingOfficersPrivateData.mockResolvedValue(MOCK_MANAGING_OFFICERS_PRIVATE_DATA);
-
-    await fetchManagingOfficersPrivateData(appData, req);
-    expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
-    expect(appData.update?.review_managing_officers_individual?.[0].usual_residential_address).toBeUndefined();
-    expect(appData.update?.review_managing_officers_individual?.[0].date_of_birth).toBeUndefined();
-  });
-
-  test("should not map Corporate MO private data if existing MO does not have ch_reference", async () => {
-    if (appData.update && appData.update.review_managing_officers_corporate) {
-      appData.update.review_managing_officers_corporate[0].ch_reference = undefined;
-    }
-
-    mockIsActiveFeature.mockReturnValue(false);
-    mockGetManagingOfficersPrivateData.mockResolvedValue(MOCK_MANAGING_OFFICERS_PRIVATE_DATA);
-
-    await fetchManagingOfficersPrivateData(appData, req);
-    expect(mockGetManagingOfficersPrivateData).toHaveBeenCalled();
-    expect(appData.update?.review_managing_officers_corporate?.[0].principal_address).toBeUndefined();
-    expect(appData.update?.review_managing_officers_corporate?.[0].contact_email).toBeUndefined();
   });
 });

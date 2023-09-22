@@ -25,8 +25,6 @@ import { UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL } from '../../../src/confi
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-// dummy change
-
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 

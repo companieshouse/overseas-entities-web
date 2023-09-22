@@ -202,7 +202,7 @@ describe("Private address retrieval", () => {
     line_1: "72 COWLEY AVENUE",
     line_2: "QUIA EX ESSE SINT EU",
     county: "ULLAM DOLORUM CUPIDA",
-    country: "KUWAIT",
+    country: "Kuwait",
     postcode: "76022",
     town: "AD EUM DEBITIS EST E"
   };

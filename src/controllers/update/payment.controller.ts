@@ -21,13 +21,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_CONFIRMATION_URL}`);
       return res.redirect(config.UPDATE_CONFIRMATION_URL);
     } else {
-      if (!appData.update?.no_change) {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_CHECK_YOUR_ANSWERS_URL}`);
-        return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
-      } else {
-        logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_PAYMENT_FAILED_URL}`);
-        return res.redirect(config.UPDATE_PAYMENT_FAILED_URL);
-      }
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${config.UPDATE_PAYMENT_FAILED_URL}`);
+      return res.redirect(config.UPDATE_PAYMENT_FAILED_URL);
     }
   } catch (error){
     logger.errorRequest(req, error);

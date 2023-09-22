@@ -11,7 +11,7 @@
 {% endif %}
 
 {% set moFormattedResidentialOrPrincipalAddressHtml %}
-  {% if inNoChangeJourney %}
+  {% if not moAddress %}
     <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% else %}
     {% set address = moAddress %}

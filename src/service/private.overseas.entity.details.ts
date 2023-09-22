@@ -50,7 +50,7 @@ export const getBeneficialOwnersPrivateData = async (
   return response.resource;
 };
 
-export const getManagingOfficerPrivateData = async (
+export const getManagingOfficersPrivateData = async (
   req: Request,
   transactionId: string,
   overseasEntityId: string

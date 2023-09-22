@@ -39,7 +39,7 @@
   {% endif %}
 {% endset %}
 
-{% if isRegistration %}
+{% if pageParams.isRegistration %}
   {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
 {% else %}
   {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL%}

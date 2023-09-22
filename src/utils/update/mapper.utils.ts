@@ -31,7 +31,9 @@ export const mapInputDate = (date: string | undefined): InputDate | undefined =>
     return undefined;
   }
 
-  const yearMonthDay = date.split('-');
+  const [dateWithoutTimestamp] = date.split(' ');
+
+  const yearMonthDay = dateWithoutTimestamp.split('-');
   if (yearMonthDay.length <= 2) {
     return {
       day: '',
@@ -67,14 +69,14 @@ export const mapAddress = (address: ServiceAddress | undefined): Address => {
 };
 
 type BOMOAddressMapTypes = {
-  (address: PSCAddress | undefined): Address;
-  (address: OfficerAddress | undefined): Address;
-  (address: PrivateAddress | undefined): PrivateAddress;
+  (address: PSCAddress | undefined): Address | undefined;
+  (address: OfficerAddress | undefined): Address | undefined;
+  (address: PrivateAddress | undefined): PrivateAddress | undefined;
 };
 
 export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
   if (!address) {
-    return {};
+    return undefined;
   }
   return {
     property_name_number: address.premises,
@@ -102,8 +104,8 @@ export const mapBOIndividualName = (name: NameElements) => {
 };
 
 type AddressMatches = {
-  (address1: Address, address2?: Address): boolean;
-  (address1: OfficeAddress, address2?: OfficeAddress): boolean;
+  (address1: Address | undefined, address2?: Address | undefined): boolean;
+  (address1: OfficeAddress | undefined, address2?: OfficeAddress | undefined): boolean;
 };
 
 export const isSameAddress: AddressMatches = (address1: any, address2?: any) => {

@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { mapIndividualMoPrivateData, mapCorporateMoPrivateAddress } from "./managing.officer.mapper";
+import { mapIndividualMoPrivateData, mapCorporateMoPrivateData } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
 
@@ -40,7 +40,7 @@ const mapManagingOfficersPrivateData = (moPrivateData, appData: ApplicationData)
     });
     appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
       if (managingOfficer.ch_reference) {
-        mapCorporateMoPrivateAddress(moPrivateData, managingOfficer);
+        mapCorporateMoPrivateData(moPrivateData, managingOfficer);
       }
     });
   }

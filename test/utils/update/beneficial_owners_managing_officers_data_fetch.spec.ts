@@ -74,7 +74,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  test("Should return rearly if pscs is undefined", async () => {
+  test("Should return early if pscs is undefined", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
     mockGetCompanyPscService.mockReturnValue(undefined);
     await retrieveBeneficialOwners(req, appData);
@@ -83,7 +83,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  test("Should return rearly if pscs.items is undefined", async () => {
+  test("Should return early if pscs.items is undefined", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
     mockGetCompanyPscService.mockReturnValue({ });
     await retrieveBeneficialOwners(req, appData);
@@ -92,7 +92,7 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  test("Should return rearly if pscs.items is empty", async () => {
+  test("Should return early if pscs.items is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
     mockGetCompanyPscService.mockReturnValue({ items: [] });
     await retrieveBeneficialOwners(req, appData);

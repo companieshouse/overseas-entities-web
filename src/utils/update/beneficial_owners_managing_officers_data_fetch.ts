@@ -37,7 +37,7 @@ const initialiseBoAndMoUpdateAppData = (appData: ApplicationData) => {
 export const retrieveBeneficialOwners = async (req: Request, appData: ApplicationData) => {
   const pscs: CompanyPersonsWithSignificantControl = await getCompanyPsc(req, appData[EntityNumberKey] as string);
 
-  if (!pscs || pscs.items?.length === 0) {
+  if (pscs === undefined || pscs.items === undefined || pscs.items.length === 0) {
     return;
   }
 
@@ -62,7 +62,7 @@ export const retrieveManagingOfficers = async (req: Request, appData: Applicatio
 
   const companyOfficers = await getCompanyOfficers(req, appData[EntityNumberKey] as string);
 
-  if (!companyOfficers || companyOfficers.items?.length === 0) {
+  if (companyOfficers === undefined || companyOfficers.items === undefined || companyOfficers.items.length === 0) {
     return;
   }
 

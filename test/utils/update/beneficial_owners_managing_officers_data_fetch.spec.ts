@@ -92,13 +92,12 @@ describe("util beneficial owners managing officers data fetch", () => {
 
   test("Should return rearly if pscs.items is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
-    mockGetCompanyPscService.mockReturnValue({ items: []});
+    mockGetCompanyPscService.mockReturnValue({ items: [] });
     await retrieveBeneficialOwners(req, appData);
 
     expect(mockGetCompanyPscService).toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
-
 
   test("Should return rearly if pscs is empty", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
@@ -108,7 +107,6 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockGetCompanyPscService).toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
-
 
   test("Should not set BO data in appData if no Company PSCs exist", async () => {
     appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };

@@ -208,7 +208,7 @@ describe("Run all tests", () => {
       town: "AD EUM DEBITIS EST E"
     };
 
-    test('that private data for Individual Beneficial Owner is correctly mapped', () => {
+    test('private data for Individual Beneficial Owner is correctly mapped', () => {
       const appDataIndividualBoWithMatchingChRef = {
         ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
         ch_reference: PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE
@@ -236,7 +236,7 @@ describe("Run all tests", () => {
       expect(appDataCorpBoWithMatchingChRef.principal_address).toEqual(mappedBoAddress);
     });
 
-    test('that private data for Individual Beneficial Owner is not mapped if no matching hashedId', () => {
+    test('private data for Individual Beneficial Owner is not mapped if no matching hashedId', () => {
       const appDataIndividualBoWithMatchingChRef = {
         ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
         ch_reference: 'some_other_ch_ref'
@@ -244,6 +244,15 @@ describe("Run all tests", () => {
       mapIndividualBOPrivateData(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, appDataIndividualBoWithMatchingChRef);
       expect(appDataIndividualBoWithMatchingChRef.usual_residential_address).not.toEqual(mappedBoAddress);
       expect(appDataIndividualBoWithMatchingChRef.date_of_birth).not.toEqual({ day: "19", month: "4", year: "1979" });
+    });
+
+    test('principal/office address for Gov and Corp BOs is not mapped when no matching hashedId', () => {
+      const appDataGovBoWithMatchingChRef = {
+        ...BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
+        ch_reference: 'some_other_ch_ref'
+      };
+      mapCorporateOrGovernmentBOPrivateData(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, appDataGovBoWithMatchingChRef);
+      expect(appDataGovBoWithMatchingChRef.principal_address).not.toEqual(mappedBoAddress);
     });
   });
 });

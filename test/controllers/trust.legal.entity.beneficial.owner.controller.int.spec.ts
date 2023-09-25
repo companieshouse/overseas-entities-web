@@ -164,14 +164,14 @@ describe("Legal entity beneficial owner integration tests", () => {
       expect(decodedHTML).not.toContain(ErrorMessages.NAME_REGISTRATION_JURISDICTION_LEGAL_ENTITY_BO);
     });
 
-    test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors interested person date`, async () => {
-      // Arrange
-      const mockTrust = <Trust>{};
-      (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
-      legalEntityWithMissingFields.roleWithinTrust = RoleWithinTrustType.INTERESTED_PERSON;
-      legalEntityWithMissingFields.interestedPersonStartDateDay = "02";
-      legalEntityWithMissingFields.interestedPersonStartDateMonth = "08";
-      legalEntityWithMissingFields.interestedPersonStartDateYear = "2012";
+  test(`renders the ${TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE} page without errors interested person date`, async () => {
+    // Arrange
+    const mockTrust = <Trust>{};
+    (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
+    legalEntityWithMissingFields.roleWithinTrust = RoleWithinTrustType.INTERESTED_PERSON;
+    legalEntityWithMissingFields.interestedPersonStartDateDay = "2";
+    legalEntityWithMissingFields.interestedPersonStartDateMonth = "8";
+    legalEntityWithMissingFields.interestedPersonStartDateYear = "2012";
 
       // Act
       const resp = await request(app).post(pageUrl).send(legalEntityWithMissingFields);

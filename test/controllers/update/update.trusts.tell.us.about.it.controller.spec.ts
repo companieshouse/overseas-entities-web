@@ -101,8 +101,8 @@ describe('Update - Trusts - Tell us about the trust', () => {
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
       const resp = await request(app).post(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL).send({
         name: 'Trust name',
-        createdDateDay: '08',
-        createdDateMonth: '07',
+        createdDateDay: '8',
+        createdDateMonth: '7',
         createdDateYear: '2023',
         beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
         hasAllInfo: '0',

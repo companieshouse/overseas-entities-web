@@ -79,18 +79,13 @@ export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
     return undefined;
   }
 
-  const capitalizeIfAllUpper = (s: string) => {
-    if (s === undefined) {return s;}
-    return s === s.toUpperCase() ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s;
-  };
-
   return {
     property_name_number: address.premises,
     line_1: address.addressLine1,
     line_2: address.addressLine2,
     town: address.locality,
     county: address.region,
-    country: capitalizeIfAllUpper(address.country),
+    country: lowerCaseAllWordsExceptFirstLetters(address.country),
     postcode: address.postalCode
   };
 };

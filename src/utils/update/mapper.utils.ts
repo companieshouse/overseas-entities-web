@@ -78,13 +78,14 @@ export const mapBOMOAddress: BOMOAddressMapTypes = (address: any) => {
   if (!address) {
     return undefined;
   }
+
   return {
     property_name_number: address.premises,
     line_1: address.addressLine1,
     line_2: address.addressLine2,
     town: address.locality,
     county: address.region,
-    country: address.country,
+    country: lowerCaseAllWordsExceptFirstLetters(address.country),
     postcode: address.postalCode
   };
 };

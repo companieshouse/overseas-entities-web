@@ -31,21 +31,19 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
 };
 
 const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData) => {
-  if (boPrivateData !== undefined && boPrivateData.length > 0) {
-    appData.update?.review_beneficial_owners_individual?.forEach(beneficialOwner => {
-      if (beneficialOwner.ch_reference) {
-        mapIndividualBOPrivateData(boPrivateData, beneficialOwner);
-      }
-    });
-    appData.update?.review_beneficial_owners_corporate?.forEach(beneficialOwner => {
-      if (beneficialOwner.ch_reference) {
-        mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
-      }
-    });
-    appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(beneficialOwner => {
-      if (beneficialOwner.ch_reference) {
-        mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
-      }
-    });
-  }
+  appData.update?.review_beneficial_owners_individual?.forEach(beneficialOwner => {
+    if (beneficialOwner.ch_reference) {
+      mapIndividualBOPrivateData(boPrivateData, beneficialOwner);
+    }
+  });
+  appData.update?.review_beneficial_owners_corporate?.forEach(beneficialOwner => {
+    if (beneficialOwner.ch_reference) {
+      mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
+    }
+  });
+  appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(beneficialOwner => {
+    if (beneficialOwner.ch_reference) {
+      mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
+    }
+  });
 };

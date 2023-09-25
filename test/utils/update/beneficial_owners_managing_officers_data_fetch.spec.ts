@@ -44,9 +44,19 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(appData.update?.bo_mo_data_fetched).toBe(true);
   });
 
-  test('Should return early if companyOfficers is null', async () => {
+  test('Should return early if companyOfficers is undefined', async () => {
     const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
-    mockGetCompanyOfficers.mockReturnValue(null);
+    mockGetCompanyOfficers.mockReturnValue(undefined);
+
+    await retrieveManagingOfficers(req, appData);
+
+    expect(mockGetCompanyOfficers).toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
+
+  test('Should return early if companyOfficers.items is undefined', async () => {
+    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
+    mockGetCompanyOfficers.mockReturnValue({ });
 
     await retrieveManagingOfficers(req, appData);
 
@@ -64,30 +74,35 @@ describe("util beneficial owners managing officers data fetch", () => {
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  test('Should return early if companyOfficers is null', async () => {
-    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
-    mockGetCompanyOfficers.mockReturnValue(null);
+  test("Should return early if pscs is undefined", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
+    mockGetCompanyPscService.mockReturnValue(undefined);
+    await retrieveBeneficialOwners(req, appData);
 
-    await retrieveManagingOfficers(req, appData);
-
-    expect(mockGetCompanyOfficers).toHaveBeenCalled();
-    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+    expect(mockGetCompanyPscService).toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
-  test('Should return early if companyOfficers.items is empty', async () => {
-    const appData = { "transaction_id": "id", "overseas_entity_id": "id", "entity_number": "1234" };
-    mockGetCompanyOfficers.mockReturnValue({ items: [] });
+  test("Should return early if pscs.items is undefined", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
+    mockGetCompanyPscService.mockReturnValue({ });
+    await retrieveBeneficialOwners(req, appData);
 
-    await retrieveManagingOfficers(req, appData);
+    expect(mockGetCompanyPscService).toHaveBeenCalled();
+    expect(mockLoggerInfo).not.toHaveBeenCalled();
+  });
 
-    expect(mockGetCompanyOfficers).toHaveBeenCalled();
-    expect(mockGetManagingOfficerPrivateData).not.toHaveBeenCalled();
+  test("Should return early if pscs.items is empty", async () => {
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
+    mockGetCompanyPscService.mockReturnValue({ items: [] });
+    await retrieveBeneficialOwners(req, appData);
+
+    expect(mockGetCompanyPscService).toHaveBeenCalled();
     expect(mockLoggerInfo).not.toHaveBeenCalled();
   });
 
   test("Should not set BO data in appData if no Company PSCs exist", async () => {
-    appData = { "transaction_id": "123", "overseas_entity_id": "456" };
+    appData = { "transaction_id": "123", "overseas_entity_id": "456", "entity_number": "1234" };
     mockGetCompanyPscService.mockReturnValue({ items: [] });
     await retrieveBeneficialOwners(req, appData);
 

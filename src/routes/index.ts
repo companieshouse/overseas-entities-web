@@ -86,13 +86,14 @@ import {
   updateTrustsIndividualBeneficialOwner,
   updateTrustsLegalEntityBeneficialOwner,
   updateStatementValidationErrors,
+  updateManageTrustsOrchestrator,
   updateManageTrustsInterrupt,
   updateManageTrustsReviewTheTrust,
   updateManageTrustsReviewFormerBo,
   updateManageTrustsReviewIndividuals,
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
-  updatePaymentFailed
+  updatePaymentFailed,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -469,6 +470,16 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
+router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .all(updateManageTrustsOrchestrator.handler);
+
 router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
@@ -494,7 +505,9 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewFormerBOsGuard,
   )
   .get(updateManageTrustsReviewFormerBo.get)
   .post(updateManageTrustsReviewFormerBo.post);
@@ -504,7 +517,9 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewIndividualsGuard,
   )
   .get(updateManageTrustsReviewIndividuals.get)
   .post(updateManageTrustsReviewIndividuals.post);
@@ -514,7 +529,9 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewLegalEntitiesGuard,
   )
   .get(updateManageTrustsReviewLegalEntities.get)
   .post(updateManageTrustsReviewLegalEntities.post);

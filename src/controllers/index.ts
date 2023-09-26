@@ -85,6 +85,7 @@ export * as updateTrustsIndividualBeneficialOwner from "./update/update.trusts.i
 export * as updateTrustHistoricalBeneficialOwner from './update/update.trusts.historical.beneficial.owner.controller';
 export * as updateTrustsLegalEntityBeneficialOwner from './update/update.trusts.legal.entity.beneficial.owner.controller';
 export * as updateStatementValidationErrors from './update/update.statement.validation.errors.controller';
+export * as updateManageTrustsOrchestrator from './update/update.manage.trusts.orchestrator.controller';
 export * as updateManageTrustsInterrupt from './update/update.manage.trusts.interrupt.controller';
 export * as updateManageTrustsReviewTheTrust from './update/update.manage.trusts.review.the.trust.controller';
 export * as updateManageTrustsReviewFormerBo from './update/update.manage.trusts.review.former.bo.controller';

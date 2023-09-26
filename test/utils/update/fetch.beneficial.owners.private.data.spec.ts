@@ -153,6 +153,57 @@ describe("Test fetching and mapping BO private data", () => {
     expect(appData.update?.review_beneficial_owners_government_or_public_authority?.length).toBeUndefined();
   });
 
+  test("should handle undefined review_beneficial_owners_individual", async () => {
+    const localAppData = {
+      ...FETCH_BO_APPLICATION_DATA_MOCK,
+      update: {
+        ...FETCH_BO_APPLICATION_DATA_MOCK.update,
+        review_beneficial_owners_individual: undefined
+      }
+    };
+
+    mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
+    await fetchBeneficialOwnersPrivateData(localAppData, req);
+
+    expect(localAppData.update?.review_beneficial_owners_individual).toBeUndefined();
+    expect(localAppData.update?.review_beneficial_owners_corporate?.length).toEqual(1);
+    expect(localAppData.update?.review_beneficial_owners_government_or_public_authority?.length).toEqual(1);
+  });
+
+  test("should handle undefined review_beneficial_owners_corporate", async () => {
+    const localAppData = {
+      ...FETCH_BO_APPLICATION_DATA_MOCK,
+      update: {
+        ...FETCH_BO_APPLICATION_DATA_MOCK.update,
+        review_beneficial_owners_corporate: undefined
+      }
+    };
+
+    mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
+    await fetchBeneficialOwnersPrivateData(localAppData, req);
+
+    expect(localAppData.update?.review_beneficial_owners_individual?.length).toEqual(1);
+    expect(localAppData.update?.review_beneficial_owners_corporate).toBeUndefined();
+    expect(localAppData.update?.review_beneficial_owners_government_or_public_authority?.length).toEqual(1);
+  });
+
+  test("should handle undefined review_beneficial_owners_government_or_public_authority", async () => {
+    const localAppData = {
+      ...FETCH_BO_APPLICATION_DATA_MOCK,
+      update: {
+        ...FETCH_BO_APPLICATION_DATA_MOCK.update,
+        review_beneficial_owners_government_or_public_authority: undefined
+      }
+    };
+
+    mockGetBeneficialOwnersPrivateData.mockReturnValue(PRIVATE_BO_DATA_MOCK);
+    await fetchBeneficialOwnersPrivateData(localAppData, req);
+
+    expect(localAppData.update?.review_beneficial_owners_individual?.length).toEqual(1);
+    expect(localAppData.update?.review_beneficial_owners_corporate?.length).toEqual(1);
+    expect(localAppData.update?.review_beneficial_owners_government_or_public_authority).toBeUndefined();
+  });
+
   test("should not map BO private data if retrieved BO private data is empty", async () => {
     appData = {
       overseas_entity_id: '123',

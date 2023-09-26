@@ -47,3 +47,4 @@ const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData)
     }
   });
 };
+

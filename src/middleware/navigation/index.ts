@@ -17,6 +17,15 @@ import { hasBOsOrMOsUpdate } from "./update/has.beneficial.owners.or.managing.of
 import { hasDueDiligenceDetails } from "./update/has.due.diligence.details.middleware";
 import { hasGivenValidBoMoDetails } from "./update/has.given.valid.bo.mo.details.middleware";
 import { hasAnyBosWithTrusteeNocs } from './update/has.any.bos.with.trustee.nocs.middleware';
+import { isInChangeJourney } from './update/is.in.change.journey.middleware';
+import {
+  manageTrustsReviewFormerBOsGuard,
+  manageTrustsReviewIndividualsGuard,
+  manageTrustsReviewLegalEntitiesGuard,
+  manageTrustsTellUsAboutFormerBOsGuard,
+  manageTrustsTellUsAboutIndividualsGuard,
+  manageTrustsTellUsAboutLegalEntitiesGuard,
+} from './update/manage.trusts.middleware';
 
 export const navigation = {
   hasSoldLand,
@@ -40,4 +49,11 @@ export const navigation = {
   hasDueDiligenceDetails,
   hasGivenValidBoMoDetails,
   hasAnyBosWithTrusteeNocs,
+  isInChangeJourney,
+  manageTrustsReviewFormerBOsGuard,
+  manageTrustsReviewIndividualsGuard,
+  manageTrustsReviewLegalEntitiesGuard,
+  manageTrustsTellUsAboutFormerBOsGuard,
+  manageTrustsTellUsAboutIndividualsGuard,
+  manageTrustsTellUsAboutLegalEntitiesGuard,
 };

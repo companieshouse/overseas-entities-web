@@ -30,13 +30,6 @@ const checkEntityRequiresTrusts = (appData: ApplicationData | undefined): boolea
     containsTrusteeNatureOfControl(appData.beneficial_owners_corporate ?? []);
 };
 
-const checkEntityRequiresManageTrusts = (appData: ApplicationData | undefined): boolean => {
-  if (!appData?.update?.review_trusts) {
-    return false;
-  }
-  return (appData.update.review_trusts.length > 0);
-};
-
 /**
  * Checks whether any beneficial owners requires trust data to review due to at least one of them
  * having a trustee "nature of control" of the overseas entity
@@ -494,5 +487,4 @@ export {
   getIndividualTrustee,
   getLegalEntityTrustee,
   mapTrustApiReturnModelToWebModel,
-  checkEntityRequiresManageTrusts
 };

@@ -38,14 +38,16 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       formData.beneficialOwnersIds = trustBos;
     }
 
+    const isReview = true;
+
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE,
       backLinkUrl: UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
       pageData: {
-        beneficialOwners: boAvailableForTrust,
-        isReview: true
+        beneficialOwners: boAvailableForTrust
       },
-      formData
+      formData,
+      isReview
     });
   } catch (error) {
     next(error);

@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% set formatted_creation_date = dateMacros.formatDate(formData.createdDateDay, formData.createdDateMonth, formData.createdDateYear) %}
-{% set isReview = pageData.isReview %}
+{% set isReview = isReview %}
 
 {% block backLink %}
   {% include "includes/back-link.html" %}

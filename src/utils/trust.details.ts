@@ -23,6 +23,7 @@ export const TRUST_DETAILS_TEXTS = {
 type TrustDetailPageProperties = {
   backLinkUrl: string;
   templateName: string;
+  isReview?: boolean,
   pageParams: {
     title: string;
     subtitle: string,
@@ -62,6 +63,7 @@ const getPageProperties = (
       beneficialOwners: boAvailableForTrust,
     },
     formData,
+    isReview,
     errors,
     url: getUrl(isUpdate),
   };

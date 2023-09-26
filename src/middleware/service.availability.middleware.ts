@@ -16,6 +16,7 @@ import {
 import { logger } from "../utils/logger";
 
 export const serviceAvailabilityMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
   if (isActiveFeature(SHOW_SERVICE_OFFLINE_PAGE)) {
     logger.infoRequest(req, "Service offline flag is set - displaying service offline page");
     return res.render(SERVICE_OFFLINE_PAGE);

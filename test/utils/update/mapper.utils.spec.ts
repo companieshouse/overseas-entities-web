@@ -31,6 +31,11 @@ describe("Test mapping utils", () => {
     expect(InputDate).toEqual({ day: "", month: "7", year: "2022" });
   });
 
+  test("mapInputDate trims timestamp off string date", () => {
+    const InputDate = mapInputDate("1979-04-19 00:00:000");
+    expect(InputDate).toEqual({ day: "19", month: "4", year: "1979" });
+  });
+
   test("returns string for name with forename and middlename", () => {
     const nameElements = { forename: "First", middleName: "middle", surname: "surname" };
     const firstName = mapBOIndividualName(nameElements);

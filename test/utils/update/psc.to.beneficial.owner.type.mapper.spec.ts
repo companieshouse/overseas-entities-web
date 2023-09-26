@@ -1,7 +1,7 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapBoPrivateAddress, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
-import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA } from '../../__mocks__/session.mock';
+import { BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_MOCK_DATA_PRINCIPAL_ADDRESS, PRIVATE_BO_MOCK_DATA_UNDEFINED, PSC_BENEFICIAL_OWNER_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 import { BeneficialOwnerPrivateData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
 
@@ -138,8 +138,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         country: pscMock.address.country,
         county: undefined
       },
-      principal_address: {
-      },
+      principal_address: undefined,
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
       public_register_name: pscMock.identification?.placeRegistered,
@@ -176,7 +175,7 @@ describe("Test Mapping person of significant control to beneficial owner type", 
         town: pscMock.address.locality,
         country: pscMock.address.country,
       },
-      principal_address: {},
+      principal_address: undefined,
       law_governed: pscMock.identification?.legalAuthority,
       legal_form: pscMock.identification?.legalForm,
       is_on_sanctions_list: pscMock.isSanctioned ? 1 : 0
@@ -203,12 +202,22 @@ describe("Private address retrieval", () => {
     line_1: "72 COWLEY AVENUE",
     line_2: "QUIA EX ESSE SINT EU",
     county: "ULLAM DOLORUM CUPIDA",
-    country: "KUWAIT",
+    country: "Kuwait",
     postcode: "76022",
     town: "AD EUM DEBITIS EST E"
   };
   test('that usual residential address for beneficial owner individual is correctly mapped', () => {
     const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, false);
+    expect(address).toEqual(mockResult);
+  });
+
+  test('that principal/office address for beneficial owner gov is correctly mapped', () => {
+    const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, true);
+    expect(address).toEqual(mockResult);
+  });
+
+  test('that principal/office address for beneficial owner corp is correctly mapped', () => {
+    const address = mapBoPrivateAddress(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE, true);
     expect(address).toEqual(mockResult);
   });
 

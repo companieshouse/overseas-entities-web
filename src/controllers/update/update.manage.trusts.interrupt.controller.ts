@@ -4,7 +4,7 @@ import { logger } from '../../utils/logger';
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE,
-  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
 } from '../../config';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
@@ -24,8 +24,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    // Redirect to orchestrator to determine the trust to review
-    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
   } catch (error) {
     next(error);
   }

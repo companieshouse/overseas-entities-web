@@ -32,10 +32,10 @@
 {% endset %}
 
 {% set moFormattedContactEmailHtml %}
-  {% if inNoChangeJourney %}
-    <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
-  {% else %}
+  {% if moContactEmail %}
     {{ moContactEmail }}
+  {% else %}
+    <strong class="govuk-tag govuk-tag--blue">CANNOT BE DISPLAYED</strong>
   {% endif %}
 {% endset %}
 

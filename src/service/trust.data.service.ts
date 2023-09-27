@@ -72,7 +72,7 @@ export const getIndividualTrustees = async (
   }
 
   return response.resource;
-}
+};
 
 export const getCorporateTrustees = async (
   req: Request,
@@ -95,12 +95,12 @@ export const getCorporateTrustees = async (
   }
 
   return response.resource;
-}
+};
 
 const hasErrorResponse = (req: Request, response: any,
-  overseasEntityId: string, transactionId: string,
-  trustDataToRetrieve: string, trustId?: string): boolean => {
-    
+                          overseasEntityId: string, transactionId: string,
+                          trustDataToRetrieve: string, trustId?: string): boolean => {
+
   if (response.httpStatusCode !== 200 && response.httpStatusCode !== 404) {
     const errorMsg = `Something went wrong fetching ${trustDataToRetrieve} for ${overseasEntityId} under ${transactionId} = ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);

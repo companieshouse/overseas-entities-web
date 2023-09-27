@@ -6,7 +6,7 @@ locals {
   container_port            = "3000" # default node port required here until prod docker container is built allowing port change via env var
   docker_repo               = "overseas-entities-web"
   lb_listener_rule_priority = 91
-  lb_listener_paths         = ["/register-an-overseas-entity/*","/update-an-overseas-entity/*"]
+  lb_listener_paths         = ["/register-an-overseas-entity*","/update-an-overseas-entity*"]
   healthcheck_path          = "/register-an-overseas-entity/healthcheck" #healthcheck path for overseas entities web
   healthcheck_matcher       = "200"
 

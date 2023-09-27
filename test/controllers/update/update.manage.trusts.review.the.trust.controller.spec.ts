@@ -1,6 +1,7 @@
 jest.mock('ioredis');
 jest.mock('../../../src/utils/feature.flag' );
 jest.mock('../../../src/utils/application.data');
+jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
@@ -16,13 +17,16 @@ import { companyAuthentication } from '../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
+import { ErrorMessages } from "../../../src/validation/error.messages";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -62,6 +66,15 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
+
+    test("when feature flag is on, should render the error page when 500 response code", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
   });
 
   describe('POST tests', () => {
@@ -78,6 +91,36 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    });
+
+    test('when feature flag is on, POST empty object and check for error in page title', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
+        .send({
+          name: '',
+          beneficialOwnersIds: '',
+          hasAllInfo: '0',
+          trustId: ''
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`renders the ${UPDATE_REVIEW_THE_TRUST} page with error messages`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.TRUST_NAME_2);
+      expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).toContain(ErrorMessages.TRUST_HAS_ALL_INFO);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test('when feature flag is off, 404 is returned', async () => {

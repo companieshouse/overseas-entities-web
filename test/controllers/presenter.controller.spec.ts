@@ -3,11 +3,11 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.overseas.name.middleware');
+// jest.mock('../../src/utils/feature.flag');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
-
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import {
@@ -16,6 +16,7 @@ import {
   WHO_IS_MAKING_FILING_PAGE,
   WHO_IS_MAKING_FILING_URL,
   LANDING_PAGE_URL,
+  PRESENTER_WITH_PARAMS_URL,
 } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { ApplicationDataType } from '../../src/model';
@@ -44,6 +45,7 @@ import {
 } from '../__mocks__/validation.mock';
 import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.name.middleware";
 import { saveAndContinue } from "../../src/utils/save.and.continue";
+// import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -59,11 +61,14 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 
 const mockPrepareData = prepareData as jest.Mock;
 
+// const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
 describe("PRESENTER controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockSetApplicationData.mockReset();
+    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
@@ -84,6 +89,30 @@ describe("PRESENTER controller", () => {
     test("catch error when renders the presenter page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
+  describe("GET with url Params tests", () => {
+    test(`renders the presenter page with ${SAVE_AND_CONTINUE_BUTTON_TEXT} button`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
+      const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(LANDING_PAGE_URL);
+      expect(resp.text).toContain(PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(USE_INFORMATION_NEED_MORE);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+    });
+
+    test("catch error when renders the presenter page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -208,5 +237,16 @@ describe("PRESENTER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
+  });
+
+  describe("POST with url params tests", () => {
+    // test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with url params`, async () => {
+    //   mockIsActiveFeature.mockReturnValueOnce(false);
+    //   const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL).send(PRESENTER_OBJECT_MOCK);
+
+    //   expect(resp.status).toEqual(302);
+    //   expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+    //   expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    // });
   });
 });

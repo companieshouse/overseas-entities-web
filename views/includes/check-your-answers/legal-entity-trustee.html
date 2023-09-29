@@ -100,7 +100,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + "#interestedPersonStartDate-interestedPersonStartDateDay",
+        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + legalEntity.id + OE_CONFIGS.LEGAL_INTERESTED_PERSON_START_DATE,
         "Legal entity " + legalEntity.name + " - date became an interested person",
         "change-legal-entity-beneficial-owner-became-interested-person-date-button"
       ) ]

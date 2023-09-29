@@ -1,6 +1,7 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
+import { TrustData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities/types';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -227,3 +228,18 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
   responsibilities: "role and responsibilities text",
   resignedOn: "resigned"
 };
+
+export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
+  {
+    trustId: "12345678",
+    trustName: "Test Trust",
+    creationDate: "2020-01-01",
+    unableToObtainAllTrustInfo: false
+  },
+  {
+    trustId: "87654321",
+    trustName: "Test Trust 2",
+    creationDate: "2020-02-02",
+    unableToObtainAllTrustInfo: true
+  }
+];

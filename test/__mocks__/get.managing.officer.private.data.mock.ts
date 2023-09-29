@@ -11,7 +11,6 @@ export const INDIVIDUAL_MO_MOCK: ManagingOfficerPrivateData = {
     region: "URA County"
   },
   hashedId: "officers1",
-  managingOfficerAppointmentId: "",
   principalAddress: {},
   dateOfBirth: "",
   contactNameFull: "",

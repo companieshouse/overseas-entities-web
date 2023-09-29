@@ -15,5 +15,5 @@ export const getUrlWithParamsToPath = (pathToPage: string, req: Request): string
   );
 };
 
-export const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
-export const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_OVERSEAS_ENTITY_ID];
+const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
+const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_OVERSEAS_ENTITY_ID];

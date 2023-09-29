@@ -136,6 +136,9 @@ variable "feature_flag_disable_update_private_data_fetch_28062023" {
 variable "feature_flag_enable_update_manage_trusts_29082023" {
   type        = string
 }
+variable "feature_flag_enable_redis_removal_27092023" {
+  type        = string
+}
 variable "landing_page_url" {
   type        = string
 }

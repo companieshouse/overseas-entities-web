@@ -16,6 +16,7 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
   if (appData.entity === undefined) {
     appData.entity = {};
   }
+
   if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
     try {
       const moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
@@ -32,16 +33,14 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
 };
 
 const mapManagingOfficersPrivateData = (moPrivateData, appData: ApplicationData) => {
-  if (moPrivateData !== undefined && moPrivateData.length > 0) {
-    appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
-      if (managingOfficer.ch_reference) {
-        mapIndividualMoPrivateData(moPrivateData, managingOfficer);
-      }
-    });
-    appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
-      if (managingOfficer.ch_reference) {
-        mapCorporateMoPrivateData(moPrivateData, managingOfficer);
-      }
-    });
-  }
+  appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
+    if (managingOfficer.ch_reference) {
+      mapIndividualMoPrivateData(moPrivateData, managingOfficer);
+    }
+  });
+  appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
+    if (managingOfficer.ch_reference) {
+      mapCorporateMoPrivateData(moPrivateData, managingOfficer);
+    }
+  });
 };

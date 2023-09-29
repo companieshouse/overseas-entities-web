@@ -1298,6 +1298,7 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   review_beneficial_owners_government_or_public_authority: [],
   review_managing_officers_individual: [],
   review_managing_officers_corporate: [],
+  review_trusts: [],
   no_change: true
 };
 
@@ -1806,7 +1807,7 @@ export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA: BeneficialOwnerPrivateData = {
   hashedId: PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE,
   dateBecameRegistrable: "2023-04-17 00:00:00.0",
   isServiceAddressSameAsUsualAddress: "N",
-  dateOfBirth: "02-06-1998",
+  dateOfBirth: "1979-04-19 00:00:000",
   usualResidentialAddress: {
     addressLine1: "72 COWLEY AVENUE",
     addressLine2: "QUIA EX ESSE SINT EU",
@@ -1859,7 +1860,7 @@ export const PRIVATE_BO_GOV_MOCK_DATA: BeneficialOwnerPrivateData = {
     addressLine1: "72 COWLEY AVENUE",
     addressLine2: "QUIA EX ESSE SINT EU",
     careOf: "",
-    country: "KUWAIT",
+    country: "Kuwait",
     locality: "AD EUM DEBITIS EST E",
     poBox: "FGdg",
     postalCode: "76022",

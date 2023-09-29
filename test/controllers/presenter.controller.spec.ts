@@ -5,6 +5,7 @@ jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.overseas.name.middleware');
 jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/middleware/service.availability.middleware');
+jest.mock("../../src/utils/url");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -49,6 +50,9 @@ import { hasOverseasName } from "../../src/middleware/navigation/has.overseas.na
 import { saveAndContinue } from "../../src/utils/save.and.continue";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
+
+const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -68,6 +72,9 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("PRESENTER controller", () => {
 
@@ -253,8 +260,10 @@ describe("PRESENTER controller", () => {
       const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {
@@ -263,7 +272,7 @@ describe("PRESENTER controller", () => {
       const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
@@ -321,7 +330,7 @@ describe("PRESENTER controller", () => {
         .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -346,7 +355,7 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
@@ -361,7 +370,7 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
@@ -376,7 +385,7 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(`${WHO_IS_MAKING_FILING_WITH_PARAMS_URL}`);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);

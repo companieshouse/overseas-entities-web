@@ -30,8 +30,9 @@ export const mapInputDate = (date: string | undefined): InputDate | undefined =>
   if (date === undefined) {
     return undefined;
   }
+  const [dateWithoutTimestamp] = date.split(' ');
 
-  const yearMonthDay = date.split('-');
+  const yearMonthDay = dateWithoutTimestamp.split('-');
   if (yearMonthDay.length <= 2) {
     return {
       day: '',

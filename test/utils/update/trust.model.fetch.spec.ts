@@ -1,7 +1,12 @@
 import { retrieveTrustData, mapTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { describe, expect, jest, test } from '@jest/globals';
 import { Request } from "express";
-import { getTrustData } from '../../../src/service/trust.data.service';
+import {
+  getTrustData,
+  getIndividualTrustees,
+  getCorporateTrustees,
+  getTrustLinks
+} from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
 import { Trust } from "../../../src/model/trust.model";
 import { FETCH_TRUST_DATA_MOCK } from "./mocks";
@@ -12,6 +17,9 @@ jest.mock('../../../src/service/trust.data.service');
 jest.mock('../../../src/utils/logger');
 
 const mockGetTrustData = getTrustData as jest.Mock;
+const mockGetIndividualTrustees = getIndividualTrustees as jest.Mock;
+const mockGetCorporateTrustees = getCorporateTrustees as jest.Mock;
+const mockGetTrustLinks = getTrustLinks as jest.Mock;
 const mockLoggerInfo = logger.info as jest.Mock;
 const mockLoggerError = logger.errorRequest as jest.Mock;
 
@@ -26,6 +34,9 @@ describe("Test fetching and mapping of Trust data", () => {
     const appData = FETCH_TRUST_APPLICATION_DATA_MOCK;
 
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([]);
 
     await retrieveTrustData(req, appData);
 

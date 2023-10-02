@@ -1,6 +1,5 @@
 import { retrieveTrustData, mapTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { describe, expect, jest, test } from '@jest/globals';
-import { Request } from "express";
 import {
   getTrustData,
   getIndividualTrustees,
@@ -9,10 +8,19 @@ import {
 } from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
 import { Trust } from "../../../src/model/trust.model";
-import { FETCH_CORPORATE_TRUSTEE_DATA_MOCK, FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK, FETCH_TRUST_DATA_MOCK } from "./mocks";
+import {
+  FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
+  FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
+  FETCH_TRUST_DATA_MOCK,
+  MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
+  MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK,
+  MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
+  MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK
+} from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { ApplicationData } from "../../../src/model";
+import { Request } from "express";
 
 jest.mock('../../../src/service/trust.data.service');
 jest.mock('../../../src/utils/logger');
@@ -49,7 +57,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "1",
       creation_date_month: "1",
       creation_date_year: "2020",
-      trust_id: "12345678",
+      trust_id: "1",
       trust_name: "Test Trust",
       unable_to_obtain_all_trust_info: "No",
       INDIVIDUALS: [],
@@ -109,7 +117,7 @@ describe("Test fetching and mapping of Trust data", () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { review_trusts: [] } };
     const trustData = { ...FETCH_TRUST_DATA_MOCK[0], creationDate: undefined } as unknown as TrustData;
     const trust: Trust = {
-      trust_id: trustData.trustId,
+      trust_id: "1",
       ch_reference: trustData.trustId,
       trust_name: trustData.trustName,
       creation_date_day: "",
@@ -159,8 +167,13 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.update?.review_trusts).toHaveLength(2);
     const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
     expect(individualTrustees).toHaveLength(1);
+    const individualTrustee = (individualTrustees ?? [])[0];
+    expect(individualTrustee).toEqual(MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
+
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);
+    const historicalTrustee = (historicalTrustees ?? [])[0];
+    expect(historicalTrustee).toEqual(MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK);
   });
 
   test("should fetch and map corporate trustees", async () => {
@@ -177,7 +190,11 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.update?.review_trusts).toHaveLength(2);
     const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
     expect(corporateTrustees).toHaveLength(1);
+    const corporateTrustee = (corporateTrustees ?? [])[0];
+    expect(corporateTrustee).toEqual(MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);
+    const historicalTrustee = (historicalTrustees ?? [])[0];
+    expect(historicalTrustee).toEqual(MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK);
   });
 });

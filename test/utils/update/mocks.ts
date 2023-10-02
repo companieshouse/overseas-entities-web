@@ -325,3 +325,98 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     trusteeTypeId: "50002"
   }
 ];
+
+export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
+  {
+    "ch_references": "12345678",
+    "dob_day": "1",
+    "dob_month": "1",
+    "dob_year": "1990",
+    "forename": "Test Individual Trustee",
+    "nationality": "British",
+    "other_forenames": "Individual",
+    "sa_address_care_of": "",
+    "sa_address_country": "Mexico",
+    "sa_address_line_1": "Boulevard",
+    "sa_address_line_2": "of life",
+    "sa_address_locality": "Chicoloapan",
+    "sa_address_po_box": "",
+    "sa_address_postal_code": "56335",
+    "sa_address_premises": "100",
+    "sa_address_region": "Sierra Madre",
+    "second_nationality": undefined,
+    "surname": "Jones",
+    "type": "Beneficiary",
+    "ura_address_care_of": "",
+    "ura_address_country": "Honk Kong",
+    "ura_address_line_1": "Pak Hok Ting St",
+    "ura_address_line_2": undefined,
+    "ura_address_locality": "Sha Tin",
+    "ura_address_po_box": "",
+    "ura_address_postal_code": "12345",
+    "ura_address_premises": "8",
+    "ura_address_region": "Shing Mun"
+  };
+
+export const MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK =
+  {
+    "ceased_date_day": "3",
+    "ceased_date_month": "3",
+    "ceased_date_year": "2020",
+    "ch_references": "87654321",
+    "corporate_indicator": 1,
+    "forename": "Test Individual Trustee 2",
+    "notified_date_day": "",
+    "notified_date_month": "",
+    "notified_date_year": "",
+    "other_forenames": "",
+    "surname": "Smith",
+  };
+
+export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
+  {
+    "ch_references": "12345678",
+    "date_became_interested_person_day": "1",
+    "date_became_interested_person_month": "1",
+    "date_became_interested_person_year": "2020",
+    "identification_country_registration": "",
+    "identification_legal_authority": "",
+    "identification_legal_form": "",
+    "identification_place_registered": "",
+    "identification_registration_number": "",
+    "is_on_register_in_country_formed_in": 0,
+    "is_service_address_same_as_principal_address": 0,
+    "name": "Test Corporate Trustee",
+    "ro_address_care_of": "",
+    "ro_address_country": "Australia",
+    "ro_address_line_1": "Brynat St",
+    "ro_address_line_2": undefined,
+    "ro_address_locality": "Syndney",
+    "ro_address_po_box": "",
+    "ro_address_postal_code": "67890",
+    "ro_address_premises": "8",
+    "ro_address_region": "Bayside",
+    "sa_address_care_of": "",
+    "sa_address_country": "Indonesia",
+    "sa_address_line_1": "Jalan Melon",
+    "sa_address_line_2": undefined,
+    "sa_address_locality": "Kota Tangerang",
+    "sa_address_po_box": "",
+    "sa_address_postal_code": "abcd",
+    "sa_address_premises": "2",
+    "sa_address_region": "Banten",
+    "type": "Beneficiary"
+  };
+
+export const MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK =
+  {
+    "ceased_date_day": "3",
+    "ceased_date_month": "3",
+    "ceased_date_year": "2020",
+    "ch_references": "87654321",
+    "corporate_indicator": 1,
+    "corporate_name": "Test Corporate Trustee 2",
+    "notified_date_day": "2",
+    "notified_date_month": "2",
+    "notified_date_year": "2020"
+  };

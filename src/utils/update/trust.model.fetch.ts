@@ -64,7 +64,7 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => {
   const dateOfBirth = mapInputDate(trustData.creationDate);
   const trust: Trust = {
-    trust_id: trustData.trustId,
+    trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
     ch_reference: trustData.trustId,
     trust_name: trustData.trustName,
     creation_date_day: dateOfBirth?.day ?? "",

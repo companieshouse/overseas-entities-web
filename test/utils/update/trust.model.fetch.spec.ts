@@ -9,9 +9,10 @@ import {
 } from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
 import { Trust } from "../../../src/model/trust.model";
-import { FETCH_TRUST_DATA_MOCK } from "./mocks";
+import { FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK, FETCH_TRUST_DATA_MOCK } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { ApplicationData } from "../../../src/model";
 
 jest.mock('../../../src/service/trust.data.service');
 jest.mock('../../../src/utils/logger');
@@ -50,7 +51,10 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_year: "2020",
       trust_id: "12345678",
       trust_name: "Test Trust",
-      unable_to_obtain_all_trust_info: "No"
+      unable_to_obtain_all_trust_info: "No",
+      INDIVIDUALS: [],
+      CORPORATES: [],
+      HISTORICAL_BO: []
     } as Trust);
   });
 
@@ -112,6 +116,9 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_month: "",
       creation_date_year: "",
       unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfo ? "Yes" : "No",
+      INDIVIDUALS: [],
+      CORPORATES: [],
+      HISTORICAL_BO: []
     };
 
     mapTrustData(trustData, appData);
@@ -136,5 +143,23 @@ describe("Test fetching and mapping of Trust data", () => {
     mapTrustData(trustData, appData);
 
     expect(appData.update).toEqual(undefined);
+  });
+
+  test("should fetch and map individual trustees", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValueOnce(FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(8);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+    const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
+    expect(individualTrustees).toHaveLength(1);
+    const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
+    expect(historicalTrustees).toHaveLength(1);
   });
 });

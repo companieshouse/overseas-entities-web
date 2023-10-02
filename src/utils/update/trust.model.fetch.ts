@@ -8,8 +8,10 @@ import {
 import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
-import { Trust } from "../../model/trust.model";
-import { mapInputDate } from "./mapper.utils";
+import { Trust, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
+import { mapInputDate, splitNationalities } from "./mapper.utils";
+import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
+import { yesNoResponse } from "../../model/data.types.model";
 
 export const retrieveTrustData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedTrustData(appData)) {
@@ -69,6 +71,9 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
     creation_date_month: dateOfBirth?.month ?? "",
     creation_date_year: dateOfBirth?.year ?? "",
     unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfo ? "Yes" : "No",
+    INDIVIDUALS: [],
+    CORPORATES: [],
+    HISTORICAL_BO: []
   };
   appData.update?.review_trusts?.push(trust);
   return trust;
@@ -93,9 +98,77 @@ const fetchAndMapIndivdualTrustees = async (
   }
 };
 
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+  switch (trusteeTypeId) {
+      case "5005":
+        return RoleWithinTrustType.INTERESTED_PERSON;
+      case "5004":
+        return RoleWithinTrustType.GRANTOR;
+      case "5003":
+        return RoleWithinTrustType.SETTLOR;
+      case "5002":
+      default:
+        return RoleWithinTrustType.BENEFICIARY;
+  }
+};
+
 const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   logger.debug("Mapping individual trustee " + trustee.trusteeId + " for trust " + trust.trust_id);
-  // TODO: map individual trustee data
+  if (trustee.ceasedDate !== undefined) {
+    mapHistoricalBeneficialOwnerData(trustee, trust);
+    return;
+  }
+  const dateOfBirth = mapInputDate(trustee.dateOfBirth);
+  const nationalities = splitNationalities(trustee.nationality);
+  // TODO map addresses and other fields
+  const individualTrustee: TrustIndividual = {
+    forename: trustee.trusteeForename1 ?? "",
+    other_forenames: trustee.trusteeForename2 ?? "",
+    surname: trustee.trusteeSurname,
+    dob_day: dateOfBirth?.day ?? "",
+    dob_month: dateOfBirth?.month ?? "",
+    dob_year: dateOfBirth?.year ?? "",
+    nationality: nationalities[0],
+    second_nationality: nationalities[1],
+    type: mapTrusteeType(trustee.trusteeTypeId),
+    ura_address_premises: "",
+    ura_address_line_1: "",
+    ura_address_line_2: "",
+    ura_address_locality: "",
+    ura_address_region: "",
+    ura_address_country: "",
+    ura_address_postal_code: "",
+    ura_address_care_of: "",
+    ura_address_po_box: "",
+    sa_address_premises: "",
+    sa_address_line_1: "",
+    sa_address_line_2: "",
+    sa_address_locality: "",
+    sa_address_region: "",
+    sa_address_country: "",
+    sa_address_postal_code: "",
+    sa_address_care_of: "",
+    sa_address_po_box: ""
+  };
+  trust.INDIVIDUALS?.push(individualTrustee);
+};
+
+const mapHistoricalBeneficialOwnerData = (trustee: IndividualTrusteeData, trust: Trust) => {
+  const ceasedDate = mapInputDate(trustee.ceasedDate);
+  const dateOfBirth = mapInputDate(trustee.dateOfBirth);
+  const historicalBeneficialOwner: TrustHistoricalBeneficialOwner = {
+    forename: trustee.trusteeForename1 ?? "",
+    other_forenames: trustee.trusteeForename2 ?? "",
+    surname: trustee.trusteeSurname,
+    ceased_date_day: ceasedDate?.day ?? "",
+    ceased_date_month: ceasedDate?.month ?? "",
+    ceased_date_year: ceasedDate?.year ?? "",
+    notified_date_day: dateOfBirth?.day ?? "",
+    notified_date_month: dateOfBirth?.month ?? "",
+    notified_date_year: dateOfBirth?.year ?? "",
+    corporate_indicator: trustee.corporateIndicator ? yesNoResponse.Yes : yesNoResponse.No
+  };
+  trust.HISTORICAL_BO?.push(historicalBeneficialOwner);
 };
 
 const fetchAndMapCorporateTrustees = async (

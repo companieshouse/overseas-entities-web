@@ -254,7 +254,28 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     nationality: "British",
     corporateIndicator: "N",
     trusteeTypeId: "50002",
-    appointmentDate: "2020-01-01"
+    appointmentDate: "2020-01-01",
+    usualResidentialAddress: {
+      addressLine1: "Pak Hok Ting St",
+      careOf: "",
+      country: "Honk Kong",
+      locality: "Sha Tin",
+      poBox: "",
+      premises: "8",
+      postalCode: "12345",
+      region: "Shing Mun"
+    },
+    serviceAddress: {
+      addressLine1: "Boulevard",
+      addressLine2: "of life",
+      careOf: "",
+      country: "Mexico",
+      locality: "Chicoloapan",
+      poBox: "",
+      premises: "100",
+      postalCode: "56335",
+      region: "Sierra Madre"
+    },
   },
   {
     trusteeId: "87654321",
@@ -273,7 +294,27 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     trusteeName: "Test Corporate Trustee",
     corporateIndicator: "N",
     trusteeTypeId: "50002",
-    appointmentDate: "2020-01-01"
+    appointmentDate: "2020-01-01",
+    registeredOfficeAddress: {
+      addressLine1: "Brynat St",
+      careOf: "",
+      country: "Australia",
+      locality: "Syndney",
+      poBox: "",
+      premises: "8",
+      postalCode: "67890",
+      region: "Bayside"
+    },
+    serviceAddress: {
+      addressLine1: "Jalan Melon",
+      careOf: "",
+      country: "Indonesia",
+      locality: "Kota Tangerang",
+      poBox: "",
+      premises: "2",
+      postalCode: "abcd",
+      region: "Banten"
+    },
   },
   {
     trusteeId: "87654321",

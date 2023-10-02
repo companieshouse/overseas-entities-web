@@ -1,19 +1,19 @@
 import * as config from "../config";
 import { Request } from "express";
 
-export const getUrlWithTransactionIdAndOverseasEntityId = (url: string, transactionId: string, overseasEntityId: string): string => {
+export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
     .replace(`:${config.ROUTE_PARAM_TRANSACTION_ID}`, transactionId)
-    .replace(`:${config.ROUTE_PARAM_OVERSEAS_ENTITY_ID}`, overseasEntityId);
+    .replace(`:${config.ROUTE_PARAM_SUBMISSION_ID}`, submissionId);
   return url;
 };
 
 export const getUrlWithParamsToPath = (pathToPage: string, req: Request): string => {
-  return getUrlWithTransactionIdAndOverseasEntityId(pathToPage,
-                                                    getTransactionIdFromRequestParams(req),
-                                                    getSubmissionIdFromRequestParams(req)
+  return getUrlWithTransactionIdAndSubmissionId(pathToPage,
+                                                getTransactionIdFromRequestParams(req),
+                                                getSubmissionIdFromRequestParams(req)
   );
 };
 
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
-const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_OVERSEAS_ENTITY_ID];
+const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];

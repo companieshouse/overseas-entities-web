@@ -10,8 +10,8 @@ describe("Url utils tests", () => {
   describe("getUrlWithTransactionIdAndOverseasEntityId tests", () => {
 
     test("substitutes url params successfully", () => {
-      const url = urlUtils.getUrlWithTransactionIdAndOverseasEntityId(config.PRESENTER_WITH_PARAMS_URL, TRANSACTION_ID, SUBMISSION_ID);
-      expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/overseas-entity/${SUBMISSION_ID}/presenter`);
+      const url = urlUtils.getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, TRANSACTION_ID, SUBMISSION_ID);
+      expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/presenter`);
     });
   });
 
@@ -20,11 +20,11 @@ describe("Url utils tests", () => {
     test("substitutes url params successfully by getting them from the request", () => {
       req["params"] = {
         [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID,
-        [config.ROUTE_PARAM_OVERSEAS_ENTITY_ID]: SUBMISSION_ID
+        [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
       };
 
       const url = urlUtils.getUrlWithParamsToPath(config.PRESENTER_WITH_PARAMS_URL, req);
-      expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/overseas-entity/${SUBMISSION_ID}/presenter`);
+      expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/presenter`);
     });
   });
 });

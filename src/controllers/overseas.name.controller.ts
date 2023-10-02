@@ -9,7 +9,7 @@ import { getApplicationData, setExtraData } from "../utils/application.data";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { EntityNameKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { getUrlWithTransactionIdAndOverseasEntityId } from "../utils/url";
+import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -52,7 +52,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
         await updateOverseasEntity(req, session);
       }
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
-        nextPageUrl = getUrlWithTransactionIdAndOverseasEntityId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
+        nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }
     return res.redirect(nextPageUrl);

@@ -10,7 +10,7 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL } from '../../../src/config';
+import { UPDATE_BENEFICIAL_OWNER_TYPE_URL, UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
@@ -71,7 +71,7 @@ describe('Update - Manage Trusts - Interrupt', () => {
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

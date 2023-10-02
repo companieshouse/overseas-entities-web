@@ -9,6 +9,7 @@ jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/utils/trusts');
+jest.mock('../../../src/utils/update/review_trusts');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -57,7 +58,8 @@ import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.m
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { checkEntityRequiresManageTrusts, checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+import { hasTrustsToReview } from '../../../src/utils/update/review_trusts';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -73,7 +75,7 @@ mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response
 
 const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
-const mockCheckEntityRequiresManageTrusts = checkEntityRequiresManageTrusts as jest.Mock;
+const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
@@ -89,7 +91,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockGetApplicationData.mockReset();
-    mockCheckEntityRequiresTrusts.mockReturnValue(false);
+    mockHasTrustsToReview.mockReturnValue(false);
   });
 
   describe("GET tests", () => {
@@ -191,7 +193,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
-      mockCheckEntityRequiresManageTrusts.mockReturnValueOnce(true);
+      mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
@@ -202,7 +204,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to check your answers if manage trusts feature flag is on but no trusts to review', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
-      mockCheckEntityRequiresManageTrusts.mockReturnValueOnce(false);
+      mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 

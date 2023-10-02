@@ -9,7 +9,7 @@ import {
 } from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
 import { Trust } from "../../../src/model/trust.model";
-import { FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK, FETCH_TRUST_DATA_MOCK } from "./mocks";
+import { FETCH_CORPORATE_TRUSTEE_DATA_MOCK, FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK, FETCH_TRUST_DATA_MOCK } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { ApplicationData } from "../../../src/model";
@@ -159,6 +159,24 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.update?.review_trusts).toHaveLength(2);
     const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
     expect(individualTrustees).toHaveLength(1);
+    const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
+    expect(historicalTrustees).toHaveLength(1);
+  });
+
+  test("should fetch and map corporate trustees", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValueOnce(FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(8);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+    const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
+    expect(corporateTrustees).toHaveLength(1);
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);
   });

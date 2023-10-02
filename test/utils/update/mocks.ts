@@ -1,7 +1,7 @@
 import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/company-profile/types';
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
-import { TrustData, IndividualTrusteeData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities/types';
+import { TrustData, IndividualTrusteeData, CorporateTrusteeData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities/types';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -247,7 +247,7 @@ export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
 export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   {
     trusteeId: "12345678",
-    trusteeForename1: "Test Trustee",
+    trusteeForename1: "Test Individual Trustee",
     trusteeForename2: "Individual",
     trusteeSurname: "Jones",
     dateOfBirth: "1990-01-01",
@@ -258,8 +258,26 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   },
   {
     trusteeId: "87654321",
-    trusteeForename1: "Test Trustee 2",
+    trusteeForename1: "Test Individual Trustee 2",
     trusteeSurname: "Smith",
+    corporateIndicator: "N",
+    appointmentDate: "2020-02-02",
+    ceasedDate: "2020-03-03",
+    trusteeTypeId: "50002"
+  }
+];
+
+export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
+  {
+    trusteeId: "12345678",
+    trusteeName: "Test Corporate Trustee",
+    corporateIndicator: "N",
+    trusteeTypeId: "50002",
+    appointmentDate: "2020-01-01"
+  },
+  {
+    trusteeId: "87654321",
+    trusteeName: "Test Corporate Trustee 2",
     corporateIndicator: "N",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",

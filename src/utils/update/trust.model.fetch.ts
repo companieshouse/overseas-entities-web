@@ -8,7 +8,7 @@ import {
 import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
-import { Trust, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
+import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
 import { mapInputDate, splitNationalities } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
@@ -115,13 +115,14 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
 const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   logger.debug("Mapping individual trustee " + trustee.trusteeId + " for trust " + trust.trust_id);
   if (trustee.ceasedDate !== undefined) {
-    mapHistoricalBeneficialOwnerData(trustee, trust);
+    mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
   }
   const dateOfBirth = mapInputDate(trustee.dateOfBirth);
   const nationalities = splitNationalities(trustee.nationality);
-  // TODO map addresses and other fields
+
   const individualTrustee: TrustIndividual = {
+    ch_references: trustee.trusteeId,
     forename: trustee.trusteeForename1 ?? "",
     other_forenames: trustee.trusteeForename2 ?? "",
     surname: trustee.trusteeSurname,
@@ -153,10 +154,12 @@ const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) 
   trust.INDIVIDUALS?.push(individualTrustee);
 };
 
-const mapHistoricalBeneficialOwnerData = (trustee: IndividualTrusteeData, trust: Trust) => {
+const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   const ceasedDate = mapInputDate(trustee.ceasedDate);
   const dateOfBirth = mapInputDate(trustee.dateOfBirth);
-  const historicalBeneficialOwner: TrustHistoricalBeneficialOwner = {
+
+  const historicalIndividualTrustee: TrustHistoricalBeneficialOwner = {
+    ch_references: trustee.trusteeId,
     forename: trustee.trusteeForename1 ?? "",
     other_forenames: trustee.trusteeForename2 ?? "",
     surname: trustee.trusteeSurname,
@@ -168,7 +171,7 @@ const mapHistoricalBeneficialOwnerData = (trustee: IndividualTrusteeData, trust:
     notified_date_year: dateOfBirth?.year ?? "",
     corporate_indicator: trustee.corporateIndicator ? yesNoResponse.Yes : yesNoResponse.No
   };
-  trust.HISTORICAL_BO?.push(historicalBeneficialOwner);
+  trust.HISTORICAL_BO?.push(historicalIndividualTrustee);
 };
 
 const fetchAndMapCorporateTrustees = async (
@@ -192,7 +195,65 @@ const fetchAndMapCorporateTrustees = async (
 
 const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
   logger.debug("Mapping corporate trustee " + trustee.trusteeId + " for trust " + trust.trust_id);
-  // TODO: map corporate trustee data
+  if (trustee.ceasedDate !== undefined) {
+    mapHistoricalCorporateTrusteeData(trustee, trust);
+    return;
+  }
+  const appointmentDate = mapInputDate(trustee.appointmentDate);
+
+  const corporateTrustee: TrustCorporate = {
+    ch_references: trustee.trusteeId,
+    type: mapTrusteeType(trustee.trusteeTypeId),
+    name: trustee.trusteeName,
+    date_became_interested_person_day: appointmentDate?.day ?? "",
+    date_became_interested_person_month: appointmentDate?.month ?? "",
+    date_became_interested_person_year: appointmentDate?.year ?? "",
+    is_on_register_in_country_formed_in: trustee.onRegisterInCountryFormed ? yesNoResponse.Yes : yesNoResponse.No,
+    identification_legal_authority: trustee.lawGoverned ?? "",
+    identification_legal_form: trustee.legalForm ?? "",
+    identification_place_registered: trustee.registerLocation ?? "",
+    identification_registration_number: trustee.registrationNumber ?? "",
+    identification_country_registration: trustee.country ?? "",
+    ro_address_premises: "",
+    ro_address_line_1: "",
+    ro_address_line_2: "",
+    ro_address_locality: "",
+    ro_address_region: "",
+    ro_address_country: "",
+    ro_address_postal_code: "",
+    ro_address_care_of: "",
+    ro_address_po_box: "",
+
+    sa_address_premises: "",
+    sa_address_line_1: "",
+    sa_address_line_2: "",
+    sa_address_locality: "",
+    sa_address_region: "",
+    sa_address_country: "",
+    sa_address_postal_code: "",
+    sa_address_care_of: "",
+    sa_address_po_box: "",
+    is_service_address_same_as_principal_address: yesNoResponse.No
+  };
+  trust.CORPORATES?.push(corporateTrustee);
+};
+
+const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
+  const ceasedDate = mapInputDate(trustee.ceasedDate);
+  const appointmentDate = mapInputDate(trustee.appointmentDate);
+
+  const historicalCorporateTrustee: TrustHistoricalBeneficialOwner = {
+    ch_references: trustee.trusteeId,
+    corporate_name: trustee.trusteeName,
+    ceased_date_day: ceasedDate?.day ?? "",
+    ceased_date_month: ceasedDate?.month ?? "",
+    ceased_date_year: ceasedDate?.year ?? "",
+    notified_date_day: appointmentDate?.day ?? "",
+    notified_date_month: appointmentDate?.month ?? "",
+    notified_date_year: appointmentDate?.year ?? "",
+    corporate_indicator: yesNoResponse.Yes
+  };
+  trust.HISTORICAL_BO?.push(historicalCorporateTrustee);
 };
 
 export const retrieveTrustLinks = async (req: Request, appData: ApplicationData) => {

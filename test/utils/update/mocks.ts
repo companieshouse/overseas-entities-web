@@ -2,6 +2,7 @@ import { CompanyProfile } from '@companieshouse/api-sdk-node/dist/services/compa
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { CompanyOfficer } from '@companieshouse/api-sdk-node/dist/services/company-officers/types';
 import { TrustData, IndividualTrusteeData, CorporateTrusteeData } from '@companieshouse/api-sdk-node/dist/services/overseas-entities/types';
+import { RoleWithinTrustType } from '../../../src/model/role.within.trust.type.model';
 
 export const companyDetailsMock: CompanyProfile = {
   companyName: "acme",
@@ -251,9 +252,9 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     trusteeForename2: "Individual",
     trusteeSurname: "Jones",
     dateOfBirth: "1990-01-01",
-    nationality: "British",
+    nationality: "British, Irish",
     corporateIndicator: "N",
-    trusteeTypeId: "50002",
+    trusteeTypeId: "5002",
     appointmentDate: "2020-01-01",
     usualResidentialAddress: {
       addressLine1: "Pak Hok Ting St",
@@ -284,7 +285,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     corporateIndicator: "N",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
-    trusteeTypeId: "50002"
+    trusteeTypeId: "5004"
   }
 ];
 
@@ -293,8 +294,14 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     trusteeId: "12345678",
     trusteeName: "Test Corporate Trustee",
     corporateIndicator: "N",
-    trusteeTypeId: "50002",
+    trusteeTypeId: "5003",
     appointmentDate: "2020-01-01",
+    onRegisterInCountryFormed: "1",
+    registerLocation: "USA",
+    registrationNumber: "1234567890",
+    lawGoverned: "Sheriff",
+    legalForm: "The Wild West",
+    country: "UNITED STATES",
     registeredOfficeAddress: {
       addressLine1: "Brynat St",
       careOf: "",
@@ -322,7 +329,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     corporateIndicator: "N",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
-    trusteeTypeId: "50002"
+    trusteeTypeId: "5002"
   }
 ];
 
@@ -344,9 +351,9 @@ export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "sa_address_postal_code": "56335",
     "sa_address_premises": "100",
     "sa_address_region": "Sierra Madre",
-    "second_nationality": undefined,
+    "second_nationality": "Irish",
     "surname": "Jones",
-    "type": "Beneficiary",
+    "type": RoleWithinTrustType.BENEFICIARY,
     "ura_address_care_of": "",
     "ura_address_country": "Honk Kong",
     "ura_address_line_1": "Pak Hok Ting St",
@@ -364,7 +371,7 @@ export const MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK =
     "ceased_date_month": "3",
     "ceased_date_year": "2020",
     "ch_references": "87654321",
-    "corporate_indicator": 1,
+    "corporate_indicator": 0,
     "forename": "Test Individual Trustee 2",
     "notified_date_day": "",
     "notified_date_month": "",
@@ -379,12 +386,12 @@ export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
     "date_became_interested_person_day": "1",
     "date_became_interested_person_month": "1",
     "date_became_interested_person_year": "2020",
-    "identification_country_registration": "",
-    "identification_legal_authority": "",
-    "identification_legal_form": "",
-    "identification_place_registered": "",
-    "identification_registration_number": "",
-    "is_on_register_in_country_formed_in": 0,
+    "identification_country_registration": "UNITED STATES",
+    "identification_legal_authority": "Sheriff",
+    "identification_legal_form": "The Wild West",
+    "identification_place_registered": "USA",
+    "identification_registration_number": "1234567890",
+    "is_on_register_in_country_formed_in": 1,
     "is_service_address_same_as_principal_address": 0,
     "name": "Test Corporate Trustee",
     "ro_address_care_of": "",
@@ -405,7 +412,7 @@ export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
     "sa_address_postal_code": "abcd",
     "sa_address_premises": "2",
     "sa_address_region": "Banten",
-    "type": "Beneficiary"
+    "type": RoleWithinTrustType.SETTLOR
   };
 
 export const MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK =

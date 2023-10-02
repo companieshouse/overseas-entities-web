@@ -171,7 +171,7 @@ const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trus
     notified_date_day: dateOfBirth?.day ?? "",
     notified_date_month: dateOfBirth?.month ?? "",
     notified_date_year: dateOfBirth?.year ?? "",
-    corporate_indicator: trustee.corporateIndicator ? yesNoResponse.Yes : yesNoResponse.No
+    corporate_indicator: yesNoResponse.No
   };
   trust.HISTORICAL_BO?.push(historicalIndividualTrustee);
 };

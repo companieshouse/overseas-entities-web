@@ -193,10 +193,10 @@ describe("Who is making filing controller tests", () => {
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      // Seems to receive due diligence for this line not overseas entities due diligence
       // expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
     });
 
@@ -208,6 +208,7 @@ describe("Who is making filing controller tests", () => {
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(config.DUE_DILIGENCE_URL);
       expect(resp.header.location).toEqual(config.DUE_DILIGENCE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);

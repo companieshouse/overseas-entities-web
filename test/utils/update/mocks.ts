@@ -286,7 +286,39 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
     trusteeTypeId: "5004"
-  }
+  },
+  {
+    trusteeId: "abscdefg",
+    trusteeForename1: "Test Individual Trustee 3",
+    trusteeForename2: "John",
+    trusteeSurname: "Smith",
+    dateOfBirth: "1988-12-01",
+    nationality: "German",
+    corporateIndicator: "N",
+    trusteeTypeId: "5001",
+    appointmentDate: "2022-01-01",
+    usualResidentialAddress: {
+      addressLine1: "Park lane",
+      careOf: "Doorkeeper",
+      country: "US",
+      locality: "San Francisco",
+      poBox: "8439",
+      premises: "1A",
+      postalCode: "12345",
+      region: "California"
+    },
+    serviceAddress: {
+      addressLine1: "Broadway",
+      addressLine2: "Avenue",
+      careOf: "",
+      country: "USA",
+      locality: "New York",
+      poBox: "",
+      premises: "66",
+      postalCode: "7A81",
+      region: "Manhattan"
+    },
+  },
 ];
 
 export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
@@ -335,6 +367,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
 
 export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
   {
+    "id": "1",
     "ch_references": "12345678",
     "dob_day": "1",
     "dob_month": "1",
@@ -365,8 +398,42 @@ export const MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "ura_address_region": "Shing Mun"
   };
 
+export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
+  {
+    "id": "2",
+    "ch_references": "abscdefg",
+    "dob_day": "1",
+    "dob_month": "12",
+    "dob_year": "1988",
+    "forename": "Test Individual Trustee 3",
+    "nationality": "German",
+    "other_forenames": "John",
+    "sa_address_care_of": "",
+    "sa_address_country": "USA",
+    "sa_address_line_1": "Broadway",
+    "sa_address_line_2": "Avenue",
+    "sa_address_locality": "New York",
+    "sa_address_po_box": "",
+    "sa_address_postal_code": "7A81",
+    "sa_address_premises": "66",
+    "sa_address_region": "Manhattan",
+    "second_nationality": undefined,
+    "surname": "Smith",
+    "type": "Beneficiary",
+    "ura_address_care_of": "Doorkeeper",
+    "ura_address_country": "US",
+    "ura_address_line_1": "Park lane",
+    "ura_address_line_2": undefined,
+    "ura_address_locality": "San Francisco",
+    "ura_address_po_box": "8439",
+    "ura_address_postal_code": "12345",
+    "ura_address_premises": "1A",
+    "ura_address_region": "California"
+  };
+
 export const MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK =
   {
+    "id": "1",
     "ceased_date_day": "3",
     "ceased_date_month": "3",
     "ceased_date_year": "2020",
@@ -382,6 +449,7 @@ export const MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK =
 
 export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
   {
+    "id": "1",
     "ch_references": "12345678",
     "date_became_interested_person_day": "1",
     "date_became_interested_person_month": "1",
@@ -417,6 +485,7 @@ export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
 
 export const MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK =
   {
+    "id": "1",
     "ceased_date_day": "3",
     "ceased_date_month": "3",
     "ceased_date_year": "2020",

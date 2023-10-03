@@ -13,6 +13,7 @@ import {
   FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
   FETCH_TRUST_DATA_MOCK,
   MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
+  MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK,
   MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK,
   MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
   MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK
@@ -60,6 +61,18 @@ describe("Test fetching and mapping of Trust data", () => {
       trust_id: "1",
       trust_name: "Test Trust",
       unable_to_obtain_all_trust_info: "No",
+      INDIVIDUALS: [],
+      CORPORATES: [],
+      HISTORICAL_BO: []
+    } as Trust);
+    expect((appData.update?.review_trusts ?? [])[1]).toEqual({
+      ch_reference: "87654321",
+      creation_date_day: "2",
+      creation_date_month: "2",
+      creation_date_year: "2020",
+      trust_id: "2",
+      trust_name: "Test Trust 2",
+      unable_to_obtain_all_trust_info: "Yes",
       INDIVIDUALS: [],
       CORPORATES: [],
       HISTORICAL_BO: []
@@ -113,7 +126,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(mockLoggerError).toBeCalledTimes(2);
   });
 
-  test("mapTrustData without date of birth", () => {
+  test("mapTrustData without creation date", () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { review_trusts: [] } };
     const trustData = { ...FETCH_TRUST_DATA_MOCK[0], creationDate: undefined } as unknown as TrustData;
     const trust: Trust = {
@@ -166,9 +179,12 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
-    expect(individualTrustees).toHaveLength(1);
+    expect(individualTrustees).toHaveLength(2);
     const individualTrustee = (individualTrustees ?? [])[0];
     expect(individualTrustee).toEqual(MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
+
+    const secondIndividualTrustee = (individualTrustees ?? [])[1];
+    expect(secondIndividualTrustee).toEqual(MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK);
 
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);

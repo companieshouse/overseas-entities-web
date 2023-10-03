@@ -98,20 +98,6 @@ const fetchAndMapIndivdualTrustees = async (
   }
 };
 
-const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
-  switch (trusteeTypeId) {
-      case "5005":
-        return RoleWithinTrustType.INTERESTED_PERSON;
-      case "5004":
-        return RoleWithinTrustType.GRANTOR;
-      case "5003":
-        return RoleWithinTrustType.SETTLOR;
-      case "5002":
-      default:
-        return RoleWithinTrustType.BENEFICIARY;
-  }
-};
-
 const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   if (trustee.ceasedDate !== undefined) {
     mapHistoricalIndividualTrusteeData(trustee, trust);
@@ -121,6 +107,7 @@ const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) 
   const nationalities = splitNationalities(trustee.nationality);
 
   const individualTrustee: TrustIndividual = {
+    id: ((trust.INDIVIDUALS ?? []).length + 1).toString(),
     ch_references: trustee.trusteeId,
     forename: trustee.trusteeForename1 ?? "",
     other_forenames: trustee.trusteeForename2 ?? "",
@@ -129,27 +116,14 @@ const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) 
     dob_month: dateOfBirth?.month ?? "",
     dob_year: dateOfBirth?.year ?? "",
     nationality: nationalities[0],
-    second_nationality: nationalities[1],
+    second_nationality: nationalities.length > 1 ? nationalities[1] : undefined,
     type: mapTrusteeType(trustee.trusteeTypeId),
 
     ura_address_premises: "",
     ura_address_line_1: "",
-    ura_address_line_2: "",
     ura_address_locality: "",
-    ura_address_region: "",
     ura_address_country: "",
-    ura_address_postal_code: "",
-    ura_address_care_of: "",
-    ura_address_po_box: "",
-    sa_address_premises: "",
-    sa_address_line_1: "",
-    sa_address_line_2: "",
-    sa_address_locality: "",
-    sa_address_region: "",
-    sa_address_country: "",
-    sa_address_postal_code: "",
-    sa_address_care_of: "",
-    sa_address_po_box: ""
+    ura_address_postal_code: ""
   };
 
   mapUsualResidentialAddress(individualTrustee, trustee);
@@ -163,6 +137,7 @@ const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trus
   const dateOfBirth = mapInputDate(trustee.dateOfBirth);
 
   const historicalIndividualTrustee: TrustHistoricalBeneficialOwner = {
+    id: ((trust.HISTORICAL_BO ?? []).length + 1).toString(),
     ch_references: trustee.trusteeId,
     forename: trustee.trusteeForename1,
     other_forenames: trustee.trusteeForename2 ?? "",
@@ -205,6 +180,7 @@ const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) =>
   const appointmentDate = mapInputDate(trustee.appointmentDate);
 
   const corporateTrustee: TrustCorporate = {
+    id: ((trust.CORPORATES ?? []).length + 1).toString(),
     ch_references: trustee.trusteeId,
     type: mapTrusteeType(trustee.trusteeTypeId),
     name: trustee.trusteeName,
@@ -220,22 +196,11 @@ const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) =>
 
     ro_address_premises: "",
     ro_address_line_1: "",
-    ro_address_line_2: "",
     ro_address_locality: "",
     ro_address_region: "",
     ro_address_country: "",
     ro_address_postal_code: "",
-    ro_address_care_of: "",
-    ro_address_po_box: "",
-    sa_address_premises: "",
-    sa_address_line_1: "",
-    sa_address_line_2: "",
-    sa_address_locality: "",
-    sa_address_region: "",
-    sa_address_country: "",
-    sa_address_postal_code: "",
-    sa_address_care_of: "",
-    sa_address_po_box: "",
+
     is_service_address_same_as_principal_address: yesNoResponse.No
   };
 
@@ -250,6 +215,7 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
   const appointmentDate = mapInputDate(trustee.appointmentDate);
 
   const historicalCorporateTrustee: TrustHistoricalBeneficialOwner = {
+    id: ((trust.HISTORICAL_BO ?? []).length + 1).toString(),
     ch_references: trustee.trusteeId,
     corporate_name: trustee.trusteeName,
     ceased_date_day: ceasedDate?.day ?? "",
@@ -296,6 +262,20 @@ const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData) => {
       }
       individualBeneficialOwner.trust_ids.push(trust.trust_id);
     }
+  }
+};
+
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+  switch (trusteeTypeId) {
+      case "5005":
+        return RoleWithinTrustType.INTERESTED_PERSON;
+      case "5004":
+        return RoleWithinTrustType.GRANTOR;
+      case "5003":
+        return RoleWithinTrustType.SETTLOR;
+      case "5002":
+      default:
+        return RoleWithinTrustType.BENEFICIARY;
   }
 };
 

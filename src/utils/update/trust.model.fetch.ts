@@ -133,26 +133,29 @@ const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) 
     second_nationality: nationalities[1],
     type: mapTrusteeType(trustee.trusteeTypeId),
 
-    ura_address_premises: trustee.usualResidentialAddress?.premises ?? "",
-    ura_address_line_1: trustee.usualResidentialAddress?.addressLine1 ?? "",
-    ura_address_line_2: trustee.usualResidentialAddress?.addressLine2,
-    ura_address_locality: trustee.usualResidentialAddress?.locality ?? "",
-    ura_address_region: trustee.usualResidentialAddress?.region,
-    ura_address_country: trustee.usualResidentialAddress?.country ?? "",
-    ura_address_postal_code: trustee.usualResidentialAddress?.postalCode ?? "",
-    ura_address_care_of: trustee.usualResidentialAddress?.careOf,
-    ura_address_po_box: trustee.usualResidentialAddress?.poBox,
-
-    sa_address_premises: trustee.serviceAddress?.premises ?? "",
-    sa_address_line_1: trustee.serviceAddress?.addressLine1 ?? "",
-    sa_address_line_2: trustee.serviceAddress?.addressLine2 ?? "",
-    sa_address_locality: trustee.serviceAddress?.locality ?? "",
-    sa_address_region: trustee.serviceAddress?.region ?? "",
-    sa_address_country: trustee.serviceAddress?.country ?? "",
-    sa_address_postal_code: trustee.serviceAddress?.postalCode ?? "",
-    sa_address_care_of: trustee.serviceAddress?.careOf ?? "",
-    sa_address_po_box: trustee.serviceAddress?.poBox ?? ""
+    ura_address_premises: "",
+    ura_address_line_1: "",
+    ura_address_line_2: "",
+    ura_address_locality: "",
+    ura_address_region: "",
+    ura_address_country: "",
+    ura_address_postal_code: "",
+    ura_address_care_of: "",
+    ura_address_po_box: "",
+    sa_address_premises: "",
+    sa_address_line_1: "",
+    sa_address_line_2: "",
+    sa_address_locality: "",
+    sa_address_region: "",
+    sa_address_country: "",
+    sa_address_postal_code: "",
+    sa_address_care_of: "",
+    sa_address_po_box: ""
   };
+
+  mapUsualResidentialAddress(individualTrustee, trustee);
+  mapServiceAddress(individualTrustee, trustee);
+
   trust.INDIVIDUALS?.push(individualTrustee);
 };
 
@@ -217,27 +220,30 @@ const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) =>
     identification_registration_number: trustee.registrationNumber ?? "",
     identification_country_registration: trustee.country ?? "",
 
-    ro_address_premises: trustee.registeredOfficeAddress?.premises ?? "",
-    ro_address_line_1: trustee.registeredOfficeAddress?.addressLine1 ?? "",
-    ro_address_line_2: trustee.registeredOfficeAddress?.addressLine2,
-    ro_address_locality: trustee.registeredOfficeAddress?.locality ?? "",
-    ro_address_region: trustee.registeredOfficeAddress?.region ?? "",
-    ro_address_country: trustee.registeredOfficeAddress?.country ?? "",
-    ro_address_postal_code: trustee.registeredOfficeAddress?.postalCode ?? "",
-    ro_address_care_of: trustee.registeredOfficeAddress?.careOf,
-    ro_address_po_box: trustee.registeredOfficeAddress?.poBox,
-
-    sa_address_premises: trustee.serviceAddress?.premises,
-    sa_address_line_1: trustee.serviceAddress?.addressLine1,
-    sa_address_line_2: trustee.serviceAddress?.addressLine2,
-    sa_address_locality: trustee.serviceAddress?.locality,
-    sa_address_region: trustee.serviceAddress?.region,
-    sa_address_country: trustee.serviceAddress?.country,
-    sa_address_postal_code: trustee.serviceAddress?.postalCode,
-    sa_address_care_of: trustee.serviceAddress?.careOf,
-    sa_address_po_box: trustee.serviceAddress?.poBox,
+    ro_address_premises: "",
+    ro_address_line_1: "",
+    ro_address_line_2: "",
+    ro_address_locality: "",
+    ro_address_region: "",
+    ro_address_country: "",
+    ro_address_postal_code: "",
+    ro_address_care_of: "",
+    ro_address_po_box: "",
+    sa_address_premises: "",
+    sa_address_line_1: "",
+    sa_address_line_2: "",
+    sa_address_locality: "",
+    sa_address_region: "",
+    sa_address_country: "",
+    sa_address_postal_code: "",
+    sa_address_care_of: "",
+    sa_address_po_box: "",
     is_service_address_same_as_principal_address: yesNoResponse.No
   };
+
+  mapResidentialAddress(corporateTrustee, trustee);
+  mapServiceAddress(corporateTrustee, trustee);
+
   trust.CORPORATES?.push(corporateTrustee);
 };
 
@@ -279,4 +285,44 @@ export const retrieveTrustLinks = async (req: Request, appData: ApplicationData)
     logger.info("Loaded trust link " + trustLink.trustId + " for coprporate appointment " + trustLink.corporateBodyAppointmentId);
     // TODO: map trust link data
   }
+};
+
+const mapResidentialAddress = (trustee: TrustCorporate, trusteeData: CorporateTrusteeData) => {
+  trustee.ro_address_premises = trusteeData.registeredOfficeAddress?.premises ?? "";
+  trustee.ro_address_line_1 = trusteeData.registeredOfficeAddress?.addressLine1 ?? "";
+  trustee.ro_address_line_2 = trusteeData.registeredOfficeAddress?.addressLine2;
+  trustee.ro_address_locality = trusteeData.registeredOfficeAddress?.locality ?? "";
+  trustee.ro_address_region = trusteeData.registeredOfficeAddress?.region ?? "";
+  trustee.ro_address_country = trusteeData.registeredOfficeAddress?.country ?? "";
+  trustee.ro_address_postal_code = trusteeData.registeredOfficeAddress?.postalCode ?? "";
+  trustee.ro_address_care_of = trusteeData.registeredOfficeAddress?.careOf;
+  trustee.ro_address_po_box = trusteeData.registeredOfficeAddress?.poBox;
+};
+
+const mapServiceAddress = (trustee: TrustIndividual | TrustCorporate, trusteeData: IndividualTrusteeData | CorporateTrusteeData) => {
+  trustee.sa_address_premises = trusteeData.serviceAddress?.premises ?? "";
+  trustee.sa_address_line_1 = trusteeData.serviceAddress?.addressLine1 ?? "";
+  trustee.sa_address_line_2 = trusteeData.serviceAddress?.addressLine2;
+  trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
+  trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
+  trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
+  trustee.sa_address_region = trusteeData.serviceAddress?.region ?? "";
+  trustee.sa_address_country = trusteeData.serviceAddress?.country ?? "";
+  trustee.sa_address_postal_code = trusteeData.serviceAddress?.postalCode ?? "";
+  trustee.sa_address_care_of = trusteeData.serviceAddress?.careOf ?? "";
+  trustee.sa_address_po_box = trusteeData.serviceAddress?.poBox ?? "";
+};
+
+const mapUsualResidentialAddress = (trustee: TrustIndividual, trusteeData: IndividualTrusteeData) => {
+  trustee.ura_address_premises = trusteeData.usualResidentialAddress?.premises ?? "";
+  trustee.ura_address_line_1 = trusteeData.usualResidentialAddress?.addressLine1 ?? "";
+  trustee.ura_address_line_2 = trusteeData.usualResidentialAddress?.addressLine2;
+  trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
+  trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
+  trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
+  trustee.ura_address_region = trusteeData.usualResidentialAddress?.region;
+  trustee.ura_address_country = trusteeData.usualResidentialAddress?.country ?? "";
+  trustee.ura_address_postal_code = trusteeData.usualResidentialAddress?.postalCode ?? "";
+  trustee.ura_address_care_of = trusteeData.usualResidentialAddress?.careOf;
+  trustee.ura_address_po_box = trusteeData.usualResidentialAddress?.poBox;
 };

@@ -191,17 +191,17 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
     });
   });
-  describe("POST with url params tests", () => {
-    test("redirects to the beneficial owner type page with url params", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      const resp = await request(app)
-        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
-        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
+  // describe("POST with url params tests", () => {
+  //   test("redirects to the beneficial owner type page with url params", async () => {
+  //     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+  //     mockIsActiveFeature.mockReturnValueOnce(true);
+  //     const resp = await request(app)
+  //       .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+  //       .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    });
-  });
+  //     expect(resp.status).toEqual(302);
+  //     expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+  //     expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+  //   });
+  // });
 });

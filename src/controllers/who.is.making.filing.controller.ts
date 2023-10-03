@@ -6,7 +6,6 @@ import { getUrlWithParamsToPath } from "../utils/url";
 import {
   WHO_IS_MAKING_FILING_PAGE,
   PRESENTER_URL,
-  PRESENTER_WITH_PARAMS_URL,
   DUE_DILIGENCE_URL,
   DUE_DILIGENCE_WITH_PARAMS_URL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
@@ -15,11 +14,7 @@ import {
 import { getWhoIsFiling, postWhoIsFiling } from "../utils/who.is.making.filing";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  let prevPageUrl = PRESENTER_URL;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-    prevPageUrl = getUrlWithParamsToPath(PRESENTER_WITH_PARAMS_URL, req);
-  }
-  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, prevPageUrl);
+  getWhoIsFiling(req, res, next, WHO_IS_MAKING_FILING_PAGE, PRESENTER_URL);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

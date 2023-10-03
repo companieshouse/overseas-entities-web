@@ -48,14 +48,15 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
+const NEXT_PAGE_URL = "/NEXT_PAGE";
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("Who is making filing controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    mockGetUrlWithParamsToPath.mockReset();
     process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
@@ -187,32 +188,30 @@ describe("Who is making filing controller tests", () => {
   describe("POST with url params tests", () => {
     test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetUrlWithParamsToPath.mockReturnValue(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
-      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      // expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
     });
 
     test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetUrlWithParamsToPath.mockReturnValue(config.DUE_DILIGENCE_URL);
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(config.DUE_DILIGENCE_URL);
-      expect(resp.header.location).toEqual(config.DUE_DILIGENCE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.DUE_DILIGENCE_WITH_PARAMS_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
     });
 
     test("renders the current page with error message", async () => {

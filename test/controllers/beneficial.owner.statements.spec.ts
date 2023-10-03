@@ -3,7 +3,8 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.entity.middleware');
-
+jest.mock('../../src/utils/feature.flag');
+jest.mock("../../src/utils/url");
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
 
 import request from "supertest";
@@ -38,6 +39,8 @@ import {
 } from "../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { hasEntity } from "../../src/middleware/navigation/has.entity.middleware";
+import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockHasEntityMiddleware = hasEntity as jest.Mock;
 mockHasEntityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -49,6 +52,11 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckBOsDetailsEntered = checkBOsDetailsEntered as jest.Mock;
 const mockCheckMOsDetailsEntered = checkMOsDetailsEntered as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const NEXT_PAGE_URL = "/NEXT_PAGE";
+
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 const redirectUrl = `${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=`;
 
@@ -56,6 +64,8 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
@@ -179,6 +189,19 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+    });
+  });
+  describe("POST with url params tests", () => {
+    test("redirects to the beneficial owner type page with url params", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

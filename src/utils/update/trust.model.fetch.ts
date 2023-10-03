@@ -252,7 +252,7 @@ export const retrieveTrustLinks = async (req: Request, appData: ApplicationData)
 };
 
 const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData) => {
-  const trust = appData.update?.review_trusts?.find((trust) => trust.ch_reference === trustLink.trustId);
+  const trust = appData.update?.review_trusts?.find(t => t.ch_reference === trustLink.trustId);
   if (trust) {
     const individualBeneficialOwner = appData.beneficial_owners_individual?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.corporateBodyAppointmentId);
     if (individualBeneficialOwner) {

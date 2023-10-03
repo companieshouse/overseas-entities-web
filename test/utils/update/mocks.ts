@@ -306,18 +306,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
       premises: "1A",
       postalCode: "12345",
       region: "California"
-    },
-    serviceAddress: {
-      addressLine1: "Broadway",
-      addressLine2: "Avenue",
-      careOf: "",
-      country: "USA",
-      locality: "New York",
-      poBox: "",
-      premises: "66",
-      postalCode: "7A81",
-      region: "Manhattan"
-    },
+    }
   },
 ];
 
@@ -325,7 +314,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
   {
     trusteeId: "12345678",
     trusteeName: "Test Corporate Trustee",
-    corporateIndicator: "N",
+    corporateIndicator: "Y",
     trusteeTypeId: "5003",
     appointmentDate: "2020-01-01",
     onRegisterInCountryFormed: "1",
@@ -358,10 +347,52 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
   {
     trusteeId: "87654321",
     trusteeName: "Test Corporate Trustee 2",
-    corporateIndicator: "N",
+    corporateIndicator: "Y",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
-    trusteeTypeId: "5002"
+    trusteeTypeId: "5005"
+  },
+  {
+    trusteeId: "abcdefg",
+    trusteeName: "Test Corporate Trustee 3",
+    corporateIndicator: "Y",
+    trusteeTypeId: "5004",
+    appointmentDate: "2023-3-03",
+    onRegisterInCountryFormed: "0",
+    lawGoverned: "Sheriff",
+    legalForm: "The Wild West",
+    country: "UNITED STATES",
+    registeredOfficeAddress: {
+      addressLine1: "Boroadway",
+      careOf: "",
+      country: "USA",
+      locality: "Manhattan",
+      poBox: "",
+      premises: "10",
+      postalCode: "97453874",
+      region: "New York"
+    },
+  },
+  {
+    trusteeId: "abcdefg",
+    trusteeName: "Test Corporate Trustee 4",
+    corporateIndicator: "Y",
+    trusteeTypeId: "5005",
+    appointmentDate: "1990-4-30",
+    onRegisterInCountryFormed: "0",
+    lawGoverned: "Sheriff",
+    legalForm: "The Wild West",
+    country: "UNITED STATES",
+    registeredOfficeAddress: {
+      addressLine1: "Boroadway",
+      careOf: "",
+      country: "USA",
+      locality: "Manhattan",
+      poBox: "",
+      premises: "10",
+      postalCode: "97453874",
+      region: "New York"
+    }
   }
 ];
 
@@ -409,14 +440,14 @@ export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "nationality": "German",
     "other_forenames": "John",
     "sa_address_care_of": "",
-    "sa_address_country": "USA",
-    "sa_address_line_1": "Broadway",
-    "sa_address_line_2": "Avenue",
-    "sa_address_locality": "New York",
+    "sa_address_country": "",
+    "sa_address_line_1": "",
+    "sa_address_line_2": undefined,
+    "sa_address_locality": "",
     "sa_address_po_box": "",
-    "sa_address_postal_code": "7A81",
-    "sa_address_premises": "66",
-    "sa_address_region": "Manhattan",
+    "sa_address_postal_code": "",
+    "sa_address_premises": "",
+    "sa_address_region": "",
     "second_nationality": undefined,
     "surname": "Smith",
     "type": "Beneficiary",
@@ -431,7 +462,7 @@ export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "ura_address_region": "California"
   };
 
-export const MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK =
+export const MAPPED_FETCH_HISTORICAL_INDIVIDUAL_DATA_MOCK =
   {
     "id": "1",
     "ceased_date_day": "3",
@@ -483,7 +514,79 @@ export const MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK =
     "type": RoleWithinTrustType.SETTLOR
   };
 
-export const MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK =
+export const MAPPED_FETCH_SECOND_CORPORATE_TRUSTEE_DATA_MOCK =
+  {
+    "ch_references": "abcdefg",
+    "date_became_interested_person_day": "3",
+    "date_became_interested_person_month": "3",
+    "date_became_interested_person_year": "2023",
+    "id": "2",
+    "identification_country_registration": "UNITED STATES",
+    "identification_legal_authority": "Sheriff",
+    "identification_legal_form": "The Wild West",
+    "identification_place_registered": "",
+    "identification_registration_number": "",
+    "is_on_register_in_country_formed_in": 1,
+    "is_service_address_same_as_principal_address": 0,
+    "name": "Test Corporate Trustee 3",
+    "ro_address_care_of": "",
+    "ro_address_country": "USA",
+    "ro_address_line_1": "Boroadway",
+    "ro_address_line_2": undefined,
+    "ro_address_locality": "Manhattan",
+    "ro_address_po_box": "",
+    "ro_address_postal_code": "97453874",
+    "ro_address_premises": "10",
+    "ro_address_region": "New York",
+    "sa_address_care_of": "",
+    "sa_address_country": "",
+    "sa_address_line_1": "",
+    "sa_address_line_2": undefined,
+    "sa_address_locality": "",
+    "sa_address_po_box": "",
+    "sa_address_postal_code": "",
+    "sa_address_premises": "",
+    "sa_address_region": "",
+    "type": "Grantor"
+  };
+
+export const MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK =
+  {
+    "ch_references": "abcdefg",
+    "date_became_interested_person_day": "30",
+    "date_became_interested_person_month": "4",
+    "date_became_interested_person_year": "1990",
+    "id": "3",
+    "identification_country_registration": "UNITED STATES",
+    "identification_legal_authority": "Sheriff",
+    "identification_legal_form": "The Wild West",
+    "identification_place_registered": "",
+    "identification_registration_number": "",
+    "is_on_register_in_country_formed_in": 1,
+    "is_service_address_same_as_principal_address": 0,
+    "name": "Test Corporate Trustee 4",
+    "ro_address_care_of": "",
+    "ro_address_country": "USA",
+    "ro_address_line_1": "Boroadway",
+    "ro_address_line_2": undefined,
+    "ro_address_locality": "Manhattan",
+    "ro_address_po_box": "",
+    "ro_address_postal_code": "97453874",
+    "ro_address_premises": "10",
+    "ro_address_region": "New York",
+    "sa_address_care_of": "",
+    "sa_address_country": "",
+    "sa_address_line_1": "",
+    "sa_address_line_2": undefined,
+    "sa_address_locality": "",
+    "sa_address_po_box": "",
+    "sa_address_postal_code": "",
+    "sa_address_premises": "",
+    "sa_address_region": "",
+    "type": "Interested_Person",
+  };
+
+export const MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK =
   {
     "id": "1",
     "ceased_date_day": "3",

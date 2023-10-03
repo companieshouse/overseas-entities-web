@@ -14,9 +14,11 @@ import {
   FETCH_TRUST_DATA_MOCK,
   MAPPED_FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
   MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK,
-  MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK,
+  MAPPED_FETCH_HISTORICAL_INDIVIDUAL_DATA_MOCK,
   MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
-  MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK
+  MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK,
+  MAPPED_FETCH_SECOND_CORPORATE_TRUSTEE_DATA_MOCK,
+  MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK
 } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
@@ -189,7 +191,7 @@ describe("Test fetching and mapping of Trust data", () => {
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);
     const historicalTrustee = (historicalTrustees ?? [])[0];
-    expect(historicalTrustee).toEqual(MAPPED_FETCHED_HISTORICAL_INDIVIDUAL_DATA_MOCK);
+    expect(historicalTrustee).toEqual(MAPPED_FETCH_HISTORICAL_INDIVIDUAL_DATA_MOCK);
   });
 
   test("should fetch and map corporate trustees", async () => {
@@ -205,13 +207,17 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
-    expect(corporateTrustees).toHaveLength(1);
+    expect(corporateTrustees).toHaveLength(3);
     const corporateTrustee = (corporateTrustees ?? [])[0];
     expect(corporateTrustee).toEqual(MAPPED_FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
+    const secondCorporateTrustee = (corporateTrustees ?? [])[1];
+    expect(secondCorporateTrustee).toEqual(MAPPED_FETCH_SECOND_CORPORATE_TRUSTEE_DATA_MOCK);
+    const thirdCorporateTrustee = (corporateTrustees ?? [])[2];
+    expect(thirdCorporateTrustee).toEqual(MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK);
     const historicalTrustees = ((appData.update?.review_trusts ?? [])[0]).HISTORICAL_BO;
     expect(historicalTrustees).toHaveLength(1);
     const historicalTrustee = (historicalTrustees ?? [])[0];
-    expect(historicalTrustee).toEqual(MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK);
+    expect(historicalTrustee).toEqual(MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK);
   });
 
   test("should fetch and map trust links", async () => {

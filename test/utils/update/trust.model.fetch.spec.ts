@@ -1,4 +1,4 @@
-import { retrieveTrustData, mapTrustData } from "../../../src/utils/update/trust.model.fetch";
+import { retrieveTrustData, mapTrustData, mapIndividualTrusteeData, mapCorporateTrusteeData } from "../../../src/utils/update/trust.model.fetch";
 import { describe, expect, jest, test } from '@jest/globals';
 import {
   getTrustData,
@@ -21,7 +21,7 @@ import {
   MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK
 } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
-import { TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
+import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { ApplicationData } from "../../../src/model";
 import { Request } from "express";
 
@@ -266,5 +266,57 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1", "2"]);
     expect(appData.beneficial_owners_individual[1].trust_ids).toEqual([]);
     expect(appData.beneficial_owners_individual[2].trust_ids).toEqual(["2"]);
+  });
+
+  test("should not any add trustees to trust if no lists in trust", () => {
+    const trust: Trust = {
+      trust_id: "1",
+      ch_reference: "12345678",
+      trust_name: "Test Trust",
+      creation_date_day: "1",
+      creation_date_month: "1",
+      creation_date_year: "2020",
+      unable_to_obtain_all_trust_info: "No"
+    };
+    const trusteeData: IndividualTrusteeData = {
+      trusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      appointmentDate: "2021-01-01"
+    };
+    mapIndividualTrusteeData(trusteeData, trust);
+    const historicalTrusteeData: IndividualTrusteeData = {
+      trusteeId: "2",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      appointmentDate: "2021-01-01",
+      ceasedDate: "2023-03-03"
+    };
+    mapIndividualTrusteeData(historicalTrusteeData, trust);
+    const corporateTrusteeData: CorporateTrusteeData = {
+      trusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      appointmentDate: "2021-01-01"
+    };
+    mapCorporateTrusteeData(corporateTrusteeData, trust);
+    const historicalCorporateTrusteeData: CorporateTrusteeData = {
+      trusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      appointmentDate: "2021-01-01",
+      ceasedDate: "2022-02-02"
+    };
+    mapCorporateTrusteeData(historicalCorporateTrusteeData, trust);
+
+    expect(trust.INDIVIDUALS).toEqual(undefined);
+    expect(trust.CORPORATES).toEqual(undefined);
+    expect(trust.HISTORICAL_BO).toEqual(undefined);
   });
 });

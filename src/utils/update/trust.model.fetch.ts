@@ -24,7 +24,7 @@ export const retrieveTrustData = async (req: Request, appData: ApplicationData) 
   }
 };
 
-const hasFetchedTrustData = (appData: ApplicationData) => appData?.update?.trust_data_fetched ?? false;
+const hasFetchedTrustData = (appData: ApplicationData) => appData.update?.trust_data_fetched ?? false;
 
 const initialiseTrustUpdateAppData = (appData: ApplicationData) => {
   if (!appData.update) {
@@ -98,7 +98,7 @@ const fetchAndMapIndivdualTrustees = async (
   }
 };
 
-const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
+export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   if (trustee.ceasedDate !== undefined) {
     mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
@@ -172,7 +172,7 @@ const fetchAndMapCorporateTrustees = async (
   }
 };
 
-const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
+export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
   if (trustee.ceasedDate !== undefined) {
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;

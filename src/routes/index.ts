@@ -144,6 +144,8 @@ router.post(config.PRESENTER_WITH_PARAMS_URL, authentication, navigation.hasOver
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
+router.get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
+router.post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
 
 router.get(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, dueDiligence.get);
 router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);

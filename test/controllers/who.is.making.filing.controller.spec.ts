@@ -82,6 +82,45 @@ describe("Who is making filing controller tests", () => {
     });
   });
 
+  describe("GET with url Params tests", () => {
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(RADIO_BUTTON_AGENT_SELECTED);
+      expect(resp.text).not.toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(UK_REGULATED_AGENT);
+    });
+
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.AGENT}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RADIO_BUTTON_AGENT_SELECTED);
+    });
+
+    test(`renders the ${config.WHO_IS_MAKING_FILING_PAGE} page with radios selected to ${WhoIsRegisteringType.SOMEONE_ELSE}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(RADIO_BUTTON_SOMEONE_ELSE_SELECTED);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
   describe("POST tests", () => {
     test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
       const resp = await request(app)
@@ -122,6 +161,53 @@ describe("Who is making filing controller tests", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(config.WHO_IS_MAKING_FILING_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
+  describe("POST with url params tests", () => {
+    test(`redirect the ${config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.SOMEONE_ELSE} is selected`, async () => {
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.SOMEONE_ELSE });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${config.DUE_DILIGENCE_URL} page when ${WhoIsRegisteringType.AGENT} is selected`, async () => {
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
+        .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.DUE_DILIGENCE_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with error message", async () => {
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(WHO_IS_MAKING_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.SELECT_WHO_IS_MAKING_FILING);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+    });
+
+    test("catch error when posting the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL)
         .send({ [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT });
 
       expect(resp.status).toEqual(500);

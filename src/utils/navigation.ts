@@ -137,12 +137,17 @@ export const NAVIGATION: Navigation = {
   [config.PRESENTER_WITH_PARAMS_URL]: {
     currentPage: config.PRESENTER_PAGE,
     previousPage: () => config.OVERSEAS_NAME_URL,
-    nextPage: [config.WHO_IS_MAKING_FILING_URL]
+    nextPage: [config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL]
   },
   [config.WHO_IS_MAKING_FILING_URL]: {
     currentPage: config.WHO_IS_MAKING_FILING_PAGE,
     previousPage: () => config.PRESENTER_URL,
     nextPage: [config.DUE_DILIGENCE_URL, config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]
+  },
+  [config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL]: {
+    currentPage: config.WHO_IS_MAKING_FILING_PAGE,
+    previousPage: () => config.PRESENTER_WITH_PARAMS_URL,
+    nextPage: [config.DUE_DILIGENCE_WITH_PARAMS_URL, config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL]
   },
   [config.DUE_DILIGENCE_URL]: {
     currentPage: config.DUE_DILIGENCE_PAGE,

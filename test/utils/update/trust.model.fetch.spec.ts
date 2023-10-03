@@ -50,7 +50,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(7);
+    expect(mockLoggerInfo).toBeCalledTimes(5);
     expect(appData.update?.review_trusts).toHaveLength(2);
     expect((appData.update?.review_trusts ?? [])[0]).toEqual({
       ch_reference: "12345678",
@@ -163,7 +163,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(8);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
     expect(individualTrustees).toHaveLength(1);
@@ -186,7 +186,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(8);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
     expect(corporateTrustees).toHaveLength(1);
@@ -196,5 +196,53 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(historicalTrustees).toHaveLength(1);
     const historicalTrustee = (historicalTrustees ?? [])[0];
     expect(historicalTrustee).toEqual(MAPPED_FETCHED_HISTORICAL_CORPORATE_DATA_MOCK);
+  });
+
+  test("should fetch and map trust links", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValueOnce([
+      {
+        trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
+        corporateBodyAppointmentId: "bolink100"
+      },
+      {
+        trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
+        corporateBodyAppointmentId: "bolink100"
+      },
+      {
+        trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
+        corporateBodyAppointmentId: "bolink300"
+      },
+    ]);
+
+    appData.beneficial_owners_individual = [
+      {
+        id: "bo1",
+        ch_reference: "bolink100"
+      },
+      {
+        id: "bo2",
+        ch_reference: "bolink200",
+        trust_ids: []
+      },
+      {
+        id: "bo3",
+        ch_reference: "bolink300",
+        trust_ids: []
+      }
+    ];
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1", "2"]);
+    expect(appData.beneficial_owners_individual[1].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_individual[2].trust_ids).toEqual(["2"]);
   });
 });

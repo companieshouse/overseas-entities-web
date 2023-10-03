@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       appData.beneficial_owners_individual[0].trust_ids = ["1"];
     }
 
-    const formData = mapperDetails.mapDetailToPage(appData, trustId, true);
+    const formData = mapperDetails.mapDetailToPage(appData, trustId, isReview);
 
     const boAvailableForTrust = [
       ...getBoIndividualAssignableToTrust(appData)

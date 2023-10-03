@@ -155,7 +155,9 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     Object.keys(details).forEach(key => trust[key] = details[key]);
 
     //  update trust  in application data at session
+    if (!isReview) {
     appData = saveTrustInApp(appData, trust);
+    }
 
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];

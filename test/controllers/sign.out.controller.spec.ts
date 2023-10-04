@@ -158,7 +158,32 @@ describe("Sign Out controller", () => {
     });
   });
 
-  describe("POST tests", () => {
+  describe("GET with url params tests", () => {
+    test(`renders the ${config.SIGN_OUT_PAGE} page with ${config.MANAGING_OFFICER_CORPORATE_PAGE} as back link`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      const resp = await request(app)
+        .get(`${config.SIGN_OUT_WITH_PARAMS_URL}?page=${config.MANAGING_OFFICER_CORPORATE_PAGE}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(SIGN_OUT_PAGE_TITLE);
+      expect(resp.text).toContain(SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_DROPDOWN_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
+      expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_DETAILS_TEXT);
+      expect(resp.text).toContain(`${config.REGISTER_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}`);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(config.SIGN_OUT_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
+  describe("All POST tests", () => {
     test(`redirects to ${config.ACCOUNTS_SIGN_OUT_URL}, the CH search page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
@@ -170,9 +195,32 @@ describe("Sign Out controller", () => {
       expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
     });
 
+    test(`redirects to ${config.ACCOUNTS_SIGN_OUT_URL}, the CH search page when yes is selected and parameters are added`, async () => {
+      const resp = await request(app)
+        .post(config.SIGN_OUT_WITH_PARAMS_URL)
+        .send({ sign_out: 'yes', previousPage });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.ACCOUNTS_SIGN_OUT_URL);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
     test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previous page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.SIGN_OUT_URL)
+        .send({ sign_out: 'no', previousPage });
+
+      expect(resp.status).toEqual(302);
+
+      expect(resp.header.location).toEqual(previousPage);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
+    test(`redirects to ${config.SOLD_LAND_FILTER_PAGE}, the previous page when no is selected and parameters are added`, async () => {
+      const resp = await request(app)
+        .post(config.SIGN_OUT_WITH_PARAMS_URL)
         .send({ sign_out: 'no', previousPage });
 
       expect(resp.status).toEqual(302);

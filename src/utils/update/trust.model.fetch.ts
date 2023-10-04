@@ -261,6 +261,15 @@ const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData) => {
         individualBeneficialOwner.trust_ids = [];
       }
       individualBeneficialOwner.trust_ids.push(trust.trust_id);
+    } else {
+      const corporateBeneficialOwner = appData.beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.corporateBodyAppointmentId);
+      if (corporateBeneficialOwner) {
+        logger.debug("Linking corporate beneficial owner " + corporateBeneficialOwner.ch_reference + " to trust " + trust.ch_reference);
+        if (corporateBeneficialOwner.trust_ids === undefined) {
+          corporateBeneficialOwner.trust_ids = [];
+        }
+        corporateBeneficialOwner.trust_ids.push(trust.trust_id);
+      }
     }
   }
 };

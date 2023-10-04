@@ -600,3 +600,35 @@ export const MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK =
     "notified_date_month": "2",
     "notified_date_year": "2020"
   };
+
+export const TRUST_LINKS_DATA_MOCK = [
+  {
+    trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
+    corporateBodyAppointmentId: "bolink100"
+  },
+  {
+    trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
+    corporateBodyAppointmentId: "bolink100"
+  },
+  {
+    trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
+    corporateBodyAppointmentId: "bolink300"
+  },
+];
+
+export const BO_TRUST_LINKS_DATA_MOCK = [
+  {
+    id: "bo1",
+    ch_reference: "bolink100"
+  },
+  {
+    id: "bo2",
+    ch_reference: "bolink200",
+    trust_ids: []
+  },
+  {
+    id: "bo3",
+    ch_reference: "bolink300",
+    trust_ids: []
+  }
+];

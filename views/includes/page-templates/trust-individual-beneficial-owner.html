@@ -1,144 +1,150 @@
-{% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-      {% include "includes/list/errors.html" %}
+{% set pageTitle = pageParams.title %}
 
-      <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
-      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageParams.title }}</h1>
-      <br> <p class="govuk-body">You can add more later.</p> <br>
+{% set trustName = pageData.trustData.trustName %}
+{% set trusteeId = formData.trusteeId %}
 
-      <form class="form" method="post">
+{% set nationality = formData.nationality %}
+{% set second_nationality = formData.second_nationality %}
 
-        {% set interestedPersonDateHtml %}
+{% set usual_residential_address_property_name_number = formData.usual_residential_address_property_name_number %}
+{% set usual_residential_address_line_1 = formData.usual_residential_address_line_1 %}
+{% set usual_residential_address_line_2 = formData.usual_residential_address_line_2 %}
+{% set usual_residential_address_town = formData.usual_residential_address_town %}
+{% set usual_residential_address_county = formData.usual_residential_address_county %}
+{% set usual_residential_address_country = formData.usual_residential_address_country %}
+{% set usual_residential_address_postcode = formData.usual_residential_address_postcode %}
+{% set is_service_address_same_as_usual_residential_address = formData.is_service_address_same_as_usual_residential_address %}
 
-        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
-        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
-        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
-          <br>
-          {% set fieldParam = {
-            name: 'dateBecameIP',
-            value: {
-              'Day': formData.dateBecameIPDay,
-              'Month': formData.dateBecameIPMonth,
-              'Year': formData.dateBecameIPYear
-            },
-            label: 'What date did they become an interested person?',
-            classes: 'govuk-fieldset__legend--s',
-            error: errors.dateBecameIP if errors
-          } %}
-          {% include "includes/inputs/date-input.html" %}
-        {% endset -%}
+{% set service_address_property_name_number = formData.service_address_property_name_number %}
+{% set service_address_line_1 = formData.service_address_line_1 %}
+{% set service_address_line_2 = formData.service_address_line_2 %}
+{% set service_address_town = formData.service_address_town %}
+{% set service_address_county = formData.service_address_county %}
+{% set service_address_country = formData.service_address_country %}
+{% set service_address_postcode = formData.service_address_postcode %}
 
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+
+    <span class="govuk-caption-l">{{ trustName }}</span>
+    <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
+    <br> <p class="govuk-body">You can add more later.</p> <br>
+
+    <form class="form" method="post">
+      <input type="hidden" name="trusteeId" value="{{ trusteeId }}"/>
+
+      {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
+      {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
+      {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
+
+      {% set fieldParam = {
+        name: 'forename',
+        value: formData.forename,
+        label: 'What is their first name?',
+        hint: 'This is also known as their given name.',
+        error: errors.forename if errors
+      } %}
+
+      {% include "includes/inputs/text-input.html" %}
+
+      {% set fieldParam = {
+        name: 'surname',
+        value: formData.surname,
+        label: 'What is their last name?',
+        hint: 'This is also known as their family name.',
+        error: errors.surname if errors
+      } %}
+
+      {% include "includes/inputs/text-input.html" %}
+
+      {% set fieldParam = {
+        name: 'dateOfBirth',
+        value: {
+          'Day': formData.dateOfBirthDay,
+          'Month': formData.dateOfBirthMonth,
+          'Year': formData.dateOfBirthYear
+        },
+        label: 'What is their date of birth?',
+        error: errors.dateOfBirth if errors
+      } %}
+
+      {% include "includes/inputs/date-input.html" %}
+
+      {% set interestedPersonDateHtml %}
         {% set fieldParam = {
-          name: 'forename',
-          value: formData.forename,
-          label: 'What is their first name?',
-          hint: 'This is also known as their given name.',
-          error: errors.forename if errors
-        } %}
-        {% include "includes/inputs/text-input.html" %}
-
-        {% set fieldParam = {
-          name: 'surname',
-          value: formData.surname,
-          label: 'What is their last name?',
-          hint: 'This is also known as their family name.',
-          error: errors.surname if errors
-        } %}
-        {% include "includes/inputs/text-input.html" %}
-
-        {% set date_classes_year = "govuk-input--width-4 govuk-input" %}
-        {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
-        {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
-
-        {% set fieldParam = {
-          name: 'dateOfBirth',
+          label: 'What date did they become an interested person?',
+          name: 'dateBecameIP',
           value: {
-            'Day': formData.dateOfBirthDay,
-            'Month': formData.dateOfBirthMonth,
-            'Year': formData.dateOfBirthYear
+            'Day': formData.dateBecameIPDay,
+            'Month': formData.dateBecameIPMonth,
+            'Year': formData.dateBecameIPYear
           },
-          label: 'What is their date of birth?',
-          error: errors.dateOfBirth if errors
+          classes: 'govuk-fieldset__legend--s',
+          error: errors.dateBecameIP if errors
         } %}
+        <br>
+
         {% include "includes/inputs/date-input.html" %}
+      {% endset -%}
 
-        {% set fieldParam = {
-          name: 'roleWithinTrust',
-          label: 'What is their role within the trust?',
-          value: formData.roleWithinTrust,
-          error: errors.roleWithinTrust if errors,
-          items: [
-            {
-              value: pageData.roleWithinTrustType.BENEFICIARY,
-              text: "Beneficiary",
-              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
-              attributes: {
-                "data-event-id": "beneficiary-type-radio-option"
-              }
-            }, {
-              value: pageData.roleWithinTrustType.SETTLOR,
-              text: "Settlor",
-              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
-              attributes: {
-                "data-event-id": "settlor-type-radio-option"
-              }
-            }, {
-              value: pageData.roleWithinTrustType.GRANTOR,
-              text: "Grantor",
-              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
-              attributes: {
-                "data-event-id": "grantor-type-radio-option"
-              }
-            }, {
-              value: pageData.roleWithinTrustType.INTERESTED_PERSON,
-              text: "Interested Person",
-              checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
-              attributes: {
-                "data-event-id": "interested-person-type-radio-option"
-              },
-             conditional: {
-                html: interestedPersonDateHtml
-              }
+      {% set fieldParam = {
+        name: 'roleWithinTrust',
+        label: 'What is their role within the trust?',
+        value: formData.roleWithinTrust,
+        error: errors.roleWithinTrust if errors,
+        items: [
+          {
+            value: pageData.roleWithinTrustType.BENEFICIARY,
+            text: "Beneficiary",
+            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.BENEFICIARY,
+            attributes: {
+              "data-event-id": "beneficiary-type-radio-option"
             }
-          ]
-        } %}
-        {% include "includes/inputs/radio-input.html" %}
+          }, {
+            value: pageData.roleWithinTrustType.SETTLOR,
+            text: "Settlor",
+            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.SETTLOR,
+            attributes: {
+              "data-event-id": "settlor-type-radio-option"
+            }
+          }, {
+            value: pageData.roleWithinTrustType.GRANTOR,
+            text: "Grantor",
+            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.GRANTOR,
+            attributes: {
+              "data-event-id": "grantor-type-radio-option"
+            }
+          }, {
+            value: pageData.roleWithinTrustType.INTERESTED_PERSON,
+            text: "Interested Person",
+            checked: formData.roleWithinTrust == pageData.roleWithinTrustType.INTERESTED_PERSON,
+            attributes: {
+              "data-event-id": "interested-person-type-radio-option"
+            },
+            conditional: {
+              html: interestedPersonDateHtml
+            }
+          }
+        ]
+      } %}
 
-        {% set nationality = formData.nationality %}
-        {% set second_nationality = formData.second_nationality %}
-        {% include "includes/inputs/nationality/nationality.html" %}
-        {% include "includes/inputs/nationality/second-nationality.html" %}
+      {% include "includes/inputs/radio-input.html" %}
 
-        {% set usual_residential_address_property_name_number = formData.usual_residential_address_property_name_number %}
-        {% set usual_residential_address_line_1 = formData.usual_residential_address_line_1 %}
-        {% set usual_residential_address_line_2 = formData.usual_residential_address_line_2 %}
-        {% set usual_residential_address_town = formData.usual_residential_address_town %}
-        {% set usual_residential_address_county = formData.usual_residential_address_county %}
-        {% set usual_residential_address_country = formData.usual_residential_address_country %}
-        {% set usual_residential_address_postcode = formData.usual_residential_address_postcode %}
-        {% set is_service_address_same_as_usual_residential_address = formData.is_service_address_same_as_usual_residential_address %}
+      {% include "includes/inputs/nationality/nationality.html" %}
+      
+      {% include "includes/inputs/nationality/second-nationality.html" %}
+      
+      {% include "includes/inputs/address/residential-address-input.html" %}
 
-        {% set service_address_property_name_number = formData.service_address_property_name_number %}
-        {% set service_address_line_1 = formData.service_address_line_1 %}
-        {% set service_address_line_2 = formData.service_address_line_2 %}
-        {% set service_address_town = formData.service_address_town %}
-        {% set service_address_county = formData.service_address_county %}
-        {% set service_address_country = formData.service_address_country %}
-        {% set service_address_postcode = formData.service_address_postcode %}
-        {% include "includes/inputs/address/residential-address-input.html" %}
+      {{ govukInsetText({
+        html: '
+          <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+          <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
+        '
+      }) }}
 
-        {{ govukInsetText({
-          html: '
-            <h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
-            <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
-          '
-        }) }}
-
-        <input type="hidden" name="trusteeId" value="{{ formData.trusteeId }}"/>
-
-        {% include "includes/save-and-continue-button.html" %}
-      </form>
-    </div>
+      {% include "includes/save-and-continue-button.html" %}
+    </form>
   </div>
-{% endblock %}
+</div>

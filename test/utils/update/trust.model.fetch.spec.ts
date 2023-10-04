@@ -319,4 +319,55 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(trust.CORPORATES).toEqual(undefined);
     expect(trust.HISTORICAL_BO).toEqual(undefined);
   });
+
+  test("should map trustees into trust when missing dates", () => {
+    const trust: Trust = {
+      trust_id: "1",
+      ch_reference: "12345678",
+      trust_name: "Test Trust",
+      unable_to_obtain_all_trust_info: "No",
+      creation_date_day: "1",
+      creation_date_month: "1",
+      creation_date_year: "2020",
+      INDIVIDUALS: [],
+      CORPORATES: [],
+      HISTORICAL_BO: []
+    };
+    const trusteeData = {
+      trusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: ""
+    } as unknown as IndividualTrusteeData;
+    mapIndividualTrusteeData(trusteeData, trust);
+    const historicalTrusteeData = {
+      trusteeId: "2",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      ceasedDate: "2023-03-03"
+    } as unknown as IndividualTrusteeData;
+    mapIndividualTrusteeData(historicalTrusteeData, trust);
+    const corporateTrusteeData = {
+      trusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: ""
+    } as unknown as CorporateTrusteeData;
+    mapCorporateTrusteeData(corporateTrusteeData, trust);
+    const historicalCorporateTrusteeData: CorporateTrusteeData = {
+      trusteeId: "3",
+      trusteeName: "",
+      corporateIndicator: "",
+      trusteeTypeId: "",
+      ceasedDate: "2022-02-02"
+    } as unknown as CorporateTrusteeData;
+    mapCorporateTrusteeData(historicalCorporateTrusteeData, trust);
+
+    expect(trust.INDIVIDUALS).toHaveLength(1);
+    expect(trust.CORPORATES).toHaveLength(1);
+    expect(trust.HISTORICAL_BO).toHaveLength(2);
+  });
 });

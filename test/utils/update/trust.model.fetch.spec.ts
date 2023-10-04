@@ -268,6 +268,88 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[2].trust_ids).toEqual(["2"]);
   });
 
+  test("should fetch and not map trust links in without matching BO", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValueOnce([
+      {
+        trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
+        corporateBodyAppointmentId: "bolink100"
+      }
+    ]);
+
+    appData.beneficial_owners_individual = [
+      {
+        id: "bo4",
+        ch_reference: "bolink400"
+      }
+    ];
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links in without matching Trusts", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValueOnce([
+      {
+        trustId: "fhjkds438",
+        corporateBodyAppointmentId: "bolink100"
+      }
+    ]);
+
+    appData.beneficial_owners_individual = [
+      {
+        id: "bo1",
+        ch_reference: "bolink100"
+      }
+    ];
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links in without any tusts", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValueOnce([
+      {
+        trustId: "fhjkds438",
+        corporateBodyAppointmentId: "bolink100"
+      }
+    ]);
+
+    appData.beneficial_owners_individual = [
+      {
+        id: "bo1",
+        ch_reference: "bolink100"
+      }
+    ];
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(1);
+    expect(appData.update?.review_trusts).toHaveLength(0);
+
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
   test("should not any add trustees to trust if no lists in trust", () => {
     const trust: Trust = {
       trust_id: "1",

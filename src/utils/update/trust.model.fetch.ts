@@ -109,7 +109,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
   const individualTrustee: TrustIndividual = {
     id: ((trust.INDIVIDUALS ?? []).length + 1).toString(),
     ch_references: trustee.trusteeId,
-    forename: trustee.trusteeForename1 ?? "",
+    forename: trustee.trusteeForename1,
     other_forenames: trustee.trusteeForename2 ?? "",
     surname: trustee.trusteeSurname,
     dob_day: dateOfBirth?.day ?? "",

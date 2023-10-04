@@ -290,7 +290,6 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   {
     trusteeId: "abscdefg",
     trusteeForename1: "Test Individual Trustee 3",
-    trusteeForename2: "John",
     trusteeSurname: "Smith",
     dateOfBirth: "1988-12-01",
     nationality: "German",
@@ -438,7 +437,7 @@ export const MAPPED_FETCH_SECOND_INDIVIDUAL_TRUSTEE_DATA_MOCK =
     "dob_year": "1988",
     "forename": "Test Individual Trustee 3",
     "nationality": "German",
-    "other_forenames": "John",
+    "other_forenames": "",
     "sa_address_care_of": "",
     "sa_address_country": "",
     "sa_address_line_1": "",

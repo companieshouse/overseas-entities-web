@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 
 import * as config from "../config";
 import { getDueDiligence, postDueDiligence } from "../utils/overseas.due.diligence";
-import { ENTITY_URL } from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
@@ -11,9 +10,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  let nextPageUrl = ENTITY_URL;
-   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
-     nextPageUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
-   }
+  let nextPageUrl = config.ENTITY_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    nextPageUrl = getUrlWithParamsToPath(config.ENTITY_WITH_PARAMS_URL, req);
+  }
   postDueDiligence(req, res, next, nextPageUrl, true);
 };

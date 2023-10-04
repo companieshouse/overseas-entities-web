@@ -185,7 +185,6 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
   });
 
-
   describe("POST tests", () => {
 
     test(`redirect to ${ENTITY_PAGE} page after a successful post from ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} page`, async () => {
@@ -663,6 +662,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(ENTITY_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
@@ -683,13 +683,14 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-
+    
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
       expect(data["email"]).toEqual(EMAIL_ADDRESS);
     });
 
     test("Test email is valid with long email address", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const dueDiligenceMock = {
         ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "vsocarroll@QQQQQQQT123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -707,6 +708,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(resp.text).toContain(NEXT_PAGE_URL);
     });
 
     test("Test email is valid with long email name and address", async () => {
@@ -730,6 +732,7 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
     });
 
     test("Test email is valid with very long email name and address", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const dueDiligenceMock = {
         ...OVERSEAS_ENTITY_DUE_DILIGENCE_REQ_BODY_OBJECT_MOCK,
         email: "socarrollA123456789B132456798C123456798D123456789E123456789F123XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
@@ -746,9 +749,10 @@ describe("OVERSEAS_ENTITY_DUE_DILIGENCE controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalled();
     });
-    
+
     test(`renders the ${OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE} with error messages`, async () => {
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL)

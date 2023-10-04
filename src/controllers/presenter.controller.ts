@@ -6,7 +6,12 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  getPresenterPage(req, res, next, config.PRESENTER_PAGE, config.OVERSEAS_NAME_URL);
+  let backLinkUrl = config.OVERSEAS_NAME_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    backLinkUrl = getUrlWithParamsToPath(config.OVERSEAS_NAME_WITH_PARAMS_URL, req);
+  }
+
+  getPresenterPage(req, res, next, config.PRESENTER_PAGE, backLinkUrl);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

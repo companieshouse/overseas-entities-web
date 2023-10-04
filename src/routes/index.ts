@@ -498,7 +498,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
     navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsReviewTheTrust.get)
-  .post(updateManageTrustsReviewTheTrust.post);
+  .post(...validator.reviewTrustDetails, updateManageTrustsReviewTheTrust.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   .all(

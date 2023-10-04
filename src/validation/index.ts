@@ -21,7 +21,7 @@ import { overseasName } from "./overseas.name.validation";
 import { startingNew } from "./starting.new.validation";
 import { trustInvolved } from './trust.involved.validation';
 import { beneficialOwnersTypeSubmission } from "./beneficial.owner.type.validation.submission";
-import { trustDetails } from "./trust.details.validation";
+import { trustDetails, reviewTrustDetails } from "./trust.details.validation";
 import { trustIndividualBeneficialOwner } from "./trust.individual.beneficial.owner.validation";
 import { trustHistoricalBeneficialOwner } from "./trust.historical.beneficial.owner.validation";
 import { addTrustValidations } from "./add.trust.validation";
@@ -64,6 +64,7 @@ export const validator = {
   startingNew,
   trustInvolved,
   trustDetails,
+  reviewTrustDetails,
   updateBeneficialOwnerAndManagingOfficerType,
   updateBeneficialOwnerStatements,
   updateBeneficialOwnerIndividual,

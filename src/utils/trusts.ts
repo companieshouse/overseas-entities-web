@@ -14,6 +14,7 @@ import {
   TrustCorporate,
 } from "../model/trust.model";
 import { yesNoResponse } from "../model/data.types.model";
+import { ReviewTrustKey } from "../model/update.type.model";
 
 /**
  * Checks whether any beneficial owners requires trust data due to at least one of them
@@ -102,8 +103,12 @@ const containsTrustData = (trusts: Trust[]): boolean => {
  * @param appData Application Data in Session
  * @param trustId Trust ID find (returns empty object if not found)
  */
-const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
-  return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+const getTrustByIdFromApp = (appData: ApplicationData, trustId: string, isReview?: boolean): Trust => {
+  if (isReview) {
+    return appData.update?.[ReviewTrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+  } else {
+    return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+  }
 };
 
 /**

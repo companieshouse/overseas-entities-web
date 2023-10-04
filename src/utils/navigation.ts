@@ -169,6 +169,11 @@ export const NAVIGATION: Navigation = {
     previousPage: getEntityBackLink,
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]
   },
+  [config.ENTITY_WITH_PARAMS_URL]: {
+    currentPage: config.ENTITY_PAGE,
+    previousPage: getEntityBackLink,
+    nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]
+  },
   [config.BENEFICIAL_OWNER_STATEMENTS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.ENTITY_URL,

@@ -4,6 +4,7 @@ jest.mock('../../src/utils/application.data');
 jest.mock('../../src/utils/save.and.continue');
 jest.mock('../../src/middleware/navigation/has.entity.middleware');
 jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 import { describe, expect, test, beforeEach, jest } from "@jest/globals";
 
@@ -40,6 +41,7 @@ import {
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { hasEntity } from "../../src/middleware/navigation/has.entity.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockHasEntityMiddleware = hasEntity as jest.Mock;
@@ -52,7 +54,11 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockCheckBOsDetailsEntered = checkBOsDetailsEntered as jest.Mock;
 const mockCheckMOsDetailsEntered = checkMOsDetailsEntered as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
 const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
@@ -191,17 +197,21 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
     });
   });
-  // describe("POST with url params tests", () => {
-  //   test("redirects to the beneficial owner type page with url params", async () => {
-  //     mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
-  //     mockIsActiveFeature.mockReturnValueOnce(true);
-  //     const resp = await request(app)
-  //       .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
-  //       .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
 
-  //     expect(resp.status).toEqual(302);
-  //     expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_TYPE_URL);
-  //     expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-  //   });
-  // });
+  describe("POST with url params tests", () => {
+    test("redirects to the beneficial owner type page with url params", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+    });
+  });
 });

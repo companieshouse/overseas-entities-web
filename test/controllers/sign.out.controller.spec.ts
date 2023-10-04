@@ -278,7 +278,6 @@ describe("Sign Out controller", () => {
       expect(resp.text).toContain(SIGN_OUT_SAVE_AND_RESUME_GUIDANCE_TEXT);
       expect(resp.text).toContain('Continue');
     });
-
   });
 });
 

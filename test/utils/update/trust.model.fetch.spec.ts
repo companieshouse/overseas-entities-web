@@ -370,6 +370,26 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual).toEqual(undefined);
   });
 
+  test("should fetch and not map trust links in with empty bos", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetTrustLinks.mockResolvedValueOnce([
+      {
+        trustId: "fhjkds438",
+        corporateBodyAppointmentId: "bolink100"
+      }
+    ]);
+
+    appData.beneficial_owners_individual = [];
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+    expect(appData.beneficial_owners_individual).toEqual([]);
+  });
+
   test("should not any add trustees to trust if no lists in trust", () => {
     const trust: Trust = {
       trust_id: "1",

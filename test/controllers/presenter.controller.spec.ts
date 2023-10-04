@@ -54,7 +54,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
-const MOCKED_PAGE_URL = "/NEXT_PAGE";
+const MOCKED_PAGE_URL = "/MOCKED_PAGE";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 

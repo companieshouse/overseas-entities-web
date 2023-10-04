@@ -134,7 +134,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
 
 const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   const ceasedDate = mapInputDate(trustee.ceasedDate);
-  const dateOfBirth = mapInputDate(trustee.dateOfBirth);
+  const appointmentDate = mapInputDate(trustee.appointmentDate);
 
   const historicalIndividualTrustee: TrustHistoricalBeneficialOwner = {
     id: ((trust.HISTORICAL_BO ?? []).length + 1).toString(),
@@ -145,9 +145,9 @@ const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trus
     ceased_date_day: ceasedDate?.day ?? "",
     ceased_date_month: ceasedDate?.month ?? "",
     ceased_date_year: ceasedDate?.year ?? "",
-    notified_date_day: dateOfBirth?.day ?? "",
-    notified_date_month: dateOfBirth?.month ?? "",
-    notified_date_year: dateOfBirth?.year ?? "",
+    notified_date_day: appointmentDate?.day ?? "",
+    notified_date_month: appointmentDate?.month ?? "",
+    notified_date_year: appointmentDate?.year ?? "",
     corporate_indicator: yesNoResponse.No
   };
   trust.HISTORICAL_BO?.push(historicalIndividualTrustee);

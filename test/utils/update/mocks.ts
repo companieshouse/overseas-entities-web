@@ -281,8 +281,10 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   {
     trusteeId: "87654321",
     trusteeForename1: "Test Individual Trustee 2",
+    trusteeForename2: "Sue",
     trusteeSurname: "Smith",
     corporateIndicator: "N",
+    dateOfBirth: "1950-01-01",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
     trusteeTypeId: "5004"
@@ -470,10 +472,10 @@ export const MAPPED_FETCH_HISTORICAL_INDIVIDUAL_DATA_MOCK =
     "ch_references": "87654321",
     "corporate_indicator": 0,
     "forename": "Test Individual Trustee 2",
-    "notified_date_day": "",
-    "notified_date_month": "",
-    "notified_date_year": "",
-    "other_forenames": "",
+    "notified_date_day": "2",
+    "notified_date_month": "2",
+    "notified_date_year": "2020",
+    "other_forenames": "Sue",
     "surname": "Smith",
   };
 

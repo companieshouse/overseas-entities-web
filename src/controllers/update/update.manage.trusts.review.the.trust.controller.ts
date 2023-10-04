@@ -11,19 +11,11 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const isReview = true;
     const appData = getApplicationData(req.session);
     const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
-    let trustId = "";
-    if (trustInReview?.trust_id) {
-      trustId = trustInReview?.trust_id;
-    }
+    const trustId = trustInReview?.trust_id ?? "";
 
-    if (appData.beneficial_owners_individual) {
-      appData.beneficial_owners_individual[0].trust_ids = ["1"];
-    }
-
-    const formData = mapperDetails.mapDetailToPage(appData, trustId, isReview);
+    const formData = mapperDetails.mapDetailToPage(appData, trustId, true);
 
     const boAvailableForTrust = [
       ...getBoIndividualAssignableToTrust(appData)
@@ -39,7 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         beneficialOwners: boAvailableForTrust
       },
       formData,
-      isReview
+      isReview: true,
     });
   } catch (error) {
     next(error);

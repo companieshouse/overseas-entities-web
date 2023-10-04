@@ -145,16 +145,22 @@ router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ..
 router.post(config.PRESENTER_WITH_PARAMS_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
+router.get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
+router.post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
 
 router.get(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, dueDiligence.get);
+router.get(config.DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, dueDiligence.get);
 router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
+router.post(config.DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
 
 router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
 router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
 
 router.get(config.ENTITY_URL, authentication, navigation.hasDueDiligence, entity.get);
+router.get(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, entity.get);
 router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
+router.post(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
 router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);

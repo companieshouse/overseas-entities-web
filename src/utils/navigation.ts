@@ -150,7 +150,17 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.PRESENTER_URL,
     nextPage: [config.DUE_DILIGENCE_URL, config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]
   },
+  [config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL]: {
+    currentPage: config.WHO_IS_MAKING_FILING_PAGE,
+    previousPage: () => config.PRESENTER_URL,
+    nextPage: [config.DUE_DILIGENCE_URL, config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]
+  },
   [config.DUE_DILIGENCE_URL]: {
+    currentPage: config.DUE_DILIGENCE_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    nextPage: [config.ENTITY_URL]
+  },
+  [config.DUE_DILIGENCE_WITH_PARAMS_URL]: {
     currentPage: config.DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_FILING_URL,
     nextPage: [config.ENTITY_URL]
@@ -161,6 +171,11 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.ENTITY_URL]
   },
   [config.ENTITY_URL]: {
+    currentPage: config.ENTITY_PAGE,
+    previousPage: getEntityBackLink,
+    nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]
+  },
+  [config.ENTITY_WITH_PARAMS_URL]: {
     currentPage: config.ENTITY_PAGE,
     previousPage: getEntityBackLink,
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]

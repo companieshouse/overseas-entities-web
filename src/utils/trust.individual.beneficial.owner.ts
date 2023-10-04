@@ -7,7 +7,7 @@ import { getApplicationData, setExtraData } from './application.data';
 import { getTrustByIdFromApp, saveTrustInApp, saveIndividualTrusteeInTrust } from './trusts';
 import * as PageModel from '../model/trust.page.model';
 import { ApplicationData } from '../model';
-import { mapIndividualTrusteeToSession, mapIndividualTrusteeFromSessionToPage } from './trust/individual.trustee.mapper';
+import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPage } from './trust/individual.trustee.mapper';
 import { safeRedirect } from './http.ext';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
@@ -64,7 +64,7 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeFromSessionToPage(
+    const formData: PageModel.IndividualTrusteesFormCommon = mapIndividualTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId

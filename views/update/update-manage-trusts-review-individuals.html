@@ -1,6 +1,29 @@
+{% import 'includes/trustee-macros.html' as trusteeMacros %}
 {% extends "update-layout.html" %}
 
+{% set trustName = pageData.trustName %}
 {% set title = "Review individuals" %}
+
+{% set rows = [] %}
+
+{% set baseChangeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL %}
+
+{% for trustee in pageData.individuals %}
+  {% set trusteeName = trustee.forename + ' ' + trustee.surname %}
+  {% set trusteeRole = trusteeMacros.readableTrusteeRole(trustee.type) %}
+  {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + '/' + trustee.id %}
+
+  {% set rows = (rows.push([
+    { text: trusteeName },
+    { text: trusteeRole},
+    {
+      html: '<a class="govuk-link" href="' + changeLink + '">Change</a>',
+      attributes: {
+        'data-event-id': 'change-trust-individual'
+      }
+    }
+  ]), rows) %}
+{% endfor %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -16,10 +39,40 @@
 
       {% include "includes/list/errors.html" %}
 
+      <span class="govuk-caption-l"> {{ trustName }} </span>
       <h1 class="govuk-heading-xl">{{ title }}</h1>
 
+      {{ govukTable({
+        caption: "Individuals associated with this trust",
+        captionClasses: "govuk-table__caption--m",
+        firstCellIsHeader: true,
+        head: [{ text: "Name" }, { text: "Role" }, { text: "Change" }],
+        rows: rows
+      }) }}
+
       <form method="post">
-        {% include "includes/save-and-continue-button.html" %}
+        <div class="govuk-button-group">
+          {{ govukButton({
+            text: "Add an individual",
+            attributes: {
+              "id": "addIndividual",
+              "name": "addIndividual",
+              "value": "addIndividual",
+              "data-event-id": "manage-trust-individuals-add-button"
+            }
+          }) }}
+
+          {{ govukButton({
+            text: 'No more to add',
+            attributes: {
+              "id": "noMoreToAdd",
+              "name": "noMoreToAdd",
+              "value": "noMoreToAdd",
+              "data-event-id": "manage-trust-individuals-no-more-to-add"
+            },
+            classes: "govuk-button--secondary"
+          }) }}
+        </div>
       </form>
     </div>
   </div>

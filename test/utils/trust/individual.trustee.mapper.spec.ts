@@ -7,6 +7,7 @@ import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.m
 import { IndividualTrustee, TrustKey } from "../../../src/model/trust.model";
 import * as Page from '../../../src/model/trust.page.model';
 import {
+  mapIndividualTrusteeByIdFromSessionToPage,
   mapIndividualTrusteeFromSessionToPage,
   mapIndividualTrusteeToSession,
 } from '../../../src/utils/trust/individual.trustee.mapper';
@@ -233,7 +234,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       sa_address_po_box: '',
     } as IndividualTrustee;
 
-    test.each(testParam)('map Individual trustees page', (roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
+    test.each(testParam)('map Individual trustee by id', (roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
       const mockSessionData = {
         ...mockSessionDataBasic,
         type: roleWithinTrust,
@@ -246,7 +247,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         }]
       } as ApplicationData;
 
-      expect(mapIndividualTrusteeFromSessionToPage(appData, test_trust_id, test_trustee_id)).toEqual({
+      expect(mapIndividualTrusteeByIdFromSessionToPage(appData, test_trust_id, test_trustee_id)).toEqual({
         trusteeId: mockSessionData.id,
         forename: mockSessionData.forename,
         surname: mockSessionData.surname,
@@ -274,7 +275,41 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
       });
     });
 
-    test('map Interested trustees', () => {
+    test.each(testParam)('map Individual trustee', (roleWithinTrust: Exclude<RoleWithinTrustType, RoleWithinTrustType.INTERESTED_PERSON>) => {
+      const mockSessionData = {
+        ...mockSessionDataBasic,
+        type: roleWithinTrust,
+      };
+
+      expect(mapIndividualTrusteeFromSessionToPage(mockSessionData)).toEqual({
+        trusteeId: mockSessionData.id,
+        forename: mockSessionData.forename,
+        surname: mockSessionData.surname,
+        roleWithinTrust: mockSessionData.type,
+        dateOfBirthDay: mockSessionData.dob_day,
+        dateOfBirthMonth: mockSessionData.dob_month,
+        dateOfBirthYear: mockSessionData.dob_year,
+        nationality: mockSessionData.nationality,
+        second_nationality: mockSessionData.second_nationality,
+        usual_residential_address_property_name_number: mockSessionData.ura_address_premises,
+        usual_residential_address_line_1: mockSessionData.ura_address_line_1,
+        usual_residential_address_line_2: mockSessionData.ura_address_line_2,
+        usual_residential_address_town: mockSessionData.ura_address_locality,
+        usual_residential_address_county: mockSessionData.ura_address_region,
+        usual_residential_address_country: mockSessionData.ura_address_country,
+        usual_residential_address_postcode: mockSessionData.ura_address_postal_code,
+        service_address_property_name_number: mockSessionData.sa_address_premises,
+        service_address_line_1: mockSessionData.sa_address_line_1,
+        service_address_line_2: mockSessionData.sa_address_line_2,
+        service_address_town: mockSessionData.sa_address_locality,
+        service_address_county: mockSessionData.sa_address_region,
+        service_address_country: mockSessionData.sa_address_country,
+        service_address_postcode: mockSessionData.sa_address_postal_code,
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No
+      });
+    });
+
+    test('map interested trustee by id', () => {
       const mockSessionData = {
         ...mockSessionDataBasic,
         type: RoleWithinTrustType.INTERESTED_PERSON,
@@ -290,7 +325,47 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         }]
       } as ApplicationData;
 
-      expect(mapIndividualTrusteeFromSessionToPage(appData, test_trust_id, test_trustee_id)).toEqual({
+      expect(mapIndividualTrusteeByIdFromSessionToPage(appData, test_trust_id, test_trustee_id)).toEqual({
+        trusteeId: mockSessionData.id,
+        forename: mockSessionData.forename,
+        surname: mockSessionData.surname,
+        roleWithinTrust: mockSessionData.type,
+        dateOfBirthDay: mockSessionData.dob_day,
+        dateOfBirthMonth: mockSessionData.dob_month,
+        dateOfBirthYear: mockSessionData.dob_year,
+        nationality: mockSessionData.nationality,
+        second_nationality: mockSessionData.second_nationality,
+        usual_residential_address_property_name_number: mockSessionData.ura_address_premises,
+        usual_residential_address_line_1: mockSessionData.ura_address_line_1,
+        usual_residential_address_line_2: mockSessionData.ura_address_line_2,
+        usual_residential_address_town: mockSessionData.ura_address_locality,
+        usual_residential_address_county: mockSessionData.ura_address_region,
+        usual_residential_address_country: mockSessionData.ura_address_country,
+        usual_residential_address_postcode: mockSessionData.ura_address_postal_code,
+        service_address_property_name_number: mockSessionData.sa_address_premises,
+        service_address_line_1: mockSessionData.sa_address_line_1,
+        service_address_line_2: mockSessionData.sa_address_line_2,
+        service_address_town: mockSessionData.sa_address_locality,
+        service_address_county: mockSessionData.sa_address_region,
+        service_address_country: mockSessionData.sa_address_country,
+        service_address_postcode: mockSessionData.sa_address_postal_code,
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        dateBecameIPDay: mockSessionData.date_became_interested_person_day,
+        dateBecameIPMonth: mockSessionData.date_became_interested_person_month,
+        dateBecameIPYear: mockSessionData.date_became_interested_person_year,
+      });
+    });
+
+    test('map interested trustee', () => {
+      const mockSessionData = {
+        ...mockSessionDataBasic,
+        type: RoleWithinTrustType.INTERESTED_PERSON,
+        date_became_interested_person_day: '2',
+        date_became_interested_person_month: '11',
+        date_became_interested_person_year: '2022',
+      };
+
+      expect(mapIndividualTrusteeFromSessionToPage(mockSessionData)).toEqual({
         trusteeId: mockSessionData.id,
         forename: mockSessionData.forename,
         surname: mockSessionData.surname,

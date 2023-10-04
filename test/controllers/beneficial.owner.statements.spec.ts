@@ -122,6 +122,54 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
+  describe("GET with url params tests", () => {
+    test("renders the beneficial owner statements page with Registration data", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_REGISTRATION_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the beneficial owner statements page with undefined entity_number", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK_WITHOUT_UPDATE);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test("renders the beneficial owner statements page with Update data", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_UPDATE_BO_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(resp.text).toContain(config.UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
 
   describe("POST tests", () => {
     test("redirects to the beneficial owner type page", async () => {
@@ -213,5 +261,71 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
+
+    test("renders the current page with error message", async () => {
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_STATEMENTS_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_ANY_BENEFICIAL_OWNERS_BEEN_IDENTIFIED);
+      expect(resp.text).toContain(config.ENTITY_URL);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test("catch error when posting data", async () => {
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    // TODO - UPDATE THESE TESTS, ADD PARAMETERS TO BENEFICIAL_OWNER_DELETE_WARNING_PAGE
+    test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
+              page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
+      });
+      mockCheckBOsDetailsEntered.mockReturnValueOnce(true);
+
+      const boStatement = BeneficialOwnersStatementType.NONE_IDENTIFIED;
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: boStatement });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+    });
+    // TODO - UPDATE THESE TESTS, ADD PARAMETERS TO BENEFICIAL_OWNER_DELETE_WARNING_PAGE
+    test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
+              page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
+      });
+      mockCheckMOsDetailsEntered.mockReturnValueOnce(true);
+
+      const boStatement = BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS;
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: boStatement });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+    });
   });
+
 });

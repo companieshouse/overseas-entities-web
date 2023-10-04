@@ -164,6 +164,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.WHO_IS_MAKING_FILING_URL,
     nextPage: [config.ENTITY_URL]
   },
+  [config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL]: {
+    currentPage: config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    nextPage: [config.ENTITY_URL]
+  },
   [config.ENTITY_URL]: {
     currentPage: config.ENTITY_PAGE,
     previousPage: getEntityBackLink,

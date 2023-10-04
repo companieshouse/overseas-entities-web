@@ -153,7 +153,9 @@ router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, .
 router.post(config.DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
 
 router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
+router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
 router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
+router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
 
 router.get(config.ENTITY_URL, authentication, navigation.hasDueDiligence, entity.get);
 router.get(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, entity.get);

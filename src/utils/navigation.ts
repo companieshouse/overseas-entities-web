@@ -264,6 +264,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => "",
     nextPage: []
   },
+  [config.SIGN_OUT_WITH_PARAMS_URL]: {
+    currentPage: config.SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
+  },
   [config.UPDATE_DUE_DILIGENCE_URL]: {
     currentPage: config.UPDATE_DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_UPDATE_URL,

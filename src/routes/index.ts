@@ -115,7 +115,9 @@ router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
+router.get(config.SIGN_OUT_WITH_PARAMS_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+router.post(config.SIGN_OUT_WITH_PARAMS_URL, ...validator.signOut, checkValidations, signOut.post);
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 

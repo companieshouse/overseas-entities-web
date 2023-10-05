@@ -163,7 +163,9 @@ router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...va
 router.post(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
+router.get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
 router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
+router.post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
 
 router.get(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerDeleteWarning.get);
 router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerDeleteWarning, checkValidations, beneficialOwnerDeleteWarning.post);

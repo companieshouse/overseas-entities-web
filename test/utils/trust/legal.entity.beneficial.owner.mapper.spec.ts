@@ -11,7 +11,7 @@ import {
   generateId,
   mapLegalEntityItemToPage,
   mapLegalEntityToSession,
-  mapLegalEntityTrusteeFromSessionToPage,
+  mapLegalEntityTrusteeByIdFromSessionToPage,
 } from '../../../src/utils/trust/legal.entity.beneficial.owner.mapper';
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
@@ -186,7 +186,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           }]
         } as ApplicationData;
         expect(
-          mapLegalEntityTrusteeFromSessionToPage(appData, trustId, trusteeId)
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
           legalEntityId: mockSessionData.id,
           roleWithinTrust: mockSessionData.type,
@@ -235,7 +235,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           }]
         } as ApplicationData;
         expect(
-          mapLegalEntityTrusteeFromSessionToPage(appData, trustId, trusteeId)
+          mapLegalEntityTrusteeByIdFromSessionToPage(appData, trustId, trusteeId)
         ).toEqual({
           legalEntityId: mockSessionData.id,
           roleWithinTrust: mockSessionData.type,

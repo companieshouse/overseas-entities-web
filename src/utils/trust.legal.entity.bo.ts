@@ -5,7 +5,7 @@ import { safeRedirect } from './http.ext';
 import { getApplicationData, setExtraData } from './application.data';
 import { getTrustByIdFromApp, saveLegalEntityBoInTrust, saveTrustInApp } from './trusts';
 import * as CommonTrustDataMapper from './trust/common.trust.data.mapper';
-import { mapLegalEntityTrusteeFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
+import { mapLegalEntityTrusteeByIdFromSessionToPage, mapLegalEntityToSession } from './trust/legal.entity.beneficial.owner.mapper';
 import { RoleWithinTrustType } from '../model/role.within.trust.type.model';
 import { ApplicationData } from '../model';
 import { CommonTrustData, TrustLegalEntityForm } from '../model/trust.page.model';
@@ -65,7 +65,7 @@ export const getTrustLegalEntityBo = (req: Request, res: Response, next: NextFun
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const formData: TrustLegalEntityForm = mapLegalEntityTrusteeFromSessionToPage(
+    const formData: TrustLegalEntityForm = mapLegalEntityTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId

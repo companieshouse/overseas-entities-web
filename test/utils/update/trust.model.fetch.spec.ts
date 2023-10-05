@@ -1,4 +1,4 @@
-import { retrieveTrustData, mapTrustData, mapIndividualTrusteeData, mapCorporateTrusteeData } from "../../../src/utils/update/trust.model.fetch";
+import { retrieveTrustData, mapTrustData, mapIndividualTrusteeData, mapCorporateTrusteeData, mapTrustLink } from "../../../src/utils/update/trust.model.fetch";
 import { describe, expect, jest, test } from '@jest/globals';
 import {
   getTrustData,
@@ -230,7 +230,7 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetTrustLinks.mockResolvedValueOnce(TRUST_LINKS_DATA_MOCK);
 
     appData.beneficial_owners_individual = BO_TRUST_LINKS_DATA_MOCK;
-    appData.beneficial_owners_corporate = [];
+    appData.beneficial_owners_corporate = undefined;
 
     await retrieveTrustData(req, appData);
 
@@ -241,7 +241,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1", "2"]);
     expect(appData.beneficial_owners_individual[1].trust_ids).toEqual([]);
     expect(appData.beneficial_owners_individual[2].trust_ids).toEqual(["2"]);
-    expect(appData.beneficial_owners_corporate).toEqual([]);
+    expect(appData.beneficial_owners_corporate).toEqual(undefined);
   });
 
   test("should fetch and map trust links for corporate BOs", async () => {
@@ -251,9 +251,9 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetCorporateTrustees.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValueOnce(TRUST_LINKS_DATA_MOCK);
 
-    appData.beneficial_owners_individual = [];
+    appData.beneficial_owners_individual = undefined;
     appData.beneficial_owners_corporate = BO_TRUST_LINKS_DATA_MOCK;
-    appData.beneficial_owners_corporate.forEach(bo => bo.trust_ids = []);
+    appData.beneficial_owners_corporate.forEach(bo => bo.trust_ids = undefined);
 
     await retrieveTrustData(req, appData);
 
@@ -262,9 +262,9 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.update?.review_trusts).toHaveLength(2);
 
     expect(appData.beneficial_owners_corporate[0].trust_ids).toEqual(["1", "2"]);
-    expect(appData.beneficial_owners_corporate[1].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_corporate[1].trust_ids).toEqual(undefined);
     expect(appData.beneficial_owners_corporate[2].trust_ids).toEqual(["2"]);
-    expect(appData.beneficial_owners_individual).toEqual([]);
+    expect(appData.beneficial_owners_individual).toEqual(undefined);
   });
 
   test("should fetch and not map trust links in without matching BO", async () => {
@@ -416,6 +416,112 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.update?.review_trusts).toHaveLength(2);
     expect(appData.beneficial_owners_individual).toEqual([]);
     expect(appData.beneficial_owners_corporate).toEqual([]);
+  });
+
+  test("should fetch and not map trust links when not in update", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: undefined
+      }] };
+    mapTrustLink({
+      trustId: "fhjkds438",
+      corporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links when no trusts to review in update", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: undefined
+      }],
+      update: {}
+    };
+    mapTrustLink({
+      trustId: "fhjkds438",
+      corporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links when no trusts to review is empty in update", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: undefined
+      }],
+      update: {
+        review_trusts: []
+      }
+    };
+    mapTrustLink({
+      trustId: "fhjkds438",
+      corporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links when trusts to review in update does not match", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: undefined
+      }],
+      update: {
+        review_trusts:
+          [
+            {
+              trust_id: "1",
+              ch_reference: "bolink000",
+              trust_name: "Test Trust",
+              creation_date_day: "1",
+              creation_date_month: "1",
+              creation_date_year: "2020",
+              unable_to_obtain_all_trust_info: "No"
+            }
+          ]
+      }
+    };
+    mapTrustLink({
+      trustId: "fhjkds438",
+      corporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
+  });
+
+  test("should fetch and map trust links when trusts to review in update matches", () => {
+    const appData = {
+      beneficial_owners_individual: [{
+        id: "bo1",
+        ch_reference: "bolink100",
+        trust_ids: undefined
+      }],
+      update: {
+        review_trusts:
+        [
+          {
+            trust_id: "1",
+            ch_reference: "abcd1234",
+            trust_name: "Test Trust",
+            creation_date_day: "1",
+            creation_date_month: "1",
+            creation_date_year: "2020",
+            unable_to_obtain_all_trust_info: "No"
+          }
+        ]
+      }
+    };
+    mapTrustLink({
+      trustId: "abcd1234",
+      corporateBodyAppointmentId: "bolink100",
+    }, appData);
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1"]);
   });
 
   test("should not any add trustees to trust if no lists in trust", () => {

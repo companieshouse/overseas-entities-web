@@ -8,7 +8,7 @@ export const hasTrustsToReview = (appData: ApplicationData) =>
 export const getTrustInReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).find(trust => !!trust.review_status?.in_review);
 
-export const putTrustInReview = (appData: ApplicationData) => {
+export const setupNextTrustForReview = (appData: ApplicationData) => {
   const trustToReview = (appData.update?.review_trusts ?? [])[0];
 
   if (!trustToReview) {
@@ -16,12 +16,23 @@ export const putTrustInReview = (appData: ApplicationData) => {
   }
 
   trustToReview.review_status = {
-    in_review: true,
+    in_review: false,
     reviewed_former_bos: false,
     reviewed_individuals: false,
     reviewed_legal_entities: false,
   };
 
+  return true;
+};
+
+export const beginTrustReview = (appData: ApplicationData) => {
+  const trustToReview = (appData.update?.review_trusts ?? []).find(trust => trust.review_status);
+
+  if (!trustToReview?.review_status) {
+    return false;
+  }
+
+  trustToReview.review_status.in_review = true;
   return true;
 };
 

@@ -14,7 +14,7 @@ import { ApplicationData } from '../../model';
 import { Trust } from '../../model/trust.model';
 import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { saveAndContinue } from '../../utils/save.and.continue';
-import { getTrustInReview, putTrustInReview } from '../../utils/update/review_trusts';
+import { getTrustInReview, setupNextTrustForReview } from '../../utils/update/review_trusts';
 
 export const handler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -24,7 +24,7 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
     const trustInReview = getTrustInReview(appData);
 
     if (!trustInReview) {
-      if (putTrustInReview(appData)) {
+      if (setupNextTrustForReview(appData)) {
         await saveAppData(req, appData);
         return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
       } else {

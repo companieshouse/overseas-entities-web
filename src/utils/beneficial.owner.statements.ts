@@ -58,7 +58,7 @@ const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag
 
 export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   try {
-    const REDIRECT_URL = getRedirectUrl(req, registrationFlag, noChangeRedirectUrl);
+    const redirectUrl = getRedirectUrl(req, registrationFlag, noChangeRedirectUrl);
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const session = req.session as Session;
@@ -80,23 +80,23 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
     setExtraData(session, appData);
     await saveAndContinue(req, session, registrationFlag);
 
-    return res.redirect(REDIRECT_URL);
+    return res.redirect(redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
 };
 const getRedirectUrl = (req: Request, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
-  let REDIRECT_URL: string;
+  let redirectUrl: string;
   if (noChangeRedirectUrl) {
-    REDIRECT_URL = noChangeRedirectUrl;
+    redirectUrl = noChangeRedirectUrl;
   } else if (registrationFlag){
-    REDIRECT_URL = config.BENEFICIAL_OWNER_TYPE_URL;
+    redirectUrl = config.BENEFICIAL_OWNER_TYPE_URL;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
-      REDIRECT_URL = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+      redirectUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
     }
   } else {
-    REDIRECT_URL = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+    redirectUrl = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   }
-  return REDIRECT_URL;
+  return redirectUrl ;
 };

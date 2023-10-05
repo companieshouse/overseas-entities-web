@@ -18,7 +18,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -70,6 +70,16 @@ describe('Update - Manage Trusts - Review the trust', () => {
     test("when feature flag is on, should render the error page when 500 response code", async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
       expect(resp.status).toEqual(500);
@@ -130,6 +140,16 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
+    });
+
+    test("catch error when posting", async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

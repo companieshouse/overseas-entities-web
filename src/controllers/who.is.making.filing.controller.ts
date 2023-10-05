@@ -1,4 +1,3 @@
-import * as config from "../config";
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
@@ -8,6 +7,7 @@ import {
   PRESENTER_URL,
   DUE_DILIGENCE_URL,
   DUE_DILIGENCE_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_URL,
   OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL
 } from "../config";
@@ -20,7 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   let nextPageUrl = DUE_DILIGENCE_URL;
   let oeNextPageUrl = OVERSEAS_ENTITY_DUE_DILIGENCE_URL;
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(DUE_DILIGENCE_WITH_PARAMS_URL, req);
     oeNextPageUrl = getUrlWithParamsToPath(OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, req);
   }

@@ -1,9 +1,10 @@
-
 import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
+import { getUrlWithParamsToPath } from "./url";
+import { Request } from "express";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
@@ -129,6 +130,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.INTERRUPT_CARD_URL,
     nextPage: [config.PRESENTER_URL]
   },
+  [config.OVERSEAS_NAME_WITH_PARAMS_URL]: {
+    currentPage: config.OVERSEAS_NAME_PAGE,
+    previousPage: () => config.INTERRUPT_CARD_URL,
+    nextPage: [config.PRESENTER_URL]
+  },
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
     previousPage: () => config.OVERSEAS_NAME_URL,
@@ -136,7 +142,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.PRESENTER_WITH_PARAMS_URL]: {
     currentPage: config.PRESENTER_PAGE,
-    previousPage: () => config.OVERSEAS_NAME_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_NAME_WITH_PARAMS_URL, req),
     nextPage: [config.WHO_IS_MAKING_FILING_URL]
   },
   [config.WHO_IS_MAKING_FILING_URL]: {
@@ -154,7 +160,17 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.WHO_IS_MAKING_FILING_URL,
     nextPage: [config.ENTITY_URL]
   },
+  [config.DUE_DILIGENCE_WITH_PARAMS_URL]: {
+    currentPage: config.DUE_DILIGENCE_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    nextPage: [config.ENTITY_URL]
+  },
   [config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL]: {
+    currentPage: config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
+    previousPage: () => config.WHO_IS_MAKING_FILING_URL,
+    nextPage: [config.ENTITY_URL]
+  },
+  [config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL]: {
     currentPage: config.OVERSEAS_ENTITY_DUE_DILIGENCE_PAGE,
     previousPage: () => config.WHO_IS_MAKING_FILING_URL,
     nextPage: [config.ENTITY_URL]
@@ -164,7 +180,17 @@ export const NAVIGATION: Navigation = {
     previousPage: getEntityBackLink,
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]
   },
+  [config.ENTITY_WITH_PARAMS_URL]: {
+    currentPage: config.ENTITY_PAGE,
+    previousPage: getEntityBackLink,
+    nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL]
+  },
   [config.BENEFICIAL_OWNER_STATEMENTS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.ENTITY_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
     previousPage: () => config.ENTITY_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]

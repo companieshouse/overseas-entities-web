@@ -14,6 +14,7 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
+import { beginTrustReview } from '../utils/update/review_trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -162,6 +163,11 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
+
+    // if reviewing a trust, mark trust as in review
+    if (isReview) {
+      beginTrustReview(appData);
+    }
 
     //  save to session
     const session = req.session as Session;

@@ -78,7 +78,7 @@ describe("INTERRUPT CARD controller", () => {
   describe("GET with url params tests", () => {
     test(`renders the ${INTERRUPT_CARD_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      
+
       const resp = await request(app).get(INTERRUPT_CARD_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);

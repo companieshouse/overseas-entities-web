@@ -130,7 +130,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(mockLoggerError).toBeCalledTimes(2);
   });
 
-  test("mapTrustData without creation date", () => {
+  test("mapTrustData without creation date to have default day/month/year", () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { review_trusts: [] } };
     const trustData = { ...FETCH_TRUST_DATA_MOCK[0], creationDate: undefined } as unknown as TrustData;
     const trust: Trust = {
@@ -152,7 +152,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect((appData.update?.review_trusts ?? [])[0]).toEqual(trust);
   });
 
-  test("mapTrustData should not push result if no review list", () => {
+  test("mapTrustData should not push any result if no review list", () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { review_trusts: undefined } };
     const trustData = { ...FETCH_TRUST_DATA_MOCK[0] };
 
@@ -267,7 +267,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in without matching BO", async () => {
+  test("should fetch and not map trust links in without matching beneficial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
@@ -302,7 +302,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in without matching Trusts", async () => {
+  test("should fetch and not map trust links in without matching trusts", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
@@ -374,7 +374,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate[0].trust_ids).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in without any bos", async () => {
+  test("should fetch and not map trust links in without any beneficial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
@@ -396,7 +396,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in with empty bos", async () => {
+  test("should fetch and not map trust links in with empty benefitial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
@@ -448,7 +448,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links when no trusts to review is empty in update", () => {
+  test("should fetch and not map trust links when trusts to review list is empty in update", () => {
     const appData = {
       beneficial_owners_individual: [{
         id: "bo1",
@@ -495,7 +495,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
 
-  test("should fetch and map trust links when trusts to review in update matches", () => {
+  test("should fetch and map trust links when trusts to review in update match", () => {
     const appData = {
       beneficial_owners_individual: [{
         id: "bo1",
@@ -524,7 +524,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1"]);
   });
 
-  test("should not any add trustees to trust if no lists in trust", () => {
+  test("should not any add trustees to trust if no lists of trustees in trust", () => {
     const trust: Trust = {
       trust_id: "1",
       ch_reference: "12345678",

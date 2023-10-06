@@ -26,10 +26,13 @@ import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock"
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { ApplicationData } from "../../../src/model";
 import { Request } from "express";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 jest.mock('../../../src/service/trust.data.service');
 jest.mock('../../../src/utils/logger');
+jest.mock('../../../src/utils/feature.flag');
 
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetTrustData = getTrustData as jest.Mock;
 const mockGetIndividualTrustees = getIndividualTrustees as jest.Mock;
 const mockGetCorporateTrustees = getCorporateTrustees as jest.Mock;
@@ -47,6 +50,7 @@ describe("Test fetching and mapping of Trust data", () => {
   test("should fetch and map trust data data", async () => {
     const appData = FETCH_TRUST_APPLICATION_DATA_MOCK;
 
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
     mockGetCorporateTrustees.mockResolvedValue([]);
@@ -94,6 +98,7 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust data data when trusts are undefined", async () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(undefined);
 
     await retrieveTrustData(req, appData);
@@ -104,6 +109,7 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust data data when trusts are empty", async () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue([]);
 
     await retrieveTrustData(req, appData);
@@ -172,15 +178,16 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and map individual trustees", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
-    mockGetIndividualTrustees.mockResolvedValueOnce(FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue(FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
     mockGetCorporateTrustees.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValue([]);
 
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(mockLoggerInfo).toBeCalledTimes(3);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const individualTrustees = ((appData.update?.review_trusts ?? [])[0]).INDIVIDUALS;
     expect(individualTrustees).toHaveLength(2);
@@ -198,15 +205,16 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and map corporate trustees", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
-    mockGetCorporateTrustees.mockResolvedValueOnce(FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
+    mockGetCorporateTrustees.mockResolvedValue(FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValue([]);
 
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(mockLoggerInfo).toBeCalledTimes(3);
     expect(appData.update?.review_trusts).toHaveLength(2);
     const corporateTrustees = ((appData.update?.review_trusts ?? [])[0]).CORPORATES;
     expect(corporateTrustees).toHaveLength(3);
@@ -224,10 +232,11 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and map trust links for indivdual BOs", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
     mockGetCorporateTrustees.mockResolvedValue([]);
-    mockGetTrustLinks.mockResolvedValueOnce(TRUST_LINKS_DATA_MOCK);
+    mockGetTrustLinks.mockResolvedValue(TRUST_LINKS_DATA_MOCK);
 
     appData.beneficial_owners_individual = BO_TRUST_LINKS_DATA_MOCK;
     appData.beneficial_owners_corporate = undefined;
@@ -246,10 +255,11 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and map trust links for corporate BOs", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
     mockGetCorporateTrustees.mockResolvedValue([]);
-    mockGetTrustLinks.mockResolvedValueOnce(TRUST_LINKS_DATA_MOCK);
+    mockGetTrustLinks.mockResolvedValue(TRUST_LINKS_DATA_MOCK);
 
     appData.beneficial_owners_individual = undefined;
     appData.beneficial_owners_corporate = BO_TRUST_LINKS_DATA_MOCK;
@@ -267,12 +277,93 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in without matching beneficial owners", async () => {
+  test("should not fetch and map individual trustees when feature disabled", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValueOnce(FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+    expect(appData.beneficial_owners_individual).toEqual(undefined);
+  });
+
+  test("should not fetch and map corporate trustees when feature disabled", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValueOnce(FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+    expect(appData.beneficial_owners_corporate).toEqual(undefined);
+  });
+
+  test("should not fetch and map trust links for indivdual BOs when feature disabled", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(true);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
     mockGetCorporateTrustees.mockResolvedValue([]);
-    mockGetTrustLinks.mockResolvedValueOnce([
+    mockGetTrustLinks.mockResolvedValue(TRUST_LINKS_DATA_MOCK);
+
+    appData.beneficial_owners_individual = BO_TRUST_LINKS_DATA_MOCK;
+    appData.beneficial_owners_individual.forEach(bo => bo.trust_ids = []);
+    appData.beneficial_owners_corporate = undefined;
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+
+    expect(appData.beneficial_owners_individual[0].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_individual[1].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_individual[2].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_corporate).toEqual(undefined);
+  });
+
+  test("should not fetch and map trust links for corporate BOs when feature disabled", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(true);
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue(TRUST_LINKS_DATA_MOCK);
+
+    appData.beneficial_owners_individual = undefined;
+    appData.beneficial_owners_corporate = BO_TRUST_LINKS_DATA_MOCK;
+    appData.beneficial_owners_corporate.forEach(bo => bo.trust_ids = []);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(appData.update?.review_trusts).toHaveLength(2);
+
+    expect(appData.beneficial_owners_corporate[0].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_corporate[1].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_corporate[2].trust_ids).toEqual([]);
+    expect(appData.beneficial_owners_individual).toEqual(undefined);
+  });
+
+  test("should fetch and not map trust links in without matching beneficial owners", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
+    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([
       {
         trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
         corporateBodyAppointmentId: "bolink100"
@@ -296,7 +387,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(4);
+    expect(mockLoggerInfo).toBeCalledTimes(2);
     expect(appData.update?.review_trusts).toHaveLength(2);
 
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
@@ -304,10 +395,11 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust links in without matching trusts", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetIndividualTrustees.mockResolvedValue([]);
     mockGetCorporateTrustees.mockResolvedValue([]);
-    mockGetTrustLinks.mockResolvedValueOnce([
+    mockGetTrustLinks.mockResolvedValue([
       {
         trustId: "fhjkds438",
         corporateBodyAppointmentId: "bolink100"
@@ -330,6 +422,8 @@ describe("Test fetching and mapping of Trust data", () => {
       }
     ];
 
+    appData.beneficial_owners_individual.forEach(bo => bo.trust_ids = []);
+
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
@@ -342,6 +436,7 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust links in without any tusts", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValueOnce([
       {
@@ -376,6 +471,7 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust links in without any beneficial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
       {
@@ -398,6 +494,7 @@ describe("Test fetching and mapping of Trust data", () => {
 
   test("should fetch and not map trust links in with empty benefitial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockIsActiveFeature.mockReturnValue(false);
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
       {

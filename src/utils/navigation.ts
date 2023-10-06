@@ -132,7 +132,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_NAME_WITH_PARAMS_URL]: {
     currentPage: config.OVERSEAS_NAME_PAGE,
-    previousPage: () => config.INTERRUPT_CARD_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.INTERRUPT_CARD_WITH_PARAMS_URL, req),
     nextPage: [config.PRESENTER_URL]
   },
   [config.PRESENTER_URL]: {

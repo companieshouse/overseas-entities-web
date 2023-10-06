@@ -27,4 +27,43 @@ describe("Url utils tests", () => {
       expect(url).toEqual(`/register-an-overseas-entity/transaction/${TRANSACTION_ID}/submission/${SUBMISSION_ID}/presenter`);
     });
   });
+
+  describe("transactionIdAndSubmissionIdExistInRequest tests", () => {
+
+    test("TRUE returned if both ids are set", () => {
+      req["params"] = {
+        [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID,
+        [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
+      };
+
+      const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
+      expect(response).toEqual(true);
+    });
+
+    test("FALSE returned if neither id is set", () => {
+      req["params"] = {
+      };
+
+      const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
+      expect(response).toEqual(false);
+    });
+
+    test("FALSE returned if submission id not set", () => {
+      req["params"] = {
+        [config.ROUTE_PARAM_TRANSACTION_ID]: TRANSACTION_ID
+      };
+
+      const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
+      expect(response).toEqual(false);
+    });
+
+    test("FALSE returned if transaction id not set", () => {
+      req["params"] = {
+        [config.ROUTE_PARAM_SUBMISSION_ID]: SUBMISSION_ID
+      };
+
+      const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
+      expect(response).toEqual(false);
+    });
+  });
 });

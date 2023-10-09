@@ -15,12 +15,14 @@ import {
   BeneficialOwnersStatementTypes,
   BeneficialOwnerStatementKey
 } from "../model/beneficial.owner.statement.model";
+import { isActiveFeature } from "../utils/feature.flag";
 import { BeneficialOwnerGovKey } from "../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividualKey } from "../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOtherKey } from "../model/beneficial.owner.other.model";
 import { ManagingOfficerCorporateKey } from "../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../model/managing.officer.model";
 import { TrustKey } from "../model/trust.model";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -62,7 +64,12 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       appData[BeneficialOwnerStatementKey] = boStatement;
 
       setExtraData(req.session, appData);
-      return res.redirect(config.BENEFICIAL_OWNER_TYPE_URL);
+      let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+      }
+
+      return res.redirect(nextPageUrl);
     }
 
     return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);

@@ -8,6 +8,7 @@ import { checkBOsDetailsEntered, checkMOsDetailsEntered, getApplicationData, set
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from "../model/beneficial.owner.statement.model";
 import { EntityNameKey, EntityNumberKey } from "../model/data.types.model";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { getUrlWithParamsToPath } from "../utils/url";
 import { isActiveFeature } from "./feature.flag";
 import { containsTrustData, getTrustArray } from "./trusts";
 
@@ -57,16 +58,7 @@ const getChangeBackLinkUrl = (registrationFlag: boolean, statementValidationFlag
 
 export const postBeneficialOwnerStatements = async (req: Request, res: Response, next: NextFunction, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   try {
-    let REDIRECT_URL: string;
-
-    if (noChangeRedirectUrl) {
-      REDIRECT_URL = noChangeRedirectUrl;
-    } else {
-      REDIRECT_URL = registrationFlag
-        ? config.BENEFICIAL_OWNER_TYPE_URL
-        : config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
-    }
-
+    const redirectUrl = getRedirectUrl(req, registrationFlag, noChangeRedirectUrl);
     logger.debugRequest(req, `${req.method} ${config.BENEFICIAL_OWNER_STATEMENTS_PAGE}`);
 
     const session = req.session as Session;
@@ -88,9 +80,23 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
     setExtraData(session, appData);
     await saveAndContinue(req, session, registrationFlag);
 
-    return res.redirect(REDIRECT_URL);
+    return res.redirect(redirectUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);
   }
+};
+const getRedirectUrl = (req: Request, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
+  let redirectUrl: string;
+  if (noChangeRedirectUrl) {
+    redirectUrl = noChangeRedirectUrl;
+  } else if (registrationFlag){
+    redirectUrl = config.BENEFICIAL_OWNER_TYPE_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      redirectUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+    }
+  } else {
+    redirectUrl = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+  }
+  return redirectUrl ;
 };

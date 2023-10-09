@@ -51,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       } else {
         await updateOverseasEntity(req, session);
       }
-      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         nextPageUrl = getUrlWithTransactionIdAndSubmissionId(config.PRESENTER_WITH_PARAMS_URL, appData[Transactionkey] as string, appData[OverseasEntityKey] as string);
       }
     }

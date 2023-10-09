@@ -33,7 +33,7 @@ const corporateTrusteesFunctionName = 'getCorporateTrustees';
 
 const trustDataMock = [
   {
-    trustId: "123456789",
+    hashedTrustId: "123456789",
     trustName: "Trust Name",
     creationDate: "1965-01-01",
     unableToObtainAllTrustInfo: false
@@ -42,13 +42,13 @@ const trustDataMock = [
 
 const trustLinksMock = [
   {
-    trustId: "123456789",
-    corporateBodyAppointmentId: "123456789",
+    hashedTrustId: "123456789",
+    hashedCorporateBodyAppointmentId: "123456789",
   }
 ];
 
 const IndividualTrusteeDataMock = [{
-  trusteeId: "123",
+  hashedTrusteeId: "123",
   trusteeForename1: "joe",
   trusteeForename2: "jim",
   trusteeSurname: "bloggs",
@@ -83,7 +83,7 @@ const IndividualTrusteeDataMock = [{
 }];
 
 const corporateTrusteeDataMock = [{
-  trusteeId: "123",
+  hashedTrusteeId: "123",
   trusteeName: "trust_name",
   registerLocation: "register_location",
   registrationNumber: "registration_number",

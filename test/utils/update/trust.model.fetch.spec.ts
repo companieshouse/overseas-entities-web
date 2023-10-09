@@ -141,7 +141,7 @@ describe("Test fetching and mapping of Trust data", () => {
     const trustData = { ...FETCH_TRUST_DATA_MOCK[0], creationDate: undefined } as unknown as TrustData;
     const trust: Trust = {
       trust_id: "1",
-      ch_reference: trustData.trustId,
+      ch_reference: trustData.hashedTrustId,
       trust_name: trustData.trustName,
       creation_date_day: "",
       creation_date_month: "",
@@ -365,8 +365,8 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetCorporateTrustees.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValue([
       {
-        trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
-        corporateBodyAppointmentId: "bolink100"
+        hashedTrustId: FETCH_TRUST_DATA_MOCK[0].hashedTrustId,
+        hashedCorporateBodyAppointmentId: "bolink100"
       }
     ]);
 
@@ -401,8 +401,8 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetCorporateTrustees.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValue([
       {
-        trustId: "fhjkds438",
-        corporateBodyAppointmentId: "bolink100"
+        hashedTrustId: "fhjkds438",
+        hashedCorporateBodyAppointmentId: "bolink100"
       }
     ]);
 
@@ -440,8 +440,8 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetTrustData.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValueOnce([
       {
-        trustId: "fhjkds438",
-        corporateBodyAppointmentId: "bolink100"
+        hashedTrustId: "fhjkds438",
+        hashedCorporateBodyAppointmentId: "bolink100"
       }
     ]);
 
@@ -475,8 +475,8 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
       {
-        trustId: "fhjkds438",
-        corporateBodyAppointmentId: "bolink100"
+        hashedTrustId: "fhjkds438",
+        hashedCorporateBodyAppointmentId: "bolink100"
       }
     ]);
 
@@ -498,8 +498,8 @@ describe("Test fetching and mapping of Trust data", () => {
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([
       {
-        trustId: "fhjkds438",
-        corporateBodyAppointmentId: "bolink100"
+        hashedTrustId: "fhjkds438",
+        hashedCorporateBodyAppointmentId: "bolink100"
       }
     ]);
 
@@ -523,8 +523,8 @@ describe("Test fetching and mapping of Trust data", () => {
         trust_ids: undefined
       }] };
     mapTrustLink({
-      trustId: "fhjkds438",
-      corporateBodyAppointmentId: "bolink100",
+      hashedTrustId: "fhjkds438",
+      hashedCorporateBodyAppointmentId: "bolink100",
     }, appData);
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
@@ -539,8 +539,8 @@ describe("Test fetching and mapping of Trust data", () => {
       update: {}
     };
     mapTrustLink({
-      trustId: "fhjkds438",
-      corporateBodyAppointmentId: "bolink100",
+      hashedTrustId: "fhjkds438",
+      hashedCorporateBodyAppointmentId: "bolink100",
     }, appData);
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
@@ -557,8 +557,8 @@ describe("Test fetching and mapping of Trust data", () => {
       }
     };
     mapTrustLink({
-      trustId: "fhjkds438",
-      corporateBodyAppointmentId: "bolink100",
+      hashedTrustId: "fhjkds438",
+      hashedCorporateBodyAppointmentId: "bolink100",
     }, appData);
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
@@ -586,8 +586,8 @@ describe("Test fetching and mapping of Trust data", () => {
       }
     };
     mapTrustLink({
-      trustId: "fhjkds438",
-      corporateBodyAppointmentId: "bolink100",
+      hashedTrustId: "fhjkds438",
+      hashedCorporateBodyAppointmentId: "bolink100",
     }, appData);
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);
   });
@@ -615,8 +615,8 @@ describe("Test fetching and mapping of Trust data", () => {
       }
     };
     mapTrustLink({
-      trustId: "abcd1234",
-      corporateBodyAppointmentId: "bolink100",
+      hashedTrustId: "abcd1234",
+      hashedCorporateBodyAppointmentId: "bolink100",
     }, appData);
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(["1"]);
   });
@@ -632,7 +632,7 @@ describe("Test fetching and mapping of Trust data", () => {
       unable_to_obtain_all_trust_info: "No"
     };
     const trusteeData: IndividualTrusteeData = {
-      trusteeId: "1",
+      hashedTrusteeId: "1",
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
@@ -641,7 +641,7 @@ describe("Test fetching and mapping of Trust data", () => {
     };
     mapIndividualTrusteeData(trusteeData, trust);
     const historicalTrusteeData: IndividualTrusteeData = {
-      trusteeId: "2",
+      hashedTrusteeId: "2",
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
@@ -651,7 +651,7 @@ describe("Test fetching and mapping of Trust data", () => {
     };
     mapIndividualTrusteeData(historicalTrusteeData, trust);
     const corporateTrusteeData: CorporateTrusteeData = {
-      trusteeId: "3",
+      hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: "",
@@ -659,7 +659,7 @@ describe("Test fetching and mapping of Trust data", () => {
     };
     mapCorporateTrusteeData(corporateTrusteeData, trust);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
-      trusteeId: "3",
+      hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: "",
@@ -687,7 +687,7 @@ describe("Test fetching and mapping of Trust data", () => {
       HISTORICAL_BO: []
     };
     const trusteeData = {
-      trusteeId: "1",
+      hashedTrusteeId: "1",
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
@@ -695,7 +695,7 @@ describe("Test fetching and mapping of Trust data", () => {
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(trusteeData, trust);
     const historicalTrusteeData = {
-      trusteeId: "2",
+      hashedTrusteeId: "2",
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
@@ -704,14 +704,14 @@ describe("Test fetching and mapping of Trust data", () => {
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(historicalTrusteeData, trust);
     const corporateTrusteeData = {
-      trusteeId: "3",
+      hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: ""
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(corporateTrusteeData, trust);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
-      trusteeId: "3",
+      hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: "",

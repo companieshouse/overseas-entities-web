@@ -232,13 +232,13 @@ export const managingOfficerMockDualNationality: CompanyOfficer = {
 
 export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
   {
-    trustId: "12345678",
+    hashedTrustId: "12345678",
     trustName: "Test Trust",
     creationDate: "2020-01-01",
     unableToObtainAllTrustInfo: false
   },
   {
-    trustId: "87654321",
+    hashedTrustId: "87654321",
     trustName: "Test Trust 2",
     creationDate: "2020-02-02",
     unableToObtainAllTrustInfo: true
@@ -247,7 +247,7 @@ export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
 
 export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   {
-    trusteeId: "12345678",
+    hashedTrusteeId: "12345678",
     trusteeForename1: "Test Individual Trustee",
     trusteeForename2: "Individual",
     trusteeSurname: "Jones",
@@ -279,7 +279,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     },
   },
   {
-    trusteeId: "87654321",
+    hashedTrusteeId: "87654321",
     trusteeForename1: "Test Individual Trustee 2",
     trusteeForename2: "Sue",
     trusteeSurname: "Smith",
@@ -290,7 +290,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     trusteeTypeId: "5004"
   },
   {
-    trusteeId: "abscdefg",
+    hashedTrusteeId: "abscdefg",
     trusteeForename1: "Test Individual Trustee 3",
     trusteeSurname: "Smith",
     dateOfBirth: "1988-12-01",
@@ -313,7 +313,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
 
 export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
   {
-    trusteeId: "12345678",
+    hashedTrusteeId: "12345678",
     trusteeName: "Test Corporate Trustee",
     corporateIndicator: "Y",
     trusteeTypeId: "5003",
@@ -346,7 +346,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     },
   },
   {
-    trusteeId: "87654321",
+    hashedTrusteeId: "87654321",
     trusteeName: "Test Corporate Trustee 2",
     corporateIndicator: "Y",
     appointmentDate: "2020-02-02",
@@ -354,7 +354,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     trusteeTypeId: "5005"
   },
   {
-    trusteeId: "abcdefg",
+    hashedTrusteeId: "abcdefg",
     trusteeName: "Test Corporate Trustee 3",
     corporateIndicator: "Y",
     trusteeTypeId: "5004",
@@ -375,7 +375,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     },
   },
   {
-    trusteeId: "abcdefg",
+    hashedTrusteeId: "abcdefg",
     trusteeName: "Test Corporate Trustee 4",
     corporateIndicator: "Y",
     trusteeTypeId: "5005",
@@ -603,16 +603,16 @@ export const MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK =
 
 export const TRUST_LINKS_DATA_MOCK = [
   {
-    trustId: FETCH_TRUST_DATA_MOCK[0].trustId,
-    corporateBodyAppointmentId: "bolink100"
+    hashedTrustId: FETCH_TRUST_DATA_MOCK[0].hashedTrustId,
+    hashedCorporateBodyAppointmentId: "bolink100"
   },
   {
-    trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
-    corporateBodyAppointmentId: "bolink100"
+    hashedTrustId: FETCH_TRUST_DATA_MOCK[1].hashedTrustId,
+    hashedCorporateBodyAppointmentId: "bolink100"
   },
   {
-    trustId: FETCH_TRUST_DATA_MOCK[1].trustId,
-    corporateBodyAppointmentId: "bolink300"
+    hashedTrustId: FETCH_TRUST_DATA_MOCK[1].hashedTrustId,
+    hashedCorporateBodyAppointmentId: "bolink300"
   },
 ];
 

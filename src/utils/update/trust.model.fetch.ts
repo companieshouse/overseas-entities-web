@@ -53,12 +53,12 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
   }
 
   for (const trustData of trusts) {
-    logger.debug("Loaded trust " + trustData.trustId);
+    logger.debug("Loaded trust " + trustData.hashedTrustId);
 
     const trust = mapTrustData(trustData, appData);
 
     if (isActiveFeature(FEATURE_FLAG_DISABLE_UPDATE_TRUST_DATA_FETCH)) {
-      logger.debug("Skip retrieving trustees for " + trustData.trustId);
+      logger.debug("Skip retrieving trustees for " + trustData.hashedTrustId);
       continue;
     }
 
@@ -72,7 +72,7 @@ export const mapTrustData = (trustData: TrustData, appData: ApplicationData) => 
   const dateOfBirth = mapInputDate(trustData.creationDate);
   const trust: Trust = {
     trust_id: (((appData.update?.review_trusts ?? []).length) + 1).toString(),
-    ch_reference: trustData.trustId,
+    ch_reference: trustData.hashedTrustId,
     trust_name: trustData.trustName,
     creation_date_day: dateOfBirth?.day ?? "",
     creation_date_month: dateOfBirth?.month ?? "",
@@ -100,7 +100,7 @@ const fetchAndMapIndivdualTrustees = async (
   }
 
   for (const trustee of individualTrustees) {
-    logger.debug("Loaded individual trustee " + trustee.trusteeId);
+    logger.debug("Loaded individual trustee " + trustee.hashedTrusteeId);
     mapIndividualTrusteeData(trustee, trust);
   }
 };
@@ -115,7 +115,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
 
   const individualTrustee: TrustIndividual = {
     id: ((trust.INDIVIDUALS ?? []).length + 1).toString(),
-    ch_references: trustee.trusteeId,
+    ch_references: trustee.hashedTrusteeId,
     forename: trustee.trusteeForename1,
     other_forenames: trustee.trusteeForename2 ?? "",
     surname: trustee.trusteeSurname,
@@ -145,7 +145,7 @@ const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trus
 
   const historicalIndividualTrustee: TrustHistoricalBeneficialOwner = {
     id: ((trust.HISTORICAL_BO ?? []).length + 1).toString(),
-    ch_references: trustee.trusteeId,
+    ch_references: trustee.hashedTrusteeId,
     forename: trustee.trusteeForename1,
     other_forenames: trustee.trusteeForename2 ?? "",
     surname: trustee.trusteeSurname,
@@ -174,7 +174,7 @@ const fetchAndMapCorporateTrustees = async (
   }
 
   for (const trustee of corporateTrustees) {
-    logger.debug("Loaded corporate trustee " + trustee.trusteeId);
+    logger.debug("Loaded corporate trustee " + trustee.hashedTrusteeId);
     mapCorporateTrusteeData(trustee, trust);
   }
 };
@@ -188,7 +188,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
 
   const corporateTrustee: TrustCorporate = {
     id: ((trust.CORPORATES ?? []).length + 1).toString(),
-    ch_references: trustee.trusteeId,
+    ch_references: trustee.hashedTrusteeId,
     type: mapTrusteeType(trustee.trusteeTypeId),
     name: trustee.trusteeName,
     date_became_interested_person_day: appointmentDate?.day ?? "",
@@ -223,7 +223,7 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
 
   const historicalCorporateTrustee: TrustHistoricalBeneficialOwner = {
     id: ((trust.HISTORICAL_BO ?? []).length + 1).toString(),
-    ch_references: trustee.trusteeId,
+    ch_references: trustee.hashedTrusteeId,
     corporate_name: trustee.trusteeName,
     ceased_date_day: ceasedDate?.day ?? "",
     ceased_date_month: ceasedDate?.month ?? "",
@@ -258,15 +258,15 @@ export const retrieveTrustLinks = async (req: Request, appData: ApplicationData)
   }
 
   for (const trustLink of trustLinks) {
-    logger.debug("Loaded trust link " + trustLink.trustId + " for coprporate appointment " + trustLink.corporateBodyAppointmentId);
+    logger.debug("Loaded trust link " + trustLink.hashedTrustId + " for coprporate appointment " + trustLink.hashedCorporateBodyAppointmentId);
     mapTrustLink(trustLink, appData);
   }
 };
 
 export const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData) => {
-  const trust = appData.update?.review_trusts?.find(t => t.ch_reference === trustLink.trustId);
+  const trust = appData.update?.review_trusts?.find(t => t.ch_reference === trustLink.hashedTrustId);
   if (trust) {
-    const individualBeneficialOwner = appData.beneficial_owners_individual?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.corporateBodyAppointmentId);
+    const individualBeneficialOwner = appData.beneficial_owners_individual?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
     if (individualBeneficialOwner) {
       logger.debug("Linking individual beneficial owner " + individualBeneficialOwner.ch_reference + " to trust " + trust.ch_reference);
       if (individualBeneficialOwner.trust_ids === undefined) {
@@ -274,7 +274,7 @@ export const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData)
       }
       individualBeneficialOwner.trust_ids.push(trust.trust_id);
     } else {
-      const corporateBeneficialOwner = appData.beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.corporateBodyAppointmentId);
+      const corporateBeneficialOwner = appData.beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
       if (corporateBeneficialOwner) {
         logger.debug("Linking corporate beneficial owner " + corporateBeneficialOwner.ch_reference + " to trust " + trust.ch_reference);
         if (corporateBeneficialOwner.trust_ids === undefined) {

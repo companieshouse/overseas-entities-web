@@ -53,11 +53,13 @@ mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 const session = getSessionRequestWithExtraData();
 const req: Request = { headers: {} } as Request;
 
-describe('Payment Service test suite', () => {
+beforeEach (() => {
+  jest.clearAllMocks();
+  mockIsActiveFeature.mockReset();
+  process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = "false";
+});
 
-  beforeEach (() => {
-    jest.clearAllMocks();
-  });
+describe('Payment Service test suite', () => {
 
   test(`startPaymentsSession() should return ${CONFIRMATION_URL} if ${PAYMENT_REQUIRED_HEADER} blank`, async () => {
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE );
@@ -107,11 +109,6 @@ describe('Payment Service test suite', () => {
 
 describe('Payment Service test suite with params url', () => {
 
-  beforeEach (() => {
-    jest.clearAllMocks();
-    mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = "false";
-  });
   test(`startPaymentsSession() should return ${CONFIRMATION_WITH_PARAMS_URL} if ${PAYMENT_REQUIRED_HEADER} blank`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     const response = await startPaymentsSession(req, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE );

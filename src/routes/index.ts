@@ -115,7 +115,9 @@ router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
+router.get(config.SIGN_OUT_WITH_PARAMS_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+router.post(config.SIGN_OUT_WITH_PARAMS_URL, ...validator.signOut, checkValidations, signOut.post);
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
@@ -135,7 +137,9 @@ router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePape
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
+router.get(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, overseasName.get);
 router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+router.post(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
 
 router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
 router.get(config.PRESENTER_WITH_PARAMS_URL, authentication, navigation.hasOverseasName, presenter.get);

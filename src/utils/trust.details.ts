@@ -164,10 +164,10 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
 
-    // if reviewing a trust, mark trust as in review
-    if (isReview) {
-      beginTrustReview(appData);
-    }
+    // // if reviewing a trust, mark trust as in review
+    // if (isReview) {
+    //   beginTrustReview(appData);
+    // }
 
     //  save to session
     const session = req.session as Session;
@@ -230,7 +230,7 @@ const getNextPage = (isUpdate: boolean, trustId: string, isReview?: boolean,) =>
   if (isReview){
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
   }
-  if (isUpdate){
+  else if (isUpdate){
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
     return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;

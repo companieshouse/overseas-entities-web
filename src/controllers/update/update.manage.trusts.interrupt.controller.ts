@@ -6,11 +6,21 @@ import {
   UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
 } from '../../config';
+import { ApplicationData } from 'model';
+import { getApplicationData } from '../../utils/application.data';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
+    // Resets in_review status to false
+    const appData = getApplicationData(req.session);
+      const trustToReview = (appData.update?.review_trusts ?? []).find(trust => trust.review_status);
+    
+      if (trustToReview?.review_status) {
+        trustToReview.review_status.in_review = false;
+      }
+    
     return res.render(UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE,
       backLinkUrl: UPDATE_BENEFICIAL_OWNER_TYPE_URL,

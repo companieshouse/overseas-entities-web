@@ -6,12 +6,17 @@ import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust } from '.
 import * as mapperDetails from '../../utils/trust/details.mapper';
 import * as mapperBo from '../../utils/trust/beneficial.owner.mapper';
 import { UPDATE_MANAGE_TRUSTS_INTERRUPT_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE } from '../../config';
+import { beginTrustReview } from '../../utils/update/review_trusts';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const appData = getApplicationData(req.session);
+    
+    // if reviewing a trust, mark trust as in review
+    beginTrustReview(appData);
+
     const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
     const trustId = trustInReview?.trust_id ?? "";
 

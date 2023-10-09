@@ -274,6 +274,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
 
@@ -306,6 +307,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
 
@@ -334,6 +336,7 @@ describe("BENEFICIAL OWNER DELETE WARNING controller", () => {
       expect(resp.text).toContain(NEXT_PAGE_URL);
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
 

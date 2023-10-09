@@ -74,8 +74,9 @@ export const mapIndividualTrusteeFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
+  isReview?: boolean
 ): Page.IndividualTrusteesFormCommon => {
-  const trustee = getIndividualTrustee(appData, trustId, trusteeId);
+  const trustee = getIndividualTrustee(appData, trustId, trusteeId, isReview);
 
   const data = {
     trusteeId: trustee.id,

@@ -86,8 +86,9 @@ const mapLegalEntityTrusteeFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
+  isReview?: boolean
 ): Page.TrustLegalEntityForm => {
-  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId);
+  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId, isReview);
 
   const data = {
     legalEntityId: trustee.id,

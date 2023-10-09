@@ -17,7 +17,8 @@ import { checkAndReviewManagingOfficers } from "../../utils/update/review.managi
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { checkEntityRequiresTrusts, getTrustLandingUrl, checkEntityRequiresManageTrusts } from "../../utils/trusts";
+import { hasTrustsToReview } from "../../utils/update/review_trusts";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -68,7 +69,7 @@ export const postSubmit = (req: Request, res: Response) => {
 
   const appData: ApplicationData = getApplicationData(req.session);
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS) && checkEntityRequiresManageTrusts(appData)) {
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS) && hasTrustsToReview(appData)) {
     return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
   }
 

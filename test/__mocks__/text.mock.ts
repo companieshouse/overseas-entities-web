@@ -242,3 +242,8 @@ export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trus
 export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";
 export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/update-trusts-associated-with-overseas-entity";
 export const HOME_ADDRESS_LINE1 = "addressLine1";
+
+// Manage Trusts
+export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";
+export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE = "Tell us about the former beneficial owner";
+export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"col\" class=\"govuk-table__header\">Name</th>";

@@ -4,37 +4,41 @@
     {% set displayDay = "0" + day %}
   {% endif %}
 
-  {% set displayMonth %}
-    {% if month | length === 1 %}
-      {% set month = "0" + month %}
-    {% endif %}
+  {{ displayDay }} {{ formatMonth(month) }} {{ year }}
+{% endmacro %}
 
-    {% if month === "01" %}
-      January
-    {% elif month === "02" %}
-      February
-    {% elif month === "03" %}
-      March
-    {% elif month === "04" %}
-      April
-    {% elif month === "05" %}
-      May
-    {% elif month === "06" %}
-      June
-    {% elif month === "07" %}
-      July
-    {% elif month === "08" %}
-      August
-    {% elif month === "09" %}
-      September
-    {% elif month === "10" %}
-      October
-    {% elif month === "11" %}
-      November
-    {% elif month === "12" %}
-      December
-    {% endif %}
-  {% endset %}
+{% macro formatMonthYearDate(month, year) %}
+  {{ formatMonth(month) }} {{ year }}
+{% endmacro %}
 
-  {{ displayDay }} {{ displayMonth }} {{ year }}
+{% macro formatMonth(month) %}
+  {% if month | length === 1 %}
+    {% set month = "0" + month %}
+  {% endif %}
+
+  {% if month === "01" %}
+    January
+  {% elif month === "02" %}
+    February
+  {% elif month === "03" %}
+    March
+  {% elif month === "04" %}
+    April
+  {% elif month === "05" %}
+    May
+  {% elif month === "06" %}
+    June
+  {% elif month === "07" %}
+    July
+  {% elif month === "08" %}
+    August
+  {% elif month === "09" %}
+    September
+  {% elif month === "10" %}
+    October
+  {% elif month === "11" %}
+    November
+  {% elif month === "12" %}
+    December
+  {% endif %}
 {% endmacro %}

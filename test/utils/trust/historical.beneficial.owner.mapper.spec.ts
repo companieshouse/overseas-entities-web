@@ -7,7 +7,7 @@ import * as Page from '../../../src/model/trust.page.model';
 import {
   generateBoId,
   mapBeneficialOwnerToSession,
-  mapFormerTrusteeFromSessionToPage,
+  mapFormerTrusteeByIdFromSessionToPage,
 } from '../../../src/utils/trust/historical.beneficial.owner.mapper';
 import { TrusteeType } from "../../../src/model/trustee.type.model";
 import { yesNoResponse } from "../../../src/model/data.types.model";
@@ -109,7 +109,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           }]
         } as ApplicationData;
 
-        expect(mapFormerTrusteeFromSessionToPage(appData, trustId, trusteeId )).toEqual({
+        expect(mapFormerTrusteeByIdFromSessionToPage(appData, trustId, trusteeId )).toEqual({
           boId: mockSessionData.id,
           type: TrusteeType.INDIVIDUAL,
           firstName: mockSessionData.forename,
@@ -138,7 +138,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           }]
         } as ApplicationData;
 
-        expect(mapFormerTrusteeFromSessionToPage( appData, trustId, trusteeId )).toEqual({
+        expect(mapFormerTrusteeByIdFromSessionToPage( appData, trustId, trusteeId )).toEqual({
 
           boId: mockSessionData.id,
           type: TrusteeType.LEGAL_ENTITY,

@@ -20,6 +20,7 @@ import app from "../../src/app";
 import { get, post } from "../../src/controllers/trust.historical.beneficial.owner.controller";
 import { HISTORICAL_BO_TEXTS } from '../../src/utils/trust.former.bo';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
+import { ErrorMessages } from '../../src/validation/error.messages';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
 import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
@@ -53,6 +54,18 @@ describe('Trust Historical Beneficial Owner Controller', () => {
   let mockAppData = {};
 
   let mockReq = {} as Request;
+
+  const mockHistBORequest = {
+    type: "legalEntity",
+    corporate_name: "Lacotto",
+    startDateDay: "16",
+    startDateMonth: "4",
+    startDateYear: "2023",
+    endDateDay: "17",
+    endDateMonth: "3",
+    endDateYear: "2023"
+  };
+
   const mockRes = {
     render: jest.fn() as any,
     redirect: jest.fn() as any,
@@ -176,6 +189,18 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test('renders the current page with error messages', async () => {
+      const resp = await request(app).post(pageUrl).send(mockHistBORequest);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);

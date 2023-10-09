@@ -33,16 +33,16 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     if ( !savedPayment.state || savedPayment.state !== state) {
       return next(createAndLogErrorRequest(req, `Rejecting payment redirect, payment state does not match. Payment Request: ${ JSON.stringify(savedPayment)}`));
     }
-    console.log("*********** T1");
+
     // Validate the status of the payment
     if (status === PAYMENT_PAID) {
-      console.log("*********** T2");
+
       let confirmationPageUrl = CONFIRMATION_URL;
       if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-        console.log("*********** T3");
+
         confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
       }
-      console.log("*********** T4");
+
       logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${confirmationPageUrl}`);
 
       // Payment Successful, redirect to confirmation page

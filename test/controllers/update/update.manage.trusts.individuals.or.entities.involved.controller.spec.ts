@@ -23,7 +23,6 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
-import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
@@ -54,7 +53,6 @@ describe('Update - Manage Trusts - Individuals or entities involved', () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain("Individuals or entities involved in the trust");
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-      expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 

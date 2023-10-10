@@ -142,8 +142,6 @@ mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
 
-const NEXT_PAGE_URL = "/NEXT_PAGE";
-
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
@@ -636,8 +634,6 @@ describe("GET with url params tests tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   test(`renders the ${CHECK_YOUR_ANSWERS_PAGE} page including presenter details`, async () => {

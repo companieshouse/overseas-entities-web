@@ -386,9 +386,4 @@ export const NAVIGATION: Navigation = {
       config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
     ],
   },
-  // [config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL]: {
-  //   currentPage: config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_PAGE,
-  //   previousPage: () => config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL,
-  //   nextPage: [config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL]
-  // },
 };

@@ -14,7 +14,6 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
-import { beginTrustReview } from '../utils/update/review_trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -70,7 +69,7 @@ const getPageProperties = (
   };
 };
 
-export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean): void => {
+export const getTrustDetails = (req: Request, res: Response, next: NextFunction, isUpdate: boolean, isReview: boolean): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
@@ -80,6 +79,7 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
     const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,
       trustId,
+      isReview,
     );
 
     const pageProps = getPageProperties(req, formData, isUpdate);
@@ -163,11 +163,6 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
-
-    // // if reviewing a trust, mark trust as in review
-    // if (isReview) {
-    //   beginTrustReview(appData);
-    // }
 
     //  save to session
     const session = req.session as Session;

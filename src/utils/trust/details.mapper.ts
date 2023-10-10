@@ -9,7 +9,7 @@ import { addTrustToBeneficialOwner, getTrustByIdFromApp, removeTrustFromBenefici
 const mapDetailToPage = (
   appData: ApplicationData,
   trustId: string,
-  isReview?: boolean
+  isReview: boolean
 ): Page.TrustDetailsForm => {
   const trustData = getTrustByIdFromApp(appData, trustId, isReview);
 

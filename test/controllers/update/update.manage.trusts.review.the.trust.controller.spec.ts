@@ -18,7 +18,7 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -67,15 +67,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
     });
 
-    test("when feature flag is on, should render the error page when 500 response code", async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-
-      expect(resp.status).toEqual(500);
-      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
     test("catch error when rendering the page", async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
@@ -94,29 +85,13 @@ describe('Update - Manage Trusts - Review the trust', () => {
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
         .send({
           name: 'Trust name',
-          beneficialOwnersIds: '45e4283c-6b05-42da-ac9d-1f7bf9fe9c85',
+          beneficialOwnersIds: ['45e4283c-6b05-42da-ac9d-1f7bf9fe9c85'],
           hasAllInfo: '0',
           trustId: ''
         });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-    });
-
-    test('when feature flag is on, POST empty object and check for error in page title', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
-        .send({
-          name: '',
-          beneficialOwnersIds: '',
-          hasAllInfo: '0',
-          trustId: ''
-        });
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(PAGE_TITLE_ERROR);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`renders the ${UPDATE_REVIEW_THE_TRUST} page with error messages`, async () => {

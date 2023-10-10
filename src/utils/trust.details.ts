@@ -14,6 +14,7 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
+import { beginTrustReview } from './update/review_trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -75,14 +76,21 @@ export const getTrustDetails = (req: Request, res: Response, next: NextFunction,
 
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    let trustId;
+    if (isReview) {
+      const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status);
+      trustId = trustInReview?.trust_id;
+    } else {
+      trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    }
+
     const formData: PageModel.TrustDetailsForm = mapperDetails.mapDetailToPage(
       appData,
       trustId,
       isReview,
     );
 
-    const pageProps = getPageProperties(req, formData, isUpdate);
+    const pageProps = getPageProperties(req, formData, isUpdate, isReview);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -152,7 +160,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     }
 
     //  if present, get existing trust from session (as it might have attached trustees)
-    const trust = getTrustByIdFromApp(appData, details.trust_id, isReview);
+    const trust = getTrustByIdFromApp(appData, details.trust_id);
     Object.keys(details).forEach(key => trust[key] = details[key]);
 
     //  update trust  in application data at session
@@ -163,6 +171,11 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     //  update trusts in beneficial owners
     const selectedBoIds = req.body?.beneficialOwnersIds ?? [];
     appData = updateBeneficialOwnersTrustInApp(appData, details.trust_id, selectedBoIds);
+
+    // // if reviewing a trust, mark trust as in review
+    if (isReview) {
+      beginTrustReview(appData);
+    }
 
     //  save to session
     const session = req.session as Session;
@@ -222,10 +235,9 @@ const getUrl = (isUpdate: boolean) => {
 };
 
 const getNextPage = (isUpdate: boolean, trustId: string, isReview?: boolean,) => {
-  if (isReview){
+  if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
-  }
-  else if (isUpdate){
+  } else if (isUpdate) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
     return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;

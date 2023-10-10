@@ -8,6 +8,9 @@ export const hasTrustsToReview = (appData: ApplicationData) =>
 export const getTrustInReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).find(trust => !!trust.review_status?.in_review);
 
+export const getReviewTrustById = (appData: ApplicationData, trustId: string) => {
+  return appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
+};
 export const setupNextTrustForReview = (appData: ApplicationData) => {
   const trustToReview = (appData.update?.review_trusts ?? [])[0];
 

@@ -181,7 +181,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
     const session = req.session as Session;
     setExtraData(session, appData);
 
-    await saveAndContinue(req, session, true);
+    await saveAndContinue(req, session, !(isReview || isUpdate));
 
     return safeRedirect(res, getNextPage(isUpdate, details.trust_id, isReview));
 

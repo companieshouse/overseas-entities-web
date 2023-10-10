@@ -16,9 +16,13 @@ import {
   PAYMENT,
   TRANSACTION,
   OVERSEAS_ENTITY,
-  CONFIRMATION_URL
+  CONFIRMATION_URL,
+  CONFIRMATION_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
 } from "../config";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
+import { getUrlWithParamsToPath } from "../utils/url";
+import { isActiveFeature } from "../utils/feature.flag";
 
 // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
 // directing the application to the Payment Platform to begin a payment session, otherwise
@@ -42,7 +46,12 @@ export const startPaymentsSession = async (
 
   if (!paymentUrl) {
     // Only if transaction does not have a fee.
-    return CONFIRMATION_URL;
+    let confirmationPageUrl = CONFIRMATION_URL;
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
+    }
+
+    return confirmationPageUrl;
   }
 
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId, baseURL);

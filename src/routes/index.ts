@@ -337,6 +337,7 @@ router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
 router.get(config.PAYMENT_FAILED_WITH_PARAMS_URL, authentication, paymentFailed.get);
 
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
+router.get(config.CONFIRMATION_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);

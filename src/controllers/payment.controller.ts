@@ -5,6 +5,7 @@ import { logger, createAndLogErrorRequest } from "../utils/logger";
 import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_URL,
+  CONFIRMATION_WITH_PARAMS_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
   PAYMENT_FAILED_URL,
@@ -36,12 +37,18 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     // Validate the status of the payment
     if (status === PAYMENT_PAID) {
-      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CONFIRMATION_URL}`);
+
+      let confirmationPageUrl = CONFIRMATION_URL;
+      if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+
+        confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
+      }
+
+      logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${confirmationPageUrl}`);
 
       // Payment Successful, redirect to confirmation page
-      return res.redirect(CONFIRMATION_URL);
+      return res.redirect(confirmationPageUrl);
     } else {
-
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
       if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
         logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);

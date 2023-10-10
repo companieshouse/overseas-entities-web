@@ -16,6 +16,7 @@ import { serviceAvailabilityMiddleware } from "../../src/middleware/service.avai
 import { getApplicationData } from '../../src/utils/application.data';
 import { createAndLogErrorRequest, logger } from '../../src/utils/logger';
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 import {
   PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING,
@@ -26,6 +27,7 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_PAGE,
   CONFIRMATION_URL,
+  CONFIRMATION_WITH_PARAMS_URL,
   PAYMENT_FAILED_PAGE,
   PAYMENT_FAILED_URL,
   PAYMENT_FAILED_WITH_PARAMS_URL,
@@ -33,9 +35,8 @@ import {
 } from "../../src/config";
 import { FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../__mocks__/text.mock";
 import { PaymentKey } from "../../src/model/data.types.model";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
-const MOCKED_PAGE_URL = "/MOCKED_PAGE";
+const NEXT_PAGE_URL = "/NEXT_PAGE";
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -47,79 +48,102 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_PAGE_URL);
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("Payment controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+    mockGetApplicationData.mockReset();
+    mockLoggerDebugRequest.mockReset();
+    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = "false";
   });
 
-  test("should rejecting redirect, state does not match", async () => {
-    mockGetApplicationData.mockReturnValueOnce( {} );
-    await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+  describe("GET tests for Payment controller without params url", () => {
+    test("should rejecting redirect, state does not match", async () => {
+      mockGetApplicationData.mockReturnValueOnce( {} );
+      await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
-    expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
+      expect(mockCreateAndLogErrorRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
+      const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
+    test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
+      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
+      const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
+    test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
+      const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_FAILED_URL}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
+
+    test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active and with params`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
+      const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${NEXT_PAGE_URL}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(PAYMENT_FAILED_WITH_PARAMS_URL);
+    });
+
+    test(`Should render the error page`, async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
+      const response = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+
+      expect(response.status).toEqual(500);
+      expect(response.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+    });
   });
 
-  test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
+  describe("GET tests for Payment controller with params url", () => {
 
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-  });
+    test(`should redirect to ${CONFIRMATION_PAGE} page, Payment Successful with status ${PAYMENT_PAID}`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
+      const resp = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
 
-  test(`should redirect to ${CHECK_YOUR_ANSWERS_URL} page, Payment failed somehow`, async () => {
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CHECK_YOUR_ANSWERS_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-  });
-
-  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_FAILED_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-  });
-
-  test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active and with params`, async () => {
-    mockIsActiveFeature.mockReturnValueOnce(true);
-    mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
-    const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(resp.status).toEqual(302);
-    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${MOCKED_PAGE_URL}`);
-    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
-    expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-    expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(PAYMENT_FAILED_WITH_PARAMS_URL);
-  });
-
-  test(`Should render the error page`, async () => {
-    mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(MESSAGE_ERROR); });
-    const response = await request(app).get(PAYMENT_WITH_TRANSACTION_URL_AND_QUERY_STRING);
-
-    expect(response.status).toEqual(500);
-    expect(response.text).toContain(SERVICE_UNAVAILABLE);
-    expect(mockLoggerDebugRequest).not.toHaveBeenCalled();
-    expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+      expect(mockCreateAndLogErrorRequest).not.toHaveBeenCalled();
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(CONFIRMATION_WITH_PARAMS_URL);
+    });
   });
 });

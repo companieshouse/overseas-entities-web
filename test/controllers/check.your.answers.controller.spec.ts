@@ -1126,6 +1126,7 @@ describe("POST tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockOverseasEntity.mockReset();
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
@@ -1176,12 +1177,12 @@ describe("POST tests", () => {
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
 });
+
 describe("POST with url param tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
+    mockOverseasEntity.mockReset();
   });
 
   test(`redirect the ${CONFIRMATION_PAGE} page after fetching transaction and OE id from appData`, async () => {
@@ -1202,6 +1203,28 @@ describe("POST with url param tests", () => {
     expect(resp.status).toEqual(302);
     expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
   });
+
+  test(`redirect the ${CONFIRMATION_PAGE} page after a successful post from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
+    const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(mockTransactionService).toHaveBeenCalledTimes(1);
+    expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${CONFIRMATION_URL}`);
+  });
+
+  test(`redirect to ${PAYMENT_LINK_JOURNEY}, the first Payment web journey page`, async () => {
+    mockIsActiveFeature.mockReturnValueOnce( false ); // For Save and Resume
+    mockPaymentsSession.mockReturnValueOnce(PAYMENT_LINK_JOURNEY);
+    const resp = await request(app).post(CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(mockTransactionService).toHaveBeenCalledTimes(1);
+    expect(mockOverseasEntity).toHaveBeenCalledTimes(1);
+    expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${PAYMENT_LINK_JOURNEY}`);
+  });
+
   test(`catch error when post data from ${CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
     mockOverseasEntity.mockImplementation(() => {
       throw ERROR;

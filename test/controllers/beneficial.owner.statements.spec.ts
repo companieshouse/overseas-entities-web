@@ -65,6 +65,7 @@ const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 const redirectUrl = `${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=`;
+const redirectWithParmsUrl = `${NEXT_PAGE_URL}?${BeneficialOwnerStatementKey}=`;
 
 describe("BENEFICIAL OWNER STATEMENTS controller", () => {
 
@@ -290,10 +291,10 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    // TODO - UPDATE THESE TESTS, ADD PARAMETERS TO BENEFICIAL_OWNER_DELETE_WARNING_PAGE
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
               page with NONE_IDENTIFIED as beneficial owners statement type`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getRedirectURL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getWarningRedirectURL
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
@@ -306,12 +307,16 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: boStatement });
 
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+      expect(resp.header.location).toEqual(`${redirectWithParmsUrl}${boStatement}`);
     });
-    // TODO - UPDATE THESE TESTS, ADD PARAMETERS TO BENEFICIAL_OWNER_DELETE_WARNING_PAGE
+
     test(`redirects to ${config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE}
               page with ALL_IDENTIFIED_ALL_DETAILS as beneficial owners statement type`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getRedirectURL
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL - getWarningRedirectURL
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK,
         [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS
@@ -323,8 +328,10 @@ describe("BENEFICIAL OWNER STATEMENTS controller", () => {
         .post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerStatementKey]: boStatement });
 
+      expect(mockIsActiveFeature).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${redirectUrl}${boStatement}`);
+      expect(resp.header.location).toEqual(`${redirectWithParmsUrl}${boStatement}`);
     });
   });
 

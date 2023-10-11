@@ -103,12 +103,8 @@ const containsTrustData = (trusts: Trust[]): boolean => {
  * @param appData Application Data in Session
  * @param trustId Trust ID find (returns empty object if not found)
  */
-const getTrustByIdFromApp = (appData: ApplicationData, trustId: string, isReview?: boolean): Trust => {
-  if (isReview) {
-    return appData[UpdateKey]?.[ReviewTrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
-  } else {
-    return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
-  }
+const getTrustByIdFromApp = (appData: ApplicationData, trustId: string): Trust => {
+  return appData[TrustKey]?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 };
 
 /**

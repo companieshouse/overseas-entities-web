@@ -51,26 +51,32 @@ type TrustInvolvedPageProperties = {
 const getPageProperties = (
   req: Request,
   isUpdate: boolean,
+  isReview: boolean,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
 ): TrustInvolvedPageProperties => {
-
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
   const appData = getApplicationData(req.session);
+  let trustId;
+
+  if (isReview) {
+    trustId = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
+  } else {
+    trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+  }
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, trustId),
-    templateName: getPageTemplate(isUpdate),
+    backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview),
+    templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
     },
     pageData: {
-      trustData: mapCommonTrustDataToPage(appData, trustId),
+      trustData: mapCommonTrustDataToPage(appData, trustId, isReview),
       ...mapTrustWhoIsInvolvedToPage(appData, trustId),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId),
-      formerTrusteeData: getFormerTrusteesFromTrust(appData, trustId),
+      individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId, isReview),
+      formerTrusteeData: getFormerTrusteesFromTrust(appData, trustId, isReview),
       trusteeType: TrusteeType,
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
@@ -86,12 +92,22 @@ export const getTrustInvolvedPage = (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean
+  isUpdate: boolean,
+  isReview: boolean
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req, isUpdate);
+    const appData = getApplicationData(req.session);
+
+    if (appData.beneficial_owners_individual) {
+      appData.beneficial_owners_individual[0].trust_ids = ["1"];
+    }
+
+    const pageProps = getPageProperties(req, isUpdate, isReview);
+
+    console.log("******** PAGE PROPS");
+    console.log(pageProps);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -104,13 +120,14 @@ export const postTrustInvolvedPage = (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean
+  isUpdate: boolean,
+  isReview: boolean
 ) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, getNextPage(isUpdate));
+      return safeRedirect(res, getNextPage(isUpdate, isReview));
     }
     //  check on errors
     const errorList = validationResult(req);
@@ -119,6 +136,7 @@ export const postTrustInvolvedPage = (
       const pageProps = getPageProperties(
         req,
         isUpdate,
+        isReview,
         req.body,
         formatValidationError(errorList.array()),
       );
@@ -155,16 +173,20 @@ export const postTrustInvolvedPage = (
   }
 };
 
-const getPageTemplate = (isUpdate: boolean) => {
-  if (isUpdate) {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
+  } else if (isUpdate) {
     return config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
   } else {
     return config.TRUST_INVOLVED_PAGE;
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, trustId: string) => {
-  if (isUpdate) {
+const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
+  } else if (isUpdate) {
     return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
   } else {
     return `${config.TRUST_DETAILS_URL}/${trustId}`;
@@ -187,8 +209,10 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean) => {
-  if (isUpdate) {
+const getNextPage = (isUpdate: boolean, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
+  } else if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {
     return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;

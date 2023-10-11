@@ -21,7 +21,7 @@
       <h1 class="govuk-heading-xl">{{ title }}</h1>
       {% set boItems = [] %}
       {% for bo in pageData.boInTrust %}
-        {% set type = pageData.beneficialOwnerTypeTitle[bo.type] %}
+        {% set type = 'Beneficial Owner' %}
         {% set boItems = (
           boItems.push({
             key: {

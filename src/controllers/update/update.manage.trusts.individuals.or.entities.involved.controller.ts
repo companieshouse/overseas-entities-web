@@ -1,62 +1,63 @@
 import { NextFunction, Request, Response } from 'express';
 import { Session } from '@companieshouse/node-session-handler';
-
 import { logger } from '../../utils/logger';
 import {
-  TRUST_BENEFICIAL_OWNER_DETACH_URL,
-  TRUST_ENTRY_URL,
+  // TRUST_BENEFICIAL_OWNER_DETACH_URL,
+  // TRUST_ENTRY_URL,
   TRUST_ID,
-  UPDATE_AN_OVERSEAS_ENTITY_URL,
-  UPDATE_CHECK_YOUR_ANSWERS_URL,
-  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
+  // UPDATE_AN_OVERSEAS_ENTITY_URL,
+  // UPDATE_CHECK_YOUR_ANSWERS_URL,
+  // UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  // UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
   UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL,
 } from '../../config';
 import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { ApplicationData } from '../../model';
 import { saveAndContinue } from '../../utils/save.and.continue';
-import { TrusteeType } from '../../model/trustee.type.model';
-import { TRUST_INVOLVED_TEXTS } from '../../utils/trust.involved';
-import { mapTrustWhoIsInvolvedToPage } from '../../utils/trust/who.is.involved.mapper';
+// import { TrusteeType } from '../../model/trustee.type.model';
+import { getTrustInvolvedPage } from '../../utils/trust.involved';
+// import { mapTrustWhoIsInvolvedToPage } from '../../utils/trust/who.is.involved.mapper';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
-  try {
-    logger.debugRequest(req, `${req.method} ${req.route.path}`);
+  getTrustInvolvedPage(req, res, next, true, true);
+  // try {
+  //   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
-    const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
-    let trustId = '';
-    if (trustInReview) {
-      trustId = trustInReview.trust_id;
-    }
+  //   const appData = getApplicationData(req.session);
+  //   const trustInReview = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
+  //   let trustId = trustInReview?.trust_id ?? "";
 
-    return res.render(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, {
-      templateName: UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
-      backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
-      pageParams: {
-        title: TRUST_INVOLVED_TEXTS.title
-      },
-      pageData: {
-        trustData: {
-          trustId: trustId,
-          trustName: trustInReview?.trust_name
-        },
-        ...mapTrustWhoIsInvolvedToPage(appData, trustId),
-        beneficialOwnerTypeTitle: 'Beneficial Owner',
-        trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-        individualTrusteeData: trustInReview?.INDIVIDUALS,
-        formerTrusteeData: trustInReview?.HISTORICAL_BO,
-        legalEntityTrusteeData: trustInReview?.CORPORATES,
-        trusteeType: TrusteeType,
-        checkYourAnswersUrl: UPDATE_CHECK_YOUR_ANSWERS_URL,
-        beneficialOwnerUrlDetach: `${TRUST_ENTRY_URL}/${trustInReview?.trust_id}${TRUST_BENEFICIAL_OWNER_DETACH_URL}`
-      },
-      url: UPDATE_AN_OVERSEAS_ENTITY_URL
-    });
-  } catch (error) {
-    next(error);
-  }
+  //   if (appData.beneficial_owners_individual) {
+  //     appData.beneficial_owners_individual[0].trust_ids = ["1"];
+  //   }
+
+  //   return res.render(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE, {
+  //     templateName: UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE,
+  //     backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
+  //     pageParams: {
+  //       title: TRUST_INVOLVED_TEXTS.title
+  //     },
+  //     pageData: {
+  //       trustData: {
+  //         trustId: trustId,
+  //         trustName: trustInReview?.trust_name
+  //       },
+  //       ...mapTrustWhoIsInvolvedToPage(appData, trustId),
+  //       beneficialOwnerTypeTitle: 'Beneficial Owner',
+  //       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
+  //       individualTrusteeData: trustInReview?.INDIVIDUALS,
+  //       formerTrusteeData: trustInReview?.HISTORICAL_BO,
+  //       legalEntityTrusteeData: trustInReview?.CORPORATES,
+  //       trusteeType: TrusteeType,
+  //       checkYourAnswersUrl: UPDATE_CHECK_YOUR_ANSWERS_URL,
+  //       beneficialOwnerUrlDetach: `${TRUST_ENTRY_URL}/${trustInReview?.trust_id}${TRUST_BENEFICIAL_OWNER_DETACH_URL}`
+  //     },
+  //     url: UPDATE_AN_OVERSEAS_ENTITY_URL
+  //   });
+  // } catch (error) {
+  //   next(error);
+  // }
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {

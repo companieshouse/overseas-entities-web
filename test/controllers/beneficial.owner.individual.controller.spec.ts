@@ -856,10 +856,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
   });
 
-
-
-
-
   describe("POST with url params tests", () => {
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
@@ -1527,10 +1523,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
   });
-
-  
-
-
 
   describe("UPDATE tests", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {

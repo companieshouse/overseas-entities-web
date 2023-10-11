@@ -141,9 +141,11 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockRetrieveTrustData).not.toHaveBeenCalled();
     });
 
-    test("retrieve trust data is called if feature enabled and no update model data", async () => {
+    test("retrieve trust data is called if feature enabled and empty update model in app data", async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+        update: {
+        }
       });
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockIsActiveFeature.mockReturnValueOnce(true);

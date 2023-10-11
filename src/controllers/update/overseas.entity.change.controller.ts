@@ -83,7 +83,11 @@ export const resetDataForNoChange = async (req: Request, appData: ApplicationDat
     await retrieveBoAndMoData(req, appData);
   }
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
-    await retrieveTrustData(req, appData);
+    if (appData.update) {
+      appData.update.trust_data_fetched = false;
+      appData.update.review_trusts = undefined;
+      await retrieveTrustData(req, appData);
+    }
   }
   return appData;
 };

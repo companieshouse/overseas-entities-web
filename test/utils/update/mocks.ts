@@ -235,13 +235,13 @@ export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
     hashedTrustId: "12345678",
     trustName: "Test Trust",
     creationDate: "2020-01-01",
-    unableToObtainAllTrustInfo: false
+    unableToObtainAllTrustInfoIndicator: false
   },
   {
     hashedTrustId: "87654321",
     trustName: "Test Trust 2",
     creationDate: "2020-02-02",
-    unableToObtainAllTrustInfo: true
+    unableToObtainAllTrustInfoIndicator: true
   }
 ];
 

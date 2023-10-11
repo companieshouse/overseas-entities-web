@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import { getManagingOfficersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { mapMoPrivateAddress } from "./managing.officer.mapper";
+import { mapIndividualMoPrivateData, mapCorporateMoPrivateData } from "./managing.officer.mapper";
 
 export const fetchManagingOfficersPrivateData = async (appData: ApplicationData, req) => {
 
@@ -16,6 +16,7 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
   if (appData.entity === undefined) {
     appData.entity = {};
   }
+
   if (!appData.entity.email && overseasEntityId !== undefined && transactionId !== undefined) {
     try {
       const moPrivateData = await getManagingOfficersPrivateData(req, transactionId, overseasEntityId);
@@ -32,16 +33,14 @@ export const fetchManagingOfficersPrivateData = async (appData: ApplicationData,
 };
 
 const mapManagingOfficersPrivateData = (moPrivateData, appData: ApplicationData) => {
-  if (moPrivateData !== undefined && moPrivateData.length > 0) {
-    appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
-      if (managingOfficer.ch_reference) {
-        managingOfficer.usual_residential_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, false);
-      }
-    });
-    appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
-      if (managingOfficer.ch_reference) {
-        managingOfficer.principal_address = mapMoPrivateAddress(moPrivateData, managingOfficer.ch_reference, true);
-      }
-    });
-  }
+  appData.update?.review_managing_officers_individual?.forEach(managingOfficer => {
+    if (managingOfficer.ch_reference) {
+      mapIndividualMoPrivateData(moPrivateData, managingOfficer);
+    }
+  });
+  appData.update?.review_managing_officers_corporate?.forEach(managingOfficer => {
+    if (managingOfficer.ch_reference) {
+      mapCorporateMoPrivateData(moPrivateData, managingOfficer);
+    }
+  });
 };

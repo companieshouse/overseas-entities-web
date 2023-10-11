@@ -17,7 +17,20 @@
       {% include "includes/list/errors.html" %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
-
+      <p class="govuk-body">At least one individual or entity you've told us about is a beneficial owner of the overseas entity, due to being a trustee of a trust.</p>
+      <br>
+      <p class="govuk-body">If we already hold trust information for this entity, you can review it in this section, and update it if needed.</p>
+      {{ govukInsetText({
+          html: '
+          <p>We can only show information that has previously been provided. You may need to <strong>enter any information that is missing</strong>.</p>
+          '
+        }) }}
+      <p class="govuk-body">You can also:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>add any new trusts and tell us about their former beneficial owners, beneficiaries, settlors, grantors or interested persons</li>
+        <li>remove any trusts that are no longer involved in the overseas entity</li>
+      </ul>
+      
       <form method="post">
         {% include "includes/save-and-continue-button.html" %}
       </form>

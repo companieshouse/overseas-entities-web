@@ -3,7 +3,7 @@ import { logger } from "../logger";
 import { getBeneficialOwnersPrivateData } from "../../service/private.overseas.entity.details";
 import { isActiveFeature } from '../feature.flag';
 import { ApplicationData } from "../../model";
-import { mapBoPrivateAddress } from "./psc.to.beneficial.owner.type.mapper";
+import { mapCorporateOrGovernmentBOPrivateData, mapIndividualBOPrivateData } from "./psc.to.beneficial.owner.type.mapper";
 
 export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData, req) => {
 
@@ -31,20 +31,18 @@ export const fetchBeneficialOwnersPrivateData = async (appData: ApplicationData,
 };
 
 const mapBeneficialOwnersPrivateData = (boPrivateData, appData: ApplicationData) => {
-  if (boPrivateData === undefined || boPrivateData.length === 0) {
-    return;
-  }
-  const mapUsualResidentialAddress = beneficialOwner => {
+  const mapIndividualOwners = beneficialOwner => {
     if (beneficialOwner.ch_reference) {
-      beneficialOwner.usual_residential_address = mapBoPrivateAddress(boPrivateData, beneficialOwner.ch_reference, false);
+      mapIndividualBOPrivateData(boPrivateData, beneficialOwner);
     }
   };
-  const mapPrincipalAddress = beneficialOwner => {
+  const mapCorporateOrGovernmentOwners = beneficialOwner => {
     if (beneficialOwner.ch_reference) {
-      beneficialOwner.principal_address = mapBoPrivateAddress(boPrivateData, beneficialOwner.ch_reference, true);
+      mapCorporateOrGovernmentBOPrivateData(boPrivateData, beneficialOwner);
     }
   };
-  appData.update?.review_beneficial_owners_individual?.forEach(mapUsualResidentialAddress);
-  appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(mapPrincipalAddress);
-  appData.update?.review_beneficial_owners_corporate?.forEach(mapPrincipalAddress);
+  appData.update?.review_beneficial_owners_individual?.forEach(mapIndividualOwners);
+  appData.update?.review_beneficial_owners_corporate?.forEach(mapCorporateOrGovernmentOwners);
+  appData.update?.review_beneficial_owners_government_or_public_authority?.forEach(mapCorporateOrGovernmentOwners);
 };
+

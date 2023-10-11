@@ -2,14 +2,18 @@
 
 {% set inNoChangeJourney = pageParams.noChangeFlag %}
 {% set inChangeJourney = not inNoChangeJourney %}
+{% set isRegistrationJourney = pageParams.isRegistration %}
 
 {% set boiFullName = boi.first_name + " " + boi.last_name %}
 
 {% set boiDateOfBirth %}
-  {% if boi.date_of_birth and inNoChangeJourney %}
-    {{ dateMacros.formatDate("", boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
-  {% elif boi.date_of_birth %}
-    {{ dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) }}
+  {% if boi.date_of_birth %}
+    {% if not isRegistrationJourney and (boi.date_of_birth["day"] == "01" or boi.date_of_birth["day"] == "1") %}
+      {% set dob = dateMacros.formatMonthYearDate(boi.date_of_birth["month"] | string, boi.date_of_birth["year"]) %}
+    {% else %}
+      {% set dob = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}
+    {% endif %}
+    {{ dob }}
   {% endif %}
 {% endset %}
 

@@ -9,6 +9,7 @@ jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/utils/trusts');
+jest.mock('../../../src/utils/update/review_trusts');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -47,7 +48,7 @@ import {
   UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK,
   UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK,
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK,
-  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK,
+  UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK
 } from '../../__mocks__/session.mock';
 import { BeneficialOwnersStatementType, BeneficialOwnerStatementKey } from '../../../src/model/beneficial.owner.statement.model';
 import { ManagingOfficerKey } from '../../../src/model/managing.officer.model';
@@ -58,20 +59,23 @@ import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.oth
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+import { hasTrustsToReview } from '../../../src/utils/update/review_trusts';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
-mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
-mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
-mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
 
 const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
+
+const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
@@ -87,18 +91,18 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockGetApplicationData.mockReset();
-    mockCheckEntityRequiresTrusts.mockReturnValue(false);
+    mockHasTrustsToReview.mockReturnValue(false);
   });
 
   describe("GET tests", () => {
 
     describe("BOs and MOs to review", () => {
       test.each([
-        ['review-beneficial-owner-individual', "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BeneficialOwnerIndividualKey ],
-        ['review-beneficial-owner-other', "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, BeneficialOwnerOtherKey ],
-        ['review-beneficial-owner-gov', "review_beneficial_owners_government_or_public_authority", BENEFICIAL_OWNER_GOV_OBJECT_MOCK, BeneficialOwnerGovKey ],
-        ['review-individual-managing-officer', "review_managing_officers_individual", MANAGING_OFFICER_OBJECT_MOCK, ManagingOfficerKey ],
-        ['review-managing-officer-corporate', "review_managing_officers_corporate", MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, ManagingOfficerCorporateKey ]
+        ['review-beneficial-owner-individual', "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, BeneficialOwnerIndividualKey],
+        ['review-beneficial-owner-other', "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK, BeneficialOwnerOtherKey],
+        ['review-beneficial-owner-gov', "review_beneficial_owners_government_or_public_authority", BENEFICIAL_OWNER_GOV_OBJECT_MOCK, BeneficialOwnerGovKey],
+        ['review-individual-managing-officer', "review_managing_officers_individual", MANAGING_OFFICER_OBJECT_MOCK, ManagingOfficerKey],
+        ['review-managing-officer-corporate', "review_managing_officers_corporate", MANAGING_OFFICER_CORPORATE_OBJECT_MOCK, ManagingOfficerCorporateKey]
       ])(`redirects to %s review page`, async (reviewType, key, mockObject, appDataBoKey) => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[UpdateKey] = { [key]: [mockObject] };
@@ -134,11 +138,11 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       });
 
       test.each([
-        ['BO Individual', BeneficialOwnerIndividualKey, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-        ['BO Other', BeneficialOwnerOtherKey, UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-        ['BO Gov', BeneficialOwnerGovKey, UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-        ['MO Individual', ManagingOfficerKey, UPDATE_MANAGING_OFFICER_OBJECT_MOCK ],
-        ['MO Corporate', ManagingOfficerCorporateKey, UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
+        ['BO Individual', BeneficialOwnerIndividualKey, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+        ['BO Other', BeneficialOwnerOtherKey, UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK],
+        ['BO Gov', BeneficialOwnerGovKey, UPDATE_BENEFICIAL_OWNER_GOV_OBJECT_MOCK],
+        ['MO Individual', ManagingOfficerKey, UPDATE_MANAGING_OFFICER_OBJECT_MOCK],
+        ['MO Corporate', ManagingOfficerCorporateKey, UPDATE_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK]
       ])(`renders the update-beneficial-owner-type page with reviewed BOs and MOs table displayed when a %s has been reviewed`, async (_, key, mockObject) => {
         let objectWithRef = {};
         objectWithRef = {
@@ -158,11 +162,11 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       });
 
       test.each([
-        ['BO Individual', BeneficialOwnerIndividualKey, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
-        ['BO Other', BeneficialOwnerOtherKey, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
-        ['BO Gov', BeneficialOwnerGovKey, BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
-        ['MO Individual', ManagingOfficerKey, UPDATE_NEWLY_ADDED_MANAGING_OFFICER_OBJECT_MOCK ],
-        ['MO Corporate', ManagingOfficerCorporateKey, UPDATE_NEWLY_ADDED_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ]
+        ['BO Individual', BeneficialOwnerIndividualKey, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK],
+        ['BO Other', BeneficialOwnerOtherKey, BENEFICIAL_OWNER_OTHER_OBJECT_MOCK],
+        ['BO Gov', BeneficialOwnerGovKey, BENEFICIAL_OWNER_GOV_OBJECT_MOCK],
+        ['MO Individual', ManagingOfficerKey, UPDATE_NEWLY_ADDED_MANAGING_OFFICER_OBJECT_MOCK],
+        ['MO Corporate', ManagingOfficerCorporateKey, UPDATE_NEWLY_ADDED_MANAGING_OFFICER_CORPORATE_OBJECT_MOCK]
       ])(`renders the update-beneficial-owner-type page with newly added BOs and MOs table displayed when a %s has been added`, async (_, key, mockObject) => {
         appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
         appData[key] = [mockObject];
@@ -177,7 +181,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
+      mockGetApplicationData.mockImplementationOnce(() => { throw ERROR; });
       const resp = await request(app).get(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
 
       expect(resp.status).toEqual(500);
@@ -189,10 +193,23 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     test('redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('redirects to check your answers if manage trusts feature flag is on but no trusts to review', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      mockHasTrustsToReview.mockReturnValueOnce(false);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
     });
 
     test('redirects to add trusts if manage trusts flag is off, add trusts flag is on, and trusts are required', async () => {

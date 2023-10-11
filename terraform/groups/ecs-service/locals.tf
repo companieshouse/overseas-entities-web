@@ -6,7 +6,7 @@ locals {
   container_port            = "3000" # default node port required here until prod docker container is built allowing port change via env var
   docker_repo               = "overseas-entities-web"
   lb_listener_rule_priority = 91
-  lb_listener_paths         = ["/register-an-overseas-entity/*","/update-an-overseas-entity/*"]
+  lb_listener_paths         = ["/register-an-overseas-entity*","/update-an-overseas-entity*"]
   healthcheck_path          = "/register-an-overseas-entity/healthcheck" #healthcheck path for overseas entities web
   healthcheck_matcher       = "200"
 
@@ -79,6 +79,7 @@ locals {
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_TRUSTS_30062023", "value": "${var.feature_flag_enable_update_trusts_30062023}" },
     { "name": "FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023", "value": "${var.feature_flag_disable_update_private_data_fetch_28062023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023", "value": "${var.feature_flag_enable_update_manage_trusts_29082023}" },
+    { "name": "FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023", "value": "${var.feature_flag_enable_redis_removal_27092023}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },

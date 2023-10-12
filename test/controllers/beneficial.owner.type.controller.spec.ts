@@ -81,8 +81,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    // TODO Remove? Doesn't seem to work or have any effect
-    // process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "true";
   });
 
   describe("GET with url params tests", () => {

@@ -90,6 +90,7 @@ import {
   updateManageTrustsInterrupt,
   updateManageTrustsReviewTheTrust,
   updateManageTrustsReviewFormerBo,
+  updateManageTrustsTellUsAboutTheFormerBo,
   updateManageTrustsReviewIndividuals,
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
@@ -514,6 +515,16 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   )
   .get(updateManageTrustsReviewFormerBo.get)
   .post(updateManageTrustsReviewFormerBo.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.manageTrustsTellUsAboutFormerBOsGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheFormerBo.get)
+  .post(...validator.trustHistoricalBeneficialOwner, updateManageTrustsTellUsAboutTheFormerBo.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
   .all(

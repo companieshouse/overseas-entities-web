@@ -89,6 +89,7 @@ export * as updateManageTrustsOrchestrator from './update/update.manage.trusts.o
 export * as updateManageTrustsInterrupt from './update/update.manage.trusts.interrupt.controller';
 export * as updateManageTrustsReviewTheTrust from './update/update.manage.trusts.review.the.trust.controller';
 export * as updateManageTrustsReviewFormerBo from './update/update.manage.trusts.review.former.bo.controller';
+export * as updateManageTrustsTellUsAboutTheFormerBo from './update/update.manage.trusts.tell.us.about.the.former.bo.controller';
 export * as updateManageTrustsReviewIndividuals from './update/update.manage.trusts.review.individuals.controller';
 export * as updateManageTrustsReviewLegalEntities from './update/update.manage.trusts.review.legal.entities.controller';
 export * as updateManageTrustsIndividualsOrEntitiesInvolved from './update/update.manage.trusts.individuals.or.entities.involved.controller';

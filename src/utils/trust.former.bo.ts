@@ -4,7 +4,7 @@ import { logger } from '../utils/logger';
 import { TrusteeType } from '../model/trustee.type.model';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../utils/trusts';
-import { mapBeneficialOwnerToSession, mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { mapBeneficialOwnerToSession, mapFormerTrusteeByIdFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 import * as CommonTrustDataMapper from '../utils/trust/common.trust.data.mapper';
 import { ApplicationData } from '../model';
 import * as PageModel from '../model/trust.page.model';
@@ -62,7 +62,7 @@ export const getTrustFormerBo = (req: Request, res: Response, next: NextFunction
     const trusteeId = req.params[config.ROUTE_PARAM_TRUSTEE_ID];
     const appData: ApplicationData = getApplicationData(req.session);
 
-    const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeFromSessionToPage(
+    const formData: PageModel.TrustHistoricalBeneficialOwnerForm = mapFormerTrusteeByIdFromSessionToPage(
       appData,
       trustId,
       trusteeId

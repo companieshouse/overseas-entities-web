@@ -308,19 +308,19 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
 const mapResidentialAddress = (trustee: TrustCorporate, trusteeData: CorporateTrusteeData) => {
   trustee.ro_address_premises = trusteeData.registeredOfficeAddress?.premises ?? "";
   trustee.ro_address_line_1 = trusteeData.registeredOfficeAddress?.addressLine1 ?? "";
-  trustee.ro_address_line_2 = trusteeData.registeredOfficeAddress?.addressLine2;
+  trustee.ro_address_line_2 = trusteeData.registeredOfficeAddress?.addressLine2 ?? "";
   trustee.ro_address_locality = trusteeData.registeredOfficeAddress?.locality ?? "";
   trustee.ro_address_region = trusteeData.registeredOfficeAddress?.region ?? "";
   trustee.ro_address_country = trusteeData.registeredOfficeAddress?.country ?? "";
   trustee.ro_address_postal_code = trusteeData.registeredOfficeAddress?.postalCode ?? "";
-  trustee.ro_address_care_of = trusteeData.registeredOfficeAddress?.careOf;
-  trustee.ro_address_po_box = trusteeData.registeredOfficeAddress?.poBox;
+  trustee.ro_address_care_of = trusteeData.registeredOfficeAddress?.careOf ?? "";
+  trustee.ro_address_po_box = trusteeData.registeredOfficeAddress?.poBox || "";
 };
 
 const mapServiceAddress = (trustee: TrustIndividual | TrustCorporate, trusteeData: IndividualTrusteeData | CorporateTrusteeData) => {
   trustee.sa_address_premises = trusteeData.serviceAddress?.premises ?? "";
   trustee.sa_address_line_1 = trusteeData.serviceAddress?.addressLine1 ?? "";
-  trustee.sa_address_line_2 = trusteeData.serviceAddress?.addressLine2;
+  trustee.sa_address_line_2 = trusteeData.serviceAddress?.addressLine2 ?? "";
   trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
   trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
   trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
@@ -334,13 +334,13 @@ const mapServiceAddress = (trustee: TrustIndividual | TrustCorporate, trusteeDat
 const mapUsualResidentialAddress = (trustee: TrustIndividual, trusteeData: IndividualTrusteeData) => {
   trustee.ura_address_premises = trusteeData.usualResidentialAddress?.premises ?? "";
   trustee.ura_address_line_1 = trusteeData.usualResidentialAddress?.addressLine1 ?? "";
-  trustee.ura_address_line_2 = trusteeData.usualResidentialAddress?.addressLine2;
+  trustee.ura_address_line_2 = trusteeData.usualResidentialAddress?.addressLine2 ?? "";
   trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
   trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
   trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
-  trustee.ura_address_region = trusteeData.usualResidentialAddress?.region;
+  trustee.ura_address_region = trusteeData.usualResidentialAddress?.region ?? "";
   trustee.ura_address_country = trusteeData.usualResidentialAddress?.country ?? "";
   trustee.ura_address_postal_code = trusteeData.usualResidentialAddress?.postalCode ?? "";
-  trustee.ura_address_care_of = trusteeData.usualResidentialAddress?.careOf;
-  trustee.ura_address_po_box = trusteeData.usualResidentialAddress?.poBox;
+  trustee.ura_address_care_of = trusteeData.usualResidentialAddress?.careOf ?? "";
+  trustee.ura_address_po_box = trusteeData.usualResidentialAddress?.poBox ?? "";
 };

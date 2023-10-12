@@ -397,8 +397,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     /*
-    TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been 
-    implemented (journey only partially completed in order to allow navigation to final screens 
+    TODO Add the other POST Submit tests in here and change to work with the 'with params' URLs
+    (journey only partially completed in order to allow navigation to final screens
     */
   });
 

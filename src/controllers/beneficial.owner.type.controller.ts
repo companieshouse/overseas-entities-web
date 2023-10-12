@@ -24,6 +24,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
+        FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
         addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
         noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined
         beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),

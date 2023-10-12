@@ -115,7 +115,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
     mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {

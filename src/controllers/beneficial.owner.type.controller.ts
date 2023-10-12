@@ -56,11 +56,7 @@ const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice | Ma
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
-    let nextPage = config.BENEFICIAL_OWNER_OTHER_URL;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-      nextPage = config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL;
-    }
-    return nextPage;
+    return config.BENEFICIAL_OWNER_OTHER_URL;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
     return config.BENEFICIAL_OWNER_GOV_URL;
   } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {

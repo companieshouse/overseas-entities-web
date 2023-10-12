@@ -5,13 +5,9 @@
 
     {% if isReview %}
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
-      <h1 class="govuk-heading-xl govuk-!-margin-0">{{ pageTitle }}</h1>
-      <br><br>
-      <label class="govuk-label govuk-!-margin-bottom-7">{{ subtitle }}</label>
-    {% else %}
-      <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
-      <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
     {% endif %}
+    <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
+    <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
 
     <form class="form" method="post">
       {% set fieldParam = {

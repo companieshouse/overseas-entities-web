@@ -18,7 +18,9 @@ import { beginTrustReview } from './update/review_trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
-  subtitle: 'You can add more trusts later.'
+  review_title: 'Review the trust',
+  subtitle: 'You can add more trusts later.',
+  review_subtitle: 'If you need to update this information, you can change the answers here.'
 };
 
 type TrustDetailPageProperties = {
@@ -57,8 +59,8 @@ const getPageProperties = (
     backLinkUrl: getBackLinkUrl(isUpdate, appData, isReview),
     templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
-      title: TRUST_DETAILS_TEXTS.title,
-      subtitle: TRUST_DETAILS_TEXTS.subtitle,
+      title: isReview ? TRUST_DETAILS_TEXTS.review_title : TRUST_DETAILS_TEXTS.title,
+      subtitle: isReview ? TRUST_DETAILS_TEXTS.review_subtitle : TRUST_DETAILS_TEXTS.subtitle,
     },
     pageData: {
       beneficialOwners: boAvailableForTrust,

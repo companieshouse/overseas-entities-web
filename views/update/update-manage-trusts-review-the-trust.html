@@ -2,8 +2,7 @@
 
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set pageTitle = "Review the trust" %}
-{% set subtitle = "If you need to update this information, you can change the answers here." %}
+{% set title = pageParams.title %}
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}

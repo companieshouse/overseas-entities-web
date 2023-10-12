@@ -1,5 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
+import {
+  BENEFICIAL_OWNER_OTHER_PAGE,
+  BENEFICIAL_OWNER_TYPE_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL } from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
 import {
   getBeneficialOwnerOther,
   getBeneficialOwnerOtherById,
@@ -7,6 +12,7 @@ import {
   removeBeneficialOwnerOther,
   updateBeneficialOwnerOther
 } from "../utils/beneficial.owner.other";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
   getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL);
@@ -17,7 +23,11 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerOther(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
+  let nextPage = BENEFICIAL_OWNER_TYPE_URL;
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    nextPage = getUrlWithParamsToPath(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+  }
+  postBeneficialOwnerOther(req, res, next, nextPage, true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {

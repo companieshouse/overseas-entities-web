@@ -22,6 +22,8 @@ import { logger } from '../utils/logger';
 import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
+import { isActiveFeature } from "../utils/feature.flag";
+import * as config from "../config";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -55,6 +57,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
+      console.log("******* VALIDATION MIDDLEWARE RENDER **********");
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
         templateName: NAVIGATION[routePath].currentPage,
@@ -64,6 +67,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...appData,
         ...req.body,
         ...dates,
+        FEATURE_FLAG_ENABLE_REDIS_REMOVAL: isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL),
         errors
       });
     }

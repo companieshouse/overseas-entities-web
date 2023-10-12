@@ -50,7 +50,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  return res.redirect(getNextPage(req, req.body[BeneficialOwnerTypeKey]));
+  return res.redirect(getNextPage(req));
 };
 
 export const postSubmit = (req: Request, res: Response) => {
@@ -66,7 +66,9 @@ export const postSubmit = (req: Request, res: Response) => {
 };
 
 // With validation in place we have got just these 5 possible choices
-const getNextPage = (req: Request, beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
+const getNextPage = (req: Request): string => {
+  const beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice = req.body[BeneficialOwnerTypeKey];
+
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
     let nextPageUrl = config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){

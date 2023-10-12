@@ -53,6 +53,11 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
   }
 
   for (const trustData of trusts) {
+    if (trustData.ceasedDate !== undefined && trustData.ceasedDate !== "") {
+      logger.debug("Skipping ceased trust " + trustData.hashedTrustId);
+      continue;
+    }
+
     logger.debug("Loaded trust " + trustData.hashedTrustId);
 
     const trust = mapTrustData(trustData, appData);

@@ -87,6 +87,65 @@ describe("Test fetching and mapping of Trust data", () => {
     } as Trust);
   });
 
+  test("should fetch and not map a ceased trust", async () => {
+    const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false, review_trusts: undefined } };
+
+    mockIsActiveFeature.mockReturnValue(false);
+    mockGetTrustData.mockResolvedValue([
+      {
+        trustName: "Test Trust A",
+        hashedTrustId: "87654321",
+        creationDate: "2010-01-01",
+        ceasedDate: "2020-02-02",
+        unableToObtainAllTrustInfoIndicator: true
+      }
+    ]);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(1);
+    expect(appData.update?.review_trusts).toEqual([]);
+  });
+
+  test("should fetch and map a trust with empty ceased date", async () => {
+    const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false, review_trusts: undefined } };
+
+    mockIsActiveFeature.mockReturnValue(false);
+    mockGetTrustData.mockResolvedValue([
+      {
+        trustName: "Test Trust A",
+        hashedTrustId: "87654321",
+        creationDate: "2010-01-01",
+        ceasedDate: "",
+        unableToObtainAllTrustInfoIndicator: true
+      }
+    ]);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(3);
+    expect(appData.update?.review_trusts).toEqual([{
+      "ch_reference": "87654321",
+      "creation_date_day": "1",
+      "creation_date_month": "1",
+      "creation_date_year": "2010",
+      "trust_id": "1",
+      "trust_name": "Test Trust A",
+      "unable_to_obtain_all_trust_info": "Yes",
+      "CORPORATES": [],
+      "HISTORICAL_BO": [],
+      "INDIVIDUALS": []
+    }]);
+  });
+
   test("should not fetch and map trust data data when already fetched", async () => {
     const appData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: true } };
 
@@ -146,7 +205,7 @@ describe("Test fetching and mapping of Trust data", () => {
       creation_date_day: "",
       creation_date_month: "",
       creation_date_year: "",
-      unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfo ? "Yes" : "No",
+      unable_to_obtain_all_trust_info: trustData.unableToObtainAllTrustInfoIndicator ? "Yes" : "No",
       INDIVIDUALS: [],
       CORPORATES: [],
       HISTORICAL_BO: []

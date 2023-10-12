@@ -115,7 +115,6 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
     mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
@@ -225,7 +224,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
+      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
       const resp = await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
@@ -350,7 +349,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -885,21 +884,18 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
-    // TODO Understand why this test passes when run individually (using .only) but fails when run with other tests in this file.
-    //      Fix and then re-include
-    //
-    // test(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
-    //   mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+    test(`redirect to the ${BENEFICIAL_OWNER_TYPE_PAGE} page after a successful post from ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with service address data`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
-    //   mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO );
-    //   const resp = await request(app)
-    //     .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
-    //     .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+        .send(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
 
-    //   expect(resp.status).toEqual(302);
-    //   expect(resp.text).toContain(NEXT_PAGE_URL);
-    //   expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-    // });
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
 
     test(`POST empty object and do not redirect to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => REQ_BODY_BENEFICIAL_OWNER_INDIVIDUAL_EMPTY );
@@ -1018,7 +1014,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);
@@ -1564,7 +1560,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
 
     test(`Service address from the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} is present when same address is set to no`, async () => {
-      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      mockPrepareData.mockReturnValueOnce( { ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO } );
       await request(app)
         .post(BENEFICIAL_OWNER_INDIVIDUAL_URL + BO_IND_ID_URL)
         .send(BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK);

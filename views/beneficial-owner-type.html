@@ -66,7 +66,7 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
   {% set noMoreToAddButtonAction = "/register-an-overseas-entity/beneficial-owner-type/submit" %}
   {% set beneficialOwnerIndividualUrl = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL %}
 
-  {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_REDIS_REMOVAL === "true" %}
+  {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
     {% set addButtonAction = addButtonActionWithParams %}
     {% set noMoreToAddButtonAction = noMoreToAddButtonActionWithParams %}
     {% set beneficialOwnerIndividualUrl = beneficialOwnerIndividualUrlWithParams %}

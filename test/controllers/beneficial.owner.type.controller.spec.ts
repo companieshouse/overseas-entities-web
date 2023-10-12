@@ -1,5 +1,3 @@
-// process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "true";
-
 jest.mock("ioredis");
 jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
@@ -83,7 +81,6 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    // process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "true";
   });
 
   describe("GET with url params tests", () => {
@@ -174,7 +171,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test.only("renders the beneficial owner type page with correct urls for buttons and links", async () => {
+    test("renders the beneficial owner type page with correct urls for buttons and links", async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);

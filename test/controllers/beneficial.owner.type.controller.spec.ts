@@ -5,6 +5,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 jest.mock('../../src/utils/trusts.ts');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/feature.flag" );
+jest.mock("../../src/utils/url");
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -50,6 +51,7 @@ import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.i
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../src/utils/trusts";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
@@ -68,6 +70,10 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockcheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
+
+const NEXT_PAGE_URL = "/NEXT_PAGE";
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
@@ -266,11 +272,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
       const resp = await request(app)
-        .post(config.BENEFICIAL_OWNER_TYPE_URL)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
         .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_OTHER_URL);
+    });
+
+    test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page with params`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
     });
 
     test(`redirects to the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {

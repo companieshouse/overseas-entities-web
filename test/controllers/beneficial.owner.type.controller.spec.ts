@@ -266,7 +266,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
       const resp = await request(app)
-        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .post(config.BENEFICIAL_OWNER_TYPE_URL)
         .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
 
       expect(resp.status).toEqual(302);

@@ -34,6 +34,7 @@ const mockTrust = {
   beneficialOwnersIds: ['45e4283c-6b05-42da-ac9d-1f7bf9fe9c85'],
   review_status: {
     in_review: false,
+    reviewed_trust_details: false,
     reviewed_former_bos: false,
     reviewed_individuals: false,
     reviewed_legal_entities: false,
@@ -125,15 +126,6 @@ describe('Update - Manage Trusts - Review the trust', () => {
   describe('POST tests', () => {
     test('when feature flag is on, redirect to review former bo page', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockUpdateTrustInReviewList.mockReturnValueOnce({
-        ...APPLICATION_DATA_MOCK,
-        [UpdateKey]: {
-          review_trusts: [{
-            ...mockTrust,
-            trust_name: "Updated Trust name"
-          }]
-        }
-      });
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
         .send({

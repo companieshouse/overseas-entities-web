@@ -115,7 +115,6 @@ import { BeneficialOwnerGovKey } from "../../src/model/beneficial.owner.gov.mode
 import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );
@@ -141,9 +140,6 @@ mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( CONFIRMATION_URL );
-
-const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
 
 describe("GET tests", () => {
 

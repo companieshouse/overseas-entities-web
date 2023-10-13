@@ -3,9 +3,24 @@ import { NextFunction, Request, Response } from "express";
 import { logger } from "../../../utils/logger";
 import { NavigationErrorMessage } from "../check.condition";
 import { ROUTE_PARAM_TRUSTEE_ID, SECURE_UPDATE_FILTER_URL } from '../../../config';
-import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview } from "../../../utils/update/review_trusts";
+import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview, hasTrustsToReview } from "../../../utils/update/review_trusts";
 import { getApplicationData } from "../../../utils/application.data";
 import { TrusteeType } from "../../../model/trustee.type.model";
+
+export const reviewTheTrustGuard = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const appData = getApplicationData(req.session);
+
+    if (hasTrustsToReview(appData)) {
+      return next();
+    }
+
+    logger.infoRequest(req, NavigationErrorMessage);
+    return res.redirect(SECURE_UPDATE_FILTER_URL);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const reviewTrusteesGuard = (req: Request, res: Response, next: NextFunction, trusteeType: TrusteeType) => {
   try {

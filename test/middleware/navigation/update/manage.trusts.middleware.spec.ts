@@ -16,15 +16,17 @@ import {
   manageTrustsTellUsAboutFormerBOsGuard,
   manageTrustsTellUsAboutIndividualsGuard,
   manageTrustsTellUsAboutLegalEntitiesGuard,
+  reviewTheTrustGuard,
 } from '../../../../src/middleware/navigation/update/manage.trusts.middleware';
 import { getApplicationData } from '../../../../src/utils/application.data';
-import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview } from "../../../../src/utils/update/review_trusts";
+import { getTrustInReview, getTrusteeIndex, hasTrusteesToReview, hasTrustsToReview } from "../../../../src/utils/update/review_trusts";
 import { TrusteeType } from '../../../../src/model/trustee.type.model';
 
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockGetTrustInReview = getTrustInReview as jest.Mock;
 const mockGetTrusteeIndex = getTrusteeIndex as jest.Mock;
+const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 const mockHasTrusteesToReview = hasTrusteesToReview as jest.Mock;
 
 const req = {} as Request;
@@ -53,6 +55,35 @@ describe("manage trusts middleware", () => {
     mockGetTrustInReview.mockReset();
     mockGetTrusteeIndex.mockReset();
     mockHasTrusteesToReview.mockReset();
+  });
+
+  describe('reviewTheTrustGuard', () => {
+    test('when an error is thrown, next is called with the error as an argument', () => {
+      const error = new Error('Error message');
+      mockGetApplicationData.mockImplementationOnce(() => { throw error; });
+
+      reviewTheTrustGuard(req, res, next);
+
+      expectNextToBeCalledWithError(error);
+    });
+
+    test('when there are trusts to review, moves to next middleware', () => {
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      reviewTheTrustGuard(req, res, next);
+
+      expectToGoToNextMiddleware();
+    });
+
+    test('when there are no trusts to review, redirects to SECURE_UPDATE_FILTER', () => {
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
+      mockHasTrustsToReview.mockReturnValueOnce(false);
+
+      reviewTheTrustGuard(req, res, next);
+
+      expectToBeRedirectedToSecureUpdateFilter();
+    });
   });
 
   describe('manageTrustsReviewFormerBOsGuard', () => {

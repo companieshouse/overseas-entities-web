@@ -23,17 +23,21 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
+  postBeneficialOwnerOther(req, res, next, nextPage(req), true);
+};
+
+export const update = (req: Request, res: Response, next: NextFunction) => {
+  updateBeneficialOwnerOther(req, res, next, nextPage(req), true);
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  removeBeneficialOwnerOther(req, res, next, nextPage(req), true);
+};
+
+const nextPage = (req: Request): string => {
   let nextPage = BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPage = getUrlWithParamsToPath(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }
-  postBeneficialOwnerOther(req, res, next, nextPage, true);
-};
-
-export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerOther(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
-};
-
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerOther(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
+  return nextPage;
 };

@@ -1,7 +1,18 @@
 import { ApplicationData } from '../../../src/model';
 import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from '../../../src/model/trust.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
-import { hasTrustsToReview, getTrustInReview, setupNextTrustForReview, hasTrusteesToReview, getTrusteeIndex, getTrustee, setTrusteesAsReviewed, beginTrustReview } from '../../../src/utils/update/review_trusts';
+import {
+  hasTrustsToReview,
+  getTrustInReview,
+  setupNextTrustForReview,
+  hasTrusteesToReview,
+  getTrusteeIndex,
+  getTrustee,
+  setTrusteesAsReviewed,
+  beginTrustReview,
+  updateTrustInReviewList,
+  getReviewTrustById
+} from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
   describe('hasTrustsToReview', () => {
@@ -470,6 +481,51 @@ describe('Manage trusts - review trusts utils tests', () => {
         reviewed_individuals: false,
         reviewed_legal_entities: true,
       });
+    });
+  });
+
+  describe('updateTrustInReviewList', () => {
+    test ('test that new trust data is saved to application data', () => {
+      const reviewTrustData = {
+        trust_id: "1",
+        trust_name: "Test Trust",
+        creation_date_day: "12",
+        creation_date_month: "6",
+        creation_date_year: "2023",
+        unable_to_obtain_all_trust_info: "No",
+      } as Trust;
+
+      const appData = { update: { review_trusts: [reviewTrustData] } };
+
+      const trustDataToSave = {
+        trust_id: "1",
+        trust_name: "Trust Reviewed",
+        creation_date_day: "12",
+        creation_date_month: "6",
+        creation_date_year: "2023",
+        unable_to_obtain_all_trust_info: "Yes",
+      } as Trust;
+
+      const updatedAppData = { update: { review_trusts: [trustDataToSave] } };
+
+      expect(updateTrustInReviewList(appData, trustDataToSave)).toEqual(updatedAppData);
+    });
+  });
+
+  describe('getReviewTrustById', () => {
+    test ('test that correct trust is returned', () => {
+      const reviewTrustData = {
+        trust_id: "1",
+        trust_name: "Test Trust",
+        creation_date_day: "12",
+        creation_date_month: "6",
+        creation_date_year: "2023",
+        unable_to_obtain_all_trust_info: "No",
+      } as Trust;
+
+      const appData = { update: { review_trusts: [reviewTrustData] } };
+
+      expect(getReviewTrustById(appData, reviewTrustData.trust_id)).toEqual(reviewTrustData);
     });
   });
 });

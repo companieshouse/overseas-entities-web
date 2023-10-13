@@ -1,6 +1,7 @@
 import { Trust } from '../../model/trust.model';
 import { ApplicationData } from '../../model';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { ReviewTrustKey, UpdateKey } from '../../model/update.type.model';
 
 export const hasTrustsToReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).length > 0;
@@ -11,6 +12,20 @@ export const getTrustInReview = (appData: ApplicationData) =>
 export const getReviewTrustById = (appData: ApplicationData, trustId: string) => {
   return appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 };
+
+export const updateTrustInReviewList = (appData: ApplicationData, trustToSave: Trust) => {
+  const trusts: Trust[] = appData.update?.review_trusts ?? [];
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
+  trusts[trustIndex] = trustToSave;
+
+  return {
+    ...appData,
+    [UpdateKey]: {
+      [ReviewTrustKey]: trusts
+    }
+  };
+};
+
 export const setupNextTrustForReview = (appData: ApplicationData) => {
   const trustToReview = (appData.update?.review_trusts ?? [])[0];
 

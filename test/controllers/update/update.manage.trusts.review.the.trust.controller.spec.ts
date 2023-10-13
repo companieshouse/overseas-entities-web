@@ -5,6 +5,7 @@ jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+// jest.mock('../../../src/utils/update/review_trusts');
 
 import { beforeEach, jest, test, describe } from '@jest/globals';
 import request from 'supertest';
@@ -22,6 +23,7 @@ import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TR
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from "../../../src/validation/error.messages";
+// import { getReviewTrustById, updateTrustInReviewList } from '../../../src/utils/update/review_trusts';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue( APPLICATION_DATA_MOCK );
@@ -39,6 +41,10 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(true);
+
+// const mockGetReviewTrustById = getReviewTrustById as jest.Mock;
+
+// const mockUpdateTrustInReviewList = updateTrustInReviewList as jest.Mock;
 
 describe('Update - Manage Trusts - Review the trust', () => {
   beforeEach(() => {
@@ -91,6 +97,8 @@ describe('Update - Manage Trusts - Review the trust', () => {
         });
 
       expect(resp.status).toEqual(302);
+      // expect(mockGetReviewTrustById).toHaveBeenCalled();
+      // expect(mockUpdateTrustInReviewList).toHaveBeenCalled();
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 

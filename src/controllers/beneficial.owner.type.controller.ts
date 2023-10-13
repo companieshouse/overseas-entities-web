@@ -11,6 +11,7 @@ import {
   ManagingOfficerTypeChoice,
 } from "../model/beneficial.owner.type.model";
 import { isActiveFeature } from '../utils/feature.flag';
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -20,6 +21,21 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const requiresTrusts: boolean = checkEntityRequiresTrusts(appData);
 
     logger.infoRequest(req, `${config.BENEFICIAL_OWNER_TYPE_PAGE} requiresTrusts=${requiresTrusts}`);
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
+        // Even though the value of this feature flag is available in the template via the OE_CONFIGS variable, passing it in
+        // like this enables unit tests to assert different outcomes, based on whether it is set or not
+        FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+        addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
+        noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined
+        beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
+        backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
+        templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
+        requiresTrusts,
+        ...appData,
+      });
+    }
 
     return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
       backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
@@ -36,7 +52,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
+  return res.redirect(getNextPage(req));
 };
 
 export const postSubmit = (req: Request, res: Response) => {
@@ -52,9 +68,16 @@ export const postSubmit = (req: Request, res: Response) => {
 };
 
 // With validation in place we have got just these 5 possible choices
-const getNextPage = (beneficialOwnerTypeChoices?: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {
+const getNextPage = (req: Request): string => {
+  const beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice = req.body[BeneficialOwnerTypeKey];
+
   if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
-    return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
+    let nextPageUrl = config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req);
+    }
+
+    return nextPageUrl;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
     return config.BENEFICIAL_OWNER_OTHER_URL;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {

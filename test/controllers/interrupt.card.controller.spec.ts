@@ -50,7 +50,6 @@ describe("INTERRUPT CARD controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
@@ -90,7 +89,7 @@ describe("INTERRUPT CARD controller", () => {
     });
 
     test(`renders the ${INTERRUPT_CARD_PAGE} page with trust feature flag false`, async () => {
-      (isActiveFeature as jest.Mock).mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(INTERRUPT_CARD_WITH_PARAMS_URL);
 

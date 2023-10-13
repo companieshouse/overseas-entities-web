@@ -181,9 +181,10 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(3);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
-      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
     });
   });
 
@@ -377,6 +378,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
+  });
+
+  describe("POST Submit with url params tests", () => {
+
+    test(`redirects to the  ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+    });
+
+    /*
+    TODO Add the other POST Submit tests in here and change to work with the 'with params' URLs
+    (journey only partially completed in order to allow navigation to final screens
+    */
   });
 
   describe("POST Submit tests", () => {

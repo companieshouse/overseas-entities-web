@@ -36,7 +36,7 @@ const trustDataMock = [
     hashedTrustId: "123456789",
     trustName: "Trust Name",
     creationDate: "1965-01-01",
-    unableToObtainAllTrustInfo: false
+    unableToObtainAllTrustInfoIndicator: false
   }
 ];
 

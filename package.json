@@ -29,7 +29,7 @@
   "license": "MIT",
   "homepage": "https://github.com/companieshouse/overseas-entities-web#readme",
   "dependencies": {
-    "@companieshouse/api-sdk-node": "github:companieshouse/api-sdk-node#feature/uar-1145-trusts-fetch-map-test3",
+    "@companieshouse/api-sdk-node": "^2.0.121",
     "@companieshouse/node-session-handler": "^4.1.9",
     "@companieshouse/structured-logging-node": "^1.0.8",
     "@companieshouse/web-security-node": "^2.0.3",

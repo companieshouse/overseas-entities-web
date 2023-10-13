@@ -295,6 +295,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been
     //      implemented (journey only partially completed in order to allow navigation to final screens)
+
+    test(`renders the current page with error message when ${BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS} has been selected `, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+    });
   });
 
   describe("POST tests", () => {

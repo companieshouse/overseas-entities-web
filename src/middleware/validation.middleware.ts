@@ -24,6 +24,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -57,7 +58,24 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
-      console.log("******* VALIDATION MIDDLEWARE RENDER **********");
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        return res.render(NAVIGATION[routePath].currentPage, {
+          backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+          templateName: NAVIGATION[routePath].currentPage,
+          id,
+          entityName,
+          entityNumber,
+          ...appData,
+          ...req.body,
+          ...dates,
+          FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+          addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
+          noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined
+          beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
+          errors
+        });
+      }
+
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
         templateName: NAVIGATION[routePath].currentPage,
@@ -67,7 +85,6 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...appData,
         ...req.body,
         ...dates,
-        FEATURE_FLAG_ENABLE_REDIS_REMOVAL: isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL),
         errors
       });
     }

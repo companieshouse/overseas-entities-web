@@ -4,7 +4,7 @@ import {
   getIndividualTrustees,
   getCorporateTrustees,
   getTrustLinks
-} from "../../../src/service/trust.data.service";
+} from "../../service/trust.data.service";
 import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";

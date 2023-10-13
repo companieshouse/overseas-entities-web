@@ -19,6 +19,8 @@ import {
   CONFIRMATION_URL,
   CONFIRMATION_WITH_PARAMS_URL,
   FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  ACTIVE_SUBMISSION_BASE_PATH,
+  LANDING_URL,
 } from "../config";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
 import { getUrlWithParamsToPath } from "../utils/url";
@@ -46,8 +48,10 @@ export const startPaymentsSession = async (
 
   if (!paymentUrl) {
     // Only if transaction does not have a fee.
+    const isRegistration: boolean = req.path.startsWith(LANDING_URL);
+
     let confirmationPageUrl = CONFIRMATION_URL;
-    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration){
       confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
     }
 
@@ -98,7 +102,10 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
 
   // Once payment has been taken, the platform redirects the user back to the application,
   // using the application supplied `redirectUri`.
-  const redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
+  let redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && baseURL.includes(REGISTER_AN_OVERSEAS_ENTITY_URL)) {
+    redirectUri = `${baseURL}${ACTIVE_SUBMISSION_BASE_PATH}/${PAYMENT}`;
+  }
 
   return {
     resource: paymentResourceUri,

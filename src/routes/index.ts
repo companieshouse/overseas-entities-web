@@ -330,6 +330,7 @@ router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
+router.get(config.PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL, authentication, payment.get);
 
 router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
 

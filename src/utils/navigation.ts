@@ -1,9 +1,10 @@
-
 import * as config from "../config";
 import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
+import { getUrlWithParamsToPath } from "./url";
+import { Request } from "express";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
@@ -129,6 +130,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.INTERRUPT_CARD_URL,
     nextPage: [config.PRESENTER_URL]
   },
+  [config.OVERSEAS_NAME_WITH_PARAMS_URL]: {
+    currentPage: config.OVERSEAS_NAME_PAGE,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.INTERRUPT_CARD_WITH_PARAMS_URL, req),
+    nextPage: [config.PRESENTER_URL]
+  },
   [config.PRESENTER_URL]: {
     currentPage: config.PRESENTER_PAGE,
     previousPage: () => config.OVERSEAS_NAME_URL,
@@ -136,7 +142,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.PRESENTER_WITH_PARAMS_URL]: {
     currentPage: config.PRESENTER_PAGE,
-    previousPage: () => config.OVERSEAS_NAME_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUrlWithParamsToPath(config.OVERSEAS_NAME_WITH_PARAMS_URL, req),
     nextPage: [config.WHO_IS_MAKING_FILING_URL]
   },
   [config.WHO_IS_MAKING_FILING_URL]: {
@@ -184,7 +190,17 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.ENTITY_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_STATEMENTS_PAGE,
+    previousPage: () => config.ENTITY_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.BENEFICIAL_OWNER_DELETE_WARNING_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL, config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_DELETE_WARNING_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [config.BENEFICIAL_OWNER_STATEMENTS_URL, config.BENEFICIAL_OWNER_TYPE_URL]
@@ -194,12 +210,27 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
   },
+  [config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+  },
   [config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
     nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
   },
+  [config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
+    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+  },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
+    currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
@@ -275,6 +306,11 @@ export const NAVIGATION: Navigation = {
     nextPage: [config.CHECK_YOUR_ANSWERS_URL]
   },
   [config.SIGN_OUT_URL]: {
+    currentPage: config.SIGN_OUT_PAGE,
+    previousPage: () => "",
+    nextPage: []
+  },
+  [config.SIGN_OUT_WITH_PARAMS_URL]: {
     currentPage: config.SIGN_OUT_PAGE,
     previousPage: () => "",
     nextPage: []

@@ -15,11 +15,13 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import {
   PRESENTER_URL,
   LANDING_URL,
+  OVERSEAS_NAME_URL,
   WHO_IS_MAKING_FILING_PAGE,
   WHO_IS_MAKING_FILING_WITH_PARAMS_URL,
   WHO_IS_MAKING_FILING_URL,
   LANDING_PAGE_URL,
   PRESENTER_WITH_PARAMS_URL,
+  OVERSEAS_NAME_WITH_PARAMS_URL,
 } from "../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from "../../src/utils/application.data";
 import { ApplicationDataType } from '../../src/model';
@@ -52,7 +54,7 @@ import { isActiveFeature } from "../../src/utils/feature.flag";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
-const NEXT_PAGE_URL = "/NEXT_PAGE";
+const MOCKED_PAGE_URL = "/MOCKED_PAGE";
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -74,7 +76,7 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_PAGE_URL);
 
 describe("PRESENTER controller", () => {
 
@@ -98,6 +100,14 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(USE_INFORMATION_NEED_MORE);
       expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+    });
+
+    test(`renders the presenter page with back link URL correctly set`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
+      const resp = await request(app).get(PRESENTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_NAME_URL);
     });
 
     test("catch error when renders the presenter page", async () => {
@@ -124,6 +134,18 @@ describe("PRESENTER controller", () => {
       expect(resp.text).toContain(NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER);
     });
 
+    test(`renders the presenter page with back link URL correctly set`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
+      const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(OVERSEAS_NAME_WITH_PARAMS_URL);
+    });
+
     test("catch error when renders the presenter page", async () => {
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
@@ -148,6 +170,13 @@ describe("PRESENTER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${WHO_IS_MAKING_FILING_URL}`);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with correct back link URL when validation error occurs", async () => {
+      const resp = await request(app).post(PRESENTER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_NAME_URL);
     });
 
     test("renders the current page with error message", async () => {
@@ -255,30 +284,37 @@ describe("PRESENTER controller", () => {
 
   describe("POST with url params tests", () => {
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with url params`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL).send(PRESENTER_OBJECT_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(WHO_IS_MAKING_FILING_WITH_PARAMS_URL);
     });
 
     test(`redirect to the ${WHO_IS_MAKING_FILING_PAGE} page after a successful post from presenter page with special characters`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test("renders the current page with error message", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+    test("renders the current page with correct back link URL when validation error occurs", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
+      const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
+    });
+
+    test("renders the current page with error message", async () => {
       const resp = await request(app).post(PRESENTER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
@@ -323,14 +359,14 @@ describe("PRESENTER controller", () => {
     });
 
     test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app)
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
 
       // Additionally check that email address is trimmed before it's saved in the session
       const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
@@ -346,7 +382,7 @@ describe("PRESENTER controller", () => {
     });
 
     test("Test email is valid with long email address", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const presenter = {
         ...PRESENTER_OBJECT_MOCK,
@@ -355,13 +391,13 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test("Test email is valid with long email name and address", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const presenter = {
         ...PRESENTER_OBJECT_MOCK,
@@ -370,13 +406,13 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
     });
 
     test("Test email is valid with very long email name and address", async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const presenter = {
         ...PRESENTER_OBJECT_MOCK,
@@ -385,7 +421,7 @@ describe("PRESENTER controller", () => {
         .post(PRESENTER_WITH_PARAMS_URL)
         .send(presenter);
       expect(resp.status).toEqual(302);
-      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.text).toContain(MOCKED_PAGE_URL);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);

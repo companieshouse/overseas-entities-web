@@ -73,7 +73,7 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
         (boStatement === BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS && checkMOsDetailsEntered(appData))
       )
     ) {
-      return res.redirect(`${config.BENEFICIAL_OWNER_DELETE_WARNING_URL}?${BeneficialOwnerStatementKey}=${boStatement}`);
+      return res.redirect(`${getWarningRedirectUrl(req)}?${BeneficialOwnerStatementKey}=${boStatement}`);
     }
 
     appData[BeneficialOwnerStatementKey] = boStatement;
@@ -86,6 +86,7 @@ export const postBeneficialOwnerStatements = async (req: Request, res: Response,
     next(error);
   }
 };
+
 const getRedirectUrl = (req: Request, registrationFlag: boolean, noChangeRedirectUrl?: string) => {
   let redirectUrl: string;
   if (noChangeRedirectUrl) {
@@ -98,5 +99,13 @@ const getRedirectUrl = (req: Request, registrationFlag: boolean, noChangeRedirec
   } else {
     redirectUrl = config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   }
-  return redirectUrl ;
+  return redirectUrl;
+};
+
+const getWarningRedirectUrl = (req: Request) => {
+  let warningRedirectUrl = config.BENEFICIAL_OWNER_DELETE_WARNING_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    warningRedirectUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL, req);
+  }
+  return warningRedirectUrl;
 };

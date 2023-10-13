@@ -182,6 +182,7 @@ router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBene
 router.post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
 
 router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
   .all(
@@ -340,7 +341,9 @@ router
   });
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
+router.get(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
+router.post(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 router.get(config.PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL, authentication, payment.get);

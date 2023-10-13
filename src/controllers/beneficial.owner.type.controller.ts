@@ -24,6 +24,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       return res.render(config.BENEFICIAL_OWNER_TYPE_PAGE, {
+        // Even though the value of this feature flag is available in the template via the OE_CONFIGS variable, passing it in
+        // like this enables unit tests to assert different outcomes, based on whether it is set or not
         FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
         addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
         noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined

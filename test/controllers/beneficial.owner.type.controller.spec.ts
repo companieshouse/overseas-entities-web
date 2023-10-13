@@ -5,6 +5,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 jest.mock('../../src/utils/trusts.ts');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/feature.flag" );
+jest.mock("../../src/utils/url");
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -50,6 +51,7 @@ import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.i
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../src/utils/trusts";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
@@ -69,10 +71,16 @@ const mockcheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
+const NEXT_PAGE_URL = "/NEXT_PAGE";
+
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
   });
 
   describe("GET with url params tests", () => {
@@ -161,6 +169,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("renders the beneficial owner type page with correct urls for buttons and links", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
     });
   });
 
@@ -252,6 +275,25 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+  });
+
+  describe("POST with url params tests", () => {
+    test(`redirects to the ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.individual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+    });
+
+    // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been
+    //      implemented (journey only partially completed in order to allow navigation to final screens)
   });
 
   describe("POST tests", () => {

@@ -104,7 +104,7 @@ describe("PRESENTER controller", () => {
 
     test(`renders the presenter page with back link URL correctly set`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK });
-      const resp = await request(app).get(PRESENTER_WITH_PARAMS_URL);
+      const resp = await request(app).get(PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_NAME_URL);

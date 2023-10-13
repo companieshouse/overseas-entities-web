@@ -30,6 +30,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
         noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined
         beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
+        beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
         backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
         templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
         requiresTrusts,
@@ -79,7 +80,12 @@ const getNextPage = (req: Request): string => {
 
     return nextPageUrl;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
-    return config.BENEFICIAL_OWNER_OTHER_URL;
+    let nextPageUrl = config.BENEFICIAL_OWNER_OTHER_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req);
+    }
+
+    return nextPageUrl;
   } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
     return config.BENEFICIAL_OWNER_GOV_URL;
   } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {

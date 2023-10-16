@@ -218,14 +218,6 @@ router.route(config.BENEFICIAL_OWNER_OTHER_URL)
   .get(beneficialOwnerOther.get)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
 
-router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
-  .all(
-    authentication,
-    navigation.hasBeneficialOwnersStatement
-  )
-  .get(beneficialOwnerOther.get)
-  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
-
 router.route(config.BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .all(
     authentication,
@@ -234,6 +226,14 @@ router.route(config.BENEFICIAL_OWNER_OTHER_URL + config.ID)
   .get(beneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
 router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
+
+router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID)
   .all(

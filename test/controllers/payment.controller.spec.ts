@@ -132,7 +132,7 @@ describe("Payment controller", () => {
     });
 
     test(`should redirect to ${PAYMENT_FAILED_PAGE} page, Payment failed somehow and feature flag active`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG ENABLE_SAVE_AND_RESUME
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetApplicationData.mockReturnValueOnce( { [PaymentKey]: PAYMENT_OBJECT_MOCK } );
       const resp = await request(app).get(PAYMENT_DECLINED_WITH_TRANSACTION_URL_AND_QUERY_STRING);

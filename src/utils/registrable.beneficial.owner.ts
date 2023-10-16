@@ -35,7 +35,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
   }
 };
 
-export const postRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
+export const postRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
@@ -45,7 +45,7 @@ export const postRegistrableBeneficialOwner = (req: Request, res: Response, next
       appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner ? yesNoResponse.Yes : yesNoResponse.No;
     }
     setExtraData(req.session, appData);
-    saveAndContinue(req, session, false);
+    await saveAndContinue(req, session, false);
 
     if (noChangeFlag) {
       noChangeHandler(req, res);

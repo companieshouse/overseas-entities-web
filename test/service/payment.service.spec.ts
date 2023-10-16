@@ -21,6 +21,7 @@ import {
   PAYMENT,
   PAYMENT_REQUIRED_HEADER,
   TRANSACTION,
+  UPDATE_AN_OVERSEAS_ENTITY_URL,
   UPDATE_CHECK_YOUR_ANSWERS_URL
 } from "../../src/config";
 import { startPaymentsSession } from "../../src/service/payment.service";
@@ -142,7 +143,7 @@ describe('Payment Service test suite with params url', () => {
 
   test(`startPaymentsSession() should return ${CONFIRMATION_URL} without substituted values if ${PAYMENT_REQUIRED_HEADER} blank but not on the registration journey`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
-    const response = await startPaymentsSession(updateReq, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE );
+    const response = await startPaymentsSession(updateReq, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_CLOSED_RESPONSE);
 
     expect(response).toEqual(CONFIRMATION_URL);
     expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(0);
@@ -156,7 +157,7 @@ describe('Payment Service test suite with params url', () => {
     expect(response).toEqual(PAYMENT_JOURNEY_URL);
 
     const createPaymentResult = mockCreatePayment.mock.calls[0][0];
-    expect(createPaymentResult.redirectUri).toEqual(`${process.env.CHS_URL}${LANDING_URL}/${NEXT_PAGE_URL}/${PAYMENT}`);
+    expect(createPaymentResult.redirectUri).toEqual(`${process.env.CHS_URL}${LANDING_URL}/${NEXT_PAGE_URL}${PAYMENT}`);
     expect(createPaymentResult.reference).toEqual(`${REFERENCE}_${TRANSACTION_ID}`);
     expect(createPaymentResult.resource).toEqual(`${API_URL}/transactions/${TRANSACTION_ID}/${PAYMENT}`);
   });
@@ -164,12 +165,13 @@ describe('Payment Service test suite with params url', () => {
   test(`startPaymentsSession() should return the first page to initiate the web journey ${PAYMENT_JOURNEY_URL} and with correct callback details, including a redirect URI without substituted values if not on the registration journey`, async () => {
     mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
     mockCreatePayment.mockResolvedValueOnce( mockPaymentResult );
-    const response = await startPaymentsSession(updateReq, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER);
+    const updateBaseUrl = `${process.env.CHS_URL}${UPDATE_AN_OVERSEAS_ENTITY_URL}`;
+    const response = await startPaymentsSession(updateReq, session, TRANSACTION_ID, OVERSEAS_ENTITY_ID, TRANSACTION_WITH_PAYMENT_HEADER, updateBaseUrl);
 
     expect(response).toEqual(PAYMENT_JOURNEY_URL);
 
     const createPaymentResult = mockCreatePayment.mock.calls[0][0];
-    expect(createPaymentResult.redirectUri).toEqual(`${process.env.CHS_URL}${LANDING_URL}/${NEXT_PAGE_URL}/${PAYMENT}`);
+    expect(createPaymentResult.redirectUri).toEqual(`${updateBaseUrl}${TRANSACTION}/${TRANSACTION_ID}/${OVERSEAS_ENTITY}/${OVERSEAS_ENTITY_ID}/${PAYMENT}`);
     expect(createPaymentResult.reference).toEqual(`${REFERENCE}_${TRANSACTION_ID}`);
     expect(createPaymentResult.resource).toEqual(`${API_URL}/transactions/${TRANSACTION_ID}/${PAYMENT}`);
   });

@@ -96,6 +96,8 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
 
   const paymentResourceUri = `${API_URL}/transactions/${transactionId}/${PAYMENT}`;
 
+  console.log(`\n\n*** baseUrl 111 = ${baseURL}`);
+
   if (!baseURL) {
     baseURL = `${CHS_URL}${REGISTER_AN_OVERSEAS_ENTITY_URL}`;
   }
@@ -111,7 +113,7 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
 
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
     const activeSubmissionBasePathWithIds = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, transactionId, overseasEntityId);
-    redirectUri = `${baseURL}${activeSubmissionBasePathWithIds}/${PAYMENT}`;
+    redirectUri = `${baseURL}${activeSubmissionBasePathWithIds}${PAYMENT}`;
   }
 
   return {

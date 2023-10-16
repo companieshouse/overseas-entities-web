@@ -4,13 +4,20 @@ import * as Page from '../../model/trust.page.model';
 import { BeneficialOwnerIndividualKey } from '../../model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../model/beneficial.owner.other.model';
 import { addTrustToBeneficialOwner, getTrustByIdFromApp, removeTrustFromBeneficialOwner } from '../../utils/trusts';
+import { getReviewTrustById } from '../../utils/update/review_trusts';
 
 //  to page form mapping
 const mapDetailToPage = (
   appData: ApplicationData,
   trustId: string,
+  isReview: boolean
 ): Page.TrustDetailsForm => {
-  const trustData = getTrustByIdFromApp(appData, trustId);
+  let trustData;
+  if (isReview) {
+    trustData = getReviewTrustById(appData, trustId);
+  } else {
+    trustData = getTrustByIdFromApp(appData, trustId);
+  }
 
   const trustBoIds: string[] =
     [

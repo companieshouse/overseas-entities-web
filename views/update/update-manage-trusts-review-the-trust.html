@@ -1,26 +1,18 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Review the trust" %}
+{% import "includes/date-macros.html" as dateMacros %}
 
+{% set title = pageParams.title %}
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
+
+{% set formatted_creation_date = dateMacros.formatDate(formData.createdDateDay, formData.createdDateMonth, formData.createdDateYear) %}
 
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-
-      {% include "includes/list/errors.html" %}
-
-      <h1 class="govuk-heading-xl">{{ title }}</h1>
-
-      <form method="post">
-        {% include "includes/save-and-continue-button.html" %}
-      </form>
-    </div>
-  </div>
+  {% include "includes/page-templates/trust-details.html" %}
 {% endblock %}

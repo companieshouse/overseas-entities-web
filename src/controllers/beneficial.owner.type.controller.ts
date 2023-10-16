@@ -30,6 +30,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
         noMoreToAddButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, req),
         beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
+        beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
+        beneficialOwnerGovUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req),
         backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
         templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
         requiresTrusts,

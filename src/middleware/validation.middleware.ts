@@ -68,11 +68,13 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           ...appData,
           ...req.body,
           ...dates,
+          errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
           addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
-          noMoreToAddButtonActionWithParams: "TODO", // TODO Set correct URL with params when new URL constant has been defined
+          noMoreToAddButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, req),
           beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
-          errors
+          beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
+          beneficialOwnerGovUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req)
         });
       }
 

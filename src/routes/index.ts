@@ -499,10 +499,10 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
+    navigation.reviewTheTrustGuard,
   )
   .get(updateManageTrustsReviewTheTrust.get)
-  .post(updateManageTrustsReviewTheTrust.post);
+  .post(...validator.reviewTrustDetails, updateManageTrustsReviewTheTrust.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   .all(

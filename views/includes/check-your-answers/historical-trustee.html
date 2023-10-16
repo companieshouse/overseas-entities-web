@@ -15,9 +15,13 @@
 
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
+  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL + "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id %}
 {% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL%}
+  {% if manageTrusts %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/historical/" + formerTrustee.id %}
+  {% else %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id %}
+  {% endif %}
 {% endif %}
 
 
@@ -33,7 +37,7 @@
   },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + formerTrusteeChangeName,
+      changeLinkUrl + formerTrusteeChangeName,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
@@ -49,7 +53,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_START_DATE,
+      changeLinkUrl + OE_CONFIGS.TRUSTEE_START_DATE,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
@@ -65,7 +69,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + formerTrustee.id + OE_CONFIGS.TRUSTEE_END_DATE,
+      changeLinkUrl + OE_CONFIGS.TRUSTEE_END_DATE,
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]

@@ -350,6 +350,7 @@ router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 router.get(config.PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL, authentication, payment.get);
 
 router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
+router.get(config.PAYMENT_FAILED_WITH_PARAMS_URL, authentication, paymentFailed.get);
 
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 router.get(config.CONFIRMATION_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);

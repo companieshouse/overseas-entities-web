@@ -6,10 +6,11 @@ import {
   CHECK_YOUR_ANSWERS_URL,
   CONFIRMATION_URL,
   CONFIRMATION_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
   FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022,
   PAYMENT_FAILED_URL,
-  PAYMENT_PAID,
-  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  PAYMENT_FAILED_WITH_PARAMS_URL,
+  PAYMENT_PAID
 } from "../config";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "../utils/application.data";
@@ -51,7 +52,12 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       // Dealing with failures payment (User cancelled, Insufficient funds, Payment error ...)
       if (isActiveFeature(FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022)) {
         logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${PAYMENT_FAILED_URL}`);
-        return res.redirect(PAYMENT_FAILED_URL);
+        let nextPageUrl = PAYMENT_FAILED_URL;
+        if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+          nextPageUrl = getUrlWithParamsToPath(PAYMENT_FAILED_WITH_PARAMS_URL, req);
+        }
+        return res.redirect(nextPageUrl);
+
       } else {
         logger.debugRequest(req, `Overseas Entity id: ${ appData[OverseasEntityKey] }, Payment status: ${status}, Redirecting to: ${CHECK_YOUR_ANSWERS_URL}`);
         // Redirect to CHECK_YOUR_ANSWERS. Try again eventually

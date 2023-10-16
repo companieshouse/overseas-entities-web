@@ -102,15 +102,15 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   test.each([
     ['GET', get],
     ['POST', post],
-  ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and puts trust in review', async (_, handler) => {
-    const appData: ApplicationData = createAppData({ reviewTrusts: [{ review_status: { in_review: false } }] });
+  ])('%s - when a trust to review, and none in review, redirects to Review the trust page, and sets up trust for review', async (_, handler) => {
+    const appData: ApplicationData = createAppData({ reviewTrusts: [{ trust_name: 'Trust 1' }] });
     mockGetApplicationData.mockReturnValue(appData);
 
     const resp = await handler();
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
+    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(false);
     expect(mockSetExtraData).toHaveBeenCalledWith(undefined, appData);
     expect(mockSaveAndContinue).toHaveBeenCalled();
   });

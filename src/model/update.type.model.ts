@@ -9,6 +9,7 @@ import { Trust } from "./trust.model";
 export const UpdateKey = "update";
 export const RegistrableBeneficialOwnerKey = "registrable_beneficial_owner";
 export const NoChangeKey = "no_change";
+export const ReviewTrustKey = "review_trusts";
 
 export const UpdateKeys: string[] = [
   "date_of_creation",

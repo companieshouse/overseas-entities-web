@@ -125,7 +125,7 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
   const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART"];
 
   return country.replace(/\w*/g, word => {
-    if (word === "MCDONALD") {
+    if (word === "MCDONALD" || word === "Mcdonald") {
       return "McDonald";
     }
 

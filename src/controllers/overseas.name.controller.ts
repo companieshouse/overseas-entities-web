@@ -9,8 +9,7 @@ import { getApplicationData, setExtraData } from "../utils/application.data";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity, updateOverseasEntity } from "../service/overseas.entities.service";
 import { EntityNameKey, OverseasEntityKey, Transactionkey } from "../model/data.types.model";
-import { getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
-import { getUrlWithParamsToPath, transactionIdAndSubmissionIdExistInRequest } from "../utils/url";
+import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId, transactionIdAndSubmissionIdExistInRequest } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

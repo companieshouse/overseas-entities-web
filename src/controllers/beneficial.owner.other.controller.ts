@@ -15,26 +15,26 @@ import {
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerOther(req, res, BENEFICIAL_OWNER_OTHER_PAGE, nextOrLastPage(req));
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerOtherById(req, res, next, BENEFICIAL_OWNER_OTHER_PAGE, nextOrLastPage(req));
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerOther(req, res, next, nextPage(req), true);
+  postBeneficialOwnerOther(req, res, next, nextOrLastPage(req), true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerOther(req, res, next, nextPage(req), true);
+  updateBeneficialOwnerOther(req, res, next, nextOrLastPage(req), true);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerOther(req, res, next, nextPage(req), true);
+  removeBeneficialOwnerOther(req, res, next, nextOrLastPage(req), true);
 };
 
-const nextPage = (req: Request): string => {
+const nextOrLastPage = (req: Request): string => {
   let nextPage = BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPage = getUrlWithParamsToPath(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);

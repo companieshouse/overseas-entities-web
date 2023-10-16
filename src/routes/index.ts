@@ -135,6 +135,7 @@ router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSol
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
+router.get(config.INTERRUPT_CARD_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
 router.get(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, overseasName.get);
@@ -177,10 +178,22 @@ router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigati
 router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerDeleteWarning, checkValidations, beneficialOwnerDeleteWarning.post);
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
+router.get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+
 router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerIndividual.get)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.post);
+
+router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasBeneficialOwnersStatement
@@ -329,7 +342,9 @@ router
   });
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
+router.get(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
+router.post(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
 

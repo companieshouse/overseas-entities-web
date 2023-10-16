@@ -63,7 +63,15 @@ describe("Test mapping utils", () => {
       ["BRITISH INDIAN OCEAN TERRITORY", "British Indian Ocean Territory"],
       ["SAINT HELENA, ASCENSION AND TRISTAN DA CUNHA", "Saint Helena, Ascension and Tristan da Cunha"],
       ["SINT MAARTEN (DUTCH PART)", "Sint Maarten (Dutch part)"],
-      ["GUINEA-BISSAU", "Guinea-Bissau"]
+      ["GUINEA-BISSAU", "Guinea-Bissau"],
+      ["Svalbard And Jan Mayen", "Svalbard and Jan Mayen"],
+      ["Saint Helena, Ascension And Tristan Da Cunha", "Saint Helena, Ascension and Tristan da Cunha"],
+      ["Isle Of Mann", "Isle of Mann"],
+      ["Sint Maarten (Dutch Part)", "Sint Maarten (Dutch part)"],
+      ["Congo, The Democratic Republic Of The", "Congo, the Democratic Republic of the"],
+      ["Saint Vincent And The Grenadines", "Saint Vincent and the Grenadines"],
+      ["South Georgia And The South Sandwich Islands", "South Georgia and the South Sandwich Islands"],
+      ["Heard Island And Mcdonald Islands", "Heard Island and McDonald Islands"],
     ])(`Correctly reformats %s`, (str, expectedResult) => {
       expect(lowerCaseAllWordsExceptFirstLetters(str)).toEqual(expectedResult);
     });

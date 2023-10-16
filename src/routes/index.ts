@@ -135,6 +135,7 @@ router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSol
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
+router.get(config.INTERRUPT_CARD_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
 router.get(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, overseasName.get);

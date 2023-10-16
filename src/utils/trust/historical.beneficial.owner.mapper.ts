@@ -39,7 +39,6 @@ const mapFormerTrusteeByIdFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
-  isReview?: boolean
 ): Page.TrustHistoricalBeneficialOwnerForm => {
   const trustee = getFormerTrustee(appData, trustId, trusteeId);
   return mapFormerTrusteeFromSessionToPage(trustee);

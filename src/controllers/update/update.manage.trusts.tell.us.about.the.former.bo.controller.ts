@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
 } from '../../config';
@@ -27,7 +29,13 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.HISTORICAL) as TrustHistoricalBeneficialOwner;
 
     const formData = trusteeId ? mapFormerTrusteeFromSessionToPage(trustee) : {} as TrustHistoricalBeneficialOwnerForm;
-    const pageProperties = getPageProperties(trust, formData);
+
+    let isIndividualOrLegalEntityInvolvedFlow = false;
+    if (trust.review_status?.reviewed_former_bos === true) {
+      isIndividualOrLegalEntityInvolvedFlow = true;
+    }
+
+    const pageProperties = getPageProperties(trust, isIndividualOrLegalEntityInvolvedFlow, formData);
 
     return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
   } catch (error) {
@@ -48,7 +56,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     // check for form validation errors
     const errorList = validationResult(req);
     if (!errorList.isEmpty()) {
-      const pageProperties = getPageProperties(trust, formData, formatValidationError(errorList.array()));
+      const pageProperties = getPageProperties(trust, false, formData, formatValidationError(errorList.array()));
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
@@ -66,14 +74,14 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     setExtraData(session, appData);
     await saveAndContinue(req, session, true);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
   }
 };
 
-const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
-  backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+const getPageProperties = (trust: Trust, isIndividualOrLegalEntityInvolvedFlow: boolean, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
+  backLinkUrl: getBackLink(isIndividualOrLegalEntityInvolvedFlow),
   templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
@@ -88,3 +96,11 @@ const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwn
   formData,
   errors
 });
+
+const getBackLink = (isIndividualOrLegalEntityInvolvedFlow: boolean) => {
+  if (isIndividualOrLegalEntityInvolvedFlow) {
+    return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+  } else {
+    return UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL;
+  }
+};

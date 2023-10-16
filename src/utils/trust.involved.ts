@@ -12,6 +12,7 @@ import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
+import { getTrustInReview } from './update/review_trusts';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -59,7 +60,8 @@ const getPageProperties = (
   let trustId;
 
   if (isReview) {
-    trustId = appData.update?.review_trusts?.find(trust => trust.review_status?.in_review);
+    const trustInReview = getTrustInReview(appData);
+    trustId = trustInReview?.trust_id;
   } else {
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
   }
@@ -72,7 +74,7 @@ const getPageProperties = (
     },
     pageData: {
       trustData: mapCommonTrustDataToPage(appData, trustId, isReview),
-      ...mapTrustWhoIsInvolvedToPage(appData, trustId),
+      ...mapTrustWhoIsInvolvedToPage(appData, trustId, isReview),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
       individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId, isReview),
@@ -105,9 +107,6 @@ export const getTrustInvolvedPage = (
     }
 
     const pageProps = getPageProperties(req, isUpdate, isReview);
-
-    console.log("******** PAGE PROPS");
-    console.log(pageProps);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -209,10 +208,8 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean, isReview: boolean) => {
-  if (isReview) {
-    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
-  } else if (isUpdate) {
+const getNextPage = (isUpdate: boolean) => {
+  if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {
     return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;

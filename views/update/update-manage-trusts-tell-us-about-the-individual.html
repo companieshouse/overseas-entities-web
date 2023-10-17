@@ -1,18 +1,15 @@
 {% extends "update-layout.html" %}
 
-{% import "includes/date-macros.html" as dateMacros %}
-
 {% set title = pageParams.title %}
+
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
-
-{% set formatted_creation_date = dateMacros.formatDate(formData.createdDateDay, formData.createdDateMonth, formData.createdDateYear) %}
 
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
 
 {% block content %}
-  {% include "includes/page-templates/trust-details.html" %}
+  {% include "includes/page-templates/trust-individual-beneficial-owner.html" %}
 {% endblock %}

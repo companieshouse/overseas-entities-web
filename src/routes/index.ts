@@ -92,6 +92,7 @@ import {
   updateManageTrustsReviewFormerBo,
   updateManageTrustsTellUsAboutTheFormerBo,
   updateManageTrustsReviewIndividuals,
+  updateManageTrustsTellUsAboutTheIndividual,
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
@@ -497,10 +498,10 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
+    navigation.reviewTheTrustGuard,
   )
   .get(updateManageTrustsReviewTheTrust.get)
-  .post(updateManageTrustsReviewTheTrust.post);
+  .post(...validator.reviewTrustDetails, updateManageTrustsReviewTheTrust.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   .all(
@@ -535,6 +536,18 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
   )
   .get(updateManageTrustsReviewIndividuals.get)
   .post(updateManageTrustsReviewIndividuals.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsTellUsAboutIndividualsGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheIndividual.get)
+  .post(...validator.trustIndividualBeneficialOwner, updateManageTrustsTellUsAboutTheIndividual.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
   .all(

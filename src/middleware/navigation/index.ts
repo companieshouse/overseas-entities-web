@@ -19,6 +19,7 @@ import { hasGivenValidBoMoDetails } from "./update/has.given.valid.bo.mo.details
 import { hasAnyBosWithTrusteeNocs } from './update/has.any.bos.with.trustee.nocs.middleware';
 import { isInChangeJourney } from './update/is.in.change.journey.middleware';
 import {
+  reviewTheTrustGuard,
   manageTrustsReviewFormerBOsGuard,
   manageTrustsReviewIndividualsGuard,
   manageTrustsReviewLegalEntitiesGuard,
@@ -50,6 +51,7 @@ export const navigation = {
   hasGivenValidBoMoDetails,
   hasAnyBosWithTrusteeNocs,
   isInChangeJourney,
+  reviewTheTrustGuard,
   manageTrustsReviewFormerBOsGuard,
   manageTrustsReviewIndividualsGuard,
   manageTrustsReviewLegalEntitiesGuard,

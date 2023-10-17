@@ -135,7 +135,7 @@ describe('Trust Details controller', () => {
       get(mockReq, mockRes, mockNext);
 
       expect(mapDetailToPage).toBeCalledTimes(1);
-      expect(mapDetailToPage).toBeCalledWith(mockAppData, mockTrust2Data.trust_id);
+      expect(mapDetailToPage).toBeCalledWith(mockAppData, mockTrust2Data.trust_id, false);
 
       expect(getBoIndividualAssignableToTrust).toBeCalledTimes(1);
       expect(getBoOtherAssignableToTrust).toBeCalledTimes(1);

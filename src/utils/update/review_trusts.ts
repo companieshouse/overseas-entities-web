@@ -8,19 +8,39 @@ export const hasTrustsToReview = (appData: ApplicationData) =>
 export const getTrustInReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).find(trust => !!trust.review_status?.in_review);
 
-export const putTrustInReview = (appData: ApplicationData) => {
+export const getReviewTrustById = (appData: ApplicationData, trustId: string) =>
+  appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {};
+
+export const updateTrustInReviewList = (appData: ApplicationData, trustToSave: Trust) => {
+  const trusts: Trust[] = appData.update?.review_trusts ?? [];
+  const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
+  trusts[trustIndex] = trustToSave;
+};
+
+export const putNextTrustInReview = (appData: ApplicationData) => {
   const trustToReview = (appData.update?.review_trusts ?? [])[0];
 
-  if (!trustToReview) {
+  if (trustToReview) {
+    trustToReview.review_status = {
+      in_review: true,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    };
+  }
+
+  return trustToReview;
+};
+
+export const setTrustDetailsAsReviewed = (appData: ApplicationData) => {
+  const trust = getTrustInReview(appData);
+
+  if (!trust?.review_status) {
     return false;
   }
 
-  trustToReview.review_status = {
-    in_review: true,
-    reviewed_former_bos: false,
-    reviewed_individuals: false,
-    reviewed_legal_entities: false,
-  };
+  trust.review_status.reviewed_trust_details = true;
 
   return true;
 };

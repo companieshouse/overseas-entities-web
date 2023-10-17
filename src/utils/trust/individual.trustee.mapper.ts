@@ -70,13 +70,18 @@ export const mapIndividualTrusteeToSession = (
   }
 };
 
-export const mapIndividualTrusteeFromSessionToPage = (
+export const mapIndividualTrusteeByIdFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
 ): Page.IndividualTrusteesFormCommon => {
   const trustee = getIndividualTrustee(appData, trustId, trusteeId);
+  return mapIndividualTrusteeFromSessionToPage(trustee);
+};
 
+export const mapIndividualTrusteeFromSessionToPage = (
+  trustee: Trust.IndividualTrustee,
+): Page.IndividualTrusteesFormCommon => {
   const data = {
     trusteeId: trustee.id,
     roleWithinTrust: trustee.type,

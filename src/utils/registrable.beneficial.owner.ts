@@ -5,6 +5,9 @@ import { ApplicationData } from "../model/application.model";
 import { getApplicationData, setExtraData } from "../utils/application.data";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 import { isActiveFeature } from "./feature.flag";
+import { yesNoResponse } from "../model/data.types.model";
+import { Session } from "@companieshouse/node-session-handler";
+import { saveAndContinue } from "./save.and.continue";
 
 export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
@@ -32,15 +35,17 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
   }
 };
 
-export const postRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
+export const postRegistrableBeneficialOwner = async (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const isRegistrableBeneficialOwner = req.body[RegistrableBeneficialOwnerKey];
-    const appData: ApplicationData = getApplicationData(req.session);
+    const session = req.session as Session;
+    const appData: ApplicationData = getApplicationData(session);
     if (appData.update) {
-      appData.update.registrable_beneficial_owner = (isRegistrableBeneficialOwner) ? +isRegistrableBeneficialOwner : 0;
+      appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner ? yesNoResponse.Yes : yesNoResponse.No;
     }
     setExtraData(req.session, appData);
+    await saveAndContinue(req, session, false);
 
     if (noChangeFlag) {
       noChangeHandler(req, res);

@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/utils/feature.flag" );
+jest.mock('../../../src/utils/save.and.continue');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -36,6 +37,7 @@ import {
 import { yesNoResponse } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -55,6 +57,7 @@ mockIsActiveFeature.mockReturnValue(false);
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("No change registrable beneficial owner", () => {
 
@@ -139,6 +142,7 @@ describe("No change registrable beneficial owner", () => {
     test(`with statement validation flag on, redirects to the update-statement-validation-errors page when 'has reasonable cause' is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
 
       const resp = await request(app)
         .post(UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL)
@@ -147,6 +151,7 @@ describe("No change registrable beneficial owner", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("Test validation error is displayed when posting empty object", async () => {

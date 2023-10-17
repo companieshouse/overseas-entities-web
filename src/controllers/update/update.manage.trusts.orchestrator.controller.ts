@@ -14,22 +14,27 @@ import { ApplicationData } from '../../model';
 import { Trust } from '../../model/trust.model';
 import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { saveAndContinue } from '../../utils/save.and.continue';
-import { getTrustInReview, setupNextTrustForReview } from '../../utils/update/review_trusts';
+import { getTrustInReview, putNextTrustInReview } from '../../utils/update/review_trusts';
 
 export const handler = async (req: Request, res: Response, next: NextFunction) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   try {
     const appData = getApplicationData(req.session);
-    const trustInReview = getTrustInReview(appData);
+    let trustInReview = getTrustInReview(appData);
 
     if (!trustInReview) {
-      if (setupNextTrustForReview(appData)) {
-        await saveAppData(req, appData);
-        return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-      } else {
+      trustInReview = putNextTrustInReview(appData);
+
+      if (!trustInReview) {
         return res.redirect(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
       }
+
+      await saveAppData(req, appData);
+    }
+
+    if (shouldGoToReviewTheTrust(trustInReview)) {
+      return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
     }
 
     if (shouldGoToReviewFormerBOs(trustInReview)) {
@@ -51,23 +56,27 @@ export const handler = async (req: Request, res: Response, next: NextFunction) =
   }
 };
 
+const shouldGoToReviewTheTrust = (trustInReview: Trust) => {
+  return !trustInReview.review_status?.reviewed_trust_details;
+};
+
 const shouldGoToReviewFormerBOs = (trustInReview: Trust) => {
   const hasFormerBOs = (trustInReview.HISTORICAL_BO ?? []).length > 0;
-  const hasReviewedFormerBOs = trustInReview.review_status?.reviewed_former_bos ?? true;
+  const hasReviewedFormerBOs = trustInReview.review_status?.reviewed_former_bos;
 
   return hasFormerBOs && !hasReviewedFormerBOs;
 };
 
 const shouldGoToReviewIndividuals = (trustInReview: Trust) => {
   const hasIndividuals = (trustInReview.INDIVIDUALS ?? []).length > 0;
-  const hasReviewedIndividuals = trustInReview.review_status?.reviewed_individuals ?? true;
+  const hasReviewedIndividuals = trustInReview.review_status?.reviewed_individuals;
 
   return hasIndividuals && !hasReviewedIndividuals;
 };
 
 const shouldGoToReviewLegalEntities = (trustInReview: Trust) => {
   const hasLegalEntities = (trustInReview.CORPORATES ?? []).length > 0;
-  const hasReviewedLegalEntities = trustInReview.review_status?.reviewed_legal_entities ?? true;
+  const hasReviewedLegalEntities = trustInReview.review_status?.reviewed_legal_entities;
 
   return hasLegalEntities && !hasReviewedLegalEntities;
 };

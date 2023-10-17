@@ -62,6 +62,7 @@ mockGetApplicationData.mockReturnValue({
         ],
         review_status: {
           in_review: true,
+          reviewed_trust_details: false,
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,

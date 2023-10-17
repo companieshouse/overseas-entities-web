@@ -42,7 +42,7 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);
     if (appData.update) {
-      appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner ? yesNoResponse.Yes : yesNoResponse.No;
+      appData.update.registrable_beneficial_owner = isRegistrableBeneficialOwner === '1' ? yesNoResponse.Yes : yesNoResponse.No;
     }
     setExtraData(req.session, appData);
     await saveAndContinue(req, session, false);

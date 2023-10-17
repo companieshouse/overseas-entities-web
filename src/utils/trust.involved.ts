@@ -106,13 +106,6 @@ export const getTrustInvolvedPage = (
       appData.beneficial_owners_individual[0].trust_ids = ["1"];
     }
 
-    console.log("******** BOS IN TRUST AND TRUSTEES");
-    const trust = getTrustInReview(appData);
-    if (trust) {
-      const test = mapTrustWhoIsInvolvedToPage(appData, trust.trust_id, isReview);
-      console.log(test);
-    }
-
     const pageProps = getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.templateName, pageProps);

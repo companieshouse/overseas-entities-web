@@ -136,6 +136,7 @@ const mapLegalEntityItemToPage = (
     id: legalEntity.id,
     name: legalEntity.name,
     trusteeItemType: TrusteeType.LEGAL_ENTITY,
+    ch_references: legalEntity.ch_references
   };
 };
 

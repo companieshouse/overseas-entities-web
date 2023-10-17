@@ -10,6 +10,7 @@ export const mapIndividualTrusteeToSession = (
 ): Trust.IndividualTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
+    ch_references: formData.ch_references,
     type: formData.roleWithinTrust,
     forename: formData.forename,
     other_forenames: '',
@@ -85,6 +86,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
 ): Page.IndividualTrusteesFormCommon => {
   const data = {
     trusteeId: trustee.id,
+    ch_references: trustee.ch_references,
     roleWithinTrust: trustee.type,
     forename: trustee.forename,
     surname: trustee.surname,

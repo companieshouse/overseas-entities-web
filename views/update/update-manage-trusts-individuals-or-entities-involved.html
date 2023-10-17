@@ -150,7 +150,7 @@
 
       {% set reviewedLegalEntityTrustees = [] %}
       {% set addedLegalEntityTrustees = [] %}
-      {% for trustee in pageData.legalEntityTrusteeData %}
+      {% for trustee in pageData.trustees %}
         {% set type = 'Legal Entity' %}
         {% if trustee.ch_references %}
           {% set reviewedLegalEntityTrustees = (

@@ -17,6 +17,7 @@ const mapBeneficialOwnerToSession = (
     ceased_date_day: formData.endDateDay,
     ceased_date_month: formData.endDateMonth,
     ceased_date_year: formData.endDateYear,
+    ch_references: formData.ch_references
   };
 
   if (formData.type === TrusteeType.LEGAL_ENTITY) {
@@ -55,6 +56,7 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateDay: trustee.ceased_date_day,
     endDateMonth: trustee.ceased_date_month,
     endDateYear: trustee.ceased_date_year,
+    ch_references: trustee.ch_references,
   };
   if (trustee.corporate_indicator === yesNoResponse.Yes && 'corporate_name' in trustee) {
     return {

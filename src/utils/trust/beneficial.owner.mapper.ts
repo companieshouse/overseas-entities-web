@@ -10,6 +10,7 @@ const mapBoIndividualToPage = (
     id: beneficialOwner.id,
     name: [beneficialOwner.first_name, beneficialOwner.last_name].join(' '),
     type: BeneficialOwnerTypeChoice.individual,
+    ch_reference: beneficialOwner.ch_reference
   };
 };
 
@@ -20,6 +21,7 @@ const mapBoOtherToPage = (
     id: beneficialOwner.id,
     name: beneficialOwner.name || "",
     type: BeneficialOwnerTypeChoice.otherLegal,
+    ch_reference: beneficialOwner.ch_reference
   };
 };
 

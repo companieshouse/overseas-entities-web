@@ -6,6 +6,7 @@ import {
   TRUST_ID,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL,
+  UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL,
 } from '../../config';
 import { getApplicationData, setExtraData } from '../../utils/application.data';
 import { ApplicationData } from '../../model';
@@ -31,7 +32,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (req.body.typeOfTrustee === TrusteeType.HISTORICAL) {
       return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
     } else if (req.body.typeOfTrustee === TrusteeType.INDIVIDUAL) {
-      return res.redirect(SECURE_REGISTER_FILTER_URL);
+      return res.redirect(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
     } else if (req.body.typeOfTrustee === TrusteeType.LEGAL_ENTITY) {
       return res.redirect(SECURE_REGISTER_FILTER_URL);
     }

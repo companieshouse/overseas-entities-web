@@ -12,8 +12,6 @@ import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual 
 import { mapInputDate, splitNationalities } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
-import { isActiveFeature } from "../../utils/feature.flag";
-import { FEATURE_FLAG_DISABLE_UPDATE_TRUST_DATA_FETCH } from "../../config";
 
 export const retrieveTrustData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedTrustData(appData)) {
@@ -239,11 +237,6 @@ const mapHistoricalCorporateTrusteeData = (trustee: CorporateTrusteeData, trust:
 export const retrieveTrustLinks = async (req: Request, appData: ApplicationData) => {
   const overseasEntityId = appData.overseas_entity_id;
   const transactionId = appData.transaction_id;
-
-  if (isActiveFeature(FEATURE_FLAG_DISABLE_UPDATE_TRUST_DATA_FETCH)) {
-    logger.debug("Skip retrieving trust links for overseas entity id" + overseasEntityId);
-    return;
-  }
 
   if (transactionId === undefined || overseasEntityId === undefined) {
     logger.errorRequest(req, "Trust links could not be retrieved as transactionId or overseasEntityId is undefined");

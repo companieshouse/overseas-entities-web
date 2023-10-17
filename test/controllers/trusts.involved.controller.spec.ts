@@ -103,7 +103,7 @@ describe('Trust Involved controller', () => {
       expect(mockRes.redirect).not.toBeCalled();
 
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
-      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId);
+      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId);
@@ -240,7 +240,7 @@ describe('Trust Involved controller', () => {
       expect(mockRes.redirect).not.toBeCalled;
 
       expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
-      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId);
+      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId);

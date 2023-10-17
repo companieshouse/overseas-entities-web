@@ -90,10 +90,10 @@ const fetchAndMapIndivdualTrustees = async (
   overseasEntityId: string,
   trust: Trust
 ) => {
-  const individualTrustees = await getIndividualTrustees(req, transactionId, overseasEntityId, trust.trust_id);
+  const individualTrustees = await getIndividualTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
 
   if (individualTrustees === undefined || individualTrustees.length === 0) {
-    logger.info(`No individual trustees found for overseas entity ${overseasEntityId} and trust ${trust.trust_id}`);
+    logger.info(`No individual trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
     return;
   }
 
@@ -164,10 +164,10 @@ const fetchAndMapCorporateTrustees = async (
   overseasEntityId: string,
   trust: Trust
 ) => {
-  const corporateTrustees = await getCorporateTrustees(req, transactionId, overseasEntityId, trust.trust_id);
+  const corporateTrustees = await getCorporateTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
 
   if (corporateTrustees === undefined || corporateTrustees.length === 0) {
-    logger.info(`No corporate trustees found for overseas entity ${overseasEntityId} and trust ${trust.trust_id}`);
+    logger.info(`No corporate trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
     return;
   }
 

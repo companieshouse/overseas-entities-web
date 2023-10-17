@@ -336,38 +336,6 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_individual).toEqual(undefined);
   });
 
-  test("should not fetch and map individual trustees when feature disabled", async () => {
-    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
-    mockIsActiveFeature.mockReturnValue(true);
-    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
-    mockGetIndividualTrustees.mockResolvedValueOnce(FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK);
-    mockGetCorporateTrustees.mockResolvedValue([]);
-    mockGetTrustLinks.mockResolvedValue([]);
-
-    await retrieveTrustData(req, appData);
-
-    expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(0);
-    expect(appData.update?.review_trusts).toHaveLength(2);
-    expect(appData.beneficial_owners_individual).toEqual(undefined);
-  });
-
-  test("should not fetch and map corporate trustees when feature disabled", async () => {
-    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
-    mockIsActiveFeature.mockReturnValue(true);
-    mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
-    mockGetIndividualTrustees.mockResolvedValue([]);
-    mockGetCorporateTrustees.mockResolvedValueOnce(FETCH_CORPORATE_TRUSTEE_DATA_MOCK);
-    mockGetTrustLinks.mockResolvedValue([]);
-
-    await retrieveTrustData(req, appData);
-
-    expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(0);
-    expect(appData.update?.review_trusts).toHaveLength(2);
-    expect(appData.beneficial_owners_corporate).toEqual(undefined);
-  });
-
   test("should not fetch and map trust links for indivdual BOs when feature disabled", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockIsActiveFeature.mockReturnValue(true);
@@ -383,7 +351,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
 
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual([]);
@@ -407,7 +375,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(0);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
 
     expect(appData.beneficial_owners_corporate[0].trust_ids).toEqual([]);
@@ -446,7 +414,7 @@ describe("Test fetching and mapping of Trust data", () => {
     await retrieveTrustData(req, appData);
 
     expect(mockGetTrustData).toBeCalledTimes(1);
-    expect(mockLoggerInfo).toBeCalledTimes(2);
+    expect(mockLoggerInfo).toBeCalledTimes(4);
     expect(appData.update?.review_trusts).toHaveLength(2);
 
     expect(appData.beneficial_owners_individual[0].trust_ids).toEqual(undefined);

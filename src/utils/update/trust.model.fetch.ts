@@ -62,11 +62,6 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
     const trust = mapTrustData(trustData, appData);
 
-    if (isActiveFeature(FEATURE_FLAG_DISABLE_UPDATE_TRUST_DATA_FETCH)) {
-      logger.debug("Skip retrieving trustees for " + trustData.hashedTrustId);
-      continue;
-    }
-
     fetchAndMapIndivdualTrustees(req, transactionId, overseasEntityId, trust);
 
     fetchAndMapCorporateTrustees(req, transactionId, overseasEntityId, trust);

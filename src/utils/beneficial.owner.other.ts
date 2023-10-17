@@ -26,6 +26,9 @@ import {
   StartDateKeys
 } from "../model/date.model";
 import { v4 as uuidv4 } from 'uuid';
+import { isActiveFeature } from "./feature.flag";
+import * as config from "../config";
+import { getUrlWithParamsToPath } from "./url";
 
 export const getBeneficialOwnerOther = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -59,6 +62,13 @@ export const getBeneficialOwnerOtherById = (req: Request, res: Response, next: N
       ...serviceAddress,
       [StartDateKey]: startDate
     };
+
+    // Redis removal work - Add extra template options if Redis Remove flag is true
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      templateOptions.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = true;
+      templateOptions.activeSubmissionBasePath = getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req);
+    }
 
     const appData = getApplicationData(req.session);
 

@@ -4,8 +4,8 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
-  UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_PAGE,
+  UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL,
 } from '../../config';
 import { logger } from '../../utils/logger';
@@ -29,7 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     return res.render(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_PAGE, {
       templateName: UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_PAGE,
-      backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
+      backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL,
       pageData: {
         trustName: trustInReview?.trust_name ?? '',
         legalEntities,

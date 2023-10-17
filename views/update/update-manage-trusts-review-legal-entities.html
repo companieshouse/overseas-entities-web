@@ -1,3 +1,5 @@
+{% import 'includes/trustee-macros.html' as trusteeMacros %}
+
 {% extends "update-layout.html" %}
 
 {% set title = "Review legal entities" %}
@@ -10,75 +12,67 @@
   {% include "includes/back-link.html" %}
 {% endblock %}
 
+{% set rows=[] %}
+{% for trustee in pageData.legalEntities %}
+  {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id %}
+  {% set rows = (rows.push(
+    [
+      {
+        text: trustee.name
+      },
+      {
+        text: trusteeMacros.readableTrusteeRole(trustee.type)
+      },
+      {
+        html: "<a href=" + changeLink + ">Change</a>",
+        attributes: {
+          'data-event-id': "manage-trusts-change-legal-entity"
+        }
+      }
+    ]
+  ), rows) %}
+{% endfor %}
 
 {% block content %}
-  <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
 
-      {% include "includes/list/errors.html" %}
-      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }}
-        <h1 class="govuk-heading-xl">{{ title }}</h1>
-        <div class="govuk-summary-card">
-          <div class="govuk-summary-card__title-wrapper">
-            <h2 class="govuk-summary-card__title">What you have reviewed</h2>
-          </div>
-          <div class="govuk-summary-card__content">
-            <dl class="govuk-summary-list">
-              <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                  Name
-                </dt>
-                <dd class="govuk-summary-list__key">
-                  Role  
-                </dd>
-                <dd class="govuk-summary-list__value">
-                  Change   
-                </dd>
-              </div>
-              {% for legalEntity in pageData.legalEntities %}
-                <div class="govuk-summary-list__row">
-                  <dt class="govuk-summary-list__key">
-                    {{legalEntity.name}}
-                  </dt>
-                  <dd class="govuk-summary-list__value">
-                    {{legalEntity.type}}
-                  </dd>
-                  <dd class="govuk-summary-list__value">
-                    <a class="govuk-link" href="{{OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL}}/{{legalEntity.id}}"
-                      data-event-id="change-link-review-other-bo">
-                        Change<span class="govuk-visually-hidden">{{ legalEntity.name }} - Legal entity</span>
-                    </a>
-                  </dd>
-                </div>
-              {% endfor %}
-            </dl>
-          </div>
-        </div>
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    {% include "includes/list/errors.html" %}
+    <span class="govuk-caption-l">{{ pageData.trustName }}</span>
+    <h1 class="govuk-heading-xl">{{ title }}</h1>
+    
+    {{ govukTable({
+      caption: "Legal entities associated with this trust",
+      captionClasses: "govuk-table__caption--m",
+      firstCellIsHeader: true,
+      head: [{text: "Name"}, {text: "Role"},{text: "Change"}],
+      rows: rows
+    }) }}
 
-        <form method="post">
-          <div class="govuk-button-group">
-          {{ govukButton({
-              text: "Add a legal entity",
-            attributes: {
-              "id": "addLegalEntity",
-              "name": "addLegalEntity",
-              "value": "addLegalEntity",
-              "data-event-id": "trust-involved-page-add-button"
-            }
-            }) }}
+    <form method="post">
+    <div class="govuk-button-group">
+      {{ govukButton({
+        text: "Add a legal entity",
+        attributes: {
+          "id": "addLegalEntity",
+          "name": "addLegalEntity",
+          "value": "addLegalEntity",
+          "data-event-id": "manage-trust-legal-entities-add"
+        }
+      }) }}
 
-          {{ govukButton({
-              text: "No more to add",
-              attributes: {
-                "id": "noMoreToAdd",
-                "name": "noMoreToAdd",
-                "value": "noMoreToAdd"
-              },
-              classes: "govuk-button--secondary"
-            }) }}
-        </div>
-        </form>
-      </div>
+      {{ govukButton({
+        text: "No more to add",
+        attributes: {
+          "id": "noMoreToAdd",
+          "name": "noMoreToAdd",
+          "value": "noMoreToAdd",
+          "data-event-id": "manage-trust-legal-entities-no-more-add"
+        },
+        classes: "govuk-button--secondary"
+      }) }}
     </div>
+    </form>
   </div>
+</div>
 {% endblock %}

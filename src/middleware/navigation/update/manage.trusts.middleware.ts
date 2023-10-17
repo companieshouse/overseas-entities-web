@@ -26,9 +26,9 @@ const reviewTrusteesGuard = (req: Request, res: Response, next: NextFunction, tr
   try {
     const appData = getApplicationData(req.session);
     const trustInReview = getTrustInReview(appData);
-    const hasIndividualTrustees = hasTrusteesToReview(trustInReview, trusteeType);
+    const hasTrusteesForReview = hasTrusteesToReview(trustInReview, trusteeType);
 
-    if (hasIndividualTrustees) {
+    if (hasTrusteesForReview) {
       return next();
     }
 

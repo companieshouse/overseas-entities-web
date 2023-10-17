@@ -14,7 +14,7 @@ import { validationResult } from 'express-validator/src/validation-result';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
-import { beginTrustReview, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
+import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -172,7 +172,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     //  update trust  in application data at session
     if (isReview) {
-      appData = updateTrustInReviewList(appData, trust);
+      updateTrustInReviewList(appData, trust);
     } else {
       appData = saveTrustInApp(appData, trust);
     }
@@ -183,7 +183,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     // // if reviewing a trust, mark trust as in review
     if (isReview) {
-      beginTrustReview(appData);
+      setTrustDetailsAsReviewed(appData);
     }
 
     //  save to session

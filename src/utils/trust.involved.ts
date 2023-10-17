@@ -126,7 +126,7 @@ export const postTrustInvolvedPage = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, getNextPage(isUpdate, isReview));
+      return safeRedirect(res, getNextPage(isUpdate));
     }
     //  check on errors
     const errorList = validationResult(req);

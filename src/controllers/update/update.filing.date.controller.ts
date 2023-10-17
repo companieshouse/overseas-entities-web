@@ -61,7 +61,8 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
             ceased_date_month: "6",
             ceased_date_year: "2023",
             corporate_indicator: 1,
-            corporate_name: "trust 1 former"
+            corporate_name: "trust 1 former",
+            ch_references: "chref"
           }],
         }];
       }

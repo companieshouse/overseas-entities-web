@@ -19,23 +19,39 @@
 
       <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
       <h1 class="govuk-heading-xl">{{ title }}</h1>
-      {% set boItems = [] %}
+      {% set reviewedBoItems = [] %}
+      {% set addedBoItems = [] %}
       {% for bo in pageData.boInTrust %}
         {% set type = 'Beneficial Owner' %}
-        {% set boItems = (
-          boItems.push({
-            key: {
-              text: type
-            },
-            value: {
-              text: bo.name
-            }
-          }),
-          boItems
-        ) %}
+        {% if bo.ch_reference %}
+          {% set reviewedBoItems = (
+            reviewedBoItems.push({
+              key: {
+                text: type
+              },
+              value: {
+                text: bo.name
+              }
+            }),
+            reviewedBoItems
+          ) %}
+        {% else %}
+          {% set addedBoItems = (
+            addedBoItems.push({
+              key: {
+                text: type
+              },
+              value: {
+                text: bo.name
+              }
+            }),
+            addedBoItems
+          ) %}
+        {% endif %}
       {% endfor %}
 
-      {% set formerTrustees = [] %}
+      {% set reviewedFormerTrustees = [] %}
+      {% set addedFormerTrustees = [] %}
       {% for trustee in pageData.formerTrusteeData %}
         {% set type = pageData.trusteeTypeTitle[pageData.trusteeType.HISTORICAL] %}
         {% if trustee.forename and trustee.surname%}
@@ -45,93 +61,183 @@
           {% set name = trustee.corporate_name %}
           {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
         {% endif %}
-        {% set formerTrustees = (
-          formerTrustees.push({
-            key: {
-              text: type  
-            },
-            value: {
-              text: name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
-                "Former Trustee" + trustee.name,
-                "change-former-trustee-button"
-             ) ]
-            }
-          }),
-          formerTrustees
-        ) %}
+        {% if trustee.ch_references %}
+          {% set reviewedFormerTrustees = (
+            reviewedFormerTrustees.push({
+              key: {
+                text: type  
+              },
+              value: {
+                text: name
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
+                  "Former Trustee" + trustee.name,
+                  "change-former-trustee-button"
+              ) ]
+              }
+            }),
+            reviewedFormerTrustees
+          ) %}
+        {% else %}
+          {% set addedFormerTrustees = (
+            addedFormerTrustees.push({
+              key: {
+                text: type  
+              },
+              value: {
+                text: name
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
+                  "Former Trustee" + trustee.name,
+                  "change-former-trustee-button"
+              ) ]
+              }
+            }),
+            addedFormerTrustees
+          ) %}
+        {% endif %}
       {% endfor %}
 
-      {% set individualTrustees = [] %}
+      {% set reviewedIndividualTrustees = [] %}
+      {% set addedIndividualTrustees = [] %}
       {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
-        {% set individualTrustees = (
-          individualTrustees.push({
-            key: {
-              text: type  
-            },
-            value: {
-              text: name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
-                + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
-                "Individual Trustee " + name,
-                "change-individual-trustee-button"
-             ) ]
-            }
-          }),
-          individualTrustees
-        ) %}
+        {% if trustee.ch_references %}
+          {% set reviewedIndividualTrustees = (
+            reviewedIndividualTrustees.push({
+              key: {
+                text: type  
+              },
+              value: {
+                text: name
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
+                  + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
+                  "Individual Trustee " + name,
+                  "change-individual-trustee-button"
+              ) ]
+              }
+            }),
+            reviewedIndividualTrustees
+          ) %}
+        {% else %}
+          {% set addedIndividualTrustees = (
+            addedIndividualTrustees.push({
+              key: {
+                text: type  
+              },
+              value: {
+                text: name
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
+                  + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
+                  "Individual Trustee " + name,
+                  "change-individual-trustee-button"
+              ) ]
+              }
+            }),
+            addedIndividualTrustees
+          ) %}
+        {% endif %}
       {% endfor %}
 
-      {% set legalEntityTrustees = [] %}
+      {% set reviewedLegalEntityTrustees = [] %}
+      {% set addedLegalEntityTrustees = [] %}
       {% for trustee in pageData.legalEntityTrusteeData %}
         {% set type = 'Legal Entity' %}
-        {% set legalEntityTrustees = (
-          legalEntityTrustees.push({
-            key: {
-              text: type
-            },
-            value: {
-              text: trustee.name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
-                + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
-                "Legal Entity Trustee " + trustee.name,
-                "change-legal-entity-trustee-button"
-             ) ]
-            }
-          }),
-          legalEntityTrustees
-        ) %}
+        {% if trustee.ch_references %}
+          {% set reviewedLegalEntityTrustees = (
+              reviewedLegalEntityTrustees.push({
+                key: {
+                  text: type
+                },
+                value: {
+                  text: trustee.name
+                },
+                actions: {
+                  items: [ CREATE_CHANGE_LINK(
+                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
+                    + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
+                    "Legal Entity Trustee " + trustee.name,
+                    "change-legal-entity-trustee-button"
+                ) ]
+                }
+              }),
+              reviewedLegalEntityTrustees
+            ) %}
+          {% else %}
+            {% set addedLegalEntityTrustees = (
+              addedLegalEntityTrustees.push({
+                key: {
+                  text: type
+                },
+                value: {
+                  text: trustee.name
+                },
+                actions: {
+                  items: [ CREATE_CHANGE_LINK(
+                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + "/" + pageData.trustData.trustId
+                    + OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
+                    "Legal Entity Trustee " + trustee.name,
+                    "change-legal-entity-trustee-button"
+                ) ]
+                }
+              }),
+              addedLegalEntityTrustees
+            ) %}
+        {% endif %}
       {% endfor %}
 
-      {% if boItems | length or formerTrustees | length or individualTrustees | length or legalEntityTrustees | length %}
+      {% if reviewedBoItems | length or reviewedFormerTrustees | length or reviewedIndividualTrustees | length or reviewedLegalEntityTrustees | length %}
         <h1 class="govuk-heading-m">
           What you have reviewed for this trust
         </h1>
         {{ govukSummaryList({
-          rows: boItems
+          rows: reviewedBoItems
         }) }}
 
         {{ govukSummaryList({
-          rows: formerTrustees
+          rows: reviewedFormerTrustees
         }) }}
 
         {{ govukSummaryList({
-          rows: individualTrustees
+          rows: reviewedIndividualTrustees
         }) }}
 
         {{ govukSummaryList({
-          rows: legalEntityTrustees
+          rows: reviewedLegalEntityTrustees
+        }) }}
+
+      {% endif %}
+  
+
+      {% if addedBoItems | length or addedFormerTrustees | length or addedIndividualTrustees | length or addedLegalEntityTrustees | length %}
+        <h1 class="govuk-heading-m">
+          What you have added so far for this trust
+        </h1>
+        {{ govukSummaryList({
+          rows: addedBoItems
+        }) }}
+
+        {{ govukSummaryList({
+          rows: addedFormerTrustees
+        }) }}
+
+        {{ govukSummaryList({
+          rows: addedIndividualTrustees
+        }) }}
+
+        {{ govukSummaryList({
+          rows: addedLegalEntityTrustees
         }) }}
 
       {% endif %}

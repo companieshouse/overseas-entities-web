@@ -12,8 +12,15 @@ import { ApplicationData } from '../../model';
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { getTrustInvolvedPage } from '../../utils/trust.involved';
 import { TrusteeType } from '../../model/trustee.type.model';
+import { getTrustInReview } from '../../utils/update/review_trusts';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
+  const appData = getApplicationData(req.session);
+  const trustInReview = getTrustInReview(appData);
+  console.log("******* BOS");
+  console.log(appData.beneficial_owners_individual);
+  console.log("******* REVIEW FORMER BOS");
+  console.log(trustInReview?.HISTORICAL_BO);
   getTrustInvolvedPage(req, res, next, true, true);
 };
 

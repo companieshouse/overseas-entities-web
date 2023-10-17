@@ -93,7 +93,4 @@ export * as updateManageTrustsTellUsAboutTheFormerBo from './update/update.manag
 export * as updateManageTrustsReviewIndividuals from './update/update.manage.trusts.review.individuals.controller';
 export * as updateManageTrustsReviewLegalEntities from './update/update.manage.trusts.review.legal.entities.controller';
 export * as updateManageTrustsIndividualsOrEntitiesInvolved from './update/update.manage.trusts.individuals.or.entities.involved.controller';
-export * as updateManageTrustsHistoricalBeneficialOwner from './update/update.manage.trusts.historical.beneficial.owner.controller';
-export * as updateManageTrustsIndividualBeneficialOwner from './update/update.manage.trusts.individual.beneficial.owner.controller';
-export * as updateManageTrustsLegalEntityBeneficialOwner from './update/update.manage.trusts.legal.entity.beneficial.owner.controller';
 export * as updatePaymentFailed from './update/update.payment.failed.controller';

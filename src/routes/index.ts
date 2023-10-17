@@ -95,9 +95,6 @@ import {
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
-  updateManageTrustsHistoricalBeneficialOwner,
-  updateManageTrustsIndividualBeneficialOwner,
-  updateManageTrustsLegalEntityBeneficialOwner,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -559,39 +556,6 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
   )
   .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
   .post(...validator.trustInvolved, updateManageTrustsIndividualsOrEntitiesInvolved.post);
-
-router
-  .route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
-  )
-  .get(updateManageTrustsHistoricalBeneficialOwner.get)
-  .post(...validator.trustHistoricalBeneficialOwner, updateManageTrustsHistoricalBeneficialOwner.post);
-
-router
-  .route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
-  )
-  .get(updateManageTrustsIndividualBeneficialOwner.get)
-  .post(...validator.trustIndividualBeneficialOwner, updateManageTrustsIndividualBeneficialOwner.post);
-
-router
-  .route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
-  .all(
-    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
-    authentication,
-    companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
-  )
-  .get(updateManageTrustsLegalEntityBeneficialOwner.get)
-  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsLegalEntityBeneficialOwner.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(

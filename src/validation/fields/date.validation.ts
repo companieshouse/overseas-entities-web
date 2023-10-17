@@ -24,7 +24,14 @@ import { conditionalDateValidations, dateContext, dateContextWithCondition, date
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const start_date_validations = [
+  body("start_date-day")
+    .ltrim("0"),
+  body("start_date-month")
+    .ltrim("0"),
+  body("start_date-year")
+    .ltrim("0"),
   body("start_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-month")
@@ -35,7 +42,14 @@ export const start_date_validations = [
     .custom((value, { req }) => checkDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
 ];
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [
+  body(date_field_id + "-day")
+    .ltrim("0"),
+  body(date_field_id + "-month")
+    .ltrim("0"),
+  body(date_field_id + "-year")
+    .ltrim("0"),
   body(date_field_id + "-day")
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDateFieldDay(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"])),
@@ -71,8 +85,15 @@ export const resigned_on_validations = is_still_active_validations("resigned_on"
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-// This means that the year check is checked before some others
+// This means that the year check is checked before some others.
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const date_of_birth_validations = [
+  body("date_of_birth-day")
+    .ltrim("0"),
+  body("date_of_birth-month")
+    .ltrim("0"),
+  body("date_of_birth-year")
+    .ltrim("0"),
   body("date_of_birth-day")
     .custom((value, { req }) => checkDateFieldDayOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-month")
@@ -85,7 +106,14 @@ export const date_of_birth_validations = [
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const identity_check_date_validations = [
+  body("identity_date-day")
+    .ltrim("0"),
+  body("identity_date-month")
+    .ltrim("0"),
+  body("identity_date-year")
+    .ltrim("0"),
   body("identity_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")
@@ -96,7 +124,14 @@ export const identity_check_date_validations = [
     .custom((value, { req }) => checkIdentityDate(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
 ];
 
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const filing_date_validations = [
+  body("filing_date-day")
+    .ltrim("0"),
+  body("filing_date-month")
+    .ltrim("0"),
+  body("filing_date-year")
+    .ltrim("0"),
   body("filing_date-day")
     .custom((value, { req }) => checkDateFieldDay(req.body["filing_date-day"], req.body["filing_date-month"], req.body["filing_date-year"])),
   body("filing_date-month")

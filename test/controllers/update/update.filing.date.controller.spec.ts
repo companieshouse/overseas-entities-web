@@ -190,11 +190,126 @@ describe("Update Filing Date controller", () => {
 
       const resp = await request(app)
         .post(config.UPDATE_FILING_DATE_URL)
-        .send({ filingDateMock });
+        .send(filingDateMock);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).toContain(ERROR_LIST);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with missing DAY error when filing date day is zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "00";
+      filingDateMock["filing_date-month"] = "11";
+      filingDateMock["filing_date-year"] = "2020";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.DAY);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with missing MONTH error when filing date month is zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "11";
+      filingDateMock["filing_date-month"] = "00";
+      filingDateMock["filing_date-year"] = "2020";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with missing YEAR error when filing date year is zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "11";
+      filingDateMock["filing_date-month"] = "12";
+      filingDateMock["filing_date-year"] = "0000";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with YEAR LENGTH error when filing date year is not 4 digits with leading zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "11";
+      filingDateMock["filing_date-month"] = "12";
+      filingDateMock["filing_date-year"] = "0020";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.YEAR_LENGTH);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with INVALID DATE error when filing date day is out of range with leading zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "0032";
+      filingDateMock["filing_date-month"] = "12";
+      filingDateMock["filing_date-year"] = "2020";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`renders the ${config.UPDATE_FILING_DATE_PAGE} page with INVALID DATE error when filing date month is out of range with leading zeroes`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+      const filingDateMock = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDateMock["filing_date-day"] = "21";
+      filingDateMock["filing_date-month"] = "0013";
+      filingDateMock["filing_date-year"] = "2020";
+
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDateMock);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+    });
+
+    test(`leading zeros are stripped from filing date`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValueOnce(mockData);
+
+      const filingDate = { ...FILING_DATE_REQ_BODY_MOCK };
+      filingDate["filing_date-day"] = "0030";
+      filingDate["filing_date-month"] = "0011";
+      filingDate["filing_date-year"] = "001234";
+      const resp = await request(app)
+        .post(config.UPDATE_FILING_DATE_URL)
+        .send(filingDate);
+      expect(resp.status).toEqual(302);
+
+      const req = mockLoggerDebugRequest.mock.calls[0][0];
+      expect(req.body["filing_date-day"]).toEqual("30");
+      expect(req.body["filing_date-month"]).toEqual("11");
+      expect(req.body["filing_date-year"]).toEqual("1234");
     });
 
     test(`catch error on POST action for ${config.UPDATE_FILING_DATE_URL} page`, async () => {

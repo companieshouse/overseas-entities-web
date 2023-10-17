@@ -394,28 +394,58 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing DAY error when day is zero`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
-      beneficialOwnerGov["start_date-day"] = "0";
+      beneficialOwnerGov["start_date-day"] = "00";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyDayErrors(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing MONTH error when month is zero`, async () => {
       const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
       beneficialOwnerGov["start_date-day"] = "30";
-      beneficialOwnerGov["start_date-month"] = "0";
+      beneficialOwnerGov["start_date-month"] = "00";
       beneficialOwnerGov["start_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing YEAR error when year is zero`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "30";
+      beneficialOwnerGov["start_date-month"] = "11";
+      beneficialOwnerGov["start_date-year"] = "00";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyYearErrors(resp);
+    });
+
+    test(`leading zeros are stripped from start date`, async () => {
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      beneficialOwnerGov["start_date-day"] = "0030";
+      beneficialOwnerGov["start_date-month"] = "0011";
+      beneficialOwnerGov["start_date-year"] = "002019";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      expect(resp.status).toEqual(302);
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["start_date-day"]).toEqual("30");
+      expect(reqBody["start_date-month"]).toEqual("11");
+      expect(reqBody["start_date-year"]).toEqual("2019");
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {
@@ -442,6 +472,18 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       beneficialOwnerGov["start_date-day"] = "10";
       beneficialOwnerGov["start_date-month"] = "12";
       beneficialOwnerGov["start_date-year"] = "20";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyYearLengthError(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR_LENGTH error when year length is not 4 digits with leading zeroes`, async () => {
+      const beneficialOwnerGov = { ...REQ_BODY_BENEFICIAL_OWNER_GOV_FOR_START_DATE_VALIDATION };
+      beneficialOwnerGov["start_date-day"] = "10";
+      beneficialOwnerGov["start_date-month"] = "12";
+      beneficialOwnerGov["start_date-year"] = "0020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
@@ -569,6 +611,18 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when date is outside valid numbers with leading zeroes`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "0031";
+      beneficialOwnerGov["ceased_date-month"] = "06";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyInvalidDateError(resp);
+    });
+
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is outside valid numbers`, async () => {
       const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
       beneficialOwnerGov["ceased_date-day"] = "30";
@@ -581,10 +635,10 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when day is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is outside valid numbers with leading zeroes`, async () => {
       const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
-      beneficialOwnerGov["ceased_date-day"] = "0";
-      beneficialOwnerGov["ceased_date-month"] = "12";
+      beneficialOwnerGov["ceased_date-day"] = "30";
+      beneficialOwnerGov["ceased_date-month"] = "0013";
       beneficialOwnerGov["ceased_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
@@ -593,16 +647,40 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyInvalidDateError(resp);
     });
 
-    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when month is zero`, async () => {
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing DAY error when day is zero`, async () => {
       const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
-      beneficialOwnerGov["ceased_date-day"] = "30";
-      beneficialOwnerGov["ceased_date-month"] = "0";
+      beneficialOwnerGov["ceased_date-day"] = "00";
+      beneficialOwnerGov["ceased_date-month"] = "12";
       beneficialOwnerGov["ceased_date-year"] = "2020";
       const resp = await request(app)
         .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
         .send(beneficialOwnerGov);
 
-      assertOnlyInvalidDateError(resp);
+      assertOnlyEmptyDayErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing MONTH error when month is zero`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "30";
+      beneficialOwnerGov["ceased_date-month"] = "00";
+      beneficialOwnerGov["ceased_date-year"] = "2020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyMonthErrors(resp);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only missing YEAR error when year is zero`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "30";
+      beneficialOwnerGov["ceased_date-month"] = "11";
+      beneficialOwnerGov["ceased_date-year"] = "0000";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyEmptyYearErrors(resp);
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only INVALID_DATE error when invalid characters are used`, async () => {
@@ -636,6 +714,18 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
       assertOnlyYearLengthError(resp);
     });
 
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only YEAR_LENGTH error when year length is not 4 digits with leading zeroes`, async () => {
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
+      beneficialOwnerGov["ceased_date-day"] = "10";
+      beneficialOwnerGov["ceased_date-month"] = "12";
+      beneficialOwnerGov["ceased_date-year"] = "0020";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      assertOnlyYearLengthError(resp);
+    });
+
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when ceased date is not in the past`, async () => {
       const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_MOCK_FOR_CEASE_VALIDATION };
       const inTheFuture = DateTime.now().plus({ days: 1 });
@@ -647,6 +737,24 @@ describe("UPDATE BENEFICIAL OWNER GOV controller", () => {
         .send(beneficialOwnerGov);
 
       assertOnlyDayNotInPastErrors(resp);
+    });
+
+    test(`leading zeros are stripped from ceased date`, async () => {
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_GOV_OBJECT_MOCK);
+      const beneficialOwnerGov = { ...UPDATE_BENEFICIAL_OWNER_GOV_BODY_OBJECT_MOCK_WITH_ADDRESS };
+      beneficialOwnerGov["ceased_date-day"] = "0030";
+      beneficialOwnerGov["ceased_date-month"] = "0011";
+      beneficialOwnerGov["ceased_date-year"] = "002019";
+
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_GOV_URL)
+        .send(beneficialOwnerGov);
+
+      expect(resp.status).toEqual(302);
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["ceased_date-day"]).toEqual("30");
+      expect(reqBody["ceased_date-month"]).toEqual("11");
+      expect(reqBody["ceased_date-year"]).toEqual("2019");
     });
 
     test(`renders the ${UPDATE_BENEFICIAL_OWNER_GOV_PAGE} page with error when ceased date is before start date`, async () => {

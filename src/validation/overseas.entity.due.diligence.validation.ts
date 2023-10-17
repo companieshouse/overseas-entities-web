@@ -11,10 +11,16 @@ import {
 } from "./custom.validation";
 import { email_validations } from "./fields/email.validation";
 
+// to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
+// This means that the year check is checked before some others.
+// Need to trim leading zeros before custom validations as these reference day month year fields.
 export const overseasEntityDueDiligence = [
-
-  // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
-  // This means that the year check is checked before some others
+  body("identity_date-day")
+    .ltrim("0"),
+  body("identity_date-month")
+    .ltrim("0"),
+  body("identity_date-year")
+    .ltrim("0"),
   body("identity_date-day")
     .custom((value, { req }) => checkDateFieldDayForOptionalDates(req.body["identity_date-day"], req.body["identity_date-month"], req.body["identity_date-year"])),
   body("identity_date-month")

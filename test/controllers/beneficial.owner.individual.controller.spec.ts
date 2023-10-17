@@ -471,9 +471,9 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date day is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing DAY error when start date day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
-      beneficialOwnerIndividual["start_date-day"] = "0";
+      beneficialOwnerIndividual["start_date-day"] = "00";
       beneficialOwnerIndividual["start_date-month"] = "11";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
@@ -481,17 +481,17 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
-      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).toContain(ErrorMessages.DAY);
       expect(resp.text).not.toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when start date month is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing MONTH error when start date month is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
       beneficialOwnerIndividual["start_date-day"] = "30";
-      beneficialOwnerIndividual["start_date-month"] = "0";
+      beneficialOwnerIndividual["start_date-month"] = "00";
       beneficialOwnerIndividual["start_date-year"] = "2020";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
@@ -499,10 +499,61 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DAY);
-      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing YEAR error when start date year is zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerIndividual["start_date-day"] = "30";
+      beneficialOwnerIndividual["start_date-month"] = "11";
+      beneficialOwnerIndividual["start_date-year"] = "00";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DAY);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
+    });
+
+    test(`leading zeros are stripped from start date`, async () => {
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      const beneficialOwnerGov = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
+      beneficialOwnerGov["start_date-day"] = "0030";
+      beneficialOwnerGov["start_date-month"] = "0011";
+      beneficialOwnerGov["start_date-year"] = "001234";
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(302);
+
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["start_date-day"]).toEqual("30");
+      expect(reqBody["start_date-month"]).toEqual("11");
+      expect(reqBody["start_date-year"]).toEqual("1234");
+    });
+
+    test(`leading zeros are stripped from date of birth`, async () => {
+      mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
+      const beneficialOwnerGov = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK };
+      beneficialOwnerGov["date_of_birth-day"] = "0030";
+      beneficialOwnerGov["date_of_birth-month"] = "0011";
+      beneficialOwnerGov["date_of_birth-year"] = "001234";
+      const resp = await request(app)
+        .post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerGov);
+      expect(resp.status).toEqual(302);
+
+      const reqBody = mockPrepareData.mock.calls[0][0];
+      expect(reqBody["date_of_birth-day"]).toEqual("30");
+      expect(reqBody["date_of_birth-month"]).toEqual("11");
+      expect(reqBody["date_of_birth-year"]).toEqual("1234");
     });
 
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only DATE_NOT_IN_PAST_OR_TODAY error when start_date is in the future`, async () => {
@@ -688,6 +739,23 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is outside valid numbers with leading zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
+      beneficialOwnerIndividual["date_of_birth-day"] = "0032";
+      beneficialOwnerIndividual["date_of_birth-month"] = "11";
+      beneficialOwnerIndividual["date_of_birth-year"] = "1970";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+    });
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is outside valid numbers`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "30";
@@ -705,10 +773,10 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth day is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is outside valid numbers with leading zeroes`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
-      beneficialOwnerIndividual["date_of_birth-day"] = "0";
-      beneficialOwnerIndividual["date_of_birth-month"] = "11";
+      beneficialOwnerIndividual["date_of_birth-day"] = "30";
+      beneficialOwnerIndividual["date_of_birth-month"] = "0013";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
@@ -722,20 +790,56 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
-    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only INVALID_DATE error when date of birth month is zero`, async () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing DAY error when date of birth day is zero`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
-      beneficialOwnerIndividual["date_of_birth-day"] = "30";
-      beneficialOwnerIndividual["date_of_birth-month"] = "0";
+      beneficialOwnerIndividual["date_of_birth-day"] = "00";
+      beneficialOwnerIndividual["date_of_birth-month"] = "11";
       beneficialOwnerIndividual["date_of_birth-year"] = "1970";
       const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
         .send(beneficialOwnerIndividual);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.DAY_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
-      expect(resp.text).toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing MONTH error when date of birth month is zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
+      beneficialOwnerIndividual["date_of_birth-day"] = "30";
+      beneficialOwnerIndividual["date_of_birth-month"] = "00";
+      beneficialOwnerIndividual["date_of_birth-year"] = "1970";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only missing YEAR error when date of birth year is zero`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
+      beneficialOwnerIndividual["date_of_birth-day"] = "30";
+      beneficialOwnerIndividual["date_of_birth-month"] = "11";
+      beneficialOwnerIndividual["date_of_birth-year"] = "0000";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.ENTER_DATE_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.MONTH_OF_BIRTH);
+      expect(resp.text).toContain(ErrorMessages.YEAR_OF_BIRTH);
+      expect(resp.text).not.toContain(ErrorMessages.INVALID_DATE_OF_BIRTH);
       expect(resp.text).not.toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 

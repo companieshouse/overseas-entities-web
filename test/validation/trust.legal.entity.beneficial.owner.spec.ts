@@ -7,6 +7,7 @@ const mockMatches = jest.fn();
 const mockIf = jest.fn();
 const mockEquals = jest.fn();
 const mockIsEmpty = jest.fn();
+const mockLTrim = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
@@ -19,6 +20,7 @@ jest.mock('express-validator', () => ({
     equals: mockEquals.mockReturnThis(),
     withMessage: mockWithMessage.mockReturnThis(),
     isEmpty: mockIsEmpty.mockReturnThis(),
+    ltrim: mockLTrim.mockReturnThis(),
   })),
   check: jest.fn().mockImplementation(() => ({
     notEmpty: mockNotEmpty.mockReturnThis(),
@@ -44,6 +46,7 @@ describe('test legal entity validator', () => {
     expect(mockEquals).toHaveBeenCalled();
     expect(mockNot).toHaveBeenCalled();
     expect(mockIsEmpty).toHaveBeenCalled();
+    expect(mockLTrim).toHaveBeenCalled();
   });
 
   test('checkIfLessThanTargetValue throws error', async () => {

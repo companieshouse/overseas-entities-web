@@ -21,6 +21,7 @@ const mockIf = jest.fn();
 const mockCustom = jest.fn();
 const mockEquals = jest.fn();
 const mockNotEmpty = jest.fn();
+const mockLTrim = jest.fn();
 
 jest.mock('express-validator', () => ({
   body: jest.fn().mockImplementation(() => ({
@@ -28,6 +29,7 @@ jest.mock('express-validator', () => ({
     equals: mockEquals.mockReturnThis(),
     if: mockIf.mockReturnThis(),
     notEmpty: mockNotEmpty.mockReturnThis(),
+    ltrim: mockLTrim.mockReturnThis(),
   })),
 }));
 
@@ -38,6 +40,7 @@ describe('Test to validate date validator', () => {
     mockCustom.mockRestore();
     mockEquals.mockRestore();
     mockNotEmpty.mockRestore();
+    mockLTrim.mockRestore();
   });
 
   test('should test dateValidations', () => {
@@ -73,10 +76,11 @@ describe('Test to validate date validator', () => {
     };
 
     const sut = dateValidations(mockDateValidationsContext);
-    expect(sut.length).toEqual(4);
+    expect(sut.length).toEqual(7);
     expect(mockIf).toHaveBeenCalled();
     expect(mockCustom).toHaveBeenCalled();
     expect(mockEquals).not.toHaveBeenCalled();
+    expect(mockLTrim).toBeCalledTimes(3);
   });
 
   test('should test conditionalDateValidations success', () => {
@@ -116,10 +120,11 @@ describe('Test to validate date validator', () => {
     };
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
-    expect(sut.length).toEqual(4);
+    expect(sut.length).toEqual(7);
     expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
+    expect(mockLTrim).toBeCalledTimes(3);
   });
 
   test('should test conditionalDateValidations failure', () => {
@@ -160,10 +165,11 @@ describe('Test to validate date validator', () => {
     };
 
     const sut = conditionalDateValidations(mockDateValidationsContext);
-    expect(sut.length).toEqual(4);
+    expect(sut.length).toEqual(7);
     expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
+    expect(mockLTrim).toBeCalledTimes(3);
   });
 });
 

@@ -110,7 +110,13 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(false);
+    expect((appData.update?.review_trusts ?? [])[0].review_status).toEqual({
+      in_review: true,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    });
     expect(mockSetExtraData).toHaveBeenCalledWith(undefined, appData);
     expect(mockSaveAndContinue).toHaveBeenCalled();
   });
@@ -118,7 +124,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   test.each([
     ['GET', get],
     ['POST', post],
-  ])('%s - when a trust is in review, with no trustees, redirects to manage trusts individuals and entities involved page', async (_, handler) => {
+  ])('%s - when a trust is in review, with no trustees, and has reviewed trust details, redirects to manage trusts individuals and entities involved page', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [],
@@ -126,6 +132,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -138,7 +145,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -146,7 +152,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
   test.each([
     ['GET', get],
     ['POST', post],
-  ])('%s - when a trust is in review, with trustees, redirects to review former bo page if no trustees reviewed', async (_, handler) => {
+  ])('%s - when a trust is in review, with trustees, and has reviewed trust details, redirects to review former bo page if no trustees reviewed', async (_, handler) => {
     const appData: ApplicationData = createAppData({
       reviewTrusts: [{
         HISTORICAL_BO: [{}],
@@ -154,6 +160,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -166,7 +173,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -182,6 +188,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: true,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -194,7 +201,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -210,6 +216,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: true,
           reviewed_individuals: true,
           reviewed_legal_entities: false,
@@ -222,7 +229,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -238,6 +244,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: true,
           reviewed_individuals: true,
           reviewed_legal_entities: true,
@@ -250,7 +257,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -266,6 +272,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -278,7 +285,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -294,6 +300,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -306,7 +313,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -322,6 +328,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [{}],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: true,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
@@ -334,7 +341,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
@@ -350,6 +356,7 @@ describe('Update - Manage Trusts - Orchestrator', () => {
         CORPORATES: [],
         review_status: {
           in_review: true,
+          reviewed_trust_details: true,
           reviewed_former_bos: true,
           reviewed_individuals: true,
           reviewed_legal_entities: false,
@@ -362,7 +369,6 @@ describe('Update - Manage Trusts - Orchestrator', () => {
 
     expect(resp.status).toBe(302);
     expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL);
-    expect((appData.update?.review_trusts ?? [])[0].review_status?.in_review).toBe(true);
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });

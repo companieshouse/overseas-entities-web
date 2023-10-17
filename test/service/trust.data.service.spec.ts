@@ -89,7 +89,7 @@ const corporateTrusteeDataMock = [{
   registrationNumber: "registration_number",
   lawGoverned: "law_governed",
   legalForm: "legal_form",
-  onRegisterInCountryFormedIn: "Y",
+  onRegisterInCountryFormed: "Y",
   corporateIndicator: "Y",
   trusteeTypeId: "50002",
   appointmentDate: "2020-02-20",

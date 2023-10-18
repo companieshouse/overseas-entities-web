@@ -14,7 +14,9 @@ import { NextFunction } from 'express';
 
 import app from '../../../src/app';
 import {
+  SECURE_UPDATE_FILTER_URL,
   UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
@@ -32,7 +34,9 @@ import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { ApplicationData } from '../../../src/model';
 import { hasBOsOrMOsUpdate } from '../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware';
 
-import { PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
+import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { Trust } from '../../../src/model/trust.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -372,4 +376,47 @@ describe('Update - Manage Trusts - Orchestrator', () => {
     expect(mockSetExtraData).not.toHaveBeenCalled();
     expect(mockSaveAndContinue).not.toHaveBeenCalled();
   });
+});
+
+describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockIsActiveFeature.mockReturnValue(true);
+  });
+
+  test('passing TrustId puts trust back into review and redirects to the update-manage-trusts-review-the-trust page', async () => {
+    const trustId = '1';
+    mockGetApplicationData.mockReturnValue({
+      trusts: [{ trust_id: trustId, trust_name: 'trust name' } as Trust],
+      [UpdateKey]: {
+        review_trusts: []
+      }
+    });
+
+    const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + '/' + trustId);
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+    expect(mockSetExtraData).toHaveBeenCalled();
+    expect(mockSaveAndContinue).toHaveBeenCalled();
+  });
+
+  test('passing invalid TrustId redirects user to the secure-update-filter page', async () => {
+    mockGetApplicationData.mockReturnValue({});
+
+    const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1234`);
+    expect(resp.status).toBe(302);
+    expect(resp.header.location).toEqual(SECURE_UPDATE_FILTER_URL);
+    expect(mockSetExtraData).not.toHaveBeenCalled();
+    expect(mockSaveAndContinue).not.toHaveBeenCalled();
+  });
+
+  test("catch error", async () => {
+    mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
+    const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1234`);
+
+    expect(resp.status).toEqual(500);
+    expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+  });
+
 });

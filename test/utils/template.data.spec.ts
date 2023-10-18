@@ -30,6 +30,8 @@ describe("Template Data Utils tests", () => {
 
       expect(testObject["FEATURE_FLAG_ENABLE_REDIS_REMOVAL"]).toEqual(true);
       expect(testObject["activeSubmissionBasePath"]).toEqual(dummyUrl);
+      expect(testObject["name"]).toEqual("Bob");
+      expect(testObject["isOnRegister"]).toEqual(false);
     });
 
     test("Adds activeSubmissionBasePath and Redis feature flag to template data - REDIS FLAG FALSE", () => {
@@ -43,6 +45,8 @@ describe("Template Data Utils tests", () => {
 
       expect(testObject["FEATURE_FLAG_ENABLE_REDIS_REMOVAL"]).toEqual(undefined);
       expect(testObject["activeSubmissionBasePath"]).toEqual(undefined);
+      expect(testObject["name"]).toEqual("Bob");
+      expect(testObject["isOnRegister"]).toEqual(false);
     });
   });
 });

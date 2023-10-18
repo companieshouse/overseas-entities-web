@@ -10,6 +10,7 @@ export const CeasedDateKey: string = "ceased_date";
 export const ResignedOnKey: string = "resigned_on";
 export const FilingDateKey: string = "filing_date";
 export const ResignedOnDateKey: string = "resigned_on";
+export const HaveDayOfBirthKey = "have_day_of_birth";
 
 /*
   The sub-fields for Date Objects used in the templates

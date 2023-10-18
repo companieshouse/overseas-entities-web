@@ -14,6 +14,7 @@ export const ManagingOfficerKeys: string[] = [
   "has_former_names",
   "former_names",
   "date_of_birth",
+  "have_day_of_birth",
   "nationality",
   "second_nationality",
   "usual_residential_address",
@@ -33,6 +34,7 @@ export interface ManagingOfficerIndividual {
   has_former_names?: yesNoResponse;
   former_names?: string;
   date_of_birth?: InputDate;
+  have_day_of_birth?: boolean;
   nationality?: string;
   second_nationality?: string;
   usual_residential_address?: Address;

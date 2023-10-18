@@ -60,9 +60,10 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
 
     const trust = mapTrustData(trustData, appData);
 
-    fetchAndMapIndivdualTrustees(req, transactionId, overseasEntityId, trust);
-
-    fetchAndMapCorporateTrustees(req, transactionId, overseasEntityId, trust);
+    if (trust.ch_reference !== undefined && trust.ch_reference !== "") {
+      fetchAndMapIndivdualTrustees(req, transactionId, overseasEntityId, trust);
+      fetchAndMapCorporateTrustees(req, transactionId, overseasEntityId, trust);
+    }
   }
 };
 

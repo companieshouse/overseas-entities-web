@@ -20,7 +20,8 @@ import {
   MAPPED_FETCH_SECOND_CORPORATE_TRUSTEE_DATA_MOCK,
   MAPPED_FETCH_THIRD_CORPORATE_TRUSTEE_DATA_MOCK,
   TRUST_LINKS_DATA_MOCK,
-  BO_TRUST_LINKS_DATA_MOCK
+  BO_TRUST_LINKS_DATA_MOCK,
+  FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE
 } from "./mocks";
 import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
@@ -277,6 +278,35 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(historicalTrustees).toHaveLength(1);
     const historicalTrustee = (historicalTrustees ?? [])[0];
     expect(historicalTrustee).toEqual(MAPPED_FETCH_HISTORICAL_CORPORATE_DATA_MOCK);
+  });
+
+  test("should not fetch and map trustees if chips reference is empty", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    mockGetTrustData.mockResolvedValue([ FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE ]);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(1);
+    expect(appData.update?.review_trusts).toHaveLength(1);
+    expect(mockGetIndividualTrustees).not.toBeCalled();
+    expect(mockGetCorporateTrustees).not.toBeCalled();
+  });
+
+  test("should not fetch and map trustees if chips reference is undefined", async () => {
+    const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
+    const trustData = [ { ...FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE, hashedTrustId: undefined } as unknown as TrustData];
+    mockGetTrustData.mockResolvedValue(trustData);
+    mockGetTrustLinks.mockResolvedValue([]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(mockGetTrustData).toBeCalledTimes(1);
+    expect(mockLoggerInfo).toBeCalledTimes(1);
+    expect(appData.update?.review_trusts).toHaveLength(1);
+    expect(mockGetIndividualTrustees).not.toBeCalled();
+    expect(mockGetCorporateTrustees).not.toBeCalled();
   });
 
   test("should fetch and map trust links for indivdual BOs", async () => {

@@ -245,6 +245,14 @@ export const FETCH_TRUST_DATA_MOCK: TrustData[] = [
   }
 ];
 
+export const FETCH_TRUST_DATA_MOCK_WITHOUT_CHIPS_REFERENCE: TrustData =
+  {
+    hashedTrustId: "",
+    trustName: "Test Trust",
+    creationDate: "2020-01-01",
+    unableToObtainAllTrustInfoIndicator: false
+  };
+
 export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
   {
     hashedTrusteeId: "12345678",

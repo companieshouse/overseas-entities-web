@@ -210,7 +210,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
     is_service_address_same_as_principal_address: yesNoResponse.No
   };
 
-  mapResidentialAddress(corporateTrustee, trustee);
+  mapRegisteredOfficeAddress(corporateTrustee, trustee);
   mapServiceAddress(corporateTrustee, trustee);
 
   trust.CORPORATES?.push(corporateTrustee);
@@ -294,7 +294,7 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
   }
 };
 
-const mapResidentialAddress = (trustee: TrustCorporate, trusteeData: CorporateTrusteeData) => {
+const mapRegisteredOfficeAddress = (trustee: TrustCorporate, trusteeData: CorporateTrusteeData) => {
   trustee.ro_address_premises = trusteeData.registeredOfficeAddress?.premises ?? "";
   trustee.ro_address_line_1 = trusteeData.registeredOfficeAddress?.addressLine1 ?? "";
   trustee.ro_address_line_2 = trusteeData.registeredOfficeAddress?.addressLine2 ?? "";

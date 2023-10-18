@@ -485,7 +485,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate).toEqual(undefined);
   });
 
-  test("should fetch and not map trust links in with empty benefitial owners", async () => {
+  test("should fetch and not map trust links in with empty beneficial owners", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
     mockGetTrustLinks.mockResolvedValueOnce([

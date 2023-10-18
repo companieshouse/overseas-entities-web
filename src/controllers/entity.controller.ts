@@ -18,6 +18,8 @@ import { mapRequestToEntityData } from "../utils/request.to.entity.mapper";
 import { getEntityBackLink } from "../utils/navigation";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../utils/save.and.continue";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -57,7 +59,13 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
     setApplicationData(session, data, EntityKey);
     await saveAndContinue(req, session, true);
 
-    return res.redirect(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+    let nextPageUrl = config.BENEFICIAL_OWNER_STATEMENTS_URL;
+
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+      nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, req);
+    }
+
+    return res.redirect(nextPageUrl);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

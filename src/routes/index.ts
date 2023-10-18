@@ -118,7 +118,9 @@ router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
 router.get(config.LANDING_URL, landing.get);
 
 router.get(config.SIGN_OUT_URL, signOut.get);
+router.get(config.SIGN_OUT_WITH_PARAMS_URL, signOut.get);
 router.post(config.SIGN_OUT_URL, ...validator.signOut, checkValidations, signOut.post);
+router.post(config.SIGN_OUT_WITH_PARAMS_URL, ...validator.signOut, checkValidations, signOut.post);
 
 router.get(config.RESUME_SUBMISSION_URL, authentication, resumeSubmission.get);
 
@@ -136,36 +138,65 @@ router.post(config.SECURE_REGISTER_FILTER_URL, authentication, navigation.hasSol
 router.get(config.USE_PAPER_URL, authentication, navigation.hasSoldLand, usePaper.get);
 
 router.get(config.INTERRUPT_CARD_URL, authentication, navigation.isSecureRegister, interruptCard.get);
+router.get(config.INTERRUPT_CARD_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, interruptCard.get);
 
 router.get(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, overseasName.get);
+router.get(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, overseasName.get);
 router.post(config.OVERSEAS_NAME_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
+router.post(config.OVERSEAS_NAME_WITH_PARAMS_URL, authentication, navigation.isSecureRegister, ...validator.overseasName, checkValidations, overseasName.post);
 
 router.get(config.PRESENTER_URL, authentication, navigation.hasOverseasName, presenter.get);
+router.get(config.PRESENTER_WITH_PARAMS_URL, authentication, navigation.hasOverseasName, presenter.get);
 router.post(config.PRESENTER_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
+router.post(config.PRESENTER_WITH_PARAMS_URL, authentication, navigation.hasOverseasName, ...validator.presenter, checkValidations, presenter.post);
 
 router.get(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
+router.get(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, whoIsMakingFiling.get);
 router.post(config.WHO_IS_MAKING_FILING_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
+router.post(config.WHO_IS_MAKING_FILING_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.whoIsMakingFiling, checkValidations, whoIsMakingFiling.post);
 
 router.get(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, dueDiligence.get);
+router.get(config.DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, dueDiligence.get);
 router.post(config.DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
+router.post(config.DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.dueDiligence, checkValidations, dueDiligence.post);
 
 router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
+router.get(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, overseasEntityDueDiligence.get);
 router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
+router.post(config.OVERSEAS_ENTITY_DUE_DILIGENCE_WITH_PARAMS_URL, authentication, navigation.hasPresenter, ...validator.overseasEntityDueDiligence, checkValidations, overseasEntityDueDiligence.post);
 
 router.get(config.ENTITY_URL, authentication, navigation.hasDueDiligence, entity.get);
+router.get(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, entity.get);
 router.post(config.ENTITY_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
+router.post(config.ENTITY_WITH_PARAMS_URL, authentication, navigation.hasDueDiligence, ...validator.entity, checkValidations, entity.post);
 
 router.get(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
+router.get(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, authentication, navigation.hasEntity, beneficialOwnerStatements.get);
 router.post(config.BENEFICIAL_OWNER_STATEMENTS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
+router.post(config.BENEFICIAL_OWNER_STATEMENTS_WITH_PARAMS_URL, authentication, navigation.hasEntity, ...validator.beneficialOwnersStatement, checkValidations, beneficialOwnerStatements.post);
 
 router.get(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerDeleteWarning.get);
+router.get(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerDeleteWarning.get);
 router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerDeleteWarning, checkValidations, beneficialOwnerDeleteWarning.post);
+router.post(config.BENEFICIAL_OWNER_DELETE_WARNING_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnerDeleteWarning, checkValidations, beneficialOwnerDeleteWarning.post);
 
 router.get(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
+router.get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerType.get);
 router.post(config.BENEFICIAL_OWNER_TYPE_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+router.post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersType, checkValidations, beneficialOwnerType.post);
+
 router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
+router.post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.beneficialOwnersTypeSubmission, checkValidations, beneficialOwnerType.postSubmit);
 
 router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerIndividual.get)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.post);
+
+router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasBeneficialOwnersStatement
@@ -314,13 +345,18 @@ router
   });
 
 router.get(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
+router.get(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.get);
 router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
+router.post(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
+router.get(config.PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL, authentication, payment.get);
 
 router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
+router.get(config.PAYMENT_FAILED_WITH_PARAMS_URL, authentication, paymentFailed.get);
 
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
+router.get(config.CONFIRMATION_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 
 // Routes for UPDATE journey
 router.get(config.UPDATE_LANDING_URL, updateLanding.get);

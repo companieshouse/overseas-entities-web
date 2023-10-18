@@ -16,9 +16,15 @@ import {
   PAYMENT,
   TRANSACTION,
   OVERSEAS_ENTITY,
-  CONFIRMATION_URL
+  CONFIRMATION_URL,
+  CONFIRMATION_WITH_PARAMS_URL,
+  FEATURE_FLAG_ENABLE_REDIS_REMOVAL,
+  ACTIVE_SUBMISSION_BASE_PATH,
+  LANDING_URL,
 } from "../config";
 import { OverseasEntityKey, PaymentKey, Transactionkey } from "../model/data.types.model";
+import { getUrlWithParamsToPath, getUrlWithTransactionIdAndSubmissionId } from "../utils/url";
+import { isActiveFeature } from "../utils/feature.flag";
 
 // If the transaction response is fee-bearing, a `X-Payment-Required` header will be received,
 // directing the application to the Payment Platform to begin a payment session, otherwise
@@ -41,8 +47,17 @@ export const startPaymentsSession = async (
   const paymentUrl = transactionRes.headers?.[PAYMENT_REQUIRED_HEADER];
 
   if (!paymentUrl) {
-    // Only if transaction does not have a fee.
-    return CONFIRMATION_URL;
+    // Only if transaction does not have a fee
+    let confirmationPageUrl = CONFIRMATION_URL;
+
+    // TODO Remove this and the check for being on the registration journey when ids are in the Update journey URLs
+    const isRegistration: boolean = req.path.startsWith(LANDING_URL);
+
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration){
+      confirmationPageUrl = getUrlWithParamsToPath(CONFIRMATION_WITH_PARAMS_URL, req);
+    }
+
+    return confirmationPageUrl;
   }
 
   const createPaymentRequest: CreatePaymentRequest = setPaymentRequest(transactionId, overseasEntityId, baseURL);
@@ -89,7 +104,15 @@ const setPaymentRequest = (transactionId: string, overseasEntityId: string, base
 
   // Once payment has been taken, the platform redirects the user back to the application,
   // using the application supplied `redirectUri`.
-  const redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
+  let redirectUri = `${baseURL}${TRANSACTION}/${transactionId}/${OVERSEAS_ENTITY}/${overseasEntityId}/${PAYMENT}`;
+
+  // TODO Remove this and the check for being on the registration journey when ids are in the Update journey URLs
+  const isRegistration: boolean = baseURL.includes(LANDING_URL);
+
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+    const activeSubmissionBasePathWithIds = getUrlWithTransactionIdAndSubmissionId(ACTIVE_SUBMISSION_BASE_PATH, transactionId, overseasEntityId);
+    redirectUri = `${baseURL}${activeSubmissionBasePathWithIds}${PAYMENT}`;
+  }
 
   return {
     resource: paymentResourceUri,

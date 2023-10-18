@@ -1453,6 +1453,112 @@ describe("MANAGING_OFFICER controller", () => {
     });
   });
 
+  describe("UPDATE with url params tests", () => {
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+    });
+
+    test("catch error when updating data", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`replaces existing object on submit`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const newMoData: ManagingOfficerIndividual = { id: MO_IND_ID, first_name: "new name" };
+      mockPrepareData.mockReturnValueOnce(newMoData);
+      const resp = await request(app)
+        .post(MANAGING_OFFICER_URL + MO_IND_ID_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
+
+      expect(mockSetApplicationData.mock.calls[0][1].id).toEqual(MO_IND_ID);
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(ManagingOfficerKey);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is present when same address is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      expect(mapFieldsToDataObject).toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual(DUMMY_DATA_OBJECT);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Service address from the ${MANAGING_OFFICER_PAGE} is empty when same address is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_SERVICE_ADDRESS_YES );
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+
+      expect(mapFieldsToDataObject).not.toHaveBeenCalledWith(expect.anything(), ServiceAddressKeys, AddressKeys);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[ServiceAddressKey]).toEqual({});
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when has former names is set to yes`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_YES);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("John Doe");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`Former names data from the ${MANAGING_OFFICER_PAGE} is empty when when has former names is set to no`, async () => {
+      mockPrepareData.mockImplementationOnce( () => MANAGING_OFFICER_INDIVIDUAL_OBJECT_MOCK_WITH_FORMER_NAMES_NO);
+      await request(app)
+        .post(MANAGING_OFFICER_URL)
+        .send(REQ_BODY_MANAGING_OFFICER_MOCK_WITH_ADDRESS);
+      const data: ApplicationDataType = mockSetApplicationData.mock.calls[0][1];
+      expect(data[FormerNamesKey]).toEqual("");
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the current page ${MANAGING_OFFICER_PAGE} + ${MO_IND_ID_URL} with second nationality error when same as nationality`, async () => {
+      const managingOfficer = {
+        ...MANAGING_OFFICER_OBJECT_MOCK,
+        nationality: "British",
+        second_nationality: "British"
+      };
+      const resp = await request(app).post(MANAGING_OFFICER_URL).send(managingOfficer);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(MANAGING_OFFICER_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
+    });
+  });
+
   describe("REMOVE tests", () => {
     test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
       mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
@@ -1481,6 +1587,45 @@ describe("MANAGING_OFFICER controller", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("REMOVE with url params tests", () => {
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(MANAGING_OFFICER_OBJECT_MOCK);
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + REMOVE + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+    });
+
+    test("catch error when removing data", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + REMOVE + MO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+    });
+
+    test(`removes the object from session`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app).get(MANAGING_OFFICER_WITH_PARAMS_URL + REMOVE + MO_IND_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(ManagingOfficerKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(MO_IND_ID);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
     });
   });
 });

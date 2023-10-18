@@ -256,6 +256,12 @@ router.post(config.MANAGING_OFFICER_CORPORATE_URL, authentication, navigation.ha
 router.post(config.MANAGING_OFFICER_CORPORATE_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
 router.get(config.MANAGING_OFFICER_CORPORATE_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
 
+router.get(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.get);
+router.get(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.getById);
+router.post(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.post);
+router.post(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, ...validator.managingOfficerCorporate, checkValidations, managingOfficerCorporate.update);
+router.get(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerCorporate.remove);
+
 // TO DO: add a navigation middleware that has got only BOs with the right NOC selected
 router.get(
   config.TRUST_INFO_URL, authentication, navigation.hasBOsOrMOs,

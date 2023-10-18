@@ -6,6 +6,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/utils/feature.flag" );
+jest.mock('../../../src/utils/save.and.continue');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -38,6 +39,7 @@ import { RegistrableBeneficialOwnerKey } from "../../../src/model/update.type.mo
 import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has.overseas.entity.middleware";
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -57,6 +59,7 @@ mockIsActiveFeature.mockReturnValue(false);
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 describe("Update registrable beneficial owner controller tests", () => {
 
@@ -133,6 +136,8 @@ describe("Update registrable beneficial owner controller tests", () => {
     test(`with statement validation on, redirect to update-statement-validation-errors page when ${yesNoResponse.Yes} is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
       const resp = await request(app)
         .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
@@ -140,11 +145,14 @@ describe("Update registrable beneficial owner controller tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test(`with statement validation on, redirects to the update-statement-validation-errors page when ${yesNoResponse.No} is selected`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
       const resp = await request(app)
         .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.No });
@@ -152,6 +160,7 @@ describe("Update registrable beneficial owner controller tests", () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
     test("POST empty object and check for error in page title", async () => {

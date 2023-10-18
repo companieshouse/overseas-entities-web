@@ -11,7 +11,7 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
+import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
@@ -19,14 +19,15 @@ import { checkBOsDetailsEntered, getApplicationData } from '../../../src/utils/a
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
 import { TRUST } from '../../__mocks__/session.mock';
-import { ANY_MESSAGE_ERROR, PAGE_NOT_FOUND_TEXT, SERVICE_UNAVAILABLE, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust, TrustHistoricalBeneficialOwner } from '../../../src/model/trust.model';
 import { yesNoResponse } from '../../../src/model/data.types.model';
 import { ApplicationData } from '../../../src/model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
-const appDataWithReviewTrust = {
+const mockGetApplicationData = getApplicationData as jest.Mock;
+mockGetApplicationData.mockReturnValue({
   [UpdateKey]: {
     review_trusts: [
       {
@@ -69,10 +70,7 @@ const appDataWithReviewTrust = {
       } as Trust
     ]
   }
-} as ApplicationData;
-
-const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
+} as ApplicationData);
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -97,50 +95,46 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, page is returned', async () => {
+    test('when feature flag is on, page is returned for adding new former BO', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE);
-      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
-      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING);
-      expect(resp.text).toContain("BO Individual");
-      expect(resp.text).toContain("BO Corporate");
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE);
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
       expect(resp.text).toContain("name of trust");
-      expect(resp.text).toContain("March");
-      expect(resp.text).toContain("August");
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when feature flag is on, redirect if user tries to access with no trust to review', async () => {
+    test('when feature flag is on, page is returned for editing existing BO', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      const appData = { [UpdateKey]: { review_trusts: [] } } as ApplicationData;
-      mockGetApplicationData.mockReturnValue(appData);
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/1234");
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE);
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      expect(resp.text).toContain("name of trust");
+      expect(resp.text).toContain("Individual");
+      expect(resp.text).toContain("30");
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when feature flag is on, redirect if user tries to access with nothing to review', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValueOnce({ [UpdateKey]: { review_trusts: [] } });
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    test('when feature flag is on, redirect if user tries to access with no BOs to review', async () => {
+    test('when feature flag is on, redirect if user tries to access with wrong ID', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      const appData = {
-        [UpdateKey]: {
-          review_trusts: [
-            {
-              ...TRUST,
-              trust_id: "1",
-              HISTORICAL_BO: []
-            } as Trust
-          ]
-        }
-      } as ApplicationData;
 
-      mockGetApplicationData.mockReturnValue(appData);
-
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/12");
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
@@ -149,7 +143,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
@@ -159,7 +153,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
-      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
@@ -167,32 +161,85 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, and clicking to add new former BO, redirects to update-manage-trusts-tell-us-about-the-former-bo', async () => {
+    test('when feature flag is on, and adding new legal former BO, redirects to update-manage-trusts-review-former-bo', async () => {
       mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL).send({ addFormerBo: 'addFormerBo' });
-
-      expect(resp.status).toEqual(302);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
-    });
-
-    test('when feature flag is on, and clicking no more to add, redirects to update-manage-trusts-orchestrator', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
-
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL).send({ noMoreToAdd: 'noMoreToAdd' });
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
+        type: 'legalEntity',
+        corporate_name: 'Corporate BO',
+        startDateDay: '18',
+        startDateMonth: '09',
+        startDateYear: '2023',
+        endDateDay: '20',
+        endDateMonth: '09',
+        endDateYear: '2023',
+        boId: ''
+      });
 
       expect(resp.status).toEqual(302);
       expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    });
+
+    test('when feature flag is on, and adding new individual former BO, redirects to update-manage-trusts-review-former-bo', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
+        type: 'individual',
+        firstName: 'Individual',
+        lastName: 'BO',
+        startDateDay: '18',
+        startDateMonth: '09',
+        startDateYear: '2023',
+        endDateDay: '20',
+        endDateMonth: '09',
+        endDateYear: '2023',
+        boId: ''
+      });
+
+      expect(resp.status).toEqual(302);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    });
+
+    test('when feature flag is on, update existing former BO, redirects to update-manage-trusts-review-former-bo', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/1234").send({
+        type: 'individual',
+        firstName: 'Updated Individual',
+        lastName: 'BO',
+        startDateDay: '18',
+        startDateMonth: '09',
+        startDateYear: '2023',
+        endDateDay: '20',
+        endDateMonth: '09',
+        endDateYear: '2023',
+        boId: ''
+      });
+
+      expect(resp.status).toEqual(302);
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    });
+
+    test('triggers validation errors', async () => {
+      mockIsActiveFeature.mockReturnValue(true);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({});
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("name of trust");
+      expect(resp.text).toContain("Select if the former beneficial owner is an individual or a legal entity");
+      expect(resp.text).toContain("Enter the date they became a beneficial owner");
+      expect(resp.text).toContain("Enter the date they stopped being a beneficial owner");
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(404);
       expect(resp.text).toContain(PAGE_NOT_FOUND_TEXT);
@@ -202,7 +249,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
-      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

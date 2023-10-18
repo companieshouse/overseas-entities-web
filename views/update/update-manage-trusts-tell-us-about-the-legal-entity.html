@@ -1,6 +1,10 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Tell us about the legal entity (Trusts)" %}
+{% block content %}
+  {% include "includes/page-templates/trust-legal-entity-bo.html" %}
+{% endblock %}
+
+{% set title = pageParams.title %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -8,8 +12,4 @@
 
 {% block backLink %}
   {% include "includes/back-link.html" %}
-{% endblock %}
-
-{% block content %}
-  {% include "includes/page-templates/trust-legal-entity-bo.html" %}
 {% endblock %}

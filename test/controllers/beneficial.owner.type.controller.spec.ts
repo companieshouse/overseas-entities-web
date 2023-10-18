@@ -5,6 +5,7 @@ jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middl
 jest.mock('../../src/utils/trusts.ts');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/feature.flag" );
+jest.mock("../../src/utils/url");
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -50,6 +51,7 @@ import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.i
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../src/utils/trusts";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { getUrlWithParamsToPath } from "../../src/utils/url";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
@@ -69,10 +71,121 @@ const mockcheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
+const NEXT_PAGE_URL = "/NEXT_PAGE";
+
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
+
 describe("BENEFICIAL OWNER TYPE controller", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockIsActiveFeature.mockReset();
+  });
+
+  describe("GET with url params tests", () => {
+    test("renders the beneficial owner type page with url params when some are identified", async () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL); // back button
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_BENEFICIAL_OWNER);
+      expect(resp.text).not.toContain(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT);
+    });
+
+    test("renders the beneficial owner type page with params url for beneficial owners", async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS
+      });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+    });
+
+    test("renders the beneficial owner type page with params url for managing officers", async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK,
+        [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED
+      });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).toContain(config.BENEFICIAL_OWNER_STATEMENTS_URL);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_MO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_CORPORATE_BO);
+      expect(resp.text).not.toContain(BENEFICIAL_OWNER_TYPE_PAGE_GOVERNMENT_BO);
+    });
+
+    test("renders the beneficial owner type page with params url for beneficial owners with just the BOs options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.ALL_IDENTIFIED_ALL_DETAILS });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_ALL_IDENTIFIED_ALL_DETAILS);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_ALL_IDENTIFIED);
+    });
+
+    test("renders the beneficial owner type page with params url for beneficial owners with just the MOs options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.NONE_IDENTIFIED });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_NONE_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_NONE_IDENTIFIED);
+    });
+
+    test("renders the beneficial owner type page with params url for beneficial owners with both options", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [BeneficialOwnerStatementKey]: BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_LEGEND_TEXT_SOME_IDENTIFIED);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_ADD_BUTTON_SOME_IDENTIFIED);
+    });
+
+    test("catch error when rendering the page with params url", async () => {
+      mockGetApplicationData.mockImplementationOnce( () => { throw ERROR; });
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("renders the beneficial owner type page with correct urls for buttons and links", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      const resp = await request(app).get(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(3);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+    });
   });
 
   describe("GET tests", () => {
@@ -165,6 +278,25 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
   });
 
+  describe("POST with url params tests", () => {
+    test(`redirects to the ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.individual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
+    });
+
+    // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been
+    //      implemented (journey only partially completed in order to allow navigation to final screens)
+  });
+
   describe("POST tests", () => {
     test(`redirects to the ${config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
       const resp = await request(app)
@@ -246,6 +378,28 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
     });
+  });
+
+  describe("POST Submit with url params tests", () => {
+
+    test(`redirects to the  ${config.CHECK_YOUR_ANSWERS_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockcheckEntityRequiresTrusts.mockReturnValueOnce(false);
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL);
+    });
+
+    /*
+    TODO Add the other POST Submit tests in here and change to work with the 'with params' URLs
+    (journey only partially completed in order to allow navigation to final screens
+    */
   });
 
   describe("POST Submit tests", () => {

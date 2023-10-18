@@ -56,7 +56,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       const entityNumber = appData?.[EntityNumberKey];
 
       return res.render(NAVIGATION[routePath].currentPage, {
-        backLinkUrl: NAVIGATION[routePath].previousPage(appData),
+        backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
         templateName: NAVIGATION[routePath].currentPage,
         id,
         entityName,

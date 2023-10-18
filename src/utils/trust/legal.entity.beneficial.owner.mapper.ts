@@ -82,14 +82,19 @@ const mapLegalEntityToSession = (
   }
 };
 
-const mapLegalEntityTrusteeFromSessionToPage = (
+const mapLegalEntityTrusteeByIdFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
   isReview?: boolean
 ): Page.TrustLegalEntityForm => {
-  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId, isReview);
+  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId);
+  return mapLegalEntityTrusteeFromSessionToPage(trustee);
+};
 
+const mapLegalEntityTrusteeFromSessionToPage = (
+  trustee: Trust.TrustCorporate
+): Page.TrustLegalEntityForm => {
   const data = {
     legalEntityId: trustee.id,
     roleWithinTrust: trustee.type,
@@ -148,6 +153,7 @@ const generateId = (): string => {
 export {
   mapLegalEntityToSession,
   mapLegalEntityTrusteeFromSessionToPage,
+  mapLegalEntityTrusteeByIdFromSessionToPage,
   mapLegalEntityItemToPage,
   generateId,
 };

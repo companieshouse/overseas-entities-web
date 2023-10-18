@@ -6,13 +6,16 @@ import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../
 import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
-import { getApplicationData } from './application.data';
+import { getApplicationData, setExtraData } from './application.data';
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
 import { getTrustInReview } from './update/review_trusts';
+import { ApplicationData } from '../model';
+import { saveAndContinue } from './save.and.continue';
+import { Session } from '@companieshouse/node-session-handler';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -115,7 +118,7 @@ export const getTrustInvolvedPage = (
   }
 };
 
-export const postTrustInvolvedPage = (
+export const postTrustInvolvedPage = async (
   req: Request,
   res: Response,
   next: NextFunction,
@@ -126,8 +129,17 @@ export const postTrustInvolvedPage = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, getNextPage(isUpdate));
+      if (isReview) {
+        const appData = getApplicationData(req.session);
+        const trustInReview = getTrustInReview(appData);
+        const trustId = trustInReview?.trust_id ?? "";
+        moveTrustOutOfReview(appData, trustId);
+        setExtraData(req.session, appData);
+        await saveAndContinue(req, req.session as Session, false);
+      }
+      return safeRedirect(res, getNextPage(isUpdate, isReview));
     }
+
     //  check on errors
     const errorList = validationResult(req);
 
@@ -144,6 +156,17 @@ export const postTrustInvolvedPage = (
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
+
+    if (isReview) {
+      switch (typeOfTrustee) {
+          case TrusteeType.HISTORICAL:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
+          case TrusteeType.INDIVIDUAL:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+          case TrusteeType.LEGAL_ENTITY:
+            return safeRedirect(res, config.SECURE_REGISTER_FILTER_URL);
+      }
+    }
 
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
     let url = isUpdate
@@ -208,10 +231,28 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean) => {
+const getNextPage = (isUpdate: boolean, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
+  }
   if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {
     return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
   }
+};
+
+const moveTrustOutOfReview = (appData: ApplicationData, trustId: string) => {
+  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(trust => trust.trust_id === trustId);
+  const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
+
+  if (!trust) { return; }
+
+  delete trust.review_status;
+
+  if (appData.trusts === undefined) {
+    appData.trusts = [];
+  }
+
+  appData.trusts?.push(trust);
 };

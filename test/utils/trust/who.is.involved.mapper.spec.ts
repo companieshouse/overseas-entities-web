@@ -63,7 +63,7 @@ describe('Trust Involved Mapper to Page Service', () => {
 
       expect(getTrustBoIndividuals).toBeCalledWith(mockAppData, mockTrust1.trust_id);
       expect(getTrustBoOthers).toBeCalledWith(mockAppData, mockTrust1.trust_id);
-      expect(getLegalEntityBosInTrust).toBeCalledWith(mockAppData, mockTrust1.trust_id);
+      expect(getLegalEntityBosInTrust).toBeCalledWith(mockAppData, mockTrust1.trust_id, false);
     });
   });
 });

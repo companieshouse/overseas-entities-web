@@ -106,10 +106,10 @@ describe('Trust Involved controller', () => {
       expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
-      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId);
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(getIndividualTrusteesFromTrust).toBeCalledTimes(1);
-      expect(getIndividualTrusteesFromTrust).toBeCalledWith(mockAppData, trustId);
+      expect(getIndividualTrusteesFromTrust).toBeCalledWith(mockAppData, trustId, false);
 
       expect(getFormerTrusteesFromTrust).toBeCalledTimes(1);
       expect(getFormerTrusteesFromTrust).toBeCalledWith(mockAppData, trustId);
@@ -243,7 +243,7 @@ describe('Trust Involved controller', () => {
       expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
-      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId);
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(

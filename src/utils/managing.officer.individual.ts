@@ -34,6 +34,9 @@ import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, Usua
 import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey, ManagingOfficerKeys } from "../model/managing.officer.model";
 import { v4 as uuidv4 } from 'uuid';
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
+import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.ch_reference;
 
@@ -79,6 +82,14 @@ export const getManagingOfficerById = (req: Request, res: Response, next: NextFu
       const startDate = officerData ? mapDataObjectToFields(officerData[StartDateKey], StartDateKeys, InputDateKeys) : {};
       templateOptions[StartDateKey] = startDate;
     }
+
+    // Start: Redis removal work - Add extra template options if Redis Remove flag is true - needs refacotoring into a common method
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      templateOptions.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = true;
+      templateOptions.activeSubmissionBasePath = getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req);
+    }
+    // End: Redis removal work
 
     if (inUpdateJourney) {
       templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);

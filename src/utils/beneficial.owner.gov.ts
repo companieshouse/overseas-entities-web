@@ -24,6 +24,9 @@ import {
 } from "../model/date.model";
 import { BeneficialOwnerGovKey, BeneficialOwnerGovKeys } from "../model/beneficial.owner.gov.model";
 import { v4 as uuidv4 } from "uuid";
+import * as config from "../config";
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const getBeneficialOwnerGov = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -58,6 +61,13 @@ export const getBeneficialOwnerGovById = (req: Request, res: Response, next: Nex
       [StartDateKey]: startDate
     };
     const appData = getApplicationData(req.session);
+
+    // Redis removal work - Add extra template options if Redis Remove flag is true
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
+      templateOptions.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = true;
+      templateOptions.activeSubmissionBasePath = getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req);
+    }
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

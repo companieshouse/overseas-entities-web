@@ -235,6 +235,14 @@ router.route(config.BENEFICIAL_OWNER_GOV_URL)
   .get(beneficialOwnerGov.get)
   .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
 
+router.route(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerGov.get)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
+
 router.route(config.BENEFICIAL_OWNER_GOV_URL + config.ID)
   .all(
     authentication,
@@ -242,7 +250,18 @@ router.route(config.BENEFICIAL_OWNER_GOV_URL + config.ID)
   )
   .get(beneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+
+router.route(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerGov.getById)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+
 router.get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.remove);
+
+router.get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.remove);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerIndividual.get);
 router.get(config.MANAGING_OFFICER_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerIndividual.getById);

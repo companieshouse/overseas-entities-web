@@ -162,7 +162,10 @@ export const mapIndividualBOPrivateData = (boPrivateData: BeneficialOwnerPrivate
   for (const boData of boPrivateData) {
     if (boData.hashedId === beneficialOwner.ch_reference) {
       beneficialOwner.usual_residential_address = mapBOMOAddress(boData.usualResidentialAddress);
-      beneficialOwner.date_of_birth = mapInputDate(boData.dateOfBirth);
+      if (boData.dateOfBirth) {
+        beneficialOwner.date_of_birth = mapInputDate(boData.dateOfBirth);
+        beneficialOwner.have_day_of_birth = true;
+      }
     }
   }
 };

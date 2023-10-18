@@ -96,6 +96,7 @@ import {
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
+  updateManageTrustsTellUsAboutTheLegalEntity,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -635,6 +636,18 @@ router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.
   )
   .get(updateTrustsIndividualsOrEntitiesInvolved.get)
   .post(...validator.trustInvolved, updateTrustsIndividualsOrEntitiesInvolved.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsTellUsAboutLegalEntitiesGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
 
 router
   .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')

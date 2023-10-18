@@ -1,12 +1,14 @@
 {% import "includes/date-macros.html" as dateMacros %}
-<h3 class="govuk-heading-m">Trust {{ trust_count }}</h3>
+
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
 
 {% set trustBeneficialOwnersHtml %}
   {% include "includes/check-your-answers/trust-beneficial-owners.html" %}
 {% endset %}
 
-{% if pageParams.isTrustFeatureEnabled %}
+<h3 class="govuk-heading-m">{{ trust_heading }}</h3>
 
+{% if pageParams.isTrustFeatureEnabled %}
   {% if pageParams.isRegistration %}
     {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
   {% else %}
@@ -29,7 +31,7 @@
             "Trust " + trust.trust_name + " -  name",
             "change-trust-name-button"
           ) ]
-        }
+        } if not inNoChangeJourney
       },
       {
         key: {
@@ -44,7 +46,7 @@
             "Trust " + trust.trust_name + " -  created date",
             "change-trust-created-date-button"
           ) ]
-        }
+        } if not inNoChangeJourney
       },
       {
         key: {
@@ -59,7 +61,7 @@
             "Trust " + trust.trust_name + " -  Beneficial Owner",
             "change-beneficial-owner-button"
           ) ]
-        }
+        } if not inNoChangeJourney
       }
     ]
 }) }}

@@ -1,5 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+
 {% set legalEntityDateOfBirth = dateMacros.formatDate(legalEntity.dateOfBirthDay, legalEntity.dateOfBirthMonth, legalEntity.dateOfBirthYear) %}
 
 {% set interestedPersonDate = dateMacros.formatDate(legalEntity.date_became_interested_person_day, legalEntity.date_became_interested_person_month, legalEntity.date_became_interested_person_year) %}
@@ -71,7 +73,7 @@
       "Legal entity " + legalEntity.name + " - name",
       "change-legal-entity-name-button"
    ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -87,7 +89,7 @@
       "Legal entity " + legalEntity.name + " - type",
       "change-legal-entity-type-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% if legalEntity.type ==  roleTypes.INTERESTED_PERSON %}
@@ -104,7 +106,7 @@
         "Legal entity " + legalEntity.name + " - date became an interested person",
         "change-legal-entity-beneficial-owner-became-interested-person-date-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -121,7 +123,7 @@
       "Legal entity " + legalEntity.name + " - home address",
       "change-legal-entity-residential-address-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% if legalEntityFormattedServiceAddressHtml.length %}
@@ -138,7 +140,7 @@
         "Legal entity " + legalEntity.name + " - correspondence address",
         "change-legal-entity-correspondence-address-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -156,7 +158,7 @@
         "Legal entity " + legalEntity.name + " - country formed in",
         "change-legal-entity-country-formed-in-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -173,7 +175,7 @@
       "Legal entity " + legalEntity.name + " - legal form",
       "change-legal-entity-legal-form-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -189,7 +191,7 @@
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-governing-law-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -205,7 +207,7 @@
       "Legal entity " + legalEntity.name + " - legal authority",
       "change-legal-entity-identification-registration-number-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 <h3 class="govuk-heading-m">Legal Entity for {{trust.trust_name}}</h3>

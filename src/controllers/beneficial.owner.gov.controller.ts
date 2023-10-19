@@ -13,26 +13,26 @@ import { isActiveFeature } from "../utils/feature.flag";
 import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  return getBeneficialOwnerGov(req, res, config.BENEFICIAL_OWNER_GOV_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGov(req, res, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  return getBeneficialOwnerGovById(req, res, next, config.BENEFICIAL_OWNER_GOV_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
+  return getBeneficialOwnerGovById(req, res, next, config.BENEFICIAL_OWNER_GOV_PAGE, getBeneficialOwnerTypeUrl(req));
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerGov(req, res, next, getNextPageUrl(req), true);
+  postBeneficialOwnerGov(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  return updateBeneficialOwnerGov(req, res, next, getNextPageUrl(req), true);
+  return updateBeneficialOwnerGov(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  return removeBeneficialOwnerGov(req, res, next, getNextPageUrl(req), true);
+  return removeBeneficialOwnerGov(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
-const getNextPageUrl = (req: Request): string => {
+const getBeneficialOwnerTypeUrl = (req: Request): string => {
   let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);

@@ -275,6 +275,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID]: {
+    currentPage: config.BENEFICIAL_OWNER_GOV_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.MANAGING_OFFICER_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,

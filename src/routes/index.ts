@@ -86,13 +86,17 @@ import {
   updateTrustsIndividualBeneficialOwner,
   updateTrustsLegalEntityBeneficialOwner,
   updateStatementValidationErrors,
+  updateManageTrustsOrchestrator,
   updateManageTrustsInterrupt,
   updateManageTrustsReviewTheTrust,
   updateManageTrustsReviewFormerBo,
+  updateManageTrustsTellUsAboutTheFormerBo,
   updateManageTrustsReviewIndividuals,
+  updateManageTrustsTellUsAboutTheIndividual,
   updateManageTrustsReviewLegalEntities,
   updateManageTrustsIndividualsOrEntitiesInvolved,
-  updatePaymentFailed
+  updatePaymentFailed,
+  updateManageTrustsTellUsAboutTheLegalEntity,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -208,9 +212,18 @@ router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   )
   .get(beneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
+
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+
+router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasBeneficialOwnersStatement
@@ -225,9 +238,27 @@ router.route(config.BENEFICIAL_OWNER_OTHER_URL + config.ID)
   )
   .get(beneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+
+router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.getById)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+
 router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
+router.get(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
 
 router.route(config.BENEFICIAL_OWNER_GOV_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerGov.get)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.post);
+
+router.route(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasBeneficialOwnersStatement
@@ -242,7 +273,18 @@ router.route(config.BENEFICIAL_OWNER_GOV_URL + config.ID)
   )
   .get(beneficialOwnerGov.getById)
   .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+
+router.route(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerGov.getById)
+  .post(...validator.beneficialOwnerGov, checkValidations, beneficialOwnerGov.update);
+
 router.get(config.BENEFICIAL_OWNER_GOV_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.remove);
+
+router.get(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerGov.remove);
 
 router.get(config.MANAGING_OFFICER_URL, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerIndividual.get);
 router.get(config.MANAGING_OFFICER_URL + config.ID, authentication, navigation.hasBeneficialOwnersStatement, managingOfficerIndividual.getById);
@@ -353,8 +395,10 @@ router.post(config.CHECK_YOUR_ANSWERS_URL, authentication, navigation.hasBOsOrMO
 router.post(config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, checkYourAnswers.post);
 
 router.get(config.PAYMENT_WITH_TRANSACTION_URL, authentication, payment.get);
+router.get(config.PAYMENT_WITH_TRANSACTION_WITH_PARAMS_URL, authentication, payment.get);
 
 router.get(config.PAYMENT_FAILED_URL, authentication, paymentFailed.get);
+router.get(config.PAYMENT_FAILED_WITH_PARAMS_URL, authentication, paymentFailed.get);
 
 router.get(config.CONFIRMATION_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
 router.get(config.CONFIRMATION_WITH_PARAMS_URL, authentication, navigation.hasBOsOrMOs, confirmation.get);
@@ -509,6 +553,16 @@ router.route(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL)
 
 router.post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL, authentication, navigation.hasUpdatePresenter, updateBeneficialOwnerType.postSubmit);
 
+router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+  )
+  .all(updateManageTrustsOrchestrator.handler);
+
 router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
@@ -524,37 +578,65 @@ router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
-    navigation.hasBOsOrMOsUpdate,
+    navigation.reviewTheTrustGuard,
   )
   .get(updateManageTrustsReviewTheTrust.get)
-  .post(updateManageTrustsReviewTheTrust.post);
+  .post(...validator.reviewTrustDetails, updateManageTrustsReviewTheTrust.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewFormerBOsGuard,
   )
   .get(updateManageTrustsReviewFormerBo.get)
   .post(updateManageTrustsReviewFormerBo.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.manageTrustsTellUsAboutFormerBOsGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheFormerBo.get)
+  .post(...validator.trustHistoricalBeneficialOwner, updateManageTrustsTellUsAboutTheFormerBo.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewIndividualsGuard,
   )
   .get(updateManageTrustsReviewIndividuals.get)
   .post(updateManageTrustsReviewIndividuals.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsTellUsAboutIndividualsGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheIndividual.get)
+  .post(...validator.trustIndividualBeneficialOwner, updateManageTrustsTellUsAboutTheIndividual.post);
 
 router.route(config.UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
     authentication,
     companyAuthentication,
+    navigation.isInChangeJourney,
     navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsReviewLegalEntitiesGuard,
   )
   .get(updateManageTrustsReviewLegalEntities.get)
   .post(updateManageTrustsReviewLegalEntities.post);
@@ -598,6 +680,18 @@ router.route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.
   )
   .get(updateTrustsIndividualsOrEntitiesInvolved.get)
   .post(...validator.trustInvolved, updateTrustsIndividualsOrEntitiesInvolved.post);
+
+router.route(config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.isInChangeJourney,
+    navigation.hasBOsOrMOsUpdate,
+    navigation.manageTrustsTellUsAboutLegalEntitiesGuard,
+  )
+  .get(updateManageTrustsTellUsAboutTheLegalEntity.get)
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, updateManageTrustsTellUsAboutTheLegalEntity.post);
 
 router
   .route(config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')

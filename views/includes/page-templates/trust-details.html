@@ -3,6 +3,9 @@
 
     {% include "includes/list/errors.html" %}
 
+    {% if isReview %}
+      <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
+    {% endif %}
     <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
     <p class="govuk-caption-l govuk-!-margin-bottom-8">{{ pageParams.subtitle }}</p>
 
@@ -20,17 +23,23 @@
       {% set date_classes_month = "govuk-input--width-2 govuk-input" %}
       {% set date_classes_day = "govuk-input--width-2 govuk-input" %}
 
-      {% set fieldParam = {
-        name: 'createdDate',
-        label: 'When was the trust created?',
-        error: errors.createdDate if errors,
-        value: {
-          'Day': formData.createdDateDay,
-          'Month': formData.createdDateMonth,
-          'Year': formData.createdDateYear
-        }
-      } %}
-      {% include "includes/inputs/date-input.html" %}
+      {% if isReview %}
+        <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
+        <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
+        <br>
+      {% else %}
+        {% set fieldParam = {
+          name: 'createdDate',
+          label: 'When was the trust created?',
+          error: errors.createdDate if errors,
+          value: {
+            'Day': formData.createdDateDay,
+            'Month': formData.createdDateMonth,
+            'Year': formData.createdDateYear
+          }
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+      {% endif %}
 
       {% set boItems = [] %}
       {% set beneficialOwnersIds = formData.beneficialOwnersIds if formData.beneficialOwnersIds else [] %}
@@ -89,6 +98,11 @@
       }) }}
 
       <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
+      {% if isReview %}
+        <input type="hidden" name="createdDateDay" value="{{ formData.createdDateDay }}"/>
+        <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
+        <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>
+      {% endif %}
       {% include "includes/save-and-continue-button.html" %}
     </form>
   </div>

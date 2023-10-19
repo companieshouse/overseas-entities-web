@@ -35,13 +35,18 @@ const mapBeneficialOwnerToSession = (
   };
 };
 
-const mapFormerTrusteeFromSessionToPage = (
+const mapFormerTrusteeByIdFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
 ): Page.TrustHistoricalBeneficialOwnerForm => {
   const trustee = getFormerTrustee(appData, trustId, trusteeId);
+  return mapFormerTrusteeFromSessionToPage(trustee);
+};
 
+const mapFormerTrusteeFromSessionToPage = (
+  trustee: Trust.TrustHistoricalBeneficialOwner
+): Page.TrustHistoricalBeneficialOwnerForm => {
   const data = {
     boId: trustee.id,
     startDateDay: trustee.notified_date_day,
@@ -79,5 +84,6 @@ const generateBoId = (): string => {
 export {
   mapBeneficialOwnerToSession,
   mapFormerTrusteeFromSessionToPage,
+  mapFormerTrusteeByIdFromSessionToPage,
   generateBoId,
 };

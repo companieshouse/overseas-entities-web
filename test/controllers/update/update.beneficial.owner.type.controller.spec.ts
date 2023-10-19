@@ -9,6 +9,9 @@ jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock('../../../src/utils/update/beneficial_owners_managing_officers_data_fetch');
 jest.mock('../../../src/utils/feature.flag');
 jest.mock('../../../src/utils/trusts');
+jest.mock('../../../src/utils/update/review_trusts');
+jest.mock('../../../src/utils/update/trust.model.fetch');
+jest.mock('../../../src/utils/save.and.continue');
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -20,7 +23,7 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import * as config from "../../../src/config";
-import { getApplicationData } from '../../../src/utils/application.data';
+import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import {
   SERVICE_UNAVAILABLE,
   BENEFICIAL_OWNER_MANAGING_OFFICER_TYPE_LEGEND_TEXT,
@@ -57,7 +60,10 @@ import { BeneficialOwnerGovKey } from '../../../src/model/beneficial.owner.gov.m
 import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.other.model';
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { checkEntityRequiresManageTrusts, checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
+import { hasTrustsToReview } from '../../../src/utils/update/review_trusts';
+import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
+import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());
@@ -73,13 +79,19 @@ mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response
 
 const mockCheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
-const mockCheckEntityRequiresManageTrusts = checkEntityRequiresManageTrusts as jest.Mock;
+const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
+const mockRetrieveTrustData = retrieveTrustData as jest.Mock;
+
+const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -89,7 +101,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     jest.clearAllMocks();
     jest.resetModules();
     mockGetApplicationData.mockReset();
-    mockCheckEntityRequiresTrusts.mockReturnValue(false);
+    mockHasTrustsToReview.mockReturnValue(false);
   });
 
   describe("GET tests", () => {
@@ -190,10 +202,57 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
   describe("POST Submit tests", () => {
     test('redirects to manage trusts interrupt if manage trusts feature flag is on', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({});
 
-      mockCheckEntityRequiresManageTrusts.mockReturnValueOnce(true);
+      mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('redirects to manage trusts interrupt if manage trusts feature flag is on and update in app data', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({ update: {} });
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('redirects to manage trusts interrupt if manage trusts feature flag is on and not fetched trust data already in app data', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
@@ -201,10 +260,35 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
     test('redirects to check your answers if manage trusts feature flag is on but no trusts to review', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({});
 
-      mockCheckEntityRequiresManageTrusts.mockReturnValueOnce(false);
+      mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+    });
+
+    test('redirects to check your answers if manage trusts feature flag is on and already reviewed trusts', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: true } });
+      mockHasTrustsToReview.mockReturnValueOnce(false);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).not.toHaveBeenCalled();
+      expect(mockSetExtraData).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);

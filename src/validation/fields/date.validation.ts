@@ -55,9 +55,20 @@ const is_still_active_validations = (date_field_id: string, radio_button_id: str
     )),
 ];
 
+const is_trust_still_active_validation = (error_message: string) => [
+  body("endDate")
+    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
+      req.body["endDateDay"], req.body["endDateMonth"], req.body["endDateYear"],
+      req.body["startDateDay"], req.body["startDateMonth"], req.body["startDateYear"],
+      error_message
+    )),
+];
+
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
+
+export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others

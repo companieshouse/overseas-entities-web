@@ -157,6 +157,7 @@ export enum ErrorMessages {
   END_YEAR_LENGTH_HISTORICAL_BO = "The date they stopped being a beneficial owner year must include 4 numbers",
   DATE_BEFORE_START_DATE = "Date must be on or after the appointed date",
   CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the appointed date",
+  TRUST_CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the start date",
   RESIGNED_ON_BEFORE_START_DATE = "Resigned on date must be on or after the appointed date",
 
   // No radio selected

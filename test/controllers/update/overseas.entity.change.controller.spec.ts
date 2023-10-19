@@ -10,6 +10,8 @@ jest.mock('../../../src/service/company.managing.officer.service');
 jest.mock('../../../src/service/persons.with.signficant.control.service');
 jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/service/private.overseas.entity.details");
+jest.mock("../../../src/utils/feature.flag");
+jest.mock("../../../src/utils/update/trust.model.fetch");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -42,6 +44,8 @@ import { resetDataForNoChange, resetDataForChange } from '../../../src/controlle
 import { companyProfileQueryMock } from '../../__mocks__/update.entity.mocks';
 import { getCompanyProfile } from '../../../src/service/company.profile.service';
 import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
+import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
+import { isActiveFeature } from "../../../src/utils/feature.flag";
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
@@ -65,6 +69,9 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockGetCompanyPscService = getCompanyPsc as jest.Mock;
 const mockGetCompanyOfficers = getCompanyOfficers as jest.Mock;
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockRetrieveTrustData = retrieveTrustData as jest.Mock;
 
 describe("Overseas entity do you want to change your OE controller", () => {
 
@@ -120,14 +127,34 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
   describe("POST tests", () => {
 
-    test("setextra data is not called if no update model data", async () => {
+    test("retrieve trust data is not called if feature disabled and no update model data", async () => {
       mockGetApplicationData.mockReturnValueOnce({
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
       });
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockSaveAndContinue.mockReturnValueOnce(undefined);
+
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
-        .send({ [NoChangeKey]: "0" });
+        .send({ [NoChangeKey]: "1" });
       expect(resp.status).toEqual(302);
-      expect(setExtraData).not.toHaveBeenCalled();
+      expect(mockRetrieveTrustData).not.toHaveBeenCalled();
+    });
+
+    test("retrieve trust data is called if feature enabled and empty update model in app data", async () => {
+      mockGetApplicationData.mockReturnValueOnce({
+        ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+        update: {
+        }
+      });
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(undefined);
+
+      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL)
+        .send({ [NoChangeKey]: "1" });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
     });
 
     test(`redirect to ${WHO_IS_MAKING_UPDATE_URL} on YES selection`, async () => {
@@ -192,7 +219,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
   describe("RESET post data", () => {
 
-    test("That application data reset when user choose no change from change journey", async () => {
+    test("That application data is reset when user chooses no change from change journey", async () => {
       const req = {} as Request;
       mockGetCompanyPscService.mockReturnValue(MOCK_GET_COMPANY_PSC_ALL_BO_TYPES);
       mockGetCompanyOfficers.mockReturnValue(MOCK_GET_COMPANY_OFFICERS);
@@ -206,7 +233,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
       );
     });
 
-    test("That session data reset when user choose change journey from no change journey", () => {
+    test("That session data is reset when user chooses change journey from no change journey", () => {
       expect(resetDataForChange(APPLICATION_DATA_MOCK)).toMatchObject(
         {
           ...RESET_DATA_FOR_CHANGE_RESPONSE

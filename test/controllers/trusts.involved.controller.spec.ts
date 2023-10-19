@@ -112,7 +112,7 @@ describe('Trust Involved controller', () => {
       expect(getIndividualTrusteesFromTrust).toBeCalledWith(mockAppData, trustId, false);
 
       expect(getFormerTrusteesFromTrust).toBeCalledTimes(1);
-      expect(getFormerTrusteesFromTrust).toBeCalledWith(mockAppData, trustId);
+      expect(getFormerTrusteesFromTrust).toBeCalledWith(mockAppData, trustId, false);
 
       expect(mockRes.render).toBeCalledTimes(1);
       expect(mockRes.render).toBeCalledWith(

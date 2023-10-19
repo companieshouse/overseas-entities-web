@@ -17,6 +17,8 @@
   <div class="govuk-grid-column-two-thirds">
     {% include "includes/list/errors.html" %}
 
+    {% set haveDayOfBirth = have_day_of_birth %}
+
     {% include "includes/date_of_birth-display.html" %}
 
     <h1 class="govuk-heading-xl govuk-!-margin-0">Review the individual beneficial owner</h1>
@@ -31,6 +33,7 @@
       <input type="hidden" name="dob_day" value="{{ date_of_birth.day }}"/>
       <input type="hidden" name="dob_year" value="{{ date_of_birth.year }}"/>
       <input type="hidden" name="dob_month" value="{{ date_of_birth.month }}"/>
+      <input type="hidden" name="dob_have_day_of_birth" value="{{ have_day_of_birth }}"/>
 
       {% if populateResidentialAddress %}
         {% set usual_residential_address_property_name_number =  usual_residential_address.property_name_number %}

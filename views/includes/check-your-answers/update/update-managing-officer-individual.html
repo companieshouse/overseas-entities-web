@@ -12,7 +12,7 @@
 {% set moFormerNames = moi.former_names %}
 {% set moDateOfBirth %}
   {% if moi.date_of_birth %}
-    {% if moi.date_of_birth["day"] == "01" or moi.date_of_birth["day"] == "1"%}
+    {% if not moi.have_day_of_birth %}
       {% set dob = dateMacros.formatMonthYearDate(moi.date_of_birth["month"] | string, moi.date_of_birth["year"]) %}
     {% else %}
       {% set dob = dateMacros.formatDate(moi.date_of_birth["day"], moi.date_of_birth["month"], moi.date_of_birth["year"]) %}

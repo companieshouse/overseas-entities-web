@@ -175,7 +175,10 @@ describe("Test mapping to managing officer", () => {
             hashedId: 'hashedId1',
           },
         ];
-      const address = mapIndividualMoPrivateData(mockDataWithUndefinedAddresses, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF);
+      const mockManagingOfficerObject = {
+        ...MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
+      };
+      const address = mapIndividualMoPrivateData(mockDataWithUndefinedAddresses, mockManagingOfficerObject);
       expect(address).toEqual(undefined);
     });
 
@@ -210,6 +213,7 @@ describe("Test mapping to managing officer", () => {
 
       mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, managingOfficer);
       expect(managingOfficer.date_of_birth).toEqual({ day: "1", month: "1", year: "1990" });
+      expect(managingOfficer.have_day_of_birth).toEqual(true);
     });
 
     test('DOB Undefined when no matching hashedId is found', () => {
@@ -220,6 +224,7 @@ describe("Test mapping to managing officer", () => {
 
       const dob = mapIndividualMoPrivateData(MOCK_MANAGING_OFFICERS_PRIVATE_DATA, NoMatchingCHRef);
       expect(dob).toBeUndefined();
+      expect(NoMatchingCHRef.have_day_of_birth).toBeUndefined();
     });
 
     test('DOB Undefined when managingOfficerData.dateOfBirth is undefined', () => {
@@ -231,8 +236,12 @@ describe("Test mapping to managing officer", () => {
             hashedId: 'hashedId1',
           },
         ];
-      const dob = mapIndividualMoPrivateData(mockDataWithUndefinedDOB, MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF);
+      const mockManagingOfficerObject = {
+        ...MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF
+      };
+      const dob = mapIndividualMoPrivateData(mockDataWithUndefinedDOB, mockManagingOfficerObject);
       expect(dob).toBeUndefined();
+      expect(MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF.have_day_of_birth).toBeUndefined();
     });
 
     describe('Test mapping for Corporate MO private data', () => {

@@ -1,7 +1,7 @@
 import { CompanyPersonWithSignificantControl } from '@companieshouse/api-sdk-node/dist/services/company-psc/types';
 import { NatureOfControlType, yesNoResponse } from '../../../src/model/data.types.model';
 import { mapCorporateOrGovernmentBOPrivateData, mapIndividualBOPrivateData, mapPscToBeneficialOwnerGov, mapPscToBeneficialOwnerOther, mapPscToBeneficialOwnerTypeIndividual } from '../../../src/utils/update/psc.to.beneficial.owner.type.mapper';
-import { BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PSC_BENEFICIAL_OWNER_MOCK_DATA, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from '../../__mocks__/session.mock';
+import { BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF, BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL, PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE, PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE, PSC_BENEFICIAL_OWNER_MOCK_DATA, UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK, UPDATE_BENEFICIAL_OWNER_OTHER_OBJECT_MOCK } from '../../__mocks__/session.mock';
 import { pscDualNationalityMock, pscMock } from './mocks';
 
 describe("Run all tests", () => {
@@ -216,6 +216,7 @@ describe("Run all tests", () => {
       mapIndividualBOPrivateData(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, appDataIndividualBoWithMatchingChRef);
       expect(appDataIndividualBoWithMatchingChRef.usual_residential_address).toEqual(mappedBoAddress);
       expect(appDataIndividualBoWithMatchingChRef.date_of_birth).toEqual({ day: "19", month: "4", year: "1979" });
+      expect(appDataIndividualBoWithMatchingChRef.have_day_of_birth).toEqual(true);
     });
 
     test('principal/office address for beneficial owner gov is correctly mapped', () => {
@@ -238,12 +239,12 @@ describe("Run all tests", () => {
 
     test('private data for Individual Beneficial Owner is not mapped if no matching hashedId', () => {
       const appDataIndividualBoWithMatchingChRef = {
-        ...UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK,
+        ...BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK_WITH_CH_REF_NO_RESIDENTIAL,
         ch_reference: 'some_other_ch_ref'
       };
       mapIndividualBOPrivateData(PRIVATE_BENEFICAL_OWNERS_MOCK_DATA, appDataIndividualBoWithMatchingChRef);
       expect(appDataIndividualBoWithMatchingChRef.usual_residential_address).not.toEqual(mappedBoAddress);
-      expect(appDataIndividualBoWithMatchingChRef.date_of_birth).not.toEqual({ day: "19", month: "4", year: "1979" });
+      expect(appDataIndividualBoWithMatchingChRef.have_day_of_birth).toBeUndefined();
     });
 
     test('principal/office address for Gov and Corp BOs is not mapped when no matching hashedId', () => {

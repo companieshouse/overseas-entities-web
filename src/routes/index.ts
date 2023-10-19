@@ -208,9 +208,18 @@ router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   )
   .get(beneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
+
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_URL)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerOther.get)
+  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
+
+router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
   .all(
     authentication,
     navigation.hasBeneficialOwnersStatement
@@ -225,15 +234,6 @@ router.route(config.BENEFICIAL_OWNER_OTHER_URL + config.ID)
   )
   .get(beneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
-router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
-
-router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL)
-  .all(
-    authentication,
-    navigation.hasBeneficialOwnersStatement
-  )
-  .get(beneficialOwnerOther.get)
-  .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.post);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID)
   .all(
@@ -242,6 +242,8 @@ router.route(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.ID)
   )
   .get(beneficialOwnerOther.getById)
   .post(...validator.beneficialOwnerOther, checkValidations, beneficialOwnerOther.update);
+
+router.get(config.BENEFICIAL_OWNER_OTHER_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
 router.get(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerOther.remove);
 
 router.route(config.BENEFICIAL_OWNER_GOV_URL)

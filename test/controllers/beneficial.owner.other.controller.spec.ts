@@ -107,7 +107,7 @@ const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-const NEXT_PAGE_URL = "/NEXT_PAGE";
+const NEXT_PAGE_URL = "/NEXT_PAGE/";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
@@ -120,7 +120,6 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     mockMapFieldsToDataObject.mockReset();
     mockMapFieldsToDataObject.mockReturnValue(DUMMY_DATA_OBJECT);
     mockIsActiveFeature.mockReset();
-    process.env.FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023 = "false";
   });
 
   describe("GET tests", () => {
@@ -149,6 +148,42 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
 
     test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {
       const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
+      expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+    });
+  });
+
+  describe("GET with url params tests", () => {
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      delete appData[EntityNumberKey];
+
+      mockGetApplicationData.mockReturnValueOnce({ ...appData });
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.LANDING_PAGE_URL);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
+      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
+      expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
+      expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
+      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
+      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
+    });
+
+    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {
+      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
@@ -189,46 +224,11 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
     });
   });
 
-  describe("GET with url params tests", () => {
-
-    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
-      const appData = APPLICATION_DATA_MOCK;
-      delete appData[EntityNumberKey];
-
-      mockGetApplicationData.mockReturnValueOnce({ ...appData });
-
-      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(config.LANDING_PAGE_URL);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain(BENEFICIAL_OWNER_OTHER_PAGE_HEADING);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
-      expect(resp.text).toContain(INFORMATION_SHOWN_ON_THE_PUBLIC_REGISTER);
-      expect(resp.text).toContain(SHOW_INFORMATION_ON_PUBLIC_REGISTER);
-      expect(resp.text).toContain(UK_SANCTIONS_DETAILS);
-      expect(resp.text).toContain(YES_SANCTIONS_TEXT_IT);
-      expect(resp.text).toContain(NO_SANCTIONS_TEXT_IT);
-      expect(resp.text).toContain(SANCTIONS_HINT_TEXT_IT);
-      expect(resp.text).toContain(TRUSTS_NOC_HEADING);
-    });
-
-    test(`Renders the ${BENEFICIAL_OWNER_OTHER_PAGE} page without public register jurisdiction field`, async () => {
-      const resp = await request(app).get(BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
-
-      expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(config.LANDING_PAGE_URL);
-      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).not.toContain(JURISDICTION_FIELD_LABEL);
-      expect(resp.text).toContain(PUBLIC_REGISTER_HINT_TEXT);
-      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
-    });
-  });
-
   describe("GET BY ID with url params tests", () => {
 
     test("Renders the page through GET", async () => {
-      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS);
+      mockIsActiveFeature.mockReturnValueOnce(true).mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL x 2
+      mockGetFromApplicationData.mockReturnValueOnce({ ...BENEFICIAL_OWNER_OTHER_BODY_OBJECT_MOCK_WITH_ADDRESS });
       const applicationDataMock = { ...APPLICATION_DATA_MOCK };
       delete applicationDataMock[EntityNumberKey];
       mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
@@ -244,6 +244,11 @@ describe("BENEFICIAL OWNER OTHER controller", () => {
       expect(resp.text).toContain("country");
       expect(resp.text).toContain("BY 2");
       expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(mockIsActiveFeature).toBeCalledTimes(2);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+      const removePath = config.REGISTER_AN_OVERSEAS_ENTITY_URL + NEXT_PAGE_URL + config.BENEFICIAL_OWNER_OTHER_PAGE + config.REMOVE + BO_OTHER_ID_URL;
+      expect(resp.text).toContain(removePath);
     });
 
     test("Should render the error page", async () => {

@@ -9,7 +9,7 @@ import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
 import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
-import { mapInputDate, splitNationalities } from "./mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapInputDate, splitNationalities } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
 
@@ -121,6 +121,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_day: dateOfBirth?.day ?? "",
     dob_month: dateOfBirth?.month ?? "",
     dob_year: dateOfBirth?.year ?? "",
+    // UAR-1106 will need conversion to PascalCase
     nationality: nationalities[0],
     second_nationality: nationalities.length > 1 ? nationalities[1] : undefined,
     type: mapTrusteeType(trustee.trusteeTypeId),
@@ -300,7 +301,7 @@ const mapRegisteredOfficeAddress = (trustee: TrustCorporate, trusteeData: Corpor
   trustee.ro_address_line_2 = trusteeData.registeredOfficeAddress?.addressLine2 ?? "";
   trustee.ro_address_locality = trusteeData.registeredOfficeAddress?.locality ?? "";
   trustee.ro_address_region = trusteeData.registeredOfficeAddress?.region ?? "";
-  trustee.ro_address_country = trusteeData.registeredOfficeAddress?.country ?? "";
+  trustee.ro_address_country = lowerCaseAllWordsExceptFirstLetters(trusteeData.registeredOfficeAddress?.country ?? "");
   trustee.ro_address_postal_code = trusteeData.registeredOfficeAddress?.postalCode ?? "";
   trustee.ro_address_care_of = trusteeData.registeredOfficeAddress?.careOf ?? "";
   trustee.ro_address_po_box = trusteeData.registeredOfficeAddress?.poBox || "";
@@ -314,7 +315,7 @@ const mapServiceAddress = (trustee: TrustIndividual | TrustCorporate, trusteeDat
   trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
   trustee.sa_address_locality = trusteeData.serviceAddress?.locality ?? "";
   trustee.sa_address_region = trusteeData.serviceAddress?.region ?? "";
-  trustee.sa_address_country = trusteeData.serviceAddress?.country ?? "";
+  trustee.sa_address_country = lowerCaseAllWordsExceptFirstLetters(trusteeData.serviceAddress?.country ?? "");
   trustee.sa_address_postal_code = trusteeData.serviceAddress?.postalCode ?? "";
   trustee.sa_address_care_of = trusteeData.serviceAddress?.careOf ?? "";
   trustee.sa_address_po_box = trusteeData.serviceAddress?.poBox ?? "";
@@ -328,7 +329,7 @@ const mapUsualResidentialAddress = (trustee: TrustIndividual, trusteeData: Indiv
   trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
   trustee.ura_address_locality = trusteeData.usualResidentialAddress?.locality ?? "";
   trustee.ura_address_region = trusteeData.usualResidentialAddress?.region ?? "";
-  trustee.ura_address_country = trusteeData.usualResidentialAddress?.country ?? "";
+  trustee.ura_address_country = lowerCaseAllWordsExceptFirstLetters(trusteeData.usualResidentialAddress?.country ?? "");
   trustee.ura_address_postal_code = trusteeData.usualResidentialAddress?.postalCode ?? "";
   trustee.ura_address_care_of = trusteeData.usualResidentialAddress?.careOf ?? "";
   trustee.ura_address_po_box = trusteeData.usualResidentialAddress?.poBox ?? "";

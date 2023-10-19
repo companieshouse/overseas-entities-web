@@ -856,7 +856,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
   });
 
   describe("POST with url params tests", () => {
-    test.only(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
+    test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );

@@ -186,8 +186,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[3][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
-      expect(mockGetUrlWithParamsToPath.mock.calls[4][0]).toEqual(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[4][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[5][0]).toEqual(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
     });
   });
 

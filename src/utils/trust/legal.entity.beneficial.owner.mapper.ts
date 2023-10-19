@@ -12,6 +12,7 @@ const mapLegalEntityToSession = (
 
   const data = {
     id: formData.legalEntityId || generateId(),
+    ch_references: formData.ch_references,
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
     date_became_interested_person_day: formData.interestedPersonStartDateDay,
@@ -88,7 +89,7 @@ const mapLegalEntityTrusteeByIdFromSessionToPage = (
   trusteeId: string,
   isReview?: boolean
 ): Page.TrustLegalEntityForm => {
-  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId);
+  const trustee = getLegalEntityTrustee(appData, trustId, trusteeId, isReview);
   return mapLegalEntityTrusteeFromSessionToPage(trustee);
 };
 
@@ -97,6 +98,7 @@ const mapLegalEntityTrusteeFromSessionToPage = (
 ): Page.TrustLegalEntityForm => {
   const data = {
     legalEntityId: trustee.id,
+    ch_references: trustee.ch_references,
     roleWithinTrust: trustee.type,
     legalEntityName: trustee.name,
     principal_address_property_name_number: trustee.ro_address_premises,

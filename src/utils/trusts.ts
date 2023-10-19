@@ -122,15 +122,8 @@ const getTrustArray = (appData: ApplicationData): Trust[] => {
  * @param appData Application Data in Session
  * @param trustToSave Trust (with any trustees) to save
  */
-const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust, isReview?: boolean): ApplicationData => {
-  let trustKey;
-  if (isReview) {
-    trustKey = [UpdateKey]?.[ReviewTrustKey];
-  } else {
-    trustKey = [TrustKey];
-  }
-
-  const trusts: Trust[] = appData[trustKey] ?? [];
+const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust): ApplicationData => {
+  const trusts: Trust[] = appData[TrustKey] ?? [];
 
   //  get index of trust in trusts array, if exists
   const trustIndex: number = trusts.findIndex((trust: Trust) => trust.trust_id === trustToSave.trust_id);
@@ -146,7 +139,7 @@ const saveTrustInApp = (appData: ApplicationData, trustToSave: Trust, isReview?:
 
   return {
     ...appData,
-    [trustKey]: trusts,
+    [TrustKey]: trusts,
   };
 };
 

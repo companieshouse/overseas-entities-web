@@ -103,12 +103,6 @@ export const getTrustInvolvedPage = (
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const appData = getApplicationData(req.session);
-
-    if (appData.beneficial_owners_individual) {
-      appData.beneficial_owners_individual[0].trust_ids = ["1"];
-    }
-
     const pageProps = getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.templateName, pageProps);
@@ -164,7 +158,7 @@ export const postTrustInvolvedPage = async (
           case TrusteeType.INDIVIDUAL:
             return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
           case TrusteeType.LEGAL_ENTITY:
-            return safeRedirect(res, config.SECURE_REGISTER_FILTER_URL);
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
       }
     }
 

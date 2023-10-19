@@ -5,6 +5,8 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
 } from '../../config';
@@ -20,10 +22,10 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 
-const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
+const getPageProperties = (trust, isIndividualOrLegalEntityInvolvedFlow: boolean, formData, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-    backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+    backLinkUrl: getBackLink(isIndividualOrLegalEntityInvolvedFlow),
     pageParams: {
       title: 'Tell us about the legal entity',
     },
@@ -46,9 +48,14 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
+    let isIndividualOrLegalEntityInvolvedFlow = false;
+    if (trust.review_status?.reviewed_legal_entities === true) {
+      isIndividualOrLegalEntityInvolvedFlow = true;
+    }
+
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, isIndividualOrLegalEntityInvolvedFlow, formData));
   } catch (error) {
     next(error);
   }
@@ -68,7 +75,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!errorList.isEmpty()) {
       return res.render(
         UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-        getPageProperties(trust, formData, formatValidationError(errorList.array())),
+        getPageProperties(trust, false, formData, formatValidationError(errorList.array())),
       );
     }
 
@@ -84,7 +91,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAppData(req, appData);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
   }
@@ -93,4 +100,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 const saveAppData = async(req: Request, appData: ApplicationData) => {
   setExtraData(req.session, appData);
   await saveAndContinue(req, req.session as Session, false);
+};
+
+const getBackLink = (isIndividualOrLegalEntityInvolvedFlow: boolean) => {
+  if (isIndividualOrLegalEntityInvolvedFlow) {
+    return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+  } else {
+    return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
+  }
 };

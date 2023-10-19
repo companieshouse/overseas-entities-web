@@ -181,7 +181,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(5);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(6);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);

@@ -12,8 +12,7 @@ import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
-import { getTrustInReview } from './update/review_trusts';
-import { ApplicationData } from '../model';
+import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
 
@@ -125,9 +124,7 @@ export const postTrustInvolvedPage = async (
     if (req.body.noMoreToAdd) {
       if (isReview) {
         const appData = getApplicationData(req.session);
-        const trustInReview = getTrustInReview(appData);
-        const trustId = trustInReview?.trust_id ?? "";
-        moveTrustOutOfReview(appData, trustId);
+        moveTrustOutOfReview(appData);
         setExtraData(req.session, appData);
         await saveAndContinue(req, req.session as Session, false);
       }
@@ -234,19 +231,4 @@ const getNextPage = (isUpdate: boolean, isReview: boolean) => {
   } else {
     return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
   }
-};
-
-const moveTrustOutOfReview = (appData: ApplicationData, trustId: string) => {
-  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(trust => trust.trust_id === trustId);
-  const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
-
-  if (!trust) { return; }
-
-  delete trust.review_status;
-
-  if (appData.trusts === undefined) {
-    appData.trusts = [];
-  }
-
-  appData.trusts?.push(trust);
 };

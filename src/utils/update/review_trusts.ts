@@ -105,3 +105,18 @@ export const setTrusteesAsReviewed = (appData: ApplicationData, trusteeType: Tru
         return false;
   }
 };
+
+export const moveTrustOutOfReview = (appData: ApplicationData) => {
+  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(trust => trust?.review_status?.in_review);
+  const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
+
+  if (!trust) { return; }
+
+  delete trust.review_status;
+
+  if (appData.trusts === undefined) {
+    appData.trusts = [];
+  }
+
+  appData.trusts?.push(trust);
+};

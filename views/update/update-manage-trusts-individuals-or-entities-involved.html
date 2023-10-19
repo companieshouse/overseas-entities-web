@@ -22,31 +22,15 @@
       {% set reviewedBoItems = [] %}
       {% set addedBoItems = [] %}
       {% for bo in pageData.boInTrust %}
-        {% set type = 'Beneficial Owner' %}
+        {% set type = pageData.beneficialOwnerTypeTitle[bo.type] %}
+        {% set row = {
+          key: { text: type },
+          value: { text: bo.name }
+        } %}
         {% if bo.ch_reference %}
-          {% set reviewedBoItems = (
-            reviewedBoItems.push({
-              key: {
-                text: type
-              },
-              value: {
-                text: bo.name
-              }
-            }),
-            reviewedBoItems
-          ) %}
+          {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
         {% else %}
-          {% set addedBoItems = (
-            addedBoItems.push({
-              key: {
-                text: type
-              },
-              value: {
-                text: bo.name
-              }
-            }),
-            addedBoItems
-          ) %}
+          {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
         {% endif %}
       {% endfor %}
 
@@ -54,51 +38,26 @@
       {% set addedFormerTrustees = [] %}
       {% for trustee in pageData.formerTrusteeData %}
         {% set type = pageData.trusteeTypeTitle[pageData.trusteeType.HISTORICAL] %}
-        {% if trustee.forename and trustee.surname%}
-          {% set name = trustee.forename + " " + trustee.surname %}
-          {% set formerTrusteeChangeName = OE_CONFIGS.INDIVIDUAL_NAME %}
-        {% else %}
-          {% set name = trustee.corporate_name %}
-          {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
-        {% endif %}
+        
+        {% set isCorporate = trustee.corporate_indicator === 1 %}
+        {% set name = trustee.corporate_name if isCorporate else trustee.forename + " " + trustee.surname %}
+        {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME if isCorporate else OE_CONFIGS.INDIVIDUAL_NAME %}
+        
+        {% set row = {
+          key: { text: type },
+          value: { text: name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
+              "Former Trustee " + name,
+              "change-former-trustee-button"
+            )]
+          }
+        } %}
         {% if trustee.ch_references %}
-          {% set reviewedFormerTrustees = (
-            reviewedFormerTrustees.push({
-              key: {
-                text: type  
-              },
-              value: {
-                text: name
-              },
-              actions: {
-                items: [ CREATE_CHANGE_LINK(
-                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
-                  "Former Trustee" + trustee.name,
-                  "change-former-trustee-button"
-              ) ]
-              }
-            }),
-            reviewedFormerTrustees
-          ) %}
+          {% set reviewedFormerTrustees = (reviewedFormerTrustees.push(row), reviewedFormerTrustees) %}
         {% else %}
-          {% set addedFormerTrustees = (
-            addedFormerTrustees.push({
-              key: {
-                text: type  
-              },
-              value: {
-                text: name
-              },
-              actions: {
-                items: [ CREATE_CHANGE_LINK(
-                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.id + formerTrusteeChangeName,
-                  "Former Trustee" + trustee.name,
-                  "change-former-trustee-button"
-              ) ]
-              }
-            }),
-            addedFormerTrustees
-          ) %}
+          {% set addedFormerTrustees = (addedFormerTrustees.push(row), addedFormerTrustees) %}
         {% endif %}
       {% endfor %}
 
@@ -107,89 +66,44 @@
       {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
+        
+        {% set row = {
+          key: { text: type },
+          value: { text: name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
+              "Individual Trustee " + name,
+              "change-individual-trustee-button"
+            )]
+          }
+        } %}
         {% if trustee.ch_references %}
-          {% set reviewedIndividualTrustees = (
-            reviewedIndividualTrustees.push({
-              key: {
-                text: type  
-              },
-              value: {
-                text: name
-              },
-              actions: {
-                items: [ CREATE_CHANGE_LINK(
-                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
-                  "Individual Trustee " + name,
-                  "change-individual-trustee-button"
-              ) ]
-              }
-            }),
-            reviewedIndividualTrustees
-          ) %}
+          {% set reviewedIndividualTrustees = (reviewedIndividualTrustees.push(row), reviewedIndividualTrustees) %}
         {% else %}
-          {% set addedIndividualTrustees = (
-            addedIndividualTrustees.push({
-              key: {
-                text: type  
-              },
-              value: {
-                text: name
-              },
-              actions: {
-                items: [ CREATE_CHANGE_LINK(
-                  OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + "/" + trustee.id + OE_CONFIGS.FORENAME,
-                  "Individual Trustee " + name,
-                  "change-individual-trustee-button"
-              ) ]
-              }
-            }),
-            addedIndividualTrustees
-          ) %}
+          {% set addedIndividualTrustees = (addedIndividualTrustees.push(row), addedIndividualTrustees) %}
         {% endif %}
       {% endfor %}
 
       {% set reviewedLegalEntityTrustees = [] %}
       {% set addedLegalEntityTrustees = [] %}
       {% for trustee in pageData.trustees %}
-        {% set type = 'Legal Entity' %}
+        {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
+        {% set row = {
+          key: { text: type },
+          value: { text: trustee.name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(
+              OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
+              "Legal Entity Trustee " + trustee.name,
+              "change-legal-entity-trustee-button"
+            )]
+          }
+        } %}
         {% if trustee.ch_references %}
-          {% set reviewedLegalEntityTrustees = (
-              reviewedLegalEntityTrustees.push({
-                key: {
-                  text: type
-                },
-                value: {
-                  text: trustee.name
-                },
-                actions: {
-                  items: [ CREATE_CHANGE_LINK(
-                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
-                    "Legal Entity Trustee " + trustee.name,
-                    "change-legal-entity-trustee-button"
-                ) ]
-                }
-              }),
-              reviewedLegalEntityTrustees
-            ) %}
-          {% else %}
-            {% set addedLegalEntityTrustees = (
-              addedLegalEntityTrustees.push({
-                key: {
-                  text: type
-                },
-                value: {
-                  text: trustee.name
-                },
-                actions: {
-                  items: [ CREATE_CHANGE_LINK(
-                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
-                    "Legal Entity Trustee " + trustee.name,
-                    "change-legal-entity-trustee-button"
-                ) ]
-                }
-              }),
-              addedLegalEntityTrustees
-            ) %}
+          {% set reviewedLegalEntityTrustees = (reviewedLegalEntityTrustees.push(row), reviewedLegalEntityTrustees) %}
+        {% else %}
+          {% set addedLegalEntityTrustees = (addedLegalEntityTrustees.push(row), addedLegalEntityTrustees) %}
         {% endif %}
       {% endfor %}
 

@@ -22,10 +22,10 @@ import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { TrustLegalEntityForm } from '../../model/trust.page.model';
 import { ApplicationData } from '../../model';
 
-const getPageProperties = (trust, isIndividualOrLegalEntityInvolvedFlow: boolean, formData, errors?: FormattedValidationErrors) => {
+const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-    backLinkUrl: getBackLink(isIndividualOrLegalEntityInvolvedFlow),
+    backLinkUrl: getBackLink(trust.review_status?.reviewed_legal_entities),
     pageParams: {
       title: 'Tell us about the legal entity',
     },
@@ -48,14 +48,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trust = getTrustInReview(appData) as Trust;
     const trustee = getTrustee(trust, trusteeId, TrusteeType.LEGAL_ENTITY) as TrustCorporate;
 
-    let isIndividualOrLegalEntityInvolvedFlow = false;
-    if (trust.review_status?.reviewed_legal_entities === true) {
-      isIndividualOrLegalEntityInvolvedFlow = true;
-    }
-
     const formData = trustee ? mapLegalEntityTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, isIndividualOrLegalEntityInvolvedFlow, formData));
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE, getPageProperties(trust, formData));
   } catch (error) {
     next(error);
   }
@@ -75,7 +70,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (!errorList.isEmpty()) {
       return res.render(
         UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-        getPageProperties(trust, false, formData, formatValidationError(errorList.array())),
+        getPageProperties(trust, formData, formatValidationError(errorList.array())),
       );
     }
 
@@ -102,8 +97,8 @@ const saveAppData = async(req: Request, appData: ApplicationData) => {
   await saveAndContinue(req, req.session as Session, false);
 };
 
-const getBackLink = (isIndividualOrLegalEntityInvolvedFlow: boolean) => {
-  if (isIndividualOrLegalEntityInvolvedFlow) {
+const getBackLink = (legalEntitiesReviewed: boolean) => {
+  if (legalEntitiesReviewed) {
     return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;

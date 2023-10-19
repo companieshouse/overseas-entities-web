@@ -30,12 +30,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trusteeId ? mapFormerTrusteeFromSessionToPage(trustee) : {} as TrustHistoricalBeneficialOwnerForm;
 
-    let isIndividualOrLegalEntityInvolvedFlow = false;
-    if (trust.review_status?.reviewed_former_bos === true) {
-      isIndividualOrLegalEntityInvolvedFlow = true;
-    }
-
-    const pageProperties = getPageProperties(trust, isIndividualOrLegalEntityInvolvedFlow, formData);
+    const pageProperties = getPageProperties(trust, formData);
 
     return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
   } catch (error) {
@@ -56,7 +51,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     // check for form validation errors
     const errorList = validationResult(req);
     if (!errorList.isEmpty()) {
-      const pageProperties = getPageProperties(trust, false, formData, formatValidationError(errorList.array()));
+      const pageProperties = getPageProperties(trust, formData, formatValidationError(errorList.array()));
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
@@ -80,8 +75,8 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const getPageProperties = (trust: Trust, isIndividualOrLegalEntityInvolvedFlow: boolean, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
-  backLinkUrl: getBackLink(isIndividualOrLegalEntityInvolvedFlow),
+const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
+  backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos),
   templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
@@ -97,8 +92,8 @@ const getPageProperties = (trust: Trust, isIndividualOrLegalEntityInvolvedFlow: 
   errors
 });
 
-const getBackLink = (isIndividualOrLegalEntityInvolvedFlow: boolean) => {
-  if (isIndividualOrLegalEntityInvolvedFlow) {
+const getBackLink = (formerBosReviewed) => {
+  if (formerBosReviewed) {
     return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
   } else {
     return UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL;

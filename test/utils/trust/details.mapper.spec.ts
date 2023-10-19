@@ -66,7 +66,7 @@ describe('Trust Details page Mapper Service', () => {
 
   describe('To Page mapper methods tests', () => {
     test('mapDetailToPage should return object (verify mapping of hasAllInfo when false)', () => {
-      expect(mapDetailToPage(mockAppData, mockTrust1.trust_id)).toEqual({
+      expect(mapDetailToPage(mockAppData, mockTrust1.trust_id, false)).toEqual({
         trustId: mockTrust1.trust_id,
         name: mockTrust1.trust_name,
         createdDateDay: mockTrust1.creation_date_day,
@@ -80,7 +80,7 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
     test('mapDetailToPage should return object (verify mapping of hasAllInfo when true)', () => {
-      expect(mapDetailToPage(mockAppData, mockTrust2.trust_id)).toEqual({
+      expect(mapDetailToPage(mockAppData, mockTrust2.trust_id, false)).toEqual({
         trustId: mockTrust2.trust_id,
         name: mockTrust2.trust_name,
         createdDateDay: mockTrust2.creation_date_day,
@@ -93,7 +93,7 @@ describe('Trust Details page Mapper Service', () => {
       });
     });
     test('mapDetailToPage should return object (verify mapping of hasAllInfo for new trust)', () => {
-      const initialFormDetails = mapDetailToPage(mockAppData, unknownTrustId);
+      const initialFormDetails = mapDetailToPage(mockAppData, unknownTrustId, false);
       expect(initialFormDetails.hasAllInfo).toBe("");
     });
   });

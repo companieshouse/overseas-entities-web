@@ -295,7 +295,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
     });
 
-    // TODO Uncomment the other BO/MO Type POST tests in here once this has been
+    test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.otherLegal });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
+    });
+
+    // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been
     //      implemented (journey only partially completed in order to allow navigation to final screens)
 
     // test(`redirects to the ${config.BENEFICIAL_OWNER_OTHER_PAGE} page`, async () => {

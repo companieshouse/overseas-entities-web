@@ -7,7 +7,7 @@ import {
   ManagingOfficerTypeChoice
 } from "../../model/beneficial.owner.type.model";
 
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, setExtraData } from "../../utils/application.data";
 import { ApplicationData } from "../../model";
 import { BeneficialOwnerGovKey } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerOtherKey } from "../../model/beneficial.owner.other.model";
@@ -17,7 +17,11 @@ import { checkAndReviewManagingOfficers } from "../../utils/update/review.managi
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { checkEntityRequiresTrusts, getTrustLandingUrl, checkEntityRequiresManageTrusts } from "../../utils/trusts";
+import { hasTrustsToReview } from "../../utils/update/review_trusts";
+import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
+import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { Session } from "@companieshouse/node-session-handler";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -63,13 +67,25 @@ export const post = (req: Request, res: Response) => {
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
 
-export const postSubmit = (req: Request, res: Response) => {
+export const postSubmit = async (req: Request, res: Response) => {
+
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
   const appData: ApplicationData = getApplicationData(req.session);
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS) && checkEntityRequiresManageTrusts(appData)) {
-    return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+
+    if (!appData.update?.trust_data_fetched) {
+      const session = req.session as Session;
+
+      await retrieveTrustData(req, appData);
+      setExtraData(req.session, appData);
+      await saveAndContinue(req, session, false);
+    }
+
+    if (hasTrustsToReview(appData)) {
+      return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    }
   }
 
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {

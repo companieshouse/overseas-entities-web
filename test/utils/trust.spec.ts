@@ -22,7 +22,6 @@ import {
   getLegalEntityTrustee,
   getFormerTrustee,
   mapTrustApiReturnModelToWebModel,
-  checkEntityRequiresManageTrusts,
 } from '../../src/utils/trusts';
 import { ApplicationData } from '../../src/model';
 import { NatureOfControlType } from '../../src/model/data.types.model';
@@ -559,48 +558,6 @@ describe('Trust Utils method tests', () => {
       let appData;
 
       const result = checkEntityRequiresTrusts(appData);
-      expect(result).toEqual(false);
-    });
-  });
-
-  describe('test if overseas entity requires manage trusts', () => {
-
-    test("test checkEntityRequiresManageTrusts with application data with no review trusts to review", () => {
-      const result = checkEntityRequiresManageTrusts(mockAppData);
-      expect(result).toEqual(false);
-    });
-
-    test("test checkEntityRequiresManageTrusts with undefined application data with no review trusts to review", () => {
-      const result = checkEntityRequiresManageTrusts(undefined);
-      expect(result).toEqual(false);
-    });
-
-    test("test checkEntityRequiresManageTrusts with application data with trusts to review", () => {
-      const appData: ApplicationData = {
-        update: {
-          review_trusts: [
-            {
-              trust_id: "1",
-              trust_name: "test",
-              creation_date_day: "1",
-              creation_date_month: "2",
-              creation_date_year: "2023",
-              ch_reference: "test",
-              unable_to_obtain_all_trust_info: "false"
-            }
-          ]
-        }
-      };
-      const result = checkEntityRequiresManageTrusts(appData);
-      expect(result).toEqual(true);
-    });
-    test("test checkEntityRequiresManageTrusts with application data with no trusts to review", () => {
-      const appData: ApplicationData = {
-        update: {
-          review_trusts: []
-        }
-      };
-      const result = checkEntityRequiresManageTrusts(appData);
       expect(result).toEqual(false);
     });
   });

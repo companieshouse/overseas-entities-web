@@ -1,12 +1,22 @@
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+
+{% if inNoChangeJourney and appData.update %}
+  {% set individuals = appData.update.review_beneficial_owners_individual %}
+  {% set corporates = appData.update.review_beneficial_owners_corporate %}
+{% else %}
+  {% set individuals = appData.beneficial_owners_individual %}
+  {% set corporates = appData.beneficial_owners_corporate %}
+{% endif %}
+
 <ul class="govuk-list govuk-list--bullet">
-  {% for boi in appData.beneficial_owners_individual %}
+  {% for boi in individuals %}
     {% for trust_id in boi.trust_ids %}
       {% if trust_id === trust.trust_id %}
         <li>{{ boi.first_name }} {{ boi.last_name }}</li>
       {% endif %}
     {% endfor %}
   {% endfor %}
-  {% for boc in appData.beneficial_owners_corporate %}
+  {% for boc in corporates %}
     {% for trust_id in boc.trust_ids %}
       {% if trust_id === trust.trust_id %}
         <li>{{ boc.name }}</li>

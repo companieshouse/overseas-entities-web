@@ -21,18 +21,18 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postManagingOfficer(req, res, next, getNextPageURL(req), true);
+  postManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateManagingOfficer(req, res, next, getNextPageURL(req), true);
+  updateManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeManagingOfficer(req, res, next, getNextPageURL(req), true);
+  removeManagingOfficer(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
-const getNextPageURL = (req: Request): string => {
+const getBeneficialOwnerTypeUrl = (req: Request): string => {
   let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);

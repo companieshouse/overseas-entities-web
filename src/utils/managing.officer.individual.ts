@@ -35,8 +35,6 @@ import { FormerNamesKey, ManagingOfficerIndividual, ManagingOfficerKey, Managing
 import { v4 as uuidv4 } from 'uuid';
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import * as config from "../config";
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerIndividual) => !officerData.ch_reference;

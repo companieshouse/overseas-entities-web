@@ -2194,7 +2194,7 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
     review_managing_officers_corporate: [
       {
         ch_reference: "officers2",
-        contact_full_name: undefined,
+        contact_full_name: "Test User",
         id: "/company/OE111129/officers2",
         is_on_register_in_country_formed_in: 0,
         is_service_address_same_as_principal_address: undefined,

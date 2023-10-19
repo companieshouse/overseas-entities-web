@@ -84,7 +84,7 @@ const getNextPage = (req: Request): string => {
     } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
       return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req);
     } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
-      return config.BENEFICIAL_OWNER_GOV_URL;
+      return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req);
     } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
       return config.MANAGING_OFFICER_CORPORATE_URL;
     }

@@ -191,8 +191,9 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(expectedBOTypePageUrl + "/submit");
       expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE);
       expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_OTHER_PAGE);
+      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_GOV_PAGE);
       // TODO
-      // expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_GOV_PAGE);
+      //
       // and MO's
     });
   });
@@ -316,19 +317,21 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
     });
 
+    test(`redirects to the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.government });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(MOCKED_URL);
+      expect(resp.header.location).toEqual(MOCKED_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+    });
+
     // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been
     //      implemented (journey only partially completed in order to allow navigation to final screens)
-
-    // test(`redirects to the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
-    //   const resp = await request(app)
-    //     .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
-    //     .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.government });
-
-    //   expect(resp.status).toEqual(302);
-    //   expect(resp.header.location).toEqual(MOCKED_URL);
-    //   expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-    //   expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
-    // });
 
     // test(`redirects to the ${config.MANAGING_OFFICER_PAGE} page`, async () => {
     //   const resp = await request(app)

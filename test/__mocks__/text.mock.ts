@@ -217,6 +217,7 @@ export const UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_HEADING = "Review the ind
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_HEADING = "Review the other legal entity beneficial owner";
 export const UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING = "Review the individual managing officer";
 export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_HEADING = "Review the corporate managing officer";
+export const UPDATE_REVIEW_THE_TRUST = "Review the trust";
 export const UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_CONTACT_NAME = "Joe Bloggs";
 export const UPDATE_REVIEW_BENEFICIAL_OWNER_GOV_HEADING = "Review the government or public authority";
 export const UPDATE_CHECK_YOUR_ANSWERS_WHO_CAN_WE_CONTACT = "Who can we contact about this update application?";
@@ -242,3 +243,9 @@ export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trus
 export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";
 export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/update-trusts-associated-with-overseas-entity";
 export const HOME_ADDRESS_LINE1 = "addressLine1";
+
+// Manage Trusts
+export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";
+export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE = "Tell us about the former beneficial owner";
+export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"col\" class=\"govuk-table__header\">Name</th>";
+export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE = "Tell us about the legal entity";

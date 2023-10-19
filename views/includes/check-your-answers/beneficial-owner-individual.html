@@ -8,7 +8,7 @@
 
 {% set boiDateOfBirth %}
   {% if boi.date_of_birth %}
-    {% if not isRegistrationJourney and boi.date_of_birth["day"] == "01"%}
+    {% if not isRegistrationJourney and (boi.date_of_birth["day"] == "01" or boi.date_of_birth["day"] == "1") %}
       {% set dob = dateMacros.formatMonthYearDate(boi.date_of_birth["month"] | string, boi.date_of_birth["year"]) %}
     {% else %}
       {% set dob = dateMacros.formatDate(boi.date_of_birth["day"], boi.date_of_birth["month"], boi.date_of_birth["year"]) %}

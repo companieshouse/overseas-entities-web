@@ -63,7 +63,7 @@ export const mapAddress = (address: ServiceAddress | undefined): Address => {
     line_2: address.addressLineTwo,
     town: address.locality,
     county: address.region,
-    country: address.country,
+    country: lowerCaseAllWordsExceptFirstLetters(address.country),
     postcode: address.postalCode
   };
 };
@@ -125,7 +125,11 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
   const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART"];
 
   return country.replace(/\w*/g, word => {
-    if (wordsForAllLowerCase.includes(word)){
+    if (word.toUpperCase() === "MCDONALD") {
+      return "McDonald";
+    }
+
+    if (wordsForAllLowerCase.includes(word.toUpperCase())){
       return word.toLowerCase();
     }
 

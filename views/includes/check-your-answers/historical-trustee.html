@@ -1,5 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+
 {% if formerTrustee.corporate_name %}
   {% set formerTrusteeName = formerTrustee.corporate_name %}
   {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
@@ -35,7 +37,7 @@
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -51,7 +53,7 @@
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -67,7 +69,7 @@
       "Former Trustee" + formerTrustee.name + " - name",
       "change-former-trustee-name-button"
    ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 <h3 class="govuk-heading-m">Former beneficial owner for {{trust.trust_name}}</h3>

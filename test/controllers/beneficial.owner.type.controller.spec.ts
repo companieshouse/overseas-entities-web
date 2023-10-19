@@ -187,6 +187,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[3][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[4][0]).toEqual(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[4][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
     });
   });
 
@@ -307,6 +308,19 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
+    });
+
+    test(`redirects to the ${config.BENEFICIAL_OWNER_GOV_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: BeneficialOwnerTypeChoice.government });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
     });
 
     test(`redirects to the ${config.MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {

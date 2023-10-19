@@ -32,6 +32,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
         beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
         beneficialOwnerGovUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req),
+        managingOfficerIndividualUrlWithParams: getUrlWithParamsToPath(config.MANAGING_OFFICER_WITH_PARAMS_URL, req),
         backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
         templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
         requiresTrusts,
@@ -86,6 +87,7 @@ const getNextPage = (req: Request): string => {
     } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
       return config.MANAGING_OFFICER_CORPORATE_URL;
     }
+    return getUrlWithParamsToPath(config.MANAGING_OFFICER_WITH_PARAMS_URL, req);
   } else {
     if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
       return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
@@ -96,6 +98,6 @@ const getNextPage = (req: Request): string => {
     } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
       return config.MANAGING_OFFICER_CORPORATE_URL;
     }
+    return config.MANAGING_OFFICER_URL;
   }
-  return config.MANAGING_OFFICER_URL;
 };

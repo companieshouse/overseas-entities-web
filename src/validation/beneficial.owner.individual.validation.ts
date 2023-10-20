@@ -9,6 +9,7 @@ import {
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { date_of_birth_validations, start_date_validations, ceased_date_validations } from "./fields/date.validation";
+import { checkStartDateBeforeDOB } from "./custom.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")
@@ -47,6 +48,15 @@ export const updateBeneficialOwnerIndividual = [
   ...beneficialOwnerIndividual,
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
+  body("start_date-day")
+    .custom((value, { req }) => checkStartDateBeforeDOB(
+      req.body["start_date-day"],
+      req.body["start_date-month"],
+      req.body["start_date-year"],
+      req.body["date_of_birth-day"],
+      req.body["date_of_birth-month"],
+      req.body["date_of_birth-year"]
+    )),
 
   ...ceased_date_validations
 ];

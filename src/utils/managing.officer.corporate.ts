@@ -29,8 +29,7 @@ import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
 import { addResignedDateToTemplateOptions } from "./update/ceased_date_util";
 import * as config from "../config";
-import { isActiveFeature } from "../utils/feature.flag";
-import { getUrlWithParamsToPath } from "../utils/url";
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 const isNewlyAddedMO = (officerData: ManagingOfficerCorporate) => !officerData.ch_reference;
 
@@ -75,13 +74,11 @@ export const getManagingOfficerCorporateById = (req: Request, res: Response, nex
       templateOptions[StartDateKey] = startDate;
     }
 
-    // Start: Redis removal work - Add extra template options if Redis Remove flag is true - needs refacotoring into a common method
+    // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && isRegistration) {
-      templateOptions.FEATURE_FLAG_ENABLE_REDIS_REMOVAL = true;
-      templateOptions.activeSubmissionBasePath = getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req);
+    if (isRegistration) {
+      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
-    // End: Redis removal work
 
     if (inUpdateJourney) {
       templateOptions = addResignedDateToTemplateOptions(templateOptions, appData, officerData);

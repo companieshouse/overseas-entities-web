@@ -68,6 +68,7 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
   {% set beneficialOwnerOtherUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
   {% set beneficialOwnerGovUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL %}
   {% set managingOfficerIndividualUrl = OE_CONFIGS.MANAGING_OFFICER_URL %}
+  {% set managingOfficerCorporateUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL %}
 
   {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
     {% set addButtonAction = addButtonActionWithParams %}
@@ -76,6 +77,7 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
     {% set beneficialOwnerOtherUrl = beneficialOwnerOtherUrlWithParams %}
     {% set beneficialOwnerGovUrl = beneficialOwnerGovUrlWithParams %}
     {% set managingOfficerIndividualUrl = managingOfficerIndividualUrlWithParams %}
+    {% set managingOfficerCorporateUrl = managingOfficerCorporateWithParams %} 
   {% endif %}
   
   {% include "includes/page-templates/beneficial-owner.html" %}

@@ -61,7 +61,7 @@ const getTrustLandingUrl = (appData: ApplicationData): string => {
       return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;
     }
   }
-  if (appData.entity_number !== undefined) {
+  if (appData.entity_number) {
     return UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
   } else {
     return `${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`;

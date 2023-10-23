@@ -55,7 +55,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
-    const trustee = mapBeneficialOwnerToSession(req.body);
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.HISTORICAL);
 
     if (trust.HISTORICAL_BO && trusteeIndex >= 0) {
@@ -65,6 +64,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       trust.HISTORICAL_BO[trusteeIndex] = updatedTrustee;
     } else {
       // add new trustee
+      const trustee = mapBeneficialOwnerToSession(req.body);
       trust.HISTORICAL_BO?.push(trustee);
     }
 

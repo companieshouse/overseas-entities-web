@@ -74,8 +74,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
-    const trustee = mapLegalEntityToSession(formData);
-
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.LEGAL_ENTITY);
 
     if (trust.CORPORATES && trusteeIndex >= 0) {
@@ -83,6 +81,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const updatedTrustee = mapLegalEntityToSession(formData, trusteeToChange);
       trust.CORPORATES[trusteeIndex] = updatedTrustee;
     } else {
+      const trustee = mapLegalEntityToSession(formData);
       trust.CORPORATES?.push(trustee);
     }
 

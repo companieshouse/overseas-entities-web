@@ -107,7 +107,7 @@ export const setTrusteesAsReviewed = (appData: ApplicationData, trusteeType: Tru
 };
 
 export const moveTrustOutOfReview = (appData: ApplicationData) => {
-  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(trust => trust?.review_status?.in_review);
+  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(reviewTrust => reviewTrust?.review_status?.in_review);
   const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
 
   if (!trust) { return; }

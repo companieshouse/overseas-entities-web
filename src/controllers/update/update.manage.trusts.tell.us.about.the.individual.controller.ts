@@ -73,7 +73,6 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
-    const trustee = mapIndividualTrusteeToSession(formData);
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.INDIVIDUAL);
 
     if (trust.INDIVIDUALS && trusteeIndex >= 0) {
@@ -81,6 +80,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const updatedTrustee = mapIndividualTrusteeToSession(formData, trusteeToChange);
       trust.INDIVIDUALS[trusteeIndex] = updatedTrustee;
     } else {
+      const trustee = mapIndividualTrusteeToSession(formData);
       trust.INDIVIDUALS?.push(trustee);
     }
 

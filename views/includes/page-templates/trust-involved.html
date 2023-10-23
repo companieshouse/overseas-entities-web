@@ -20,10 +20,10 @@
           key: { text: type },
           value: { text: bo.name }
         } %}
-        {% if not pageData.isReview %}
-          {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
-        {% else %}
+        {% if pageData.isReview %}
           {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
+        {% else %}
+          {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
         {% endif %}
       {% endfor %}
 

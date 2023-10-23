@@ -207,6 +207,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const expectedTrustee = {
         id: 'trustee-id-2',
         type: RoleWithinTrustType.GRANTOR,
+        ch_references: "existing-ch-references",
         forename: 'Trust',
         other_forenames: '',
         surname: 'Ee',

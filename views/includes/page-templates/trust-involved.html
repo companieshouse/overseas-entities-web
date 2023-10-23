@@ -23,11 +23,7 @@
         {% if not pageData.isReview %}
           {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
         {% else %}
-          {% if bo.is_newly_added %}
-            {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
-          {% else %}
-            {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
-          {% endif %}
+          {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
         {% endif %}
       {% endfor %}
 

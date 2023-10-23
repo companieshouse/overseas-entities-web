@@ -120,6 +120,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           endDateDay: mockSessionData.ceased_date_day,
           endDateMonth: mockSessionData.ceased_date_month,
           endDateYear: mockSessionData.ceased_date_year,
+          is_newly_added: true,
 
         });
       });
@@ -149,6 +150,7 @@ describe('Historical Beneficial Owner page Mapper Service', () => {
           endDateDay: mockSessionData.ceased_date_day,
           endDateMonth: mockSessionData.ceased_date_month,
           endDateYear: mockSessionData.ceased_date_year,
+          is_newly_added: true,
         });
       });
     });

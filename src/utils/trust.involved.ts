@@ -119,12 +119,7 @@ export const getTrustInvolvedPage = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const pageProps = getPageProperties(req, isUpdate, isReview);
-    console.log("********** TRUSTEES");
-    console.log(pageProps.pageData.trustees);
-    console.log("********** IND");
-    console.log(pageProps.pageData.individualTrusteeData);
-    console.log("********** FORMER");
-    console.log(pageProps.pageData.formerTrusteeData);
+
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

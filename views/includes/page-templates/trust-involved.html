@@ -20,10 +20,14 @@
           key: { text: type },
           value: { text: bo.name }
         } %}
-        {% if bo.is_newly_added %}
+        {% if not pageData.isReview %}
           {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
         {% else %}
-          {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
+          {% if bo.is_newly_added %}
+            {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
+          {% else %}
+            {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
+          {% endif %}
         {% endif %}
       {% endfor %}
 
@@ -31,8 +35,8 @@
       {% set addedFormerTrustees = [] %}
       {% for trustee in pageData.formerTrusteeData %}
         {% set type = pageData.trusteeTypeTitle[pageData.trusteeType.HISTORICAL] %}
-        {% if trustee.forename and trustee.surname%}
-          {% set name = trustee.forename + " " + trustee.surname %}
+        {% if trustee.forename and trustee.surname or trustee.firstName and trustee.lastName %}
+          {% set name = trustee.firstName + " " + trustee.lastName if pageData.isReview else trustee.forename + " " + trustee.surname %}
           {% set formerTrusteeChangeName = OE_CONFIGS.INDIVIDUAL_NAME %}
         {% else %}
           {% set name = trustee.corporate_name %}
@@ -52,10 +56,14 @@
           }
         } %}
 
-        {% if trustee.is_newly_added %}
+        {% if not pageData.isReview %}
           {% set addedFormerTrustees = (addedFormerTrustees.push(row), addedFormerTrustees) %}
         {% else %}
-          {% set reviewedFormerTrustees = (reviewedFormerTrustees.push(row), reviewedFormerTrustees) %}
+          {% if trustee.is_newly_added %}
+            {% set addedFormerTrustees = (addedFormerTrustees.push(row), addedFormerTrustees) %}
+          {% else %}
+            {% set reviewedFormerTrustees = (reviewedFormerTrustees.push(row), reviewedFormerTrustees) %}
+          {% endif %}
         {% endif %}
       {% endfor %}
 
@@ -78,10 +86,14 @@
           }
         } %}
 
-        {% if trustee.is_newly_added %}
+        {% if not pageData.isReview %}
           {% set addedIndividualTrustees = (addedIndividualTrustees.push(row), addedIndividualTrustees) %}
         {% else %}
-          {% set reviewedIndividualTrustees = (reviewedIndividualTrustees.push(row), reviewedIndividualTrustees) %}
+          {% if trustee.is_newly_added %}
+            {% set addedIndividualTrustees = (addedIndividualTrustees.push(row), addedIndividualTrustees) %}
+          {% else %}
+            {% set reviewedIndividualTrustees = (reviewedIndividualTrustees.push(row), reviewedIndividualTrustees) %}
+          {% endif %}
         {% endif %}
       {% endfor %}
 
@@ -103,10 +115,14 @@
           }
         } %}
 
-        {% if trustee.is_newly_added %}
+        {% if not pageData.isReview %}
           {% set addedLegalEntityTrustees = (addedLegalEntityTrustees.push(row), addedLegalEntityTrustees) %}
         {% else %}
-          {% set reviewedLegalEntityTrustees = (reviewedLegalEntityTrustees.push(row), reviewedLegalEntityTrustees) %}
+          {% if trustee.is_newly_added %}
+            {% set addedLegalEntityTrustees = (addedLegalEntityTrustees.push(row), addedLegalEntityTrustees) %}
+          {% else %}
+            {% set reviewedLegalEntityTrustees = (reviewedLegalEntityTrustees.push(row), reviewedLegalEntityTrustees) %}
+          {% endif %}
         {% endif %}
       {% endfor %}
 

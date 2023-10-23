@@ -1,4 +1,4 @@
-{% if haveDayOfBirth != true and date_of_birth["month"] and date_of_birth["year"] %}
+{% if have_day_of_birth != true and date_of_birth["month"] and date_of_birth["year"] %}
   {% set dob = dateMacros.formatMonthYearDate(date_of_birth["month"] | string, date_of_birth["year"]) %}
 {% elif dob_have_day_of_birth != "true" and dob_month and dob_year %}
   {% set dob = dateMacros.formatMonthYearDate(dob_month, dob_year) %}

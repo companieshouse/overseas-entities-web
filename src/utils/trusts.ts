@@ -55,7 +55,7 @@ const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): 
 const getTrustLandingUrl = (appData: ApplicationData): string => {
   if (containsTrustData(getTrustArray(appData))) {
     // Once naviation changes are agreed the following will change
-    if (appData.entity_number !== undefined) {
+    if (appData.entity_number) {
       return UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
     } else {
       return `${TRUST_ENTRY_URL + ADD_TRUST_URL}`;

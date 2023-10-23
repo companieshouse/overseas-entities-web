@@ -185,12 +185,12 @@ const getIndividualTrusteesFromTrust = (
   isReview?: boolean,
 ): IndividualTrustee[] => {
   let individuals: IndividualTrustee[] = [];
-  let trustList: Trust[] | undefined;
-  if (isReview) {
-    trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  } else {
-    trustList = appData[TrustKey];
-  }
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
+  // if (isReview) {
+  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
+  // } else {
+  //   trustList = appData[TrustKey];
+  // }
   if (trustId) {
     individuals = trustList?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
@@ -225,12 +225,12 @@ const getFormerTrusteesFromTrust = (
   isReview?: boolean,
 ): TrustHistoricalBeneficialOwner[] => {
   let formerTrustees: TrustHistoricalBeneficialOwner[] = [];
-  let trustList: Trust[] | undefined;
-  if (isReview) {
-    trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  } else {
-    trustList = appData[TrustKey];
-  }
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
+  // if (isReview) {
+  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
+  // } else {
+  //   trustList = appData[TrustKey];
+  // }
   if (trustId) {
     formerTrustees = trustList?.find(trust =>
       trust?.trust_id === trustId)?.HISTORICAL_BO as TrustHistoricalBeneficialOwner[];
@@ -295,17 +295,17 @@ const getLegalEntityBosInTrust = (
   isReview?: boolean,
 ): TrustCorporate[] => {
   let legalEntities: TrustCorporate[] = [];
-  let trustList: Trust[] | undefined;
-  if (isReview) {
-    trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  } else {
-    trustList = appData[TrustKey];
-  }
-  if (trustId) {
-    legalEntities = trustList?.find(trust =>
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
+  // if (isReview) {
+  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
+  // } else {
+  //   trustList = appData[TrustKey];
+  // }
+  if (trustId && trustList) {
+    legalEntities = trustList.find(trust =>
       trust?.trust_id === trustId)?.CORPORATES as TrustCorporate[];
     if (legalEntities === undefined) {
-      legalEntities = [] as TrustCorporate[];
+      legalEntities = [];
     }
   }
   return legalEntities;

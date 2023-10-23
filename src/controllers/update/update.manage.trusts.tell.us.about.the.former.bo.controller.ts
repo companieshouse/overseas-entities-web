@@ -60,7 +60,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     if (trust.HISTORICAL_BO && trusteeIndex >= 0) {
       // update existing trustee
-      trust.HISTORICAL_BO[trusteeIndex] = trustee;
+      const trusteeToChange = trust.HISTORICAL_BO[trusteeIndex];
+      const updatedTrustee = mapBeneficialOwnerToSession(formData, trusteeToChange);
+      trust.HISTORICAL_BO[trusteeIndex] = updatedTrustee;
     } else {
       // add new trustee
       trust.HISTORICAL_BO?.push(trustee);

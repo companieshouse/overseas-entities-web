@@ -7,12 +7,13 @@ import { getLegalEntityTrustee } from '../../utils/trusts';
 import { ApplicationData } from 'model';
 
 const mapLegalEntityToSession = (
-  formData: Page.TrustLegalEntityForm
+  formData: Page.TrustLegalEntityForm,
+  trustee?: Trust.TrustCorporate
 ): Trust.TrustCorporate => {
 
   const data = {
     id: formData.legalEntityId || generateId(),
-    ch_references: formData.ch_references,
+    ch_references: trustee ? trustee.ch_references : undefined,
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
     date_became_interested_person_day: formData.interestedPersonStartDateDay,
@@ -98,7 +99,7 @@ const mapLegalEntityTrusteeFromSessionToPage = (
 ): Page.TrustLegalEntityForm => {
   const data = {
     legalEntityId: trustee.id,
-    ch_references: trustee.ch_references,
+    is_newly_added: trustee.ch_references ? false : true,
     roleWithinTrust: trustee.type,
     legalEntityName: trustee.name,
     principal_address_property_name_number: trustee.ro_address_premises,
@@ -143,7 +144,7 @@ const mapLegalEntityItemToPage = (
     id: legalEntity.id,
     name: legalEntity.name,
     trusteeItemType: TrusteeType.LEGAL_ENTITY,
-    ch_references: legalEntity.ch_references
+    is_newly_added: legalEntity.ch_references ? false : true
   };
 };
 

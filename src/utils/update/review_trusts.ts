@@ -112,7 +112,7 @@ export const moveTrustOutOfReview = (appData: ApplicationData) => {
 
   if (!trust) { return; }
 
-  delete trust.review_status;
+  trust.review_status = undefined;
 
   if (appData.trusts === undefined) {
     appData.trusts = [];

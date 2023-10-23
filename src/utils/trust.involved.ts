@@ -15,6 +15,8 @@ import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './tr
 import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
 import { saveAndContinue } from './save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
+import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
+import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -44,7 +46,8 @@ type TrustInvolvedPageProperties = {
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,
-    isUpdate: boolean
+    isUpdate: boolean,
+    isReview: boolean
   } & TrustWhoIsInvolved,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
@@ -60,12 +63,24 @@ const getPageProperties = (
 ): TrustInvolvedPageProperties => {
   const appData = getApplicationData(req.session);
   let trustId;
+  let individualTrusteeData;
+  let formerTrusteeData;
 
   if (isReview) {
     const trustInReview = getTrustInReview(appData);
     trustId = trustInReview?.trust_id;
+    individualTrusteeData = [
+      ...getIndividualTrusteesFromTrust(appData, trustId, isReview)
+        .map(mapIndividualTrusteeFromSessionToPage)
+    ];
+    formerTrusteeData = [
+      ...getFormerTrusteesFromTrust(appData, trustId, isReview)
+        .map(mapFormerTrusteeFromSessionToPage)
+    ];
   } else {
     trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
+    formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
   }
 
   return {
@@ -79,12 +94,13 @@ const getPageProperties = (
       ...mapTrustWhoIsInvolvedToPage(appData, trustId, isReview),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId, isReview),
-      formerTrusteeData: getFormerTrusteesFromTrust(appData, trustId, isReview),
+      individualTrusteeData: individualTrusteeData,
+      formerTrusteeData: formerTrusteeData,
       trusteeType: TrusteeType,
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
-      isUpdate: isUpdate
+      isUpdate: isUpdate,
+      isReview: isReview
     },
     formData,
     errors,
@@ -103,7 +119,12 @@ export const getTrustInvolvedPage = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const pageProps = getPageProperties(req, isUpdate, isReview);
-
+    console.log("********** TRUSTEES");
+    console.log(pageProps.pageData.trustees);
+    console.log("********** IND");
+    console.log(pageProps.pageData.individualTrusteeData);
+    console.log("********** FORMER");
+    console.log(pageProps.pageData.formerTrusteeData);
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

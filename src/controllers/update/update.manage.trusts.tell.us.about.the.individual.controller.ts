@@ -77,7 +77,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.INDIVIDUAL);
 
     if (trust.INDIVIDUALS && trusteeIndex >= 0) {
-      trust.INDIVIDUALS[trusteeIndex] = trustee;
+      const trusteeToChange = trust.INDIVIDUALS[trusteeIndex];
+      const updatedTrustee = mapIndividualTrusteeToSession(formData, trusteeToChange);
+      trust.INDIVIDUALS[trusteeIndex] = updatedTrustee;
     } else {
       trust.INDIVIDUALS?.push(trustee);
     }

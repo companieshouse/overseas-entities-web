@@ -4,7 +4,6 @@ jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.beneficial.owners.statement.middleware');
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/feature.flag" );
-jest.mock("../../src/utils/url");
 
 import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -19,7 +18,6 @@ import { hasBeneficialOwnersStatement } from "../../src/middleware/navigation/ha
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { getUrlWithParamsToPath } from "../../src/utils/url";
 import { EntityNumberKey } from '../../src/model/data.types.model';
 import { TrustKey } from '../../src/model/trust.model';
 
@@ -37,20 +35,15 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
-const NEXT_PAGE_URL = "/NEXT_PAGE";
-
-const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
-mockGetUrlWithParamsToPath.mockReturnValue(NEXT_PAGE_URL);
-
-describe("BENEFICIAL OWNER TYPE controller Resume", () => {
+describe("BENEFICIAL OWNER TYPE controller on resume", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockIsActiveFeature.mockReset();
   });
 
-  describe("POST Submit resume tests", () => {
-    test(`redirects to the trust information page with entity_number null on resume`, async () => {
+  describe("POST Submit", () => {
+    test(`redirects to the trust interrupt page with entity_number null on resume`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockIsActiveFeature.mockReturnValueOnce(true);
       const appDataMock = {

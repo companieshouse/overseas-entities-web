@@ -181,12 +181,14 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(NEXT_PAGE_URL);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(5);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(7);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[1][0]).toEqual(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[2][0]).toEqual(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[3][0]).toEqual(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL);
       expect(mockGetUrlWithParamsToPath.mock.calls[4][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[5][0]).toEqual(config.MANAGING_OFFICER_WITH_PARAMS_URL);
+      expect(mockGetUrlWithParamsToPath.mock.calls[6][0]).toEqual(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
     });
   });
 
@@ -320,6 +322,34 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.header.location).toEqual(NEXT_PAGE_URL);
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL);
+    });
+
+    test(`redirects to the ${config.MANAGING_OFFICER_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_URL)
+        .send({ [BeneficialOwnerTypeKey]: ManagingOfficerTypeChoice.individual });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.MANAGING_OFFICER_WITH_PARAMS_URL);
+    });
+
+    test(`redirects to the ${config.MANAGING_OFFICER_CORPORATE_PAGE} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+      const resp = await request(app)
+        .post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL)
+        .send({ [BeneficialOwnerTypeKey]: ManagingOfficerTypeChoice.corporate });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(NEXT_PAGE_URL);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL);
     });
 
     // TODO Add the other BO Type POST tests in here and change to work with the 'with params' URLs once this has been

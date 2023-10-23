@@ -186,11 +186,6 @@ const getIndividualTrusteesFromTrust = (
 ): IndividualTrustee[] => {
   let individuals: IndividualTrustee[] = [];
   const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
-  // if (isReview) {
-  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  // } else {
-  //   trustList = appData[TrustKey];
-  // }
   if (trustId) {
     individuals = trustList?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
@@ -226,11 +221,6 @@ const getFormerTrusteesFromTrust = (
 ): TrustHistoricalBeneficialOwner[] => {
   let formerTrustees: TrustHistoricalBeneficialOwner[] = [];
   const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
-  // if (isReview) {
-  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  // } else {
-  //   trustList = appData[TrustKey];
-  // }
   if (trustId) {
     formerTrustees = trustList?.find(trust =>
       trust?.trust_id === trustId)?.HISTORICAL_BO as TrustHistoricalBeneficialOwner[];
@@ -296,11 +286,6 @@ const getLegalEntityBosInTrust = (
 ): TrustCorporate[] => {
   let legalEntities: TrustCorporate[] = [];
   const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
-  // if (isReview) {
-  //   trustList = appData[UpdateKey]?.[ReviewTrustKey];
-  // } else {
-  //   trustList = appData[TrustKey];
-  // }
   if (trustId && trustList) {
     legalEntities = trustList.find(trust =>
       trust?.trust_id === trustId)?.CORPORATES as TrustCorporate[];

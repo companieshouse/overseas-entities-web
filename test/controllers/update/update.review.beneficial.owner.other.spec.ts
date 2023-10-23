@@ -92,7 +92,7 @@ describe(`Update review beneficial owner other`, () => {
 
   describe(`POST tests`, () => {
     test(`redirect to ${UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_UPDATE_BO_MOCK
       });
 

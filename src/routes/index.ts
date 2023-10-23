@@ -348,6 +348,19 @@ router
   );
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrustWithIdRegister,
+  )
+  .get(trustInvolved.get)
+  .post(
+    ...validator.trustInvolved,
+    trustInvolved.post,
+  );
+
+router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_HISTORICAL_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),

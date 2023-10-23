@@ -15,6 +15,8 @@ import { FormattedValidationErrors, formatValidationError } from '../middleware/
 import { saveAndContinue } from '../utils/save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
 import { setTrustDetailsAsReviewed, getReviewTrustById, updateTrustInReviewList } from './update/review_trusts';
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const TRUST_DETAILS_TEXTS = {
   title: 'Tell us about the trust',
@@ -192,8 +194,7 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
 
     await saveAndContinue(req, session, !(isReview || isUpdate));
 
-    return safeRedirect(res, getNextPage(isUpdate, details.trust_id, isReview));
-
+    return safeRedirect(res, getNextPage(isUpdate, details.trust_id, req, isReview));
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -243,12 +244,17 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean, trustId: string, isReview?: boolean,) => {
+const getNextPage = (isUpdate: boolean, trustId: string, req: Request, isReview?: boolean) => {
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
   } else if (isUpdate) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
-    return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    let nextPageUrl = `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      nextPageUrl = getUrlWithParamsToPath(`${config.TRUST_ENTRY_WITH_PARAMS_URL}/${trustId}${config.TRUST_INVOLVED_URL}`, req);
+    }
+
+    return nextPageUrl;
   }
 };

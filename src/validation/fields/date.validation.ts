@@ -17,7 +17,8 @@ import {
   MonthFieldErrors,
   YearFieldErrors,
   checkDateIPLegalEntityBO,
-  checkCeasedDateOnOrAfterStartDate
+  checkFirstDateOnOrAfterSecondDate,
+  checkFilingPeriod
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -48,7 +49,7 @@ const is_still_active_validations = (date_field_id: string, radio_button_id: str
   body(date_field_id)
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDate(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"]))
-    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
+    .custom((value, { req }) => checkFirstDateOnOrAfterSecondDate(
       req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
       req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
       error_message
@@ -57,9 +58,18 @@ const is_still_active_validations = (date_field_id: string, radio_button_id: str
 
 const is_trust_still_active_validation = (error_message: string) => [
   body("endDate")
-    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
+    .custom((value, { req }) => checkFirstDateOnOrAfterSecondDate(
       req.body["endDateDay"], req.body["endDateMonth"], req.body["endDateYear"],
       req.body["startDateDay"], req.body["startDateMonth"], req.body["startDateYear"],
+      error_message
+    )),
+];
+
+const is_date_within_filing_period = (date_field_id: string, error_message: string) => [
+  body(date_field_id)
+    .custom((value, { req }) => checkFilingPeriod(
+      req,
+      req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
       error_message
     )),
 ];
@@ -69,6 +79,8 @@ export const ceased_date_validations = is_still_active_validations("ceased_date"
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
 
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
+
+export const filingPeriodStartDateValidations = is_date_within_filing_period("start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others

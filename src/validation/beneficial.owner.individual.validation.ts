@@ -9,7 +9,6 @@ import {
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { date_of_birth_validations, start_date_validations, ceased_date_validations } from "./fields/date.validation";
-import { checkStartDateBeforeDOB } from "./custom.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")

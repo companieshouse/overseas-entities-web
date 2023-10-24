@@ -8,122 +8,166 @@
       <span class="govuk-caption-l">{{ pageData.trustData.trustName }}</span>
       <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
 
-      {% set boItems = [] %}
+      {% set reviewedBoItems = [] %}
+      {% set addedBoItems = [] %}
       {% for bo in pageData.boInTrust %}
-        {% set type = pageData.beneficialOwnerTypeTitle[bo.type] %}
-        {% set boItems = (
-          boItems.push({
-            key: {
-              text: type
-            },
-            value: {
-              text: bo.name
-            }
-          }),
-          boItems
-        ) %}
+        {% if pageData.isReview %}
+          {% set type = "Beneficial Owner" %}
+        {% else %}
+          {% set type = pageData.beneficialOwnerTypeTitle[bo.type] %}
+        {% endif %}
+        {% set row = {
+          key: { text: type },
+          value: { text: bo.name }
+        } %}
+        {% if pageData.isReview %}
+          {% set reviewedBoItems = (reviewedBoItems.push(row), reviewedBoItems) %}
+        {% else %}
+          {% set addedBoItems = (addedBoItems.push(row), addedBoItems) %}
+        {% endif %}
       {% endfor %}
 
-      {% set formerTrustees = [] %}
+      {% set reviewedFormerTrustees = [] %}
+      {% set addedFormerTrustees = [] %}
       {% for trustee in pageData.formerTrusteeData %}
         {% set type = pageData.trusteeTypeTitle[pageData.trusteeType.HISTORICAL] %}
-        {% if trustee.forename and trustee.surname%}
-          {% set name = trustee.forename + " " + trustee.surname %}
+        {% if trustee.forename and trustee.surname or trustee.firstName and trustee.lastName %}
+          {% set name = trustee.firstName + " " + trustee.lastName if pageData.isReview else trustee.forename + " " + trustee.surname %}
           {% set formerTrusteeChangeName = OE_CONFIGS.INDIVIDUAL_NAME %}
         {% else %}
           {% set name = trustee.corporate_name %}
           {% set formerTrusteeChangeName = OE_CONFIGS.CORPORATE_NAME %}
         {% endif %}
-        {% set formerTrustees = (
-          formerTrustees.push({
-            key: {
-              text: type  
-            },
-            value: {
-              text: name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + formerTrusteeChangeName,
-                "Former Trustee" + trustee.name,
-                "change-former-trustee-button"
-             ) ]
-            }
-          }),
-          formerTrustees
-        ) %}
+        {% if pageData.isReview %}
+          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/" + trustee.boId + formerTrusteeChangeName %}
+        {% else %}
+          {% set changeLink = OE_CONFIGS.TRUST_HISTORICAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + formerTrusteeChangeName %}
+        {% endif %}
+
+        {% set row = {
+          key: { text: type },
+          value: { text: name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(changeLink, "Former Trustee " + name, "change-former-trustee-button")]
+          }
+        } %}
+
+        {% if not pageData.isReview %}
+          {% set addedFormerTrustees = (addedFormerTrustees.push(row), addedFormerTrustees) %}
+        {% else %}
+          {% if trustee.is_newly_added %}
+            {% set addedFormerTrustees = (addedFormerTrustees.push(row), addedFormerTrustees) %}
+          {% else %}
+            {% set reviewedFormerTrustees = (reviewedFormerTrustees.push(row), reviewedFormerTrustees) %}
+          {% endif %}
+        {% endif %}
       {% endfor %}
-      
-      {% set individualTrustees = [] %}
+
+      {% set reviewedIndividualTrustees = [] %}
+      {% set addedIndividualTrustees = [] %}
       {% for trustee in pageData.individualTrusteeData %}
         {% set type = pageData.trusteeType.INDIVIDUAL | capitalize %}
         {% set name = trustee.forename + " " + trustee.surname %}
-        {% set individualTrustees = (
-          individualTrustees.push({
-            key: {
-              text: type  
-            },
-            value: {
-              text: name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.FORENAME,
-                "Individual Trustee " + name,
-                "change-individual-trustee-button"
-             ) ]
-            }
-          }),
-          individualTrustees
-        ) %}
+        {% if pageData.isReview %}
+          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL + "/" + trustee.trusteeId + OE_CONFIGS.FORENAME %}
+        {% else %}
+          {% set changeLink = OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.FORENAME %}
+        {% endif %}
+
+        {% set row = {
+          key: { text: type },
+          value: { text: name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(changeLink, "Individual Trustee " + name, "change-individual-trustee-button")]
+          }
+        } %}
+
+        {% if not pageData.isReview %}
+          {% set addedIndividualTrustees = (addedIndividualTrustees.push(row), addedIndividualTrustees) %}
+        {% else %}
+          {% if trustee.is_newly_added %}
+            {% set addedIndividualTrustees = (addedIndividualTrustees.push(row), addedIndividualTrustees) %}
+          {% else %}
+            {% set reviewedIndividualTrustees = (reviewedIndividualTrustees.push(row), reviewedIndividualTrustees) %}
+          {% endif %}
+        {% endif %}
       {% endfor %}
 
-      {% set legalEntityTrustees = [] %}
+      {% set reviewedLegalEntityTrustees = [] %}
+      {% set addedLegalEntityTrustees = [] %}
       {% for trustee in pageData.trustees %}
         {% set type = pageData.trusteeTypeTitle[trustee.trusteeItemType] %}
-        {% set legalEntityTrustees = (
-          legalEntityTrustees.push({
-            key: {
-              text: type
-            },
-            value: {
-              text: trustee.name
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME,
-                "Legal Entity Trustee " + trustee.name,
-                "change-legal-entity-trustee-button"
-             ) ]
-            }
-          }),
-          legalEntityTrustees
-        ) %}
+        {% if pageData.isReview %}
+          {% set changeLink = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME %}
+        {% else %}
+          {% set changeLink = OE_CONFIGS.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_PAGE + "/" + trustee.id + OE_CONFIGS.LEGAL_ENTITY_NAME %}
+        {% endif %}
+
+        {% set row = {
+          key: { text: type },
+          value: { text: trustee.name },
+          actions: {
+            items: [CREATE_CHANGE_LINK(changeLink, "Legal Entity Trustee " + trustee.name, "change-legal-entity-trustee-button")]
+          }
+        } %}
+
+        {% if not pageData.isReview %}
+          {% set addedLegalEntityTrustees = (addedLegalEntityTrustees.push(row), addedLegalEntityTrustees) %}
+        {% else %}
+          {% if trustee.is_newly_added %}
+            {% set addedLegalEntityTrustees = (addedLegalEntityTrustees.push(row), addedLegalEntityTrustees) %}
+          {% else %}
+            {% set reviewedLegalEntityTrustees = (reviewedLegalEntityTrustees.push(row), reviewedLegalEntityTrustees) %}
+          {% endif %}
+        {% endif %}
       {% endfor %}
 
-      {% if boItems | length or formerTrustees | length or individualTrustees | length or legalEntityTrustees | length %}
+      {% if pageData.isReview %}
+        {% if reviewedBoItems | length or reviewedFormerTrustees | length or reviewedIndividualTrustees | length or reviewedLegalEntityTrustees | length %}
+          <h1 class="govuk-heading-m">
+            What you have reviewed for this trust
+          </h1>
+          {{ govukSummaryList({
+            rows: reviewedBoItems
+          }) }}
+
+          {{ govukSummaryList({
+            rows: reviewedFormerTrustees
+          }) }}
+
+          {{ govukSummaryList({
+            rows: reviewedIndividualTrustees
+          }) }}
+
+          {{ govukSummaryList({
+            rows: reviewedLegalEntityTrustees
+          }) }}
+
+        {% endif %}
+      {% endif %}
+
+      {% if addedBoItems | length or addedFormerTrustees | length or addedIndividualTrustees | length or addedLegalEntityTrustees | length %}
         <h1 class="govuk-heading-m">
           What <span class="govuk-visually-hidden">individuals or entities</span>
           you have added so far for this trust
         </h1>
         {{ govukSummaryList({
-          rows: boItems
+          rows: addedBoItems
         }) }}
 
         {{ govukSummaryList({
-          rows: formerTrustees
+          rows: addedFormerTrustees
         }) }}
 
         {{ govukSummaryList({
-          rows: individualTrustees
+          rows: addedIndividualTrustees
         }) }}
 
         {{ govukSummaryList({
-          rows: legalEntityTrustees
+          rows: addedLegalEntityTrustees
         }) }}
         
       {% endif %}
-      
 
       <form class="form" method="post">
         {% set fieldParam = {

@@ -11,7 +11,7 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
+import { SECURE_UPDATE_FILTER_URL, UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
@@ -161,7 +161,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
   });
 
   describe('POST tests', () => {
-    test('when feature flag is on, and adding new legal former BO, redirects to update-manage-trusts-review-former-bo', async () => {
+    test('when feature flag is on, and adding new legal former BO, redirects to update-manage-trusts-orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
@@ -178,10 +178,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
       expect(resp.status).toEqual(302);
       expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
-    test('when feature flag is on, and adding new individual former BO, redirects to update-manage-trusts-review-former-bo', async () => {
+    test('when feature flag is on, and adding new individual former BO, redirects to update-manage-trusts-orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL).send({
@@ -199,10 +199,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
       expect(resp.status).toEqual(302);
       expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
-    test('when feature flag is on, update existing former BO, redirects to update-manage-trusts-review-former-bo', async () => {
+    test('when feature flag is on, update existing former BO, redirects to update-manage-trusts-orchestrator', async () => {
       mockIsActiveFeature.mockReturnValue(true);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL + "/1234").send({
@@ -220,7 +220,7 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
 
       expect(resp.status).toEqual(302);
       expect(mockSaveAndContinue).toHaveBeenCalled();
-      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
     });
 
     test('triggers validation errors', async () => {

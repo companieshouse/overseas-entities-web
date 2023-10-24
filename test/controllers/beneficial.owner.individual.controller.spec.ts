@@ -199,6 +199,34 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
     });
   });
 
+  describe("GET BY ID with url params tests", () => {
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page`, async () => {
+      mockGetFromApplicationData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+      const applicationDataMock = { ...APPLICATION_DATA_MOCK };
+      delete applicationDataMock[EntityNumberKey];
+      mockGetApplicationData.mockReturnValueOnce(applicationDataMock);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(SAVE_AND_CONTINUE_BUTTON_TEXT);
+      expect(resp.text).toContain("Ivan");
+      expect(resp.text).toContain("Drago");
+      expect(resp.text).toContain("Russian");
+      expect(resp.text).toContain(SECOND_NATIONALITY);
+      expect(resp.text).toContain(SECOND_NATIONALITY_HINT);
+    });
+
+    test("catch error when rendering the page", async () => {
+      mockGetFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+  });
+
   describe("POST tests", () => {
     test(`redirects to ${BENEFICIAL_OWNER_TYPE_PAGE} page`, async () => {
       mockPrepareData.mockImplementationOnce( () => BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK );
@@ -1621,6 +1649,39 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+    });
+  });
+
+  describe("REMOVE with url params tests", () => {
+    test(`redirects to the ${BENEFICIAL_OWNER_TYPE_URL} page`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockPrepareData.mockReturnValueOnce(BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK);
+
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(NEXT_PAGE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("catch error when removing data", async () => {
+      mockRemoveFromApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+      expect(mockSaveAndContinue).not.toHaveBeenCalled(); // TODO: testing
+    });
+
+    test(`removes the object from session`, async () => {
+      const resp = await request(app).get(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + REMOVE + BO_IND_ID_URL);
+
+      expect(mockRemoveFromApplicationData.mock.calls[0][1]).toEqual(BeneficialOwnerIndividualKey);
+      expect(mockRemoveFromApplicationData.mock.calls[0][2]).toEqual(BO_IND_ID);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(BENEFICIAL_OWNER_TYPE_URL);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

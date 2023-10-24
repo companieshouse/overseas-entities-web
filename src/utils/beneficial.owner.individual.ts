@@ -74,13 +74,13 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
       [StartDateKey]: startDate
     };
 
-    const appData = getApplicationData(req.session);
-
     // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
     const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
     if (isRegistration) {
       addActiveSubmissionBasePathToTemplateData(templateOptions, req);
     }
+
+    const appData = getApplicationData(req.session);
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

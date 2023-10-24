@@ -34,6 +34,28 @@ describe('checkFirstDateOnOrAfterSecondDate', () => {
     expect(custom.checkFirstDateOnOrAfterSecondDate(...ceaseDate, ...startDate)).toBe(true);
   });
 
+  test('should throw error if filing date before start date', () => {
+    const filingDate = ["2", "2", "2023"];
+    const startDate = ["3", "3", "2023"];
+
+    expect(() => custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate, ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+      .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+  });
+
+  test('should return true if filing date = start date', () => {
+    const filingDate = ["3", "3", "2023"];
+    const startDate = ["3", "3", "2023"];
+
+    expect(custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate)).toBe(true);
+  });
+
+  test('should return true if filing date after start date', () => {
+    const filingDate = ["3", "3", "2023"];
+    const startDate = ["2", "2", "2023"];
+
+    expect(custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate)).toBe(true);
+  });
+
   test("should test checkFieldIfRadioButtonSelectedAndFieldsEmpty validity", () => {
     const errorMsg = "kaput";
     expect(() => custom.checkFieldIfRadioButtonSelectedAndFieldsEmpty(true, true, true, errorMsg)).toThrowError("Enter their correspondence address");

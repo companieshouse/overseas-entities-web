@@ -7,9 +7,11 @@ import { ApplicationData } from 'model';
 
 export const mapIndividualTrusteeToSession = (
   formData: Page.IndividualTrusteesFormCommon,
+  trustee?: Trust.TrustIndividual
 ): Trust.IndividualTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
+    ch_references: trustee?.ch_references,
     type: formData.roleWithinTrust,
     forename: formData.forename,
     other_forenames: '',
@@ -74,8 +76,9 @@ export const mapIndividualTrusteeByIdFromSessionToPage = (
   appData: ApplicationData,
   trustId: string,
   trusteeId: string,
+  isReview?: boolean
 ): Page.IndividualTrusteesFormCommon => {
-  const trustee = getIndividualTrustee(appData, trustId, trusteeId);
+  const trustee = getIndividualTrustee(appData, trustId, trusteeId, isReview);
   return mapIndividualTrusteeFromSessionToPage(trustee);
 };
 
@@ -84,6 +87,7 @@ export const mapIndividualTrusteeFromSessionToPage = (
 ): Page.IndividualTrusteesFormCommon => {
   const data = {
     trusteeId: trustee.id,
+    is_newly_added: trustee.ch_references ? false : true,
     roleWithinTrust: trustee.type,
     forename: trustee.forename,
     surname: trustee.surname,

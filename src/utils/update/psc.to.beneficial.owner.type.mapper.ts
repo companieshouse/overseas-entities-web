@@ -3,7 +3,7 @@ import { BeneficialOwnerGov } from "../../model/beneficial.owner.gov.model";
 import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
 import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 import { NatureOfControlType, yesNoResponse } from "../../model/data.types.model";
-import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate, splitNationalities, mapBOIndividualName } from "./mapper.utils";
+import { mapBOMOAddress, isSameAddress, mapDateOfBirth, mapSelfLink, mapInputDate, splitNationalities, mapBOIndividualName, lowerCaseNationalityExceptFirstLetters } from "./mapper.utils";
 import { logger } from "../../utils/logger";
 import { BeneficialOwnerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 
@@ -15,8 +15,8 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
     ch_reference: mapSelfLink(psc.links?.self),
     first_name: mapBOIndividualName(psc.nameElements),
     last_name: psc.nameElements?.surname,
-    nationality: nationalities[0],
-    second_nationality: nationalities[1],
+    nationality: lowerCaseNationalityExceptFirstLetters(nationalities[0]),
+    second_nationality: lowerCaseNationalityExceptFirstLetters(nationalities[1]),
     date_of_birth: mapDateOfBirth(psc.dateOfBirth),
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, undefined) ? yesNoResponse.Yes : yesNoResponse.No,
     usual_residential_address: undefined,

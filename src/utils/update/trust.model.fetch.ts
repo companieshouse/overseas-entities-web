@@ -9,7 +9,7 @@ import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
 import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
-import { mapInputDate, splitNationalities } from "./mapper.utils";
+import { mapInputDate, splitNationalities, lowerCaseNationalityExceptFirstLetters } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
 
@@ -121,8 +121,8 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_day: dateOfBirth?.day ?? "",
     dob_month: dateOfBirth?.month ?? "",
     dob_year: dateOfBirth?.year ?? "",
-    nationality: nationalities[0],
-    second_nationality: nationalities.length > 1 ? nationalities[1] : undefined,
+    nationality: lowerCaseNationalityExceptFirstLetters(nationalities[0]) ?? "",
+    second_nationality: nationalities.length > 1 ? lowerCaseNationalityExceptFirstLetters(nationalities[1]) : undefined,
     type: mapTrusteeType(trustee.trusteeTypeId),
 
     ura_address_premises: "",

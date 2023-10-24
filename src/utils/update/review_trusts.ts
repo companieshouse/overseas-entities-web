@@ -8,8 +8,8 @@ export const hasTrustsToReview = (appData: ApplicationData) =>
 export const getTrustInReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).find(trust => !!trust.review_status?.in_review);
 
-export const getReviewTrustById = (appData: ApplicationData, trustId: string) =>
-  appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {};
+export const getReviewTrustById = (appData: ApplicationData, trustId: string): Trust =>
+  appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 
 export const updateTrustInReviewList = (appData: ApplicationData, trustToSave: Trust) => {
   const trusts: Trust[] = appData.update?.review_trusts ?? [];
@@ -104,4 +104,19 @@ export const setTrusteesAsReviewed = (appData: ApplicationData, trusteeType: Tru
       default:
         return false;
   }
+};
+
+export const moveTrustOutOfReview = (appData: ApplicationData) => {
+  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(reviewTrust => reviewTrust?.review_status?.in_review);
+  const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
+
+  if (!trust) { return; }
+
+  trust.review_status = undefined;
+
+  if (appData.trusts === undefined) {
+    appData.trusts = [];
+  }
+
+  appData.trusts?.push(trust);
 };

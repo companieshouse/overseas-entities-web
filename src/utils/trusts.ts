@@ -14,6 +14,7 @@ import {
   TrustCorporate,
 } from "../model/trust.model";
 import { yesNoResponse } from "../model/data.types.model";
+import { ReviewTrustKey, UpdateKey } from "../model/update.type.model";
 
 /**
  * Checks whether any beneficial owners requires trust data due to at least one of them
@@ -181,10 +182,12 @@ const getTrustBoOthers = (
 const getIndividualTrusteesFromTrust = (
   appData: ApplicationData,
   trustId?: string,
+  isReview?: boolean,
 ): IndividualTrustee[] => {
   let individuals: IndividualTrustee[] = [];
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
   if (trustId) {
-    individuals = appData[TrustKey]?.find(trust =>
+    individuals = trustList?.find(trust =>
       trust?.trust_id === trustId)?.INDIVIDUALS as IndividualTrustee[];
     if (individuals === undefined){
       individuals = [] as IndividualTrustee[];
@@ -201,8 +204,9 @@ const getIndividualTrustee = (
   appData: ApplicationData,
   trustId: string,
   trusteeId?: string,
+  isReview?: boolean,
 ): IndividualTrustee => {
-  const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId);
+  const individualTrustees = getIndividualTrusteesFromTrust(appData, trustId, isReview);
 
   if (individualTrustees.length === 0 || trusteeId === undefined) {
     return {} as IndividualTrustee;
@@ -213,10 +217,12 @@ const getIndividualTrustee = (
 const getFormerTrusteesFromTrust = (
   appData: ApplicationData,
   trustId?: string,
+  isReview?: boolean,
 ): TrustHistoricalBeneficialOwner[] => {
   let formerTrustees: TrustHistoricalBeneficialOwner[] = [];
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
   if (trustId) {
-    formerTrustees = appData[TrustKey]?.find(trust =>
+    formerTrustees = trustList?.find(trust =>
       trust?.trust_id === trustId)?.HISTORICAL_BO as TrustHistoricalBeneficialOwner[];
     if (formerTrustees === undefined) {
       formerTrustees = [] as TrustHistoricalBeneficialOwner[];
@@ -229,8 +235,9 @@ const getFormerTrustee = (
   appData: ApplicationData,
   trustId: string,
   trusteeId?: string,
+  isReview?: boolean,
 ): TrustHistoricalBeneficialOwner => {
-  const formerTrustees = getFormerTrusteesFromTrust(appData, trustId);
+  const formerTrustees = getFormerTrusteesFromTrust(appData, trustId, isReview);
 
   if (formerTrustees.length === 0 || trusteeId === undefined) {
     return {} as TrustHistoricalBeneficialOwner;
@@ -275,13 +282,15 @@ const saveHistoricalBoInTrust = (
 const getLegalEntityBosInTrust = (
   appData: ApplicationData,
   trustId?: string,
+  isReview?: boolean,
 ): TrustCorporate[] => {
   let legalEntities: TrustCorporate[] = [];
-  if (trustId) {
-    legalEntities = appData[TrustKey]?.find(trust =>
+  const trustList = isReview ? appData[UpdateKey]?.[ReviewTrustKey] : appData[TrustKey];
+  if (trustId && trustList) {
+    legalEntities = trustList.find(trust =>
       trust?.trust_id === trustId)?.CORPORATES as TrustCorporate[];
     if (legalEntities === undefined) {
-      legalEntities = [] as TrustCorporate[];
+      legalEntities = [];
     }
   }
   return legalEntities;
@@ -291,8 +300,9 @@ const getLegalEntityTrustee = (
   appData: ApplicationData,
   trustId: string,
   trusteeId?: string,
+  isReview?: boolean
 ): TrustCorporate => {
-  const legalEntityTrustees = getLegalEntityBosInTrust(appData, trustId);
+  const legalEntityTrustees = getLegalEntityBosInTrust(appData, trustId, isReview);
 
   if (legalEntityTrustees.length === 0 || trusteeId === undefined) {
     return {} as TrustCorporate;

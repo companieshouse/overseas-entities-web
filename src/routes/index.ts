@@ -213,7 +213,17 @@ router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .get(beneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
 
+router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerIndividual.getById)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
+
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
+
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_URL)
   .all(
@@ -654,7 +664,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
     navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
-  .post(updateManageTrustsIndividualsOrEntitiesInvolved.post);
+  .post(...validator.trustInvolved, updateManageTrustsIndividualsOrEntitiesInvolved.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(

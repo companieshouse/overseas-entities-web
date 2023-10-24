@@ -34,6 +34,7 @@ describe('Trust Details page Mapper Service', () => {
         id: mockBo.id,
         name: mockBo.name,
         type: BeneficialOwnerTypeChoice.otherLegal,
+        is_newly_added: true,
       });
     });
   });

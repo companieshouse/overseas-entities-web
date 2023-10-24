@@ -7,6 +7,7 @@ import { ApplicationData } from '.../../model';
 const mapTrustWhoIsInvolvedToPage = (
   appData: ApplicationData,
   trustId: string,
+  isReview: boolean
 ): TrustWhoIsInvolved => {
   const boInTrust = [
     ...getTrustBoIndividuals(appData, trustId)
@@ -16,7 +17,7 @@ const mapTrustWhoIsInvolvedToPage = (
   ];
 
   const trustees = [
-    ...getLegalEntityBosInTrust(appData, trustId)
+    ...getLegalEntityBosInTrust(appData, trustId, isReview)
       .map(trustLegalEntityMapper.mapLegalEntityItemToPage)
   ];
 

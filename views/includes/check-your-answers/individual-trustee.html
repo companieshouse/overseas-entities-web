@@ -1,5 +1,7 @@
 {% import "includes/date-macros.html" as dateMacros %}
 
+{% set inNoChangeJourney = pageParams.noChangeFlag %}
+
 {% set individualTrusteeFullName = individualTrustee.forename + " " + individualTrustee.surname %}
 
 {% set individualTrusteeDateOfBirth = dateMacros.formatDate(individualTrustee.dob_day, individualTrustee.dob_month, individualTrustee.dob_year) %}
@@ -62,7 +64,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - first name",
       "change-individual-beneficial-owner-first-name-button"
    ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -78,7 +80,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - last name",
       "change-individual-beneficial-owner-last-name-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -94,7 +96,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% set rows = (rows.push({
@@ -110,7 +112,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - type",
       "change-individual-beneficial-owner-type-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% if individualTrustee.type ==  roleTypes.INTERESTED_PERSON %}
@@ -127,7 +129,7 @@
         "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
         "change-individual-beneficial-owner-date-of-birth-name-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -145,7 +147,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - nationality",
       "change-individual-beneficial-owner-nationality-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% if individualTrustee.second_nationality %}
@@ -162,7 +164,7 @@
         "Individual beneficial owner " + individualTrusteeFullName + " - second_nationality",
         "change-individual-beneficial-owner-second-nationality-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 
@@ -179,7 +181,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - home address",
       "change-individual-beneficial-owner-residential-address-button"
     ) ]
-  }
+  } if not inNoChangeJourney
 }), rows) %}
 
 {% if individualTrusteeFormattedServiceAddressHtml.length %}
@@ -196,7 +198,7 @@
         "Individual beneficial owner " + individualTrusteeFullName + " - correspondence address",
         "change-individual-beneficial-owner-correspondence-address-button"
       ) ]
-    }
+    } if not inNoChangeJourney
   }), rows) %}
 {% endif %}
 

@@ -6,12 +6,17 @@ import { CommonTrustData, TrustWhoIsInvolved, TrustWhoIsInvolvedForm } from '../
 import { validationResult } from 'express-validator/src/validation-result';
 import { logger } from './logger';
 import { safeRedirect } from './http.ext';
-import { getApplicationData } from './application.data';
+import { getApplicationData, setExtraData } from './application.data';
 import { mapCommonTrustDataToPage } from './trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from './trust/who.is.involved.mapper';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { IndividualTrustee, TrustHistoricalBeneficialOwner } from '../model/trust.model';
 import { getIndividualTrusteesFromTrust, getFormerTrusteesFromTrust } from './trusts';
+import { getTrustInReview, moveTrustOutOfReview } from './update/review_trusts';
+import { saveAndContinue } from './save.and.continue';
+import { Session } from '@companieshouse/node-session-handler';
+import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
+import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -41,7 +46,8 @@ type TrustInvolvedPageProperties = {
     checkYourAnswersUrl: string;
     beneficialOwnerUrlDetach: string;
     trustData: CommonTrustData,
-    isUpdate: boolean
+    isUpdate: boolean,
+    isReview: boolean
   } & TrustWhoIsInvolved,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
@@ -51,30 +57,50 @@ type TrustInvolvedPageProperties = {
 const getPageProperties = (
   req: Request,
   isUpdate: boolean,
+  isReview: boolean,
   formData?: TrustWhoIsInvolvedForm,
   errors?: FormattedValidationErrors,
 ): TrustInvolvedPageProperties => {
-
-  const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
   const appData = getApplicationData(req.session);
+  let trustId;
+  let individualTrusteeData;
+  let formerTrusteeData;
+
+  if (isReview) {
+    const trustInReview = getTrustInReview(appData);
+    trustId = trustInReview?.trust_id;
+    individualTrusteeData = [
+      ...getIndividualTrusteesFromTrust(appData, trustId, isReview)
+        .map(mapIndividualTrusteeFromSessionToPage)
+    ];
+    formerTrusteeData = [
+      ...getFormerTrusteesFromTrust(appData, trustId, isReview)
+        .map(mapFormerTrusteeFromSessionToPage)
+    ];
+  } else {
+    trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
+    individualTrusteeData = getIndividualTrusteesFromTrust(appData, trustId, isReview);
+    formerTrusteeData = getFormerTrusteesFromTrust(appData, trustId, isReview);
+  }
 
   return {
-    backLinkUrl: getBackLinkUrl(isUpdate, trustId),
-    templateName: getPageTemplate(isUpdate),
+    backLinkUrl: getBackLinkUrl(isUpdate, trustId, isReview),
+    templateName: getPageTemplate(isUpdate, isReview),
     pageParams: {
       title: TRUST_INVOLVED_TEXTS.title,
     },
     pageData: {
-      trustData: mapCommonTrustDataToPage(appData, trustId),
-      ...mapTrustWhoIsInvolvedToPage(appData, trustId),
+      trustData: mapCommonTrustDataToPage(appData, trustId, isReview),
+      ...mapTrustWhoIsInvolvedToPage(appData, trustId, isReview),
       beneficialOwnerTypeTitle: TRUST_INVOLVED_TEXTS.boTypeTitle,
       trusteeTypeTitle: TRUST_INVOLVED_TEXTS.trusteeTypeTitle,
-      individualTrusteeData: getIndividualTrusteesFromTrust(appData, trustId),
-      formerTrusteeData: getFormerTrusteesFromTrust(appData, trustId),
+      individualTrusteeData: individualTrusteeData,
+      formerTrusteeData: formerTrusteeData,
       trusteeType: TrusteeType,
       checkYourAnswersUrl: getCheckYourAnswersUrl(isUpdate),
       beneficialOwnerUrlDetach: `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_BENEFICIAL_OWNER_DETACH_URL}`,
-      isUpdate: isUpdate
+      isUpdate: isUpdate,
+      isReview: isReview
     },
     formData,
     errors,
@@ -86,12 +112,13 @@ export const getTrustInvolvedPage = (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean
+  isUpdate: boolean,
+  isReview: boolean
 ): void => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    const pageProps = getPageProperties(req, isUpdate);
+    const pageProps = getPageProperties(req, isUpdate, isReview);
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
@@ -100,18 +127,26 @@ export const getTrustInvolvedPage = (
   }
 };
 
-export const postTrustInvolvedPage = (
+export const postTrustInvolvedPage = async (
   req: Request,
   res: Response,
   next: NextFunction,
-  isUpdate: boolean
+  isUpdate: boolean,
+  isReview: boolean
 ) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     if (req.body.noMoreToAdd) {
-      return safeRedirect(res, getNextPage(isUpdate));
+      if (isReview) {
+        const appData = getApplicationData(req.session);
+        moveTrustOutOfReview(appData);
+        setExtraData(req.session, appData);
+        await saveAndContinue(req, req.session as Session, false);
+      }
+      return safeRedirect(res, getNextPage(isUpdate, isReview));
     }
+
     //  check on errors
     const errorList = validationResult(req);
 
@@ -119,6 +154,7 @@ export const postTrustInvolvedPage = (
       const pageProps = getPageProperties(
         req,
         isUpdate,
+        isReview,
         req.body,
         formatValidationError(errorList.array()),
       );
@@ -127,6 +163,19 @@ export const postTrustInvolvedPage = (
     }
 
     const typeOfTrustee = req.body.typeOfTrustee;
+
+    if (isReview) {
+      switch (typeOfTrustee) {
+          case TrusteeType.HISTORICAL:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_URL);
+          case TrusteeType.INDIVIDUAL:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL);
+          case TrusteeType.LEGAL_ENTITY:
+            return safeRedirect(res, config.UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_URL);
+          default:
+            throw new Error("Unexpected trustee type received");
+      }
+    }
 
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
     let url = isUpdate
@@ -155,16 +204,20 @@ export const postTrustInvolvedPage = (
   }
 };
 
-const getPageTemplate = (isUpdate: boolean) => {
-  if (isUpdate) {
+const getPageTemplate = (isUpdate: boolean, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
+  } else if (isUpdate) {
     return config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE;
   } else {
     return config.TRUST_INVOLVED_PAGE;
   }
 };
 
-const getBackLinkUrl = (isUpdate: boolean, trustId: string) => {
-  if (isUpdate) {
+const getBackLinkUrl = (isUpdate: boolean, trustId: string, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL;
+  } else if (isUpdate) {
     return `${config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL}/${trustId}`;
   } else {
     return `${config.TRUST_DETAILS_URL}/${trustId}`;
@@ -187,7 +240,10 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean) => {
+const getNextPage = (isUpdate: boolean, isReview: boolean) => {
+  if (isReview) {
+    return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
+  }
   if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {

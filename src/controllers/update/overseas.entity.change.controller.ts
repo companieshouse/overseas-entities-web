@@ -10,6 +10,8 @@ import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managi
 import { getCompanyProfile } from "../../service/company.profile.service";
 import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
+import { isActiveFeature } from "../../utils/feature.flag";
+import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
@@ -37,7 +39,6 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
 
     if (appData.update) {
       appData.update.no_change = noChangeStatement === "1";
-      setExtraData(session, appData);
     }
 
     if (noChangeStatement === "1") {
@@ -47,7 +48,10 @@ export const post = async (req: Request, resp: Response, next: NextFunction) => 
       resetDataForChange(appData);
       redirectUrl = config.WHO_IS_MAKING_UPDATE_URL;
     }
+
+    setExtraData(session, appData);
     await saveAndContinue(req, session, false);
+
     return resp.redirect(redirectUrl);
 
   } catch (errors){
@@ -77,6 +81,13 @@ export const resetDataForNoChange = async (req: Request, appData: ApplicationDat
     appData.update.registrable_beneficial_owner = undefined;
     appData.update.bo_mo_data_fetched = false;
     await retrieveBoAndMoData(req, appData);
+  }
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+    if (appData.update) {
+      appData.update.trust_data_fetched = false;
+      appData.update.review_trusts = undefined;
+      await retrieveTrustData(req, appData);
+    }
   }
   return appData;
 };

@@ -8,6 +8,7 @@ import request from "supertest";
 
 import {
   PAYMENT_FAILED_PAGE,
+  PAYMENT_FAILED_WITH_PARAMS_URL,
   PAYMENT_FAILED_URL,
   YOUR_FILINGS_PATH
 } from "../../src/config";
@@ -23,6 +24,14 @@ describe("Payment failed controller tests", () => {
 
   test(`renders the ${PAYMENT_FAILED_PAGE} page`, async () => {
     const resp = await request(app).get(PAYMENT_FAILED_URL);
+
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(PAYMENT_FAILED_PAGE_HEADING);
+    expect(resp.text).toContain(YOUR_FILINGS_PATH);
+  });
+
+  test(`renders the ${PAYMENT_FAILED_PAGE} page with url params`, async () => {
+    const resp = await request(app).get(PAYMENT_FAILED_WITH_PARAMS_URL);
 
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain(PAYMENT_FAILED_PAGE_HEADING);

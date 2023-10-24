@@ -12,5 +12,10 @@
 
 {% block content %}
   {% set removePathURL = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL + OE_CONFIGS.REMOVE + "/" + id %}
+
+  {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
+    {% set removePathURL = OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL + activeSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_PAGE + OE_CONFIGS.REMOVE + "/" + id %}
+  {% endif %}
+
   {% include "includes/page-templates/beneficial-owner-individual.html" %}
 {% endblock %}

@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { logger } from '../../utils/logger';
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
 } from '../../config';
@@ -27,6 +29,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const trustee = getTrustee(trust, trusteeId, TrusteeType.HISTORICAL) as TrustHistoricalBeneficialOwner;
 
     const formData = trusteeId ? mapFormerTrusteeFromSessionToPage(trustee) : {} as TrustHistoricalBeneficialOwnerForm;
+
     const pageProperties = getPageProperties(trust, formData);
 
     return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
@@ -52,28 +55,30 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE, pageProperties);
     }
 
-    const trustee = mapBeneficialOwnerToSession(req.body);
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.HISTORICAL);
 
     if (trust.HISTORICAL_BO && trusteeIndex >= 0) {
       // update existing trustee
-      trust.HISTORICAL_BO[trusteeIndex] = trustee;
+      const trusteeToChange = trust.HISTORICAL_BO[trusteeIndex];
+      const updatedTrustee = mapBeneficialOwnerToSession(formData, trusteeToChange);
+      trust.HISTORICAL_BO[trusteeIndex] = updatedTrustee;
     } else {
       // add new trustee
+      const trustee = mapBeneficialOwnerToSession(req.body);
       trust.HISTORICAL_BO?.push(trustee);
     }
 
     setExtraData(session, appData);
     await saveAndContinue(req, session, true);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
   }
 };
 
 const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwnerForm, errors?: FormattedValidationErrors) => ({
-  backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL,
+  backLinkUrl: getBackLink(trust.review_status?.reviewed_former_bos),
   templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_FORMER_BO_PAGE,
   pageParams: {
     title: "Tell us about the former beneficial owner",
@@ -88,3 +93,11 @@ const getPageProperties = (trust: Trust, formData?: TrustHistoricalBeneficialOwn
   formData,
   errors
 });
+
+const getBackLink = (formerBosReviewed) => {
+  if (formerBosReviewed) {
+    return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+  } else {
+    return UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_URL;
+  }
+};

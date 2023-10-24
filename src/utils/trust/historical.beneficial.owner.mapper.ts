@@ -8,9 +8,11 @@ import { ApplicationData } from 'model';
 
 const mapBeneficialOwnerToSession = (
   formData: Page.TrustHistoricalBeneficialOwnerForm,
+  trustee?: Trust.TrustHistoricalBeneficialOwner
 ): Trust.TrustHistoricalBeneficialOwner => {
   const data = {
     id: formData.boId || generateBoId(),
+    ch_references: trustee?.ch_references,
     notified_date_day: formData.startDateDay,
     notified_date_month: formData.startDateMonth,
     notified_date_year: formData.startDateYear,
@@ -55,6 +57,7 @@ const mapFormerTrusteeFromSessionToPage = (
     endDateDay: trustee.ceased_date_day,
     endDateMonth: trustee.ceased_date_month,
     endDateYear: trustee.ceased_date_year,
+    is_newly_added: trustee.ch_references ? false : true
   };
   if (trustee.corporate_indicator === yesNoResponse.Yes && 'corporate_name' in trustee) {
     return {

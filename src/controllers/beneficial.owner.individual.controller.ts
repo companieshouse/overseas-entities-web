@@ -8,24 +8,36 @@ import {
   updateBeneficialOwnerIndividual
 } from "../utils/beneficial.owner.individual";
 
-import { BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL } from "../config";
+import * as config from "../config";
+
+import { isActiveFeature } from "../utils/feature.flag";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export const get = (req: Request, res: Response) => {
-  getBeneficialOwnerIndividual(req, res, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerIndividual(req, res, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const getById = (req: Request, res: Response, next: NextFunction) => {
-  getBeneficialOwnerIndividualById(req, res, next, BENEFICIAL_OWNER_INDIVIDUAL_PAGE, BENEFICIAL_OWNER_TYPE_URL);
+  getBeneficialOwnerIndividualById(req, res, next, config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE, config.BENEFICIAL_OWNER_TYPE_URL);
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
-  postBeneficialOwnerIndividual(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
+  postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerIndividual(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
+  updateBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
 };
 
 export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerIndividual(req, res, next, BENEFICIAL_OWNER_TYPE_URL, true);
+  removeBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+};
+
+const getBeneficialOwnerTypeUrl = (req: Request): string => {
+  let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
+  }
+
+  return nextPageUrl;
 };

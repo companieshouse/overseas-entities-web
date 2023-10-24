@@ -48,7 +48,7 @@ describe('Trust Involved Mapper to Page Service', () => {
       const expectlegalEntityResult = 'dummylegalEntityResult';
       (mapLegalEntityItemToPage as jest.Mock).mockReturnValue(expectlegalEntityResult);
 
-      const actual = mapTrustWhoIsInvolvedToPage(mockAppData, mockTrust1.trust_id);
+      const actual = mapTrustWhoIsInvolvedToPage(mockAppData, mockTrust1.trust_id, false);
 
       expect(actual).toEqual({
         boInTrust: [
@@ -63,7 +63,7 @@ describe('Trust Involved Mapper to Page Service', () => {
 
       expect(getTrustBoIndividuals).toBeCalledWith(mockAppData, mockTrust1.trust_id);
       expect(getTrustBoOthers).toBeCalledWith(mockAppData, mockTrust1.trust_id);
-      expect(getLegalEntityBosInTrust).toBeCalledWith(mockAppData, mockTrust1.trust_id);
+      expect(getLegalEntityBosInTrust).toBeCalledWith(mockAppData, mockTrust1.trust_id, false);
     });
   });
 });

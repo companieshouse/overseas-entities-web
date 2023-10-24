@@ -58,7 +58,7 @@ const checkEntityReviewRequiresTrusts = (appData: ApplicationData | undefined): 
 const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => { //  TODO MAKE REQ MANDATORY
   if (containsTrustData(getTrustArray(appData))) {
     // Once naviation changes are agreed the following will change
-    if (appData.entity_number !== undefined) {
+    if (appData.entity_number) {
       return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
     } else {
       let nextPageUrl = `${config.TRUST_ENTRY_URL}${config.ADD_TRUST_URL}`;
@@ -68,7 +68,7 @@ const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => 
       return nextPageUrl;
     }
   }
-  if (appData.entity_number !== undefined) {
+  if (appData.entity_number) {
     return config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL;
   } else {
     let nextPageUrl = `${config.TRUST_DETAILS_URL}${config.TRUST_INTERRUPT_URL}`;

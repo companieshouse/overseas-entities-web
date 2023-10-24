@@ -260,7 +260,27 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.MANAGING_OFFICER_WITH_PARAMS_URL]: {
+    currentPage: config.MANAGING_OFFICER_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.MANAGING_OFFICER_CORPORATE_URL]: {
+    currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL]: {
+    currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
+    currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
+  [config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL + config.ID]: {
     currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
@@ -295,6 +315,11 @@ export const NAVIGATION: Navigation = {
     previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
     nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
+  [config.MANAGING_OFFICER_WITH_PARAMS_URL + config.ID]: {
+    currentPage: config.MANAGING_OFFICER_PAGE,
+    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
+    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
+  },
   [config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL]: {
     currentPage: config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
@@ -314,11 +339,6 @@ export const NAVIGATION: Navigation = {
     currentPage: config.UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_PAGE,
     previousPage: () => config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     nextPage: [config.UPDATE_BENEFICIAL_OWNER_TYPE_URL]
-  },
-  [config.MANAGING_OFFICER_CORPORATE_URL + config.ID]: {
-    currentPage: config.MANAGING_OFFICER_CORPORATE_PAGE,
-    previousPage: () => config.BENEFICIAL_OWNER_TYPE_URL,
-    nextPage: [config.BENEFICIAL_OWNER_TYPE_URL]
   },
   [config.TRUST_INFO_URL]: {
     currentPage: config.TRUST_INFO_PAGE,

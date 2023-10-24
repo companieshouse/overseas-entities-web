@@ -371,9 +371,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_ALL_IDENTIFIED_ALL_DETAILS);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_YOU_WANT_TO_ADD);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
-      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
+      expectTextToContainBOTypePageURL(resp.text);
     });
 
     test(`renders the current page with error message when ${BeneficialOwnersStatementType.NONE_IDENTIFIED} has been selected `, async () => {
@@ -386,9 +384,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_NONE_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_MANAGING_OFFICER_YOU_WANT_TO_ADD);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
-      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
+      expectTextToContainBOTypePageURL(resp.text);
     });
 
     test(`renders the current page with error message ${BeneficialOwnersStatementType.SOME_IDENTIFIED_ALL_DETAILS} has been selected `, async () => {
@@ -401,9 +397,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(BENEFICIAL_OWNER_TYPE_PAGE_HEADING_SOME_IDENTIFIED);
       expect(resp.text).toContain(ErrorMessages.SELECT_THE_TYPE_OF_BENEFICIAL_OWNER_OR_MANAGING_OFFICER_YOU_WANT_TO_ADD);
-      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
-      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
-      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
+      expectTextToContainBOTypePageURL(resp.text);
     });
 
     test(`POST empty object and check for error in page title`, async () => {
@@ -412,10 +406,14 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       const resp = await request(app).post(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expectTextToContainBOTypePageURL(resp.text);
+    });
+
+    const expectTextToContainBOTypePageURL = (text: string) => {
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
-      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
-    });
+      expect(text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE);
+    };
   });
 
   describe("POST tests", () => {

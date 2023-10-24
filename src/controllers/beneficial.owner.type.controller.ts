@@ -30,6 +30,10 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
         noMoreToAddButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, req),
         beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
+        beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
+        beneficialOwnerGovUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req),
+        managingOfficerIndividualUrlWithParams: getUrlWithParamsToPath(config.MANAGING_OFFICER_WITH_PARAMS_URL, req),
+        managingOfficerCorporateWithParams: getUrlWithParamsToPath(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, req),
         backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
         templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
         requiresTrusts,
@@ -74,19 +78,27 @@ export const postSubmit = (req: Request, res: Response) => {
 const getNextPage = (req: Request): string => {
   const beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice = req.body[BeneficialOwnerTypeKey];
 
-  if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
-    let nextPageUrl = config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
-      nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req);
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
+    if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
+      return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req);
+    } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
+      return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req);
+    } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
+      return getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req);
+    } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
+      return getUrlWithParamsToPath(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, req);
     }
-
-    return nextPageUrl;
-  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
-    return config.BENEFICIAL_OWNER_OTHER_URL;
-  } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
-    return config.BENEFICIAL_OWNER_GOV_URL;
-  } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
-    return config.MANAGING_OFFICER_CORPORATE_URL;
+    return getUrlWithParamsToPath(config.MANAGING_OFFICER_WITH_PARAMS_URL, req);
+  } else {
+    if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.individual) {
+      return config.BENEFICIAL_OWNER_INDIVIDUAL_URL;
+    } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.otherLegal) {
+      return config.BENEFICIAL_OWNER_OTHER_URL;
+    } else if (beneficialOwnerTypeChoices === BeneficialOwnerTypeChoice.government) {
+      return config.BENEFICIAL_OWNER_GOV_URL;
+    } else if (beneficialOwnerTypeChoices === ManagingOfficerTypeChoice.corporate) {
+      return config.MANAGING_OFFICER_CORPORATE_URL;
+    }
+    return config.MANAGING_OFFICER_URL;
   }
-  return config.MANAGING_OFFICER_URL;
 };

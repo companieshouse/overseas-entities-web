@@ -65,14 +65,20 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
   {% set addButtonAction = "/register-an-overseas-entity/beneficial-owner-type" %}
   {% set noMoreToAddButtonAction = "/register-an-overseas-entity/beneficial-owner-type/submit" %}
   {% set beneficialOwnerIndividualUrl = OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_URL %}
+  {% set beneficialOwnerOtherUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
+  {% set beneficialOwnerGovUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL %}
+  {% set managingOfficerIndividualUrl = OE_CONFIGS.MANAGING_OFFICER_URL %}
+  {% set managingOfficerCorporateUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL %}
 
   {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
     {% set addButtonAction = addButtonActionWithParams %}
     {% set noMoreToAddButtonAction = noMoreToAddButtonActionWithParams %}
     {% set beneficialOwnerIndividualUrl = beneficialOwnerIndividualUrlWithParams %}
+    {% set beneficialOwnerOtherUrl = beneficialOwnerOtherUrlWithParams %}
+    {% set beneficialOwnerGovUrl = beneficialOwnerGovUrlWithParams %}
+    {% set managingOfficerIndividualUrl = managingOfficerIndividualUrlWithParams %}
+    {% set managingOfficerCorporateUrl = managingOfficerCorporateWithParams %} 
   {% endif %}
-
-  {% set beneficialOwnerOtherUrl = OE_CONFIGS.BENEFICIAL_OWNER_OTHER_URL %}
-  {% set beneficialOwnerGovUrl = OE_CONFIGS.BENEFICIAL_OWNER_GOV_URL %}
+  
   {% include "includes/page-templates/beneficial-owner.html" %}
 {% endblock %}

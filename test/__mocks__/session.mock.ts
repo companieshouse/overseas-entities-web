@@ -931,7 +931,6 @@ export const MOCKED_PRIVATE_ADDRESS = {
 export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
   [
     {
-      managingOfficerAppointmentId: "MO1",
       residentialAddress: MOCKED_PRIVATE_ADDRESS,
       principalAddress: ADDRESS,
       dateOfBirth: "1990-01-01",
@@ -940,7 +939,6 @@ export const MOCK_MANAGING_OFFICERS_PRIVATE_DATA: ManagingOfficerPrivateData[] =
       hashedId: "hashedId1",
     },
     {
-      managingOfficerAppointmentId: "MO2",
       residentialAddress: MOCKED_PRIVATE_ADDRESS,
       principalAddress: {
         ...MOCKED_PRIVATE_ADDRESS,
@@ -1794,6 +1792,13 @@ export const FETCH_BO_APPLICATION_DATA_MOCK_NO_CH_REF: ApplicationData = {
     ]
   }
 };
+
+export const FETCH_TRUST_APPLICATION_DATA_MOCK: ApplicationData = {
+  overseas_entity_id: '123',
+  transaction_id: '345',
+  entity_number: '1'
+};
+
 export const PRIVATE_BO_INDIVIDUAL_MOCK_DATA_CH_REFERENCE = "RandomeaP1EB70SSD9SLmiK5Y";
 export const PRIVATE_BO_GOV_MOCK_DATA_CH_REFERENCE = "9TeildEUMY5Xnw2gbPxGO3jCod8";
 export const PRIVATE_BO_CORP_MOCK_DATA_CH_REFERENCE = "9dsfdfjie494634mdfsffdsfdfs5";
@@ -2189,7 +2194,7 @@ export const RESET_DATA_FOR_NO_CHANGE_RESPONSE = {
     review_managing_officers_corporate: [
       {
         ch_reference: "officers2",
-        contact_full_name: undefined,
+        contact_full_name: "Test User",
         id: "/company/OE111129/officers2",
         is_on_register_in_country_formed_in: 0,
         is_service_address_same_as_principal_address: undefined,

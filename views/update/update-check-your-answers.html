@@ -105,6 +105,7 @@
         {% set trust_count = 0 %}
         {% for trust in appData.trusts %}
           {% set trust_count = trust_count + 1 %}
+          {% set trust_heading = "Trust " + trust_count %}
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
       {% endif %}

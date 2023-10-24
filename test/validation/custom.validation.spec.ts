@@ -11,27 +11,27 @@ import { Session } from '@companieshouse/node-session-handler';
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
 
-describe('checkFirstDateOnOrAfterSecondDate', () => {
+describe('checkCeasedDateOnOrAfterStartDate', () => {
 
   test('should throw error if ceased date before start date', () => {
     const ceaseDate = ["2", "2", "2023"];
     const startDate = ["3", "3", "2023"];
 
-    expect(() => custom.checkFirstDateOnOrAfterSecondDate(...ceaseDate, ...startDate, ErrorMessages.CEASED_DATE_BEFORE_START_DATE)).toThrowError(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
+    expect(() => custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate, ErrorMessages.CEASED_DATE_BEFORE_START_DATE)).toThrowError(ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
   });
 
   test('should return true if ceased date after start date', () => {
     const ceaseDate = ["3", "3", "2023"];
     const startDate = ["2", "2", "2023"];
 
-    expect(custom.checkFirstDateOnOrAfterSecondDate(...ceaseDate, ...startDate)).toBe(true);
+    expect(custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
   });
 
   test('should return true if ceased date = start date', () => {
     const ceaseDate = ["3", "3", "2023"];
     const startDate = ["3", "3", "2023"];
 
-    expect(custom.checkFirstDateOnOrAfterSecondDate(...ceaseDate, ...startDate)).toBe(true);
+    expect(custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
   });
 
   test('should throw error if filing date before start date', () => {
@@ -107,8 +107,8 @@ describe('tests for custom Date fields', () => {
     expect(custom.checkMoreThanOneDateFieldIsNotMissing()).toBe(true);
   });
 
-  test('should be true for checkFirstDateOnOrAfterSecondDate default date values', () => {
-    expect(custom.checkFirstDateOnOrAfterSecondDate()).toBe(true);
+  test('should be true for checkCeasedDateOnOrAfterStartDate default date values', () => {
+    expect(custom.checkCeasedDateOnOrAfterStartDate()).toBe(true);
   });
 
   test('should be false for checkDateOfBirthFieldsArePresent default date values', () => {
@@ -141,7 +141,7 @@ describe('tests for custom Date fields', () => {
   });
 });
 
-describe('tests for checkFilingPeriod ', () => {
+describe('tests for checkDatePreviousToFilingDate ', () => {
 
   let mockAppData = {};
   let mockReq = {} as Request;
@@ -171,14 +171,14 @@ describe('tests for checkFilingPeriod ', () => {
   test("should return error if startDate is after filingDate", () => {
     (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-    expect(() => custom.checkFilingPeriod(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toBeTruthy();
   });
 
   test("should return error if startDate is after filingDate", () => {
     (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-    expect(() => custom.checkFilingPeriod(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });
 });

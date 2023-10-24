@@ -7,6 +7,7 @@ import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 import { CONCATENATED_VALUES_SEPARATOR } from "../config";
 import { getApplicationData } from "../utils/application.data";
+import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
@@ -231,15 +232,15 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
   return true;
 };
 
-export const checkCeasedDateOnOrAfterStartDate = (
-  ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
-  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = "",
+export const checkFirstDateOnOrAfterSecondDate = (
+  firstDayStr: string = "", firstMonthStr: string = "", firstYearStr: string = "",
+  secondDayStr: string = "", secondMonthStr: string = "", secondYearStr: string = "",
   errorMessage: string = ErrorMessages.DATE_BEFORE_START_DATE
 ): boolean => {
-  const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
-  const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
+  const firstDate = DateTime.utc(Number(firstYearStr), Number(firstMonthStr), Number(firstDayStr));
+  const secondDate = DateTime.utc(Number(secondYearStr), Number(secondMonthStr), Number(secondDayStr));
 
-  if (startDate && startDate > ceaseDate) {
+  if (secondDate && secondDate > firstDate) {
     throw new Error(errorMessage);
   }
 
@@ -501,6 +502,23 @@ export const checkBeneficialOwnersSubmission = (req) => {
     if (!hasManagingOfficers(appData)) {
       throw new Error(ErrorMessages.MUST_ADD_MANAGING_OFFICER);
     }
+  }
+  return true;
+};
+
+export const checkFilingPeriod = (req, secondDateDay: string, secondDateMonth: string, secondDateYear: string, errorMessage: string) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  const filingDateDay = appData?.update?.[FilingDateKey]?.day;
+  const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
+  const filingDateYear = appData?.update?.[FilingDateKey]?.year;
+
+  if (!checkFirstDateOnOrAfterSecondDate(
+    filingDateDay, filingDateMonth, filingDateYear,
+    secondDateDay, secondDateMonth, secondDateYear,
+    errorMessage
+  )) {
+    throw new Error(errorMessage);
   }
   return true;
 };

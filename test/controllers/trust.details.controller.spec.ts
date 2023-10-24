@@ -354,7 +354,7 @@ describe('Trust Details controller', () => {
         });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
-      expect(resp.text).toContain(pageUrl); // does not pass with parameters
+      expect(resp.text).toContain(pageUrl); // TODO update when backlinks are implemented
       expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST);
     });
   });

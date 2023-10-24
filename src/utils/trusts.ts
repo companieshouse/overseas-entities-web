@@ -60,7 +60,7 @@ const getTrustLandingUrl = (appData: ApplicationData, req?: Request): string => 
     // Once naviation changes are agreed the following will change
     if (appData.entity_number !== undefined) {
       return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
-    } else { // TODO NEED TO UNDERSTAND
+    } else {
       let nextPageUrl = `${config.TRUST_ENTRY_URL}${config.ADD_TRUST_URL}`;
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req){
         nextPageUrl = getUrlWithParamsToPath(`${config.TRUST_ENTRY_WITH_PARAMS_URL}${config.ADD_TRUST_URL}`, req);

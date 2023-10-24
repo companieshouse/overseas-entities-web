@@ -5,6 +5,8 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
 } from '../../config';
@@ -23,7 +25,7 @@ import { ApplicationData } from '../../model';
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE,
-    backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL,
+    backLinkUrl: getBackLink(trust.review_status?.reviewed_legal_entities),
     pageParams: {
       title: 'Tell us about the legal entity',
     },
@@ -72,19 +74,20 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
-    const trustee = mapLegalEntityToSession(formData);
-
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.LEGAL_ENTITY);
 
     if (trust.CORPORATES && trusteeIndex >= 0) {
-      trust.CORPORATES[trusteeIndex] = trustee;
+      const trusteeToChange = trust.CORPORATES[trusteeIndex];
+      const updatedTrustee = mapLegalEntityToSession(formData, trusteeToChange);
+      trust.CORPORATES[trusteeIndex] = updatedTrustee;
     } else {
+      const trustee = mapLegalEntityToSession(formData);
       trust.CORPORATES?.push(trustee);
     }
 
     await saveAppData(req, appData);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
   }
@@ -93,4 +96,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 const saveAppData = async(req: Request, appData: ApplicationData) => {
   setExtraData(req.session, appData);
   await saveAndContinue(req, req.session as Session, false);
+};
+
+const getBackLink = (legalEntitiesReviewed: boolean) => {
+  if (legalEntitiesReviewed) {
+    return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+  } else {
+    return UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL;
+  }
 };

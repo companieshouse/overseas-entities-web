@@ -15,6 +15,7 @@ type TrustDetailsForm = {
 
 type TrustBeneficialOwnerListItem = {
   id: string;
+  is_newly_added?: boolean;
   name: string;
   type: BeneficialOwnerTypeChoice;
 };
@@ -30,6 +31,7 @@ type TrustWhoIsInvolvedForm = {
 
 interface TrustHistoricalBeneficialOwnerFormCommon {
   boId?: string;
+  is_newly_added: boolean;
   type: string;
   startDateDay: string;
   startDateMonth: string;
@@ -122,6 +124,7 @@ type TrusteeItem = {
     id?: string;
     name: string;
     trusteeItemType: TrusteeType;
+    is_newly_added: boolean
 };
 
 type AddTrust = {

@@ -654,7 +654,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
     navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
-  .post(updateManageTrustsIndividualsOrEntitiesInvolved.post);
+  .post(...validator.trustInvolved, updateManageTrustsIndividualsOrEntitiesInvolved.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(

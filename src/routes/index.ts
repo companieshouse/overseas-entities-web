@@ -326,6 +326,15 @@ router
   .post(trustInterrupt.post);
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
+router
   .route(config.TRUST_ENTRY_URL + config.ADD_TRUST_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
@@ -337,6 +346,16 @@ router
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasBOsOrMOs,
+  )
+  .get(trustDetails.get)
+  .post(...validator.trustDetails, trustDetails.post);
+
+router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,

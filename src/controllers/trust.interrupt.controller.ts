@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
 import { safeRedirect } from '../utils/http.ext';
+import { isActiveFeature } from '../utils/feature.flag';
+import { getUrlWithParamsToPath } from "../utils/url";
 
 const TRUST_INTERRUPT_TEXTS = {
   title: 'You now need to submit trust information',
@@ -40,10 +42,13 @@ const post = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const firstTrustId = "1";
-    return safeRedirect(res, `${config.TRUST_ENTRY_URL + "/" + firstTrustId}`);
+    let trustDetailsUrl = config.TRUST_ENTRY_URL;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req) {
+      trustDetailsUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+    }
+    return safeRedirect(res, `${trustDetailsUrl + "/" + firstTrustId}`);
   } catch (error) {
     logger.errorRequest(req, error);
-
     return next(error);
   }
 };

@@ -11,7 +11,7 @@ export const mapIndividualTrusteeToSession = (
 ): Trust.IndividualTrustee => {
   const data = {
     id: formData.trusteeId || uuidv4(),
-    ch_references: trustee ? trustee.ch_references : undefined,
+    ch_references: trustee?.ch_references,
     type: formData.roleWithinTrust,
     forename: formData.forename,
     other_forenames: '',

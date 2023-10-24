@@ -13,7 +13,7 @@ const mapLegalEntityToSession = (
 
   const data = {
     id: formData.legalEntityId || generateId(),
-    ch_references: trustee ? trustee.ch_references : undefined,
+    ch_references: trustee?.ch_references,
     type: formData.roleWithinTrust,
     name: formData.legalEntityName,
     date_became_interested_person_day: formData.interestedPersonStartDateDay,

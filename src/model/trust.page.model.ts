@@ -15,7 +15,7 @@ type TrustDetailsForm = {
 
 type TrustBeneficialOwnerListItem = {
   id: string;
-  is_newly_added: boolean;
+  is_newly_added?: boolean;
   name: string;
   type: BeneficialOwnerTypeChoice;
 };

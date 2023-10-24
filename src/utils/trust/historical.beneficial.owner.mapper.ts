@@ -12,7 +12,7 @@ const mapBeneficialOwnerToSession = (
 ): Trust.TrustHistoricalBeneficialOwner => {
   const data = {
     id: formData.boId || generateBoId(),
-    ch_references: trustee ? trustee.ch_references : undefined,
+    ch_references: trustee?.ch_references,
     notified_date_day: formData.startDateDay,
     notified_date_month: formData.startDateMonth,
     notified_date_year: formData.startDateYear,

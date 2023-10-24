@@ -8,12 +8,7 @@ const mapCommonTrustDataToPage = (
   trustId: string,
   isReview: boolean
 ): CommonTrustData => {
-  let trustData;
-  if (isReview) {
-    trustData = getReviewTrustById(appData, trustId);
-  } else {
-    trustData = getTrustByIdFromApp(appData, trustId);
-  }
+  const trustData = isReview ? getReviewTrustById(appData, trustId) : getTrustByIdFromApp(appData, trustId);
 
   return {
     trustId: trustData.trust_id,

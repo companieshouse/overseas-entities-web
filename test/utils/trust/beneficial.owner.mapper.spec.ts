@@ -21,7 +21,6 @@ describe('Trust Details page Mapper Service', () => {
         id: mockBo.id,
         name: `${mockBo.first_name} ${mockBo.last_name}`,
         type: BeneficialOwnerTypeChoice.individual,
-        is_newly_added: true,
       });
     });
 

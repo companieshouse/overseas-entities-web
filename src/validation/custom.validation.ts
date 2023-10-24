@@ -131,7 +131,7 @@ export const checkStartDateBeforeDOB = (startDay: string, startMonth: string, st
   const dobDate = new Date(`${dobYear}-${dobMonth}-${dobDay}`);
 
   if (dobDate > startDate) {
-    throw new Error("Start Date must be after Date of Birth");
+    throw new Error("Start date must be on or after date of birth");
   }
 
   return true;

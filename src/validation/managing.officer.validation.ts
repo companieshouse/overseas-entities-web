@@ -3,8 +3,7 @@ import { body } from "express-validator";
 import {
   checkFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
-  checkMaxFieldIfRadioButtonSelected,
-  checkStartDateBeforeDOB
+  checkMaxFieldIfRadioButtonSelected
 } from "./custom.validation";
 import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";

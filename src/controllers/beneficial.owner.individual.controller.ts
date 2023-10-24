@@ -22,18 +22,22 @@ export const getById = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const post = (req: Request, res: Response, next: NextFunction) => {
+  postBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+};
+
+export const update = (req: Request, res: Response, next: NextFunction) => {
+  updateBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+};
+
+export const remove = (req: Request, res: Response, next: NextFunction) => {
+  removeBeneficialOwnerIndividual(req, res, next, getBeneficialOwnerTypeUrl(req), true);
+};
+
+const getBeneficialOwnerTypeUrl = (req: Request): string => {
   let nextPageUrl = config.BENEFICIAL_OWNER_TYPE_URL;
   if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)){
     nextPageUrl = getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req);
   }
 
-  postBeneficialOwnerIndividual(req, res, next, nextPageUrl, true);
-};
-
-export const update = (req: Request, res: Response, next: NextFunction) => {
-  updateBeneficialOwnerIndividual(req, res, next, config.BENEFICIAL_OWNER_TYPE_URL, true);
-};
-
-export const remove = (req: Request, res: Response, next: NextFunction) => {
-  removeBeneficialOwnerIndividual(req, res, next, config.BENEFICIAL_OWNER_TYPE_URL, true);
+  return nextPageUrl;
 };

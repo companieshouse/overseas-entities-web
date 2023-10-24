@@ -3,7 +3,8 @@ import { body } from "express-validator";
 import {
   checkFieldIfRadioButtonSelected,
   checkInvalidCharactersIfRadioButtonSelected,
-  checkMaxFieldIfRadioButtonSelected
+  checkMaxFieldIfRadioButtonSelected,
+  checkStartDateBeforeDOB
 } from "./custom.validation";
 import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
@@ -66,6 +67,15 @@ export const updateManagingOfficerIndividual = [
   ...managingOfficerIndividual,
   ...start_date_validations,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
+  body("start_date-day")
+    .custom((value, { req }) => checkStartDateBeforeDOB(
+      req.body["start_date-day"],
+      req.body["start_date-month"],
+      req.body["start_date-year"],
+      req.body["date_of_birth-day"],
+      req.body["date_of_birth-month"],
+      req.body["date_of_birth-year"]
+    )),
   ...resigned_on_validations
 ];
 

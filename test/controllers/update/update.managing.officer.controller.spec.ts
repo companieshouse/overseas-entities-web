@@ -654,6 +654,38 @@ describe("UPDATE MANAGING OFFICER controller", () => {
       expect(resp.text).toContain(ErrorMessages.DATE_OF_BIRTH_NOT_IN_PAST);
     });
 
+    test(`renders the current page ${UPDATE_MANAGING_OFFICER_PAGE} page with error if Start date before DOB`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "1";
+      managingOfficer["date_of_birth-month"] = "1";
+      managingOfficer["date_of_birth-year"] = "1960";
+      managingOfficer["start_date-day"] = "1";
+      managingOfficer["start_date-month"] = "1";
+      managingOfficer["start_date-year"] = "1959";
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
+    test(`renders the current page ${UPDATE_MANAGING_OFFICER_PAGE} page without error if Start date same as DOB`, async () => {
+      const managingOfficer = { ...REQ_BODY_MANAGING_OFFICER_FOR_DATE_VALIDATION };
+      managingOfficer["date_of_birth-day"] = "1";
+      managingOfficer["date_of_birth-month"] = "1";
+      managingOfficer["date_of_birth-year"] = "1960";
+      managingOfficer["start_date-day"] = "1";
+      managingOfficer["start_date-month"] = "1";
+      managingOfficer["start_date-year"] = "1960";
+      const resp = await request(app)
+        .post(UPDATE_MANAGING_OFFICER_URL)
+        .send(managingOfficer);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_MANAGING_OFFICER_PAGE_TITLE);
+      expect(resp.text).not.toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
     test(`renders the current page ${UPDATE_MANAGING_OFFICER_PAGE} with second nationality error when same as nationality`, async () => {
       const managingOfficer = {
         ...MANAGING_OFFICER_OBJECT_MOCK,

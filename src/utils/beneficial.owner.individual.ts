@@ -36,6 +36,8 @@ import {
   StartDateKeys
 } from "../model/date.model";
 import { v4 as uuidv4 } from "uuid";
+import * as config from "../config";
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 export const getBeneficialOwnerIndividual = (req: Request, res: Response, templateName: string, backLinkUrl: string) => {
   logger.debugRequest(req, `${req.method} ${req.route.path}`);
@@ -73,6 +75,12 @@ export const getBeneficialOwnerIndividualById = (req: Request, res: Response, ne
     };
 
     const appData = getApplicationData(req.session);
+
+    // Redis removal work - Add extra template options if Redis Remove flag is true and on Registration journey
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    if (isRegistration) {
+      addActiveSubmissionBasePathToTemplateData(templateOptions, req);
+    }
 
     if (EntityNumberKey in appData && appData[EntityNumberKey]) {
       return res.render(templateName, addCeasedDateToTemplateOptions(templateOptions, appData, data));

@@ -1670,7 +1670,7 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-      expect(mockSaveAndContinue).not.toHaveBeenCalled(); // TODO: testing
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test(`removes the object from session`, async () => {

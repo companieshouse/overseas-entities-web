@@ -34,6 +34,7 @@ export enum ErrorMessages {
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
   LEGAL_ENTITY_BO_NAME = "Enter its name",
   ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
+  START_DATE_MUST_BE_AFTER_DOB = "Start Date must be after Date of Birth",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",

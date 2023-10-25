@@ -48,7 +48,7 @@ const getPageProperties = (
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,

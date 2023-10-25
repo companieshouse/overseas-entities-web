@@ -127,6 +127,17 @@ export const checkIdentityDateFields = (dayStr: string = "", monthStr: string = 
   }
 };
 
+export const checkStartDateBeforeDOB = (startDay: string, startMonth: string, startYear: string, dobDay: string, dobMonth: string, dobYear: string) => {
+  const startDate = new Date(`${startYear}-${startMonth}-${startDay}`);
+  const dobDate = new Date(`${dobYear}-${dobMonth}-${dobDay}`);
+
+  if (dobDate > startDate) {
+    throw new Error("Start date must be on or after date of birth");
+  }
+
+  return true;
+};
+
 export const checkDate = (dayStr: string = "", monthStr: string = "", yearStr: string = ""): boolean => {
   // to prevent more than 1 error reported on the date fields we first check for multiple empty fields and then check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)

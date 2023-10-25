@@ -68,7 +68,7 @@ export const postSubmit = (req: Request, res: Response) => {
   }
   if (requiresTrusts) {
     nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-      ? getTrustLandingUrl(appData)
+      ? getTrustLandingUrl(appData, req)
       : config.TRUST_INFO_URL;
   }
   return res.redirect(nextPageUrl);

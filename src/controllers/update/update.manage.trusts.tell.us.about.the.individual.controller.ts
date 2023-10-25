@@ -5,6 +5,8 @@ import { Session } from '@companieshouse/node-session-handler';
 
 import {
   ROUTE_PARAM_TRUSTEE_ID,
+  UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL,
+  UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
   UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
   UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
 } from '../../config';
@@ -22,7 +24,7 @@ import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-    backLinkUrl: UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL,
+    backLinkUrl: getBackLink(trust.review_status.reviewed_individuals),
     pageParams: {
       title: 'Tell us about the individual',
     },
@@ -71,20 +73,30 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       );
     }
 
-    const trustee = mapIndividualTrusteeToSession(formData);
     const trusteeIndex = getTrusteeIndex(trust, trusteeId, TrusteeType.INDIVIDUAL);
 
     if (trust.INDIVIDUALS && trusteeIndex >= 0) {
-      trust.INDIVIDUALS[trusteeIndex] = trustee;
+      const trusteeToChange = trust.INDIVIDUALS[trusteeIndex];
+      const updatedTrustee = mapIndividualTrusteeToSession(formData, trusteeToChange);
+      trust.INDIVIDUALS[trusteeIndex] = updatedTrustee;
     } else {
+      const trustee = mapIndividualTrusteeToSession(formData);
       trust.INDIVIDUALS?.push(trustee);
     }
 
     setExtraData(req.session, appData);
     await saveAndContinue(req, req.session as Session, false);
 
-    return res.redirect(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+    return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {
     next(error);
+  }
+};
+
+const getBackLink = (individualsReviewed: boolean) => {
+  if (individualsReviewed) {
+    return UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL;
+  } else {
+    return UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL;
   }
 };

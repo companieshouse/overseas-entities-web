@@ -1,5 +1,8 @@
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/utils/url');
+
 import { describe, expect, test } from '@jest/globals';
-import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL } from "../../src/config";
+import { TRUST_DETAILS_URL, TRUST_INTERRUPT_URL, TRUST_ENTRY_URL, ADD_TRUST_URL, TRUST_ENTRY_WITH_PARAMS_URL } from "../../src/config";
 import {
   addTrustToBeneficialOwner,
   getBoIndividualAssignableToTrust,
@@ -32,6 +35,18 @@ import {
 } from '../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOther, BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
 import { TrustIndividual } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { Request } from 'express';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
+
+const MOCKED_URL = "MOCKED_URL";
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
+
+const mockRequest = {} as Request;
 
 describe('Trust Utils method tests', () => {
   const trustId = 'dummyExistsTrustId';
@@ -601,6 +616,61 @@ describe('Trust Utils method tests', () => {
 
       const result = getTrustLandingUrl(appData);
       expect(result).toEqual(`${TRUST_DETAILS_URL}${TRUST_INTERRUPT_URL}`);
+    });
+
+  });
+
+  describe('test if overseas entity contains any trust data with params for redis removal', () => {
+
+    test("test getBeneficialOwnerList with application data and trustee nature of control", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+
+      const result = getTrustLandingUrl(mockAppData, mockRequest);
+      expect(mockGetUrlWithParamsToPath).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+      expect(result).toEqual(MOCKED_URL);
+    });
+
+    test("test getTrustLandingUrl with bo having trust data", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+
+      const result = getTrustLandingUrl(mockAppData, mockRequest);
+      expect(mockGetUrlWithParamsToPath).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${ADD_TRUST_URL}`);
+      expect(result).toEqual(MOCKED_URL);
+    });
+
+    test("test getTrustLandingUrl with bo having trust nature of control but no trust data", () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+
+      const mockBoIndividualNoTrustData = {
+        id: '9001',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerIndividual;
+
+      const mockBoOleNoTrustData = {
+        id: '8002',
+        trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+      } as BeneficialOwnerOther;
+
+      const appData = {
+        [BeneficialOwnerIndividualKey]: [
+          {} as BeneficialOwnerIndividual,
+          mockBoIndividualNoTrustData,
+        ],
+        [BeneficialOwnerOtherKey]: [
+          {} as BeneficialOwnerOther,
+          mockBoOleNoTrustData,
+        ],
+      } as ApplicationData;
+
+      const result = getTrustLandingUrl(appData, mockRequest);
+      expect(mockGetUrlWithParamsToPath).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL}${TRUST_INTERRUPT_URL}`);
+      expect(result).toEqual(MOCKED_URL);
     });
 
   });

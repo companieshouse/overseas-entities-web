@@ -18,7 +18,8 @@ import {
   YearFieldErrors,
   checkDateIPLegalEntityBO,
   checkFirstDateOnOrAfterSecondDate,
-  checkFilingPeriod
+  checkFilingPeriod,
+  checkStartDateBeforeDOB
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -34,6 +35,15 @@ export const start_date_validations = [
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR, ErrorMessages.YEAR_LENGTH, req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
   body("start_date-day")
     .custom((value, { req }) => checkDate(req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"])),
+  body("start_date-day")
+    .custom((value, { req }) => checkStartDateBeforeDOB(
+      req.body["start_date-day"],
+      req.body["start_date-month"],
+      req.body["start_date-year"],
+      req.body["date_of_birth-day"],
+      req.body["date_of_birth-month"],
+      req.body["date_of_birth-year"]
+    )),
 ];
 
 const is_still_active_validations = (date_field_id: string, radio_button_id: string, error_message: string) => [

@@ -46,7 +46,7 @@ const getPageProperties = (
     title: HISTORICAL_BO_TEXTS.title,
   },
   pageData: {
-    trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+    trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
     trusteeType: TrusteeType,
   },
   formData,

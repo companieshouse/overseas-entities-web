@@ -15,7 +15,7 @@ import request from 'supertest';
 import { NextFunction } from 'express';
 
 import app from '../../../src/app';
-import { UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL } from '../../../src/config';
+import { UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL, UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL, UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL } from '../../../src/config';
 import { authentication } from '../../../src/middleware/authentication.middleware';
 import { companyAuthentication } from '../../../src/middleware/company.authentication.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
@@ -207,6 +207,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const expectedTrustee = {
         id: 'trustee-id-2',
         type: RoleWithinTrustType.GRANTOR,
+        ch_references: "existing-ch-references",
         forename: 'Trust',
         other_forenames: '',
         surname: 'Ee',
@@ -290,7 +291,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         });
 
       expect(resp.status).toBe(302);
-      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
 
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(expectedTrustee);
 
@@ -421,7 +422,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
         });
 
       expect(resp.status).toBe(302);
-      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+      expect(resp.header.location).toBe(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
 
       expect(appData.update.review_trusts[0].INDIVIDUALS[0]).toEqual(existingTrustee);
       expect(appData.update.review_trusts[0].INDIVIDUALS[1]).toEqual(expectedTrustee);

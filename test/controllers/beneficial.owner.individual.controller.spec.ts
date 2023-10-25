@@ -1300,6 +1300,36 @@ describe("BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY);
     });
 
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with error if Start date before DOB`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerIndividual["date_of_birth-day"] = "1";
+      beneficialOwnerIndividual["date_of_birth-month"] = "1";
+      beneficialOwnerIndividual["date_of_birth-year"] = "2000";
+      beneficialOwnerIndividual["start_date-day"] = "1";
+      beneficialOwnerIndividual["start_date-month"] = "1";
+      beneficialOwnerIndividual["start_date-year"] = "1999";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
+    test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page without error if Start date same as DOB`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_START_DATE };
+      beneficialOwnerIndividual["date_of_birth-day"] = "1";
+      beneficialOwnerIndividual["date_of_birth-month"] = "1";
+      beneficialOwnerIndividual["date_of_birth-year"] = "2000";
+      beneficialOwnerIndividual["start_date-day"] = "1";
+      beneficialOwnerIndividual["start_date-month"] = "1";
+      beneficialOwnerIndividual["start_date-year"] = "2000";
+      const resp = await request(app).post(BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
+      expect(resp.text).not.toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
     test(`renders the ${BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with only ENTER_DATE_OF_BIRTH error when date of birth is completely empty`, async () => {
       const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
       beneficialOwnerIndividual["date_of_birth-day"] = "";

@@ -271,7 +271,8 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         service_address_county: mockSessionData.sa_address_region,
         service_address_country: mockSessionData.sa_address_country,
         service_address_postcode: mockSessionData.sa_address_postal_code,
-        is_service_address_same_as_usual_residential_address: yesNoResponse.No
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        is_newly_added: true,
       });
     });
 
@@ -305,7 +306,8 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         service_address_county: mockSessionData.sa_address_region,
         service_address_country: mockSessionData.sa_address_country,
         service_address_postcode: mockSessionData.sa_address_postal_code,
-        is_service_address_same_as_usual_residential_address: yesNoResponse.No
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+        is_newly_added: true,
       });
     });
 
@@ -353,6 +355,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         dateBecameIPDay: mockSessionData.date_became_interested_person_day,
         dateBecameIPMonth: mockSessionData.date_became_interested_person_month,
         dateBecameIPYear: mockSessionData.date_became_interested_person_year,
+        is_newly_added: true,
       });
     });
 
@@ -393,6 +396,7 @@ describe('Individual Beneficial Owner page Mapper Service', () => {
         dateBecameIPDay: mockSessionData.date_became_interested_person_day,
         dateBecameIPMonth: mockSessionData.date_became_interested_person_month,
         dateBecameIPYear: mockSessionData.date_became_interested_person_year,
+        is_newly_added: true,
       });
     });
   });

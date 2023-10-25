@@ -30,7 +30,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     let backLinkUrl: string = config.BENEFICIAL_OWNER_TYPE_URL;
     if (requiresTrusts) {
       backLinkUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-        ? getTrustLandingUrl(appData)
+        ? getTrustLandingUrl(appData, req)
         : config.TRUST_INFO_PAGE;
     }
 

@@ -20,7 +20,10 @@ export const MO_MOCK = {
     }
   },
   "name": "Dr MO Individual",
-  "officerRole": "managing-officer"
+  "officerRole": "managing-officer",
+  "contactDetails": {
+    contactName: "Test User"
+  }
 };
 
 export const MO_CORPORATE_MOCK = {
@@ -41,7 +44,10 @@ export const MO_CORPORATE_MOCK = {
     }
   },
   "name": "Rev MO Corporate",
-  "officerRole": "corporate-managing-officer"
+  "officerRole": "corporate-managing-officer",
+  "contactDetails": {
+    contactName: "Test User"
+  }
 };
 
 export const MOCK_GET_COMPANY_OFFICERS: CompanyOfficers = {

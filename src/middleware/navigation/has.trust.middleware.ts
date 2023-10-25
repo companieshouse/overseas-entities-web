@@ -15,7 +15,6 @@ const hasTrustWithId = (req: Request, res: Response, next: NextFunction, url: st
     const isTrustPresent = appData[TrustKey]?.some(
       (trust) => trust.trust_id === trustId,
     );
-
     if (!isTrustPresent) {
       logger.infoRequest(req, NavigationErrorMessage);
 

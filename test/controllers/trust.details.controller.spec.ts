@@ -54,6 +54,7 @@ import {
 import { Trust, TrustKey } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
 import { BeneficialOwnerOtherKey } from '../../src/model/beneficial.owner.other.model';
+import { ErrorMessages } from "../../src/validation/error.messages";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
 
@@ -73,6 +74,7 @@ describe('Trust Details controller', () => {
   const mockSetExtraData = setExtraData as jest.Mock;
 
   const pageUrl = TRUST_DETAILS_URL;
+  const pageWithParamsUrl = TRUST_ENTRY_WITH_PARAMS_URL;
 
   const mockTrust1Data = {
     trust_id: '999',
@@ -457,6 +459,15 @@ describe('Trust Details controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
+    test(`successfully access GET with params method`, async () => {
+      const resp = await request(app).get(pageWithParamsUrl);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(TRUST_DETAILS_TEXTS.title);
+      expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
     test('successful POST submission to same page', async () => {
       mockGetApplicationData.mockReturnValue({});
 
@@ -466,10 +477,49 @@ describe('Trust Details controller', () => {
 
       const resp = await request(app)
         .post(pageUrl)
-        .send({});
+        .send({
+          name: "dummyName"
+        });
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(pageUrl);
+      expect(resp.text).not.toContain(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST);
+    });
+
+    test('successful POST submission to same page with validation errors', async () => {
+      mockGetApplicationData.mockReturnValue({});
+
+      (mapDetailToSession as jest.Mock).mockReturnValue({
+        trust_id: mockTrust2Data.trust_id,
+      });
+
+      const resp = await request(app)
+        .post(pageUrl)
+        .send({
+          name: "думмыНаме"
+        });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl);
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST);
+    });
+
+    test('successful POST submission to same page with params and validation errors', async () => {
+      mockGetApplicationData.mockReturnValue({});
+
+      (mapDetailToSession as jest.Mock).mockReturnValue({
+        trust_id: mockTrust2Data.trust_id,
+      });
+
+      const resp = await request(app)
+        .post(pageWithParamsUrl)
+        .send({
+          name: "думмыНаме"
+        });
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(pageUrl); // TODO update when backlinks are implemented
+      expect(resp.text).toContain(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST);
     });
   });
 });

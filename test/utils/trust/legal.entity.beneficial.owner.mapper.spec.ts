@@ -212,6 +212,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           registration_number: mockSessionData.identification_registration_number,
           is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
         });
       });
 
@@ -264,6 +265,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           registration_number: mockSessionData.identification_registration_number,
           is_service_address_same_as_principal_address: mockSessionData.is_service_address_same_as_principal_address,
           is_on_register_in_country_formed_in: mockSessionData.is_on_register_in_country_formed_in,
+          is_newly_added: true,
         });
       });
       test("Map legal entity trustee session data to page trustee item", () => {
@@ -273,6 +275,7 @@ describe('Trust Legal Entity Beneficial Owner Page Mapper Service', () => {
           id: mockSessionDataBasic.id,
           name: mockSessionDataBasic.name,
           trusteeItemType: TrusteeType.LEGAL_ENTITY,
+          is_newly_added: true,
         });
       });
     });

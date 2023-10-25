@@ -213,7 +213,17 @@ router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.ID)
   .get(beneficialOwnerIndividual.getById)
   .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
 
+router.route(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.ID)
+  .all(
+    authentication,
+    navigation.hasBeneficialOwnersStatement
+  )
+  .get(beneficialOwnerIndividual.getById)
+  .post(...validator.beneficialOwnerIndividual, checkValidations, beneficialOwnerIndividual.update);
+
 router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
+
+router.get(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL + config.REMOVE + config.ID, authentication, navigation.hasBeneficialOwnersStatement, beneficialOwnerIndividual.remove);
 
 router.route(config.BENEFICIAL_OWNER_OTHER_URL)
   .all(
@@ -326,6 +336,15 @@ router
   .post(trustInterrupt.post);
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_INTERRUPT_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+  )
+  .get(trustInterrupt.get)
+  .post(trustInterrupt.post);
+
+router
   .route(config.TRUST_ENTRY_URL + config.ADD_TRUST_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
@@ -337,6 +356,16 @@ router
 
 router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasBOsOrMOs,
+  )
+  .get(trustDetails.get)
+  .post(...validator.trustDetails, trustDetails.post);
+
+router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
     authentication,
@@ -667,7 +696,7 @@ router.route(config.UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL)
     navigation.hasBOsOrMOsUpdate,
   )
   .get(updateManageTrustsIndividualsOrEntitiesInvolved.get)
-  .post(updateManageTrustsIndividualsOrEntitiesInvolved.post);
+  .post(...validator.trustInvolved, updateManageTrustsIndividualsOrEntitiesInvolved.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMISSION_INTERRUPT_URL)
   .all(

@@ -189,13 +189,13 @@ describe('Trust Details controller', () => {
       };
     });
 
-    test('catch error when post data from page', () => {
+    test('catch error when post data from page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -315,20 +315,20 @@ describe('Trust Details controller', () => {
       };
     });
 
-    test('catch error when post data from page', () => {
+    test('catch error when post data from page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
 
     test('add new trust in session', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const expectBoIndividuals = ['individuals bo-s'];
@@ -396,7 +396,7 @@ describe('Trust Details controller', () => {
     });
 
     test('update existing trust in session', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockIsActiveFeature.mockReturnValueOnce(false); // For FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       mockGetApplicationData.mockReturnValueOnce(mockAppData);

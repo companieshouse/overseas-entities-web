@@ -365,6 +365,16 @@ router
   .post(...validator.trustDetails, trustDetails.post);
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasBOsOrMOs,
+  )
+  .get(trustDetails.get)
+  .post(...validator.trustDetails, trustDetails.post);
+
+router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_INVOLVED_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),

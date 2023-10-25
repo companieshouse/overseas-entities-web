@@ -71,7 +71,7 @@ const mockcheckEntityRequiresTrusts = checkEntityRequiresTrusts as jest.Mock;
 
 const mockGetTrustLandingUrl = getTrustLandingUrl as jest.Mock;
 
-const MOCKED_URL = "MOCKED_URL/";
+const MOCKED_URL = "MOCKED_URL";
 
 const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
 mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
@@ -184,7 +184,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
 
-      // 'no more to add' button url is 'add' button url + '/submit' , so we need to check the add button url exists in the htmnl exactly twice
+      // 'no more to add' button url is 'add' button url + '/submit' , so we need to check the add button url exists in the html exactly twice
       const expectedBOTypePageUrl = config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.BENEFICIAL_OWNER_TYPE_PAGE;
       const regexp = new RegExp(expectedBOTypePageUrl, 'g'); // g for global - means that the regex engine will search for all
       //       occurrences of the pattern in the input string, rather than stopping after the first match

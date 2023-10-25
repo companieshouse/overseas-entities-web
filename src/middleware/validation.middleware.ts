@@ -59,8 +59,8 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       const entityNumber = appData?.[EntityNumberKey];
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
-        // This is forthe REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
-        // and we also need to pass the feature flag as true so the template constructes the correct urls.
+        // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
+        // and we also need to pass the feature flag as true so the template constructs the correct urls.
         return res.render(NAVIGATION[routePath].currentPage, {
           backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
           templateName: NAVIGATION[routePath].currentPage,

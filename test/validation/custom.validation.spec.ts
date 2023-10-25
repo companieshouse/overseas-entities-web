@@ -31,7 +31,7 @@ describe('checkFirstDateOnOrAfterSecondDate', () => {
     const ceaseDate = ["3", "3", "2023"];
     const startDate = ["3", "3", "2023"];
 
-    expect(custom.checkFirstDateOnOrAfterSecondDate(...ceaseDate, ...startDate)).toBe(true);
+    expect(custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
   });
 
   test('should throw error if filing date before start date', () => {
@@ -141,7 +141,7 @@ describe('tests for custom Date fields', () => {
   });
 });
 
-describe('tests for checkFilingPeriod ', () => {
+describe('tests for checkDatePreviousToFilingDate ', () => {
 
   let mockAppData = {};
   let mockReq = {} as Request;
@@ -171,14 +171,14 @@ describe('tests for checkFilingPeriod ', () => {
   test("should return error if startDate is after filingDate", () => {
     (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-    expect(() => custom.checkFilingPeriod(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toBeTruthy();
   });
 
   test("should return error if startDate is after filingDate", () => {
     (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-    expect(() => custom.checkFilingPeriod(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
       .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });
 });

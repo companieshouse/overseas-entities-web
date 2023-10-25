@@ -258,6 +258,8 @@ export const checkFirstDateOnOrAfterSecondDate = (
   return true;
 };
 
+export const checkCeasedDateOnOrAfterStartDate = checkFirstDateOnOrAfterSecondDate;
+
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
   if (checkMoreThanOneDateFieldIsNotMissing(dayStr, monthStr, yearStr)
@@ -517,7 +519,7 @@ export const checkBeneficialOwnersSubmission = (req) => {
   return true;
 };
 
-export const checkFilingPeriod = (req, secondDateDay: string, secondDateMonth: string, secondDateYear: string, errorMessage: string) => {
+export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
   const appData: ApplicationData = getApplicationData(req.session);
 
   const filingDateDay = appData?.update?.[FilingDateKey]?.day;
@@ -526,7 +528,7 @@ export const checkFilingPeriod = (req, secondDateDay: string, secondDateMonth: s
 
   if (!checkFirstDateOnOrAfterSecondDate(
     filingDateDay, filingDateMonth, filingDateYear,
-    secondDateDay, secondDateMonth, secondDateYear,
+    dateDay, dateMonth, dateYear,
     errorMessage
   )) {
     throw new Error(errorMessage);

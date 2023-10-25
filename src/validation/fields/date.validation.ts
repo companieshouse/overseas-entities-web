@@ -17,9 +17,10 @@ import {
   MonthFieldErrors,
   YearFieldErrors,
   checkDateIPLegalEntityBO,
+  checkCeasedDateOnOrAfterStartDate,
+  checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkFilingPeriod,
-  checkStartDateBeforeDOB
+  checkDatePreviousToFilingDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -77,7 +78,7 @@ const is_trust_still_active_validation = (error_message: string) => [
 
 const is_date_within_filing_period = (date_field_id: string, error_message: string) => [
   body(date_field_id)
-    .custom((value, { req }) => checkFilingPeriod(
+    .custom((value, { req }) => checkDatePreviousToFilingDate(
       req,
       req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
       error_message

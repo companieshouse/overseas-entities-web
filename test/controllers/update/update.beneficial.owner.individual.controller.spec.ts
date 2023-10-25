@@ -998,6 +998,30 @@ describe("UPDATE BENEFICIAL OWNER INDIVIDUAL controller", () => {
       expect(resp.text).toContain(BENEFICIAL_OWNER_INDIVIDUAL_PAGE_HEADING);
       expect(resp.text).toContain(ErrorMessages.SECOND_NATIONALITY_IS_SAME);
     });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page with error if Start date before DOB`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
+      beneficialOwnerIndividual["start_date-day"] = "1";
+      beneficialOwnerIndividual["start_date-month"] = "1";
+      beneficialOwnerIndividual["start_date-year"] = "1999";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
+
+    test(`renders the ${UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_PAGE} page without error if Start date same as DOB`, async () => {
+      const beneficialOwnerIndividual = { ...BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_FOR_DATE_OF_BIRTH };
+      beneficialOwnerIndividual["start_date-day"] = "1";
+      beneficialOwnerIndividual["start_date-month"] = "1";
+      beneficialOwnerIndividual["start_date-year"] = "2000";
+      const resp = await request(app)
+        .post(UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL)
+        .send(beneficialOwnerIndividual);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).not.toContain(ErrorMessages.START_DATE_MUST_BE_AFTER_DOB);
+    });
   });
 
   const assertOnlyEmptyDayErrors = (response) => {

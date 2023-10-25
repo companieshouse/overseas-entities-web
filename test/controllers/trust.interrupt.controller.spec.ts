@@ -87,7 +87,7 @@ describe('Trust Interrupt controller', () => {
     });
   });
 
-  describe('POST with parms unit tests', () => {
+  describe('POST with params unit tests', () => {
     test('continue button pushed', () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // For FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       post(mockReq, mockRes, mockNext);

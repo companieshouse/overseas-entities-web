@@ -43,7 +43,7 @@ const post = (
 
     const firstTrustId = "1";
     let trustEntryUrl = config.TRUST_ENTRY_URL;
-    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req) {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
       trustEntryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
     }
     return safeRedirect(res, `${trustEntryUrl + "/" + firstTrustId}`);

@@ -727,8 +727,8 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
     });
 
     test(`redirects to the trusts interrupt page with trusts and Feature Flag ON`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
 
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       mockcheckEntityRequiresTrusts.mockReturnValueOnce(true);

@@ -42,11 +42,11 @@ const post = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const firstTrustId = "1";
-    let trustDetailsUrl = config.TRUST_ENTRY_URL;
+    let trustEntryUrl = config.TRUST_ENTRY_URL;
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL) && req) {
-      trustDetailsUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+      trustEntryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
     }
-    return safeRedirect(res, `${trustDetailsUrl + "/" + firstTrustId}`);
+    return safeRedirect(res, `${trustEntryUrl + "/" + firstTrustId}`);
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);

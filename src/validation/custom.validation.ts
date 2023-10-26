@@ -526,14 +526,10 @@ export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: s
   const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
   const filingDateYear = appData?.update?.[FilingDateKey]?.year;
 
-  if (!checkFirstDateOnOrAfterSecondDate(
+  return checkFirstDateOnOrAfterSecondDate(
     filingDateDay, filingDateMonth, filingDateYear,
     dateDay, dateMonth, dateYear,
-    errorMessage
-  )) {
-    throw new Error(errorMessage);
-  }
-  return true;
+    errorMessage);
 };
 
 const hasBeneficialOwners = (appData: ApplicationData) => {

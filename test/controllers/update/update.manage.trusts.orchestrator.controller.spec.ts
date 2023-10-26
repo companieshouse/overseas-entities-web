@@ -411,12 +411,18 @@ describe('Update - Mange Trusts - Orchestrator - Change Handler', () => {
   });
 
   test("catch error", async () => {
-    mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+    mockGetApplicationData.mockReturnValue({
+      trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
+      [UpdateKey]: {
+        review_trusts: []
+      }
+    });
 
-    const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1234`);
+    mockSetExtraData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+
+    const resp = await request(app).get(`${UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL}/1`);
 
     expect(resp.status).toEqual(500);
     expect(resp.text).toContain(SERVICE_UNAVAILABLE);
   });
-
 });

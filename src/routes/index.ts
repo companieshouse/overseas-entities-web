@@ -610,6 +610,15 @@ router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL)
   )
   .all(updateManageTrustsOrchestrator.handler);
 
+router.route(config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + config.TRUST_ID)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),
+    authentication,
+    companyAuthentication,
+    navigation.hasTrustWithIdUpdate
+  )
+  .all(updateManageTrustsOrchestrator.trustChangeHandler);
+
 router.route(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS),

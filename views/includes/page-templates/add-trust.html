@@ -6,7 +6,35 @@
       {% include "includes/list/errors.html" %}
       <h1 class="govuk-heading-xl govuk-!-margin-10">{{ title }}</h1>
 
-      {% if (isUpdate and pageData.trustData.length > 0) %}
+      {% if pageData.trustData.length > 0 %}
+        {% set reviewedTrustsRows = [] %}
+        {% set addedTrusts = [] %}
+        {% for trust in pageData.trustData %}
+            {% if trust.ch_reference.length %}
+              {% set reviewedTrustsRows = (reviewedTrustsRows.push({
+                key: {
+                  text: trust.trust_name
+                },
+                actions: {
+                  items: [CREATE_CHANGE_LINK(
+                    OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL + "/" + trust.trust_id,
+                    "Trust " + trust.trust_name,
+                    "change-trust-button"
+                  )]
+                }
+              }), reviewedTrustsRows) %}
+            {% else %}
+              {% set addedTrusts = (addedTrusts.push(trust), addedTrusts) %}
+            {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {% if reviewedTrustsRows.length > 0 %}
+        <h3 class="govuk-heading-m">What you have reviewed</h3>
+        {{ govukSummaryList({ rows: reviewedTrustsRows }) }}
+      {% endif %}
+
+      {% if (isUpdate and addedTrusts.length > 0) %}
         <h3 class="govuk-heading-m">What you have added so far</h3>
       {% endif %}
 
@@ -16,7 +44,7 @@
         {% set changeLink = OE_CONFIGS.TRUST_DETAILS_URL %}
       {% endif %}
 
-      {% for trust in pageData.trustData %}
+      {% for trust in addedTrusts %}
         {{ govukSummaryList({
         rows: [
           {
@@ -32,7 +60,7 @@
               }
             }
           ]
-        }) 
+        })
       }}
       {% endfor %}
       <form method="post">

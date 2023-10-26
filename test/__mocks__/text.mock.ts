@@ -243,6 +243,8 @@ export const UPDATE_TELL_US_ABOUT_TRUST_QUESTION = "What is the name of the trus
 export const UPDATE_TELL_US_ABOUT_THE_INDIVIDUAL_HEADING = "Tell us about the individual";
 export const UPDATE_TRUSTS_ASSOCIATED_BACK_LINK = "/update-an-overseas-entity/update-trusts-associated-with-overseas-entity";
 export const HOME_ADDRESS_LINE1 = "addressLine1";
+export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
+export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

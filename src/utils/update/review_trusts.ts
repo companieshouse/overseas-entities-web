@@ -120,3 +120,18 @@ export const moveTrustOutOfReview = (appData: ApplicationData) => {
 
   appData.trusts?.push(trust);
 };
+
+export const putTrustInChangeScenario = (appData: ApplicationData, trustId: string) => {
+  const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(t => t.trust_id === trustId), 1)[0];
+  appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
+
+  const trust = (appData.update?.review_trusts ?? [])[0];
+
+  trust.review_status = {
+    in_review: true,
+    reviewed_former_bos: true,
+    reviewed_individuals: true,
+    reviewed_legal_entities: true,
+    reviewed_trust_details: true
+  };
+};

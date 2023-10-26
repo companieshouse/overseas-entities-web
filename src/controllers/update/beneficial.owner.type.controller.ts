@@ -46,7 +46,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       ...(appData[ManagingOfficerKey] ?? [])
     ];
 
-    const hasNewlyAddedBosMos = allBosMos.find(boMo => boMo.ch_reference === undefined) !== undefined;
+    const hasNewlyAddedBosMos = allBosMos.find(boMo => !boMo.ch_reference) !== undefined;
     const hasExistingBosMos = allBosMos.find(boMo => boMo.ch_reference) !== undefined;
 
     return res.render(config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE, {

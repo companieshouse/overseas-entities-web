@@ -10,6 +10,9 @@ jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
 jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../src/utils/trust/individual.trustee.mapper');
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/utils/url');
+jest.mock('../../src/middleware/service.availability.middleware');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -24,7 +27,7 @@ import { INDIVIDUAL_BO_TEXTS } from "../../src/utils/trust.individual.beneficial
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
+import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { IndividualTrustee, Trust, TrustKey } from '../../src/model/trust.model';
@@ -33,8 +36,17 @@ import { mapIndividualTrusteeToSession, mapIndividualTrusteeByIdFromSessionToPag
 import { getTrustByIdFromApp, saveIndividualTrusteeInTrust, saveTrustInApp } from '../../src/utils/trusts';
 
 import { saveAndContinue } from '../../src/utils/save.and.continue';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
 
+const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe('Trust Individual Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -111,6 +123,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
         }),
       );
     });
+
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       mockGetApplicationData.mockImplementationOnce(() => {
@@ -125,7 +138,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('Save', () => {
+    test('Save', async () => {
       const mockTrustee = {} as IndividualTrustee ;
       (mapIndividualTrusteeToSession as jest.Mock).mockReturnValue(mockTrustee);
 
@@ -144,7 +157,7 @@ describe('Trust Individual Beneficial Owner Controller', () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapIndividualTrusteeToSession).toBeCalledTimes(1);
       expect(mapIndividualTrusteeToSession).toBeCalledWith(mockReq.body);
@@ -164,14 +177,14 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       );
     });
 
-    test('catch error when renders the page', () => {
+    test('catch error when renders the page', async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
 
       (mapIndividualTrusteeToSession as jest.Mock).mockImplementationOnce(() => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -215,6 +228,50 @@ describe('Trust Individual Beneficial Owner Controller', () => {
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Endpoint Access tests with supertest with url params', () => {
+    beforeEach(() => {
+      (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+    });
+
+    test(`successfully access GET method`, async () => {
+      const mockTrust = {
+        trustName: 'dummyName',
+      };
+
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust);
+
+      const resp = await request(app).get(TRUST_ENTRY_WITH_PARAMS_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL);
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(INDIVIDUAL_BO_TEXTS.title);
+      expect(resp.text).toContain(mockTrust.trustName);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test('successfully access POST method', async () => {
+
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+
+      const resp = await request(app).post(TRUST_ENTRY_WITH_PARAMS_URL + "/" + trustId + TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL).send({});
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${MOCKED_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
     });
   });
 });

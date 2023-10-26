@@ -84,11 +84,11 @@ const is_date_within_filing_period = (date_field_id: string, error_message: stri
     )),
 ];
 
-const is_date_within_filing_period_trusts = (dateContext: dateContext, error_message: string) => [
-  body(dateContext.dateInput.name)
+const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
+  body(trustDateContext.dateInput.name)
     .custom((value, { req }) => checkDatePreviousToFilingDate(
       req,
-      req.body[dateContext.dayInput.name], req.body[dateContext.monthInput.name], req.body[dateContext.yearInput.name],
+      req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
       error_message
     )),
 ];

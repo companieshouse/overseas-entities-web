@@ -13,6 +13,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
 import { safeRedirect } from '../utils/http.ext';
+import { isActiveFeature } from './feature.flag';
+import { getUrlWithParamsToPath } from './url';
 
 export const HISTORICAL_BO_TEXTS = {
   title: 'Tell us about the former beneficial owner',
@@ -121,7 +123,7 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId));
+    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -129,10 +131,10 @@ export const postTrustFormerBo = async (req: Request, res: Response, next: NextF
   }
 };
 
-const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string) => (
+const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => (
   isUpdate
     ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
-    : `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
+    : `${getTrustEntryUrl(req)}/${trustId}${config.TRUST_INVOLVED_URL}`
 );
 
 const getPageTemplate = (isUpdate: boolean) => (
@@ -146,3 +148,11 @@ const getUrl = (isUpdate: boolean) => (
     ? config.UPDATE_AN_OVERSEAS_ENTITY_URL
     : config.REGISTER_AN_OVERSEAS_ENTITY_URL
 );
+
+const getTrustEntryUrl = (req: Request) => {
+  let url = `${config.TRUST_ENTRY_URL}`;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    url = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+  }
+  return url;
+};

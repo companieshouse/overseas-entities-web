@@ -9,6 +9,9 @@ jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
 }));
 jest.mock('../../src/utils/trusts');
 jest.mock('../../src/utils/trust/common.trust.data.mapper');
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/utils/url');
+jest.mock('../../src/middleware/service.availability.middleware');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -23,18 +26,29 @@ import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
 import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
 import { mapBeneficialOwnerToSession } from '../../src/utils/trust/historical.beneficial.owner.mapper';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
+import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
+
+const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe('Trust Historical Beneficial Owner Controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
 
   const trustId = '99999';
   const pageUrl = TRUST_ENTRY_URL + "/" + trustId + TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
+  const pageWithParamsUrl = TRUST_ENTRY_WITH_PARAMS_URL + "/" + trustId + TRUST_HISTORICAL_BENEFICIAL_OWNER_URL;
 
   const mockTrust1Data = {
     trust_id: '999',
@@ -196,6 +210,56 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
     test('renders the current page with error messages', async () => {
       const resp = await request(app).post(pageUrl).send(mockHistBORequest);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+  });
+
+  describe('Endpoint Access with params tests', () => {
+    beforeEach(() => {
+      (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+    });
+
+    test('successfully access GET method and render', async () => {
+      const mockTrust = {
+        trustName: 'dummyName',
+      };
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust);
+
+      const resp = await request(app).get(pageWithParamsUrl);
+
+      expect(resp.text).toContain(mockTrust.trustName);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test('successfully access POST method', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+      const resp = await request(app).post(pageWithParamsUrl).send({});
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+    });
+
+    test('renders the current page with error messages', async () => {
+      const resp = await request(app).post(pageWithParamsUrl).send(mockHistBORequest);
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);

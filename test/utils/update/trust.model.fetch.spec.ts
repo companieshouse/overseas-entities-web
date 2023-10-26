@@ -7,7 +7,7 @@ import {
   getTrustLinks
 } from '../../../src/service/trust.data.service';
 import { logger } from '../../../src/utils/logger';
-import { Trust } from "../../../src/model/trust.model";
+import { InterestedIndividualPersonTrustee, Trust } from "../../../src/model/trust.model";
 import {
   FETCH_CORPORATE_TRUSTEE_DATA_MOCK,
   FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK,
@@ -27,6 +27,7 @@ import { FETCH_TRUST_APPLICATION_DATA_MOCK } from "../../__mocks__/session.mock"
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { ApplicationData } from "../../../src/model";
 import { Request } from "express";
+import { RoleWithinTrustType } from "../../../src/model/role.within.trust.type.model";
 
 jest.mock('../../../src/service/trust.data.service');
 jest.mock('../../../src/utils/logger');
@@ -665,19 +666,20 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(trust.HISTORICAL_BO).toEqual(undefined);
   });
 
+  const trustMock: Trust = {
+    trust_id: "1",
+    ch_reference: "12345678",
+    trust_name: "Test Trust",
+    unable_to_obtain_all_trust_info: "No",
+    creation_date_day: "1",
+    creation_date_month: "1",
+    creation_date_year: "2020",
+    INDIVIDUALS: [],
+    CORPORATES: [],
+    HISTORICAL_BO: []
+  };
+
   test("should map trustees into trust when trustees are missing dates", () => {
-    const trust: Trust = {
-      trust_id: "1",
-      ch_reference: "12345678",
-      trust_name: "Test Trust",
-      unable_to_obtain_all_trust_info: "No",
-      creation_date_day: "1",
-      creation_date_month: "1",
-      creation_date_year: "2020",
-      INDIVIDUALS: [],
-      CORPORATES: [],
-      HISTORICAL_BO: []
-    };
     const trusteeData = {
       hashedTrusteeId: "1",
       trusteeForename1: "",
@@ -685,7 +687,7 @@ describe("Test fetching and mapping of Trust data", () => {
       corporateIndicator: "",
       trusteeTypeId: ""
     } as unknown as IndividualTrusteeData;
-    mapIndividualTrusteeData(trusteeData, trust);
+    mapIndividualTrusteeData(trusteeData, trustMock);
     const historicalTrusteeData = {
       hashedTrusteeId: "2",
       trusteeForename1: "",
@@ -694,14 +696,14 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeTypeId: "",
       ceasedDate: "2023-03-03"
     } as unknown as IndividualTrusteeData;
-    mapIndividualTrusteeData(historicalTrusteeData, trust);
+    mapIndividualTrusteeData(historicalTrusteeData, trustMock);
     const corporateTrusteeData = {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
       trusteeTypeId: ""
     } as unknown as CorporateTrusteeData;
-    mapCorporateTrusteeData(corporateTrusteeData, trust);
+    mapCorporateTrusteeData(corporateTrusteeData, trustMock);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
       hashedTrusteeId: "3",
       trusteeName: "",
@@ -709,10 +711,61 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeTypeId: "",
       ceasedDate: "2022-02-02"
     } as unknown as CorporateTrusteeData;
-    mapCorporateTrusteeData(historicalCorporateTrusteeData, trust);
+    mapCorporateTrusteeData(historicalCorporateTrusteeData, trustMock);
 
-    expect(trust.INDIVIDUALS).toHaveLength(1);
-    expect(trust.CORPORATES).toHaveLength(1);
-    expect(trust.HISTORICAL_BO).toHaveLength(2);
+    expect(trustMock.INDIVIDUALS).toHaveLength(1);
+    expect(trustMock.CORPORATES).toHaveLength(1);
+    expect(trustMock.HISTORICAL_BO).toHaveLength(2);
+  });
+
+  test("should map interested person trustees into trust", () => {
+    const trusteeData = {
+      hashedTrusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5005",
+      appointmentDate: "2012-02-01",
+    } as unknown as IndividualTrusteeData;
+    trustMock.INDIVIDUALS = [];
+
+    mapIndividualTrusteeData(trusteeData, trustMock);
+
+    expect(trustMock.INDIVIDUALS).toHaveLength(1);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.INTERESTED_PERSON);
+      const interestedPerson = trustMock.INDIVIDUALS[0] as InterestedIndividualPersonTrustee;
+
+      expect(interestedPerson.date_became_interested_person_day).toEqual("1");
+      expect(interestedPerson.date_became_interested_person_month).toEqual("2");
+      expect(interestedPerson.date_became_interested_person_year).toEqual("2012");
+    } else {
+      fail();
+    }
+  });
+
+  test("should map interested person trustees into trust without appointmentDate", () => {
+    const trusteeData = {
+      hashedTrusteeId: "1",
+      trusteeForename1: "",
+      trusteeSurname: "",
+      corporateIndicator: "",
+      trusteeTypeId: "5005",
+    } as unknown as IndividualTrusteeData;
+    trustMock.INDIVIDUALS = [];
+
+    mapIndividualTrusteeData(trusteeData, trustMock);
+
+    expect(trustMock.INDIVIDUALS).toHaveLength(1);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.INTERESTED_PERSON);
+      const interestedPerson = trustMock.INDIVIDUALS[0] as InterestedIndividualPersonTrustee;
+
+      expect(interestedPerson.date_became_interested_person_day).toEqual("");
+      expect(interestedPerson.date_became_interested_person_month).toEqual("");
+      expect(interestedPerson.date_became_interested_person_year).toEqual("");
+    } else {
+      fail();
+    }
   });
 });

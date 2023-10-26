@@ -8,7 +8,7 @@ import {
 import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
-import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
+import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual, InterestedIndividualPersonTrustee } from "../../model/trust.model";
 import { lowerCaseAllWordsExceptFirstLetters, mapInputDate, splitNationalities } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
@@ -136,7 +136,19 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
   mapUsualResidentialAddress(individualTrustee, trustee);
   mapServiceAddress(individualTrustee, trustee);
 
-  trust.INDIVIDUALS?.push(individualTrustee);
+  if (individualTrustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
+    const appointmentDate = mapInputDate(trustee.appointmentDate);
+    const InterestedPersonTrustee: InterestedIndividualPersonTrustee = {
+      ...individualTrustee,
+      type: RoleWithinTrustType.INTERESTED_PERSON,
+      date_became_interested_person_day: appointmentDate?.day ?? "",
+      date_became_interested_person_month: appointmentDate?.month ?? "",
+      date_became_interested_person_year: appointmentDate?.year ?? "",
+    };
+    trust.INDIVIDUALS?.push(InterestedPersonTrustee);
+  } else {
+    trust.INDIVIDUALS?.push(individualTrustee);
+  }
 };
 
 const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {

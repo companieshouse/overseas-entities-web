@@ -121,17 +121,20 @@ export const moveTrustOutOfReview = (appData: ApplicationData) => {
   appData.trusts?.push(trust);
 };
 
-export const putTrustInChangeScenario = (appData: ApplicationData, trustId: string) => {
-  const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(t => t.trust_id === trustId), 1)[0];
+export const putTrustInChangeScenario = (appData: ApplicationData, trustId: string, trusteeType?: string) => {
+  const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(trust => trust.trust_id === trustId), 1)[0];
+
   appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
 
-  const trust = (appData.update?.review_trusts ?? [])[0];
+  const trustInChangeScenario = (appData.update?.review_trusts ?? [])[0];
 
-  trust.review_status = {
-    in_review: true,
-    reviewed_former_bos: true,
-    reviewed_individuals: true,
-    reviewed_legal_entities: true,
-    reviewed_trust_details: true
-  };
+  if (trustInChangeScenario) {
+    trustInChangeScenario.review_status = {
+      in_review: true,
+      reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
+      reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
+      reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
+      reviewed_trust_details: (trusteeType !== undefined)
+    };
+  }
 };

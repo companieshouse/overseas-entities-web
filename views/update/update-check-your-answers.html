@@ -100,12 +100,25 @@
           {% include "includes/check-your-answers/update/update-managing-officer-corporate.html" %}
         {% endfor %}
       {% endif %}
-      {% if (appData.trusts and appData.trusts.length > 0) %}
-        <br><h2 class="govuk-heading-l">Trusts</h2>
-        {% set trust_count = 0 %}
-        {% for trust in appData.trusts %}
-          {% set trust_count = trust_count + 1 %}
-          {% set trust_heading = "Trust " + trust_count %}
+
+      {% set trusts = appData.trusts or [] %}
+      {% set existingTrusts = trusts | selectattr('ch_reference') %}
+      {% set newTrusts = trusts | rejectattr('ch_reference') %}
+
+      {% if (existingTrusts and existingTrusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts you have reviewed</h2>
+        {% for trust in existingTrusts %}
+          {% set trust_heading = trust.trust_name %}
+          {% set manageTrusts = true %}
+          {% include "includes/check-your-answers/trusts.html" %}
+        {% endfor %}
+      {% endif %}
+      
+      {% if (newTrusts and newTrusts.length > 0) %}
+        <br><h2 class="govuk-heading-l">Trusts you have added</h2>
+        {% for trust in newTrusts %}
+          {% set trust_heading = trust.trust_name %}
+          {% set manageTrusts = false %}
           {% include "includes/check-your-answers/trusts.html" %}
         {% endfor %}
       {% endif %}

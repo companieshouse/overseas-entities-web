@@ -42,7 +42,7 @@ const getPageProperties = (
   formData?: PageModel.TrustHistoricalBeneficialOwnerForm,
   errors?: FormattedValidationErrors,
 ): TrustHistoricalBeneficialOwnerProperties => ({
-  backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId),
+  backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
   templateName: getPageTemplate(isUpdate),
   pageParams: {
     title: HISTORICAL_BO_TEXTS.title,

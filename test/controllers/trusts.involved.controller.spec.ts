@@ -354,67 +354,68 @@ describe('Trust Involved controller', () => {
     );
 
     // TODO - get working when trust-involved validation ticket is worked on
-    // test('render error', async () => {
-    //   const mockValidationErrors = [
-    //     {
-    //       value: undefined,
-    //       msg: 'Select which type of individual or entity you want to add',
-    //       param: 'typeOfTrustee',
-    //       location: 'body',
-    //     }, //  as ValidationError,
-    //   ];
-    //   (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
-    //     isEmpty: jest.fn().mockReturnValue(false),
-    //     array: jest.fn().mockReturnValue(mockValidationErrors),
-    //   }));
+    test('render error', async () => {
+      const mockValidationErrors = [
+        {
+          value: undefined,
+          msg: 'Select which type of individual or entity you want to add',
+          param: 'typeOfTrustee',
+          location: 'body',
+        }, //  as ValidationError,
+      ];
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+        array: jest.fn().mockReturnValue(mockValidationErrors),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
 
-    //   mockReq.body = {
-    //     dummyKey: 'dummyValue',
-    //   };
+      mockReq.body = {
+        dummyKey: 'dummyValue',
+      };
 
-    //   const mockTrustData = {
-    //     trustName: 'dummy',
-    //   };
-    //   (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
+      const mockTrustData = {
+        trustName: 'dummy',
+      };
+      (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
 
-    //   const mockInvolvedData = {
-    //     involvedDummyKey: 'involvedDummyValue',
-    //   };
-    //   (mapTrustWhoIsInvolvedToPage as any as jest.Mock).mockReturnValue(mockInvolvedData);
+      const mockInvolvedData = {
+        involvedDummyKey: 'involvedDummyValue',
+      };
+      (mapTrustWhoIsInvolvedToPage as any as jest.Mock).mockReturnValue(mockInvolvedData);
 
-    //   await post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
-    //   expect(mockRes.redirect).not.toBeCalled;
+      expect(mockRes.redirect).not.toBeCalled;
 
-    //   expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
-    //   expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
+      expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
+      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
 
-    //   expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
-    //   expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
 
-    //   expect(mockRes.render).toBeCalledTimes(1);
-    //   expect(mockRes.render).toBeCalledWith(
-    //     TRUST_INVOLVED_PAGE,
-    //     expect.objectContaining({
-    //       pageData: expect.objectContaining({
-    //         trustData: mockTrustData,
-    //         ...mockInvolvedData,
-    //       }),
-    //       errors: {
-    //         errorList: [
-    //           {
-    //             href: '#typeOfTrustee',
-    //             text: ErrorMessages.TRUST_INVOLVED_INVALID,
-    //           },
-    //         ],
-    //         typeOfTrustee: {
-    //           text: ErrorMessages.TRUST_INVOLVED_INVALID,
-    //         },
-    //       },
-    //       formData: mockReq.body,
-    //     }),
-    //   );
-    // });
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledWith(
+        TRUST_INVOLVED_PAGE,
+        expect.objectContaining({
+          pageData: expect.objectContaining({
+            trustData: mockTrustData,
+            ...mockInvolvedData,
+          }),
+          errors: {
+            errorList: [
+              {
+                href: '#typeOfTrustee',
+                text: ErrorMessages.TRUST_INVOLVED_INVALID,
+              },
+            ],
+            typeOfTrustee: {
+              text: ErrorMessages.TRUST_INVOLVED_INVALID,
+            },
+          },
+          formData: mockReq.body,
+        }),
+      );
+    });
 
     test('catch error when post data from page', async () => {
       mockReq.body = {

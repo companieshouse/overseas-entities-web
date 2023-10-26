@@ -353,7 +353,6 @@ describe('Trust Involved controller', () => {
       },
     );
 
-    // TODO - get working when trust-involved validation ticket is worked on
     test('render error', async () => {
       const mockValidationErrors = [
         {

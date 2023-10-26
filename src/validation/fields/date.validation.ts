@@ -17,7 +17,6 @@ import {
   MonthFieldErrors,
   YearFieldErrors,
   checkDateIPLegalEntityBO,
-  checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
   checkDatePreviousToFilingDate
@@ -85,6 +84,15 @@ const is_date_within_filing_period = (date_field_id: string, error_message: stri
     )),
 ];
 
+const is_date_within_filing_period_trusts = (dateContext: dateContext, error_message: string) => [
+  body(dateContext.dateInput.name)
+    .custom((value, { req }) => checkDatePreviousToFilingDate(
+      req,
+      req.body[dateContext.dayInput.name], req.body[dateContext.monthInput.name], req.body[dateContext.yearInput.name],
+      error_message
+    )),
+];
+
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
@@ -92,10 +100,6 @@ export const resigned_on_validations = is_still_active_validations("resigned_on"
 export const trustFormerBODateValidations = is_trust_still_active_validation(ErrorMessages.TRUST_CEASED_DATE_BEFORE_START_DATE);
 
 export const filingPeriodStartDateValidations = is_date_within_filing_period("start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodTrustStartDateValidations = is_date_within_filing_period("startDate", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
-
-export const filingPeriodCeaseDateValidations = is_date_within_filing_period("startDate", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -301,3 +305,6 @@ export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndD
 
 export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 
+export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+
+export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);

@@ -1,7 +1,7 @@
 import { body } from "express-validator";
 import { TrusteeType } from "../model/trustee.type.model";
 import { ErrorMessages } from "./error.messages";
-import { filingPeriodCeaseDateValidations, filingPeriodTrustStartDateValidations, historicalBeneficialOwnerEndDate, historicalBeneficialOwnerStartDate, trustFormerBODateValidations } from "./fields/date.validation";
+import { filingPeriodTrustCeaseDateValidations, filingPeriodTrustStartDateValidations, historicalBeneficialOwnerEndDate, historicalBeneficialOwnerStartDate, trustFormerBODateValidations } from "./fields/date.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 export const trustHistoricalBeneficialOwner = [
@@ -26,5 +26,5 @@ export const trustHistoricalBeneficialOwner = [
   ...historicalBeneficialOwnerEndDate,
   ...trustFormerBODateValidations,
   ...filingPeriodTrustStartDateValidations,
-  ...filingPeriodCeaseDateValidations
+  ...filingPeriodTrustCeaseDateValidations
 ];

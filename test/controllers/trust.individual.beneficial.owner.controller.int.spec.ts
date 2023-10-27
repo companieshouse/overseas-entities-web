@@ -7,6 +7,9 @@ jest.mock('../../src/middleware/is.feature.enabled.middleware', () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
 jest.mock('../../src/utils/trusts');
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/middleware/service.availability.middleware');
+jest.mock('../../src/utils/url');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction } from "express";
@@ -15,7 +18,7 @@ import { constants } from 'http2';
 import app from "../../src/app";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE, TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL, TRUST_INVOLVED_URL } from '../../src/config';
 import { getTrustByIdFromApp } from '../../src/utils/trusts';
 import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { saveAndContinue } from '../../src/utils/save.and.continue';
@@ -26,8 +29,18 @@ import { Trust } from '../../src/model/trust.model';
 import { IndividualTrusteesFormCommon } from '../../src/model/trust.page.model';
 import * as maxLengthMocks from "../__mocks__/max.length.mock";
 import { RESIDENTIAL_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK, SERVICE_ADDRESS_WITH_MAX_LENGTH_FIELDS_MOCK } from "../__mocks__/validation.mock";
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
 
+const MOCKED_URL = "MOCKED_URL";
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockImplementation(() => MOCKED_URL);
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe('Trust Individual Beneficial Owner Controller Integration Tests', () => {
 
@@ -44,7 +57,6 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
   describe("POST tests", () => {
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {
-
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
 
@@ -167,7 +179,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
   describe("POST with params url tests", () => {
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with missing mandatory field messages`, async () => {
-
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
 
@@ -196,6 +208,9 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+      expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
       expect(resp.text).toContain(ErrorMessages.FIRST_NAME_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.LAST_NAME_INDIVIDUAL_BO);
       expect(resp.text).toContain(ErrorMessages.ENTER_DATE_OF_BIRTH_INDIVIDUAL_BO);
@@ -208,6 +223,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
     });
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with MAX error messages`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
@@ -235,6 +251,8 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(mockSaveAndContinue).not.toHaveBeenCalled();
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
       expect(resp.text).toContain(ErrorMessages.MAX_FIRST_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_LAST_NAME_LENGTH_50);
       expect(resp.text).toContain(ErrorMessages.MAX_PROPERTY_NAME_OR_NUMBER_LENGTH);
@@ -246,6 +264,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
     });
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with no nationality error messages`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
 
@@ -266,6 +285,7 @@ describe('Trust Individual Beneficial Owner Controller Integration Tests', () =>
     });
 
     test(`renders the ${TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE} page with second nationality invalid error messages`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       const mockTrust = {} as Trust;
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust);
 

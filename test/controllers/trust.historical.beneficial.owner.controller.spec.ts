@@ -26,7 +26,12 @@ import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from '../__mocks__/text.mock';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { authentication } from '../../src/middleware/authentication.middleware';
 import { hasTrustWithIdRegister } from '../../src/middleware/navigation/has.trust.middleware';
-import { TRUST_ENTRY_URL, TRUST_ENTRY_WITH_PARAMS_URL, TRUST_HISTORICAL_BENEFICIAL_OWNER_URL } from '../../src/config';
+import {
+  TRUST_ENTRY_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
+  TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
+  TRUST_INVOLVED_URL
+} from '../../src/config';
 import { Trust, TrustHistoricalBeneficialOwner, TrustKey } from '../../src/model/trust.model';
 import { getApplicationData, setExtraData } from '../../src/utils/application.data';
 import { getTrustByIdFromApp, saveHistoricalBoInTrust, saveTrustInApp } from '../../src/utils/trusts';
@@ -255,7 +260,9 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+      expect(resp.text).toContain(MOCKED_URL + `/${trustId}${TRUST_INVOLVED_URL}`); // back link
     });
 
     test('renders the current page with error messages', async () => {

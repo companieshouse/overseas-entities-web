@@ -102,7 +102,7 @@ export const postBeneficialOwnerIndividual = async (req: Request, res: Response,
     const session = req.session as Session;
     const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
     data[HaveDayOfBirthKey] = true;
-    
+
     setApplicationData(session, data, BeneficialOwnerIndividualKey);
 
     await saveAndContinue(req, session, registrationFlag);

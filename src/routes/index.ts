@@ -451,6 +451,16 @@ router
   .post(...validator.trustLegalEntityBeneficialOwnerValidator, trustLegalEntitybeneficialOwner.post);
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.TRUST_ID + config.TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL + config.TRUSTEE_ID + '?')
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrustWithIdRegister,
+  )
+  .get(trustLegalEntitybeneficialOwner.get)
+  .post(...validator.trustLegalEntityBeneficialOwnerValidator, trustLegalEntitybeneficialOwner.post);
+
+router
   .route(config.TRUST_ENTRY_URL + config.TRUST_ID + config.TRUST_BENEFICIAL_OWNER_DETACH_URL + config.BO_ID)
   .get((_req, res) => {
     return res.render('#TODO BENEFICIAL OWNER DETACH FROM TRUST PAGE');

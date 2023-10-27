@@ -105,6 +105,7 @@ export const postManagingOfficer = async (req: Request, res: Response, next: Nex
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const officerData: ApplicationDataType = setOfficerData(req.body, uuidv4());
+    officerData[HaveDayOfBirthKey] = true;
 
     const session = req.session as Session;
     setApplicationData(session, officerData, ManagingOfficerKey);
@@ -158,7 +159,6 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
-  data[HaveDayOfBirthKey] = true;
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)

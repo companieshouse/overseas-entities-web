@@ -85,6 +85,15 @@ const is_date_within_filing_period = (date_field_id: string, error_message: stri
     )),
 ];
 
+const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
+  body(trustDateContext.dateInput.name)
+    .custom((value, { req }) => checkDatePreviousToFilingDate(
+      req,
+      req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
+      error_message
+    )),
+];
+
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
 export const resigned_on_validations = is_still_active_validations("resigned_on", "is_still_mo", ErrorMessages.RESIGNED_ON_BEFORE_START_DATE);
@@ -297,3 +306,6 @@ export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndD
 
 export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 
+export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+
+export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);

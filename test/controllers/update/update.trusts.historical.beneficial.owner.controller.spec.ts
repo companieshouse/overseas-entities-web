@@ -209,6 +209,39 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
     });
+
+    test('successfully access POST method without CeasedDate and StartDate errors', async () => {
+      mockAppData = {
+        update: {
+          "filing_date": {
+            "day": "16",
+            "month": "12",
+            "year": "2023"
+          }
+        }
+      };
+
+      mockReq = {
+        session: {} as Session,
+        headers: {},
+        route: '',
+        method: '',
+        body: {},
+      } as Request;
+
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+      const resp = await request(app).post(pageUrl).send(mockHistBORequest);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
+    });
   });
 
   describe('Endpoint Access tests', () => {

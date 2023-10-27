@@ -17,6 +17,7 @@ import {
   MonthFieldErrors,
   YearFieldErrors,
   checkDateIPLegalEntityBO,
+  checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
   checkDatePreviousToFilingDate
@@ -59,7 +60,7 @@ const is_still_active_validations = (date_field_id: string, radio_button_id: str
   body(date_field_id)
     .if(body(radio_button_id).equals('0'))
     .custom((value, { req }) => checkDate(req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"]))
-    .custom((value, { req }) => checkFirstDateOnOrAfterSecondDate(
+    .custom((value, { req }) => checkCeasedDateOnOrAfterStartDate(
       req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
       req.body["start_date-day"], req.body["start_date-month"], req.body["start_date-year"],
       error_message

@@ -546,6 +546,7 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
+  have_day_of_birth: true,
   nationality: "Russian",
   second_nationality: "",
   usual_residential_address: ADDRESS,

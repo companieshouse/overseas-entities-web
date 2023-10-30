@@ -83,7 +83,10 @@ export const mapIndividualMoPrivateData = (moPrivateData: ManagingOfficerPrivate
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === managingOfficer.ch_reference) {
       managingOfficer.usual_residential_address = mapBOMOAddress(managingOfficerData.residentialAddress);
-      managingOfficer.date_of_birth = mapInputDate(managingOfficerData.dateOfBirth);
+      if (managingOfficerData.dateOfBirth) {
+        managingOfficer.date_of_birth = mapInputDate(managingOfficerData.dateOfBirth);
+        managingOfficer.have_day_of_birth = true;
+      }
     }
   }
 };

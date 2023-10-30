@@ -25,6 +25,7 @@ import {
 import {
   DateOfBirthKey,
   DateOfBirthKeys,
+  HaveDayOfBirthKey,
   ResignedOnDateKey,
   ResignedOnDateKeys,
   StartDateKey,
@@ -157,7 +158,7 @@ export const setOfficerData = (reqBody: any, id: string): ApplicationDataType =>
   const data: ApplicationDataType = prepareData(reqBody, ManagingOfficerKeys);
   data[UsualResidentialAddressKey] = mapFieldsToDataObject(reqBody, UsualResidentialAddressKeys, AddressKeys);
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
-
+  data[HaveDayOfBirthKey] = true;
   data[HasSameResidentialAddressKey] = (data[HasSameResidentialAddressKey]) ? +data[HasSameResidentialAddressKey] : '';
   data[ServiceAddressKey] = (!data[HasSameResidentialAddressKey])
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)

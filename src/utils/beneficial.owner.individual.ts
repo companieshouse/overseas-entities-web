@@ -162,6 +162,7 @@ export const setBeneficialOwnerData = (reqBody: any, id: string): ApplicationDat
     ? mapFieldsToDataObject(reqBody, ServiceAddressKeys, AddressKeys)
     : {};
   data[DateOfBirthKey] = mapFieldsToDataObject(reqBody, DateOfBirthKeys, InputDateKeys);
+  data[HaveDayOfBirthKey] = true;
   data[StartDateKey] = mapFieldsToDataObject(reqBody, StartDateKeys, InputDateKeys);
   data[CeasedDateKey] = reqBody["is_still_bo"] === '0' ? mapFieldsToDataObject(reqBody, CeasedDateKeys, InputDateKeys) : {};
 

@@ -3,16 +3,25 @@
 {% set inNoChangeJourney = pageParams.noChangeFlag %}
 
 {% set trustBeneficialOwnersHtml %}
-  {% include "includes/check-your-answers/trust-beneficial-owners.html" %}
+{% include "includes/check-your-answers/trust-beneficial-owners.html" %}
 {% endset %}
 
 <h3 class="govuk-heading-m">{{ trust_heading }}</h3>
+
+{% set isDateEditable = true %}
+{% if (manageTrusts or inNoChangeJourney)%} 
+  {% set isDateEditable = false %}
+{% endif %}
 
 {% if pageParams.isTrustFeatureEnabled %}
   {% if pageParams.isRegistration %}
     {% set changeLinkUrl = OE_CONFIGS.TRUST_DETAILS_URL %}
   {% else %}
-    {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL %}
+    {% if manageTrusts %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL %}
+    {% else %}
+      {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL %}
+    {% endif %}
   {% endif %}
 
   {% set trustCreationDate = dateMacros.formatDate(trust.creation_date_day, trust.creation_date_month, trust.creation_date_year) %}
@@ -46,7 +55,7 @@
             "Trust " + trust.trust_name + " -  created date",
             "change-trust-created-date-button"
           ) ]
-        } if not inNoChangeJourney
+        } if isDateEditable
       },
       {
         key: {
@@ -72,8 +81,8 @@
     {% endfor %}
     <br>
   {% endif %}
-  {% if (trust.INDIVIDUALS and trust.INDIVIDUALS .length > 0) %}
-    {% for individualTrustee in trust.INDIVIDUALS  %}
+  {% if (trust.INDIVIDUALS and trust.INDIVIDUALS.length > 0) %}
+    {% for individualTrustee in trust.INDIVIDUALS %}
       {% include "includes/check-your-answers/individual-trustee.html" %}
     {% endfor %}
     <br>

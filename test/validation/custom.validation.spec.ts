@@ -1,7 +1,12 @@
+jest.mock('../../src/utils/application.data');
+
 import * as custom from "../../src/validation/custom.validation";
 import { ErrorMessages } from "../../src/validation/error.messages";
 import { DateTime } from 'luxon';
 import { MAX_80 } from "../__mocks__/max.length.mock";
+import { getApplicationData } from "../../src/utils/application.data";
+import { Request } from "express";
+import { Session } from '@companieshouse/node-session-handler';
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -27,6 +32,28 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
     const startDate = ["3", "3", "2023"];
 
     expect(custom.checkCeasedDateOnOrAfterStartDate(...ceaseDate, ...startDate)).toBe(true);
+  });
+
+  test('should throw error if filing date before start date', () => {
+    const filingDate = ["2", "2", "2023"];
+    const startDate = ["3", "3", "2023"];
+
+    expect(() => custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate, ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+      .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+  });
+
+  test('should return true if filing date = start date', () => {
+    const filingDate = ["3", "3", "2023"];
+    const startDate = ["3", "3", "2023"];
+
+    expect(custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate)).toBe(true);
+  });
+
+  test('should return true if filing date after start date', () => {
+    const filingDate = ["3", "3", "2023"];
+    const startDate = ["2", "2", "2023"];
+
+    expect(custom.checkFirstDateOnOrAfterSecondDate(...filingDate, ...startDate)).toBe(true);
   });
 
   test("should test checkFieldIfRadioButtonSelectedAndFieldsEmpty validity", () => {
@@ -111,5 +138,47 @@ describe('tests for custom Date fields', () => {
   test("should throw error for checkPublicRegisterJurisdictionLength when register field is selected", () => {
     expect(() => custom.checkPublicRegisterJurisdictionLength(true, public_register_name, public_register_jurisdiction))
       .toThrowError(ErrorMessages.MAX_ENTITY_PUBLIC_REGISTER_NAME_AND_JURISDICTION_LENGTH);
+  });
+});
+
+describe('tests for checkDatePreviousToFilingDate ', () => {
+
+  let mockAppData = {};
+  let mockReq = {} as Request;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockAppData = {
+      update: {
+        "filing_date": {
+          "day": "16",
+          "month": "6",
+          "year": "2023"
+        }
+      }
+    };
+
+    mockReq = {
+      session: {} as Session,
+      headers: {},
+      route: '',
+      method: '',
+      body: {},
+    } as Request;
+  });
+
+  test("should return error if startDate is after filingDate", () => {
+    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "15", "6", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+      .toBeTruthy();
+  });
+
+  test("should return error if startDate is after filingDate", () => {
+    (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+    expect(() => custom.checkDatePreviousToFilingDate(mockReq, "3", "8", "2023", ErrorMessages.START_DATE_BEFORE_FILING_DATE))
+      .toThrowError(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
   });
 });

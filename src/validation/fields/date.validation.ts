@@ -102,6 +102,10 @@ export const trustFormerBODateValidations = is_trust_still_active_validation(Err
 
 export const filingPeriodStartDateValidations = is_date_within_filing_period("start_date", ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
+export const filingPeriodCeasedDateValidations = is_date_within_filing_period("ceased_date", ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const filingPeriodResignedDateValidations = is_date_within_filing_period("resigned_on", ErrorMessages.RESIGNED_ON_BEFORE_FILING_DATE);
+
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
 export const date_of_birth_validations = [

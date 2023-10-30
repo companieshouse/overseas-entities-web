@@ -5,7 +5,12 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
-import { start_date_validations, ceased_date_validations, filingPeriodStartDateValidations } from "./fields/date.validation";
+import {
+  start_date_validations,
+  ceased_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodCeasedDateValidations
+} from "./fields/date.validation";
 
 export const beneficialOwnerOther = [
   body("name")
@@ -50,5 +55,7 @@ export const updateBeneficialOwnerOther = [
 
   ...ceased_date_validations,
 
-  ...filingPeriodStartDateValidations
+  ...filingPeriodStartDateValidations,
+
+  ...filingPeriodCeasedDateValidations
 ];

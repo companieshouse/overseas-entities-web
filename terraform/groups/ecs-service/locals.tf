@@ -80,6 +80,7 @@ locals {
     { "name": "FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023", "value": "${var.feature_flag_disable_update_private_data_fetch_28062023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023", "value": "${var.feature_flag_enable_update_manage_trusts_29082023}" },
     { "name": "FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023", "value": "${var.feature_flag_enable_redis_removal_27092023}" },
+    { "name": "FEATURE_FLAG_ENABLE_SDK_MANAGER_API_CALLS_31102023", "value": "${var.feature_flag_enable_sdk_manager_api_calls_31102023}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },

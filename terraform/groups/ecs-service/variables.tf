@@ -139,6 +139,9 @@ variable "feature_flag_enable_update_manage_trusts_29082023" {
 variable "feature_flag_enable_redis_removal_27092023" {
   type        = string
 }
+variable "feature_flag_enable_sdk_manager_api_calls_31102023" {
+  type        = string
+}
 variable "landing_page_url" {
   type        = string
 }

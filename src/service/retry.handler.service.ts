@@ -1,15 +1,18 @@
 import { Session } from "@companieshouse/node-session-handler";
 import { Request } from "express";
+import * as sdkManager from "sdk-manager-node";
 
 import { logger } from "../utils/logger";
 import { getAccessToken } from "../utils/session";
 import { createOAuthApiClient } from "./api.service";
 import { refreshToken } from "./refresh.token.service";
+import { isActiveFeature } from "../utils/feature.flag";
+import { FEATURE_FLAG_ENABLE_SDK_MANAGER_API_CALLS } from "../config";
 
 /**
- * Temporary local SDK wrapper, it needs to be done on node sdk manager!!!
- * Unauthorised response handler for the Update and Create of Overseas Entitys and Transactions.
+ * Unauthorised response handler for the Update and Create of Overseas Entities and Transactions.
  * Retry the call after refreshing the token in the event of 401 unauthorised response.
+ * If using the Sdk Manager it will also refresh the token in the event of 401 unauthorised response.
  *
  * @param serviceName Client Service Name (overseasEntity or transaction)
  * @param fnName Function Name
@@ -39,27 +42,32 @@ export const makeApiCallWithRetry = async (
   ...otherParams: any[]
 ) => {
 
-  logger.infoRequest(req, `Making a ${fnName} call on ${serviceName} service with token ${getAccessToken(session)}`);
+  if (isActiveFeature(FEATURE_FLAG_ENABLE_SDK_MANAGER_API_CALLS)) {
+    // Sdk Manager will log calls made at info level
+    const client = sdkManager.getApiClientWithOAuthToken(session);
+    // Sdk Manager will refresh access token and retry call automatically if 401 response received from API
+    return await sdkManager.makeApiCallWithRetry(client, serviceName, fnName, req, session, ...otherParams);
+  } else {
+    logger.infoRequest(req, `Making a ${fnName} call on ${serviceName} service with token ${getAccessToken(session)}`);
 
-  let client = createOAuthApiClient(session);
+    let client = createOAuthApiClient(session);
 
-  let response = await client[serviceName][fnName](...otherParams);
+    let response = await client[serviceName][fnName](...otherParams);
 
-  if (response && response.httpStatusCode === 401) {
+    if (response && response.httpStatusCode === 401) {
 
-    const responseMsg = `Retrying ${fnName} call on ${serviceName} service after unauthorised response`;
-    logger.infoRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
+      const responseMsg = `Retrying ${fnName} call on ${serviceName} service after unauthorised response`;
+      logger.infoRequest(req, `${responseMsg} - ${JSON.stringify(response)}`);
 
-    const accessToken = await refreshToken(req, session);
-    logger.infoRequest(req, `New access token: ${accessToken}`);
+      const accessToken = await refreshToken(req, session);
+      logger.infoRequest(req, `New access token: ${accessToken}`);
 
-    client = createOAuthApiClient(session);
-    response = await client[serviceName][fnName](...otherParams);
+      client = createOAuthApiClient(session);
+      response = await client[serviceName][fnName](...otherParams);
+    }
 
+    logger.debugRequest(req, 'Call successful.');
+    return response;
   }
-
-  logger.debugRequest(req, 'Call successful.');
-
-  return response;
 
 };

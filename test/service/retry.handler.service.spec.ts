@@ -1,9 +1,11 @@
 jest.mock("@companieshouse/api-sdk-node");
 jest.mock("@companieshouse/api-sdk-node/dist/services/overseas-entities");
 jest.mock("@companieshouse/api-sdk-node/dist/services/transaction/service");
+jest.mock("sdk-manager-node");
 
 jest.mock("../../src/utils/logger");
 jest.mock("../../src/service/refresh.token.service");
+jest.mock("../../src/utils/feature.flag");
 
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { Request } from "express";
@@ -12,6 +14,7 @@ import { OverseasEntityService } from "@companieshouse/api-sdk-node/dist/service
 import * as TransactionService from "@companieshouse/api-sdk-node/dist/services/transaction/service";
 import { createApiClient } from "@companieshouse/api-sdk-node";
 import ApiClient from "@companieshouse/api-sdk-node/dist/client";
+import * as sdkManager from "sdk-manager-node";
 
 import { logger } from "../../src/utils/logger";
 import { makeApiCallWithRetry } from "../../src/service/retry.handler.service";
@@ -31,6 +34,7 @@ import {
   TRANSACTION_ID,
   TRANSACTION_POST_PARAMS
 } from "../__mocks__/session.mock";
+import { isActiveFeature } from "../../src/utils/feature.flag";
 
 const mockPostOverseasEntity = OverseasEntityService.prototype.postOverseasEntity as jest.Mock;
 const mockPutOverseasEntity = OverseasEntityService.prototype.putOverseasEntity as jest.Mock;
@@ -45,10 +49,17 @@ const mockRefreshToken = refreshToken as jest.Mock;
 mockRefreshToken.mockReturnValue( mockNewAccessToken );
 
 const mockCreateApiClient = createApiClient as jest.Mock;
-mockCreateApiClient.mockReturnValue({
+
+const DUMMY_API_CLIENT = {
   transaction: TransactionService.default.prototype,
   overseasEntity: OverseasEntityService.prototype,
-} as ApiClient);
+} as ApiClient;
+mockCreateApiClient.mockReturnValue(DUMMY_API_CLIENT);
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+
+const mockSdkManagerGetApiClientWithOAuthToken = sdkManager.getApiClientWithOAuthToken as jest.Mock;
+const mockSdkManagerMakeApiCallWithRetry = sdkManager.makeApiCallWithRetry as jest.Mock;
 
 const session = getSessionRequestWithExtraData();
 const req: Request = {} as Request;
@@ -175,6 +186,39 @@ describe(`OE Unauthorised Response Handler test suite`, () => {
       expect(mockDebugRequestLog).toHaveBeenCalledTimes(1);
     });
 
+  });
+
+  describe('Sdk Manager Tests', () => {
+    const otherParams = [TRANSACTION_ID, APPLICATION_DATA_MOCK, false];
+
+    test("Should call sdk manager with correct params", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_SDK_MANAGER_API_CALLS
+      mockSdkManagerGetApiClientWithOAuthToken.mockReturnValueOnce(DUMMY_API_CLIENT);
+      const dummyResponse = {
+        httpStatusCode: 200,
+        data: {
+          name: "name1",
+          email: "email1"
+        }
+      };
+      mockSdkManagerMakeApiCallWithRetry.mockReturnValueOnce(dummyResponse);
+
+      const response = await makeApiCallWithRetry(serviceNameOE, fnNamePostOE, req, session, ...otherParams);
+
+      expect(response).toStrictEqual(dummyResponse);
+      expect(mockSdkManagerGetApiClientWithOAuthToken).toBeCalledTimes(1);
+      expect(mockSdkManagerGetApiClientWithOAuthToken).toBeCalledWith(session);
+      expect(mockSdkManagerMakeApiCallWithRetry).toBeCalledTimes(1);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][0]).toEqual(DUMMY_API_CLIENT);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][1]).toEqual(serviceNameOE);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][2]).toEqual(fnNamePostOE);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][3]).toEqual(req);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][4]).toEqual(session);
+      // check the ...otherParams are passed to the mockSdkManagerMakeApiCallWithRetry
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][5]).toEqual(TRANSACTION_ID);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][6]).toEqual(APPLICATION_DATA_MOCK);
+      expect(mockSdkManagerMakeApiCallWithRetry.mock.calls[0][7]).toEqual(false);
+    });
   });
 
 });

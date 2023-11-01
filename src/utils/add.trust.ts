@@ -70,11 +70,10 @@ export const getTrusts = (
 
     const pageProps = getPageProperties(req, isUpdate);
 
-    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
-    if (isRegistration) {
+    if (!isUpdate) {
       addActiveSubmissionBasePathToTemplateData(pageProps, req);
     }
-    
+
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -58,7 +58,6 @@ describe('Trust Involved controller', () => {
 
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = `${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`;
-  const pageUrlWithParams = `${TRUST_ENTRY_WITH_PARAMS_URL}/${trustId}${TRUST_INVOLVED_URL}`;
 
   let mockReq = {} as Request;
   const mockRes = {

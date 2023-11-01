@@ -465,26 +465,4 @@ describe('Trust Involved controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
-
-  // describe('Endpoint Access tests with URL params with supertest', () => {
-  //   beforeEach(() => {
-  //     (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-  //     (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
-  //   });
-
-  //   // test(`successfully access GET method`, async () => {
-  //   //   const mockTrustData = {
-  //   //     trustName: 'dummy',
-  //   //   };
-  //   //   (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
-
-  //   //   const resp = await request(app).get(pageUrl);
-
-  //   //   expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
-  //   //   expect(resp.text).toContain(TRUST_INVOLVED_TITLE);
-  //   //   expect(resp.text).toContain(mockTrustData.trustName);
-  //   //   expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-  //   //   expect(hasTrustWithIdRegister).toBeCalledTimes(1);
-  //   // });
-  // });
 });

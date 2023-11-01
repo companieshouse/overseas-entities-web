@@ -77,5 +77,6 @@ export const reviewManagingOfficerCorporate = [
   ...managingOfficerCorporateValidations,
   ...isStillMoValidation,
   ...resigned_on_validations,
-  ...contact_name_and_email_validations
+  ...contact_name_and_email_validations,
+  ...filingPeriodResignedDateValidations
 ];

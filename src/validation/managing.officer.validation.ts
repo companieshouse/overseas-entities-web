@@ -84,5 +84,6 @@ export const reviewManagingOfficers = [
   ...managing_officer_occupation_validation,
   ...managing_officer_role_validation,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
-  ...resigned_on_validations
+  ...resigned_on_validations,
+  ...filingPeriodResignedDateValidations
 ];

@@ -5,7 +5,12 @@ import { principal_address_validations, principal_service_address_validations } 
 import { public_register_validations } from "./fields/public-register.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
 import { contact_email_validations } from "./fields/email.validation";
-import { resigned_on_validations, start_date_validations, filingPeriodStartDateValidations } from "./fields/date.validation";
+import {
+  resigned_on_validations,
+  start_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodResignedDateValidations
+} from "./fields/date.validation";
 
 const contact_name_and_email_validations = [
   body("contact_full_name")
@@ -64,7 +69,8 @@ export const updateManagingOfficerCorporate = [
   ...isStillMoValidation,
   ...resigned_on_validations,
   ...contact_name_and_email_validations,
-  ...filingPeriodStartDateValidations
+  ...filingPeriodStartDateValidations,
+  ...filingPeriodResignedDateValidations
 ];
 
 export const reviewManagingOfficerCorporate = [

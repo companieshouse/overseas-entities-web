@@ -9,7 +9,6 @@ import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
-import { getUrlWithParamsToPath } from "../utils/url";
 import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 export const ADD_TRUST_TEXTS = {
@@ -71,8 +70,11 @@ export const getTrusts = (
 
     const pageProps = getPageProperties(req, isUpdate);
 
-    addActiveSubmissionBasePathToTemplateData(pageProps, req);
-
+    const isRegistration: boolean = req.path.startsWith(config.LANDING_URL);
+    if (isRegistration) {
+      addActiveSubmissionBasePathToTemplateData(pageProps, req);
+    }
+    
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);

@@ -354,7 +354,7 @@ router
   .get(addTrust.get)
   .post(...validator.addTrust, addTrust.post);
 
-  router
+router
   .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.ADD_TRUST_URL)
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),

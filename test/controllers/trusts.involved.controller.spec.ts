@@ -27,6 +27,7 @@ import {
   ADD_TRUST_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   TRUST_ENTRY_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_PAGE,
@@ -57,6 +58,7 @@ describe('Trust Involved controller', () => {
 
   const trustId = TRUST_WITH_ID.trust_id;
   const pageUrl = `${TRUST_ENTRY_URL}/${trustId}${TRUST_INVOLVED_URL}`;
+  const pageUrlWithParams = `${TRUST_ENTRY_WITH_PARAMS_URL}/${trustId}${TRUST_INVOLVED_URL}`;
 
   let mockReq = {} as Request;
   const mockRes = {
@@ -300,19 +302,19 @@ describe('Trust Involved controller', () => {
   });
 
   describe('POST with url params unit tests', () => {
-    // TODO - get working when trust-involved no more to add button ticket is worked on
-    // test('no more to add button pushed', async () => {
-    //   mockReq.body = {
-    //     noMoreToAdd: 'noMoreToAdd',
-    //   };
+    test('no more to add button pushed with url params', async () => {
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
 
-    //   mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
-    //   await post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
-    //   expect(mockRes.redirect).toBeCalledTimes(1);
-    //   expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
-    // });
+      expect(mockRes.redirect).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL + ADD_TRUST_URL}`);
+    });
 
     const dpPostTrustee = [
       [
@@ -464,4 +466,26 @@ describe('Trust Involved controller', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
   });
+
+  // describe('Endpoint Access tests with URL params with supertest', () => {
+  //   beforeEach(() => {
+  //     (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+  //     (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+  //   });
+
+  //   // test(`successfully access GET method`, async () => {
+  //   //   const mockTrustData = {
+  //   //     trustName: 'dummy',
+  //   //   };
+  //   //   (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
+
+  //   //   const resp = await request(app).get(pageUrl);
+
+  //   //   expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+  //   //   expect(resp.text).toContain(TRUST_INVOLVED_TITLE);
+  //   //   expect(resp.text).toContain(mockTrustData.trustName);
+  //   //   expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+  //   //   expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+  //   // });
+  // });
 });

@@ -840,7 +840,7 @@ router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL)
     companyAuthentication,
   )
   .get(updateReviewBeneficialOwnerOther.get)
-  .post(...validator.updateBeneficialOwnerOther, checkValidations, updateReviewBeneficialOwnerOther.post);
+  .post(...validator.updateReviewBeneficialOwnerOther, checkValidations, updateReviewBeneficialOwnerOther.post);
 
 router.route(config.UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_URL + config.UPDATE_REVIEW_OWNERS_PARAMS)
   .all(

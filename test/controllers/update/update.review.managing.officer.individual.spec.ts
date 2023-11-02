@@ -114,6 +114,24 @@ describe('Test review managing officer', () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`verify that have_day_of_birth is set following post method`, async () => {
+      const appData = APPLICATION_DATA_UPDATE_BO_MOCK;
+      if (appData.managing_officers_individual) {
+        appData.managing_officers_individual[0].have_day_of_birth = true;
+      }
+
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)
+        .send(UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO);
+
+      expect(resp.status).toEqual(302);
+      if (appData.managing_officers_individual) {
+        expect(appData.managing_officers_individual[0].have_day_of_birth).toEqual(true);
+      }
+    });
+
     test(`throw validation error on ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} without complete data`, async () => {
       const resp = await request(app)
         .post(UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_WITH_PARAM_URL_TEST)

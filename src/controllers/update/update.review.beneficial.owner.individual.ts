@@ -14,7 +14,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { AddressKeys, EntityNumberKey, InputDate } from "../../model/data.types.model";
 import { addCeasedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
-import { CeasedDateKey } from "../../model/date.model";
+import { CeasedDateKey, HaveDayOfBirthKey } from "../../model/date.model";
 import { ServiceAddressKey, ServiceAddressKeys, UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 
 export const get = (req: Request, res: Response) => {
@@ -29,6 +29,9 @@ export const get = (req: Request, res: Response) => {
     usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
   }
 
+  if (appData?.beneficial_owners_individual) {
+    appData.beneficial_owners_individual[Number(index)].have_day_of_birth = true;
+  }
   const templateOptions = {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,
@@ -58,14 +61,17 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     if (boiIndex !== undefined && appData.beneficial_owners_individual && appData.beneficial_owners_individual[Number(boiIndex)].id === req.body["id"]){
       const boId = appData.beneficial_owners_individual[Number(boiIndex)].id;
       const dob = appData.beneficial_owners_individual[Number(boiIndex)].date_of_birth as InputDate;
+      const haveDayOfBirth = appData.beneficial_owners_individual[Number(boiIndex)].have_day_of_birth;
 
       removeFromApplicationData(req, BeneficialOwnerIndividualKey, boId);
 
       setReviewedDateOfBirth(req, dob);
-
       const session = req.session as Session;
 
       const data: ApplicationDataType = setBeneficialOwnerData(req.body, uuidv4());
+      if (haveDayOfBirth) {
+        data[HaveDayOfBirthKey] = haveDayOfBirth;
+      }
 
       setApplicationData(req.session, data, BeneficialOwnerIndividualKey);
 

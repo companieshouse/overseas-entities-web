@@ -100,5 +100,7 @@ export const updateReviewBeneficialOwnerGovValidator = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations
+  ...ceased_date_validations,
+
+  ...filingPeriodCeasedDateValidations
 ];

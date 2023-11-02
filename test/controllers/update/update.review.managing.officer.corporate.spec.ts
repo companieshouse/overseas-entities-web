@@ -71,7 +71,7 @@ describe('Review managing officer corporate controller tests', () => {
 
   describe(`POST tests`, () => {
     test(`redirect to update-beneficial-owner-type page on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_CH_REF_UPDATE_MOCK
       });
       const resp = await request(app)
@@ -94,7 +94,7 @@ describe('Review managing officer corporate controller tests', () => {
     });
 
     test("catch error when posting data", async () => {
-      mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      mockGetApplicationData.mockImplementation( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_REVIEW_MANAGING_OFFICER_CORPORATE_URL + "?index=0")
         .send(REQ_BODY_UPDATE_MANAGING_OFFICER_CORPORATE_MOCK_ACTIVE);

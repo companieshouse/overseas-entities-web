@@ -27,6 +27,7 @@ import {
   ADD_TRUST_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
   TRUST_ENTRY_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_PAGE,
@@ -300,19 +301,19 @@ describe('Trust Involved controller', () => {
   });
 
   describe('POST with url params unit tests', () => {
-    // TODO - get working when trust-involved no more to add button ticket is worked on
-    // test('no more to add button pushed', async () => {
-    //   mockReq.body = {
-    //     noMoreToAdd: 'noMoreToAdd',
-    //   };
+    test('no more to add button pushed with url params', async () => {
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
 
-    //   mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
-    //   await post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
-    //   expect(mockRes.redirect).toBeCalledTimes(1);
-    //   expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
-    // });
+      expect(mockRes.redirect).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL + ADD_TRUST_URL}`);
+    });
 
     const dpPostTrustee = [
       [

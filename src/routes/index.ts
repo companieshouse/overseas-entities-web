@@ -355,6 +355,16 @@ router
   .post(...validator.addTrust, addTrust.post);
 
 router
+  .route(config.TRUST_ENTRY_WITH_PARAMS_URL + config.ADD_TRUST_URL)
+  .all(
+    isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+    authentication,
+    navigation.hasTrustDataRegister,
+  )
+  .get(addTrust.get)
+  .post(...validator.addTrust, addTrust.post);
+
+router
   .route(config.TRUST_DETAILS_URL + config.TRUST_ID + '?')
   .all(
     isFeatureEnabled(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB),

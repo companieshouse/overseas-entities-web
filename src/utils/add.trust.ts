@@ -9,6 +9,7 @@ import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -68,6 +69,10 @@ export const getTrusts = (
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
     const pageProps = getPageProperties(req, isUpdate);
+
+    if (!isUpdate) {
+      addActiveSubmissionBasePathToTemplateData(pageProps, req);
+    }
 
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {

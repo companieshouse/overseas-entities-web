@@ -29,9 +29,6 @@ export const get = (req: Request, res: Response) => {
     usual_residential_address = (dataToReview) ? mapDataObjectToFields(dataToReview[UsualResidentialAddressKey], UsualResidentialAddressKeys, AddressKeys) : {};
   }
 
-  if (appData?.beneficial_owners_individual) {
-    appData.beneficial_owners_individual[Number(index)].have_day_of_birth = true;
-  }
   const templateOptions = {
     backLinkUrl: UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
     templateName: UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_PAGE,

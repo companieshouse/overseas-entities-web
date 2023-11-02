@@ -108,7 +108,7 @@ describe("Add Trust Controller Tests", () => {
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
@@ -134,7 +134,7 @@ describe("Add Trust Controller Tests", () => {
         throw error;
       });
 
-      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       get(mockReq, mockRes, mockNext);
 

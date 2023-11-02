@@ -5,6 +5,7 @@ import {
   checkDateIPIndividualBO,
   checkDateFieldDay,
   checkDateFieldDayOfBirth,
+  checkDateFieldMonthOfBirth,
   checkDateFieldMonth,
   checkDateFieldYear,
   checkDateOfBirth,
@@ -122,7 +123,7 @@ export const date_of_birth_validations = [
   body("date_of_birth-day")
     .custom((value, { req }) => checkDateFieldDayOfBirth(req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-month")
-    .custom((value, { req }) => checkDateFieldMonth(ErrorMessages.MONTH_OF_BIRTH, ErrorMessages.MONTH_AND_YEAR_OF_BIRTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
+    .custom((value, { req }) => checkDateFieldMonthOfBirth(ErrorMessages.MONTH_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_MONTH_LENGTH, ErrorMessages.MONTH_AND_YEAR_OF_BIRTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-year")
     .custom((value, { req }) => checkDateFieldYear(ErrorMessages.YEAR_OF_BIRTH, ErrorMessages.DATE_OF_BIRTH_YEAR_LENGTH, req.body["date_of_birth-day"], req.body["date_of_birth-month"], req.body["date_of_birth-year"])),
   body("date_of_birth-day")

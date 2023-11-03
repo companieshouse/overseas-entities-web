@@ -26,11 +26,13 @@ import {
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK,
   UPDATE_REVIEW_MANAGING_OFFICER_MOCK_STILL_MO,
   RESIDENTIAL_ADDRESS_MOCK,
+  UPDATE_MANAGING_OFFICER_HAVE_DAY_OF_BIRTH_MOCK,
 } from "../../__mocks__/session.mock";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_HEADING } from '../../__mocks__/text.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { ErrorMessages } from '../../../src/validation/error.messages';
+import { ApplicationData, managingOfficerType } from '../../../src/model';
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -115,10 +117,9 @@ describe('Test review managing officer', () => {
     });
 
     test(`verify that have_day_of_birth is set following post method if set to true in app data`, async () => {
-      const appData = APPLICATION_DATA_UPDATE_BO_MOCK;
-      if (appData.managing_officers_individual) {
-        appData.managing_officers_individual[0].have_day_of_birth = true;
-      }
+      const appData: ApplicationData = {
+        [managingOfficerType.ManagingOfficerKey]: [UPDATE_MANAGING_OFFICER_HAVE_DAY_OF_BIRTH_MOCK]
+      };
 
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );
@@ -134,9 +135,6 @@ describe('Test review managing officer', () => {
 
     test(`verify that have_day_of_birth is not set following post method if not set in app data`, async () => {
       const appData = APPLICATION_DATA_UPDATE_BO_MOCK;
-      if (appData.beneficial_owners_individual) {
-        appData.beneficial_owners_individual[0].have_day_of_birth = undefined;
-      }
 
       mockGetApplicationData.mockReturnValueOnce(appData);
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_MANAGING_OFFICER_MOCK );

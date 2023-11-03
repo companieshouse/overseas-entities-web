@@ -546,6 +546,27 @@ export const UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK: beneficialOwnerIndi
   first_name: "Ivan",
   last_name: "Drago",
   date_of_birth: { day: "21", month: "3", year: "1947" },
+  have_day_of_birth: undefined,
+  nationality: "Russian",
+  second_nationality: "",
+  usual_residential_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: 1,
+  service_address: ADDRESS,
+  start_date: { day: "1", month: "3", year: "1999" },
+  ceased_date: EMPTY_DATE,
+  beneficial_owner_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_SHARES],
+  trustees_nature_of_control_types: [NatureOfControlType.OVER_25_PERCENT_OF_VOTING_RIGHTS],
+  non_legal_firm_members_nature_of_control_types: [NatureOfControlType.APPOINT_OR_REMOVE_MAJORITY_BOARD_DIRECTORS],
+  is_on_sanctions_list: 1,
+  trust_ids: []
+};
+
+export const UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK: beneficialOwnerIndividualType.BeneficialOwnerIndividual = {
+  id: BO_IND_ID,
+  ch_reference: "",
+  first_name: "Ivan",
+  last_name: "Drago",
+  date_of_birth: { day: "21", month: "3", year: "1947" },
   have_day_of_birth: true,
   nationality: "Russian",
   second_nationality: "",
@@ -1055,6 +1076,24 @@ export const UPDATE_MANAGING_OFFICER_DUAL_NATIONALITY_MOCK: managingOfficerType.
   is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
   occupation: "occupation",
   role_and_responsibilities: "role and responsibilities text"
+};
+
+export const UPDATE_MANAGING_OFFICER_HAVE_DAY_OF_BIRTH_MOCK: managingOfficerType.ManagingOfficerIndividual = {
+  id: MO_IND_ID,
+  ch_reference: "testchreference",
+  first_name: "Jimmy John",
+  last_name: "Wabb",
+  has_former_names: yesNoResponse.Yes,
+  former_names: "Jimmothy James Jimminny, Finn McCumhaill, Test Tester",
+  date_of_birth: { day: "1", month: "02", year: "1900" },
+  nationality: "country1",
+  second_nationality: "country2",
+  usual_residential_address: ADDRESS,
+  service_address: ADDRESS,
+  is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+  occupation: "occupation",
+  role_and_responsibilities: "role and responsibilities text",
+  have_day_of_birth: true
 };
 
 export const REQ_BODY_MANAGING_OFFICER_OBJECT_EMPTY = {

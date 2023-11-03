@@ -182,7 +182,7 @@ describe("Add Trust Controller Tests", () => {
     test('select yes to add trust with url params', () => {
       mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
-      
+
       mockReq.body = {
         addTrust: '1',
       };

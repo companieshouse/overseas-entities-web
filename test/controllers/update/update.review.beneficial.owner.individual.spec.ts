@@ -30,7 +30,8 @@ import {
   REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
   SERVICE_ADDRESS_MOCK,
   RESIDENTIAL_ADDRESS_MOCK,
-  UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK
+  UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH
 } from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
@@ -129,11 +130,11 @@ describe(`Update review beneficial owner individual controller`, () => {
         [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK]
       };
       mockGetApplicationData.mockReturnValue(appData);
-      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
+      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH );
 
       const resp = await request(app)
         .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
-        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH);
 
       expect(resp.status).toEqual(302);
       if (appData.beneficial_owners_individual) {

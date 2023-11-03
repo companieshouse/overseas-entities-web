@@ -65,6 +65,32 @@ describe('checkCeasedDateOnOrAfterStartDate', () => {
   });
 });
 
+describe('tests for checking length of day and month ', () => {
+  test('should throw error if day field is greater than 2 digits', () => {
+    expect(() => custom.checkDateFieldDay("001", "1", "2023")).toThrowError(ErrorMessages.DAY_LENGTH);
+  });
+
+  test('should throw error if month field is greater than 2 digits', () => {
+    expect(() => custom.checkDateFieldMonth(ErrorMessages.MONTH, ErrorMessages.MONTH_AND_YEAR, "1", "001", "2023"))
+      .toThrowError(ErrorMessages.MONTH_LENGTH);
+  });
+
+  test('should throw error if birth day field is greater than 2 digits', () => {
+    expect(() => custom.checkDateFieldDayOfBirth("001", "1", "2023")).toThrowError(ErrorMessages.DATE_OF_BIRTH_DAY_LENGTH);
+  });
+
+  test('should throw error if birth month field is greater than 2 digits', () => {
+    expect(() => custom.checkDateFieldMonthOfBirth(
+      ErrorMessages.MONTH_OF_BIRTH, ErrorMessages.MONTH_LENGTH, ErrorMessages.MONTH_AND_YEAR_OF_BIRTH, "1", "001", "2023"))
+      .toThrowError(ErrorMessages.MONTH_LENGTH);
+  });
+
+  test('should throw error if optional day field is greater than 2 digits', () => {
+    expect(() => custom.checkDateFieldDayForOptionalDates("001", "1", "2023")).toThrowError(ErrorMessages.DAY_LENGTH);
+  });
+
+});
+
 describe('tests for custom Date fields', () => {
   const today = DateTime.local();
   const tomorrow = today.plus({ days: 1 });

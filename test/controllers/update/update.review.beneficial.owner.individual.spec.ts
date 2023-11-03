@@ -122,7 +122,7 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
     });
 
-    test(`verify that have_day_of_birth is set following post method`, async () => {
+    test(`verify that have_day_of_birth is set following post method if set to true in app data`, async () => {
       const appData = APPLICATION_DATA_MOCK;
       if (appData.beneficial_owners_individual) {
         appData.beneficial_owners_individual[0].have_day_of_birth = true;
@@ -138,6 +138,25 @@ describe(`Update review beneficial owner individual controller`, () => {
       expect(resp.status).toEqual(302);
       if (appData.beneficial_owners_individual) {
         expect(appData.beneficial_owners_individual[0].have_day_of_birth).toEqual(true);
+      }
+    });
+
+    test(`verify that have_day_of_birth is not set following post method if not set in app data`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+      if (appData.beneficial_owners_individual) {
+        appData.beneficial_owners_individual[0].have_day_of_birth = undefined;
+      }
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
+
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
+        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+
+      expect(resp.status).toEqual(302);
+      if (appData.beneficial_owners_individual) {
+        expect(appData.beneficial_owners_individual[0].have_day_of_birth).toBeUndefined();
       }
     });
 

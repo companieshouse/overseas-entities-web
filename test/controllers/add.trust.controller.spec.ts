@@ -178,6 +178,23 @@ describe("Add Trust Controller Tests", () => {
     });
   });
 
+  describe('POST unit tests with url params', () => {
+    test('select yes to add trust with url params', () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+      mockReq.body = {
+        addTrust: '1',
+      };
+
+      post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.TRUST_ENTRY_WITH_PARAMS_URL);
+    });
+  });
+
   describe('Endpoint Access tests with supertest', () => {
     beforeEach(() => {
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());

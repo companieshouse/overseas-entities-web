@@ -10,6 +10,8 @@ jest.mock('../../src/utils/trust/common.trust.data.mapper');
 jest.mock('../../src/utils/trust/who.is.involved.mapper');
 jest.mock('../../src/utils/trust/who.is.involved.mapper');
 jest.mock('../../src/utils/trusts');
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/utils/url');
 
 import { constants } from 'http2';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -23,7 +25,9 @@ import { TRUST_WITH_ID } from '../__mocks__/session.mock';
 import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_INVOLVED_TITLE } from '../__mocks__/text.mock';
 import {
   ADD_TRUST_URL,
+  REGISTER_AN_OVERSEAS_ENTITY_URL,
   TRUST_ENTRY_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
   TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_PAGE,
@@ -39,6 +43,15 @@ import { getApplicationData } from '../../src/utils/application.data';
 import { mapCommonTrustDataToPage } from '../../src/utils/trust/common.trust.data.mapper';
 import { mapTrustWhoIsInvolvedToPage } from '../../src/utils/trust/who.is.involved.mapper';
 import { getFormerTrusteesFromTrust, getIndividualTrusteesFromTrust } from '../../src/utils/trusts';
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
+
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+mockIsActiveFeature.mockReturnValue(false);
+
+const MOCKED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + "MOCKED_URL";
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+mockGetUrlWithParamsToPath.mockReturnValue(MOCKED_URL);
 
 describe('Trust Involved controller', () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -128,7 +141,7 @@ describe('Trust Involved controller', () => {
       );
     });
 
-    test('catch error when post data from page', () => {
+    test('catch error when post data from page', async () => {
       mockReq.body = {
         id: 'dummyId',
         typeOfTrustee: 'dummyTrusteeType',
@@ -139,7 +152,7 @@ describe('Trust Involved controller', () => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -159,12 +172,12 @@ describe('Trust Involved controller', () => {
   });
 
   describe('POST unit tests', () => {
-    test('no more to add button pushed', () => {
+    test('no more to add button pushed', async () => {
       mockReq.body = {
         noMoreToAdd: 'noMoreToAdd',
       };
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).toBeCalledTimes(1);
       expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL + ADD_TRUST_URL}`);
@@ -191,7 +204,7 @@ describe('Trust Involved controller', () => {
 
     test.each(dpPostTrustee)(
       'success push with %p type',
-      (typeOfTrustee: string, expectedUrl: string) => {
+      async (typeOfTrustee: string, expectedUrl: string) => {
         mockReq.body = {
           typeOfTrustee,
         };
@@ -200,14 +213,14 @@ describe('Trust Involved controller', () => {
           isEmpty: jest.fn().mockReturnValue(true),
         }));
 
-        post(mockReq, mockRes, mockNext);
+        await post(mockReq, mockRes, mockNext);
 
         expect(mockRes.redirect).toBeCalledTimes(1);
         expect(mockRes.redirect).toBeCalledWith(`${TRUST_ENTRY_URL}/${trustId}${expectedUrl}`);
       },
     );
 
-    test('render error', () => {
+    test('render error', async () => {
       const mockValidationErrors = [
         {
           value: undefined,
@@ -235,7 +248,7 @@ describe('Trust Involved controller', () => {
       };
       (mapTrustWhoIsInvolvedToPage as any as jest.Mock).mockReturnValue(mockInvolvedData);
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled;
 
@@ -269,7 +282,7 @@ describe('Trust Involved controller', () => {
       );
     });
 
-    test('catch error when post data from page', () => {
+    test('catch error when post data from page', async () => {
       mockReq.body = {
         id: 'dummyId',
         typeOfTrustee: 'dummyTrusteeType',
@@ -280,7 +293,142 @@ describe('Trust Involved controller', () => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockNext).toBeCalledTimes(1);
+      expect(mockNext).toBeCalledWith(error);
+    });
+  });
+
+  describe('POST with url params unit tests', () => {
+    test('no more to add button pushed with url params', async () => {
+      mockReq.body = {
+        noMoreToAdd: 'noMoreToAdd',
+      };
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).toBeCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(`${TRUST_ENTRY_WITH_PARAMS_URL + ADD_TRUST_URL}`);
+    });
+
+    const dpPostTrustee = [
+      [
+        TrusteeType.HISTORICAL,
+        TRUST_HISTORICAL_BENEFICIAL_OWNER_URL,
+      ],
+      [
+        TrusteeType.INDIVIDUAL,
+        TRUST_INDIVIDUAL_BENEFICIAL_OWNER_URL,
+      ],
+      [
+        TrusteeType.LEGAL_ENTITY,
+        TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
+      ],
+      [
+        'unknown',
+        '',
+      ],
+    ];
+
+    test.each(dpPostTrustee)(
+      'success push with %p type',
+      async (typeOfTrustee: string, expectedUrl: string) => {
+        mockReq.body = {
+          typeOfTrustee,
+        };
+
+        (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+          isEmpty: jest.fn().mockReturnValue(true),
+        }));
+
+        mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+
+        await post(mockReq, mockRes, mockNext);
+
+        expect(mockRes.redirect).toBeCalledTimes(1);
+        expect(mockRes.redirect).toBeCalledWith(`${MOCKED_URL}/${trustId}${expectedUrl}`);
+      },
+    );
+
+    test('render error', async () => {
+      const mockValidationErrors = [
+        {
+          value: undefined,
+          msg: 'Select which type of individual or entity you want to add',
+          param: 'typeOfTrustee',
+          location: 'body',
+        }, //  as ValidationError,
+      ];
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+        array: jest.fn().mockReturnValue(mockValidationErrors),
+      }));
+      mockGetApplicationData.mockReturnValueOnce(mockAppData);
+
+      mockReq.body = {
+        dummyKey: 'dummyValue',
+      };
+
+      const mockTrustData = {
+        trustName: 'dummy',
+      };
+      (mapCommonTrustDataToPage as any as jest.Mock).mockReturnValue(mockTrustData);
+
+      const mockInvolvedData = {
+        involvedDummyKey: 'involvedDummyValue',
+      };
+      (mapTrustWhoIsInvolvedToPage as any as jest.Mock).mockReturnValue(mockInvolvedData);
+
+      await post(mockReq, mockRes, mockNext);
+
+      expect(mockRes.redirect).not.toBeCalled;
+
+      expect(mapCommonTrustDataToPage).toBeCalledTimes(1);
+      expect(mapCommonTrustDataToPage).toBeCalledWith(mockAppData, trustId, false);
+
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledTimes(1);
+      expect(mapTrustWhoIsInvolvedToPage).toBeCalledWith(mockAppData, trustId, false);
+
+      expect(mockRes.render).toBeCalledTimes(1);
+      expect(mockRes.render).toBeCalledWith(
+        TRUST_INVOLVED_PAGE,
+        expect.objectContaining({
+          pageData: expect.objectContaining({
+            trustData: mockTrustData,
+            ...mockInvolvedData,
+          }),
+          errors: {
+            errorList: [
+              {
+                href: '#typeOfTrustee',
+                text: ErrorMessages.TRUST_INVOLVED_INVALID,
+              },
+            ],
+            typeOfTrustee: {
+              text: ErrorMessages.TRUST_INVOLVED_INVALID,
+            },
+          },
+          formData: mockReq.body,
+        }),
+      );
+    });
+
+    test('catch error when post data from page', async () => {
+      mockReq.body = {
+        id: 'dummyId',
+        typeOfTrustee: 'dummyTrusteeType',
+        noMoreToAdd: 'add',
+      };
+      const error = new Error(ANY_MESSAGE_ERROR);
+      (mockRes.redirect as jest.Mock).mockImplementationOnce(() => {
+        throw error;
+      });
+
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);

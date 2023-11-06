@@ -1,6 +1,7 @@
 import { ApplicationData } from '../../../src/model';
 import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from '../../../src/model/trust.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 import {
   hasTrustsToReview,
   getTrustInReview,
@@ -13,6 +14,7 @@ import {
   putNextTrustInReview,
   setTrustDetailsAsReviewed,
   moveTrustOutOfReview,
+  putTrustInChangeScenario,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -584,5 +586,18 @@ describe('moveTrustOutOfReview', () => {
 
     // appData set to [] if undefined
     expect(appData.trusts).toEqual([{}]);
+  });
+});
+
+describe('putTrustInChangeScenario', () => {
+  test('moves trust from main model to review_trusts', () => {
+    const appData = {
+      trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
+      [UpdateKey]: {
+        review_trusts: []
+      }
+    };
+
+    putTrustInChangeScenario(appData, '1');
   });
 });

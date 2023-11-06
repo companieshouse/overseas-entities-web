@@ -13,6 +13,8 @@ import { FormattedValidationErrors, formatValidationError } from '../middleware/
 import { validationResult } from 'express-validator';
 import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
+import { isActiveFeature } from './feature.flag';
+import { getUrlWithParamsToPath } from './url';
 
 export const INDIVIDUAL_BO_TEXTS = {
   title: 'Tell us about the individual',
@@ -42,7 +44,7 @@ const getPageProperties = (
 ): TrustIndividualBeneificalOwnerPageProperties => {
 
   return {
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
     pageParams: {
       title: INDIVIDUAL_BO_TEXTS.title,
@@ -81,7 +83,6 @@ export const getTrustIndividualBo = (req: Request, res: Response, next: NextFunc
 export const postTrustIndividualBo = async (req: Request, res: Response, next: NextFunction, isUpdate: boolean) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
-
     const trustId = req.params[config.ROUTE_PARAM_TRUST_ID];
 
     // convert from data to application (session) object
@@ -119,7 +120,7 @@ export const postTrustIndividualBo = async (req: Request, res: Response, next: N
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId));
+    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
   } catch (error) {
     logger.errorRequest(req, error);
     return next(error);
@@ -134,11 +135,15 @@ const getPageTemplate = (isUpdate: boolean) => {
   }
 };
 
-const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string) => {
+const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
   if (isUpdate) {
     return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
   } else {
-    return `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+    let entryUrl = `${config.TRUST_ENTRY_URL}`;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      entryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+    }
+    return entryUrl + `/${trustId}${config.TRUST_INVOLVED_URL}`;
   }
 };
 

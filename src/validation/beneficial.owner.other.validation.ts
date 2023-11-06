@@ -5,7 +5,12 @@ import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { public_register_validations } from "./fields/public-register.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
-import { start_date_validations, ceased_date_validations } from "./fields/date.validation";
+import {
+  start_date_validations,
+  ceased_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodCeasedDateValidations
+} from "./fields/date.validation";
 
 export const beneficialOwnerOther = [
   body("name")
@@ -48,5 +53,20 @@ export const updateBeneficialOwnerOther = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations
+  ...ceased_date_validations,
+
+  ...filingPeriodStartDateValidations,
+
+  ...filingPeriodCeasedDateValidations
+];
+
+export const updateReviewBeneficialOwnerOther = [
+
+  ...beneficialOwnerOther,
+
+  body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
+
+  ...ceased_date_validations,
+
+  ...filingPeriodCeasedDateValidations
 ];

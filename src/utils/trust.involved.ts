@@ -17,6 +17,8 @@ import { saveAndContinue } from './save.and.continue';
 import { Session } from '@companieshouse/node-session-handler';
 import { mapIndividualTrusteeFromSessionToPage } from '../utils/trust/individual.trustee.mapper';
 import { mapFormerTrusteeFromSessionToPage } from '../utils/trust/historical.beneficial.owner.mapper';
+import { isActiveFeature } from './feature.flag';
+import { getUrlWithParamsToPath } from './url';
 
 export const TRUST_INVOLVED_TEXTS = {
   title: 'Individuals or entities involved in the trust',
@@ -144,7 +146,7 @@ export const postTrustInvolvedPage = async (
         setExtraData(req.session, appData);
         await saveAndContinue(req, req.session as Session, false);
       }
-      return safeRedirect(res, getNextPage(isUpdate, isReview));
+      return safeRedirect(res, getNextPage(isUpdate, isReview, req));
     }
 
     //  check on errors
@@ -180,7 +182,7 @@ export const postTrustInvolvedPage = async (
     // the req.params['id'] is already validated in the has.trust.middleware but sonar can not recognise this.
     let url = isUpdate
       ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`
-      : `${config.TRUST_ENTRY_URL}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
+      : `${getRegistrationTrustEntryUrl(req)}/${req.params[config.ROUTE_PARAM_TRUST_ID]}`;
 
     switch (typeOfTrustee) {
         case TrusteeType.HISTORICAL:
@@ -195,7 +197,6 @@ export const postTrustInvolvedPage = async (
         default:
           logger.info("TODO: On validation No trustee selected, re-displaying page");
     }
-
     return safeRedirect(res, url);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -240,13 +241,25 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean, isReview: boolean) => {
+const getNextPage = (isUpdate: boolean, isReview: boolean, req: Request) => {
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
   }
   if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {
-    return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
+    let nextPageUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      nextPageUrl = getUrlWithParamsToPath(`${config.TRUST_ENTRY_WITH_PARAMS_URL}${config.ADD_TRUST_URL}`, req);
+    }
+    return nextPageUrl;
   }
+};
+
+const getRegistrationTrustEntryUrl = (req: Request) => {
+  let url = `${config.TRUST_ENTRY_URL}`;
+  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+    url = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+  }
+  return url;
 };

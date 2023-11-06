@@ -4,7 +4,6 @@ jest.mock(".../../../src/utils/application.data");
 jest.mock("../../src/middleware/authentication.middleware");
 jest.mock("../../src/middleware/navigation/has.trust.middleware");
 jest.mock('../../src/utils/save.and.continue');
-jest.mock("../../src/middleware/is.feature.enabled.middleware");
 jest.mock("../../src/middleware/is.feature.enabled.middleware", () => ({
   isFeatureEnabled: () => (_, __, next: NextFunction) => next(),
 }));
@@ -12,6 +11,9 @@ jest.mock("../../src/utils/trusts");
 jest.mock("../../src/utils/trust/common.trust.data.mapper");
 jest.mock("../../src/utils/trust/legal.entity.beneficial.owner.mapper");
 jest.mock("../../src/middleware/validation.middleware");
+jest.mock('../../src/utils/feature.flag');
+jest.mock('../../src/middleware/service.availability.middleware');
+jest.mock('../../src/utils/url');
 
 import { constants } from "http2";
 import { beforeEach, describe, expect, jest, test } from "@jest/globals";
@@ -31,6 +33,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { hasTrustWithIdRegister } from "../../src/middleware/navigation/has.trust.middleware";
 import {
   TRUST_ENTRY_URL,
+  TRUST_ENTRY_WITH_PARAMS_URL,
   TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL,
   TRUST_INVOLVED_URL,
 } from "../../src/config";
@@ -49,8 +52,17 @@ import { mapLegalEntityToSession } from "../../src/utils/trust/legal.entity.bene
 import { saveAndContinue } from '../../src/utils/save.and.continue';
 import { RoleWithinTrustType } from "../../src/model/role.within.trust.type.model";
 import { formatValidationError } from "../../src/middleware/validation.middleware";
+import { isActiveFeature } from '../../src/utils/feature.flag';
+import { serviceAvailabilityMiddleware } from '../../src/middleware/service.availability.middleware';
+import { getUrlWithParamsToPath } from '../../src/utils/url';
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+const MOCKED_URL = TRUST_ENTRY_WITH_PARAMS_URL + "MOCKED_URL";
+const mockIsActiveFeature = isActiveFeature as jest.Mock;
+const mockGetUrlWithParamsToPath = getUrlWithParamsToPath as jest.Mock;
+
+const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
+mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe("Trust Legal Entity Beneficial Owner Controller", () => {
   const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -58,6 +70,8 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
   const trustId = "999999";
   const pageUrl =
     TRUST_ENTRY_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
+  const pageUrlWithParams =
+    TRUST_ENTRY_WITH_PARAMS_URL + "/" + trustId + TRUST_LEGAL_ENTITY_BENEFICIAL_OWNER_URL;
 
   const mockTrust1Data = {
     trust_id: "999",
@@ -145,11 +159,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
   });
 
   describe("POST unit tests", () => {
-    afterEach(() => {
-      jest.resetAllMocks();
-    });
-
-    test("Save", () => {
+    test("Save", async () => {
       const mockBoData = {} as TrustCorporate;
       (mapLegalEntityToSession as jest.Mock).mockReturnValue(mockBoData);
 
@@ -168,7 +178,7 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
         isEmpty: jest.fn().mockReturnValue(true),
       }));
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mapLegalEntityToSession).toBeCalledTimes(1);
       expect(mapLegalEntityToSession).toBeCalledWith(mockReq.body);
@@ -188,14 +198,14 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       );
     });
 
-    test("catch error on post", () => {
+    test("catch error on post", async () => {
       const error = new Error(ANY_MESSAGE_ERROR);
 
       (mapLegalEntityToSession as jest.Mock).mockImplementationOnce(() => {
         throw error;
       });
 
-      post(mockReq, mockRes, mockNext);
+      await post(mockReq, mockRes, mockNext);
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
@@ -254,6 +264,68 @@ describe("Trust Legal Entity Beneficial Owner Controller", () => {
       formatValidationError as jest.Mock;
 
       const resp = await (await request(app).post(pageUrl).send(mockReq));
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+  });
+
+  describe("Endpoint Access tests with supertest with url params", () => {
+    beforeEach(() => {
+      (authentication as jest.Mock).mockImplementation(
+        (_, __, next: NextFunction) => next()
+      );
+      (hasTrustWithIdRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) =>
+        next()
+      );
+    });
+
+    test(`successfully access GET method`, async () => {
+      const mockTrust = {
+        trustName: "dummyName",
+      };
+      (mapCommonTrustDataToPage as jest.Mock).mockReturnValue(mockTrust);
+
+      (validationResult as any as jest.Mock).mockImplementationOnce(() => ({
+        isEmpty: jest.fn().mockReturnValue(true),
+      }));
+
+      const resp = await request(app).get(pageUrlWithParams);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(LEGAL_ENTITY_BO_TEXTS.title);
+      expect(resp.text).toContain(mockTrust.trustName);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+    });
+
+    test("successfully access POST method", async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
+
+      const resp = await request(app).post(pageUrlWithParams);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_FOUND);
+      expect(resp.header.location).toEqual(`${MOCKED_URL}/${trustId}${TRUST_INVOLVED_URL}`);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdRegister).toBeCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(TRUST_ENTRY_WITH_PARAMS_URL);
+    });
+
+    test("should have validation error", async () => {
+      (validationResult as unknown as jest.Mock).mockImplementation(() => ({
+        isEmpty: jest.fn().mockReturnValue(false),
+        array: jest.fn().mockReturnValue([{ test: 'error' }])
+      }));
+      formatValidationError as jest.Mock;
+
+      const resp = await (await request(app).post(pageUrlWithParams).send(mockReq));
 
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(authentication).toBeCalledTimes(1);

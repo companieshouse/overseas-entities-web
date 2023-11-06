@@ -29,11 +29,14 @@ import {
   UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST,
   REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_PARTIAL,
   SERVICE_ADDRESS_MOCK,
-  RESIDENTIAL_ADDRESS_MOCK
+  RESIDENTIAL_ADDRESS_MOCK,
+  UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK,
+  REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH
 } from "../../__mocks__/session.mock";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { ApplicationData, beneficialOwnerIndividualType } from "../../../src/model";
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -110,7 +113,7 @@ describe(`Update review beneficial owner individual controller`, () => {
     });
 
     test(`redirect to beneficial owner type page ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
@@ -120,6 +123,39 @@ describe(`Update review beneficial owner individual controller`, () => {
         .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(config.UPDATE_BENEFICIAL_OWNER_TYPE_URL);
+    });
+
+    test(`verify that have_day_of_birth is set following post method if set to true in app data`, async () => {
+      const appData: ApplicationData = {
+        [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [UPDATE_BENEFICIAL_OWNER_HAVE_DAY_OF_BIRTH_OBJECT_MOCK]
+      };
+      mockGetApplicationData.mockReturnValue(appData);
+      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH );
+
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
+        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_HAVE_DAY_OF_BIRTH);
+
+      expect(resp.status).toEqual(302);
+      if (appData.beneficial_owners_individual) {
+        expect(appData.beneficial_owners_individual[0].have_day_of_birth).toEqual(true);
+      }
+    });
+
+    test(`verify that have_day_of_birth is not set following post method if not set in app data`, async () => {
+      const appData = APPLICATION_DATA_MOCK;
+
+      mockGetApplicationData.mockReturnValue(appData);
+      mockPrepareData.mockImplementationOnce( () => REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA );
+
+      const resp = await request(app)
+        .post(UPDATE_REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_URL_WITH_PARAM_URL_TEST)
+        .send(REVIEW_BENEFICIAL_OWNER_INDIVIDUAL_REQ_BODY_OBJECT_MOCK_WITH_FULL_DATA);
+
+      expect(resp.status).toEqual(302);
+      if (appData.beneficial_owners_individual) {
+        expect(appData.beneficial_owners_individual[0].have_day_of_birth).toBeUndefined();
+      }
     });
 
     test(`throw validation error on incomplete individual bo review submission`, async () => {

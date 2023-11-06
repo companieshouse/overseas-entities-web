@@ -42,9 +42,13 @@
 {% endset %}
 
 {% if pageParams.isRegistration %}
-  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL %}
+  {% set changeLinkUrl = OE_CONFIGS.TRUSTS_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
 {% else %}
-  {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL%}
+  {% if manageTrusts %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_CHANGE_HANDLER_URL +  "/" + trust.trust_id + "/individual/" + individualTrustee.id %}
+  {% else %}
+    {% set changeLinkUrl = OE_CONFIGS.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id %}
+  {% endif %}
 {% endif %}
 
 
@@ -60,7 +64,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.FORENAME,
+      changeLinkUrl + OE_CONFIGS.FORENAME,
       "Individual beneficial owner " + individualTrusteeFullName + " - first name",
       "change-individual-beneficial-owner-first-name-button"
    ) ]
@@ -76,7 +80,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.SURNAME,
+      changeLinkUrl + OE_CONFIGS.SURNAME,
       "Individual beneficial owner " + individualTrusteeFullName + " - last name",
       "change-individual-beneficial-owner-last-name-button"
     ) ]
@@ -92,7 +96,7 @@
   },
   actions: {
   items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.TRUST_DATE_OF_BIRTH,
+      changeLinkUrl + OE_CONFIGS.TRUST_DATE_OF_BIRTH,
       "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
     ) ]
@@ -108,7 +112,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.ROLE_WITHIN_TRUST,
+      changeLinkUrl + OE_CONFIGS.ROLE_WITHIN_TRUST,
       "Individual beneficial owner " + individualTrusteeFullName + " - type",
       "change-individual-beneficial-owner-type-button"
     ) ]
@@ -125,7 +129,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.INTERESTED_PERSON_START_DATE,
+        changeLinkUrl + OE_CONFIGS.INTERESTED_PERSON_START_DATE,
         "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
         "change-individual-beneficial-owner-date-of-birth-name-button"
       ) ]
@@ -143,7 +147,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.NATIONALITY,
+      changeLinkUrl + OE_CONFIGS.NATIONALITY,
       "Individual beneficial owner " + individualTrusteeFullName + " - nationality",
       "change-individual-beneficial-owner-nationality-button"
     ) ]
@@ -160,7 +164,7 @@
     },
     actions: {
     items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.SECOND_NATIONALITY,
+        changeLinkUrl + OE_CONFIGS.SECOND_NATIONALITY,
         "Individual beneficial owner " + individualTrusteeFullName + " - second_nationality",
         "change-individual-beneficial-owner-second-nationality-button"
       ) ]
@@ -177,7 +181,7 @@
   },
   actions: {
     items: [ CREATE_CHANGE_LINK(
-      changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
+      changeLinkUrl + OE_CONFIGS.CHANGE_RESIDENTIAL_ADDRESS,
       "Individual beneficial owner " + individualTrusteeFullName + " - home address",
       "change-individual-beneficial-owner-residential-address-button"
     ) ]
@@ -194,7 +198,7 @@
     },
     actions: {
       items: [ CREATE_CHANGE_LINK(
-        changeLinkUrl +  "/" + trust.trust_id + "/" + OE_CONFIGS.TRUST_INDIVIDUAL_BENEFICIAL_OWNER_PAGE + "/" + individualTrustee.id + individualTrusteeChangeServiceAddressHtml,
+        changeLinkUrl + individualTrusteeChangeServiceAddressHtml,
         "Individual beneficial owner " + individualTrusteeFullName + " - correspondence address",
         "change-individual-beneficial-owner-correspondence-address-button"
       ) ]

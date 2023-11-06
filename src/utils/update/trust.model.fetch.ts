@@ -8,10 +8,12 @@ import {
 import { logger } from "../../utils/logger";
 import { CorporateTrusteeData, IndividualTrusteeData, TrustData, TrustLinkData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities/types";
 import { Request } from "express";
-import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from "../../model/trust.model";
+import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual, InterestedIndividualPersonTrustee } from "../../model/trust.model";
 import { lowerCaseAllWordsExceptFirstLetters, mapInputDate, splitNationalities } from "./mapper.utils";
 import { RoleWithinTrustType } from "../../model/role.within.trust.type.model";
 import { yesNoResponse } from "../../model/data.types.model";
+import { BeneficialOwnerIndividual } from "../../model/beneficial.owner.individual.model";
+import { BeneficialOwnerOther } from "../../model/beneficial.owner.other.model";
 
 export const retrieveTrustData = async (req: Request, appData: ApplicationData) => {
   if (!hasFetchedTrustData(appData)) {
@@ -122,8 +124,8 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_month: dateOfBirth?.month ?? "",
     dob_year: dateOfBirth?.year ?? "",
     // UAR-1106 will need conversion to PascalCase
-    nationality: nationalities[0],
-    second_nationality: nationalities.length > 1 ? nationalities[1] : undefined,
+    nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
+    second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
     type: mapTrusteeType(trustee.trusteeTypeId),
 
     ura_address_premises: "",
@@ -136,7 +138,19 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
   mapUsualResidentialAddress(individualTrustee, trustee);
   mapServiceAddress(individualTrustee, trustee);
 
-  trust.INDIVIDUALS?.push(individualTrustee);
+  if (individualTrustee.type === RoleWithinTrustType.INTERESTED_PERSON) {
+    const appointmentDate = mapInputDate(trustee.appointmentDate);
+    const InterestedPersonTrustee: InterestedIndividualPersonTrustee = {
+      ...individualTrustee,
+      type: RoleWithinTrustType.INTERESTED_PERSON,
+      date_became_interested_person_day: appointmentDate?.day ?? "",
+      date_became_interested_person_month: appointmentDate?.month ?? "",
+      date_became_interested_person_year: appointmentDate?.year ?? "",
+    };
+    trust.INDIVIDUALS?.push(InterestedPersonTrustee);
+  } else {
+    trust.INDIVIDUALS?.push(individualTrustee);
+  }
 };
 
 const mapHistoricalIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
@@ -263,22 +277,36 @@ export const mapTrustLink = (trustLink: TrustLinkData, appData: ApplicationData)
   if (trust) {
     const individualBeneficialOwner = appData.beneficial_owners_individual?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
     if (individualBeneficialOwner) {
-      logger.debug("Linking individual beneficial owner " + individualBeneficialOwner.ch_reference + " to trust " + trust.ch_reference);
-      if (individualBeneficialOwner.trust_ids === undefined) {
-        individualBeneficialOwner.trust_ids = [];
-      }
-      individualBeneficialOwner.trust_ids.push(trust.trust_id);
-    } else {
-      const corporateBeneficialOwner = appData.beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
-      if (corporateBeneficialOwner) {
-        logger.debug("Linking corporate beneficial owner " + corporateBeneficialOwner.ch_reference + " to trust " + trust.ch_reference);
-        if (corporateBeneficialOwner.trust_ids === undefined) {
-          corporateBeneficialOwner.trust_ids = [];
-        }
-        corporateBeneficialOwner.trust_ids.push(trust.trust_id);
-      }
+      linkBoToTrust(individualBeneficialOwner, trust, 'individual beneficial owner');
+      return;
+    }
+
+    const reviewIndividualBeneficialOwner = appData.update?.review_beneficial_owners_individual?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
+    if (reviewIndividualBeneficialOwner) {
+      linkBoToTrust(reviewIndividualBeneficialOwner, trust, 'individual beneficial owner');
+      return;
+    }
+
+    const corporateBeneficialOwner = appData.beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
+    if (corporateBeneficialOwner) {
+      linkBoToTrust(corporateBeneficialOwner, trust, 'corporate beneficial owner');
+      return;
+    }
+
+    const reviewCorporateBeneficialOwner = appData.update?.review_beneficial_owners_corporate?.find((beneficialOwner) => beneficialOwner.ch_reference === trustLink.hashedCorporateBodyAppointmentId);
+    if (reviewCorporateBeneficialOwner) {
+      linkBoToTrust(reviewCorporateBeneficialOwner, trust, 'corporate beneficial owner');
+      return;
     }
   }
+};
+
+const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOwnerOther, trust: Trust, boType: string) => {
+  logger.debug(`Linking ${boType} ${beneficialOwner.ch_reference} to trust ${trust.ch_reference}`);
+  if (beneficialOwner.trust_ids === undefined) {
+    beneficialOwner.trust_ids = [];
+  }
+  beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
 const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
@@ -290,7 +318,10 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5003":
         return RoleWithinTrustType.SETTLOR;
       case "5002":
+      case "5001":
+        return RoleWithinTrustType.BENEFICIARY;
       default:
+        logger.debug(`Trustee Type ${trusteeTypeId} not recognised`);
         return RoleWithinTrustType.BENEFICIARY;
   }
 };

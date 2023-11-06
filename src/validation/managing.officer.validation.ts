@@ -9,7 +9,13 @@ import { ErrorMessages } from "./error.messages";
 import { usual_residential_service_address_validations, usual_residential_address_validations } from "./fields/address.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
 import { VALID_CHARACTERS, VALID_CHARACTERS_FOR_TEXT_BOX } from "./regex/regex.validation";
-import { date_of_birth_validations, resigned_on_validations, start_date_validations } from "./fields/date.validation";
+import {
+  date_of_birth_validations,
+  resigned_on_validations,
+  start_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodResignedDateValidations
+} from "./fields/date.validation";
 
 export const managing_officer_name_validation = [
   body("first_name").not().isEmpty({ ignore_whitespace: true })
@@ -66,7 +72,9 @@ export const updateManagingOfficerIndividual = [
   ...managingOfficerIndividual,
   ...start_date_validations,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
-  ...resigned_on_validations
+  ...resigned_on_validations,
+  ...filingPeriodStartDateValidations,
+  ...filingPeriodResignedDateValidations
 ];
 
 export const reviewManagingOfficers = [
@@ -76,5 +84,6 @@ export const reviewManagingOfficers = [
   ...managing_officer_occupation_validation,
   ...managing_officer_role_validation,
   body("is_still_mo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_MANAGING_OFFICER),
-  ...resigned_on_validations
+  ...resigned_on_validations,
+  ...filingPeriodResignedDateValidations
 ];

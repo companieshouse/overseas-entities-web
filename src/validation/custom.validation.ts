@@ -7,6 +7,7 @@ import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 import { CONCATENATED_VALUES_SEPARATOR } from "../config";
 import { getApplicationData } from "../utils/application.data";
+import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
@@ -242,20 +243,22 @@ export const checkMoreThanOneDateFieldIsNotMissing = (dayStr: string = "", month
   return true;
 };
 
-export const checkCeasedDateOnOrAfterStartDate = (
-  ceaseDayStr: string = "", ceaseMonthStr: string = "", ceaseYearStr: string = "",
-  startDayStr: string = "", startMonthStr: string = "", startYearStr: string = "",
+export const checkFirstDateOnOrAfterSecondDate = (
+  firstDayStr: string = "", firstMonthStr: string = "", firstYearStr: string = "",
+  secondDayStr: string = "", secondMonthStr: string = "", secondYearStr: string = "",
   errorMessage: string = ErrorMessages.DATE_BEFORE_START_DATE
 ): boolean => {
-  const ceaseDate = DateTime.utc(Number(ceaseYearStr), Number(ceaseMonthStr), Number(ceaseDayStr));
-  const startDate = DateTime.utc(Number(startYearStr), Number(startMonthStr), Number(startDayStr));
+  const firstDate = DateTime.utc(Number(firstYearStr), Number(firstMonthStr), Number(firstDayStr));
+  const secondDate = DateTime.utc(Number(secondYearStr), Number(secondMonthStr), Number(secondDayStr));
 
-  if (startDate && startDate > ceaseDate) {
+  if (secondDate && secondDate > firstDate) {
     throw new Error(errorMessage);
   }
 
   return true;
 };
+
+export const checkCeasedDateOnOrAfterStartDate = checkFirstDateOnOrAfterSecondDate;
 
 export const checkDateOfBirth = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   // to prevent more than 1 error reported on the date fields we check if the year is correct length or missing before doing the date check as a whole.
@@ -514,6 +517,19 @@ export const checkBeneficialOwnersSubmission = (req) => {
     }
   }
   return true;
+};
+
+export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: string, dateYear: string, errorMessage: string) => {
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  const filingDateDay = appData?.update?.[FilingDateKey]?.day;
+  const filingDateMonth = appData?.update?.[FilingDateKey]?.month;
+  const filingDateYear = appData?.update?.[FilingDateKey]?.year;
+
+  return checkFirstDateOnOrAfterSecondDate(
+    filingDateDay, filingDateMonth, filingDateYear,
+    dateDay, dateMonth, dateYear,
+    errorMessage);
 };
 
 const hasBeneficialOwners = (appData: ApplicationData) => {

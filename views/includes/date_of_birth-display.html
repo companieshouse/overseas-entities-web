@@ -1,11 +1,13 @@
-{% if date_of_birth["day"] == "01" or date_of_birth["day"] == "1" %}
-  {% set dob = dateMacros.formatMonthYearDate(date_of_birth["month"] | string, date_of_birth["year"]) %}
-{% elif dob_day == "01" or dob_day == "1" %}
-  {% set dob = dateMacros.formatMonthYearDate(dob_month, dob_year) %}
-{% elif dob_year %}
-  {% set dob = dateMacros.formatDate(dob_day, dob_month, dob_year) %}
-{% elif date_of_birth["month"] %}
+{% if have_day_of_birth and date_of_birth["day"] and date_of_birth["month"] and date_of_birth["year"] %}
   {% set dob = dateMacros.formatDate(date_of_birth["day"], date_of_birth["month"] | string, date_of_birth["year"]) %}
+{% elif have_day_of_birth and dob_day and dob_month and dob_year %}
+  {% set dob = dateMacros.formatDate(dob_day, dob_month, dob_year) %}
+{% elif date_of_birth["month"] and date_of_birth["year"] %}
+  {% set dob = dateMacros.formatMonthYearDate(date_of_birth["month"] | string, date_of_birth["year"]) %}
+{% elif dob_month and dob_year %}
+  {% set dob = dateMacros.formatMonthYearDate(dob_month, dob_year) %}
+{% else %}
+  {% set dob = "Unknown" %}
 {% endif %}
 
 <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ first_name }} {{ last_name }} - born {{ dob }}</span>

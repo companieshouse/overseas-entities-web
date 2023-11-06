@@ -33,6 +33,7 @@ import { companyAuthentication } from '../../../src/middleware/company.authentic
 import { hasUpdatePresenter } from '../../../src/middleware/navigation/update/has.presenter.middleware';
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
+import { ErrorMessages } from '../../../src/validation/error.messages';
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -70,6 +71,18 @@ describe('Trust Historical Beneficial Owner Controller', () => {
     trust_id: '803',
     trust_name: 'dummyTrustName3',
   } as Trust;
+
+  const mockHistBORequest = {
+    type: "legalEntity",
+    ch_reference: "erhgdfhd",
+    corporate_name: "Lacotto",
+    startDateDay: "16",
+    startDateMonth: "9",
+    startDateYear: "2023",
+    endDateDay: "17",
+    endDateMonth: "8",
+    endDateYear: "2023"
+  };
 
   let mockAppData = {};
 
@@ -153,6 +166,40 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       );
     });
 
+    test('renders the current page with error messages for start and ceased date must be on or before filing date', async () => {
+
+      mockAppData = {
+        update: {
+          "filing_date": {
+            "day": "16",
+            "month": "6",
+            "year": "2000"
+          }
+        }
+      };
+
+      mockReq = {
+        session: {} as Session,
+        headers: {},
+        route: '',
+        method: '',
+        body: {},
+      } as Request;
+
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+      const resp = await request(app).post(pageUrl).send(mockHistBORequest);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+      expect(resp.text).toContain(ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
+    });
+
     test('catch error when renders the page', () => {
       const error = new Error(ANY_MESSAGE_ERROR);
       (mapBeneficialOwnerToSession as jest.Mock).mockImplementationOnce(() => { throw error; });
@@ -161,6 +208,39 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
       expect(mockNext).toBeCalledTimes(1);
       expect(mockNext).toBeCalledWith(error);
+    });
+
+    test('successfully access POST method without CeasedDate and StartDate errors', async () => {
+      mockAppData = {
+        update: {
+          "filing_date": {
+            "day": "16",
+            "month": "12",
+            "year": "2023"
+          }
+        }
+      };
+
+      mockReq = {
+        session: {} as Session,
+        headers: {},
+        route: '',
+        method: '',
+        body: {},
+      } as Request;
+
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+      const resp = await request(app).post(pageUrl).send(mockHistBORequest);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(ErrorMessages.START_DATE_BEFORE_FILING_DATE);
+      expect(resp.text).not.toContain(ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+      expect(authentication).toBeCalledTimes(1);
+      expect(hasTrustWithIdUpdate).toBeCalledTimes(1);
     });
   });
 

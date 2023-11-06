@@ -693,7 +693,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01"
     };
     mapIndividualTrusteeData(trusteeData, trust);
@@ -702,7 +702,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01",
       ceasedDate: "2023-03-03"
     };
@@ -711,7 +711,7 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01"
     };
     mapCorporateTrusteeData(corporateTrusteeData, trust);
@@ -719,7 +719,7 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01",
       ceasedDate: "2022-02-02"
     };
@@ -749,7 +749,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: ""
+      trusteeTypeId: "5001"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(trusteeData, trustMock);
     const historicalTrusteeData = {
@@ -757,7 +757,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       ceasedDate: "2023-03-03"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(historicalTrusteeData, trustMock);
@@ -765,14 +765,14 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: ""
+      trusteeTypeId: "5001"
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(corporateTrusteeData, trustMock);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       ceasedDate: "2022-02-02"
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(historicalCorporateTrusteeData, trustMock);

@@ -321,8 +321,7 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5001":
         return RoleWithinTrustType.BENEFICIARY;
       default:
-        logger.debug(`Trustee Type ${trusteeTypeId} not recognised`);
-        return RoleWithinTrustType.BENEFICIARY;
+        throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }
 };
 

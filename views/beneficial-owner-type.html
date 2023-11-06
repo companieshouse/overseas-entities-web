@@ -71,13 +71,14 @@ or (managing_officers_corporate and managing_officers_corporate.length > 0) %}
   {% set managingOfficerCorporateUrl = OE_CONFIGS.MANAGING_OFFICER_CORPORATE_URL %}
 
   {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
-    {% set addButtonAction = addButtonActionWithParams %}
-    {% set noMoreToAddButtonAction = noMoreToAddButtonActionWithParams %}
-    {% set beneficialOwnerIndividualUrl = beneficialOwnerIndividualUrlWithParams %}
-    {% set beneficialOwnerOtherUrl = beneficialOwnerOtherUrlWithParams %}
-    {% set beneficialOwnerGovUrl = beneficialOwnerGovUrlWithParams %}
-    {% set managingOfficerIndividualUrl = managingOfficerIndividualUrlWithParams %}
-    {% set managingOfficerCorporateUrl = managingOfficerCorporateWithParams %} 
+    {% set registerActiveSubmissionBasePath = OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL + activeSubmissionBasePath %}
+    {% set addButtonAction = registerActiveSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_TYPE_PAGE %}
+    {% set noMoreToAddButtonAction = registerActiveSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_TYPE_PAGE + "/submit" %}
+    {% set beneficialOwnerIndividualUrl = registerActiveSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_INDIVIDUAL_PAGE %}
+    {% set beneficialOwnerOtherUrl = registerActiveSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_OTHER_PAGE %}
+    {% set beneficialOwnerGovUrl = registerActiveSubmissionBasePath + OE_CONFIGS.BENEFICIAL_OWNER_GOV_PAGE %}
+    {% set managingOfficerIndividualUrl = registerActiveSubmissionBasePath + OE_CONFIGS.MANAGING_OFFICER_PAGE %}
+    {% set managingOfficerCorporateUrl = registerActiveSubmissionBasePath + OE_CONFIGS.MANAGING_OFFICER_CORPORATE_PAGE %} 
   {% endif %}
   
   {% include "includes/page-templates/beneficial-owner.html" %}

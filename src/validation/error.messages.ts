@@ -34,6 +34,7 @@ export enum ErrorMessages {
   HISTORICAL_BO_LAST_NAME = "Enter the beneficial owner's last name",
   LEGAL_ENTITY_BO_NAME = "Enter its name",
   ENTITY_CORRESPONDENCE_ADDRESS = "Enter their correspondence address",
+  START_DATE_MUST_BE_AFTER_DOB = "Start date must be on or after date of birth",
 
   // Public Register
   PUBLIC_REGISTER_NAME = "Enter the name of the register",
@@ -159,6 +160,7 @@ export enum ErrorMessages {
   CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the appointed date",
   TRUST_CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the start date",
   RESIGNED_ON_BEFORE_START_DATE = "Resigned on date must be on or after the appointed date",
+  START_DATE_BEFORE_FILING_DATE = "Start date must be before or on the date of the update statement",
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",

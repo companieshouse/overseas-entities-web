@@ -20,6 +20,7 @@ const mapBoOtherToPage = (
     id: beneficialOwner.id,
     name: beneficialOwner.name || "",
     type: BeneficialOwnerTypeChoice.otherLegal,
+    is_newly_added: beneficialOwner.ch_reference ? false : true
   };
 };
 

@@ -8,8 +8,8 @@ export const hasTrustsToReview = (appData: ApplicationData) =>
 export const getTrustInReview = (appData: ApplicationData) =>
   (appData.update?.review_trusts ?? []).find(trust => !!trust.review_status?.in_review);
 
-export const getReviewTrustById = (appData: ApplicationData, trustId: string) =>
-  appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {};
+export const getReviewTrustById = (appData: ApplicationData, trustId: string): Trust =>
+  appData.update?.review_trusts?.find(trust => trust.trust_id === trustId) ?? {} as Trust;
 
 export const updateTrustInReviewList = (appData: ApplicationData, trustToSave: Trust) => {
   const trusts: Trust[] = appData.update?.review_trusts ?? [];
@@ -103,5 +103,38 @@ export const setTrusteesAsReviewed = (appData: ApplicationData, trusteeType: Tru
         return true;
       default:
         return false;
+  }
+};
+
+export const moveTrustOutOfReview = (appData: ApplicationData) => {
+  const trustIndex = (appData.update?.review_trusts ?? []).findIndex(reviewTrust => reviewTrust?.review_status?.in_review);
+  const trust = appData.update?.review_trusts?.splice(trustIndex, 1)[0];
+
+  if (!trust) { return; }
+
+  trust.review_status = undefined;
+
+  if (appData.trusts === undefined) {
+    appData.trusts = [];
+  }
+
+  appData.trusts?.push(trust);
+};
+
+export const putTrustInChangeScenario = (appData: ApplicationData, trustId: string, trusteeType?: string) => {
+  const trustForChangeScenario = appData.trusts?.splice(appData.trusts.findIndex(trust => trust.trust_id === trustId), 1)[0];
+
+  appData.update?.review_trusts?.push(trustForChangeScenario as Trust);
+
+  const trustInChangeScenario = (appData.update?.review_trusts ?? [])[0];
+
+  if (trustInChangeScenario) {
+    trustInChangeScenario.review_status = {
+      in_review: true,
+      reviewed_former_bos: (trusteeType ? trusteeType !== TrusteeType.HISTORICAL : true),
+      reviewed_individuals: (trusteeType ? trusteeType !== TrusteeType.INDIVIDUAL : true),
+      reviewed_legal_entities: (trusteeType ? trusteeType !== TrusteeType.LEGAL_ENTITY : true),
+      reviewed_trust_details: (trusteeType !== undefined)
+    };
   }
 };

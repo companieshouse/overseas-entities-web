@@ -22,6 +22,9 @@ import { logger } from '../utils/logger';
 import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
+import { isActiveFeature } from "../utils/feature.flag";
+import * as config from "../config";
+import { getUrlWithParamsToPath } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -54,6 +57,24 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         entityName = appData?.[EntityNameKey];
       }
       const entityNumber = appData?.[EntityNumberKey];
+
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+        // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
+        // and we also need to pass the feature flag as true so the template constructs the correct urls.
+        return res.render(NAVIGATION[routePath].currentPage, {
+          backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),
+          templateName: NAVIGATION[routePath].currentPage,
+          id,
+          entityName,
+          entityNumber,
+          ...appData,
+          ...req.body,
+          ...dates,
+          errors,
+          FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
+        });
+      }
 
       return res.render(NAVIGATION[routePath].currentPage, {
         backLinkUrl: NAVIGATION[routePath].previousPage(appData, req),

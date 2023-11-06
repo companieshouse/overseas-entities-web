@@ -13,6 +13,8 @@ import { Session } from '@companieshouse/node-session-handler';
 import { saveAndContinue } from './save.and.continue';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
+import { isActiveFeature } from './feature.flag';
+import { getUrlWithParamsToPath } from './url';
 
 export const LEGAL_ENTITY_BO_TEXTS = {
   title: 'Tell us about the legal entity',
@@ -42,13 +44,13 @@ const getPageProperties = (
 ): TrustLegalEntityBeneificalOwnerPageProperties => {
 
   return {
-    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId),
+    backLinkUrl: getTrustInvolvedUrl(isUpdate, trustId, req),
     templateName: getPageTemplate(isUpdate),
     pageParams: {
       title: LEGAL_ENTITY_BO_TEXTS.title,
     },
     pageData: {
-      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId),
+      trustData: CommonTrustDataMapper.mapCommonTrustDataToPage(getApplicationData(req.session), trustId, false),
       roleWithinTrustType: RoleWithinTrustType
     },
     formData,
@@ -121,7 +123,7 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
 
     await saveAndContinue(req, session, true);
 
-    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId));
+    return safeRedirect(res, getTrustInvolvedUrl(isUpdate, trustId, req));
   } catch (error) {
     logger.errorRequest(req, error);
 
@@ -129,11 +131,17 @@ export const postTrustLegalEntityBo = async (req: Request, res: Response, next: 
   }
 };
 
-const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string) => (
-  isUpdate
-    ? `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
-    : `${config.TRUST_ENTRY_URL}/${trustId}${config.TRUST_INVOLVED_URL}`
-);
+const getTrustInvolvedUrl = (isUpdate: boolean, trustId: string, req: Request) => {
+  if (isUpdate) {
+    return `${config.UPDATE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_URL}/${trustId}${config.TRUST_INVOLVED_URL}`;
+  } else {
+    let entryUrl = `${config.TRUST_ENTRY_URL}`;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      entryUrl = getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+    }
+    return entryUrl + `/${trustId}${config.TRUST_INVOLVED_URL}`;
+  }
+};
 
 const getPageTemplate = (isUpdate: boolean) => (
   isUpdate

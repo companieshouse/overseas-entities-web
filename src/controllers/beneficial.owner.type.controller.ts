@@ -27,13 +27,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         // Even though the value of this feature flag is available in the template via the OE_CONFIGS variable, passing it in
         // like this enables unit tests to assert different outcomes, based on whether it is set or not
         FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
-        addButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL, req),
-        noMoreToAddButtonActionWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL, req),
-        beneficialOwnerIndividualUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_INDIVIDUAL_WITH_PARAMS_URL, req),
-        beneficialOwnerOtherUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_OTHER_WITH_PARAMS_URL, req),
-        beneficialOwnerGovUrlWithParams: getUrlWithParamsToPath(config.BENEFICIAL_OWNER_GOV_WITH_PARAMS_URL, req),
-        managingOfficerIndividualUrlWithParams: getUrlWithParamsToPath(config.MANAGING_OFFICER_WITH_PARAMS_URL, req),
-        managingOfficerCorporateWithParams: getUrlWithParamsToPath(config.MANAGING_OFFICER_CORPORATE_WITH_PARAMS_URL, req),
+        activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
         backLinkUrl: config.BENEFICIAL_OWNER_STATEMENTS_URL,
         templateName: config.BENEFICIAL_OWNER_TYPE_PAGE,
         requiresTrusts,
@@ -68,7 +62,7 @@ export const postSubmit = (req: Request, res: Response) => {
   }
   if (requiresTrusts) {
     nextPageUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_WEB)
-      ? getTrustLandingUrl(appData)
+      ? getTrustLandingUrl(appData, req)
       : config.TRUST_INFO_URL;
   }
   return res.redirect(nextPageUrl);

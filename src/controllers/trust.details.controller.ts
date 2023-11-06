@@ -6,6 +6,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   getTrustDetails(req, res, next, false, false);
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
-  postTrustDetails(req, res, next, false, false);
+export const post = async (req: Request, res: Response, next: NextFunction) => {
+  await postTrustDetails(req, res, next, false, false);
 };

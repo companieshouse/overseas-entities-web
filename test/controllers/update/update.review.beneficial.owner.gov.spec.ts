@@ -120,7 +120,7 @@ describe(`Update review beneficial owner Gov`, () => {
     });
 
     test(`redirect to ${config.UPDATE_BENEFICIAL_OWNER_TYPE_PAGE} page on successful submission`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({
+      mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK
       });
       mockPrepareData.mockImplementationOnce( () => UPDATE_REVIEW_BENEFICIAL_OWNER_MOCK_DATA );

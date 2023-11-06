@@ -1,6 +1,7 @@
 import { ApplicationData } from '../../../src/model';
 import { Trust, TrustCorporate, TrustHistoricalBeneficialOwner, TrustIndividual } from '../../../src/model/trust.model';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
+import { UpdateKey } from '../../../src/model/update.type.model';
 import {
   hasTrustsToReview,
   getTrustInReview,
@@ -12,6 +13,8 @@ import {
   getReviewTrustById,
   putNextTrustInReview,
   setTrustDetailsAsReviewed,
+  moveTrustOutOfReview,
+  putTrustInChangeScenario,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -545,5 +548,56 @@ describe('Manage trusts - review trusts utils tests', () => {
 
       expect(getReviewTrustById(appData, reviewTrustData.trust_id)).toEqual(reviewTrustData);
     });
+  });
+});
+
+describe('moveTrustOutOfReview', () => {
+  test('when trust to review, sets review_status of trust to undefined and adds it to trusts list in application data', () => {
+
+    const review_status = {
+      in_review: true,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    };
+
+    const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
+
+    moveTrustOutOfReview(appData);
+
+    // trust.review_status set to undefined, trust added to trusts list in app data
+    expect(appData.trusts).toEqual( [{ review_status: undefined }] );
+  });
+
+  test('when trusts undefined, sets as empty array', () => {
+
+    const review_status = {
+      in_review: true,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    };
+
+    const appData = { update: { review_trusts: [{ review_status }] } } as ApplicationData;
+
+    moveTrustOutOfReview(appData);
+
+    // appData set to [] if undefined
+    expect(appData.trusts).toEqual([{}]);
+  });
+});
+
+describe('putTrustInChangeScenario', () => {
+  test('moves trust from main model to review_trusts', () => {
+    const appData = {
+      trusts: [{ trust_id: '1', trust_name: 'trust name' } as Trust],
+      [UpdateKey]: {
+        review_trusts: []
+      }
+    };
+
+    putTrustInChangeScenario(appData, '1');
   });
 });

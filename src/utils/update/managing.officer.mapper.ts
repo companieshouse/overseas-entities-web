@@ -1,4 +1,4 @@
-import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink, splitNationalities, lowerCaseNationalityExceptFirstLetters } from "./mapper.utils";
+import { isSameAddress, mapBOMOAddress, mapDateOfBirth, mapInputDate, mapSelfLink, splitNationalities, lowerCaseAllWordsExceptFirstLetters } from "./mapper.utils";
 import { CompanyOfficer, FormerNameResource } from "@companieshouse/api-sdk-node/dist/services/company-officers/types";
 import { ManagingOfficerPrivateData } from "@companieshouse/api-sdk-node/dist/services/overseas-entities";
 import { ManagingOfficerIndividual } from "../../model/managing.officer.model";
@@ -20,8 +20,8 @@ export const mapToManagingOfficer = (officer: CompanyOfficer): ManagingOfficerIn
     has_former_names: officer.formerNames ? yesNoResponse.Yes : yesNoResponse.No,
     former_names: formernames,
     date_of_birth: mapDateOfBirth(officer.dateOfBirth),
-    nationality: lowerCaseNationalityExceptFirstLetters(nationalities[0]),
-    second_nationality: lowerCaseNationalityExceptFirstLetters(nationalities[1]),
+    nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
+    second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
     usual_residential_address: address,
     is_service_address_same_as_usual_residential_address: isSameAddress(service_address, address) ? yesNoResponse.Yes : yesNoResponse.No,
     service_address: service_address,
@@ -83,7 +83,10 @@ export const mapIndividualMoPrivateData = (moPrivateData: ManagingOfficerPrivate
   for (const managingOfficerData of moPrivateData) {
     if (managingOfficerData.hashedId === managingOfficer.ch_reference) {
       managingOfficer.usual_residential_address = mapBOMOAddress(managingOfficerData.residentialAddress);
-      managingOfficer.date_of_birth = mapInputDate(managingOfficerData.dateOfBirth);
+      if (managingOfficerData.dateOfBirth) {
+        managingOfficer.date_of_birth = mapInputDate(managingOfficerData.dateOfBirth);
+        managingOfficer.have_day_of_birth = true;
+      }
     }
   }
 };

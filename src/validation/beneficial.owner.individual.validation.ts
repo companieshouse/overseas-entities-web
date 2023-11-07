@@ -8,7 +8,13 @@ import {
 } from "./fields/address.validation";
 import { nature_of_control_validations } from "./fields/nature-of-control.validation";
 import { second_nationality_validations } from "./fields/second-nationality.validation";
-import { date_of_birth_validations, start_date_validations, ceased_date_validations, filingPeriodStartDateValidations } from "./fields/date.validation";
+import {
+  date_of_birth_validations,
+  start_date_validations,
+  ceased_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodCeasedDateValidations
+} from "./fields/date.validation";
 
 export const beneficialOwnerIndividual = [
   body("first_name")
@@ -50,5 +56,7 @@ export const updateBeneficialOwnerIndividual = [
 
   ...ceased_date_validations,
 
-  ...filingPeriodStartDateValidations
+  ...filingPeriodStartDateValidations,
+
+  ...filingPeriodCeasedDateValidations
 ];

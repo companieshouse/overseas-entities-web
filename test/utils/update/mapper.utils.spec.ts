@@ -1,4 +1,4 @@
-import { lowerCaseAllWordsExceptFirstLetters, lowerCaseNationalityExceptFirstLetters, mapBOIndividualName, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
+import { lowerCaseAllWordsExceptFirstLetters, mapBOIndividualName, mapInputDate, splitOriginatingRegistryName } from "../../../src/utils/update/mapper.utils";
 
 describe("Test mapping utils", () => {
   test("does map date of creation for month format containing single digit ", () => {
@@ -612,7 +612,7 @@ describe("Test mapping utils", () => {
         "Zimbabwean"
       ];
       expect(nationalities.every(c =>
-        c === lowerCaseNationalityExceptFirstLetters(c.toUpperCase())
+        c === lowerCaseAllWordsExceptFirstLetters(c.toUpperCase())
       )).toBeTruthy();
     });
   });

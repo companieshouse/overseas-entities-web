@@ -46,7 +46,7 @@ describe("Test fetching and mapping of Trust data", () => {
     jest.clearAllMocks();
   });
 
-  test("should fetch and map trust data data", async () => {
+  test("should fetch and map trust data", async () => {
     const appData = FETCH_TRUST_APPLICATION_DATA_MOCK;
 
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
@@ -332,6 +332,38 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate).toEqual(undefined);
   });
 
+  test("should fetch and map trust links for indivdual BO still in review", async () => {
+    const appData: ApplicationData = {
+      overseas_entity_id: '1',
+      transaction_id: '1',
+      entity_number: '1'
+    };
+    appData.update = {
+      trust_data_fetched: false
+    };
+    appData.update.review_beneficial_owners_individual = [{
+      id: "bo1",
+      ch_reference: "bolink1"
+    }];
+
+    mockGetTrustData.mockResolvedValue([{
+      hashedTrustId: "1234",
+      trustName: "Test Trust",
+      creationDate: "2020-01-01",
+      unableToObtainAllTrustInfoIndicator: false
+    }]);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([{
+      hashedTrustId: '1234',
+      hashedCorporateBodyAppointmentId: "bolink1"
+    }]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(appData.update.review_beneficial_owners_individual[0].trust_ids).toEqual(["1"]);
+  });
+
   test("should fetch and map trust links for corporate BOs", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue(FETCH_TRUST_DATA_MOCK);
@@ -353,6 +385,38 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate[1].trust_ids).toEqual(undefined);
     expect(appData.beneficial_owners_corporate[2].trust_ids).toEqual(["2"]);
     expect(appData.beneficial_owners_individual).toEqual(undefined);
+  });
+
+  test("should fetch and map trust links for corporate BO still in review", async () => {
+    const appData: ApplicationData = {
+      overseas_entity_id: '1',
+      transaction_id: '1',
+      entity_number: '1'
+    };
+    appData.update = {
+      trust_data_fetched: false
+    };
+    appData.update.review_beneficial_owners_corporate = [{
+      id: "bo1",
+      ch_reference: "bolink1"
+    }];
+
+    mockGetTrustData.mockResolvedValue([{
+      hashedTrustId: "1234",
+      trustName: "Test Trust",
+      creationDate: "2020-01-01",
+      unableToObtainAllTrustInfoIndicator: false
+    }]);
+    mockGetIndividualTrustees.mockResolvedValue([]);
+    mockGetCorporateTrustees.mockResolvedValue([]);
+    mockGetTrustLinks.mockResolvedValue([{
+      hashedTrustId: '1234',
+      hashedCorporateBodyAppointmentId: "bolink1"
+    }]);
+
+    await retrieveTrustData(req, appData);
+
+    expect(appData.update.review_beneficial_owners_corporate[0].trust_ids).toEqual(["1"]);
   });
 
   test("should fetch and not map trust links in without matching beneficial owners", async () => {
@@ -430,7 +494,7 @@ describe("Test fetching and mapping of Trust data", () => {
     expect(appData.beneficial_owners_corporate[0].trust_ids).toEqual([]);
   });
 
-  test("should fetch and not map trust links in without any tusts", async () => {
+  test("should fetch and not map trust links in without any trusts", async () => {
     const appData: ApplicationData = { ...FETCH_TRUST_APPLICATION_DATA_MOCK, update: { trust_data_fetched: false } };
     mockGetTrustData.mockResolvedValue([]);
     mockGetTrustLinks.mockResolvedValueOnce([
@@ -629,7 +693,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01"
     };
     mapIndividualTrusteeData(trusteeData, trust);
@@ -638,7 +702,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01",
       ceasedDate: "2023-03-03"
     };
@@ -647,7 +711,7 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01"
     };
     mapCorporateTrusteeData(corporateTrusteeData, trust);
@@ -655,7 +719,7 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       appointmentDate: "2021-01-01",
       ceasedDate: "2022-02-02"
     };
@@ -685,7 +749,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: ""
+      trusteeTypeId: "5001"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(trusteeData, trustMock);
     const historicalTrusteeData = {
@@ -693,7 +757,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       ceasedDate: "2023-03-03"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(historicalTrusteeData, trustMock);
@@ -701,14 +765,14 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: ""
+      trusteeTypeId: "5001"
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(corporateTrusteeData, trustMock);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "",
+      trusteeTypeId: "5001",
       ceasedDate: "2022-02-02"
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(historicalCorporateTrusteeData, trustMock);

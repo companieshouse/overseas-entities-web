@@ -146,7 +146,7 @@ export const postTrustInvolvedPage = async (
         setExtraData(req.session, appData);
         await saveAndContinue(req, req.session as Session, false);
       }
-      return safeRedirect(res, getNextPage(isUpdate, isReview));
+      return safeRedirect(res, getNextPage(isUpdate, isReview, req));
     }
 
     //  check on errors
@@ -241,14 +241,18 @@ const getUrl = (isUpdate: boolean) => {
   }
 };
 
-const getNextPage = (isUpdate: boolean, isReview: boolean) => {
+const getNextPage = (isUpdate: boolean, isReview: boolean, req: Request) => {
   if (isReview) {
     return config.UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL;
   }
   if (isUpdate) {
     return config.UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL;
   } else {
-    return `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
+    let nextPageUrl = `${config.TRUST_ENTRY_URL + config.ADD_TRUST_URL}`;
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      nextPageUrl = getUrlWithParamsToPath(`${config.TRUST_ENTRY_WITH_PARAMS_URL}${config.ADD_TRUST_URL}`, req);
+    }
+    return nextPageUrl;
   }
 };
 

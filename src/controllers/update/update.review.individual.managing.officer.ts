@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { AddressKeys, InputDate } from "../../model/data.types.model";
 import { setOfficerData } from "../../utils/managing.officer.individual";
-import { ResignedOnKey } from "../../model/date.model";
+import { HaveDayOfBirthKey, ResignedOnKey } from "../../model/date.model";
 import { addResignedDateToTemplateOptions } from "../../utils/update/ceased_date_util";
 import { UsualResidentialAddressKey, UsualResidentialAddressKeys } from "../../model/address.model";
 
@@ -55,6 +55,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
       const moId = appData.managing_officers_individual[Number(moIndex)].id;
       const dob = appData.managing_officers_individual[Number(moIndex)].date_of_birth as InputDate;
+      const haveDayOfBirth = appData.managing_officers_individual[Number(moIndex)].have_day_of_birth;
 
       removeFromApplicationData(req, ManagingOfficerKey, moId);
 
@@ -62,6 +63,9 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       const session = req.session as Session;
 
       const data: ApplicationDataType = setOfficerData(req.body, uuidv4());
+      if (haveDayOfBirth) {
+        data[HaveDayOfBirthKey] = haveDayOfBirth;
+      }
 
       setApplicationData(req.session, data, ManagingOfficerKey);
 

@@ -1,6 +1,6 @@
 import { beneficialOwnerGov, updateBeneficialOwnerGov, updateReviewBeneficialOwnerGovValidator } from "./beneficial.owner.gov.validation";
 import { beneficialOwnerIndividual, updateBeneficialOwnerIndividual } from "./beneficial.owner.individual.validation";
-import { beneficialOwnerOther, updateBeneficialOwnerOther } from "./beneficial.owner.other.validation";
+import { beneficialOwnerOther, updateBeneficialOwnerOther, updateReviewBeneficialOwnerOther } from "./beneficial.owner.other.validation";
 import { beneficialOwnersStatement } from "./beneficial.owner.statements.validation";
 import { beneficialOwnerDeleteWarning } from "./beneficial.owner.delete.warning.validation";
 import { confirmToRemove } from "./confirm.to.remove.validation";
@@ -70,6 +70,7 @@ export const validator = {
   updateBeneficialOwnerIndividual,
   updateBeneficialOwnerGov,
   updateBeneficialOwnerOther,
+  updateReviewBeneficialOwnerOther,
   trustIndividualBeneficialOwner,
   trustHistoricalBeneficialOwner,
   addTrust: addTrustValidations,

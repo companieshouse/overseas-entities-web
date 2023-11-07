@@ -4,7 +4,12 @@ import { ErrorMessages } from "./error.messages";
 import { principal_address_validations, principal_service_address_validations } from "./fields/address.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 import { checkAtLeastOneFieldHasValue } from "./custom.validation";
-import { start_date_validations, ceased_date_validations, filingPeriodStartDateValidations } from "./fields/date.validation";
+import {
+  start_date_validations,
+  ceased_date_validations,
+  filingPeriodStartDateValidations,
+  filingPeriodCeasedDateValidations
+} from "./fields/date.validation";
 
 export const beneficial_owner_gov_name_validation = [
   body("name")
@@ -70,7 +75,9 @@ export const updateBeneficialOwnerGov = [
 
   ...ceased_date_validations,
 
-  ...filingPeriodStartDateValidations
+  ...filingPeriodStartDateValidations,
+
+  ...filingPeriodCeasedDateValidations
 ];
 
 export const updateReviewBeneficialOwnerGovValidator = [
@@ -93,5 +100,7 @@ export const updateReviewBeneficialOwnerGovValidator = [
 
   body("is_still_bo").not().isEmpty().withMessage(ErrorMessages.SELECT_IF_STILL_BENEFICIAL_OWNER),
 
-  ...ceased_date_validations
+  ...ceased_date_validations,
+
+  ...filingPeriodCeasedDateValidations
 ];

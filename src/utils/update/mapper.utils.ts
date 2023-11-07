@@ -122,46 +122,23 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
     return "";
   }
 
-  const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART"];
+  const wordsForAllLowerCase = ["AND", "OF", "THE", "DA", "PART", "CITIZEN"];
 
-  return country.replace(/\w*/g, word => {
+  return country.replace(/\w*/g, (word, index) => {
     if (word.toUpperCase() === "MCDONALD") {
       return "McDonald";
     }
 
-    if (wordsForAllLowerCase.includes(word.toUpperCase())){
-      return word.toLowerCase();
-    }
-
-    return `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`;
-  }
-  );
-};
-
-export const lowerCaseNationalityExceptFirstLetters = (nationality: string | undefined) => {
-  if (!nationality){
-    return undefined;
-  }
-
-  const wordsForAllLowerCase = ["AND", "OF", "THE"];
-
-  return nationality.replace(/\w*/g, (word, index) => {
     if (word.toUpperCase() === "DRC") {
       return word.toUpperCase();
     }
 
-    // If "citizen" is the first word then capitalise, otherwise lowercase
-    if (word.toUpperCase() === "CITIZEN" && index > 0){
-      return word.toLowerCase();
-    }
-
-    if (wordsForAllLowerCase.includes(word.toUpperCase())){
+    if (index !== 0 && wordsForAllLowerCase.includes(word.toUpperCase())){
       return word.toLowerCase();
     }
 
     return `${word.slice(0, 1)}${word.slice(1).toLowerCase()}`;
-  }
-  );
+  });
 };
 
 export const splitOriginatingRegistryName = (registryName: string | undefined) => {

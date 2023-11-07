@@ -9,6 +9,8 @@ import * as PageModel from '../model/trust.page.model';
 import { FormattedValidationErrors, formatValidationError } from '../middleware/validation.middleware';
 import { validationResult } from 'express-validator';
 import { isActiveFeature } from './feature.flag';
+import { addActiveSubmissionBasePathToTemplateData } from "./template.data";
+import { getUrlWithParamsToPath } from './url';
 
 export const ADD_TRUST_TEXTS = {
   title: 'Trusts associated with the overseas entity',
@@ -69,6 +71,10 @@ export const getTrusts = (
 
     const pageProps = getPageProperties(req, isUpdate);
 
+    if (!isUpdate) {
+      addActiveSubmissionBasePathToTemplateData(pageProps, req);
+    }
+
     return res.render(pageProps.templateName, pageProps);
   } catch (error) {
     logger.errorRequest(req, error);
@@ -103,7 +109,7 @@ export const postTrusts = (
 
     if (addNewTrust === '1') {
       const newTrustId = generateTrustId(appData);
-      return res.redirect(`${newTrustPage(isUpdate)}/${newTrustId}`);
+      return res.redirect(`${newTrustPage(isUpdate, req)}/${newTrustId}`);
     } else {
       return res.redirect(nextPage(isUpdate));
     }
@@ -113,10 +119,13 @@ export const postTrusts = (
   }
 };
 
-const newTrustPage = (isUpdate: boolean) => {
+const newTrustPage = (isUpdate: boolean, req: Request) => {
   if (isUpdate){
     return config.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE;
   } else {
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
+      return getUrlWithParamsToPath(config.TRUST_ENTRY_WITH_PARAMS_URL, req);
+    }
     return config.TRUST_DETAILS_URL;
   }
 };

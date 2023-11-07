@@ -129,6 +129,10 @@ export const lowerCaseAllWordsExceptFirstLetters = (country: string | undefined)
       return "McDonald";
     }
 
+    if (word.toUpperCase() === "DRC") {
+      return word.toUpperCase();
+    }
+
     if (index !== 0 && wordsForAllLowerCase.includes(word.toUpperCase())){
       return word.toLowerCase();
     }

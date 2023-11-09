@@ -123,7 +123,6 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_day: dateOfBirth?.day ?? "",
     dob_month: dateOfBirth?.month ?? "",
     dob_year: dateOfBirth?.year ?? "",
-    // UAR-1106 will need conversion to PascalCase
     nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
     second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
     type: mapTrusteeType(trustee.trusteeTypeId),

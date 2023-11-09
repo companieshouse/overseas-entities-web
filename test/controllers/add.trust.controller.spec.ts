@@ -193,6 +193,26 @@ describe("Add Trust Controller Tests", () => {
       expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
       expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.TRUST_ENTRY_WITH_PARAMS_URL);
     });
+
+    test(`renders the ${config.ADD_TRUST_PAGE} page with missing mandatory field messages`, async () => {
+      // Arrange
+      mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (hasTrustDataRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
+      (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
+
+      // Act
+      const resp = await request(app).post(pageUrl).send({});
+
+      // Assert
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(ErrorMessages.ADD_TRUST);
+      expect(resp.text).toContain(config.REGISTER_AN_OVERSEAS_ENTITY_URL + MOCKED_URL + config.TRUSTS_URL);
+      expect(mockGetUrlWithParamsToPath).toHaveBeenCalledTimes(1);
+      expect(mockGetUrlWithParamsToPath.mock.calls[0][0]).toEqual(config.ACTIVE_SUBMISSION_BASE_PATH);
+    });
   });
 
   describe('Endpoint Access tests with supertest', () => {

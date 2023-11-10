@@ -45,6 +45,7 @@ export const InputDateKeys: string[] = [
 ];
 
 export const LANDING_PAGE_QUERY_PARAM = "start";
+export const REMOVE_QUERY_PARAM = "journey";
 
 export const EntityNameKey = "entity_name";
 

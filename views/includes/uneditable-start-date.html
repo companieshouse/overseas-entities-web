@@ -13,7 +13,8 @@
 
 {% set formatted_start_date = dateMacros.formatDate(start_date_day, start_date_month, start_date_year) %}
 
-<p><legend class="govuk-fieldset__legend govuk-fieldset__legend--m"> Date it became a beneficial owner for the overseas entity:</legend></p>
+{% set dateBecameBo = "Date " + beneficialOwnerPronoun + " became a beneficial owner for the overseas entity:" %}
+<p><legend class="govuk-fieldset__legend govuk-fieldset__legend--m"> {{ dateBecameBo }}</legend></p>
 <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_start_date }}</label>
 
 <!-- append needed data for validation re-render to form -->

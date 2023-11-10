@@ -18,6 +18,8 @@ import { ErrorMessages } from '../../../src/validation/error.messages';
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
+import { REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
+import { JOURNEY_QUERY_PARAM } from "../../../src/model/data.types.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -33,11 +35,22 @@ describe("Continue with saved filing controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page`, async () => {
+    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page for the Update journey`, async () => {
       const resp = await request(app).get(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_SERVICE_NAME);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page for the Remove journey`, async () => {
+      const resp = await request(app).get(`${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=remove`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });

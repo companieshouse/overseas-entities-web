@@ -2,14 +2,14 @@ import { NextFunction, Request, Response } from "express";
 
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
-import { REMOVE_QUERY_PARAM } from "../../model/data.types.model";
+import { JourneyType, JOURNEY_QUERY_PARAM } from "../../model/data.types.model";
 
 export const get = (req: Request, res: Response, _: NextFunction) => {
   logger.debugRequest(req, `GET ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}`);
 
-  if (req.query[REMOVE_QUERY_PARAM] === 'remove') {
+  if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
     return res.render(config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE, {
-      journey: "remove",
+      journey: JourneyType.remove,
       templateName: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE
     });
   }

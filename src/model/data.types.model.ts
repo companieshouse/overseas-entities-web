@@ -45,7 +45,13 @@ export const InputDateKeys: string[] = [
 ];
 
 export const LANDING_PAGE_QUERY_PARAM = "start";
-export const REMOVE_QUERY_PARAM = "journey";
+export const JOURNEY_QUERY_PARAM = "journey";
+
+export enum JourneyType {
+  register = "register",
+  update = "update",
+  remove = "remove",
+}
 
 export const EntityNameKey = "entity_name";
 

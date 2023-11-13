@@ -19,7 +19,7 @@ export const get = (req: Request, resp: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
     return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
-      templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+      templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
       [NoChangeKey]: appData.update?.no_change,
       ...appData,
     });

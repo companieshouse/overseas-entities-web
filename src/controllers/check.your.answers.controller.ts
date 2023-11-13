@@ -56,7 +56,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
 export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL}`);
+    logger.debugRequest(req, `POST ${config.CHECK_YOUR_ANSWERS_PAGE}`);
 
     const session = req.session as Session;
     const appData: ApplicationData = getApplicationData(session);

@@ -57,6 +57,8 @@
   {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
 {% endif %}
 
+<!-- TODO Need to set the correct 'serviceUrl' value here if on the Remove journey, but requirement needs clarifying and
+          first screen hasn't yet been delivered -->
 {% block header %}
   {{ govukHeader({
     homepageUrl: "https://www.gov.uk",

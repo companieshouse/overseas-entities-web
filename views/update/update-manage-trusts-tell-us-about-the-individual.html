@@ -1,3 +1,5 @@
+{% import "includes/date-macros.html" as dateMacros %}
+
 {% extends "update-layout.html" %}
 
 {% set title = pageParams.title %}
@@ -9,6 +11,8 @@
 {% block backLink %}
   {% include "includes/back-link.html" %}
 {% endblock %}
+
+{% set formatted_date_of_birth = dateMacros.formatDate(formData.dateOfBirthDay, formData.dateOfBirthMonth, formData.dateOfBirthYear) %}
 
 {% block content %}
   {% include "includes/page-templates/trust-individual-beneficial-owner.html" %}

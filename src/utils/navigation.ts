@@ -6,6 +6,7 @@ import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath } from "./url";
 import { Request } from "express";
 
+
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
     ? config.DUE_DILIGENCE_URL
@@ -208,22 +209,22 @@ export const NAVIGATION: Navigation = {
   [config.BENEFICIAL_OWNER_TYPE_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
-    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+    nextPage: [config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
-    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+    nextPage: [config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_SUBMIT_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
-    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+    nextPage: [config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_TYPE_SUBMIT_WITH_PARAMS_URL]: {
     currentPage: config.BENEFICIAL_OWNER_TYPE_PAGE,
     previousPage: () => config.BENEFICIAL_OWNER_STATEMENTS_URL,
-    nextPage: [config.CHECK_YOUR_ANSWERS_URL, config.TRUST_INFO_URL]
+    nextPage: [config.CHECK_YOUR_ANSWERS_WITH_PARAMS_URL, config.TRUST_INFO_URL]
   },
   [config.BENEFICIAL_OWNER_INDIVIDUAL_URL]: {
     currentPage: config.BENEFICIAL_OWNER_INDIVIDUAL_PAGE,

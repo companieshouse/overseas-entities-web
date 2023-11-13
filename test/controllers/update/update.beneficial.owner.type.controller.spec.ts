@@ -34,7 +34,8 @@ import {
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_BO,
   BENEFICIAL_OWNER_TYPE_PAGE_INDIVIDUAL_MO,
   REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING,
-  NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING
+  NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING,
+  MESSAGE_ERROR
 } from '../../__mocks__/text.mock';
 import {
   ERROR,
@@ -349,6 +350,16 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+    });
+
+    test("Catch error when posting submit", async () => {
+      mockGetApplicationData.mockImplementationOnce(() => { throw new Error(MESSAGE_ERROR); });
+
+      const resp = await request(app)
+        .post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

@@ -104,6 +104,9 @@ export const postTrusts = (
         formData,
         formatValidationError(errorList.array()),
       );
+      if (!isUpdate) {
+        addActiveSubmissionBasePathToTemplateData(pageProps, req);
+      }
       return res.render(pageProps.templateName, pageProps);
     }
 

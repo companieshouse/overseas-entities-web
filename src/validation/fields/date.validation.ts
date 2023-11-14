@@ -76,23 +76,22 @@ const is_trust_still_active_validation = (error_message: string) => [
     )),
 ];
 
+const checkAgainstFilingDate = (date_field_id, error_message) =>
+  (value, { req }) => checkDatePreviousToFilingDate(
+    req,
+    req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
+    error_message
+  );
+
 const is_date_within_filing_period = (date_field_id: string, error_message: string) => [
   body(date_field_id)
-    .custom((value, { req }) => checkDatePreviousToFilingDate(
-      req,
-      req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
-      error_message
-    )),
+    .custom(checkAgainstFilingDate(date_field_id, error_message)),
 ];
 
 const is_end_date_within_filing_period = (date_field_id: string, radio_button_id: string, error_message: string) => [
   body(date_field_id)
     .if(body(radio_button_id).equals('0'))
-    .custom((value, { req }) => checkDatePreviousToFilingDate(
-      req,
-      req.body[date_field_id + "-day"], req.body[date_field_id + "-month"], req.body[date_field_id + "-year"],
-      error_message
-    )),
+    .custom(checkAgainstFilingDate(date_field_id, error_message))
 ];
 
 const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [

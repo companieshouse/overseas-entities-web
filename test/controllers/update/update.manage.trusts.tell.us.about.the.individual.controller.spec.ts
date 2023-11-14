@@ -25,7 +25,7 @@ import { manageTrustsTellUsAboutIndividualsGuard } from '../../../src/middleware
 import { getApplicationData, setExtraData } from '../../../src/utils/application.data';
 import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../../src/utils/update/review_trusts';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, CONTINUE_BUTTON_TEXT } from '../../__mocks__/text.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, CONTINUE_BUTTON_TEXT, ERROR_LIST } from '../../__mocks__/text.mock';
 import { TrusteeType } from '../../../src/model/trustee.type.model';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 import { yesNoResponse } from '../../../src/model/data.types.model';
@@ -153,6 +153,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('name="dateBecameIPMonth" type="text" value="3"');
       expect(resp.text).toContain('name="dateBecameIPYear" type="text" value="2020"');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+
+      expect(resp.text).not.toContain('id="dateOfBirthDay"');
 
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
@@ -429,6 +431,106 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
+    });
+
+    test('when validation fails, page is re-rendered', async () => {
+      const formSubmission = {
+        trusteeId: 'trustee-id-2',
+        ch_references: 'existing-ch-references',
+        roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
+        forename: '',
+        surname: '',
+        dateOfBirthDay: '01',
+        dateOfBirthMonth: '02',
+        dateOfBirthYear: '2022',
+        nationality: 'Afghan',
+        second_nationality: 'English',
+        usual_residential_address_property_name_number: 'Usual 1',
+        usual_residential_address_line_1: 'Usual New Line 1',
+        usual_residential_address_line_2: 'Usual New Line 2',
+        usual_residential_address_town: 'Usual New Town',
+        usual_residential_address_county: 'Usual New County',
+        usual_residential_address_country: 'Usual New Country',
+        usual_residential_address_postcode: 'Usual NE994WS',
+        usual_address_po_box: '',
+        usual_address_care_of: '',
+        service_address_property_name_number: 'Usual 1',
+        service_address_line_1: 'Usual New Line 1',
+        service_address_line_2: 'Usual New Line 2',
+        service_address_town: 'Usual New Town',
+        service_address_county: 'Usual New County',
+        service_address_country: 'Usual New Country',
+        service_address_postcode: 'Usual NE994WS',
+        service_address_po_box: '',
+        service_address_care_of: '',
+        is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
+        dateBecameIPDay: '02',
+        dateBecameIPMonth: '08',
+        dateBecameIPYear: '2023',
+      };
+
+      const existingTrustee = {
+        id: 'trustee-id-1',
+        ch_references: 'existing-ch-references',
+        type: RoleWithinTrustType.SETTLOR,
+        forename: 'Existing Trustee',
+        surname: 'Existing Surname',
+        dob_day: '31',
+        dob_month: '12',
+        dob_year: '2002',
+        nationality: 'Tanzanian',
+        second_nationality: 'Thai',
+        ura_address_premises: 'Existing usual premises',
+        ura_address_line_1: 'Existing usual line 2',
+        ura_address_line_2: 'Existing usual line 2',
+        ura_address_locality: 'Existing usual locality',
+        ura_address_region: 'Existing usual region',
+        ura_address_country: 'Existing usual country',
+        ura_address_care_of: '',
+        ura_address_postal_code: 'Existing usual postcode',
+        ura_address_po_box: '',
+        sa_address_premises: 'Existing service premises',
+        sa_address_line_1: 'Existing service line 1',
+        sa_address_line_2: 'Existing service line 2',
+        sa_address_locality: 'Existing service locality',
+        sa_address_region: 'Existing service region',
+        sa_address_country: 'Existing service country',
+        sa_address_care_of: '',
+        sa_address_postal_code: 'Existing service postcode',
+        sa_address_po_box: '',
+        is_service_address_same_as_usual_residential_address: yesNoResponse.No,
+      };
+
+      const trustInReview = {
+        trust_id: 'trust-1',
+        review_status: { in_review: true },
+        INDIVIDUALS: [existingTrustee]
+      };
+
+      const appData = {
+        entity_number: 'OE988669',
+        entity_name: 'Tell us about the individual OE 1',
+        update: { review_trusts: [trustInReview] }
+      };
+
+      mockIsActiveFeature.mockReturnValue(true);
+      mockGetApplicationData.mockReturnValue(appData);
+      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockGetTrustee.mockReturnValue(existingTrustee);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_URL)
+        .send({
+          ...formSubmission,
+        });
+
+      expect(resp.status).toBe(200);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain('Tell us about the individual');
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+
+      expect(mockSetExtraData).not.toHaveBeenCalled();
+      expect(mockSaveAndContinue).not.toHaveBeenCalled();
     });
 
     test('when feature flag is off, 404 is returned', async () => {

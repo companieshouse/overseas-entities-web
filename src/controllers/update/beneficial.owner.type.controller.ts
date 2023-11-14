@@ -67,36 +67,40 @@ export const post = (req: Request, res: Response) => {
   return res.redirect(getNextPage(req.body[BeneficialOwnerTypeKey]));
 };
 
-export const postSubmit = async (req: Request, res: Response) => {
+export const postSubmit = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-  logger.debugRequest(req, `${req.method} ${req.route.path}`);
+    const appData: ApplicationData = getApplicationData(req.session);
 
-  const appData: ApplicationData = getApplicationData(req.session);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
+      if (!appData.update?.trust_data_fetched) {
+        const session = req.session as Session;
 
-    if (!appData.update?.trust_data_fetched) {
-      const session = req.session as Session;
+        await retrieveTrustData(req, appData);
+        setExtraData(req.session, appData);
+        await saveAndContinue(req, session, false);
+      }
 
-      await retrieveTrustData(req, appData);
-      setExtraData(req.session, appData);
-      await saveAndContinue(req, session, false);
+      if (hasTrustsToReview(appData)) {
+        return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      }
     }
 
-    if (hasTrustsToReview(appData)) {
-      return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+      return res.redirect(getTrustLandingUrl(appData));
     }
-  }
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
-    return res.redirect(getTrustLandingUrl(appData));
-  }
+    if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
+      return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+    }
 
-  if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
-    return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
+    return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
   }
-
-  return res.redirect(config.UPDATE_CHECK_YOUR_ANSWERS_URL);
 };
 
 const getNextPage = (beneficialOwnerTypeChoices: BeneficialOwnerTypeChoice | ManagingOfficerTypeChoice): string => {

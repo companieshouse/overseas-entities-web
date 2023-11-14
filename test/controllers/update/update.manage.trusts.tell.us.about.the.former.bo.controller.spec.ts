@@ -168,10 +168,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
         type: 'legalEntity',
         corporate_name: 'Corporate BO',
         startDateDay: '18',
-        startDateMonth: '09',
+        startDateMonth: '9',
         startDateYear: '2023',
         endDateDay: '20',
-        endDateMonth: '09',
+        endDateMonth: '9',
         endDateYear: '2023',
         boId: ''
       });
@@ -189,10 +189,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
         firstName: 'Individual',
         lastName: 'BO',
         startDateDay: '18',
-        startDateMonth: '09',
+        startDateMonth: '9',
         startDateYear: '2023',
         endDateDay: '20',
-        endDateMonth: '09',
+        endDateMonth: '9',
         endDateYear: '2023',
         boId: ''
       });
@@ -210,10 +210,10 @@ describe('Update - Manage Trusts - Review former beneficial owners', () => {
         firstName: 'Updated Individual',
         lastName: 'BO',
         startDateDay: '18',
-        startDateMonth: '09',
+        startDateMonth: '9',
         startDateYear: '2023',
         endDateDay: '20',
-        endDateMonth: '09',
+        endDateMonth: '9',
         endDateYear: '2023',
         boId: ''
       });

@@ -100,8 +100,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         forename: 'Jack',
         other_forenames: '',
         surname: 'Frost',
-        dob_day: '01',
-        dob_month: '02',
+        dob_day: '1',
+        dob_month: '2',
         dob_year: '1990',
         nationality: 'Chadian',
         second_nationality: 'Afghan',
@@ -124,8 +124,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         sa_address_care_of: 'SA Care of',
         sa_address_po_box: 'SA Po Box 34',
         type: RoleWithinTrustType.INTERESTED_PERSON,
-        date_became_interested_person_day: '01',
-        date_became_interested_person_month: '03',
+        date_became_interested_person_day: '1',
+        date_became_interested_person_month: '3',
         date_became_interested_person_year: '2020',
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
       };
@@ -149,8 +149,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Jack');
       expect(resp.text).toContain('Frost');
       expect(resp.text).toContain('URA Locality');
-      expect(resp.text).toContain('name="dateBecameIPDay" type="text" value="01"');
-      expect(resp.text).toContain('name="dateBecameIPMonth" type="text" value="03"');
+      expect(resp.text).toContain('name="dateBecameIPDay" type="text" value="1"');
+      expect(resp.text).toContain('name="dateBecameIPMonth" type="text" value="3"');
       expect(resp.text).toContain('name="dateBecameIPYear" type="text" value="2020"');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
@@ -175,8 +175,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         roleWithinTrust: RoleWithinTrustType.GRANTOR,
         forename: 'Trust',
         surname: 'Ee',
-        dateOfBirthDay: '01',
-        dateOfBirthMonth: '02',
+        dateOfBirthDay: '1',
+        dateOfBirthMonth: '2',
         dateOfBirthYear: '2022',
         nationality: 'Afghan',
         second_nationality: 'English',
@@ -199,8 +199,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         service_address_po_box: '',
         service_address_care_of: '',
         is_service_address_same_as_usual_residential_address: yesNoResponse.No,
-        dateBecameIPDay: '02',
-        dateBecameIPMonth: '08',
+        dateBecameIPDay: '2',
+        dateBecameIPMonth: '8',
         dateBecameIPYear: '2023',
       };
 
@@ -211,8 +211,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         forename: 'Trust',
         other_forenames: '',
         surname: 'Ee',
-        dob_day: '01',
-        dob_month: '02',
+        dob_day: '1',
+        dob_month: '2',
         dob_year: '2022',
         nationality: 'Afghan',
         second_nationality: 'English',
@@ -305,8 +305,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         roleWithinTrust: RoleWithinTrustType.BENEFICIARY,
         forename: 'Trust',
         surname: 'Ee',
-        dateOfBirthDay: '01',
-        dateOfBirthMonth: '02',
+        dateOfBirthDay: '1',
+        dateOfBirthMonth: '2',
         dateOfBirthYear: '2022',
         nationality: 'Afghan',
         second_nationality: 'English',
@@ -329,8 +329,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         service_address_po_box: '',
         service_address_care_of: '',
         is_service_address_same_as_usual_residential_address: yesNoResponse.Yes,
-        dateBecameIPDay: '02',
-        dateBecameIPMonth: '08',
+        dateBecameIPDay: '2',
+        dateBecameIPMonth: '8',
         dateBecameIPYear: '2023',
       };
 
@@ -340,8 +340,8 @@ describe('Update - Manage Trusts - Review individuals', () => {
         forename: 'Trust',
         other_forenames: '',
         surname: 'Ee',
-        dob_day: '01',
-        dob_month: '02',
+        dob_day: '1',
+        dob_month: '2',
         dob_year: '2022',
         nationality: 'Afghan',
         second_nationality: 'English',

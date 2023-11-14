@@ -149,11 +149,12 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).toContain('Jack');
       expect(resp.text).toContain('Frost');
       expect(resp.text).toContain('URA Locality');
-      expect(resp.text).not.toContain('id="dateOfBirthDay"');
       expect(resp.text).toContain('name="dateBecameIPDay" type="text" value="01"');
       expect(resp.text).toContain('name="dateBecameIPMonth" type="text" value="03"');
       expect(resp.text).toContain('name="dateBecameIPYear" type="text" value="2020"');
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+
+      expect(resp.text).not.toContain('id="dateOfBirthDay"');
 
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

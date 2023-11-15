@@ -23,6 +23,6 @@ export const transactionIdAndSubmissionIdExistInRequest = (req: Request): boolea
 const getTransactionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_TRANSACTION_ID];
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
-export const urlContainsRemoveJourneyQueryParam = (req: Request): boolean => {
+export const isRemoveJourney = (req: Request): boolean => {
   return req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove;
 };

@@ -71,12 +71,12 @@ describe("Url utils tests", () => {
     });
   });
 
-  describe("urlContainsRemoveJourneyQueryParam tests", () => {
+  describe("isRemoveJourney tests", () => {
     test("returns true if query param journey=remove", () => {
       req["query"] = {
         "journey": "remove"
       };
-      const result = urlUtils.urlContainsRemoveJourneyQueryParam(req);
+      const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
     });
@@ -85,7 +85,7 @@ describe("Url utils tests", () => {
       req["query"] = {
         "journey": "update"
       };
-      const result = urlUtils.urlContainsRemoveJourneyQueryParam(req);
+      const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
@@ -94,7 +94,7 @@ describe("Url utils tests", () => {
       req["query"] = {
         "journey": undefined
       };
-      const result = urlUtils.urlContainsRemoveJourneyQueryParam(req);
+      const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
@@ -103,14 +103,14 @@ describe("Url utils tests", () => {
       req["query"] = {
         "question": "answer"
       };
-      const result = urlUtils.urlContainsRemoveJourneyQueryParam(req);
+      const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });
 
     test("returns false if request has empty query params object", () => {
       req["query"] = {};
-      const result = urlUtils.urlContainsRemoveJourneyQueryParam(req);
+      const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
     });

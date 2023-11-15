@@ -322,3 +322,5 @@ export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations
 export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
+
+export const sanitiseInputDayOrMonth = (dayOrMonth: string) => parseInt(dayOrMonth).toString();

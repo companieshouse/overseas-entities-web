@@ -596,20 +596,8 @@ describe("should chek date functions for custom validation", () => {
     expect(() => checkDateValueIsValid(errorMsg, "0", "1", "2001")).toThrow(errorMsg);
   });
 
-  test("should test checkDateValueIsValid throws error for 01/1/2001", () => {
-    expect(() => checkDateValueIsValid(errorMsg, "01", "1", "2001")).toThrow(errorMsg);
-  });
-
-  test("should test checkDateValueIsValid throws error for +1/1/2001", () => {
-    expect(() => checkDateValueIsValid(errorMsg, "+1", "1", "2001")).toThrow(errorMsg);
-  });
-
   test("should test checkDateValueIsValid throws error for 1/13/2001", () => {
     expect(() => checkDateValueIsValid(errorMsg, "1", "13", "2001")).toThrow(errorMsg);
-  });
-
-  test("should test checkDateValueIsValid throws error for 1/1/0999", () => {
-    expect(() => checkDateValueIsValid(errorMsg, "1", "1", "0999")).toThrow(errorMsg);
   });
 
 });

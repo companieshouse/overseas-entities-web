@@ -10,6 +10,7 @@ import { createOverseasEntity, updateOverseasEntity } from "../../service/overse
 import { OverseasEntityKey, Transactionkey, InputDateKeys } from '../../model/data.types.model';
 import { FilingDateKey, FilingDateKeys } from '../../model/date.model';
 import { ApplicationData } from "../../model/application.model";
+import { sanitiseInputDayOrMonth } from "../../validation/fields/date.validation";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -45,6 +46,10 @@ export const post = async(req: Request, res: Response, next: NextFunction) => {
       }
       if (appData.update) {
         appData.update[FilingDateKey] = mapFieldsToDataObject(req.body, FilingDateKeys, InputDateKeys);
+        if (appData.update.filing_date !== undefined) {
+          appData.update.filing_date.day = sanitiseInputDayOrMonth(appData.update.filing_date.day);
+          appData.update.filing_date.month = sanitiseInputDayOrMonth(appData.update.filing_date.month);
+        }
       }
       setExtraData(req.session, appData);
       await updateOverseasEntity(req, session);

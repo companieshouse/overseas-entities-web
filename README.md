@@ -86,6 +86,7 @@ COOKIE_SECRET | The shared secret used in validating/calculating the session coo
 INTERNAL_API_URL | Internal API URL | `http://api.url`
 LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
+REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `/gov-uk-remove-guidance-page OR http://gov.uk.ch.site/roe-remove`
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret

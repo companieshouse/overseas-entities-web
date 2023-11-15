@@ -10,6 +10,7 @@ export const get = (req: Request, res: Response, _: NextFunction) => {
   if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
     return res.render(config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE, {
       journey: JourneyType.remove,
+      backLinkUrl: config.REMOVE_LANDING_PAGE_URL,
       templateName: config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE
     });
   }

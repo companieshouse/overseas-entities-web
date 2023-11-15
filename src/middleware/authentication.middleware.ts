@@ -16,13 +16,14 @@ import {
   checkUserSignedIn,
   getLoggedInUserEmail
 } from "../utils/session";
+import { JOURNEY_QUERY_PARAM, JourneyType } from '../model/data.types.model';
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
 
-      const returnToUrl = getReturnToUrl(req.path);
+      const returnToUrl = getReturnToUrl(req);
 
       return res.redirect(`/signin?return_to=${returnToUrl}`);
     }
@@ -39,8 +40,9 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
   }
 };
 
-function getReturnToUrl(path: string) {
+function getReturnToUrl(req: Request) {
   let returnToUrl = SOLD_LAND_FILTER_URL;
+  const path = req.path;
 
   if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
     if (!path.startsWith(REGISTER_AN_OVERSEAS_ENTITY_URL) && !path.startsWith(UPDATE_AN_OVERSEAS_ENTITY_URL)) {
@@ -48,9 +50,17 @@ function getReturnToUrl(path: string) {
     }
 
     returnToUrl = path;
+
+    if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
+      // Ensure that user is placed on the Remove (not Update) journey after logging in and note that URL now needs to
+      // be encoded due to the presence of the additional '?', required for the 'remove journey' query parameter
+      returnToUrl = encodeURIComponent(returnToUrl + `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
+    }
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
     returnToUrl = SECURE_UPDATE_FILTER_URL;
   }
+
+  logger.debug("returnToUrl is " + returnToUrl);
 
   return returnToUrl;
 }

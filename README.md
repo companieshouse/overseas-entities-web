@@ -36,7 +36,7 @@ The only local development mode available, that includes account, redis and othe
 3. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
 4. Run docker using `tilt up` in the docker-chs-development directory.
 5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.(If you have credential errors then  you may not be logged into `eu-west-2`.)
-6. Open your browser and go to page <http://chs.local/register-an-overseas-entity>
+6. Open your browser and go to <http://chs.local/register-an-overseas-entity/starting-new> for the ROE Registration journey, <http://chs.local/update-an-overseas-entity/continue-with-saved-filing> for the ROE Update journey or <http://chs.local/update-an-overseas-entity/continue-with-saved-filing?journey=remove> for the ROE Remove journey (each of these is the first page that would be displayed, if navigating from the GOV UK external ROE guidance screens).
 
 Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 
@@ -86,7 +86,7 @@ COOKIE_SECRET | The shared secret used in validating/calculating the session coo
 INTERNAL_API_URL | Internal API URL | `http://api.url`
 LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
-REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `/gov-uk-remove-guidance-page OR http://gov.uk.ch.site/roe-remove`
+REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `http://gov-uk-external-remove-guidance-page`
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret

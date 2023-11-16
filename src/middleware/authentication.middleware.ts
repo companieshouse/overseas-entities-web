@@ -52,8 +52,8 @@ function getReturnToUrl(req: Request) {
     returnToUrl = path;
 
     if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
-      // Ensure that user is placed on the Remove (not Update) journey after logging in and note that URL now needs to
-      // be encoded due to the presence of the additional '?', required for the 'remove journey' query parameter
+      // Ensure that user is placed on the Remove (not Update) journey after logging in by re-adding the 'journey=remove'
+      // URL query parameter and note that the URL now needs to encoded due to the presence of the additional '?'
       returnToUrl = encodeURIComponent(returnToUrl + `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
     }
   } else if (path.startsWith(UPDATE_LANDING_URL)) {

@@ -89,4 +89,24 @@ describe("service availability middleware tests", () => {
     expect(response.text).toEqual(`${FOUND_REDIRECT_TO} /signin?return_to=${RESUME_SUBMISSION_URL}`);
     expect(response.text).not.toContain("Service offline - Register an overseas entity");
   });
+
+  test("When Remove feature flag disabled, should return service offline page when query param journey=remove", async () => {
+    mockIsActiveFeature
+      .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
+      .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
+      .mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_REMOVE
+    const response = await request(app).get("/update-an-overseas-entity/somepage?journey=remove");
+
+    expect(response.text).toContain("Service offline - Apply to remove an overseas entity from the register");
+  });
+
+  test("When Remove feature flag enabled, should NOT return service offline page when query param journey=remove", async () => {
+    mockIsActiveFeature
+      .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
+      .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
+      .mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_REMOVE
+    const response = await request(app).get("/update-an-overseas-entity/somepage?journey=remove");
+
+    expect(response.text).not.toContain("Service offline - Apply to remove an overseas entity from the register");
+  });
 });

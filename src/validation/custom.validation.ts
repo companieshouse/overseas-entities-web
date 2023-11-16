@@ -68,10 +68,14 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
   return true;
 };
 
+const digitsWithLeadingZero = ["01", "02", "03", "04", "05", "06", "07", "08", "09"];
+
 export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
   if (isNaN(day) || isNaN(month) || isNaN(year) ||
-    day.toString() !== dayStr || month.toString() !== monthStr || year.toString() !== yearStr ||
+    (day.toString() !== dayStr && !digitsWithLeadingZero.includes(dayStr)) ||
+    (month.toString() !== monthStr && !digitsWithLeadingZero.includes(monthStr)) ||
+    year.toString() !== yearStr ||
     !DateTime.utc(year, month, day).isValid) {
     throw new Error(invalidDateErrMsg);
   }

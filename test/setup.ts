@@ -17,6 +17,7 @@ export default () => {
   process.env.LANDING_PAGE_URL = "/register-an-overseas-entity/sold-land-filter?start=0";
   process.env.LANDING_PAGE_STARTING_NEW_URL = "/register-an-overseas-entity/starting-new";
   process.env.UPDATE_LANDING_PAGE_URL = "/update-an-overseas-entity/overseas-entity-query";
+  process.env.REMOVE_LANDING_PAGE_URL = "/gov-uk-remove-guidance-page";
   process.env.OAUTH2_CLIENT_ID = "clientId";
   process.env.OAUTH2_CLIENT_SECRET = "123";
   process.env.ACCOUNT_URL = "account.ch";

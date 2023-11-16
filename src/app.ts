@@ -35,6 +35,7 @@ const nunjucksEnv = nunjucks.configure([
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("UPDATE_SERVICE_NAME", config.UPDATE_SERVICE_NAME);
+nunjucksEnv.addGlobal("REMOVE_SERVICE_NAME", config.REMOVE_SERVICE_NAME);
 nunjucksEnv.addGlobal("OE_CONFIGS", config);
 nunjucksEnv.addGlobal("ERROR_MESSAGES", ErrorMessages);
 nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );

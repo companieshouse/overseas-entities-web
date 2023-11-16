@@ -151,6 +151,9 @@ variable "payment_fee" {
 variable "update_landing_page_url" {
   type        = string
 }
+variable "remove_landing_page_url" {
+  type        = string
+}
 variable "update_payment_fee" {
   type        = string
 }

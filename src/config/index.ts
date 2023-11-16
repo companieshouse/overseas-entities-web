@@ -22,6 +22,7 @@ export const UPDATE_PAYMENT_FEE = getEnvironmentValue("UPDATE_PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const LANDING_PAGE_STARTING_NEW_URL = getEnvironmentValue("LANDING_PAGE_STARTING_NEW_URL");
 export const UPDATE_LANDING_PAGE_URL = getEnvironmentValue("UPDATE_LANDING_PAGE_URL");
+export const REMOVE_LANDING_PAGE_URL = getEnvironmentValue("REMOVE_LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
 export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");

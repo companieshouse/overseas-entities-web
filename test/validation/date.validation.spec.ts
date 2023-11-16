@@ -571,6 +571,11 @@ describe("should chek date functions for custom validation", () => {
     ["2", "003", "2004"],
     ["1", "-1", "1999"],
     ["1", "1", "0999"],
+    ["00", "1", "2023"],
+    ["01", "00", "2023"],
+    ["011", "1", "2023"],
+    ["1", "013", "2023"],
+    ["1", "1.0", "1990"],
   ])("should test checkDateValueIsValid throws error", (_day, _month, _year) => {
     expect(() => checkDateValueIsValid(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
   });

@@ -177,8 +177,10 @@ describe('Authentication middleware', () => {
   test("should redirect to signin page for remove", async () => {
     const signinRedirectPath = "/signin?return_to=" + encodeURIComponent(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?journey=remove`);
 
-    mockIsActiveFeature.mockReturnValueOnce(false);
-    mockIsActiveFeature.mockReturnValueOnce(true);
+    mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
+    mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_REMOVE
+
     const resp = await request(app).get(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
 
     expect(resp.status).toEqual(302);

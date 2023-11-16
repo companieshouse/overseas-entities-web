@@ -68,6 +68,7 @@ Method | Path | Description
 --- | --- | ---
 GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point to different other pages to register an OE. URLs path [here](./src/routes/index.ts).
 GET | `/update-an-overseas-entity` | Returns the landing page for updating an overseas entity. URLs path [here](./src/routes/index.ts).
+GET | `/update-an-overseas-entity/continue-with-saved-filing?journey=remove` | Returns the landing page for removing an overseas entity. URLs path [here](./src/routes/index.ts).
 GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP code `200` and a `OK` message body
 
 ### Common Config variables (No feature flags)

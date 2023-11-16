@@ -58,18 +58,23 @@
 
       {% include "includes/inputs/text-input.html" %}
 
-      {% set fieldParam = {
-        name: 'dateOfBirth',
-        value: {
-          'Day': formData.dateOfBirthDay,
-          'Month': formData.dateOfBirthMonth,
-          'Year': formData.dateOfBirthYear
-        },
-        label: 'What is their date of birth?',
-        error: errors.dateOfBirth if errors
-      } %}
-
-      {% include "includes/inputs/date-input.html" %}
+      {% if uneditableDOB %}
+        <h1 class="govuk-heading-m govuk-!-margin-0">What is their date of birth?</h1>
+        <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_date_of_birth }}</label>
+        <br>
+      {% else %}
+        {% set fieldParam = {
+          name: 'dateOfBirth',
+          value: {
+            'Day': formData.dateOfBirthDay,
+            'Month': formData.dateOfBirthMonth,
+            'Year': formData.dateOfBirthYear
+          },
+          label: 'What is their date of birth?',
+          error: errors.dateOfBirth if errors
+        } %}
+        {% include "includes/inputs/date-input.html" %}
+      {% endif %}
 
       {% set interestedPersonDateHtml %}
         {% set fieldParam = {
@@ -132,9 +137,9 @@
       {% include "includes/inputs/radio-input.html" %}
 
       {% include "includes/inputs/nationality/nationality.html" %}
-      
+
       {% include "includes/inputs/nationality/second-nationality.html" %}
-      
+
       {% include "includes/inputs/address/residential-address-input.html" %}
 
       {{ govukInsetText({
@@ -143,6 +148,12 @@
           <p>We will not show any of the information you provide on this screen on the public Register of Overseas Entities. However, we may share it with HMRC.</p>
         '
       }) }}
+
+      {% if uneditableDOB %}
+        <input type="hidden" name="dateOfBirthDay" value="{{ formData.dateOfBirthDay }}"/>
+        <input type="hidden" name="dateOfBirthMonth" value="{{ formData.dateOfBirthMonth }}"/>
+        <input type="hidden" name="dateOfBirthYear" value="{{ formData.dateOfBirthYear }}"/>
+      {% endif %}
 
       {% include "includes/save-and-continue-button.html" %}
     </form>

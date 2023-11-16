@@ -17,11 +17,11 @@ import { getTrustInReview, getTrustee, getTrusteeIndex } from '../../utils/updat
 import { saveAndContinue } from '../../utils/save.and.continue';
 import { FormattedValidationErrors, formatValidationError } from '../../middleware/validation.middleware';
 import { TrusteeType } from '../../model/trustee.type.model';
-import { IndividualTrustee, Trust } from '../../model/trust.model';
+import { IndividualTrustee, Trust, TrustIndividual } from '../../model/trust.model';
 import { RoleWithinTrustType } from '../../model/role.within.trust.type.model';
 import { IndividualTrusteesFormCommon } from '../../model/trust.page.model';
 
-const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) => {
+const getPageProperties = (trust, formData, trustee: TrustIndividual, errors?: FormattedValidationErrors) => {
   return {
     templateName: UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
     backLinkUrl: getBackLink(trust.review_status.reviewed_individuals),
@@ -34,6 +34,7 @@ const getPageProperties = (trust, formData, errors?: FormattedValidationErrors) 
     },
     formData,
     errors,
+    uneditableDOB: trustee?.ch_references ? true : false
   };
 };
 
@@ -49,7 +50,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     const formData = trustee ? mapIndividualTrusteeFromSessionToPage(trustee) : {};
 
-    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData));
+    return res.render(UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE, getPageProperties(trust, formData, trustee));
   } catch (error) {
     next(error);
   }
@@ -67,9 +68,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const formData: IndividualTrusteesFormCommon = req.body as IndividualTrusteesFormCommon;
 
     if (!errorList.isEmpty()) {
+      const trustee = getTrustee(trust, trusteeId, TrusteeType.INDIVIDUAL) as IndividualTrustee;
+
       return res.render(
         UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_INDIVIDUAL_PAGE,
-        getPageProperties(trust, formData, formatValidationError(errorList.array())),
+        getPageProperties(trust, formData, trustee, formatValidationError(errorList.array())),
       );
     }
 

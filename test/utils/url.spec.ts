@@ -7,6 +7,10 @@ describe("Url utils tests", () => {
   const TRANSACTION_ID = "987654321";
   const SUBMISSION_ID = "1234-abcd";
 
+  beforeEach(() => {
+    req["query"] = {};
+  });
+
   describe("getUrlWithTransactionIdAndOverseasEntityId tests", () => {
 
     test("substitutes url params successfully", () => {
@@ -64,6 +68,51 @@ describe("Url utils tests", () => {
 
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
+    });
+  });
+
+  describe("isRemoveJourney tests", () => {
+    test("returns true if query param journey=remove", () => {
+      req["query"] = {
+        "journey": "remove"
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false if query param journey is a string other than remove", () => {
+      req["query"] = {
+        "journey": "update"
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if query param journey is undefined", () => {
+      req["query"] = {
+        "journey": undefined
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if query param journey is not present", () => {
+      req["query"] = {
+        "question": "answer"
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if request has empty query params object", () => {
+      req["query"] = {};
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
     });
   });
 });

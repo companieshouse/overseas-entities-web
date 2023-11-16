@@ -272,7 +272,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkDateIPIndividualBO", () => {
-    expect(checkDateIPIndividualBO("01", "01", "2000")).toBe(true);
+    expect(checkDateIPIndividualBO("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkDateIPIndividualBO", () => {
@@ -284,7 +284,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkDateIPLegalEntityBO", () => {
-    expect(checkDateIPLegalEntityBO("01", "01", "2000")).toBe(true);
+    expect(checkDateIPLegalEntityBO("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkDateIPLegalEntityBO", () => {
@@ -296,7 +296,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkBirthDate", () => {
-    expect(checkBirthDate("01", "01", "2000")).toBe(true);
+    expect(checkBirthDate("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkBirthDate", () => {
@@ -308,7 +308,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkTrustDate", () => {
-    expect(checkTrustDate("01", "01", "2000")).toBe(true);
+    expect(checkTrustDate("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkBirthDate", () => {
@@ -320,7 +320,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkHistoricalBOStartDate", () => {
-    expect(checkHistoricalBOStartDate("01", "01", "2000")).toBe(true);
+    expect(checkHistoricalBOStartDate("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkHistoricalBOStartDate", () => {
@@ -332,7 +332,7 @@ describe("test date method", () => {
   });
 
   test("should throw no errors for checkHistoricalBOEndDate", () => {
-    expect(checkHistoricalBOEndDate("01", "01", "2000")).toBe(true);
+    expect(checkHistoricalBOEndDate("1", "1", "2000")).toBe(true);
   });
 
   test("should throw errors for no arguments checkHistoricalBOEndDate", () => {
@@ -586,6 +586,30 @@ describe("should chek date functions for custom validation", () => {
   // TODO: Needs some rework
   test("should test checkIdentityDate returns true for no param", () => {
     expect(checkIdentityDate()).toBe(true);
+  });
+
+  test("should test 1/1/2001 returns true", () => {
+    expect(checkDateValueIsValid(errorMsg, "1", "1", "2001")).toBe(true);
+  });
+
+  test("should test checkDateValueIsValid throws error for 0/1/2001", () => {
+    expect(() => checkDateValueIsValid(errorMsg, "0", "1", "2001")).toThrow(errorMsg);
+  });
+
+  test("should test checkDateValueIsValid throws error for 01/1/2001", () => {
+    expect(() => checkDateValueIsValid(errorMsg, "01", "1", "2001")).toThrow(errorMsg);
+  });
+
+  test("should test checkDateValueIsValid throws error for +1/1/2001", () => {
+    expect(() => checkDateValueIsValid(errorMsg, "+1", "1", "2001")).toThrow(errorMsg);
+  });
+
+  test("should test checkDateValueIsValid throws error for 1/13/2001", () => {
+    expect(() => checkDateValueIsValid(errorMsg, "1", "13", "2001")).toThrow(errorMsg);
+  });
+
+  test("should test checkDateValueIsValid throws error for 1/1/0999", () => {
+    expect(() => checkDateValueIsValid(errorMsg, "1", "1", "0999")).toThrow(errorMsg);
   });
 
 });

@@ -100,7 +100,7 @@
       "Individual beneficial owner " + individualTrusteeFullName + " - date of birth",
       "change-individual-beneficial-owner-date-of-birth-name-button"
     ) ]
-  } if not inNoChangeJourney
+  } if not inNoChangeJourney and not individualTrustee.ch_references
 }), rows) %}
 
 {% set rows = (rows.push({

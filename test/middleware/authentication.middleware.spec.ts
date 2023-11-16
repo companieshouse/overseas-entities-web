@@ -19,20 +19,22 @@ import {
   RESUME,
   SOLD_LAND_FILTER_URL,
   STARTING_NEW_URL,
-  SECURE_UPDATE_FILTER_URL
+  SECURE_UPDATE_FILTER_URL,
+  UPDATE_CONTINUE_WITH_SAVED_FILING_URL
 } from '../../src/config';
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
 import { isActiveFeature } from "../../src/utils/feature.flag";
+import { JOURNEY_QUERY_PARAM, JourneyType } from '../../src/model/data.types.model';
 
 jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/utils/logger', () => {
   return {
-    logger: { info: jest.fn(), infoRequest: jest.fn(), errorRequest: jest.fn() }
+    logger: { debug: jest.fn(), info: jest.fn(), infoRequest: jest.fn(), errorRequest: jest.fn() }
   };
 });
 
-const req = {} as Request;
+const req = { query: {} } as Request;
 const res = { locals: {}, redirect: jest.fn() as any } as Response;
 const next = jest.fn();
 
@@ -165,6 +167,19 @@ describe('Authentication middleware', () => {
     mockIsActiveFeature.mockReturnValueOnce(false);
     mockIsActiveFeature.mockReturnValueOnce(true);
     const resp = await request(app).get(SECURE_UPDATE_FILTER_URL);
+
+    expect(resp.status).toEqual(302);
+    expect(resp.header.location).toEqual(signinRedirectPath);
+
+    expect(res.locals).toEqual({});
+  });
+
+  test("should redirect to signin page for remove", async () => {
+    const signinRedirectPath = "/signin?return_to=" + encodeURIComponent(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?journey=remove`);
+
+    mockIsActiveFeature.mockReturnValueOnce(false);
+    mockIsActiveFeature.mockReturnValueOnce(true);
+    const resp = await request(app).get(`${UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
 
     expect(resp.status).toEqual(302);
     expect(resp.header.location).toEqual(signinRedirectPath);

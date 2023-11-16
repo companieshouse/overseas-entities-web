@@ -84,6 +84,7 @@ locals {
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },
     { "name": "UPDATE_LANDING_PAGE_URL", "value": "${var.update_landing_page_url}" },
+    { "name": "REMOVE_LANDING_PAGE_URL", "value": "${var.remove_landing_page_url}" },
     { "name": "UPDATE_PAYMENT_FEE", "value": "${var.update_payment_fee}" },
     { "name": "VF01_FORM_DOWNLOAD_URL", "value": "${var.vf01_form_download_url}" }, 
     { "name": "API_URL", "value": "${var.api_url}" } # TODO Should this be a secret?

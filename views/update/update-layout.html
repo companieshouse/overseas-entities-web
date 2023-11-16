@@ -53,17 +53,17 @@
 
 {% if (journey == "remove") %}
   {% set SERVICE_NAME = OE_CONFIGS.REMOVE_SERVICE_NAME %}
+  {% set SERVICE_URL = OE_CONFIGS.REMOVE_LANDING_PAGE_URL %}
 {% else %}
   {% set SERVICE_NAME = OE_CONFIGS.UPDATE_SERVICE_NAME %}
+  {% set SERVICE_URL = OE_CONFIGS.UPDATE_LANDING_PAGE_URL %}
 {% endif %}
 
-<!-- TODO Need to set the correct 'serviceUrl' value here if on the Remove journey, but requirement needs clarifying and
-          first screen hasn't yet been delivered -->
 {% block header %}
   {{ govukHeader({
     homepageUrl: "https://www.gov.uk",
     serviceName: SERVICE_NAME,
-    serviceUrl: OE_CONFIGS.UPDATE_LANDING_PAGE_URL,
+    serviceUrl: SERVICE_URL,
     containerClasses: "govuk-width-container"
   }) }}
 {% endblock %}

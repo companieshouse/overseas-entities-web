@@ -6,6 +6,12 @@
   {% include "includes/update-page-title.html" %}
 {% endblock %}
 
+{% block backLink %}
+  {% if (journey == "remove") %}
+    {% include "includes/back-link.html" %}
+  {% endif %}
+{% endblock %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

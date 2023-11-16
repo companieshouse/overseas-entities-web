@@ -18,7 +18,7 @@ import { ErrorMessages } from '../../../src/validation/error.messages';
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
-import { REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
+import { REMOVE_LANDING_PAGE_URL, REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
 import { JOURNEY_QUERY_PARAM } from "../../../src/model/data.types.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
@@ -51,6 +51,7 @@ describe("Continue with saved filing controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(REMOVE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });

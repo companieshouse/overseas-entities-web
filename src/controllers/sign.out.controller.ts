@@ -4,7 +4,6 @@ import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { safeRedirect } from '../utils/http.ext';
-import { JourneyType } from "../model/data.types.model";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
-      journey: JourneyType.register
+      journey: config.JourneyType.register
     });
   } catch (error) {
     logger.errorRequest(req, error);

@@ -144,6 +144,8 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validat
 
 // REMOVE TEMPLATES
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-the-overseas-entity-registered-as-the-owner";
+export const REMOVE_UNALLOWED = "remove-you-cannot-apply-to-remove-this-overseas-entity";
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
@@ -168,6 +170,16 @@ export const REVIEW_OWNER_INDEX_PARAM = "?index=";
 export const UPDATE_REVIEW_OWNERS_PARAMS = REVIEW_OWNER_INDEX_PARAM + ID;
 export const ROUTE_PARAM_TRANSACTION_ID = "transactionId";
 export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
+export const LANDING_PAGE_QUERY_PARAM = "start";
+export const JOURNEY_QUERY_PARAM = "journey";
+
+export enum JourneyType {
+  register = "register",
+  update = "update",
+  remove = "remove",
+}
+
+export const JOURNEY_REMOVE_QUERY_PARAM = `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`;
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -287,6 +299,9 @@ export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL +
 export const UPDATE_ANY_TRUSTS_INVOLVED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_ANY_TRUSTS_INVOLVED_PAGE;
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE;
 export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
+
+// REMOVE overseas entity routes
+export const REMOVE_SOLD_ALL_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SOLD_ALL_LAND_FILTER_PAGE;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

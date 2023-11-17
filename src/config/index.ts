@@ -142,6 +142,9 @@ export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE = 'update-
 export const UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE = 'update-manage-trusts-individuals-or-entities-involved';
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validation-errors";
 
+// REMOVE TEMPLATES
+export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
+
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
 export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";

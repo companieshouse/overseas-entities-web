@@ -2,16 +2,26 @@ import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { JourneyType } from "../../model/data.types.model";
+import { JOURNEY_QUERY_PARAM, JourneyType } from "../../model/data.types.model";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    let journey = JourneyType.update;
+    let previousPage = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`;
+
+    if (isRemoveJourney(req)) {
+      journey = JourneyType.remove;
+      previousPage += `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`;
+    }
+
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
-      previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
+      previousPage,
       url: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME),
-      journey: JourneyType.update
+      journey
     });
   } catch (error) {
     logger.errorRequest(req, error);

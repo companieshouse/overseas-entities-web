@@ -29,7 +29,7 @@ export const post = (req: Request, res: Response, _: NextFunction) => {
   }
 
   if (isRemoveJourney(req)){
-    return res.redirect(`${config.SOLD_ALL_LAND_FILTER_PAGE}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
+    return res.redirect(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
   }
   return res.redirect(`${config.SECURE_UPDATE_FILTER_PAGE}?start=0`);
 };

@@ -81,7 +81,6 @@ describe("Continue with saved filing controller", () => {
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 
-
     test("renders the current page with error message", async () => {
       const resp = await request(app).post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL);
 
@@ -92,14 +91,13 @@ describe("Continue with saved filing controller", () => {
       expect(resp.text).toContain(UPDATE_SERVICE_NAME);
     });
 
-
   });
 
   describe("POST tests for Remove Journey", () => {
 
     test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
-        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL+ '?journey=remove')
+        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
         .send({ continue_saved_filing: 'yes' });
 
       expect(resp.status).toEqual(302);
@@ -108,10 +106,10 @@ describe("Continue with saved filing controller", () => {
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 
-    test(`redirects to the ${config.SOLD_ALL_LAND_FILTER_PAGE} page when no is selected`, async () => {
-      const soldAllLandUrl = `${config.SOLD_ALL_LAND_FILTER_PAGE}?journey=remove`;
+    test(`redirects to the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page when no is selected`, async () => {
+      const soldAllLandUrl = `${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}?journey=remove`;
       const resp = await request(app)
-        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL+ '?journey=remove')
+        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
         .send({ continue_saved_filing: 'no' });
 
       expect(resp.status).toEqual(302);

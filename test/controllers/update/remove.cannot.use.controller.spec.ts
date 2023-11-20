@@ -13,8 +13,10 @@ mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, ne
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
-test(`renders the ${config.REMOVE_CANNOT_USE_PAGE} page`, async () => {
+describe("Remove cannot use this service page", () => {
+  test(`renders the ${config.REMOVE_CANNOT_USE_PAGE} page`, async () => {
     const resp = await request(app).get(config.REMOVE_CANNOT_USE_URL);
     expect(resp.status).toEqual(200);
-    expect(resp.text).toContain("You cannot apply to remove this overseas entity");    
+    expect(resp.text).toContain("You cannot apply to remove this overseas entity");
+  });
 });

@@ -42,7 +42,6 @@
         {% set changeLink = OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE %}
       {% else %}
         {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
-            <b> *********** FLAG ON</b>
           {% set changeLink = OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL + activeSubmissionBasePath + OE_CONFIGS.TRUSTS_URL %}
         {% else %}
           {% set changeLink = OE_CONFIGS.TRUST_DETAILS_URL %}

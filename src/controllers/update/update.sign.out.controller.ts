@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { JOURNEY_QUERY_PARAM, JourneyType } from "../../model/data.types.model";
 import { isRemoveJourney } from "../../utils/url";
+import { JOURNEY_QUERY_PARAM, JourneyType } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {

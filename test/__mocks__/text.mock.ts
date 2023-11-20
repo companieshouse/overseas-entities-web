@@ -246,6 +246,9 @@ export const HOME_ADDRESS_LINE1 = "addressLine1";
 export const UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING = "What you have added so far";
 export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 
+// Remove journey
+export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all its property or land in the UK?";
+
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE = "Tell us about the former beneficial owner";

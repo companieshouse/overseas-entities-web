@@ -1,4 +1,3 @@
-import { JOURNEY_QUERY_PARAM, JourneyType } from "../model/data.types.model";
 import * as config from "../config";
 import { Request } from "express";
 
@@ -24,5 +23,5 @@ const getTransactionIdFromRequestParams = (req: Request): string => req.params[c
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
 export const isRemoveJourney = (req: Request): boolean => {
-  return req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove;
+  return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };

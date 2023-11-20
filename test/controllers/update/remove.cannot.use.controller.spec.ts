@@ -18,5 +18,9 @@ describe("Remove cannot use this service page", () => {
     const resp = await request(app).get(config.REMOVE_CANNOT_USE_URL);
     expect(resp.status).toEqual(200);
     expect(resp.text).toContain("You cannot apply to remove this overseas entity");
+    expect(resp.text).toContain("https://www.gov.uk/government/organisations/land-registry");
+    expect(resp.text).toContain("https://www.ros.gov.uk/our-registers/land-register-of-scotland");
+    expect(resp.text).toContain("https://www.nidirect.gov.uk/articles/searching-land-registry");
+    expect(resp.text).toContain("https://www.gov.uk/guidance/file-an-overseas-entity-update-statement");
   });
 });

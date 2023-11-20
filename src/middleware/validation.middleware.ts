@@ -19,7 +19,7 @@ import {
 } from "../model/date.model";
 
 import { logger } from '../utils/logger';
-import { EntityNameKey, EntityNumberKey, ID, JourneyType } from "../model/data.types.model";
+import { EntityNameKey, EntityNumberKey, ID } from "../model/data.types.model";
 import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
@@ -58,9 +58,11 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
+      // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
+      // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
       if (isRemoveJourney(req)) {
-        journey = JourneyType.remove;
+        journey = config.JourneyType.remove;
       }
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

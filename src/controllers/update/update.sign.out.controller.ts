@@ -3,7 +3,7 @@ import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { isRemoveJourney } from "../../utils/url";
-import { JOURNEY_QUERY_PARAM, JourneyType } from "../../config";
+import { JOURNEY_REMOVE_QUERY_PARAM, JourneyType } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,7 +14,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     if (isRemoveJourney(req)) {
       journey = JourneyType.remove;
-      previousPage += `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`;
+      previousPage += JOURNEY_REMOVE_QUERY_PARAM;
     }
 
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {

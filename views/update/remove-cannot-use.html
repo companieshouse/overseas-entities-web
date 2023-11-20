@@ -1,0 +1,49 @@
+{% extends "update-layout.html" %}
+
+{% block pageTitle %}
+  You cannot apply to de-register this overseas entity - {{ serviceName }} - GOV.UK
+{% endblock %}
+
+{% block backLink %} 
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">You cannot apply to remove this overseas entity</h1>
+      <p class="govuk-body"> We cannot remove an overseas entity if it:
+        <ul class="govuk-list govuk-list--bullet">
+          <li>owns any property or land in the UK</li>
+          <li>still appears on any land registry as the registered owner of property or land in the UK</li>
+        </ul>
+      </p>
+      <p class="govuk-body">
+        If you've already registered the disposal of property or land with the relevant land registry, you need to
+        wait until it has been removed from their records.
+      </p>
+      <p>You can search the land registries online to check if the overseas entity is still listed on their records
+          (they will charge a fee):
+        <ul class="govuk-list govuk-list--bullet">
+          <li>
+            <a href="https://www.gov.uk/government/organisations/land-registry">HM Land Registry</a> (for England
+            and Wales)
+          </li>
+          <li>
+            <a href="https://www.ros.gov.uk/our-registers/land-register-of-scotland">Land Register of Scotland</a>
+          </li>
+          <li>
+            <a href="https://www.nidirect.gov.uk/articles/searching-land-registry">Land Registry for Northern
+            Ireland</a>
+          </li>
+        </ul>
+      </p>
+      <p class="govuk-body">
+        You may also need to <a href="https://www.gov.uk/guidance/file-an-overseas-entity-update-statement" class="govuk-link" data-event-id="update-guidance-link">file your overseas entity update statement</a> if it is due.
+      </p>
+      <p class="govuk-body">
+        <a href="javascript:void(0)" class="govuk-link">Contact Companies House</a> if you need to speak to someone.
+      </p>
+    </div>
+  </div>
+{% endblock %}

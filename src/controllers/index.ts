@@ -35,6 +35,7 @@ export * as trustInterrupt from "./trust.interrupt.controller";
 export * as addTrust from "./add.trust.controller";
 export * as overseasName from "./overseas.name.controller";
 export * as paymentFailed from "./payment.failed.controller";
+export * as removeCannotUse from "./update/remove.cannot.use.controller";
 
 // UPDATE controllers
 export * as updateLanding from "./update/update.landing.controller";

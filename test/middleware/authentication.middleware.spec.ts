@@ -14,6 +14,8 @@ import {
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from '../../src/utils/logger';
 import {
+  JOURNEY_QUERY_PARAM,
+  JourneyType,
   LANDING_URL,
   UPDATE_LANDING_URL,
   RESUME,
@@ -25,7 +27,6 @@ import {
 
 import { ANY_MESSAGE_ERROR, REDIRECT_TO_SIGN_IN_PAGE } from '../__mocks__/text.mock';
 import { isActiveFeature } from "../../src/utils/feature.flag";
-import { JOURNEY_QUERY_PARAM, JourneyType } from '../../src/model/data.types.model';
 
 jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/utils/logger', () => {

@@ -4,14 +4,14 @@ import { logger } from "../utils/logger";
 import * as config from "../config";
 import { ApplicationData } from "../model";
 import { deleteApplicationData, getApplicationData, setExtraData } from "../utils/application.data";
-import { HasSoldLandKey, LANDING_PAGE_QUERY_PARAM } from "../model/data.types.model";
+import { HasSoldLandKey } from "../model/data.types.model";
 import { getSoldLandFilterBackLink } from "../utils/navigation";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SOLD_LAND_FILTER_PAGE}`);
 
-    if (req.query[LANDING_PAGE_QUERY_PARAM] === '0') {
+    if (req.query[config.LANDING_PAGE_QUERY_PARAM] === '0') {
       deleteApplicationData(req.session);
     }
 

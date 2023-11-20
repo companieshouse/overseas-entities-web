@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 
 import { logger } from '../utils/logger';
 import {
+  JOURNEY_QUERY_PARAM,
+  JourneyType,
+  JOURNEY_REMOVE_QUERY_PARAM,
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -16,7 +19,6 @@ import {
   checkUserSignedIn,
   getLoggedInUserEmail
 } from "../utils/session";
-import { JOURNEY_QUERY_PARAM, JourneyType } from '../model/data.types.model';
 
 export const authentication = (req: Request, res: Response, next: NextFunction): void => {
   try {
@@ -54,7 +56,7 @@ function getReturnToUrl(req: Request) {
     if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
       // Ensure that user is placed on the Remove (not Update) journey after logging in by re-adding the 'journey=remove'
       // URL query parameter and note that the URL now needs to encoded due to the presence of the additional '?'
-      returnToUrl = encodeURIComponent(returnToUrl + `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`);
+      returnToUrl = encodeURIComponent(returnToUrl + JOURNEY_REMOVE_QUERY_PARAM);
     }
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
     returnToUrl = SECURE_UPDATE_FILTER_URL;

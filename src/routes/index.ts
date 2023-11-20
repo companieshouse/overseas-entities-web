@@ -42,6 +42,7 @@ import {
   trustLegalEntitybeneficialOwner,
   trustInterrupt,
   addTrust,
+  removeSoldAllLandFilter,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -1060,6 +1061,11 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .all(authentication)
   .get(updateContinueSavedFiling.get)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
+
+router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
+  .all(authentication)
+  .get(removeSoldAllLandFilter.get)
+  .post(removeSoldAllLandFilter.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(

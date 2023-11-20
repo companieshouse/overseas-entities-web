@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
-import { logger } from "../../utils/logger";
+import * as config from "../../config";
 
 export const get = (req: Request, res: Response) => {
-    logger.debugRequest(req, `GET ...`);
-    return res.render("", {});
+    return res.render(config.REMOVE_CANNOT_USE_PAGE, {
+        backLinkUrl: config.SOLD_LAND_FILTER_URL,
+        templateName: config.CANNOT_USE_PAGE
+    });
 }; 

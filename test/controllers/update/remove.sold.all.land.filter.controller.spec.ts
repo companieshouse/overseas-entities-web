@@ -7,6 +7,7 @@ import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
+import { ErrorMessages } from '../../../src/validation/error.messages';
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -34,7 +35,7 @@ describe("Remove sold all land filter controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page`, async () => {
-      const resp = await request(app).get(config.REMOVE_SOLD_ALL_LAND_FILTER_URL);
+      const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
@@ -65,6 +66,16 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_UNALLOWED}`);
       expect(resp.header.location).toEqual(config.REMOVE_UNALLOWED);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with error message and correct page title", async () => {
+      const resp = await request(app).post(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
     });
   });
 });

@@ -24,7 +24,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
-import { getUrlWithParamsToPath } from "../utils/url";
+import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -58,6 +58,12 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
+      // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
+      let journey = req.body["journey"];
+      if (isRemoveJourney(req)){
+        journey = config.JourneyType.remove;
+      }
+
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
         // This is for the REDIS removal work, all BO / MO pages need the activeSubmissionBasePath passed into the template
         // and we also need to pass the feature flag as true so the template constructs the correct urls.
@@ -70,9 +76,10 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           ...appData,
           ...req.body,
           ...dates,
+          journey,
           errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
-          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
+          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req)
         });
       }
 
@@ -85,6 +92,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...appData,
         ...req.body,
         ...dates,
+        journey,
         errors
       });
     }

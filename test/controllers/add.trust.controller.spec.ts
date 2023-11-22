@@ -87,6 +87,16 @@ describe("Add Trust Controller Tests", () => {
           }),
         }),
       );
+      // check REDIS Removal flags not included
+      expect(mockRes.render).toBeCalledWith(
+        config.ADD_TRUST_PAGE,
+        expect.objectContaining({
+          pageData: expect.not.objectContaining({
+            FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+            activeSubmissionBasePath: MOCKED_URL
+          }),
+        }),
+      );
     });
 
     test('catch error when renders the page', () => {

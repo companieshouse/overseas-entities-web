@@ -1065,7 +1065,7 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
 router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
   .all(authentication)
   .get(removeSoldAllLandFilter.get)
-  .post(removeSoldAllLandFilter.post);
+  .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(

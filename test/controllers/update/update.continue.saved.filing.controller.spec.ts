@@ -111,8 +111,8 @@ describe("Continue with saved filing controller", () => {
         .send({ continue_saved_filing: 'no' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
-      expect(resp.header.location).toEqual(config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 

@@ -43,6 +43,7 @@ import {
   trustInterrupt,
   addTrust,
   removeSoldAllLandFilter,
+  removeIsEntityRegisteredOwner,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -1066,6 +1067,11 @@ router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
   .all(authentication)
   .get(removeSoldAllLandFilter.get)
   .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
+
+router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL)
+  .all(authentication)
+  .get(removeIsEntityRegisteredOwner.get)
+  .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(

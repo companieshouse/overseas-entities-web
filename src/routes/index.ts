@@ -22,6 +22,7 @@ import {
   managingOfficerCorporate,
   presenter,
   payment,
+  removeCannotUse,
   soldLandFilter,
   secureRegisterFilter,
   secureUpdateFilter,
@@ -1090,5 +1091,7 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   )
   .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
+
+router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
 
 export default router;

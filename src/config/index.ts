@@ -144,7 +144,7 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validat
 
 // REMOVE TEMPLATES
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
-export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-the-overseas-entity-registered-as-the-owner";
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-entity-registered-owner";
 export const REMOVE_UNALLOWED = "remove-you-cannot-apply-to-remove-this-overseas-entity";
 
 // URL PARAMS

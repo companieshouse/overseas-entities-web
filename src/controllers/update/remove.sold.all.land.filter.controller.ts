@@ -20,5 +20,5 @@ export const post = (req: Request, res: Response, _: NextFunction) => {
     return res.redirect(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE);
   }
 
-  return res.redirect(config.REMOVE_UNALLOWED);
+  return res.redirect(config.REMOVE_CANNOT_USE_URL);
 };

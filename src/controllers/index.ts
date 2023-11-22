@@ -99,3 +99,4 @@ export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.ma
 
 // REMOVE controllers
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';
+export * as removeCannotUse from "./update/remove.cannot.use.controller";

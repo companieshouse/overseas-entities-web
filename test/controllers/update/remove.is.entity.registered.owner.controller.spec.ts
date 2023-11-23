@@ -16,6 +16,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
 import { REMOVE_SERVICE_NAME } from "../../../src/config";
+import { ErrorMessages } from '../../../src/validation/error.messages';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -24,7 +25,7 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
-describe("Remove sold all land filter controller", () => {
+describe("Remove registered owner controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
@@ -59,6 +60,15 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with error message and correct page title", async () => {
+      const resp = await request(app).post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.SELECT_IF_ENTITY_IS_ON_REGISTRY);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
     });
   });
 });

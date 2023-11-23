@@ -35,7 +35,7 @@ import { anyTrustsInvolved } from "./update/update.any.trusts.involved.validatio
 import { doYouWantToMakeOeChange } from "./update/do.you.want.to.make.oe.change.validation";
 import { reviewUpdateStatementChange, statementResolution } from "./update/review.update.statement.validation";
 import { removeSoldAllLandFilter } from "./update/remove.sold.all.land.filter.validation";
-
+import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registered.owner.validation";
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
@@ -86,5 +86,6 @@ export const validator = {
   anyTrustsInvolved,
   reviewUpdateStatementChange,
   statementResolution,
-  removeSoldAllLandFilter
+  removeSoldAllLandFilter,
+  removeIsEntityRegisteredOwner
 };

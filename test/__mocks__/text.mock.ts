@@ -249,6 +249,7 @@ export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 // Remove journey
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all its property or land in the UK?";
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE = "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?";
+export const REMOVE_INTERRUPT_CARD_TEXT = "Once an overseas entity is removed";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

@@ -11,31 +11,59 @@
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
-    <div class="interrupt-card">
-      <h1 class="govuk-heading-l">Before you start</h1>
-      <h2 class="govuk-heading-m">Authentication code</h2>
-      <p class="govuk-body">
-      You will need the overseas entity's authentication code to file this update statement.
-      </p>
-      <p class="govuk-body">
-      If you need to request one, search for the overseas entity on the <a href="https://find-and-update.company-information.service.gov.uk/" class="govuk-link">Companies House register</a>, then select 'Request an authentication code'. We'll send the code to the email address that we have on record for the overseas entity.
-      </p>
-      <h2 class="govuk-heading-m">Verification checks</h2>
-      <p class="govuk-body">
-      If there have been any changes to the overseas entity, its beneficial owners or managing officers, these changes must be verified by a UK-regulated agent. This must be done no more than 3 months before the date of this update statement.
-      </p>
-      <p class="govuk-body">
-      The UK-regulated agent will need to provide their <a href="https://www.gov.uk/guidance/agent-assurance-codes" class="govuk-link">agent assurance code</a> to confirm they have authorisation to carry out verification checks.
-      </p>
-      <p class="govuk-body">
-      If you are not changing any information, you will not need to complete any verification checks.
-      </p>
-      <form method="post">
-        {% include "includes/update-start-goal-button.html" %}
-      </form>
+  {% if (journey == "remove") %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="interrupt-card">
+          <h1 class="govuk-heading-l">Before you start</h1>
+          <p class="govuk-body">
+            Once an overseas entity is removed, its Overseas Entity ID will no longer be valid. It will not be able to buy, sell, transfer, lease or charge property or land in the UK, unless it re-registers.
+          </p>
+          <h2 class="govuk-heading-m">Authentication code</h2>
+          <p class="govuk-body">
+            You will need the overseas entity's authentication code to file this application. Find out <a href="" class="govuk-link">how to get the authentication code</a> if you don't already have it.
+          </p>
+          <h2 class="govuk-heading-m">Check if any information needs to be updated</h2>
+          <p class="govuk-body">
+            All information about the overseas entity, its beneficial owners and managing officers must be correct on the date of this application.
+          </p>
+          <p class="govuk-body">
+            If you need to update any information, you can do that as part of this service. Any changes must have been <a href="" class="govuk-link">verified by a UK-regulated agent</a> no more than 3 months before this application is submitted.
+          </p>
+          <form method="post">
+            {% include "includes/update-start-goal-button.html" %}
+          </form>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
+  {% else %}
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds">
+        <div class="interrupt-card">
+          <h1 class="govuk-heading-l">Before you start</h1>
+          <h2 class="govuk-heading-m">Authentication code</h2>
+          <p class="govuk-body">
+          You will need the overseas entity's authentication code to file this update statement.
+          </p>
+          <p class="govuk-body">
+          If you need to request one, search for the overseas entity on the <a href="https://find-and-update.company-information.service.gov.uk/" class="govuk-link">Companies House register</a>, then select 'Request an authentication code'. We'll send the code to the email address that we have on record for the overseas entity.
+          </p>
+          <h2 class="govuk-heading-m">Verification checks</h2>
+          <p class="govuk-body">
+          If there have been any changes to the overseas entity, its beneficial owners or managing officers, these changes must be verified by a UK-regulated agent. This must be done no more than 3 months before the date of this update statement.
+          </p>
+          <p class="govuk-body">
+          The UK-regulated agent will need to provide their <a href="https://www.gov.uk/guidance/agent-assurance-codes" class="govuk-link">agent assurance code</a> to confirm they have authorisation to carry out verification checks.
+          </p>
+          <p class="govuk-body">
+          If you are not changing any information, you will not need to complete any verification checks.
+          </p>
+          <form method="post">
+            {% include "includes/update-start-goal-button.html" %}
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
 {% endblock %}

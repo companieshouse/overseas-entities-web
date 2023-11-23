@@ -9,8 +9,8 @@ import { expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
 import app from "../../../src/app";
-import { UPDATE_INTERRUPT_CARD_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_ANY_TRUSTS_INVOLVED_URL, SECURE_UPDATE_FILTER_URL } from "../../../src/config";
-import { INTERRUPT_CARD_PAGE_TITLE } from "../../__mocks__/text.mock";
+import { JOURNEY_REMOVE_QUERY_PARAM, UPDATE_INTERRUPT_CARD_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_ANY_TRUSTS_INVOLVED_URL, SECURE_UPDATE_FILTER_URL } from "../../../src/config";
+import { INTERRUPT_CARD_PAGE_TITLE, REMOVE_INTERRUPT_CARD_TEXT } from "../../__mocks__/text.mock";
 
 import {
   ANY_MESSAGE_ERROR,
@@ -44,6 +44,19 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       // back link
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
       expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(resp.text).not.toContain(REMOVE_INTERRUPT_CARD_TEXT);
+    });
+
+    test(`renders the update-interrupt-card page for remove journey`, async () => {
+      const resp = await request(app).get(`${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(INTERRUPT_CARD_PAGE_TITLE);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      // back link
+      expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(resp.text).toContain(REMOVE_INTERRUPT_CARD_TEXT);
     });
 
     test(`renders the update-interrupt-card page with back link to update-any-trusts-involved if flag off`, async () => {
@@ -53,6 +66,17 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.status).toEqual(200);
       // back link
       expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(resp.text).not.toContain(SECURE_UPDATE_FILTER_URL);
+      expect(resp.text).not.toContain(JOURNEY_REMOVE_QUERY_PARAM);
+    });
+
+    test(`renders the update-interrupt-card page with correct back link for remove journey`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      const resp = await request(app).get(`${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(200);
+      // back link
+      expect(resp.text).toContain(`${UPDATE_ANY_TRUSTS_INVOLVED_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).not.toContain(SECURE_UPDATE_FILTER_URL);
     });
 

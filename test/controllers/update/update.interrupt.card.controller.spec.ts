@@ -44,7 +44,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       // back link
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
       expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.text).not.toContain(REMOVE_INTERRUPT_CARD_TEXT);      
+      expect(resp.text).not.toContain(REMOVE_INTERRUPT_CARD_TEXT);
     });
 
     test(`renders the update-interrupt-card page for remove journey`, async () => {
@@ -56,7 +56,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       // back link
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
       expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(resp.text).toContain(REMOVE_INTERRUPT_CARD_TEXT);      
+      expect(resp.text).toContain(REMOVE_INTERRUPT_CARD_TEXT);
     });
 
     test(`renders the update-interrupt-card page with back link to update-any-trusts-involved if flag off`, async () => {

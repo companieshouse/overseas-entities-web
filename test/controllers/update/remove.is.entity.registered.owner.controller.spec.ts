@@ -8,9 +8,11 @@ import request from "supertest";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import {
+  ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
   REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE,
+  SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -38,6 +40,13 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("catch error on current page for GET method", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).get(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 
@@ -69,6 +78,16 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ENTITY_IS_ON_REGISTRY);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+    });
+
+    test("catch error on current page for POST method", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send({ owner_disposed: 'no' });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
   });
 });

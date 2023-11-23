@@ -111,21 +111,19 @@ describe("Continue with saved filing controller", () => {
         .send({ continue_saved_filing: 'no' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
-      expect(resp.header.location).toEqual(config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 
-    // TODO Uncomment this test (which should pass) when a solution to handling validation on the 'remove' journey is implemented
-    //
-    // test("renders the current page with error message and correct page title for the Remove journey", async () => {
-    //   const resp = await request(app).post(`${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${JOURNEY_QUERY_PARAM}=remove`);
+    test("renders the current page with error message and correct page title for the Remove journey", async () => {
+      const resp = await request(app).post(`${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
-    //   expect(resp.status).toEqual(200);
-    //   expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
-    //   expect(resp.text).toContain(PAGE_TITLE_ERROR);
-    //   expect(resp.text).toContain(ErrorMessages.UPDATE_SELECT_IF_CONTINUE_SAVED_FILING);
-    //   expect(resp.text).toContain(REMOVE_SERVICE_NAME);
-    // });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.UPDATE_SELECT_IF_CONTINUE_SAVED_FILING);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+    });
   });
 });

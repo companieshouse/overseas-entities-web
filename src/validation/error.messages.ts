@@ -166,6 +166,7 @@ export enum ErrorMessages {
 
   // No radio selected
   SELECT_IF_ENTITY_HAS_SOLD_LAND = "Select yes if the entity has disposed of UK property or land since 28 February 2022",
+  SELECT_IF_ENTITY_IS_ON_REGISTRY = "Select yes if the overseas entity is still listed as the registered owner of UK property or land",
   SELECT_IF_INDIVIDUAL_PERSON_HAS_FORMER_NAME = "Select yes if the individual person has any former names",
   SELECT_IF_REGISTER_IN_COUNTRY_FORMED_IN = "Select yes if the overseas entity is already on a public register in the country it was formed in",
   SELECT_IF_MANAGING_OFFICER_REGISTER_IN_COUNTRY_FORMED_IN = "Select yes if the corporate managing officer is already on a public register in the country it was formed",
@@ -197,6 +198,7 @@ export enum ErrorMessages {
   SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE = "Select yes if you need to make any changes to this overseas entity",
   SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT = "Select yes if all the information in this update statement is correct",
   SELECT_UPDATE_STATEMENT_VALIDATION_RESOLUTION = "Select if you want to change your statements or change the information provided in this update",
+  SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER = "Select yes if the entity has disposed of all its property or land in the UK",
 
   // MAX Lengths
   MAX_FIRST_NAME_LENGTH = "First name must be 50 characters or less",

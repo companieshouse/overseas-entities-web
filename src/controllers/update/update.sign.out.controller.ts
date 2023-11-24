@@ -3,18 +3,17 @@ import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { isRemoveJourney } from "../../utils/url";
-import { JOURNEY_REMOVE_QUERY_PARAM, JourneyType } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
 
-    let journey = JourneyType.update;
+    let journey = config.JourneyType.update;
     let previousPage = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`;
 
     if (isRemoveJourney(req)) {
-      journey = JourneyType.remove;
-      previousPage += JOURNEY_REMOVE_QUERY_PARAM;
+      journey = config.JourneyType.remove;
+      previousPage += config.JOURNEY_REMOVE_QUERY_PARAM;
     }
 
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {

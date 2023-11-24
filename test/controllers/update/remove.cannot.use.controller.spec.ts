@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
@@ -9,7 +10,12 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { authentication } from "../../../src/middleware/authentication.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+  // Add userEmail to res.locals to make sign-out url appear
+  res.locals.userEmail = "userEmail";
+  return next();
+});
+
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -22,5 +28,7 @@ describe("Remove cannot use this service page", () => {
     expect(resp.text).toContain("https://www.ros.gov.uk/our-registers/land-register-of-scotland");
     expect(resp.text).toContain("https://www.nidirect.gov.uk/articles/searching-land-registry");
     expect(resp.text).toContain("https://www.gov.uk/guidance/file-an-overseas-entity-update-statement");
+    expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
+    expect(resp.text).toContain(`${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
   });
 });

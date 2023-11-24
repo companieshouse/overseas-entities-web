@@ -1,7 +1,9 @@
 {% extends "update-layout.html" %}
 
+{% set title = "You cannot apply to remove this overseas entity" %}
+
 {% block pageTitle %}
-  You cannot apply to de-register this overseas entity - {{ serviceName }} - GOV.UK
+  {% include "includes/update-page-title.html" %}
 {% endblock %}
 
 {% block backLink %} 

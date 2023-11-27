@@ -12,6 +12,7 @@ import request from "supertest";
 import app from "../../../src/app";
 import {
   JOURNEY_REMOVE_QUERY_PARAM,
+  REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
   REMOVE_SERVICE_NAME,
   SECURE_UPDATE_FILTER_PAGE,
   SECURE_UPDATE_FILTER_URL,
@@ -75,7 +76,7 @@ describe("SECURE UPDATE FILTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_PAGE_HEADING);
-      expect(resp.text).toContain(UPDATE_LANDING_PAGE_URL);
+      expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_URL);
       expect(resp.text).not.toContain(RADIO_BUTTON_YES_SELECTED);
       expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);

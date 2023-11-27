@@ -166,10 +166,10 @@ describe("SECURE UPDATE FILTER controller", () => {
 
       const resp = await request(app)
         .post(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ is_secure_register: '0' });
+        .send({ is_secure_register: '1' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(`${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 

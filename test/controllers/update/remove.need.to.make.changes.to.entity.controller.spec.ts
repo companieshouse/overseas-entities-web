@@ -34,7 +34,7 @@ describe("Remove registered owner controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.REMOVE_NEED_MAKE_CHANGES_PAGE} page`, async () => {
-      const resp = await request(app).get(`${config.REMOVE_NEED_MAKE_CHANGES_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      const resp = await request(app).get(`${config.REMOVE_NEED_MAKE_CHANGES_URL}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(REMOVE_NEED_MAKE_CHANGES_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
@@ -67,6 +67,7 @@ describe("Remove registered owner controller", () => {
       const resp = await request(app)
         .post(`${config.REMOVE_NEED_MAKE_CHANGES_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
         .send({ make_changes: 'no' });
+
       expect(resp.status).toEqual(302);
       // TODO test for the Has the overseas entity identified all its registrable beneficial owners?
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.UPDATE_LANDING_URL}`);

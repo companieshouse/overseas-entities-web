@@ -101,3 +101,4 @@ export * as updateManageTrustsTellUsAboutTheLegalEntity from './update/update.ma
 export * as removeSoldAllLandFilter from './update/remove.sold.all.land.filter.controller';
 export * as removeCannotUse from "./update/remove.cannot.use.controller";
 export * as removeIsEntityRegisteredOwner from "./update/remove.is.entity.registered.owner.controller";
+export * as removeNeedMakeChanges from "./update/remove.need.to.make.changes.to.entity";

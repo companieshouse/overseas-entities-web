@@ -45,6 +45,7 @@ import {
   removeSoldAllLandFilter,
   removeIsEntityRegisteredOwner,
   resumeSubmission,
+  removeNeedMakeChanges,
   overseasName,
   startingNew,
   overseasEntityPayment,
@@ -1097,6 +1098,11 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   )
   .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
+
+router.route(config.REMOVE_NEED_MAKE_CHANGES_URL)
+  .all(authentication)
+  .get(removeNeedMakeChanges.get)
+  .post(...validator.removeNeedMakeChanges, checkValidations, removeNeedMakeChanges.post);
 
 router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
 

@@ -97,6 +97,12 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.text).toContain("overseas-entity-query");
     });
 
+    test(`redirect to ${OVERSEAS_ENTITY_QUERY_URL}${JOURNEY_REMOVE_QUERY_PARAM} for remove journey`, async () => {
+      const resp = await request(app).post(`${UPDATE_INTERRUPT_CARD_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain("overseas-entity-query" + JOURNEY_REMOVE_QUERY_PARAM);
+    });
+
     test("catch error when posting the page", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)

@@ -504,7 +504,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.REMOVE_NEED_MAKE_CHANGES_URL]: { // TODO set next and previous to specification in ACs on UAR-1285
     currentPage: config.REMOVE_NEED_MAKE_CHANGES_PAGE,
-    previousPage: () => `${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-    nextPage: [`${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`]
+    previousPage: () => `${config.WHO_IS_MAKING_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    nextPage: [`${config.WHO_IS_MAKING_UPDATE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`]
   }
 };

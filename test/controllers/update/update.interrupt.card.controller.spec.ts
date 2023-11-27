@@ -107,7 +107,6 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(UPDATE_INTERRUPT_CARD_URL);
-
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });

@@ -14,7 +14,7 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
     if (isRemoveJourney(req)){
       return res.render(templateName, {
         journey: config.JourneyType.remove,
-        backLinkUrl: backLinkUrl,
+        backLinkUrl: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
         templateName: templateName,
         [IsSecureRegisterKey]: appData[IsSecureRegisterKey]
       });
@@ -37,7 +37,7 @@ export const postFilterPage = (req: Request, res: Response, next: NextFunction, 
 
     setExtraData(req.session, { ...getApplicationData(req.session), [IsSecureRegisterKey]: isSecureRegister });
 
-    let nextPageUrl;
+    let nextPageUrl: any;
     if (isSecureRegister === '1') {
       nextPageUrl = isSecureRegisterYes;
     } else if (isSecureRegister === '0') {

@@ -497,4 +497,9 @@ export const NAVIGATION: Navigation = {
     previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
     nextPage: [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]
   },
+  [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]: {
+    currentPage: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE,
+    previousPage: () => `${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    nextPage: [`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`]
+  },
 };

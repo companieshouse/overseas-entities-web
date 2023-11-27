@@ -22,6 +22,7 @@ import {
   managingOfficerCorporate,
   presenter,
   payment,
+  removeCannotUse,
   soldLandFilter,
   secureRegisterFilter,
   secureUpdateFilter,
@@ -42,6 +43,7 @@ import {
   trustInterrupt,
   addTrust,
   removeSoldAllLandFilter,
+  removeIsEntityRegisteredOwner,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -1066,6 +1068,11 @@ router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
   .get(removeSoldAllLandFilter.get)
   .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
 
+router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL)
+  .all(authentication)
+  .get(removeIsEntityRegisteredOwner.get)
+  .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
+
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(
     isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
@@ -1090,5 +1097,7 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   )
   .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
+
+router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
 
 export default router;

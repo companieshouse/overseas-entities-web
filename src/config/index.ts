@@ -144,8 +144,8 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validat
 
 // REMOVE TEMPLATES
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
-export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-the-overseas-entity-registered-as-the-owner";
-export const REMOVE_UNALLOWED = "remove-you-cannot-apply-to-remove-this-overseas-entity";
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-entity-registered-owner";
+export const REMOVE_CANNOT_USE_PAGE = "remove-cannot-use";
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
@@ -302,6 +302,7 @@ export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT
 
 // REMOVE overseas entity routes
 export const REMOVE_SOLD_ALL_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SOLD_ALL_LAND_FILTER_PAGE;
+export const REMOVE_CANNOT_USE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_CANNOT_USE_PAGE;
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE;
 
 // PAYMENT CONFIGs

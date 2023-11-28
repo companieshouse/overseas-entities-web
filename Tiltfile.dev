@@ -5,12 +5,12 @@ local_resource(
 )
 
 custom_build(
-  ref = '169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/overseas-entities-web',
+  ref = '416670754337.dkr.ecr.eu-west-2.amazonaws.com/overseas-entities-web',
    #the following build-command was updated as specified by https://github.com/companieshouse/docker-chs-development/pull/581
-   command = 'DOCKER_BUILDKIT=0 docker build --build-arg SSH_PRIVATE_KEY="$(ssh_key_path="$(ssh -G github.com | grep -e \'^identityfile.*\' | head -n1 | sed \'s|^identityfile \\(.*\\)|\\1|\')"; if [ -z "${ssh_key_path}" ]; then echo "Could not find ssh key path for github.com">&2; false; elif [ -f "${ssh_key_path}" ]; then cat "${ssh_key_path}"; else echo "Could not find ssh key for github at ${ssh_key_path}" >&2; false; fi)" --build-arg SSH_PRIVATE_KEY_PASSPHRASE --tag $EXPECTED_REF .',
+   command = 'docker build --tag $EXPECTED_REF .',
   live_update = [
-    sync(local_path = './src', remote_path = '/app/src'),
-    sync(local_path = './views', remote_path = '/app/views'),
+    sync(local_path = './src', remote_path = '/opt/src'),
+    sync(local_path = './views', remote_path = '/opt/views'),
     restart_container()
   ],
   deps = [

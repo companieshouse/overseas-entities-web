@@ -1100,7 +1100,10 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
 
 router.route(config.REMOVE_NEED_MAKE_CHANGES_URL)
-  .all(authentication)
+  .all(
+    authentication,
+    companyAuthentication,
+    navigation.hasUpdatePresenter)
   .get(removeNeedMakeChanges.get)
   .post(...validator.removeNeedMakeChanges, checkValidations, removeNeedMakeChanges.post);
 

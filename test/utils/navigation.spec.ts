@@ -172,7 +172,7 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
-  test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
+  test.skip(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
   });

@@ -7,6 +7,7 @@ import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { checkEntityReviewRequiresTrusts } from "../../utils/trusts";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -38,6 +39,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 
+    if (isRemoveJourney(req)) {
+      return res.redirect(config.PRESENTER_URL);
+    }
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

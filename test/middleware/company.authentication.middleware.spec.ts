@@ -19,6 +19,7 @@ import { authMiddleware } from "@companieshouse/web-security-node";
 import { logger } from '../../src/utils/logger';
 import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 import { MOCK_GET_UPDATE_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
+import * as config from "../../src/config";
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
@@ -51,6 +52,46 @@ describe('Company Authentication middleware', () => {
       method: '',
       path: '/update-an-overseas-entity/presenter',
       body: {}
+    } as Request;
+
+    await companyAuthentication(req, res, next);
+
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(mockCompanyAuthMiddleware).toBeCalled();
+    expect(logger.errorRequest).not.toHaveBeenCalled();
+  });
+
+  test(`should pass ${config.UPDATE_FILING_DATE_URL} as the return page for company authentication for update journey`, async () => {
+    const mockLogInfoMsg = `Invoking company authentication with (${ COMPANY_NUMBER }) present in session`;
+    req = {
+      session: getSessionRequestWithExtraData(),
+      headers: {},
+      route: '',
+      method: '',
+      path: '/update-an-overseas-entity/presenter',
+      body: {},
+      query: {}
+    } as Request;
+
+    await companyAuthentication(req, res, next);
+
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(mockCompanyAuthMiddleware).toBeCalled();
+    expect(logger.errorRequest).not.toHaveBeenCalled();
+  });
+
+  test(`should pass ${config.PRESENTER_URL} as the return page for company authentication for remove journey`, async () => {
+    const mockLogInfoMsg = `Invoking company authentication with (${ COMPANY_NUMBER }) present in session`;
+    req = {
+      session: getSessionRequestWithExtraData(),
+      headers: {},
+      route: '',
+      method: '',
+      path: '/update-an-overseas-entity/presenter',
+      body: {},
+      query: {}
     } as Request;
 
     await companyAuthentication(req, res, next);
@@ -192,7 +233,7 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
-  test("should log error if no companuy number in trsansaction", async () => {
+  test("should log error if no companuy number in transaction", async () => {
     req = {
       session: getSessionRequestWithExtraData(),
       params: { transactionId: "123" } as Params,

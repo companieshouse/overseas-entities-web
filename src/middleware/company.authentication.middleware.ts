@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/logger';
 import { authMiddleware, AuthOptions } from "@companieshouse/web-security-node";
-import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME, UPDATE_LANDING_URL } from '../config';
+import { CHS_URL, UPDATE_FILING_DATE_URL, RESUME, UPDATE_LANDING_URL, PRESENTER_URL } from '../config';
 import { getApplicationData } from "../utils/application.data";
 import { ApplicationData } from "../model";
 import { EntityNumberKey } from "../model/data.types.model";
 import { getTransaction } from "../service/transaction.service";
+import { isRemoveJourney } from "../utils/url";
 
 export const companyAuthentication = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -14,6 +15,9 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     const appData: ApplicationData = getApplicationData(req.session);
     let entityNumber: string | undefined = appData?.[EntityNumberKey];
     let returnURL: string = UPDATE_FILING_DATE_URL;
+    if (isRemoveJourney(req)) {
+      returnURL = PRESENTER_URL;
+    }
 
     if (req.path.endsWith(`/${RESUME}`)) {
       [entityNumber, returnURL] = await processTransaction(req);

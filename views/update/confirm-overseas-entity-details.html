@@ -13,6 +13,12 @@
 
 {% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
 
+{% if (journey == "remove") %}
+  {% set chooseLink = "/update-an-overseas-entity/overseas-entity-query?journey=remove" %}  
+{% else %}
+  {% set chooseLink = "/update-an-overseas-entity/overseas-entity-query" %}
+{% endif %}
+
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -92,7 +98,7 @@
           }) }}
         </div>
         <br>
-          <a href="/update-an-overseas-entity/overseas-entity-query{{journeyQuery}}" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>
+          <a href="{{ chooseLink }}" class="govuk-link govuk-link--no-visited-state">Choose a different overseas entity</a>
       </form>
     </div>
   </div>

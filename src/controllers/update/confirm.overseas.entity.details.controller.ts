@@ -16,22 +16,25 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session as Session);
     const update = appData.update as Update;
 
-    let journeyQuery = "";
-    let journeyType = config.JourneyType.update;
     if (isRemoveJourney(req)) {
-      journeyType = config.JourneyType.remove;
-      journeyQuery = "?joureny=remove";
+      return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
+        journey: config.JourneyType.remove,
+        backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+        updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+        templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+        appData,
+        registrationDate: update.date_of_creation,
+      });
     }
 
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
-      backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+      backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
       registrationDate: update.date_of_creation,
-      journey: journeyType,
-      journeyQuery
     });
+
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

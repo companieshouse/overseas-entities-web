@@ -22,7 +22,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `POST ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
 
     if (req.body["disposed_all_land"] === 'yes') {
-      return res.redirect(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE);
+      return res.redirect(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
     return res.redirect(config.REMOVE_CANNOT_USE_URL);

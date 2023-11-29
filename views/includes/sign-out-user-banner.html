@@ -3,7 +3,7 @@
   {% set signOutPath = 'sign-out?page=' + templateName %}
   
   {% if journey === 'remove' %}
-    {% set signOutPath = signOutPath + '&journey=' + journey %}
+    {% set signOutPath = signOutPath + '&' + OE_CONFIGS.JOURNEY_QUERY_PARAM + '=' + journey %}
   {% endif %}
   
   <ul id="navigation">

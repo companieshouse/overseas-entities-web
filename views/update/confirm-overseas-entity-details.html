@@ -13,8 +13,8 @@
 
 {% set displayRegistrationDate = dateMacros.formatDate(registrationDate["day"], registrationDate["month"], registrationDate["year"]) %}
 
-{% if (journey == "remove") %}
-  {% set chooseLink = "/update-an-overseas-entity/overseas-entity-query?journey=remove" %}  
+{% if (journey === "remove") %}
+  {% set chooseLink = "/update-an-overseas-entity/overseas-entity-query" + OE_CONFIGS.JOURNEY_REMOVE_QUERY_PARAM %}  
 {% else %}
   {% set chooseLink = "/update-an-overseas-entity/overseas-entity-query" %}
 {% endif %}

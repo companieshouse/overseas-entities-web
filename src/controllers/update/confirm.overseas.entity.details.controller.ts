@@ -23,7 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
         templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
         appData,
-        registrationDate: update.date_of_creation,
+        registrationDate: update.date_of_creation
       });
     }
 
@@ -32,7 +32,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
       appData,
-      registrationDate: update.date_of_creation,
+      registrationDate: update.date_of_creation
     });
 
   } catch (errors) {

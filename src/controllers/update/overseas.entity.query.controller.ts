@@ -11,6 +11,7 @@ import { mapCompanyProfileToOverseasEntity } from "../../utils/update/company.pr
 import { mapInputDate } from "../../utils/update/mapper.utils";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { retrieveBoAndMoData } from "../../utils/update/beneficial_owners_managing_officers_data_fetch";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -44,7 +45,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
+    if (isRemoveJourney(req)) {
+      return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    }
+
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

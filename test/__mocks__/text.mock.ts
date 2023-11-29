@@ -256,3 +256,6 @@ export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former benefi
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_FORMER_BO_TITLE = "Tell us about the former beneficial owner";
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TABLE_HEADING = "<th scope=\"col\" class=\"govuk-table__header\">Name</th>";
 export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_TITLE = "Tell us about the legal entity";
+export const UPDATE_BANNER = "File an overseas entity update statement";
+export const REMOVE_BANNER = "Apply to remove an overseas entity from the register";
+

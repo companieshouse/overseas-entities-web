@@ -106,7 +106,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
     });
 
-    test('redirects to confirm page for valid oe number', async () => {
+    test('redirects to confirm page for valid oe number in update journey', async () => {
       mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
@@ -118,6 +118,20 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
       expect(mockSetExtraData).toHaveBeenCalledTimes(1);
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
+    });
+
+    test('redirects to confirm page for valid oe number in remove journey', async () => {
+      mockGetApplicationData.mockReturnValue({});
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
+
+      const resp = await request(app)
+        .post(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send({ entity_number: 'OE111129' });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
 
     test("catch error when posting data", async () => {

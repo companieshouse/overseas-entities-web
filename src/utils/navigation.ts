@@ -20,7 +20,7 @@ export const getSoldLandFilterBackLink = (): string => {
   }
 };
 
-export const getRemoveBackLink = (req: Request, backLinkUrl: string): string => {
+export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {
   if (isRemoveJourney(req)) {
     return `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
   } else {
@@ -51,7 +51,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: (appData: ApplicationData, req: Request) => getRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {

@@ -177,7 +177,8 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
@@ -194,6 +195,15 @@ describe("NAVIGATION utils", () => {
     };
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} with 'journey' param set when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object for Remove journey`, () => {
+    const mockRequest = { } as Request;
+    mockRequest["query"] = {
+      "journey": "remove"
+    };
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
+    expect(navigation).toEqual(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {

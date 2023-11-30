@@ -18,6 +18,15 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
 
+    if (isRemoveJourney(req)) {
+      return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
+        journey: config.JourneyType.remove,
+        backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+        templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+        [EntityNumberKey]: appData[EntityNumberKey]
+      });
+    }
+
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
@@ -37,7 +46,7 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
     const companyProfile = await getCompanyProfile(req, entityNumber);
 
     if (!companyProfile) {
-      return renderGetPageWithError(res, entityNumber);
+      return renderGetPageWithError(req, res, entityNumber);
     }
 
     const appData: ApplicationData = getApplicationData(req.session);
@@ -65,8 +74,19 @@ function createEntityNumberError(entityNumber: string): any {
   return errors;
 }
 
-const renderGetPageWithError = (res: Response, entityNumber: any) => {
+const renderGetPageWithError = (req: Request, res: Response, entityNumber: any) => {
   const errors = createEntityNumberError(entityNumber);
+
+  if (isRemoveJourney(req)) {
+    return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
+      journey: config.JourneyType.remove,
+      backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+      templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+      [EntityNumberKey]: entityNumber,
+      errors
+    });
+  }
+
   return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
     backLinkUrl: config.UPDATE_LANDING_PAGE_URL,
     templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,

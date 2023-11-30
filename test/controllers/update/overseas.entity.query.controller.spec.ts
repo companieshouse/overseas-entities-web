@@ -60,6 +60,18 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
+      expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
+      const resp = await request(app).get(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
+      expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
@@ -93,6 +105,18 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(invalidOENUmberError);
       expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
+    });
+
+    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with validator failure for empty oe number for the Remove journey', async () => {
+      const resp = await request(app)
+        .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
+        .send({ entity_number: '' });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(invalidOENUmberError);
+      expect(resp.text).toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
 
     test('renders not found error for non existing oe number', async () => {
@@ -104,6 +128,20 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(notFoundOENumberError);
       expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
+    });
+
+    test('renders not found error for non existing oe number for the Remove journey', async () => {
+      mockGetApplicationData.mockReturnValueOnce({});
+      mockGetCompanyProfile.mockReturnValueOnce(undefined);
+      const resp = await request(app)
+        .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
+        .send({ entity_number: testOENumber });
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(notFoundOENumberError);
+      expect(resp.text).not.toContain(ErrorMessages.OE_QUERY_NUMBER);
+      expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
 
     test('redirects to confirm page for valid oe number in update journey', async () => {

@@ -12,6 +12,10 @@ import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockRemoveRequest = { } as Request;
+mockRemoveRequest["query"] = {
+  "journey": "remove"
+};
 
 describe("NAVIGATION utils", () => {
 
@@ -37,11 +41,7 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`getRemoveBackLink returns a URL with the 'journey' query parameter present when on the Remove journey`, () => {
-    const mockRequest = { } as Request;
-    mockRequest["query"] = {
-      "journey": "remove"
-    };
-    const removeBackLink = getUpdateOrRemoveBackLink(mockRequest, config.UPDATE_LANDING_PAGE_URL);
+    const removeBackLink = getUpdateOrRemoveBackLink(mockRemoveRequest, config.UPDATE_LANDING_PAGE_URL);
     expect(removeBackLink).toEqual(`${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
@@ -177,7 +177,8 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
@@ -188,12 +189,13 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, () => {
-    const mockRequest = { } as Request;
-    mockRequest["query"] = {
-      "journey": "remove"
-    };
-    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} with 'journey' param set when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {

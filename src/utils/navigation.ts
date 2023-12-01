@@ -76,7 +76,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
     nextPage: [config.UPDATE_FILING_DATE_PAGE]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {

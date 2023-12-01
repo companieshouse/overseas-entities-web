@@ -3,7 +3,7 @@ import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath } from "./url";
+import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
@@ -19,6 +19,15 @@ export const getSoldLandFilterBackLink = (): string => {
     return config.LANDING_PAGE_URL;
   }
 };
+
+export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {
+  if (isRemoveJourney(req)) {
+    return `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+  } else {
+    return backLinkUrl;
+  }
+};
+
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {
     currentPage: config.STARTING_NEW_PAGE,
@@ -42,7 +51,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: () => config.UPDATE_INTERRUPT_CARD_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {

@@ -54,7 +54,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
+    if (isRemoveJourney(req)) {
+      return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    }
+
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

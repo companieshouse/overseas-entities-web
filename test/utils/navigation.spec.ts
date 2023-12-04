@@ -6,12 +6,24 @@ import { Request } from "express";
 import * as config from "../../src/config";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-import { NAVIGATION, getEntityBackLink, getSoldLandFilterBackLink, getUpdateOrRemoveBackLink } from "../../src/utils/navigation";
+import { 
+  NAVIGATION,
+  getEntityBackLink,
+  getSoldLandFilterBackLink,
+  getUpdateOrRemoveBackLink,
+  getSecureUpdateFilterBackLink 
+} from "../../src/utils/navigation";
+
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockRemoveRequest = { } as Request;
+mockRemoveRequest["query"] = {
+  "journey": "remove"
+};
+
 const mockRemoveRequest = { } as Request;
 mockRemoveRequest["query"] = {
   "journey": "remove"
@@ -43,6 +55,17 @@ describe("NAVIGATION utils", () => {
   test(`getRemoveBackLink returns a URL with the 'journey' query parameter present when on the Remove journey`, () => {
     const removeBackLink = getUpdateOrRemoveBackLink(mockRemoveRequest, config.UPDATE_LANDING_PAGE_URL);
     expect(removeBackLink).toEqual(`${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const backLink = getSecureUpdateFilterBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getSecureUpdateFilterBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_LANDING_PAGE_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -164,6 +187,11 @@ describe("NAVIGATION utils", () => {
   test(`NAVIGATION returns ${config.SECURE_UPDATE_FILTER_URL} when calling previousPage on ${config.UPDATE_ANY_TRUSTS_INVOLVED_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_ANY_TRUSTS_INVOLVED_URL].previousPage();
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL} with 'journey' param set when calling previousPage on ${config.SECURE_UPDATE_FILTER_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.SECURE_UPDATE_FILTER_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {

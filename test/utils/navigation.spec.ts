@@ -6,12 +6,12 @@ import { Request } from "express";
 import * as config from "../../src/config";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-import { 
+import {
   NAVIGATION,
   getEntityBackLink,
   getSoldLandFilterBackLink,
   getUpdateOrRemoveBackLink,
-  getSecureUpdateFilterBackLink 
+  getSecureUpdateFilterBackLink
 } from "../../src/utils/navigation";
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -19,10 +19,6 @@ import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockRemoveRequest = { } as Request;
-mockRemoveRequest["query"] = {
-  "journey": "remove"
-};
 
 const mockRemoveRequest = { } as Request;
 mockRemoveRequest["query"] = {

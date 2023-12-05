@@ -45,7 +45,7 @@ describe("Starting new controller", () => {
     test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ continue_saved_application: 'yes' });
+        .send({ continue_saved_application: '1' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.YOUR_FILINGS_PATH}`);
@@ -57,7 +57,7 @@ describe("Starting new controller", () => {
       const soldLandFilterUrl = `${config.SOLD_LAND_FILTER_URL}?start=0`;
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ continue_saved_application: 'no' });
+        .send({ continue_saved_application: '0' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${soldLandFilterUrl}`);

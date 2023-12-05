@@ -58,7 +58,7 @@ describe("Remove sold all land filter controller", () => {
     test(`redirects to the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
-        .send({ disposed_all_land: 'yes' });
+        .send({ disposed_all_land: '1' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -69,7 +69,7 @@ describe("Remove sold all land filter controller", () => {
     test(`redirects to the ${config.REMOVE_CANNOT_USE_PAGE} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
-        .send({ disposed_all_land: 'no' });
+        .send({ disposed_all_land: '0' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);

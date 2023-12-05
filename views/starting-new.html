@@ -35,8 +35,9 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes - continue with a saved application",
+              checked: continue_saved_application == 1,
               hint: {
                 text: "You’ll be able to choose which application you want to continue with."
               },
@@ -45,8 +46,9 @@
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No - start a new application",
+              checked: continue_saved_application == 0,
               hint: {
                 text: "This will not delete any saved applications."
               },

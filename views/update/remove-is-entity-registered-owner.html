@@ -40,15 +40,17 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes, it is still listed as the registered owner of UK property or land",
+              checked: is_listed_on_registry == 1,
               attributes: {
                 "data-event-id": "yes-owner_disposed"
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No, it is not listed as the registered owner of UK property or land",
+              checked: is_listed_on_registry == 0,
               attributes: {
                 "data-event-id": "no-owner_disposed"
               }

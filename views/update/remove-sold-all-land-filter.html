@@ -34,15 +34,17 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
+              checked: has_sold_land == 1,
               attributes: {
                 "data-event-id": "yes-disposed-all-land"
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
+              checked: has_sold_land == 0,
               attributes: {
                 "data-event-id": "no-disposed-all-land"
               }

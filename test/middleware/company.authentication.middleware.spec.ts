@@ -215,7 +215,7 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
-  test("should log error if no companuy number in transaction", async () => {
+  test("should log error if no company number in transaction", async () => {
     req = {
       session: getSessionRequestWithExtraData(),
       params: { transactionId: "123" } as Params,

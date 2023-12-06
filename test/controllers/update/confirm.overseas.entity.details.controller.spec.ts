@@ -223,7 +223,7 @@ describe("Confirm company data", () => {
     test.each([
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
-    ])(`redirect to update-filing-date if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
+    ])(`redirect to presenter page if %s but does not have nature of controls related to trusts`, async (_, key, mockObject) => {
       let appData = {};
       appData = APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW;
       appData[UpdateKey] = {
@@ -241,7 +241,7 @@ describe("Confirm company data", () => {
     test.each([
       ["BO Individual", "review_beneficial_owners_individual", BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
       ["BO Corporate", "review_beneficial_owners_corporate", BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ]
-    ])(`redirect to update-filing-date if %s has trusts NOC but FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async (_, key, mockObject) => {
+    ])(`redirect to presenter page if %s has trusts NOC but FEATURE_FLAG_ENABLE_UPDATE_TRUSTS = true`, async (_, key, mockObject) => {
       mockIsActiveFeature.mockReturnValueOnce(true);
 
       let appData = {};

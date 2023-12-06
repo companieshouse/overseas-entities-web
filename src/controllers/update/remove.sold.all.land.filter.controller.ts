@@ -25,7 +25,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 
-    return res.redirect(config.REMOVE_CANNOT_USE_URL);
+    return res.redirect(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
   } catch (error) {
     next(error);
   }

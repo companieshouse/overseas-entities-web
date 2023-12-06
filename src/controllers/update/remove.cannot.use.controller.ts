@@ -1,10 +1,24 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as config from "../../config";
+import { logger } from "../../utils/logger";
 
-export const get = (req: Request, res: Response) => {
-  return res.render(config.REMOVE_CANNOT_USE_PAGE, {
-    journey: config.JourneyType.remove,
-    backLinkUrl: `${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-    templateName: config.REMOVE_CANNOT_USE_PAGE
-  });
+export const get = (req: Request, res: Response, next: NextFunction) => {
+  try {
+    logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
+
+    let backLinkUrl = "";
+    const previousPage = req.query[config.PREVIOUS_PAGE_QUERY_PARAM];
+    if (previousPage) {
+      backLinkUrl = previousPage + config.JOURNEY_REMOVE_QUERY_PARAM;
+    }
+
+    return res.render(config.REMOVE_CANNOT_USE_PAGE, {
+      journey: config.JourneyType.remove,
+      backLinkUrl,
+      templateName: config.REMOVE_CANNOT_USE_PAGE
+    });
+  } catch (error) {
+    logger.errorRequest(req, error);
+    next(error);
+  }
 };

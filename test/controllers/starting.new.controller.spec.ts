@@ -1,7 +1,6 @@
 jest.mock("ioredis");
 jest.mock("../../src/utils/logger");
 jest.mock('../../src/middleware/authentication.middleware');
-jest.mock('../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -18,15 +17,11 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
-import { getApplicationData, setExtraData } from "../../src/utils/application.data";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
-
-const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("Starting new controller", () => {
 
@@ -43,7 +38,6 @@ describe("Starting new controller", () => {
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -51,28 +45,24 @@ describe("Starting new controller", () => {
     test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ continue_saved_application: '1' });
+        .send({ continue_saved_application: 'yes' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.YOUR_FILINGS_PATH}`);
       expect(resp.header.location).toEqual(config.YOUR_FILINGS_PATH);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.SOLD_LAND_FILTER_URL} page when no is selected`, async () => {
       const soldLandFilterUrl = `${config.SOLD_LAND_FILTER_URL}?start=0`;
       const resp = await request(app)
         .post(config.STARTING_NEW_URL)
-        .send({ continue_saved_application: '0' });
+        .send({ continue_saved_application: 'no' });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${soldLandFilterUrl}`);
       expect(resp.header.location).toEqual(soldLandFilterUrl);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
-      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message", async () => {

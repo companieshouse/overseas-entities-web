@@ -7,6 +7,7 @@ import { Update } from "../../model/update.type.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { checkEntityReviewRequiresTrusts } from "../../utils/trusts";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -15,6 +16,17 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session as Session);
     const update = appData.update as Update;
 
+    if (isRemoveJourney(req)) {
+      return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
+        journey: config.JourneyType.remove,
+        backLinkUrl: `${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+        updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
+        templateName: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
+        appData,
+        registrationDate: update.date_of_creation
+      });
+    }
+
     return res.render(config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_QUERY_URL,
       updateUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
@@ -22,6 +34,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       appData,
       registrationDate: update.date_of_creation
     });
+
   } catch (errors) {
     logger.errorRequest(req, errors);
     next(errors);

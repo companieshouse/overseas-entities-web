@@ -16,7 +16,11 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { getApplicationData } from "../../../src/utils/application.data";
 import request from "supertest";
 import { NextFunction } from "express";
-import { ANY_MESSAGE_ERROR, BACK_LINK_FOR_UPDATE_OE_CONFIRM, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
+import {
+  ANY_MESSAGE_ERROR,
+  BACK_LINK_FOR_UPDATE_OE_CONFIRM,
+  SERVICE_UNAVAILABLE
+} from "../../__mocks__/text.mock";
 import {
   testEntityNumber,
   testEntityName,
@@ -59,7 +63,7 @@ describe("Confirm company data", () => {
   });
 
   describe("Get confirm overseas entity details", () => {
-    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page`, async () => {
+    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page for the update journey`, async () => {
 
       mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
       const resp = await request(app).get(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
@@ -69,6 +73,20 @@ describe("Confirm company data", () => {
       expect(resp.text).toContain("January");
       expect(resp.text).toContain(testEntityNumber);
       expect(resp.text).toContain(testIncorporationCountry);
+      expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
+    });
+
+    test(`renders the ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} page for the remove journey`, async () => {
+
+      mockGetApplicationData.mockReturnValueOnce(entityProfileModelMock).mockReturnValueOnce(entityProfileModelMock);
+      const resp = await request(app).get(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(`${BACK_LINK_FOR_UPDATE_OE_CONFIRM}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.text).toContain(testEntityName);
+      expect(resp.text).toContain("January");
+      expect(resp.text).toContain(testEntityNumber);
+      expect(resp.text).toContain(testIncorporationCountry);
+      expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
     });
 
     test(`redirects if no update data`, async () => {

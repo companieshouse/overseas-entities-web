@@ -6,7 +6,7 @@ import {
   UPDATE_FILING_DATE_URL,
   RESUME,
   UPDATE_LANDING_URL,
-  PRESENTER_URL,
+  OVERSEAS_ENTITY_PRESENTER_URL,
   JOURNEY_REMOVE_QUERY_PARAM
 } from '../config';
 import { getApplicationData } from "../utils/application.data";
@@ -24,7 +24,7 @@ export const companyAuthentication = async (req: Request, res: Response, next: N
     let returnURL: string = UPDATE_FILING_DATE_URL;
     if (isRemoveJourney(req)) {
       logger.debugRequest(req, "Remove journey proceed directly to the presenter page");
-      returnURL = `${PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
+      returnURL = `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`;
     }
 
     if (req.path.endsWith(`/${RESUME}`)) {

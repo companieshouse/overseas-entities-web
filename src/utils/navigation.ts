@@ -67,7 +67,7 @@ export const NAVIGATION: Navigation = {
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
     currentPage: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
     previousPage: () => config.OVERSEAS_ENTITY_PRESENTER_URL,
-    nextPage: [config.WHO_IS_MAKING_UPDATE_URL, config.UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE]
+    nextPage: [config.WHO_IS_MAKING_UPDATE_URL]
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,

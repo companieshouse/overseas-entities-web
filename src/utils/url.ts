@@ -23,6 +23,5 @@ const getTransactionIdFromRequestParams = (req: Request): string => req.params[c
 const getSubmissionIdFromRequestParams = (req: Request): string => req.params[config.ROUTE_PARAM_SUBMISSION_ID];
 
 export const isRemoveJourney = (req: Request): boolean => {
-  return req.query !== undefined &&
-        req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
+  return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };

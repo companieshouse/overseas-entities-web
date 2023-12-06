@@ -38,7 +38,6 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     update?: updateType.Update;
-    continue_saved_application?: string;
     owner_disposed?: string;
 }
 

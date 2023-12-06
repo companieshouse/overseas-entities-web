@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -19,6 +20,7 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { logger } from "../../../src/utils/logger";
 import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { ErrorMessages } from '../../../src/validation/error.messages';
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -26,6 +28,9 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 
 describe("Remove registered owner controller", () => {
   beforeEach(() => {
@@ -40,6 +45,7 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     });
 
     test("catch error on current page for GET method", async () => {
@@ -59,6 +65,8 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
       expect(resp.header.location).toEqual(config.REMOVE_CANNOT_USE_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.SECURE_UPDATE_FILTER_URL} page when no is selected`, async () => {
@@ -69,6 +77,8 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message and correct page title", async () => {

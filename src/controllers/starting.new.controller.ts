@@ -10,7 +10,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.STARTING_NEW_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
-
     return res.render(config.STARTING_NEW_PAGE, {
       backLinkUrl: config.LANDING_PAGE_URL,
       templateName: config.STARTING_NEW_PAGE,

@@ -24,6 +24,7 @@ import { isRemoveJourney } from "../../src/utils/url";
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 let req = {} as Request;
@@ -65,6 +66,7 @@ describe('Company Authentication middleware', () => {
   });
 
   test(`should check that the journey is a remove journey`, async () => {
+    mockIsRemoveJourney.mockReturnValueOnce(true);
     const mockLogInfoMsg = `Invoking company authentication with (${ COMPANY_NUMBER }) present in session`;
     req = {
       session: getSessionRequestWithExtraData(),
@@ -72,13 +74,14 @@ describe('Company Authentication middleware', () => {
       route: '',
       method: '',
       path: '/update-an-overseas-entity/presenter',
-      body: {},
-      query: {}
+      body: {}
     } as Request;
 
     await companyAuthentication(req, res, next);
 
     expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(2);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledWith(req, "Remove journey proceed directly to the presenter page");
     expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
     expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
     expect(logger.errorRequest).not.toHaveBeenCalled();
@@ -93,7 +96,7 @@ describe('Company Authentication middleware', () => {
       route: '',
       method: '',
       path: '/update-an-overseas-entity/presenter',
-      body: {}
+      body: {},
     } as Request;
 
     await companyAuthentication(req, res, next);

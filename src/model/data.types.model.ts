@@ -85,4 +85,4 @@ export const DoYouWantToRemoveKey = "do_you_want_to_remove";
 export const AnyTrustsInvolvedKey = "any_trusts_involved";
 
 // Remove Journey
-export const HasDisposedAllLandKey = "owner_disposed";
+export const IsListedAsPropertyOwnerKey = "listed_as_property_owner";

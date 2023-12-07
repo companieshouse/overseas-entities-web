@@ -16,7 +16,7 @@ import {
   IsSecureRegisterKey,
   OverseasEntityKey,
   Transactionkey,
-  HasDisposedAllLandKey
+  IsListedAsPropertyOwnerKey
 } from "../../model/data.types.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../model/who.is.making.filing.model";
 import { OverseasEntityDueDiligence, OverseasEntityDueDiligenceKey } from "../../model/overseas.entity.due.diligence.model";
@@ -104,7 +104,7 @@ const setWebApplicationData = (session: Session, appData: ApplicationData, trans
   appData[IsSecureRegisterKey] = '0';
   appData[Transactionkey] = transactionId;
   appData[OverseasEntityKey] = overseaEntityId;
-  appData[HasDisposedAllLandKey] = '0';
+  appData[IsListedAsPropertyOwnerKey] = '0';
 
   if (Object.keys(appData[OverseasEntityDueDiligenceKey] as OverseasEntityDueDiligence).length) {
     appData[WhoIsRegisteringKey] = WhoIsRegisteringType.SOMEONE_ELSE;

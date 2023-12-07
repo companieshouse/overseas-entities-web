@@ -60,7 +60,7 @@ describe("Remove registered owner controller", () => {
     test(`redirects to the ${config.REMOVE_CANNOT_USE_URL} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ owner_disposed: '1' });
+        .send({ listed_as_property_owner: '1' });
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
       expect(resp.header.location).toEqual(config.REMOVE_CANNOT_USE_URL);
@@ -72,7 +72,7 @@ describe("Remove registered owner controller", () => {
     test(`redirects to the ${config.SECURE_UPDATE_FILTER_URL} page when no is selected`, async () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ owner_disposed: '0' });
+        .send({ listed_as_property_owner: '0' });
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -94,7 +94,7 @@ describe("Remove registered owner controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ owner_disposed: '0' });
+        .send({ listed_as_property_owner: '0' });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

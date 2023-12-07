@@ -38,7 +38,7 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     update?: updateType.Update;
-    owner_disposed?: string;
+    listed_as_property_owner?: string;
 }
 
 export const ApplicationDataArrayType = [

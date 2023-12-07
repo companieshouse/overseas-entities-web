@@ -9,7 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     let backLinkUrl = "";
     const previousPage = req.query[config.PREVIOUS_PAGE_QUERY_PARAM];
     if (previousPage) {
-      backLinkUrl = previousPage + config.JOURNEY_REMOVE_QUERY_PARAM;
+      backLinkUrl = `${previousPage}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
     }
 
     return res.render(config.REMOVE_CANNOT_USE_PAGE, {

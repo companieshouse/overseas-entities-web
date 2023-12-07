@@ -22,10 +22,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const previousPage = req.body["previousPage"];
-
-    // TODO include previousPage in url for remove-cannot-use back link
-    // have a previousPageBackLink in the body and if not undefined or null add it to the redirect to previousPage
-
     if (!previousPage.startsWith(config.UPDATE_AN_OVERSEAS_ENTITY_URL)){
       throw createAndLogErrorRequest(req, `${previousPage} page is not part of the journey!`);
     }

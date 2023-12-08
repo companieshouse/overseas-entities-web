@@ -34,6 +34,7 @@ describe("UPDATE USE PAPER controller", () => {
     const resp = await request(app).get(`${UPDATE_USE_PAPER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
     expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(UPDATE_APPLY_PAPER_FORM_HEADING);
     expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
     // back link
     expect(resp.text).toContain(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);

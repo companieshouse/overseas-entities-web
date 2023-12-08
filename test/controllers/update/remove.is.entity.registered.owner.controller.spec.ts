@@ -20,7 +20,9 @@ import { authentication } from "../../../src/middleware/authentication.middlewar
 import { logger } from "../../../src/utils/logger";
 import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { ErrorMessages } from '../../../src/validation/error.messages';
-import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getApplicationData, getRemove, setApplicationData } from "../../../src/utils/application.data";
+import { RemoveKey } from "../../../src/model/remove.type.model";
+import { IsListedAsPropertyOwnerKey } from "../../../src/model/data.types.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -30,11 +32,13 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
+const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockGetRemove = getRemove as jest.Mock;
 
 describe("Remove registered owner controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetRemove.mockReturnValue({});
   });
 
   describe("GET tests", () => {
@@ -44,6 +48,19 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page with data`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ [RemoveKey]: { [IsListedAsPropertyOwnerKey]: '1' } });
+
+      const resp = await request(app).get(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("value=\"1\" checked");
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     });
@@ -61,24 +78,34 @@ describe("Remove registered owner controller", () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
         .send({ is_listed_as_property_owner: '1' });
+
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
       expect(resp.header.location).toEqual(config.REMOVE_CANNOT_USE_URL);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockGetRemove).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
+      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual('1');
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
     test(`redirects to the ${config.SECURE_UPDATE_FILTER_URL} page when no is selected`, async () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
         .send({ is_listed_as_property_owner: '0' });
+
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockGetRemove).toHaveBeenCalledTimes(1);
+      expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
+      const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
+      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual('0');
+      expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
     test("renders the current page with error message and correct page title", async () => {

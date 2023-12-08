@@ -16,6 +16,7 @@ import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../model/
 import { ManagingOfficerIndividual, ManagingOfficerKey } from '../model/managing.officer.model';
 import { PARAM_BENEFICIAL_OWNER_GOV, PARAM_BENEFICIAL_OWNER_INDIVIDUAL, PARAM_BENEFICIAL_OWNER_OTHER, PARAM_MANAGING_OFFICER_CORPORATE, PARAM_MANAGING_OFFICER_INDIVIDUAL } from '../config';
 import { BeneficialOwnerCorporate } from '@companieshouse/api-sdk-node/dist/services/overseas-entities';
+import { Remove } from 'model/remove.type.model';
 
 export const getApplicationData = (session: Session | undefined): ApplicationData => {
   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
@@ -160,4 +161,8 @@ const getIndexInApplicationData = (req: Request, appData: ApplicationData, key: 
   if (errorIfNotFound) {
     throw createAndLogErrorRequest(req, `application.data getIndexInApplicationData - unable to find object in session data for key ${key} and ID ${id}`);
   }
+};
+
+export const getRemove = (appData: ApplicationData): Remove => {
+  return appData.remove || {};
 };

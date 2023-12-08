@@ -12,7 +12,8 @@ import {
   trustType,
   dueDiligenceType,
   overseasEntityDueDiligenceType,
-  updateType
+  updateType,
+  removeType
 } from "./index";
 
 export const APPLICATION_DATA_KEY = 'roe';
@@ -38,7 +39,7 @@ export interface ApplicationData {
     is_secure_register?: string;
     who_is_registering?: string;
     update?: updateType.Update;
-    is_listed_as_property_owner?: string;
+    remove?: removeType.Remove;
 }
 
 export const ApplicationDataArrayType = [

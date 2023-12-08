@@ -72,8 +72,8 @@ describe("Remove sold all land filter controller", () => {
         .send({ disposed_all_land: 'no' });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
-      expect(resp.header.location).toEqual(config.REMOVE_CANNOT_USE_URL);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
 

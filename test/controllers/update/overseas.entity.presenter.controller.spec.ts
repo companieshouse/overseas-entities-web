@@ -18,6 +18,8 @@ import {
   OVERSEAS_ENTITY_PRESENTER_URL,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
+  JOURNEY_REMOVE_QUERY_PARAM,
+  UPDATE_PRESENTER_PAGE
 } from "../../../src/config";
 import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { ApplicationDataType } from '../../../src/model';
@@ -89,6 +91,13 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${UPDATE_PRESENTER_PAGE} page for remove`, async () => {
+      mockGetApplicationData.mockReturnValueOnce({ });
+      const resp = await request(app).get(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(302);
     });
   });
 
@@ -178,6 +187,100 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         email: "socarrollA89F12345678910XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
       const resp = await request(app)
         .post(OVERSEAS_ENTITY_PRESENTER_URL)
+        .send(presenter);
+      expect(resp.status).toEqual(302);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+    });
+  });
+  
+  describe("POST tests on a remove journey", () => {
+    test(`redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page after a successful post from overseas entity presenter page`, async () => {
+      const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send(PRESENTER_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirect to the ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE}${JOURNEY_REMOVE_QUERY_PARAM} page after a successful post from overseas entity presenter page with special characters`, async () => {
+      const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send(PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with error message", async () => {
+      const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send({ email: '' });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.FULL_NAME);
+      expect(resp.text).toContain(ErrorMessages.EMAIL);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+    });
+
+    test(`POST empty object and check for error in page title`, async () => {
+      const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+    });
+
+    test("renders the current page with MAX error messages", async () => {
+      const resp = await request(app)
+        .post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send(PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
+      expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+      expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.FULL_NAME);
+    });
+
+    test("renders the current page with INVALID_CHARACTERS error message for full name and email", async () => {
+      const resp = await request(app)
+        .post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send(PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
+      expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
+    });
+
+    test("renders the next page and no errors are reported if email has leading and trailing spaces", async () => {
+      const resp = await request(app)
+        .post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send(PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
+
+      // Additionally check that email address is trimmed before it's saved in the session
+      const data: ApplicationDataType = mockPrepareData.mock.calls[0][0];
+      expect(data["email"]).toEqual(EMAIL_ADDRESS);
+    });
+
+    test("catch error when post data from overseas entity presenter page", async () => {
+      mockSetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send(PRESENTER_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test("Test email is valid if email name and address is greater than 100 characters but less than 256", async () => {
+      const presenter = {
+        ...PRESENTER_OBJECT_MOCK,
+        email: "socarrollA89F12345678910XX@T123465798U123456789V123456789W123456789X123456789Y123456.companieshouse.gov.uk" };
+      const resp = await request(app)
+        .post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`)
         .send(presenter);
       expect(resp.status).toEqual(302);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);

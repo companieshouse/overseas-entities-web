@@ -3,7 +3,7 @@ import { Session } from "@companieshouse/node-session-handler";
 import { ApplicationData } from "../model";
 import { PresenterKey, PresenterKeys } from "../model/presenter.model";
 import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../model/data.types.model';
-import { getApplicationData, prepareData, setApplicationData } from "./application.data";
+import { getApplicationData, prepareData, setApplicationData, setExtraData } from "./application.data";
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
 import { isRemoveJourney } from "../utils/url";
@@ -41,6 +41,7 @@ export const postPresenterPage = async (req: Request, res: Response, next: NextF
         appData[Transactionkey] = transactionID;
         appData[IsRemoveKey] = true;
         appData[OverseasEntityKey] = await createOverseasEntity(req, session, transactionID, true);
+        setExtraData(req.session, appData);
       }
     }
 

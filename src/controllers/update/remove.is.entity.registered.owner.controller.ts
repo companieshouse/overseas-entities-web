@@ -34,7 +34,6 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, remove, RemoveKey);
 
-    logger.debug(JSON.stringify(appData, null, 2));
     if (isListedAsPropertyOwner === '0') {
       return res.redirect(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }

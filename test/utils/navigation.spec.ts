@@ -2,16 +2,28 @@ jest.mock('../../src/utils/feature.flag');
 jest.mock('../../src/utils/application.data');
 
 import { describe, expect, jest, test } from '@jest/globals';
-
+import { Request } from "express";
 import * as config from "../../src/config";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-import { NAVIGATION, getEntityBackLink, getSoldLandFilterBackLink } from "../../src/utils/navigation";
+import {
+  NAVIGATION,
+  getEntityBackLink,
+  getSoldLandFilterBackLink,
+  getUpdateOrRemoveBackLink,
+  getSecureUpdateFilterBackLink
+} from "../../src/utils/navigation";
+
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+
+const mockRemoveRequest = { } as Request;
+mockRemoveRequest["query"] = {
+  "journey": "remove"
+};
 
 describe("NAVIGATION utils", () => {
 
@@ -34,6 +46,22 @@ describe("NAVIGATION utils", () => {
   test(`getSoldLandFilterBackLink returns ${config.LANDING_PAGE_URL} when FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022 is not active`, () => {
     const soldLandFilterBackLink = getSoldLandFilterBackLink();
     expect(soldLandFilterBackLink).toEqual(config.LANDING_PAGE_URL);
+  });
+
+  test(`getRemoveBackLink returns a URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const removeBackLink = getUpdateOrRemoveBackLink(mockRemoveRequest, config.UPDATE_LANDING_PAGE_URL);
+    expect(removeBackLink).toEqual(`${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const backLink = getSecureUpdateFilterBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getSecureUpdateFilterBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_LANDING_PAGE_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -157,6 +185,11 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
   });
 
+  test(`NAVIGATION returns ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL} with 'journey' param set when calling previousPage on ${config.SECURE_UPDATE_FILTER_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.SECURE_UPDATE_FILTER_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage();
     expect(navigation).toEqual(config.UPDATE_FILING_DATE_URL);
@@ -168,13 +201,25 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
-    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} with 'journey' param set when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {

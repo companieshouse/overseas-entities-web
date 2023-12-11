@@ -53,7 +53,7 @@ describe("Remove registered owner controller", () => {
     });
 
     test(`renders the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page with data`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [RemoveKey]: { [IsListedAsPropertyOwnerKey]: config.OPTION_YES } });
+      mockGetApplicationData.mockReturnValueOnce({ [RemoveKey]: { [IsListedAsPropertyOwnerKey]: config.BUTTON_OPTION_YES } });
 
       const resp = await request(app).get(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
@@ -77,7 +77,7 @@ describe("Remove registered owner controller", () => {
     test(`redirects to the ${config.REMOVE_CANNOT_USE_URL} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ is_listed_as_property_owner: config.OPTION_YES });
+        .send({ is_listed_as_property_owner: config.BUTTON_OPTION_YES });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
@@ -87,14 +87,14 @@ describe("Remove registered owner controller", () => {
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
-      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual(config.OPTION_YES);
+      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual(config.BUTTON_OPTION_YES);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
     test(`redirects to the ${config.SECURE_UPDATE_FILTER_URL} page when no is selected`, async () => {
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ is_listed_as_property_owner: config.OPTION_NO });
+        .send({ is_listed_as_property_owner: config.BUTTON_OPTION_NO });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -104,7 +104,7 @@ describe("Remove registered owner controller", () => {
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
-      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual(config.OPTION_NO);
+      expect(populatedRemoveObject[IsListedAsPropertyOwnerKey]).toEqual(config.BUTTON_OPTION_NO);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
@@ -121,7 +121,7 @@ describe("Remove registered owner controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ is_listed_as_property_owner: config.OPTION_NO });
+        .send({ is_listed_as_property_owner: config.BUTTON_OPTION_NO });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

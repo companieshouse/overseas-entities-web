@@ -57,7 +57,7 @@ describe("Remove sold all land filter controller", () => {
     });
 
     test(`renders the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page with data`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ [RemoveKey]: { [HasSoldAllLandKey]: config.OPTION_YES } });
+      mockGetApplicationData.mockReturnValueOnce({ [RemoveKey]: { [HasSoldAllLandKey]: config.BUTTON_OPTION_YES } });
       const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
@@ -81,7 +81,7 @@ describe("Remove sold all land filter controller", () => {
     test(`redirects to the ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
-        .send({ has_sold_all_land: config.OPTION_YES });
+        .send({ has_sold_all_land: config.BUTTON_OPTION_YES });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
@@ -91,14 +91,14 @@ describe("Remove sold all land filter controller", () => {
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
-      expect(populatedRemoveObject[HasSoldAllLandKey]).toEqual(config.OPTION_YES);
+      expect(populatedRemoveObject[HasSoldAllLandKey]).toEqual(config.BUTTON_OPTION_YES);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
     test(`redirects to the ${config.REMOVE_CANNOT_USE_PAGE} page when no is selected`, async () => {
       const resp = await request(app)
         .post(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
-        .send({ has_sold_all_land: config.OPTION_NO });
+        .send({ has_sold_all_land: config.BUTTON_OPTION_NO });
 
       expect(resp.status).toEqual(302);
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
@@ -108,7 +108,7 @@ describe("Remove sold all land filter controller", () => {
       expect(mockSetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);
       const populatedRemoveObject = mockSetApplicationData.mock.calls[0][1];
-      expect(populatedRemoveObject[HasSoldAllLandKey]).toEqual(config.OPTION_NO);
+      expect(populatedRemoveObject[HasSoldAllLandKey]).toEqual(config.BUTTON_OPTION_NO);
       expect(mockSetApplicationData.mock.calls[0][2]).toEqual(RemoveKey);
     });
 
@@ -126,7 +126,7 @@ describe("Remove sold all land filter controller", () => {
       mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
         .post(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
-        .send({ has_sold_all_land: config.OPTION_YES });
+        .send({ has_sold_all_land: config.BUTTON_OPTION_YES });
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);

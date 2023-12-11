@@ -4,6 +4,8 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock('../../../src/service/transaction.service');
+jest.mock('../../../src/service/overseas.entities.service');
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
@@ -16,6 +18,7 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import {
   OVERSEAS_ENTITY_PRESENTER_URL,
+  JOURNEY_REMOVE_QUERY_PARAM,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
 } from "../../../src/config";
@@ -37,7 +40,9 @@ import {
   EMAIL_ADDRESS,
   APPLICATION_DATA_MOCK,
   PRESENTER_OBJECT_MOCK,
-  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES
+  PRESENTER_OBJECT_MOCK_WITH_EMAIL_CONTAINING_LEADING_AND_TRAILING_SPACES,
+  OVERSEAS_ENTITY_ID,
+  TRANSACTION_ID
 } from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import {
@@ -45,6 +50,9 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
+import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
+import { postTransaction } from "../../../src/service/transaction.service";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
@@ -61,6 +69,12 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 
 const mockPrepareData = prepareData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockTransactionService = postTransaction as jest.Mock;
+mockTransactionService.mockReturnValue( TRANSACTION_ID );
+
+const mockCreateOverseasEntity = createOverseasEntity as jest.Mock;
+mockCreateOverseasEntity.mockReturnValue( OVERSEAS_ENTITY_ID );
 
 describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
@@ -183,6 +197,25 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).not.toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+    });
+
+    test(`Saves transaction and OE submission with 'isRemove' flag set on POST if this is a Remove journey`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK, [Transactionkey]: "", [OverseasEntityKey]: "" };
+      mockGetApplicationData.mockReturnValue(mockData);
+
+      const resp = await request(app).post(
+        `${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send(PRESENTER_OBJECT_MOCK);
+
+      expect(resp.status).toEqual(302);
+
+      expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
+      expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
+      expect(mockData[IsRemoveKey]).toEqual(true);
+      expect(mockTransactionService).toHaveBeenCalledTimes(1);
+      expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+
+      expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
     });
   });
 });

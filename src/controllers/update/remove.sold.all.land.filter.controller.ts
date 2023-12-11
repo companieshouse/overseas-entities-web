@@ -36,7 +36,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     setApplicationData(req.session, remove, RemoveKey);
 
-    if (hasSoldAllLand === '1') {
+    if (hasSoldAllLand === config.OPTION_YES) {
       return res.redirect(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
 

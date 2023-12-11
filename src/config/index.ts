@@ -173,6 +173,9 @@ export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
 export const LANDING_PAGE_QUERY_PARAM = "start";
 export const JOURNEY_QUERY_PARAM = "journey";
 
+export const OPTION_YES = '1';
+export const OPTION_NO = '0';
+
 export enum JourneyType {
   register = "register",
   update = "update",

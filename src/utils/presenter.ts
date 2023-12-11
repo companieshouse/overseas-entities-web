@@ -16,10 +16,11 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
     const presenter = appData[PresenterKey];
 
     if (isRemoveJourney(req)){
-      return res.render(config.UPDATE_PRESENTER_PAGE, {
+      return res.render(templateName, {
         journey: config.JourneyType.remove,
-        backLinkUrl: `${config.UPDATE_FILING_DATE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
-        templateName: config.UPDATE_PRESENTER_PAGE
+        backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+        templateName: templateName,
+        ...presenter
       });
     }
 

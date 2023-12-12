@@ -22,7 +22,7 @@ import {
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
 } from "../../../src/config";
-import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
+import { getApplicationData, prepareData, setApplicationData, setExtraData } from "../../../src/utils/application.data";
 import { ApplicationDataType } from '../../../src/model';
 import {
   ANY_MESSAGE_ERROR,
@@ -58,6 +58,7 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
+const mockSetExtraData = setExtraData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -214,6 +215,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
 
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
     });

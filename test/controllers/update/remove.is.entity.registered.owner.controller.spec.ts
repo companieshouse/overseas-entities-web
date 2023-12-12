@@ -80,8 +80,8 @@ describe("Remove registered owner controller", () => {
         .send({ is_listed_as_property_owner: config.BUTTON_OPTION_YES });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}`);
-      expect(resp.header.location).toEqual(config.REMOVE_CANNOT_USE_URL);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);

@@ -40,6 +40,7 @@ export interface ApplicationData {
     who_is_registering?: string;
     update?: updateType.Update;
     remove?: removeType.Remove;
+    is_remove?: boolean;
 }
 
 export const ApplicationDataArrayType = [

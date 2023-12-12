@@ -37,7 +37,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (isListedAsPropertyOwner === config.BUTTON_OPTION_NO) {
       return res.redirect(`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
-    return res.redirect(config.REMOVE_CANNOT_USE_URL);
+    return res.redirect(`${config.REMOVE_CANNOT_USE_URL}?${config.PREVIOUS_PAGE_QUERY_PARAM}=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}`);
   } catch (error) {
     next(error);
   }

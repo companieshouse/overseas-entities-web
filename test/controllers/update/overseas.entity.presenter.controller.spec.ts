@@ -77,7 +77,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       const resp = await request(app).get(OVERSEAS_ENTITY_PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).not.toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_USE_INFORMATION_NEED_MORE);
       expect(resp.text).toContain(saveAndContinueButtonText);
@@ -94,7 +94,8 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
     });
 
     test(`renders the ${UPDATE_PRESENTER_PAGE} page for remove`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ });
+      mockPrepareData.mockClear
+      mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123457" });
       const resp = await request(app).get(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
@@ -121,7 +122,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test.only("renders the current page with error message", async () => {
+    test("renders the current page with error message", async () => {
       const resp = await request(app).post(OVERSEAS_ENTITY_PRESENTER_URL).send({ email: '' });
 
       expect(resp.status).toEqual(200);

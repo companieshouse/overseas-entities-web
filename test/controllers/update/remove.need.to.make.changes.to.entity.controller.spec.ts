@@ -101,5 +101,16 @@ describe("Remove need to make changes to entity controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_REMOVE_NEED_TO_MAKE_CHANGES);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
     });
+
+    test("catch error on current page for POST method", async () => {
+      mockLoggerDebugRequest.mockImplementationOnce(() => { throw new Error(ANY_MESSAGE_ERROR); });
+      const resp = await request(app)
+        .post(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send({ disposed_all_land: 'yes' });
+
+      expect(resp.status).toEqual(500);
+      expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
   });
 });

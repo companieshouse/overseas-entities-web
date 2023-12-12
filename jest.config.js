@@ -23,5 +23,8 @@ module.exports = {
       diagnostics: false,
     }
   },
-  globalSetup: "./test/setup.ts"
+  globalSetup: "./test/setup.ts",
+  moduleNameMapper: {
+    '^axios$': require.resolve('axios'),
+  }
 };

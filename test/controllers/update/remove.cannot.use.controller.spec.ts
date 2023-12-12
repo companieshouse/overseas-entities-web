@@ -28,6 +28,7 @@ describe("Remove cannot use this service page", () => {
     expect(resp.text).toContain("https://www.ros.gov.uk/our-registers/land-register-of-scotland");
     expect(resp.text).toContain("https://www.nidirect.gov.uk/articles/searching-land-registry");
     expect(resp.text).toContain("https://www.gov.uk/guidance/file-an-overseas-entity-update-statement");
+    expect(resp.text).toContain("https://www.gov.uk/contact-companies-house");
     expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
     expect(resp.text).toContain(`${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
     expect(resp.text).toContain(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);

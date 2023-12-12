@@ -21,8 +21,8 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (req.body["make_changes"] === "yes") {
       return res.redirect(`${config.WHO_IS_MAKING_UPDATE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     } else if (req.body["make_changes"] === "no") {
-      // TODO redirect to new component Has the overseas entity identified anyregistrable beneficial owners?
-      return res.redirect(config.UPDATE_LANDING_URL);
+      // TODO redirect to new component - Has the overseas entity identified any registrable beneficial owners?
+      return res.redirect(`${config.UPDATE_LANDING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
   } catch (error) {
     next(error);

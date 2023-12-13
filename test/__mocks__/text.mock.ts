@@ -84,6 +84,7 @@ export const SECURE_UPDATE_FILTER_PAGE_HEADING = "Do any beneficial owners or ma
 export const CANNOT_USE_SERVICE_HEADING = "You'll need to apply using the paper form";
 export const APPLY_PAPER_FORM_HEADING = "You&#39;ll need to apply using the paper form";
 export const UPDATE_APPLY_PAPER_FORM_HEADING = "You&#39;ll need to file an update using the paper form";
+export const REMOVE_APPLY_PAPER_FORM_HEADING = "You&#39;ll need to submit this filing using the paper form";
 export const BENEFICIAL_OWNER_TYPE_LINK = "beneficial-owner-type";
 export const CHECK_YOUR_ANSWERS_LINK = "check-your-answers";
 export const TRUST_INFORMATION_LINK = "trust-information";

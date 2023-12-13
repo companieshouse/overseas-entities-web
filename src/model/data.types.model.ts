@@ -83,3 +83,6 @@ export const EntityNumberKey = "entity_number";
 export const UpdateModelKey = "update";
 export const DoYouWantToRemoveKey = "do_you_want_to_remove";
 export const AnyTrustsInvolvedKey = "any_trusts_involved";
+
+// Remove Journey
+export const IsRemoveKey = "is_remove";

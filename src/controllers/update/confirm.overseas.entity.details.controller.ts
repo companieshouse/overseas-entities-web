@@ -51,6 +51,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
       return res.redirect(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL);
     }
 
+    if (isRemoveJourney(req)) {
+      return res.redirect(`${config.OVERSEAS_ENTITY_PRESENTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    }
     return res.redirect(config.UPDATE_FILING_DATE_URL);
   } catch (errors) {
     logger.errorRequest(req, errors);

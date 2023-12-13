@@ -56,7 +56,6 @@ import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../../../src/mod
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
 
-
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
@@ -110,7 +109,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
     });
   });
 
-  describe ("GET tests for remove journey", () =>{
+  describe ("GET tests for remove journey", () => {
 
     test(`renders the ${UPDATE_PRESENTER_PAGE} page for remove`, async () => {
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123457" });

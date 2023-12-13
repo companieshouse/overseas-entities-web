@@ -210,7 +210,7 @@ describe("NAVIGATION utils", () => {
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object for the remove journey`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRemoveRequest);
-    expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`); 
+    expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_URL} object`, () => {
@@ -309,7 +309,6 @@ describe("NAVIGATION utils", () => {
     const navigation = NAVIGATION[config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL].previousPage();
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_PRESENTER_URL);
   });
-  
 
   test(`NAVIGATION returns ${config.WHO_IS_MAKING_UPDATE_PAGE} when calling previousPage on ${config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL} object`, () => {
     const navigation = NAVIGATION[config.UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_URL].previousPage();

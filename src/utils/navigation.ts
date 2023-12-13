@@ -36,6 +36,14 @@ export const getSecureUpdateFilterBackLink = (req: Request): string => {
   }
 };
 
+export const getOverseasEntityPresenterBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+  } else {
+    return config.UPDATE_FILING_DATE_URL;
+  }
+};
+
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {
     currentPage: config.STARTING_NEW_PAGE,
@@ -69,7 +77,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage: () => config.UPDATE_FILING_DATE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {

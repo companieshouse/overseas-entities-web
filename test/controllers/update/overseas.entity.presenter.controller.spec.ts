@@ -30,7 +30,7 @@ import {
   NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
-  SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE
+  SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE
 } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { PresenterKey } from '../../../src/model/presenter.model';
@@ -47,6 +47,7 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
+
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
@@ -77,7 +78,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       const resp = await request(app).get(OVERSEAS_ENTITY_PRESENTER_URL);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(UPDATE_USE_INFORMATION_NEED_MORE);
       expect(resp.text).toContain(saveAndContinueButtonText);
@@ -92,14 +93,16 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+  });
+
+  describe ("GET tests for remove journey", () =>{
 
     test(`renders the ${UPDATE_PRESENTER_PAGE} page for remove`, async () => {
-      mockPrepareData.mockClear
       mockGetApplicationData.mockReturnValueOnce({ [PresenterKey]: PRESENTER_OBJECT_MOCK, [EntityNumberKey]: "OE123457" });
       const resp = await request(app).get(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(saveAndContinueButtonText);
     });
@@ -126,7 +129,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       const resp = await request(app).post(OVERSEAS_ENTITY_PRESENTER_URL).send({ email: '' });
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
@@ -145,7 +148,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         .send(PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
@@ -158,7 +161,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         .send(PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
@@ -220,7 +223,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       const resp = await request(app).post(`${OVERSEAS_ENTITY_PRESENTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`).send({ email: '' });
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME);
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
@@ -239,7 +242,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         .send(PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.MAX_FULL_NAME_LENGTH);
       expect(resp.text).toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
@@ -252,7 +255,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
         .send(PRESENTER_WITH_INVALID_CHARACTERS_FIELDS_MOCK);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).toContain(ErrorMessages.FULL_NAME_INVALID_CHARACTERS);
       expect(resp.text).toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);

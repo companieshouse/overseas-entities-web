@@ -21,7 +21,6 @@ import {
   JOURNEY_REMOVE_QUERY_PARAM,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
-  JOURNEY_REMOVE_QUERY_PARAM,
   UPDATE_PRESENTER_PAGE
 } from "../../../src/config";
 import { getApplicationData, prepareData, setApplicationData, setExtraData } from "../../../src/utils/application.data";

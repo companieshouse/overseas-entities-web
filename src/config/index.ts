@@ -174,6 +174,9 @@ export const LANDING_PAGE_QUERY_PARAM = "start";
 export const JOURNEY_QUERY_PARAM = "journey";
 export const PREVIOUS_PAGE_QUERY_PARAM = "previousPage";
 
+export const BUTTON_OPTION_YES = '1';
+export const BUTTON_OPTION_NO = '0';
+
 export enum JourneyType {
   register = "register",
   update = "update",

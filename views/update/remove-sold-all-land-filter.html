@@ -18,10 +18,10 @@
 
       <form method="post">
         {{ govukRadios({
-          errorMessage: errors.disposed_all_land if errors,
+          errorMessage: errors.has_sold_all_land if errors,
           classes: "govuk-radios",
-          idPrefix: "disposed_all_land",
-          name: "disposed_all_land",
+          idPrefix: "has_sold_all_land",
+          name: "has_sold_all_land",
           fieldset: {
             legend: {
               text: title,
@@ -34,17 +34,19 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes",
+              checked: has_sold_all_land == 1,
               attributes: {
-                "data-event-id": "yes-disposed-all-land"
+                "data-event-id": "yes-has-sold-all-land"
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No",
+              checked: has_sold_all_land == 0,
               attributes: {
-                "data-event-id": "no-disposed-all-land"
+                "data-event-id": "no-has-sold-all-land"
               }
             }
           ]

@@ -27,10 +27,10 @@
         }) }}
 
         {{ govukRadios({
-          errorMessage: errors.owner_disposed if errors,
+          errorMessage: errors.is_listed_as_property_owner if errors,
           classes: "govuk-radios",
-          idPrefix: "owner_disposed",
-          name: "owner_disposed",
+          idPrefix: "is_listed_as_property_owner",
+          name: "is_listed_as_property_owner",
           fieldset: {
             legend: {
               text: "Has the overseas entity been removed from the land registry records as the owner of UK property or land?",
@@ -40,17 +40,19 @@
           },
           items: [
             {
-              value: "yes",
+              value: 1,
               text: "Yes, it is still listed as the registered owner of UK property or land",
+              checked: is_listed_as_property_owner == 1,
               attributes: {
-                "data-event-id": "yes-owner_disposed"
+                "data-event-id": "yes-is-listed-as-property-owner"
               }
             },
             {
-              value: "no",
+              value: 0,
               text: "No, it is not listed as the registered owner of UK property or land",
+              checked: is_listed_as_property_owner == 0,
               attributes: {
-                "data-event-id": "no-owner_disposed"
+                "data-event-id": "no-is-listed-as-property-owner"
               }
             }
           ]

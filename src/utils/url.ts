@@ -31,7 +31,7 @@ export const isRemoveJourney = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(session);
 
   if (appData) {
-    if (appData.is_remove === true) {
+    if (appData['is_remove'] === true) {
       return true;
     }
     // TODO Decide if return false here if appData.is_remove = false...

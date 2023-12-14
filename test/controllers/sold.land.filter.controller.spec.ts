@@ -62,7 +62,7 @@ describe("SOLD LAND FILTER controller", () => {
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ has_sold_land: 1 });
+      mockGetApplicationData.mockReturnValue({ has_sold_land: 1 });
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);

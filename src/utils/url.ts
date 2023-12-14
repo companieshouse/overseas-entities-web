@@ -1,5 +1,6 @@
 import * as config from "../config";
 import { Request } from "express";
+import { ApplicationData } from "../model";
 
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
@@ -24,4 +25,13 @@ const getSubmissionIdFromRequestParams = (req: Request): string => req.params[co
 
 export const isRemoveJourney = (req: Request): boolean => {
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
+};
+
+export const isRemoveJourneyInSession = (appData: ApplicationData ): boolean => {
+  if (appData) {
+    if (appData.is_remove === true) {
+      return true;
+    }
+  }
+  return false;
 };

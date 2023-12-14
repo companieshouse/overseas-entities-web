@@ -1,6 +1,12 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Do you need to make any changes to this overseas entity?" %}
+{% if (journey == "remove") %}
+  {% set title = "Do you need to make any changes to this overseas entity before it is removed?" %}
+  {% set hintText = "All information about the overseas entity must be up to date before the entity can be removed. It should be correct as at the date of this application. This includes information about any beneficial owners and managing officers." %}
+{% else %}
+  {% set title = "Do you need to make any changes to this overseas entity?" %}
+  {% set hintText = "This includes any changes to information about the overseas entity, its beneficial owners or managing officers." %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -31,7 +37,7 @@
           }
         },
         hint: {
-          text: "This includes any changes to information about the overseas entity, its beneficial owners or managing officers."
+          text: hintText
         },
         items: [
           {
@@ -48,6 +54,9 @@
           {
             value: 1,
             text: "No, I do not need to make changes",
+            hint: {
+              text: "Later in the service, we will show you all the information we hold and ask you to confirm that it is correct"
+            },
             checked: no_change == 1,
             attributes: {
               "data-event-id": "no-do-not-make-oe-change"
@@ -58,6 +67,19 @@
 
       {% include "includes/save-and-continue-button.html" %}
 
+      <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+          <span class="govuk-details__summary-text">
+            What verification checks are needed?
+          </span>
+        </summary>
+        <div class="govuk-details__text">
+          Verification checks are needed on any changes made to information about the overseas entity, its beneficial owners or managing officers. 
+        </div>
+        <div class="govuk-details__text">
+          Verification checks can only be carried out by a UK-regulated agent, and must have been completed no more than 3 months before the date of this update statement.   </div>
+        </div>
+      </details>       
     </form>
   </div>
 </div>

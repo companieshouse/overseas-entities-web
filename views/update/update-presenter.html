@@ -1,14 +1,15 @@
 {% extends "update-layout.html" %}
 
-{% block pageTitle %}
-  {% include "includes/update-page-title.html" %}
-{% endblock %}
-
 {% if (journey == "remove") %}
   {% set title = "Who can we contact about this application?" %}
 {% else %}
   {% set title = "Who can we contact about this update?" %}
 {% endif %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
 
 {% block backLink %}
   {% include "includes/back-link.html" %}

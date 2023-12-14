@@ -263,7 +263,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
-      expect(resp.text).toContain(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
+      expect(resp.text).toContain(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
 
     test(`POST empty object and check for error in page title`, async () => {

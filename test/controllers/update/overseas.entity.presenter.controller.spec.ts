@@ -10,6 +10,7 @@ jest.mock('../../../src/service/overseas.entities.service');
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
+import * as config from "../../../src/config";
 
 import app from "../../../src/app";
 import { authentication } from "../../../src/middleware/authentication.middleware";
@@ -118,6 +119,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
     });
   });
 
@@ -261,6 +263,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(ErrorMessages.EMAIL);
       expect(resp.text).not.toContain(ErrorMessages.MAX_EMAIL_LENGTH);
       expect(resp.text).not.toContain(ErrorMessages.EMAIL_INVALID_FORMAT);
+      expect(resp.text).toContain(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
     });
 
     test(`POST empty object and check for error in page title`, async () => {

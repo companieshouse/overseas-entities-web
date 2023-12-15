@@ -119,7 +119,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(saveAndContinueButtonText);
-      expect(resp.text).toContain(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+      expect(resp.text).toContain(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
     });
   });

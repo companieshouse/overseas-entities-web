@@ -31,10 +31,9 @@ export const isRemoveJourney = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(session);
 
   if (appData) {
-    if (appData['is_remove'] === true) {
-      return true;
+    if (appData['is_remove'] !== undefined && appData['is_remove'] !== null) {
+      return appData['is_remove'];
     }
-    // TODO Decide whether to return false here, if appData['is_remove'] is present and value is 'false'
   }
 
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;

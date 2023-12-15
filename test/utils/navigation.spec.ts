@@ -11,7 +11,8 @@ import {
   getEntityBackLink,
   getSoldLandFilterBackLink,
   getUpdateOrRemoveBackLink,
-  getSecureUpdateFilterBackLink
+  getSecureUpdateFilterBackLink,
+  getOverseasEntityPresenterBackLink
 } from "../../src/utils/navigation";
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -62,6 +63,17 @@ describe("NAVIGATION utils", () => {
     const mockRequest = { query: {} } as Request;
     const backLink = getSecureUpdateFilterBackLink(mockRequest);
     expect(backLink).toEqual(config.UPDATE_LANDING_PAGE_URL);
+  });
+
+  test(`getOverseasEntityPresenterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const backLink = getOverseasEntityPresenterBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getOverseasEntityPresenterBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getOverseasEntityPresenterBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_FILING_DATE_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -191,8 +203,14 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {
-    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object for the remove journey`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_URL} object`, () => {

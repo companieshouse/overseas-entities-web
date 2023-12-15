@@ -1,0 +1,76 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Do you need to make any changes to this overseas entity before it is removed?" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+      {% include "includes/list/errors.html" %}
+      
+      <form method="post">         
+        <input type="hidden" name="journey" value="{{ journey }}"/>
+        <span class="govuk-caption-l">{{ data['overseas-name'] }} - OE001485</span>
+        <h1 class="govuk-heading-xl">Do you need to make any changes to this overseas entity before it is removed?</h1>
+        <p class="govuk-hint govuk-!-margin-bottom-5 govuk-!-margin-top-5">
+          All information about the overseas entity must be up to date before the entity can be removed. It should be correct as at the date of this application. This includes information about any beneficial owners and managing officers.
+        </p>       
+        {{ govukRadios({
+          errorMessage: errors.make_changes if errors,
+          idPrefix: "make_changes",
+          name: "make_changes",
+          fieldset: {
+            legend: {
+              text: "Have you made any changes to the overseas entity?",
+              isPageHeading: false,
+              classes: "govuk-visually-hidden"
+            }
+          },
+          items: [
+            {
+              value: "yes",
+              text: "Yes, I need to make changes",
+              attributes: {
+                "data-event-id": "make_changes"
+              }
+            },
+            {
+              value: "no",
+              text: "No, I do not need to make changes",
+              attributes: {
+                "data-event-id": "make_changes"
+              }
+            }
+          ]
+        })
+        }}
+        {{ govukButton({
+            text: "Save and continue"
+          })
+        }}       
+        <details class="govuk-details" data-module="govuk-details">
+          <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+              What verification checks are needed?
+            </span>
+          </summary>
+          <div class="govuk-details__text">
+            Verification checks are needed on any changes made to information about the overseas entity, its beneficial owners or managing officers. 
+          </div>
+          <div class="govuk-details__text">
+            Verification checks can only be carried out by a UK-regulated agent, and must have been completed no more than 3 months before the date of this update statement.   </div>
+          </div>
+        </details>       
+      </form>
+    </div>
+  </div>
+{% endblock %}

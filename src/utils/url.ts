@@ -34,17 +34,8 @@ export const isRemoveJourney = (req: Request): boolean => {
     if (appData['is_remove'] === true) {
       return true;
     }
-    // TODO Decide if return false here if appData.is_remove = false...
+    // TODO Decide whether to return false here, if appData['is_remove'] is present and value is 'false'
   }
 
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };
-
-// export const isRemoveJourneyInSession = (appData: ApplicationData ): boolean => {
-//   if (appData) {
-//     if (appData.is_remove === true) {
-//       return true;
-//     }
-//   }
-//   return false;
-// };

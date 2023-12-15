@@ -45,7 +45,7 @@ describe("Confirmation controller tests", () => {
   });
 
   test("renders the confirmation page for non agent", async () => {
-    mockGetApplicationData.mockReturnValueOnce(
+    mockGetApplicationData.mockReturnValue(
       { ...APPLICATION_DATA_MOCK,
         who_is_registering: WhoIsRegisteringType.SOMEONE_ELSE
       }
@@ -68,7 +68,7 @@ describe("Confirmation controller tests", () => {
   });
 
   test("renders the confirmation page for agent", async () => {
-    mockGetApplicationData.mockReturnValueOnce(
+    mockGetApplicationData.mockReturnValue(
       { ...APPLICATION_DATA_MOCK,
         who_is_registering: WhoIsRegisteringType.AGENT
       }

@@ -3,6 +3,7 @@ import { Request } from "express";
 import { ApplicationData } from "../model";
 import { getApplicationData } from "./application.data";
 import { Session } from "@companieshouse/node-session-handler";
+import { IsRemoveKey } from "../model/data.types.model";
 
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
@@ -31,8 +32,8 @@ export const isRemoveJourney = (req: Request): boolean => {
   const appData: ApplicationData = getApplicationData(session);
 
   if (appData) {
-    if (appData['is_remove'] !== undefined && appData['is_remove'] !== null) {
-      return appData['is_remove'];
+    if (appData[IsRemoveKey] !== undefined && appData[IsRemoveKey] !== null) {
+      return appData[IsRemoveKey];
     }
   }
 

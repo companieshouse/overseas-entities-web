@@ -7,6 +7,7 @@ import { getApplicationData, prepareData, setApplicationData, setExtraData } fro
 import { logger } from "./logger";
 import { saveAndContinue } from "./save.and.continue";
 import { isRemoveJourney } from "../utils/url";
+import * as config from "../config";
 import { postTransaction } from "../service/transaction.service";
 import { createOverseasEntity } from "../service/overseas.entities.service";
 
@@ -16,6 +17,15 @@ export const getPresenterPage = (req: Request, res: Response, next: NextFunction
 
     const appData: ApplicationData = getApplicationData(req.session);
     const presenter = appData[PresenterKey];
+
+    if (isRemoveJourney(req)){
+      return res.render(templateName, {
+        journey: config.JourneyType.remove,
+        backLinkUrl: `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+        templateName: templateName,
+        ...presenter
+      });
+    }
 
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,

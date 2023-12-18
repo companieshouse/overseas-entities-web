@@ -136,7 +136,7 @@ describe("Overseas entity do you want to change your OE controller", () => {
 
   describe("GET remove journey tests", () => {
     test(`that ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page is rendered`, async() => {
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_REMOVE_MOCK });
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_REMOVE_MOCK });
 
       const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);

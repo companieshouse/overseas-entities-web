@@ -1,6 +1,12 @@
+jest.mock('../../src/utils/application.data');
+
 import { request } from "express";
 import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
+import { getApplicationData } from '../../src/utils/application.data';
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 describe("Url utils tests", () => {
   const req = request;
@@ -72,13 +78,89 @@ describe("Url utils tests", () => {
   });
 
   describe("isRemoveJourney tests", () => {
-    test("returns true if query param journey=remove", () => {
+
+    test("returns true if app data not present in session and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(undefined);
+
       req["query"] = {
         "journey": "remove"
       };
+
       const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is undefined in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is null in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: null
+        }
+      );
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is true in session data and query param journey=register", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: true
+        }
+      );
+
+      req["query"] = {
+        "journey": "register"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is true in session data and query param journey not defined", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: true
+        }
+      );
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false if is_remove is false in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: false
+        }
+      );
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
     });
 
     test("returns false if query param journey is a string other than remove", () => {

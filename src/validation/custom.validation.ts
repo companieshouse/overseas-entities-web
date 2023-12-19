@@ -9,6 +9,7 @@ import { CONCATENATED_VALUES_SEPARATOR } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
+import { isRemoveJourney } from "../utils/url";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -594,6 +595,18 @@ export const validateEmail = (email: string, maxLength: number) => {
   checkEmailIsPresent(emailString);
   checkIsWithinLengthLimit(emailString, maxLength);
   checkCorrectIsFormat(emailString);
+  return true;
+};
+
+export const checkNoChangeStatementSubmission = (value: any, req) => {
+  if (value === undefined) {
+    if (isRemoveJourney(req)) {
+      throw new Error(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
+    }
+
+    throw new Error(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
+  }
+
   return true;
 };
 

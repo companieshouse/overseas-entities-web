@@ -1,6 +1,16 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Do you need to make any changes to this overseas entity?" %}
+{% if (journey == "remove") %}
+  {% set title = "Do you need to make any changes to this overseas entity before it is removed?" %}
+  {% set titleHintText = "All information about the overseas entity must be correct as at the date of this application. This includes information about any beneficial owners and managing officers." %}
+  {% set yesOptionHintText = "All changes must have been verified by a UK-regulated agent no more than 3 months before the date of this application." %}
+  {% set noOptionHintText = "Later in the service, we will show you all the information we hold and ask you to confirm that it is correct." %}
+{% else %}
+  {% set title = "Do you need to make any changes to this overseas entity?" %}
+  {% set titleHintText = "This includes any changes to information about the overseas entity, its beneficial owners or managing officers." %}
+  {% set yesOptionHintText = "All changes must have been verified by a UK-regulated agent no more than 3 months before the date of this update statement." %}
+  {% set noOptionHintText = "" %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -31,14 +41,14 @@
           }
         },
         hint: {
-          text: "This includes any changes to information about the overseas entity, its beneficial owners or managing officers."
+          text: titleHintText
         },
         items: [
           {
             value: 0,
             text: "Yes, I need to make changes",
             hint: {
-              text: "All changes must have been verified by a UK-regulated agent no more than 3 months before the date of this update statement."
+              text: yesOptionHintText
             },
             checked: no_change == 0,
             attributes: {
@@ -48,6 +58,9 @@
           {
             value: 1,
             text: "No, I do not need to make changes",
+            hint: {
+              text: noOptionHintText
+            },
             checked: no_change == 1,
             attributes: {
               "data-event-id": "no-do-not-make-oe-change"
@@ -57,7 +70,6 @@
       }) }}
 
       {% include "includes/save-and-continue-button.html" %}
-
     </form>
   </div>
 </div>

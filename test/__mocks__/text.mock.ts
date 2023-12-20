@@ -229,6 +229,7 @@ export const REVIEWED_BENEFICIAL_OWNER_MANAGING_OFFICER_TABLE_HEADING = "What yo
 export const NEWLY_ADDED_BENEFICIAL_OWNERS_SUMMARY_TABLE_HEADING = "What you have added in this update";
 export const UPDATE_REVIEW_OVERSEAS_ENTITY_INFORMATION_PAGE_TITLE = "You're about to review overseas entity information";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity?";
+export const REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE = "Do you need to make any changes to this overseas entity before it is removed?";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_YES_TEXT = "Yes, I need to make changes";
 export const UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT = "No, I do not need to make changes";
 export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING = "You'll need to file an update statement using the paper form";

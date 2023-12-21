@@ -112,7 +112,7 @@ export enum ErrorMessages {
   ENTER_DATE_INTERESTED_PERSON_INDIVIDUAL_BO = "Enter the date they became an interested person",
   ENTER_DATE_INTERESTED_PERSON_LEGAL_ENTITY_BO = "Enter the date it became an interested person",
   ENTER_DATE_OF_TRUST = "Enter the date the trust was created",
-  INVALID_DATE = "Date must be a real date. For example, day or month must not start with a 0.",
+  INVALID_DATE = "Date must be a real date",
   INVALID_DAY = "Day must be a real day",
   INVALID_MONTH = "Month must be a real month",
   INVALID_DATE_OF_TRUST = "The date the trust was created must be a real date",

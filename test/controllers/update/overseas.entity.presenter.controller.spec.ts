@@ -33,7 +33,7 @@ import {
   NOT_SHOW_INFORMATION_ON_PUBLIC_REGISTER,
   PAGE_TITLE_ERROR,
   OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE,
-  SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE
+  SERVICE_UNAVAILABLE, UPDATE_USE_INFORMATION_NEED_MORE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_USE_INFORMATION_NEED_MORE
 } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { PresenterKey } from '../../../src/model/presenter.model';
@@ -118,6 +118,7 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(REMOVE_USE_INFORMATION_NEED_MORE);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).toContain(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);

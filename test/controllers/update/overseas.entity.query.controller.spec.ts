@@ -62,6 +62,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
       expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("https://find-and-update.company-information.service.gov.uk/");
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
@@ -73,6 +74,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
       expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("https://find-and-update.company-information.service.gov.uk/");
     });
 
     test('catch error when rendering the page', async () => {

@@ -6,6 +6,9 @@
 {% endif %}
 
 {% block pageTitle %}
+  {% if errors and errors.errorList and errors.errorList.length > 0 %}
+  Error:
+  {% endif %}
   Are you sure you want to sign out? - {{ SERVICE_NAME }} - GOV.UK
 {% endblock %}
 

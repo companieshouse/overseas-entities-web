@@ -270,7 +270,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_PAGE_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE);
       expect(resp.text).toContain(CHANGE_LINK);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_NAME);
-      expect(resp.text).toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
+      expect(resp.text).not.toContain(CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_SERVICE_ADDRESS);
       expect(resp.text).toContain(CHANGE_LINK_ENTITY_EMAIL);

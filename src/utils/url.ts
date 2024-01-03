@@ -37,5 +37,10 @@ export const isRemoveJourney = (req: Request): boolean => {
     }
   }
 
+  // UAT-1352 Only required for remove feature flag - can be removed with it
+  if (!req.query[config.JOURNEY_QUERY_PARAM] && req.url.includes("remove")) {
+    return true;
+  }
+
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };

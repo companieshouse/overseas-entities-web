@@ -15,6 +15,7 @@ describe("Url utils tests", () => {
 
   beforeEach(() => {
     req["query"] = {};
+    req["url"] = "";
   });
 
   describe("getUrlWithTransactionIdAndOverseasEntityId tests", () => {
@@ -119,6 +120,21 @@ describe("Url utils tests", () => {
       expect(result).toBeTruthy();
     });
 
+    test("returns true if is_remove is null in session data and query param is null but url contains remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: null
+        }
+      );
+
+      req["query"] = {};
+      req["url"] = "/remove";
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
     test("returns true if is_remove is true in session data and query param journey=register", () => {
       mockGetApplicationData.mockReturnValueOnce(
         { ...APPLICATION_DATA_MOCK,
@@ -192,6 +208,14 @@ describe("Url utils tests", () => {
 
     test("returns false if request has empty query params object", () => {
       req["query"] = {};
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if request has empty query params object and url is not remove", () => {
+      req["query"] = {};
+      req["url"] = "/update";
       const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();

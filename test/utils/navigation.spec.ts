@@ -26,6 +26,8 @@ mockRemoveRequest["query"] = {
   "journey": "remove"
 };
 
+const mockRequest = { query: {}, url: "" } as Request;
+
 describe("NAVIGATION utils", () => {
 
   test(`getEntityBackLink returns ${config.DUE_DILIGENCE_URL} when ${WhoIsRegisteringType.AGENT} selected`, () => {
@@ -60,7 +62,6 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`getSecureUpdateFilterBackLink returns the correct URL when not on the Remove journey`, () => {
-    const mockRequest = { query: {} } as Request;
     const backLink = getSecureUpdateFilterBackLink(mockRequest);
     expect(backLink).toEqual(config.UPDATE_LANDING_PAGE_URL);
   });
@@ -71,7 +72,6 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`getOverseasEntityPresenterBackLink returns the correct URL when not on the Remove journey`, () => {
-    const mockRequest = { query: {} } as Request;
     const backLink = getOverseasEntityPresenterBackLink(mockRequest);
     expect(backLink).toEqual(config.UPDATE_FILING_DATE_URL);
   });
@@ -203,7 +203,6 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {
-    const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_FILING_DATE_URL);
   });
@@ -219,13 +218,11 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
-    const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
-    const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
   });

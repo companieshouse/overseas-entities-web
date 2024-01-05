@@ -29,6 +29,7 @@ describe("UPDATE USE PAPER controller", () => {
       expect(resp.text).toContain(UPDATE_APPLY_PAPER_FORM_HEADING);
       expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
       expect(resp.text).toContain("You must register the overseas entity on paper to keep this information protected.");
+      expect(resp.text).toContain("enquiries@companieshouse.gov.uk");
     });
 
     test(`renders the ${config.USE_PAPER_PAGE} page for remove`, async () => {
@@ -38,6 +39,7 @@ describe("UPDATE USE PAPER controller", () => {
       expect(resp.text).toContain(REMOVE_APPLY_PAPER_FORM_HEADING);
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
       expect(resp.text).toContain("You must submit this filing on paper to keep this information protected.");
+      expect(resp.text).toContain("enquiries@companieshouse.gov.uk");
       // back link
       expect(resp.text).toContain(`${SECURE_UPDATE_FILTER_URL}${JOURNEY_REMOVE_QUERY_PARAM}`);
     });

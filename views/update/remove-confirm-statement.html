@@ -1,6 +1,6 @@
-{% extends "layouts/main.html" %}
+{% extends "update-layout.html" %}
 
-{% set title = Apply to remove an overseas entity from the register %}
+{% set title = "Confirm the removal statement - Apply to remove and overseas entity" %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -8,10 +8,6 @@
 
 {% block backLink %} 
   {% include "includes/back-link.html" %}
-{% endblock %}
-
-{% block beforeContent %}
-  {% include "includes/before-content.html" %}
 {% endblock %}
 
 {% block content %}
@@ -23,7 +19,8 @@
       <form class="form">
         <span class="govuk-caption-l">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
         {{ govukCheckboxes({
-          name: "waste",
+          errorMessage: fieldParam.error,
+          name: "removal_confirmation",
             fieldset: {
               legend: {
                 text: "Confirm the removal statement",

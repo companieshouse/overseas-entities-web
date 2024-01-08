@@ -71,6 +71,42 @@
   %}
 {% endif %}
 
+{% if pageParams.isRegistration %}
+{% set countryFormedIn = 
+  {
+    key: {
+      text: "Country it was formed in"
+    },
+    value: {
+      text: appData.entity.incorporation_country
+    },
+    actions: {
+      items: [CREATE_CHANGE_LINK(
+        changeLinkUrl + OE_CONFIGS.INCORPORATION_COUNTRY,
+        "Country it was formed in",
+        "change-entity-incorporation-country-button"
+      )]
+    } if inChangeJourney
+  }
+  %}
+{% else %}
+{% set countryFormedIn =
+  {
+    key: {
+      text: "Country it was formed in"
+    },
+    value: {
+      text: appData.entity.incorporation_country
+    },
+    actions: {
+      items: [
+        "Country it was formed in"
+      ]
+    } if inChangeJourney
+  }
+  %}
+{% endif %}
+
 
 <h1 class="govuk-heading-l">{{ overseasEntityHeading }}</h1>
 
@@ -87,21 +123,7 @@
           items : [entityNameLink]
         } if inChangeJourney
       },
-      {
-        key: {
-          text: "Country it was formed in"
-        },
-        value: {
-          text: appData.entity.incorporation_country
-        },
-        actions: {
-          items: [CREATE_CHANGE_LINK(
-            changeLinkUrl + OE_CONFIGS.INCORPORATION_COUNTRY,
-            "Country it was formed in",
-            "change-entity-incorporation-country-button"
-          )]
-        } if inChangeJourney
-      },
+      countryFormedIn,
       {
         key: {
           text: "Principal or registered office address"
@@ -194,4 +216,5 @@
       },
       jurisdiction, registrationNumber
     ]
-}) }}
+  })
+}}

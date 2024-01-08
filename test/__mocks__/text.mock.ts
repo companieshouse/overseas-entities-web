@@ -183,7 +183,6 @@ export const OVERSEAS_ENTITY_UPDATE_TITLE = "Check the overseas entity details";
 export const BACK_LINK_FOR_UPDATE_FILING_DATE = "/update-an-overseas-entity/confirm-overseas-entity-details";
 export const BACK_LINK_FOR_UPDATE_OE_CONFIRM = "/update-an-overseas-entity/overseas-entity-query";
 export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#entity_name";
-export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
 export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
 export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/entity#service_address_property_name_number";
 export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";

@@ -529,7 +529,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.REMOVE_CONFIRM_STATEMENT_URL]: {
     currentPage: config.REMOVE_CONFIRM_STATEMENT_PAGE,
-    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
+    previousPage: () => `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
     nextPage: [`${config.REMOVE_CANNOT_USE_URL}`]
   }
 };

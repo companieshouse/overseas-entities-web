@@ -1,3 +1,4 @@
+jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
@@ -18,6 +19,11 @@ import {
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { ApplicationData } from "../../../src/model";
+import {
+  EntityNameKey,
+  EntityNumberKey
+} from "../../../src/model/data.types.model";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -36,9 +42,16 @@ describe("Remove confirmation statement controller", () => {
 
   describe ("GET tests", () => {
     test(`renders the ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`, async () => {
+      const appData: ApplicationData = {
+        [EntityNameKey]: "Test Company",
+        [EntityNumberKey]: "OE001100",
+      };
+      mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(`${config.REMOVE_CONFIRM_STATEMENT_URL}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(REMOVE_CONFIRMATION_STATEMENT_TITLE);
+      expect(resp.text).toContain(appData[EntityNameKey]);
+      expect(resp.text).toContain(appData[EntityNumberKey]);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);

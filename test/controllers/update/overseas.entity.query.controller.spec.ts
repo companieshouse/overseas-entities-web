@@ -181,5 +181,26 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    const values_without_trim = [' OE123456', 'OE123456 ', ' OE123456 '];
+
+    test.each(values_without_trim)(
+      "trims the whitespaces and allows user to continue", async (input_value) => {
+        const resp = await request(app)
+          .post(config.OVERSEAS_ENTITY_QUERY_URL)
+          .send({ entity_number: input_value.trim() });
+        expect(resp.status).toEqual(200);
+        expect(resp.text).not.toContain(invalidOENUmberError);
+      });
+
+    test.each(values_without_trim)(
+      "trims the whitespaces and allows user to continue", async (input_value) => {
+        const resp = await request(app)
+          .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
+          .send({ entity_number: input_value.trim() });
+        expect(resp.status).toEqual(200);
+        expect(resp.text).not.toContain(invalidOENUmberError);
+      });
   });
+
 });

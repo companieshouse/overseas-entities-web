@@ -2,8 +2,10 @@
 
 {% if (journey == "remove") %}
   {% set title = "Who can we contact about this application?" %}
+  {% set submission = "application" %}
 {% else %}
   {% set title = "Who can we contact about this update?" %}
+  {% set submission = "update" %}
 {% endif %}
 
 {% block pageTitle %}
@@ -16,6 +18,5 @@
 {% endblock %}
 
 {% block content %}
-  {% set submission = "update" %}
   {% include "includes/inputs/presenter-input.html" %}
 {% endblock %}

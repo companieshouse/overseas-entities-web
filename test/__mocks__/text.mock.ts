@@ -183,7 +183,6 @@ export const OVERSEAS_ENTITY_UPDATE_TITLE = "Check the overseas entity details";
 export const BACK_LINK_FOR_UPDATE_FILING_DATE = "/update-an-overseas-entity/confirm-overseas-entity-details";
 export const BACK_LINK_FOR_UPDATE_OE_CONFIRM = "/update-an-overseas-entity/overseas-entity-query";
 export const CHANGE_LINK_ENTITY_NAME = "/update-an-overseas-entity/entity#entity_name";
-export const CHANGE_LINK_ENTITY_INCORPORATION_COUNTRY = "/update-an-overseas-entity/entity#incorporation_country";
 export const CHANGE_LINK_ENTITY_PRINCIPAL_ADDRESS = "/update-an-overseas-entity/entity#principal_address_property_name_number";
 export const CHANGE_LINK_ENTITY_SERVICE_ADDRESS = "/update-an-overseas-entity/entity#service_address_property_name_number";
 export const CHANGE_LINK_ENTITY_EMAIL = "/update-an-overseas-entity/entity#email";
@@ -253,6 +252,7 @@ export const UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING = "What you have reviewed";
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE = "Has the overseas entity disposed of all its property or land in the UK?";
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE = "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?";
 export const REMOVE_INTERRUPT_CARD_TEXT = "Once an overseas entity is removed";
+export const REMOVE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

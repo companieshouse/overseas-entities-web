@@ -9,7 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.REMOVE_CONFIRM_STATEMENT_PAGE, {
-      backLinkUrl: `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
+      backLinkUrl: `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
       appData
     });
   } catch (error) {
@@ -20,6 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
+    return res.redirect(`${config.REMOVE_CANNOT_USE_URL}`);
   } catch (error) {
     next(error);
   }

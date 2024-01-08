@@ -28,7 +28,7 @@ describe("UPDATE USE PAPER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_APPLY_PAPER_FORM_HEADING);
       expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
-      expect(resp.text).toContain("You must register the overseas entity on paper to keep this information protected.");
+      expect(resp.text).toContain("You must submit this filing on paper to keep this information protected.");
       expect(resp.text).toContain("enquiries@companieshouse.gov.uk");
     });
 

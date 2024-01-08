@@ -23,10 +23,10 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">{{ applyWithPaperFormHeading }}</h1>
       <p class="govuk-body">You've told us at least one beneficial owner or managing officer has their personal information protected from being shown on the Companies House public register.</p>
-      {% if (journey == "remove") %}
-        <p class="govuk-body">You must submit this filing on paper to keep this information protected. </p>
+      {% if pageParams.isRegistration %}
+      <p class="govuk-body">You must register the overseas entity on paper to keep this information protected. </p>
       {% else %}
-        <p class="govuk-body">You must register the overseas entity on paper to keep this information protected. </p>
+      <p class="govuk-body">You must submit this filing on paper to keep this information protected. </p>
       {% endif %}
       <p class="govuk-body">Contact us at <a class="govuk-link" href="mailto: enquiries@companieshouse.gov.uk">enquiries@companieshouse.gov.uk</a> if you need us to send you a paper form. </p>
     </div>

@@ -16,38 +16,33 @@
       
       {% include "includes/list/errors.html" %}
 
-      <form class="form">
+      <form class="form" method="post">
         <span class="govuk-caption-l">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
         {{ govukCheckboxes({
-          errorMessage: fieldParam.error,
+          errorMessage: errors.removal_confirmation if errors,
+          idPrefix: "removal_confirmation",
           name: "removal_confirmation",
-            fieldset: {
-              legend: {
-                text: "Confirm the removal statement",
-                isPageHeading: true,
-                classes: "govuk-fieldset__legend--xl"
-              }
-            },
-            items: [
-              {
-                value: "removal-declaration",
-                text: "
-                I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land. "
-              }
-            ]
-          })
-        }}
+          fieldset: {
+            legend: {
+              text: "Confirm the removal statement",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          items: [
+            {
+              value: "removal-declaration",
+              text: "I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land. "
+            }
+          ]
+        })}}
 
         {{ govukInsetText({
           html: '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
             <p>We will show this statement on the public Register of Overseas Entities.</p>'
           })
         }}
-
-        {{ govukButton({
-          text: "Save and continue",
-          href: "36-check-your-answers-before-submitting"
-        }) }}
+        {% include "includes/continue-button.html" %}  
       </form>
     </div>
   </div>

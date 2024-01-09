@@ -194,7 +194,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       });
 
     test.each(values_without_trim)(
-      "trims the whitespaces and allows user to continue", async (input_value) => {
+      "trims the whitespaces and allows user to continue when on remove journey", async (input_value) => {
         const resp = await request(app)
           .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
           .send({ entity_number: input_value.trim() });

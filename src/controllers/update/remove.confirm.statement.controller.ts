@@ -10,7 +10,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.REMOVE_CONFIRM_STATEMENT_PAGE, {
       backLinkUrl: `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
-      appData
+      ...appData
     });
   } catch (error) {
     next(error);
@@ -20,6 +20,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 export const post = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
+    // TDOD update redirect when the next page is created.
     return res.redirect(`${config.REMOVE_CANNOT_USE_URL}`);
   } catch (error) {
     next(error);

@@ -169,6 +169,38 @@ describe("Update registrable beneficial owner controller tests", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
+    test(`with statement validation off, redirects to the ${REMOVE_CONFIRM_STATEMENT_PAGE} when on the remove journey`, async () => {
+      mockIsRemoveJourney.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
+      const resp = await request(app)
+        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(REMOVE_CONFIRM_STATEMENT_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`with statement validation on, redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
+      mockIsRemoveJourney.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
+      const resp = await request(app)
+        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
     test("POST empty object and check for error in page title", async () => {
       mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
       const resp = await request(app).post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL);
@@ -186,22 +218,6 @@ describe("Update registrable beneficial owner controller tests", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
-    test(`redirects to the ${REMOVE_CONFIRM_STATEMENT_PAGE} when on the remove journey`, async () => {
-      mockIsRemoveJourney.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
-
-      const resp = await request(app)
-        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
-        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(REMOVE_CONFIRM_STATEMENT_URL);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
   });
 });

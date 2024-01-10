@@ -1,6 +1,6 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Confirm the removal statement - Apply to remove and overseas entity" %}
+{% set title = "Confirm the removal statement - Apply to remove an overseas entity" %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -17,7 +17,7 @@
       {% include "includes/list/errors.html" %}
 
       <form class="form" method="post">
-        <span class="govuk-caption-l">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
+        <span class="govuk-caption-l">{{ entity_name }} - {{ entity_number }}</span>
         {{ govukCheckboxes({
           errorMessage: errors.removal_confirmation if errors,
           idPrefix: "removal_confirmation",

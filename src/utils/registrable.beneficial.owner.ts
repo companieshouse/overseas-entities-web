@@ -26,7 +26,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
-      appData,
+      ...appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
       noChangeFlag,
       statementValidationFlag: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
@@ -49,16 +49,20 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     await saveAndContinue(req, session, false);
 
     if (isRemoveJourney(req)) {
-      return res.redirect(config.REMOVE_CONFIRM_STATEMENT_URL);
+      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
+        : config.REMOVE_CONFIRM_STATEMENT_URL;
+
+      return res.redirect(redirectUrl);
+    }
+
+    if (noChangeFlag) {
+      noChangeHandler(req, res);
     } else {
-      if (noChangeFlag) {
-        noChangeHandler(req, res);
-      } else {
-        const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
-          ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
-          : config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
-        return res.redirect(redirectUrl);
-      }
+      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
+        : config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL;
+      return res.redirect(redirectUrl);
     }
   } catch (error) {
     next(error);
@@ -73,3 +77,4 @@ const noChangeHandler = (req: Request, res: Response) => {
   return res.redirect(redirectUrl);
 
 };
+

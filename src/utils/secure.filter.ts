@@ -10,7 +10,6 @@ export const getFilterPage = (req: Request, res: Response, next: NextFunction, t
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
-
     if (isRemoveJourney(req)){
       return res.render(templateName, {
         journey: config.JourneyType.remove,

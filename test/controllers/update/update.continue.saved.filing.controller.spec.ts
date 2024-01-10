@@ -2,6 +2,7 @@ jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock('../../../src/utils/application.data');
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -14,16 +15,23 @@ import {
   PAGE_TITLE_ERROR,
   CONTINUE_SAVED_FILING_PAGE_TITLE,
 } from "../../__mocks__/text.mock";
+import {
+  APPLICATION_DATA_MOCK,
+} from '../../__mocks__/session.mock';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
 import { REMOVE_LANDING_PAGE_URL, REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
+import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { IsRemoveKey } from '../../../src/model/data.types.model';
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+const mockSetExtraData = setExtraData as jest.Mock;
+const mockGetApplicationData = getApplicationData as jest.Mock;
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 
@@ -95,6 +103,8 @@ describe("Continue with saved filing controller", () => {
   describe("POST tests for Remove Journey", () => {
 
     test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
       const resp = await request(app)
         .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
         .send({ continue_saved_filing: 'yes' });
@@ -103,9 +113,13 @@ describe("Continue with saved filing controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.YOUR_FILINGS_PATH}`);
       expect(resp.header.location).toEqual(config.YOUR_FILINGS_PATH);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockData[IsRemoveKey]).not.toEqual(true);
+      expect(mockSetExtraData).not.toHaveBeenCalledTimes(1);
     });
 
     test(`redirects to the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page when no is selected`, async () => {
+      const mockData = { ...APPLICATION_DATA_MOCK };
+      mockGetApplicationData.mockReturnValue(mockData);
       const resp = await request(app)
         .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
         .send({ continue_saved_filing: 'no' });
@@ -114,6 +128,8 @@ describe("Continue with saved filing controller", () => {
       expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.header.location).toEqual(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+      expect(mockData[IsRemoveKey]).toEqual(true);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
     });
 
     test("renders the current page with error message and correct page title for the Remove journey", async () => {

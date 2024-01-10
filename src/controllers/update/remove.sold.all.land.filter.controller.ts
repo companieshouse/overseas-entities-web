@@ -12,7 +12,6 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
     const remove = appData?.[RemoveKey];
-
     return res.render(config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl: `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,

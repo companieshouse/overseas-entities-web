@@ -24,7 +24,7 @@ import {
   UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
   UPDATE_PRESENTER_PAGE
 } from "../../../src/config";
-import { getApplicationData, prepareData, setApplicationData, setExtraData } from "../../../src/utils/application.data";
+import { getApplicationData, prepareData, setApplicationData } from "../../../src/utils/application.data";
 import { ApplicationDataType } from '../../../src/model';
 import {
   ANY_MESSAGE_ERROR,
@@ -52,7 +52,7 @@ import {
   PRESENTER_WITH_MAX_LENGTH_FIELDS_MOCK,
   PRESENTER_WITH_SPECIAL_CHARACTERS_FIELDS_MOCK
 } from '../../__mocks__/validation.mock';
-import { IsRemoveKey, OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
+import { OverseasEntityKey, Transactionkey } from '../../../src/model/data.types.model';
 import { createOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { postTransaction } from "../../../src/service/transaction.service";
 
@@ -60,7 +60,6 @@ const mockGetApplicationData = getApplicationData as jest.Mock;
 mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
 
 const mockSetApplicationData = setApplicationData as jest.Mock;
-const mockSetExtraData = setExtraData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -229,12 +228,9 @@ describe("OVERSEAS ENTITY PRESENTER controller", () => {
 
       expect(mockData[Transactionkey]).toEqual(TRANSACTION_ID);
       expect(mockData[OverseasEntityKey]).toEqual(OVERSEAS_ENTITY_ID);
-      expect(mockData[IsRemoveKey]).toEqual(true);
       expect(mockTransactionService).toHaveBeenCalledTimes(1);
       expect(mockCreateOverseasEntity).toHaveBeenCalledTimes(1);
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
-      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
-
       expect(resp.text).toContain(`${FOUND_REDIRECT_TO} ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL}`);
     });
   });

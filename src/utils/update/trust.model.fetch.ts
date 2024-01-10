@@ -308,7 +308,7 @@ const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOw
   beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
-const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+export const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
   switch (trusteeTypeId) {
       case "5005":
         return RoleWithinTrustType.INTERESTED_PERSON;
@@ -317,8 +317,9 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5003":
         return RoleWithinTrustType.SETTLOR;
       case "5002":
-      case "5001":
         return RoleWithinTrustType.BENEFICIARY;
+      case "5001":
+        return RoleWithinTrustType.BENEFICIAL_OWNER;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

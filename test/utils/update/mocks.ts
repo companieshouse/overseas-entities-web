@@ -304,7 +304,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     dateOfBirth: "1988-12-01",
     nationality: "German",
     corporateIndicator: "N",
-    trusteeTypeId: "5001",
+    trusteeTypeId: "5002",
     appointmentDate: "2022-01-01",
     usualResidentialAddress: {
       addressLine1: "Park lane",

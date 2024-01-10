@@ -1,5 +1,7 @@
 {% macro readableTrusteeRole(role) %}
-  {% if role === 'Beneficiary' %}
+  {% if role === 'Beneficial_Owner' %}
+    Beneficial Owner
+  {% elif role === 'Beneficiary' %}
     Beneficiary
   {% elif role === 'Grantor' %}
     Grantor

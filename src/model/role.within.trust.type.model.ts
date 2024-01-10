@@ -5,6 +5,7 @@
  */
 
 export enum RoleWithinTrustType {
+    BENEFICIAL_OWNER = "Beneficial_Owner",
     BENEFICIARY = "Beneficiary",
     SETTLOR = "Settlor",
     GRANTOR = "Grantor",

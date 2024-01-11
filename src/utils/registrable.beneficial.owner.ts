@@ -8,6 +8,7 @@ import { isActiveFeature } from "./feature.flag";
 import { yesNoResponse } from "../model/data.types.model";
 import { Session } from "@companieshouse/node-session-handler";
 import { saveAndContinue } from "./save.and.continue";
+import { isRemoveJourney } from "../utils/url";
 
 export const getRegistrableBeneficialOwner = (req: Request, res: Response, next: NextFunction, noChangeFlag?: boolean) => {
   try {
@@ -25,7 +26,7 @@ export const getRegistrableBeneficialOwner = (req: Request, res: Response, next:
     return res.render(templateName, {
       backLinkUrl: backLinkUrl,
       templateName: templateName,
-      appData,
+      ...appData,
       [RegistrableBeneficialOwnerKey]: appData.update?.[RegistrableBeneficialOwnerKey],
       noChangeFlag,
       statementValidationFlag: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
@@ -46,6 +47,14 @@ export const postRegistrableBeneficialOwner = async (req: Request, res: Response
     }
     setExtraData(req.session, appData);
     await saveAndContinue(req, session, false);
+
+    if (isRemoveJourney(req)) {
+      const redirectUrl = isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)
+        ? config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL
+        : config.REMOVE_CONFIRM_STATEMENT_URL;
+
+      return res.redirect(redirectUrl);
+    }
 
     if (noChangeFlag) {
       noChangeHandler(req, res);
@@ -68,3 +77,4 @@ const noChangeHandler = (req: Request, res: Response) => {
   return res.redirect(redirectUrl);
 
 };
+

@@ -9,6 +9,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     logger.debugRequest(req, `GET ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
     const appData: ApplicationData = getApplicationData(req.session);
     return res.render(config.REMOVE_CONFIRM_STATEMENT_PAGE, {
+      journey: config.JourneyType.remove,
       backLinkUrl: `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
       ...appData
     });

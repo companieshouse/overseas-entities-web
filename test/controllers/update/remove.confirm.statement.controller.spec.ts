@@ -24,6 +24,7 @@ import {
   EntityNameKey,
   EntityNumberKey
 } from "../../../src/model/data.types.model";
+import { REMOVE_SERVICE_NAME } from "../../../src/config";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -49,6 +50,7 @@ describe("Remove confirmation statement controller", () => {
       mockGetApplicationData.mockReturnValueOnce(appData);
       const resp = await request(app).get(`${config.REMOVE_CONFIRM_STATEMENT_URL}`);
       expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).toContain(REMOVE_CONFIRMATION_STATEMENT_TITLE);
       expect(resp.text).toContain(appData[EntityNameKey]);
       expect(resp.text).toContain(appData[EntityNumberKey]);

@@ -308,7 +308,7 @@ const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOw
   beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
-export const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
   switch (trusteeTypeId) {
       case "5005":
         return RoleWithinTrustType.INTERESTED_PERSON;

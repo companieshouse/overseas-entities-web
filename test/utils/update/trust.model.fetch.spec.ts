@@ -843,7 +843,7 @@ describe("Test fetching and mapping of Trust data", () => {
     trusteeData.trusteeTypeId = "5001";
     mapIndividualTrusteeData(trusteeData, trustMock);
     if (trustMock.INDIVIDUALS) {
-      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.BENEFICIAL_OWNER);
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(undefined);
     } else {
       fail();
     }

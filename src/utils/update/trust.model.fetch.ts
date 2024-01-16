@@ -308,7 +308,7 @@ const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOw
   beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
-const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType | undefined => {
   switch (trusteeTypeId) {
       case "5005":
         return RoleWithinTrustType.INTERESTED_PERSON;
@@ -319,7 +319,9 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5002":
         return RoleWithinTrustType.BENEFICIARY;
       case "5001":
-        return RoleWithinTrustType.BENEFICIAL_OWNER;
+        // Type 5001 is not a valid type for an individuual or corporate trustee
+        logger.info(`Warning - invalid data. Trustee type ${trusteeTypeId} found when mapping trustee data`);
+        return undefined;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

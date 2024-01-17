@@ -91,9 +91,9 @@ describe('Update - Manage Trusts - Review individuals', () => {
       const trustInReview = trusts[0];
       const appData = { update: { review_trusts: trusts } };
 
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(appData);
-      mockGetTrustInReview.mockReturnValue(trustInReview);
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetTrustInReview.mockReturnValueOnce(trustInReview);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
@@ -120,8 +120,29 @@ describe('Update - Manage Trusts - Review individuals', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
+    test.each([
+      ['Uppercase', 'BENEFICIARY'],
+      ['Camelcase', 'Beneficiary'],
+      ['Lowercase', 'beneficiary'],
+    ])('when beneficial owner type is %s string then it is mapped correctly on the page', async (_, boType) => {
+      // resuming an update journey/application causes the bo types to be set as uppercase strings instead of RoleWithinTrustType
+      const trusts = createTrusts();
+      const trustInReview = trusts[0];
+
+      trustInReview.INDIVIDUALS[0].type = boType as RoleWithinTrustType;
+      const appData = { update: { review_trusts: trusts } };
+
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(appData);
+      mockGetTrustInReview.mockReturnValueOnce(trustInReview);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
+
+      expect(resp.text).toContain('Beneficiary');
+    });
+
     test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
@@ -132,7 +153,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
 
   describe('POST tests', () => {
     test('when req body contains addIndividual (add button has been clicked), redirects to tell us about the individual with no id param', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
       const resp = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL)
@@ -149,7 +170,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
       mockIsActiveFeature.mockReturnValue(true);
       const appData = { entity_number: 'OE999876', entity_name: 'Test OE' };
 
-      mockGetApplicationData.mockReturnValue(appData);
+      mockGetApplicationData.mockReturnValueOnce(appData);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 
@@ -162,7 +183,7 @@ describe('Update - Manage Trusts - Review individuals', () => {
     });
 
     test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_INDIVIDUALS_URL);
 

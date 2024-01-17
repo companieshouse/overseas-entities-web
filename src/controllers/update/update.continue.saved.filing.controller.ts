@@ -31,5 +31,5 @@ export const post = (req: Request, res: Response, _: NextFunction) => {
     return res.redirect(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   }
 
-  return res.redirect(`${config.SECURE_UPDATE_FILTER_URL}?start=0`);
+  return res.redirect(`${config.SECURE_UPDATE_FILTER_PAGE}?start=0`);
 };

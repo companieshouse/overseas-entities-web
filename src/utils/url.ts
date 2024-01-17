@@ -37,5 +37,9 @@ export const isRemoveJourney = (req: Request): boolean => {
     }
   }
 
+  if (req.url !== undefined && req.url.includes("/remove/")) {
+    return true;
+  }
+
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };

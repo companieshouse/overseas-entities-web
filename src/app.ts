@@ -26,6 +26,7 @@ app.set("dev", config.NODE_ENV === "development");
 const nunjucksEnv = nunjucks.configure([
   "views",
   "views/update",
+  "views/update/remove",
   "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/components",
 ], {

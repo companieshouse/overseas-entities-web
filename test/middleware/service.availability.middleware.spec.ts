@@ -146,7 +146,7 @@ describe("service availability middleware tests", () => {
       const resp = await request(app).get(`${REMOVE_CANNOT_USE_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
-      expect(resp.text).not.toContain("Service unavailable");
+      expect(resp.text).toContain("Sorry, the service is unavailable");
     });
 
     test(`Does not reach the ${REMOVE_SOLD_ALL_LAND_FILTER_PAGE} when the remove flag is false`, async () => {
@@ -157,7 +157,7 @@ describe("service availability middleware tests", () => {
       const resp = await request(app).get(`${REMOVE_SOLD_ALL_LAND_FILTER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
-      expect(resp.text).not.toContain("Service unavailable");
+      expect(resp.text).toContain("Sorry, the service is unavailable");
     });
 
     test(`Does not reach the ${REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE} when the remove flag is false`, async () => {
@@ -168,7 +168,7 @@ describe("service availability middleware tests", () => {
       const resp = await request(app).get(`${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
-      expect(resp.text).not.toContain("Service unavailable");
+      expect(resp.text).toContain("Sorry, the service is unavailable");
     });
 
     test(`Does not reach the ${REMOVE_CONFIRM_STATEMENT_PAGE} page when the remove flag is false`, async () => {
@@ -179,7 +179,7 @@ describe("service availability middleware tests", () => {
       const resp = await request(app).get(`${REMOVE_CONFIRM_STATEMENT_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
-      expect(resp.text).not.toContain("Service unavailable");
+      expect(resp.text).toContain("Sorry, the service is unavailable");
     });
   });
 });

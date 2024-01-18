@@ -16,7 +16,8 @@ import {
   REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE,
   REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
   REMOVE_CONFIRM_STATEMENT_PAGE,
-  REMOVE_CONFIRM_STATEMENT_URL
+  REMOVE_CONFIRM_STATEMENT_URL,
+  SECURE_UPDATE_FILTER_URL
 } from "../../src/config";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { RESUME_SUBMISSION_URL } from '../__mocks__/session.mock';
@@ -134,7 +135,7 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_REMOVE
       const resp = await request(app).get(`${REMOVE_CANNOT_USE_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual("/signin?return_to=/update-an-overseas-entity/secure-update-filter");
+      expect(resp.header.location).toEqual(`/signin?return_to=${SECURE_UPDATE_FILTER_URL}`);
     });
 
     test(`Does not reach the ${REMOVE_CANNOT_USE_PAGE} when the remove flag is false`, async () => {

@@ -319,7 +319,12 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType | undefined 
       case "5002":
         return RoleWithinTrustType.BENEFICIARY;
       case "5001":
-        // Type 5001 is not a valid type for an individuual or corporate trustee
+        /*
+          Type 5001 is not a valid type for an individuual or corporate trustee. Instances of individual or corporate
+          trustees that have this rusteeTypeId are are result of incorrect data originally submitted through the
+          trust spreadsheet (which has now been superceded by web screens). In these instances we do not display the type.
+          Data fixes shoud prevent these instances from being retrieved.
+        */
         logger.info(`Warning - invalid data. Trustee type ${trusteeTypeId} found when mapping trustee data`);
         return undefined;
       default:

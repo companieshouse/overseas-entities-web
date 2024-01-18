@@ -37,7 +37,7 @@ export const isRemoveJourney = (req: Request): boolean => {
     }
   }
 
-  if (req.url !== undefined && req.url.includes("/remove/")) {
+  if (req.url !== undefined && req.url.includes(config.REMOVE_URL_IDENTIFIER)) {
     return true;
   }
 

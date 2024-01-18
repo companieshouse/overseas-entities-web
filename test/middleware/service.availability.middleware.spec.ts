@@ -134,6 +134,7 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_REMOVE
       const resp = await request(app).get(`${REMOVE_CANNOT_USE_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
       expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual("/signin?return_to=/update-an-overseas-entity/secure-update-filter");
     });
 
     test(`Does not reach the ${REMOVE_CANNOT_USE_PAGE} when the remove flag is false`, async () => {

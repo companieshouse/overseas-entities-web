@@ -143,7 +143,7 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
         .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
         .mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_REMOVE
-      const resp = await request(app).get(`${REMOVE_CANNOT_USE_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      const resp = await request(app).get(`${REMOVE_CANNOT_USE_URL}?${PREVIOUS_PAGE_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
       expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
       expect(resp.text).toContain("Sorry, the service is unavailable");
@@ -154,9 +154,9 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
         .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
         .mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_REMOVE
-      const resp = await request(app).get(`${REMOVE_SOLD_ALL_LAND_FILTER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      const resp = await request(app).get(`${REMOVE_SOLD_ALL_LAND_FILTER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
+      expect(resp.text).not.toContain("Has the overseas entity disposed of all its property or land in the UK?");
       expect(resp.text).toContain("Sorry, the service is unavailable");
     });
 
@@ -165,9 +165,9 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
         .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
         .mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_REMOVE
-      const resp = await request(app).get(`${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      const resp = await request(app).get(`${REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}?${PREVIOUS_PAGE_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
+      expect(resp.text).not.toContain("Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?");
       expect(resp.text).toContain("Sorry, the service is unavailable");
     });
 
@@ -176,9 +176,9 @@ describe("service availability middleware tests", () => {
         .mockReturnValueOnce(false) // SHOW_SERVICE_OFFLINE_PAGE
         .mockReturnValueOnce(true) // FEATURE_FLAG_ENABLE_ROE_UPDATE
         .mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_ROE_REMOVE
-      const resp = await request(app).get(`${REMOVE_CONFIRM_STATEMENT_URL}?${PREVIOUS_PAGE_QUERY_PARAM}=${REMOVE_SOLD_ALL_LAND_FILTER_PAGE}`);
+      const resp = await request(app).get(`${REMOVE_CONFIRM_STATEMENT_URL}?${PREVIOUS_PAGE_QUERY_PARAM}`);
       expect(resp.status).toEqual(200);
-      expect(resp.text).not.toContain("You cannot apply to remove this overseas entity");
+      expect(resp.text).not.toContain("Confirm the removal statement - Apply to remove an overseas entity");
       expect(resp.text).toContain("Sorry, the service is unavailable");
     });
   });

@@ -37,6 +37,7 @@ import {
   trustType,
   dueDiligenceType,
   updateType,
+  removeType
 } from "../../src/model";
 import {
   EntityNameKey,
@@ -1351,6 +1352,10 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   no_change: true
 };
 
+export const REMOVE_OBJECT_MOCK: removeType.Remove = {
+  is_not_proprietor_of_land: true
+};
+
 export const UPDATE_OBJECT_PRIVATE_DATA_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   filing_date: { day: "1", month: "1", year: "2022" },
@@ -1716,6 +1721,7 @@ export const APPLICATION_DATA_REMOVE_MOCK: ApplicationData = {
   [TrustKey]: [TRUST],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK,
+  [removeType.RemoveKey]: REMOVE_OBJECT_MOCK,
   [IsRemoveKey]: true
 };
 

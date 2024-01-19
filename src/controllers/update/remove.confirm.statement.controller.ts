@@ -2,7 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import * as config from "../../config";
 import { logger } from "../../utils/logger";
 import { ApplicationData } from "../../model/application.model";
-import { getApplicationData } from "../../utils/application.data";
+import { getApplicationData, getRemove, setApplicationData } from "../../utils/application.data";
+import { IsNotProprietorOfLandKey } from "../../model/data.types.model";
+import { RemoveKey } from "../../model/remove.type.model";
+import { saveAndContinue } from "../../utils/save.and.continue";
+import { Session } from '@companieshouse/node-session-handler';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -18,11 +22,19 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const post = (req: Request, res: Response, next: NextFunction) => {
+export const post = async (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `POST ${config.REMOVE_CONFIRM_STATEMENT_PAGE}`);
-    // TDOD update redirect when the next page is created.
-    return res.redirect(`${config.REMOVE_CANNOT_USE_URL}`);
+
+    const appData: ApplicationData = getApplicationData(req.session);
+
+    const remove = getRemove(appData);
+    remove[IsNotProprietorOfLandKey] = true ;
+    setApplicationData(req.session, remove, RemoveKey);
+
+    await saveAndContinue(req, req.session as Session, false);
+
+    return res.redirect(`${config.UPDATE_REVIEW_STATEMENT_URL}`);
   } catch (error) {
     next(error);
   }

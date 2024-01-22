@@ -149,9 +149,9 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
   describe('GET tests', () => {
     test('when feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(getAppDataWithReviewTrust(defaultLegalEntities));
-      mockGetTrustInReview.mockReturnValue(getReviewTrust(defaultLegalEntities));
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(defaultLegalEntities));
+      mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(defaultLegalEntities));
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 
@@ -174,17 +174,35 @@ describe('Update - Manage Trusts - Review legal entities', () => {
       ['there are no legal entities in the trust', []],
       ['the trust legal entities is undefined', undefined],
     ])('when feature flag is on, and %s, an error is thrown', async (_, legalEntities) => {
-      mockIsActiveFeature.mockReturnValue(true);
-      mockGetApplicationData.mockReturnValue(getAppDataWithReviewTrust(legalEntities));
-      mockGetTrustInReview.mockReturnValue(getReviewTrust(legalEntities));
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(legalEntities));
+      mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(legalEntities));
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 
       expect(response.status).toBe(500);
     });
 
+    test.each([
+      ['Uppercase', 'BENEFICIARY'],
+      ['Camelcase', 'Beneficiary'],
+      ['Lowercase', 'beneficiary'],
+    ])('when beneficial owner type is %s string then it is mapped correctly on the page', async (_, boType) => {
+      // resuming an update journey/application causes the bo types to be set as uppercase strings instead of RoleWithinTrustType
+      mockIsActiveFeature.mockReturnValue(true);
+      const cloneDefaultLegalEntities = JSON.parse(JSON.stringify(defaultLegalEntities));
+      cloneDefaultLegalEntities[0].type = boType as RoleWithinTrustType;
+
+      mockGetApplicationData.mockReturnValueOnce(getAppDataWithReviewTrust(cloneDefaultLegalEntities));
+      mockGetTrustInReview.mockReturnValueOnce(getReviewTrust(cloneDefaultLegalEntities));
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
+
+      expect(resp.text).toContain('Beneficiary');
+    });
+
     test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const response = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 
@@ -195,7 +213,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
 
   describe('POST tests', () => {
     test('when add button clicked, redirect to add legal entity page with no id param', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
 
       const response = await request(app)
         .post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL)
@@ -208,7 +226,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test('when no more add clicked, saves session state and redirects to the orchestrator', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValueOnce(true);
       const appData = { entity_number: 'OE999876', entity_name: 'Test OE' };
 
       mockGetApplicationData.mockReturnValue(appData);
@@ -223,7 +241,7 @@ describe('Update - Manage Trusts - Review legal entities', () => {
     });
 
     test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValueOnce(false);
 
       const response = await request(app).post(UPDATE_MANAGE_TRUSTS_REVIEW_LEGAL_ENTITIES_URL);
 

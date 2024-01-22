@@ -832,4 +832,57 @@ describe("Test fetching and mapping of Trust data", () => {
       fail();
     }
   });
+
+  test("mapTrusteeType should return correct role for the given trusteeTypeId", () => {
+
+    const trusteeData = {
+      hashedTrusteeId: "1",
+    } as unknown as IndividualTrusteeData;
+
+    trustMock.INDIVIDUALS = [];
+    trusteeData.trusteeTypeId = "5001";
+    mapIndividualTrusteeData(trusteeData, trustMock);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(undefined);
+    } else {
+      fail();
+    }
+
+    trustMock.INDIVIDUALS = [];
+    trusteeData.trusteeTypeId = "5002";
+    mapIndividualTrusteeData(trusteeData, trustMock);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.BENEFICIARY);
+    } else {
+      fail();
+    }
+
+    trustMock.INDIVIDUALS = [];
+    trusteeData.trusteeTypeId = "5003";
+    mapIndividualTrusteeData(trusteeData, trustMock);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.SETTLOR);
+    } else {
+      fail();
+    }
+
+    trustMock.INDIVIDUALS = [];
+    trusteeData.trusteeTypeId = "5004";
+    mapIndividualTrusteeData(trusteeData, trustMock);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.GRANTOR);
+    } else {
+      fail();
+    }
+
+    trustMock.INDIVIDUALS = [];
+    trusteeData.trusteeTypeId = "5005";
+    mapIndividualTrusteeData(trusteeData, trustMock);
+    if (trustMock.INDIVIDUALS) {
+      expect(trustMock.INDIVIDUALS[0].type).toEqual(RoleWithinTrustType.INTERESTED_PERSON);
+    } else {
+      fail();
+    }
+  });
+
 });

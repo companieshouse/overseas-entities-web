@@ -308,7 +308,7 @@ const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOw
   beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
-const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType | undefined => {
   switch (trusteeTypeId) {
       case "5005":
         return RoleWithinTrustType.INTERESTED_PERSON;
@@ -317,8 +317,16 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5003":
         return RoleWithinTrustType.SETTLOR;
       case "5002":
-      case "5001":
         return RoleWithinTrustType.BENEFICIARY;
+      case "5001":
+        /*
+          Type 5001 is not a valid type for an individual or corporate trustee. Instances of individual or corporate
+          trustees that have this trusteeTypeId are the result of incorrect data originally submitted through the
+          trust spreadsheet (which has now been superseded by web screens). In these instances we do not display the type.
+          Data fixes should prevent these instances from being retrieved.
+        */
+        logger.info(`Warning - invalid data. Trustee type ${trusteeTypeId} found when mapping trustee data`);
+        return undefined;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

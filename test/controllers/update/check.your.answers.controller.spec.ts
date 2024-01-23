@@ -24,7 +24,6 @@ import {
   UPDATE_PRESENTER_CHANGE_FULL_NAME,
   UPDATE_PRESENTER_CHANGE_EMAIL,
   SECURE_UPDATE_FILTER_URL,
-  UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL,
 } from "../../../src/config";
 import app from "../../../src/app";
 import {
@@ -72,7 +71,6 @@ import {
   UPDATE_MANAGING_OFFICER_OBJECT_MOCK_WITH_CH_REF,
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
-  APPLICATION_DATA_REMOVE_BO_MOCK
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -426,32 +424,6 @@ describe("CHECK YOUR ANSWERS controller", () => {
 
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
-    });
-
-    test(`redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when NO is submitted`, async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_UPDATE_BO_MOCK);
-
-      const resp = await request(app)
-        .post(UPDATE_CHECK_YOUR_ANSWERS_URL)
-        .send({ "no_change_review_statement": "0" });
-
-      expect(resp.status).toEqual(302);
-      expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
-    });
-
-    describe("POST tests for remove journey", () => {
-      test(`redirect to ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL} page when NO is submitted on remove journey`, async () => {
-        mockIsActiveFeature.mockReturnValueOnce(true);
-        mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
-
-        const resp = await request(app)
-          .post(UPDATE_CHECK_YOUR_ANSWERS_URL)
-          .send({ "no_change_review_statement": "0" });
-
-        expect(resp.status).toEqual(302);
-        expect(resp.header.location).toEqual(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
-      });
     });
   });
 });

@@ -4,6 +4,7 @@ jest.mock('../../src/middleware/authentication.middleware');
 jest.mock('../../src/utils/application.data');
 jest.mock('../../src/middleware/navigation/has.sold.land.middleware');
 jest.mock("../../src/middleware/service.availability.middleware");
+jest.mock("../../src/middleware/navigation/remove/remove.journey.middleware");
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -29,6 +30,7 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
+import { removeJourneyMiddleware } from "../../src/middleware/navigation/remove/remove.journey.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -42,6 +44,9 @@ const mockSetExtraData = setExtraData as jest.Mock;
 
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+
+const mockRemoveJourneyMiddleware = removeJourneyMiddleware as jest.Mock;
+mockRemoveJourneyMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 describe( "SECURE REGISTER FILTER controller", () => {
 

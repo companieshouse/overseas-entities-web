@@ -11,6 +11,7 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/service/overseas.entities.service");
+jest.mock("../../../src/utils/date");
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -28,10 +29,11 @@ import { getApplicationData, setExtraData } from "../../../src/utils/application
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getBeneficialOwnersPrivateData, getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
 import { APPLICATION_DATA_CH_REF_UPDATE_MOCK, APPLICATION_DATA_MOCK_WITH_OWNER_UPDATE_REVIEW_DATA, APPLICATION_DATA_UPDATE_BO_MOCK, APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW, ENTITY_OBJECT_MOCK, ERROR, OVERSEAS_ENTITY_ID, PAYMENT_LINK_JOURNEY, TRANSACTION_CLOSED_RESPONSE, TRANSACTION_ID, APPLICATION_DATA_UPDATE_MO_PRIVATE_DATA_MOCK, APPLICATION_DATA_REMOVE_BO_MOCK } from "../../__mocks__/session.mock";
-import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING, SECURE_UPDATE_FILTER_CHANGELINK, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK, UPDATE_FILING_DATE_CHANGELINK, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK } from "../../../src/config";
-import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, PRINT_BUTTON_TEXT, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
+import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL, UPDATE_PRESENTER_CHANGE_FULL_NAME, UPDATE_REVIEW_STATEMENT_URL, UPDATE_REVIEW_STATEMENT_PAGE, OVERSEAS_ENTITY_SECTION_HEADING, SECURE_UPDATE_FILTER_CHANGELINK, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_CHANGELINK, UPDATE_FILING_DATE_CHANGELINK, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_CHANGELINK, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_CHANGELINK, REMOVE_SERVICE_NAME, REMOVE_CONFIRM_STATEMENT_URL } from "../../../src/config";
+import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+import { DateAsStrings, getTodaysDate } from "../../../src/utils/date";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -62,10 +64,13 @@ mockCloseTransaction.mockReturnValue( TRANSACTION_CLOSED_RESPONSE );
 const mockPaymentsSession = startPaymentsSession as jest.Mock;
 mockPaymentsSession.mockReturnValue( "CONFIRMATION_URL" );
 
+const mockGetTodaysDate = getTodaysDate as jest.Mock;
+
 describe("Update review overseas entity information controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" } as DateAsStrings);
     mockGetApplicationData.mockReturnValue({
       ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
     });
@@ -237,16 +242,27 @@ describe("Update review overseas entity information controller tests", () => {
   });
 
   describe("GET tests for REMOVE journey", () => {
-    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page`, async () => {
+    test(`renders the ${UPDATE_REVIEW_STATEMENT_PAGE} page for remove journey`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       const resp = await request(app).get(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
-      // expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
       expect(resp.text).toContain(UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS);
-      // expect(resp.text).toContain(NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT);
+      expect(resp.text).toContain(REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT);
+      expect(resp.text).toContain("05");
+      expect(resp.text).toContain("April");
+      expect(resp.text).toContain("2024");
       expect(resp.text).toContain(CONTINUE_BUTTON_TEXT);
       expect(resp.text).toContain(PRINT_BUTTON_TEXT);
+      expect(resp.text).toContain(REMOVE_CONFIRM_STATEMENT_URL);
     });
   });
 
@@ -331,11 +347,18 @@ describe("Update review overseas entity information controller tests", () => {
     });
 
     test("validation error when posting on REMOVE journey", async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_REMOVE_BO_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_BO_MOCK);
       const resp = await request(app).post(UPDATE_REVIEW_STATEMENT_URL);
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_UPDATE_STATEMENT);
-      // TODO check REMOVE specific fields still present after validation fires
+      expect(resp.text).toContain(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_CHANGES_REMOVE_STATEMENT);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT);
+      expect(resp.text).toContain(REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT);
     });
   });
 });

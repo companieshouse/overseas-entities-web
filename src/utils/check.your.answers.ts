@@ -37,7 +37,7 @@ import {
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
 import { isRemoveJourney } from "./url";
-import { DateTime } from "luxon";
+import { getTodaysDate } from "./date";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
@@ -72,6 +72,7 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
         appData,
         pageParams: {
           isRegistration: false,
+          isRemove: true,
           noChangeFlag: isNoChangeJourney,
           isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
           hasAnyBosWithTrusteeNocs,
@@ -164,11 +165,3 @@ const getTemplateName = (isNoChangeJourney: boolean) => (
     : UPDATE_CHECK_YOUR_ANSWERS_PAGE
 );
 
-const getTodaysDate = (): any => {
-  const now = DateTime.now().toUTC();
-  return {
-    day: "" + now.day,
-    month: "" + now.month,
-    year: "" + now.year
-  };
-};

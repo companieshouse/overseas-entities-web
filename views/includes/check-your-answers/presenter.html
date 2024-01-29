@@ -9,9 +9,13 @@
 {% else %} 
   {% set contactDetailsSubText %}
     {% if pageParams.noChangeFlag %}
-    Who can we contact about this update statement?
+      {% if pageParams.isRemove %}
+        Who can we contact about this application?
+      {% else %}
+        Who can we contact about this update statement?
+      {% endif %}
     {%else%}
-    Who can we contact about this update application?
+      Who can we contact about this update application?
     {%endif%}
   {%endset%}
   {% set presenterNameChangeLink = OE_CONFIGS.UPDATE_PRESENTER_CHANGE_FULL_NAME %} 

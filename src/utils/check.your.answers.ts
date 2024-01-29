@@ -31,16 +31,20 @@ import {
   FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
   UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+  JourneyType,
+  REMOVE_CONFIRM_STATEMENT_URL,
 } from "../config";
 import { RoleWithinTrustType } from "../model/role.within.trust.type.model";
 import { fetchManagingOfficersPrivateData } from "./update/fetch.managing.officers.private.data";
+import { isRemoveJourney } from "./url";
+import { DateTime } from "luxon";
 
 export const getDataForReview = async (req: Request, res: Response, next: NextFunction, isNoChangeJourney: boolean) => {
   const session = req.session as Session;
   const appData = getApplicationData(session);
   const hasAnyBosWithTrusteeNocs = isNoChangeJourney ? checkEntityReviewRequiresTrusts(appData) : checkEntityRequiresTrusts(appData);
 
-  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs);
+  const backLinkUrl = getBackLinkUrl(isNoChangeJourney, hasAnyBosWithTrusteeNocs, isRemoveJourney(req));
   const templateName = getTemplateName(isNoChangeJourney);
 
   try {
@@ -54,6 +58,26 @@ export const getDataForReview = async (req: Request, res: Response, next: NextFu
 
       await fetchOverseasEntityEmailAddress(appData, req, session);
 
+    }
+
+    if (isRemoveJourney(req)) {
+      return res.render(templateName, {
+        journey: JourneyType.remove,
+        backLinkUrl: backLinkUrl,
+        templateName: templateName,
+        changeLinkUrl: OVERSEAS_ENTITY_UPDATE_DETAILS_URL,
+        overseasEntityHeading: OVERSEAS_ENTITY_SECTION_HEADING,
+        whoIsCompletingChangeLink: WHO_IS_MAKING_UPDATE_URL,
+        roleTypes: RoleWithinTrustType,
+        appData,
+        pageParams: {
+          isRegistration: false,
+          noChangeFlag: isNoChangeJourney,
+          isTrustFeatureEnabled: isActiveFeature(FEATURE_FLAG_ENABLE_TRUSTS_WEB),
+          hasAnyBosWithTrusteeNocs,
+          today: getTodaysDate()
+        },
+      });
     }
 
     return res.render(templateName, {
@@ -120,8 +144,11 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
   }
 };
 
-const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean) => {
+const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemoveJourney: boolean) => {
   if (isNoChangeJourney) {
+    if (isRemoveJourney) {
+      return REMOVE_CONFIRM_STATEMENT_URL;
+    }
     return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
   } else {
     let backLinkUrl: string;
@@ -136,3 +163,12 @@ const getTemplateName = (isNoChangeJourney: boolean) => (
     ? UPDATE_REVIEW_STATEMENT_PAGE
     : UPDATE_CHECK_YOUR_ANSWERS_PAGE
 );
+
+const getTodaysDate = (): any => {
+  const now = DateTime.now().toUTC();
+  return {
+    day: "" + now.day,
+    month: "" + now.month,
+    year: "" + now.year
+  };
+};

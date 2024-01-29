@@ -5,6 +5,7 @@ import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
+import { REMOVE_CONFIRM_STATEMENT_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL } from "../config";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
@@ -42,6 +43,13 @@ export const getOverseasEntityPresenterBackLink = (req: Request): string => {
   } else {
     return config.UPDATE_FILING_DATE_URL;
   }
+};
+
+export const getUpdateReviewStatementBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return REMOVE_CONFIRM_STATEMENT_URL;
+  }
+  return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
 };
 
 export const NAVIGATION: Navigation = {
@@ -87,7 +95,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
-    previousPage: () => config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {

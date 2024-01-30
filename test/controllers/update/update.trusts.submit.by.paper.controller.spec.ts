@@ -4,6 +4,7 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/feature.flag" );
 
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
 import { NextFunction, Request, Response } from "express";
 import { expect, test, describe, jest } from "@jest/globals";
 import request from "supertest";
@@ -42,6 +43,7 @@ describe("Update trusts submit by paper controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING);
       expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
+      expect(mockRemoveJourneyMiddleware).toHaveBeenCalled();
     });
 
     test("renders the trusts submit by paper page with back button to confirm-overseas-entity-details", async () => {

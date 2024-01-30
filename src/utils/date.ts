@@ -1,12 +1,7 @@
 import { DateTime } from "luxon";
+import { InputDate } from "../model/data.types.model";
 
-export interface DateAsStrings {
-    day: string,
-    month: string,
-    year: string
-}
-
-export const getTodaysDate = (): DateAsStrings => {
+export const getTodaysDate = (): InputDate => {
   const now = DateTime.now().toUTC();
   return {
     day: "" + now.day,

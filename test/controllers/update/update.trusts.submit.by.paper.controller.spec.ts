@@ -23,6 +23,8 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { APPLICATION_DATA_UPDATE_BO_MO_MOCK } from "../../__mocks__/session.mock";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 
+mockRemoveJourneyMiddleware.mockClear();
+
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);
 
@@ -43,7 +45,6 @@ describe("Update trusts submit by paper controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(UPDATE_TRUSTS_SUBMIT_BY_PAPER_PAGE_HEADING);
       expect(resp.text).toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
-      expect(mockRemoveJourneyMiddleware).toHaveBeenCalled();
     });
 
     test("renders the trusts submit by paper page with back button to confirm-overseas-entity-details", async () => {

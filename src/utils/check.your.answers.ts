@@ -145,9 +145,9 @@ export const postDataForReview = async (req: Request, res: Response, next: NextF
   }
 };
 
-const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemoveJourney: boolean) => {
+const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: boolean, isRemove: boolean) => {
   if (isNoChangeJourney) {
-    if (isRemoveJourney) {
+    if (isRemove) {
       return REMOVE_CONFIRM_STATEMENT_URL;
     }
     return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;

@@ -5,7 +5,6 @@ import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
 import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
-import { REMOVE_CONFIRM_STATEMENT_URL, UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL } from "../config";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
   return data?.who_is_registering === WhoIsRegisteringType.AGENT
@@ -47,9 +46,9 @@ export const getOverseasEntityPresenterBackLink = (req: Request): string => {
 
 export const getUpdateReviewStatementBackLink = (req: Request): string => {
   if (isRemoveJourney(req)) {
-    return REMOVE_CONFIRM_STATEMENT_URL;
+    return config.REMOVE_CONFIRM_STATEMENT_URL;
   }
-  return UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+  return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
 };
 
 export const NAVIGATION: Navigation = {

@@ -1980,6 +1980,11 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_REMOVE_BO_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  [IsRemoveKey]: true,
+};
+
 export const APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,

@@ -12,7 +12,8 @@ import {
   getSoldLandFilterBackLink,
   getUpdateOrRemoveBackLink,
   getSecureUpdateFilterBackLink,
-  getOverseasEntityPresenterBackLink
+  getOverseasEntityPresenterBackLink,
+  getUpdateReviewStatementBackLink
 } from "../../src/utils/navigation";
 
 import { isActiveFeature } from "../../src/utils/feature.flag";
@@ -74,6 +75,17 @@ describe("NAVIGATION utils", () => {
     const mockRequest = { query: {} } as Request;
     const backLink = getOverseasEntityPresenterBackLink(mockRequest);
     expect(backLink).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`getUpdateReviewStatementBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getUpdateReviewStatementBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`getUpdateReviewStatementBackLink returns the correct URL when on the Remove journey`, () => {
+    const backLink = getUpdateReviewStatementBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(config.REMOVE_CONFIRM_STATEMENT_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -291,8 +303,14 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.REMOVE_CONFIRM_STATEMENT_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(config.REMOVE_CONFIRM_STATEMENT_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL} object`, () => {

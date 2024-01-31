@@ -44,6 +44,13 @@ export const getOverseasEntityPresenterBackLink = (req: Request): string => {
   }
 };
 
+export const getUpdateReviewStatementBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return config.REMOVE_CONFIRM_STATEMENT_URL;
+  }
+  return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+};
+
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {
     currentPage: config.STARTING_NEW_PAGE,
@@ -87,7 +94,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
-    previousPage: () => config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {

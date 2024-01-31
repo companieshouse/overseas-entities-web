@@ -254,6 +254,11 @@ export const REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE = "Is the overseas entity c
 export const REMOVE_INTERRUPT_CARD_TEXT = "Once an overseas entity is removed";
 export const REMOVE_USE_INFORMATION_NEED_MORE = "We’ll use this if we need more information about the application.";
 export const REMOVE_CONFIRMATION_STATEMENT_TITLE = "Confirm the removal statement - Apply to remove an overseas entity";
+export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE = "Review the information before submitting";
+export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE = "Review the information before submitting";
+export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT = "Changes to the overseas entity";
+export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT = "Is all the information in this application correct?";
+export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT = "All information submitted must be correct on";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

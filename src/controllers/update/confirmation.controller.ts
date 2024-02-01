@@ -19,7 +19,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const appData: ApplicationData = getApplicationData(req.session);
     const referenceNumber = appData[Transactionkey];
 
-    // It's necessary to do this check (and save the result) before deleting the application data
+    // It's necessary to do this check and save the result before deleting the application
+    // data (as the application data is used by the 'isRemoveJourney' function)
     const isRemove: boolean = isRemoveJourney(req);
 
     deleteApplicationData(req.session);

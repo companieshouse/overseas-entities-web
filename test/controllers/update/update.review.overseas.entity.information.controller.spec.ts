@@ -6,6 +6,9 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.due.diligence.details.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -31,6 +34,8 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { logger } from "../../../src/utils/logger";
 import { hasDueDiligenceDetails } from "../../../src/middleware/navigation/update/has.due.diligence.details.middleware";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockHasDueDiligenceDetails = hasDueDiligenceDetails as jest.Mock;
 mockHasDueDiligenceDetails.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

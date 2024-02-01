@@ -7,6 +7,9 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/utils/save.and.continue');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -57,6 +60,8 @@ import { getTwoMonthOldDate } from "../../__mocks__/fields/date.mock";
 import { DUE_DILIGENCE_WITH_INVALID_CHARACTERS_FIELDS_MOCK } from "../../__mocks__/validation.mock";
 import { DateTime } from "luxon";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next());

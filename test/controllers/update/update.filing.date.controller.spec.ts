@@ -9,6 +9,9 @@ jest.mock('../../../src/service/overseas.entities.service');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
@@ -45,6 +48,8 @@ import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.moc
 
 import { NextFunction } from "express";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;

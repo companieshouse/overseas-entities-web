@@ -6,6 +6,9 @@ jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.presenter.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -35,6 +38,8 @@ import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.a
 import { logger } from "../../../src/utils/logger";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../../src/model/who.is.making.filing.model";
 import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/has.presenter.middleware";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockHasUpdatePresenter = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenter.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

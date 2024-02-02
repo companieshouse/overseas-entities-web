@@ -1,11 +1,17 @@
 {% set title = "Confirmation" %}
 
-{% if isUpdate %}
-  {% extends "update-layout.html" %}
-  {% set titleTemplate = "includes/update-page-title.html" %}
-{% else %}
+{% if not isUpdate and not isRemove %}
   {% extends "layout.html" %}
   {% set titleTemplate = "includes/page-title.html" %}
+  {% set surveyPage = "roe-confirmation" %}
+{% else %}
+  {% extends "update-layout.html" %}
+  {% set titleTemplate = "includes/update-page-title.html" %}
+  {% if isUpdate %}
+    {% set surveyPage = "oe-update-conf" %}
+  {% else %}
+    {% set surveyPage = "oe-remove-confirmation" %}
+  {% endif %}
 {% endif %}
 
 {% block pageTitle %}
@@ -18,7 +24,7 @@
     <div class="govuk-grid-column-two-thirds">
 
       <div class="govuk-panel govuk-panel--confirmation">
-        <h1 class="govuk-panel__title">{{ "Update statement submitted" if (isUpdate and (journey != "remove")) else "Application submitted" }}</h1>
+        <h1 class="govuk-panel__title">{{ "Update statement submitted" if isUpdate else "Application submitted" }}</h1>
         <div class="govuk-panel__body">
           Your application reference number: <br>
           <strong>{{ referenceNumber }}</strong>
@@ -41,22 +47,20 @@
       <h2 class="govuk-heading-m">What happens next</h2>
 
       {% if isUpdate %}
-        {% if (journey == "remove") %}
-          <p class="govuk-body">We'll process the application as soon as possible. This includes checking with all the UK land registries that the overseas entity is not currently listed as the registered owner of any property or land in the UK. As this is a new service, we're not able to tell you exactly how long this will take.</p>
-
-          <p class="govuk-body">Once we have processed the application, we'll email you to let you know if it has been accepted or rejected.</p>
-
-          <p class="govuk-body">If it is accepted, the overseas entity's status will change to 'De-registered'. Information about the entity and its beneficial owners will still be shown on the public register.</p>
-        {% elif isAgentRegistering or noChange %}
+        {% if isAgentRegistering or noChange %}
           <p class="govuk-body">We'll email you to let you know if the update statement has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
         {% else %}
           <p class="govuk-body">Once we have received the statement from the agent, we'll process the application as soon as possible. We'll email you to let you know if the update statement has been accepted or rejected. As this is a new service, we're not yet able to tell you exactly how long this will take.</p>
         {% endif %}
+      {% elif isRemove %}
+        <p class="govuk-body">We'll process the application as soon as possible. This includes checking with all the UK land registries that the overseas entity is not currently listed as the registered owner of any property or land in the UK. As this is a new service, we're not able to tell you exactly how long this will take.</p>
+
+          <p class="govuk-body">Once we have processed the application, we'll email you to let you know if it has been accepted or rejected.</p>
+
+          <p class="govuk-body">If it is accepted, the overseas entity's status will change to 'De-registered'. Information about the entity and its beneficial owners will still be shown on the public register.</p>
       {% else %}
         <p class="govuk-body">We'll email you to let you know if your application to register an overseas entity has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
-      {% endif %}
 
-      {% if not isUpdate %}
         <h3 class="govuk-heading-s">What happens if the application is accepted</h3>
         <p class="govuk-body">We'll email the Overseas Entity ID to <strong>{{ userEmail }}</strong>. We'll send the notice of registration to <strong>{{ entityEmail }}</strong>, which will also include the Overseas Entity ID. This will need to be provided to the Land Registry whenever the overseas entity buys, sells or transfers land or property in the UK. </p>
 
@@ -67,15 +71,9 @@
         <br/>
       {% endif %}
 
-      {% if isUpdate %}
-        <p class="govuk-body">
-          <a class="govuk-link" href={{ "https://www.smartsurvey.co.uk/s/oe-remove-confirmation/" if (journey == "remove") else "https://www.smartsurvey.co.uk/s/oe-update-conf/" }}>What did you think of this service?</a> (takes 30 seconds)
-        </p>
-      {% else %}
-        <p class="govuk-body">
-          <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/roe-confirmation/">What did you think of this service?</a> (takes 30 seconds)
-        </p>
-      {% endif %}
+      <p class="govuk-body">
+        <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/{{ surveyPage }}/">What did you think of this service?</a> (takes 30 seconds)
+      </p>
 
     </div>
   </div>

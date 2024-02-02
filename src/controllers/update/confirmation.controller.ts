@@ -32,7 +32,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         referenceNumber,
         userEmail: getLoggedInUserEmail(req.session),
         verificationCheckDays: 14,
-        isUpdate: true,
+        isRemove: true,
         noChange: appData.update?.no_change,
         templateName: CONFIRMATION_PAGE
       });

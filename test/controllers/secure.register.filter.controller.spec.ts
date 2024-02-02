@@ -10,6 +10,9 @@ import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import { removeJourneyMiddleware } from "../../src/middleware/navigation/remove/remove.journey.middleware";
+
 import app from "../../src/app";
 import * as config from "../../src/config";
 import { ErrorMessages } from "../../src/validation/error.messages";
@@ -30,7 +33,6 @@ import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
 import { hasSoldLand } from "../../src/middleware/navigation/has.sold.land.middleware";
 import { serviceAvailabilityMiddleware } from "../../src/middleware/service.availability.middleware";
-import { removeJourneyMiddleware } from "../../src/middleware/navigation/remove/remove.journey.middleware";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

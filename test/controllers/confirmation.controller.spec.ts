@@ -36,6 +36,7 @@ const res = { render: jest.fn() as any } as Response;
 const APPLICATION_TO_REGISTER_TEXT = "application to register an overseas entity";
 const NOTICE_OF_REGISTRATION_TEXT = "notice of registration to";
 const REGISTRATION_FEE_TEXT = "registration fee";
+const SURVEY_LINK = "roe-confirmation";
 
 describe("Confirmation controller tests", () => {
 
@@ -65,6 +66,7 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(APPLICATION_TO_REGISTER_TEXT);
     expect(resp.text).toContain(NOTICE_OF_REGISTRATION_TEXT);
     expect(resp.text).toContain(REGISTRATION_FEE_TEXT);
+    expect(resp.text).toContain(SURVEY_LINK);
   });
 
   test("renders the confirmation page for agent", async () => {

@@ -24,8 +24,15 @@ import {
   CONFIRMATION_AGENT_SPECIFIC_TEXT,
   CONFIRMATION_UPDATE_TEXT
 } from "../../__mocks__/text.mock";
+import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { deleteApplicationData, getApplicationData } from "../../../src/utils/application.data";
-import { APPLICATION_DATA_MOCK, APPLICATION_DATA_MOCK_WITHOUT_UPDATE, getSessionRequestWithExtraData, userMail } from "../../__mocks__/session.mock";
+import {
+  APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_REMOVE_MOCK,
+  APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
+  getSessionRequestWithExtraData,
+  userMail
+} from "../../__mocks__/session.mock";
 import { get } from "../../../src/controllers/confirmation.controller";
 import { getLoggedInUserEmail } from "../../../src/utils/session";
 import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware";
@@ -50,6 +57,10 @@ const mockGetLoggedInUserEmail = getLoggedInUserEmail as jest.Mock;
 const UPDATE_STATEMENT_TEXT = "update statement";
 const UPDATE_STATEMENT_WHAT_TO_DO_NOW = "What you need to do now";
 const UPDATE_STATEMENT_WHAT_HAPPENS_NEXT = "What happens next";
+const UPDATE_SURVEY_LINK = "oe-update-conf";
+
+const REMOVE_STATEMENT_TEXT = "status will change to 'De-registered'";
+const REMOVE_SURVEY_LINK = "oe-remove-confirmation";
 
 describe("UPDATE CONFIRMATION controller", () => {
 
@@ -69,7 +80,24 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER);
     expect(resp.text).toContain(userMail);
     expect(resp.text).toContain(UPDATE_STATEMENT_TEXT);
-    expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
+    expect(resp.text).toContain(UPDATE_SURVEY_LINK);
+    expect(mockGetApplicationData).toHaveBeenCalledTimes(2);
+    expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
+  });
+
+  test("renders the remove confirmation page", async () => {
+    mockGetApplicationData.mockReturnValue(
+      { ...APPLICATION_DATA_REMOVE_MOCK }
+    );
+
+    const resp = await request(app).get(UPDATE_CONFIRMATION_URL);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+    expect(resp.text).toContain(UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER);
+    expect(resp.text).toContain(userMail);
+    expect(resp.text).toContain(REMOVE_STATEMENT_TEXT);
+    expect(resp.text).toContain(REMOVE_SURVEY_LINK);
+    expect(mockGetApplicationData).toHaveBeenCalledTimes(2);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
 
@@ -95,7 +123,7 @@ describe("UPDATE CONFIRMATION controller", () => {
   });
 
   test("agent related content is not displayed for no change submission", async () => {
-    mockGetApplicationData.mockReturnValueOnce(
+    mockGetApplicationData.mockReturnValue(
       {
         ...APPLICATION_DATA_MOCK,
         who_is_registering: undefined,
@@ -111,7 +139,7 @@ describe("UPDATE CONFIRMATION controller", () => {
   });
 
   test("agent related content is displayed for change submission", async () => {
-    mockGetApplicationData.mockReturnValueOnce(
+    mockGetApplicationData.mockReturnValue(
       {
         ...APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
         who_is_registering: undefined,

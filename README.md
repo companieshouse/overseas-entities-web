@@ -97,6 +97,7 @@ PIWIK_URL | Matomo URL | `http://url`
 PIWIK_SITE_ID | Matomo Site ID | 1
 PIWIK_START_GOAL_ID | Matomo Start goal ID | 2
 PIWIK_UPDATE_START_GOAL_ID | Matomo Update Start goal ID | 3
+PIWIK_REMOVE_START_GOAL_ID | Matomo Remove Start goal ID | 4
 SHOW_SERVICE_OFFLINE_PAGE | Feature Flag | false
 VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf`
 

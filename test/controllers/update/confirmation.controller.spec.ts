@@ -85,7 +85,7 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
 
-  test("renders the remove confirmation page", async () => {
+  test("renders the remove confirmation page for a 'no change' submission", async () => {
     mockGetApplicationData.mockReturnValue(
       { ...APPLICATION_DATA_REMOVE_MOCK }
     );
@@ -97,6 +97,38 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(userMail);
     expect(resp.text).toContain(REMOVE_STATEMENT_TEXT);
     expect(resp.text).toContain(REMOVE_SURVEY_LINK);
+    expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_HAPPENS_NEXT);
+
+    // This is a 'no change' scenario, so this text should not be output
+    expect(resp.text).not.toContain(UPDATE_STATEMENT_WHAT_TO_DO_NOW);
+    expect(resp.text).not.toContain(CONFIRMATION_AGENT_SPECIFIC_TEXT);
+
+    expect(mockGetApplicationData).toHaveBeenCalledTimes(2);
+    expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
+  });
+
+  test("renders the remove confirmation page for a 'change' submission (no agent)", async () => {
+    mockGetApplicationData.mockReturnValue(
+      {
+        ...APPLICATION_DATA_REMOVE_MOCK,
+        who_is_registering: undefined,
+        update: { no_change: false }
+      }
+    );
+
+    const resp = await request(app).get(UPDATE_CONFIRMATION_URL);
+    expect(resp.status).toEqual(200);
+    expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+    expect(resp.text).toContain(UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER);
+    expect(resp.text).toContain(userMail);
+    expect(resp.text).toContain(REMOVE_STATEMENT_TEXT);
+    expect(resp.text).toContain(REMOVE_SURVEY_LINK);
+    expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_HAPPENS_NEXT);
+
+    // This is a 'change' scenario, so this text should be output
+    expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_TO_DO_NOW);
+    expect(resp.text).toContain(CONFIRMATION_AGENT_SPECIFIC_TEXT);
+
     expect(mockGetApplicationData).toHaveBeenCalledTimes(2);
     expect(mockDeleteApplicationData).toHaveBeenCalledTimes(1);
   });
@@ -127,7 +159,6 @@ describe("UPDATE CONFIRMATION controller", () => {
       {
         ...APPLICATION_DATA_MOCK,
         who_is_registering: undefined,
-
         update: { no_change: true }
       } );
     const resp = await request(app).get(UPDATE_CONFIRMATION_URL);

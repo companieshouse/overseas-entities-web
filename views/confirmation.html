@@ -53,11 +53,15 @@
           <p class="govuk-body">Once we have received the statement from the agent, we'll process the application as soon as possible. We'll email you to let you know if the update statement has been accepted or rejected. As this is a new service, we're not yet able to tell you exactly how long this will take.</p>
         {% endif %}
       {% elif isRemove %}
-        <p class="govuk-body">We'll process the application as soon as possible. This includes checking with all the UK land registries that the overseas entity is not currently listed as the registered owner of any property or land in the UK. As this is a new service, we're not able to tell you exactly how long this will take.</p>
+        {% if isAgentRegistering or noChange %}
+          <p class="govuk-body">We'll process the application as soon as possible. This includes checking with all the UK land registries that the overseas entity is not currently listed as the registered owner of any property or land in the UK. As this is a new service, we're not able to tell you exactly how long this will take.</p>
+        {% else %}
+          <p class="govuk-body">Once we have received the statement from the agent, we'll process the application as soon as possible. This includes checking with all the UK land registries that the overseas entity is not currently listed as the registered owner of any property or land in the UK. As this is a new service, we're not able to tell you exactly how long this will take.</p>
+        {% endif %}
 
-          <p class="govuk-body">Once we have processed the application, we'll email you to let you know if it has been accepted or rejected.</p>
+        <p class="govuk-body">Once we have processed the application, we'll email you to let you know if it has been accepted or rejected.</p>
 
-          <p class="govuk-body">If it is accepted, the overseas entity's status will change to 'De-registered'. Information about the entity and its beneficial owners will still be shown on the public register.</p>
+        <p class="govuk-body">If it is accepted, the overseas entity's status will change to 'De-registered'. Information about the entity and its beneficial owners will still be shown on the public register.</p>
       {% else %}
         <p class="govuk-body">We'll email you to let you know if your application to register an overseas entity has been accepted or rejected. We'll process the application as soon as possible. However, because this is a new service, we're not yet able to tell you exactly how long this will take.</p>
 

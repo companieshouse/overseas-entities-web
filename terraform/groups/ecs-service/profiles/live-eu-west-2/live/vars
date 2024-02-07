@@ -11,6 +11,7 @@ piwik_url = "https://matomo.companieshouse.gov.uk/"
 piwik_site_id = "28"
 piwik_start_goal_id = "3"
 piwik_update_start_goal_id = "11"
+piwik_remove_start_goal_id = "15"
 
 # Note that Mesos LIVE config has '//$CDN_HOST' for this
 cdn_host = "db2062spq951s.cloudfront.net"

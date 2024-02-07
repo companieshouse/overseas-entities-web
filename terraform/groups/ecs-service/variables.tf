@@ -109,6 +109,9 @@ variable "piwik_start_goal_id" {
 variable "piwik_update_start_goal_id" {
   type        = string
 }
+variable "piwik_remove_start_goal_id" {
+  type        = string
+}
 variable "feature_flag_enable_update_statement_validation_05072023" {
   type        = string
 }

@@ -69,6 +69,7 @@ locals {
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" }, # TODO Is this needed?
     { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
     { "name": "PIWIK_UPDATE_START_GOAL_ID", "value": "${var.piwik_update_start_goal_id}" },
+    { "name": "PIWIK_REMOVE_START_GOAL_ID", "value": "${var.piwik_remove_start_goal_id}" },
     { "name": "SHOW_SERVICE_OFFLINE_PAGE", "value": "${var.show_service_offline_page}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION_05072023", "value": "${var.feature_flag_enable_update_statement_validation_05072023}" },
     { "name": "FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "value": "${var.feature_flag_enable_save_and_resume_17102022}" },

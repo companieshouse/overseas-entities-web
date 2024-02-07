@@ -59,7 +59,7 @@ const UPDATE_STATEMENT_WHAT_TO_DO_NOW = "What you need to do now";
 const UPDATE_STATEMENT_WHAT_HAPPENS_NEXT = "What happens next";
 const UPDATE_SURVEY_LINK = "oe-update-conf";
 
-const REMOVE_STATEMENT_TEXT = "status will change to 'De-registered'";
+const REMOVE_STATEMENT_TEXT = "status will change to 'Removed'";
 const REMOVE_SURVEY_LINK = "oe-remove-confirmation";
 
 describe("UPDATE CONFIRMATION controller", () => {

@@ -11,7 +11,7 @@ import { NextFunction, Request, Response } from "express";
 
 import app from "../../src/app";
 import { CONFIRMATION_URL, PAYMENT_FEE } from "../../src/config";
-import { CONFIRMATION_PAGE_TITLE, CONFIRMATION_NUMBER_OF_DAYS, CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW } from "../__mocks__/text.mock";
+import { CONFIRMATION_PAGE_TITLE, CONFIRMATION_NUMBER_OF_DAYS, CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW, CONFIRMATION_AGENT_MUST_THEN_COMPLETE_TEXT, CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT, CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT } from "../__mocks__/text.mock";
 import { deleteApplicationData, getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK, ENTITY_OBJECT_MOCK, getSessionRequestWithExtraData, TRANSACTION_ID, userMail } from "../__mocks__/session.mock";
 import { get } from "../../src/controllers/confirmation.controller";
@@ -67,6 +67,10 @@ describe("Confirmation controller tests", () => {
     expect(resp.text).toContain(NOTICE_OF_REGISTRATION_TEXT);
     expect(resp.text).toContain(REGISTRATION_FEE_TEXT);
     expect(resp.text).toContain(SURVEY_LINK);
+    expect(resp.text).toContain(CONFIRMATION_AGENT_MUST_THEN_COMPLETE_TEXT);
+    expect(resp.text).toContain(CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT);
+
+    expect(resp.text).not.toContain(CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT);
   });
 
   test("renders the confirmation page for agent", async () => {

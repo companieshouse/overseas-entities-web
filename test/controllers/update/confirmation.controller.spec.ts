@@ -22,7 +22,10 @@ import {
   UPDATE_CONFIRMATION_PAGE_TITLE,
   UPDATE_CONFIRMATION_PAGE_REFERENCE_NUMBER,
   CONFIRMATION_AGENT_SPECIFIC_TEXT,
-  CONFIRMATION_UPDATE_TEXT
+  CONFIRMATION_UPDATE_TEXT,
+  CONFIRMATION_AGENT_MUST_THEN_COMPLETE_TEXT,
+  CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT,
+  CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT
 } from "../../__mocks__/text.mock";
 import { REMOVE_SERVICE_NAME } from "../../../src/config";
 import { deleteApplicationData, getApplicationData } from "../../../src/utils/application.data";
@@ -124,6 +127,10 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(REMOVE_STATEMENT_TEXT);
     expect(resp.text).toContain(REMOVE_SURVEY_LINK);
     expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_HAPPENS_NEXT);
+    expect(resp.text).toContain(CONFIRMATION_AGENT_MUST_THEN_COMPLETE_TEXT);
+    expect(resp.text).toContain(CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT);
+
+    expect(resp.text).not.toContain(CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT);
 
     // This is a 'change' scenario, so this text should be output
     expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_TO_DO_NOW);
@@ -182,5 +189,9 @@ describe("UPDATE CONFIRMATION controller", () => {
     expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_TO_DO_NOW);
     expect(resp.text).toContain(UPDATE_STATEMENT_WHAT_HAPPENS_NEXT);
     expect(resp.text).toContain(CONFIRMATION_AGENT_SPECIFIC_TEXT);
+    expect(resp.text).toContain(CONFIRMATION_AGENT_MUST_THEN_COMPLETE_TEXT);
+    expect(resp.text).toContain(CONFIRMATION_COMPLETED_VERIFICATION_CHECKS_TEXT);
+
+    expect(resp.text).not.toContain(CONFIRMATION_COMPLETED_IDENTITY_CHECKS_TEXT);
   });
 });

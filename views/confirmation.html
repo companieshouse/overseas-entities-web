@@ -37,9 +37,9 @@
 
       {% if not isAgentRegistering and not noChange %}
           <h2 class="govuk-heading-m">What you need to do now</h2>
-          <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed {{ "verification" if isUpdate else "identity" }} checks. </p>
+          <p class="govuk-body">You must give the application reference number to the UK-regulated agent that completed verification checks. </p>
 
-          <p class="govuk-body">{{ "The agent must then" if isUpdate else "Then the agent needs to" }} complete an <a href="{{OE_CONFIGS.VF01_FORM_DOWNLOAD_URL}}" class="govuk-link">Overseas entity verification checks statement</a> and email it to agentcode@companieshouse.gov.uk.</p>
+          <p class="govuk-body">The agent must then complete an <a href="{{OE_CONFIGS.VF01_FORM_DOWNLOAD_URL}}" class="govuk-link">Overseas entity verification checks statement</a> and email it to agentcode@companieshouse.gov.uk.</p>
 
           <p class="govuk-body">They must do this <strong>within {{ verificationCheckDays }} days</strong>. We cannot process this {{ "update statement filing" if isUpdate else "application" }} until we've received the statement.</p>
       {% endif %}

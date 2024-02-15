@@ -14,7 +14,7 @@ piwik_update_start_goal_id = "11"
 piwik_remove_start_goal_id = "15"
 
 # Note that Mesos LIVE config has '//$CDN_HOST' for this
-cdn_host = "db2062spq951s.cloudfront.net"
+cdn_host = "d2aolmgtg7n8lp.cloudfront.net" # cdn.ch.gov.uk-3.22.240
 
 cookie_domain = "company-information.service.gov.uk"
 account_local_url = "https://identity.company-information.service.gov.uk"

@@ -18,8 +18,8 @@ import { companyAuthentication } from '../../../src/middleware/company.authentic
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
-import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE } from '../../__mocks__/text.mock';
+import { APPLICATION_DATA_MOCK, BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK, BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK, TRUST } from '../../__mocks__/session.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, ERROR_LIST, UPDATE_REVIEW_THE_TRUST, ANY_MESSAGE_ERROR, SERVICE_UNAVAILABLE, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT, TRUST_CEASED_DATE_TEXT, TRUST_SELECT_TRUSTEES_TEXT } from '../../__mocks__/text.mock';
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { ErrorMessages } from "../../../src/validation/error.messages";
@@ -27,6 +27,7 @@ import { getReviewTrustById, hasTrustsToReview, updateTrustInReviewList } from '
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { Trust } from '../../../src/model/trust.model';
 import { ApplicationData } from '../../../src/model/application.model';
+import { beneficialOwnerIndividualType, beneficialOwnerOtherType } from '../../../src/model';
 
 const mockTrust = {
   ...TRUST,
@@ -50,8 +51,19 @@ const appDataWithReviewTrust = {
   }
 } as ApplicationData;
 
+// App data with no BOs that have trust NOCs
+const appDataWithNoTrustNocBOs = {
+  ...APPLICATION_DATA_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ],
+  [UpdateKey]: {
+    review_trusts: [
+      mockTrust
+    ]
+  }
+} as ApplicationData;
+
 const mockGetApplicationData = getApplicationData as jest.Mock;
-mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
@@ -65,7 +77,6 @@ const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
-mockIsActiveFeature.mockReturnValue(true);
 
 const mockHasTrustsToReview = hasTrustsToReview as jest.Mock;
 mockHasTrustsToReview.mockReturnValue(true);
@@ -78,11 +89,13 @@ const mockUpdateTrustInReviewList = updateTrustInReviewList as jest.Mock;
 describe('Update - Manage Trusts - Review the trust', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetApplicationData.mockReturnValue(appDataWithReviewTrust);
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, page is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+    test('when manage trusts feature flag is on, page is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -91,9 +104,49 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
       expect(resp.text).toContain(saveAndContinueButtonText);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
-    test('when feature flag is on, redirect if no trusts to review', async () => {
+    test('when manage trusts feature flag is on, trusts ceased date flag is off, ceased date not displayed when no associated BOs', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+
+      // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      // page should not contain new ceased date info as ceased date flag is FALSE
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Review the trust");
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
+    });
+
+    test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+
+      // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+
+      const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain("Review the trust");
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+      expect(resp.text).toContain(saveAndContinueButtonText);
+      expect(resp.text).toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).toContain(TRUST_CEASED_DATE_TEXT);
+      expect(resp.text).not.toContain(TRUST_SELECT_TRUSTEES_TEXT);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+    });
+
+    test('when manage trusts feature flag is on, redirect if no trusts to review', async () => {
       mockIsActiveFeature.mockReturnValue(true);
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
@@ -103,7 +156,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
     });
 
-    test('when feature flag is off, 404 is returned', async () => {
+    test('when manage trusts feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);

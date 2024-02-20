@@ -142,7 +142,7 @@ variable "feature_flag_enable_update_manage_trusts_29082023" {
 variable "feature_flag_enable_redis_removal_27092023" {
   type        = string
 }
-variable "feature_flag_enable_trusts_ceased_date_19022024" {
+variable "feature_flag_enable_cease_trusts_19022024" {
   type        = string
 }
 variable "landing_page_url" {

@@ -38,7 +38,7 @@ type TrustDetailPageProperties = {
   };
   formData: PageModel.TrustDetailsForm,
   errors?: FormattedValidationErrors,
-  isFeatureFlagTrustsCeasedDateEnabled: boolean,
+  isFeatureFlagCeaseTrustsEnabled: boolean,
   url: string,
 };
 
@@ -70,7 +70,7 @@ const getPageProperties = (
     },
     formData,
     isReview,
-    isFeatureFlagTrustsCeasedDateEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE),
+    isFeatureFlagCeaseTrustsEnabled: isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS),
     errors,
     url: getUrl(isUpdate),
   };

@@ -77,7 +77,7 @@ describe('Update - Trusts - Tell us about the trust', () => {
 
     test('when trusts ceased date feature flag is on and no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } );
 
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);

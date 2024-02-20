@@ -95,7 +95,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
   describe('GET tests', () => {
     test('when manage trusts feature flag is on, page is returned', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -110,7 +110,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     test('when manage trusts feature flag is on, trusts ceased date flag is off, ceased date not displayed when no associated BOs', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
@@ -129,7 +129,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
 
     test('when feature flags are on and no associated beneficial owners, page shows ceased date', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
       mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);

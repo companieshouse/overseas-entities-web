@@ -466,7 +466,7 @@ describe('Trust Details controller', () => {
       // check it doesn't show in this registration journey
       mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
-      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_CEASED_DATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
       const resp = await request(app).get(pageUrl);
 

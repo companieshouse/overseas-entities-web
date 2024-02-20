@@ -8,7 +8,7 @@
     {% set isTrustToBeCeased = pageData.beneficialOwners | length == 0 %}
 
     {% if isReview %}
-      {% if isTrustToBeCeased and isFeatureFlagTrustsCeasedDateEnabled %}
+      {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
         <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
           <div class="govuk-notification-banner__header">
             <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -48,7 +48,7 @@
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
         <br>
 
-        {% if isTrustToBeCeased and isFeatureFlagTrustsCeasedDateEnabled %}
+        {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
           {% set fieldParam = {
             name: 'ceasedDate',
             label: 'When did this trust stop being associated with the overseas entity?',

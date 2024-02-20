@@ -108,7 +108,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
-    test('when manage trusts feature flag is on, trusts ceased date flag is off, ceased date not displayed when no associated BOs', async () => {
+    test('when manage trusts feature flag is on, cease trusts flag is off, ceased date not displayed when no associated BOs', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
@@ -147,7 +147,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when manage trusts feature flag is on, redirect if no trusts to review', async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockHasTrustsToReview.mockReturnValueOnce(false);
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
@@ -157,7 +157,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test('when manage trusts feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValue(false);
+      mockIsActiveFeature.mockReturnValue(false); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);
 
@@ -166,7 +166,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
     });
 
     test("catch error when rendering the page", async () => {
-      mockIsActiveFeature.mockReturnValue(true);
+      mockIsActiveFeature.mockReturnValue(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
 
       const resp = await request(app).get(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL);

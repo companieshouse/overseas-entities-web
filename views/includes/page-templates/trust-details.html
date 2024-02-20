@@ -4,7 +4,7 @@
     {% include "includes/list/errors.html" %}
 
     {# Check if there are any beneficial owners. If the length of the 'beneficialOwners' array is 0, then 'isTrustToBeCeased' will be true #}
-    {# and can be used to show the ceased date - only for 'review' mode in update journey #}
+    {# and can be used to show the ceased date - only for 'review' mode (review mode is only in update journey) #}
     {% set isTrustToBeCeased = pageData.beneficialOwners | length == 0 %}
 
     {% if isReview %}

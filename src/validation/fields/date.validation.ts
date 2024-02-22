@@ -20,7 +20,8 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate
+  checkDatePreviousToFilingDate,
+  checkTrustCeasedDate
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -96,6 +97,7 @@ const is_end_date_within_filing_period = (date_field_id: string, radio_button_id
 
 const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
   body(trustDateContext.dateInput.name)
+    .if(body("myhidden").equals("true"))
     .custom((value, { req }) => checkDatePreviousToFilingDate(
       req,
       req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
@@ -247,6 +249,40 @@ const trustCreatedDateValidationsContext: dateContext = {
   },
 };
 
+const trustCeasedDateValidationsContext: dateContextWithCondition = {
+  dayInput: {
+    name: "ceasedDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_TRUST_CEASED,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_TRUST_CEASED,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "ceasedDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_TRUST_CEASED,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST_CEASED,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "ceasedDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_TRUST_CEASED,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_TRUST_CEASED
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "ceasedDate",
+    callBack: checkTrustCeasedDate,
+  },
+  condition: {
+    elementName: "isTrustToBeCeased",
+    expectedValue: "true"
+  }
+};
+
 const historicalBOStartDateContext: dateContext = {
   dayInput: {
     name: "startDateDay",
@@ -312,6 +348,8 @@ export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsCont
 export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(dateBecameIPIndividualBeneficialOwnerContext);
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
+
+export const trustCeasedDateValidations = conditionalDateValidations(trustCeasedDateValidationsContext);
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 

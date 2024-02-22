@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
-import { trustCreatedDateValidations } from "./fields/date.validation";
+import { trustCreatedDateValidations, trustCeasedDateValidations } from "./fields/date.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
 
 export const trustDetails = [
@@ -11,11 +11,11 @@ export const trustDetails = [
 
   ...trustCreatedDateValidations,
 
-  body("hasAllInfo")
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO),
-
   body("beneficialOwnersIds")
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS)
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
+
+  body("hasAllInfo")
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO)
 ];
 
 export const reviewTrustDetails = [
@@ -24,9 +24,13 @@ export const reviewTrustDetails = [
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST)
     .isLength({ max: 160 }).withMessage(ErrorMessages.MAX_NAME_LENGTH_TRUST),
 
-  body("hasAllInfo")
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO),
-
   body("beneficialOwnersIds")
-    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS)
+    .if(body("isTrustToBeCeased").not().equals("true"))
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_INVOLVED_BOS),
+
+  // trustCeasedDateValidations are conditional and will run if "isTrustToBeCeased" == "true"
+  ...trustCeasedDateValidations,
+
+  body("hasAllInfo")
+    .not().isEmpty().withMessage(ErrorMessages.TRUST_HAS_ALL_INFO)
 ];

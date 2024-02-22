@@ -76,6 +76,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS)) {
 
       if (!appData.update?.trust_data_fetched) {
+        logger.info("************************ IN 1");
         const session = req.session as Session;
 
         await retrieveTrustData(req, appData);
@@ -84,15 +85,21 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
       }
 
       if (hasTrustsToReview(appData)) {
+        logger.info("************************ IN 2");
+
         return res.redirect(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
       }
     }
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && checkEntityRequiresTrusts(appData)) {
+      logger.info("************************ IN 3");
+
       return res.redirect(getTrustLandingUrl(appData));
     }
 
     if (isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION)) {
+      logger.info("************************ IN 4");
+
       return res.redirect(config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL);
     }
 

@@ -5,11 +5,12 @@ import { DateTime } from "luxon";
 import { ErrorMessages } from "./error.messages";
 import { ApplicationData, trustType } from "../model";
 import { BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
-import { CONCATENATED_VALUES_SEPARATOR } from "../config";
+import { CONCATENATED_VALUES_SEPARATOR, ROUTE_PARAM_TRUST_ID } from "../config";
 import { getApplicationData } from "../utils/application.data";
 import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 import { isRemoveJourney } from "../utils/url";
+import { getTrustByIdFromApp } from "../utils/trusts" ;
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -533,6 +534,17 @@ export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: s
     filingDateDay, filingDateMonth, filingDateYear,
     dateDay, dateMonth, dateYear,
     errorMessage);
+};
+
+export const isUnableToObtainAllTrustInfo = (req) => {
+  const trustId = req.params[ROUTE_PARAM_TRUST_ID];
+  const appData: ApplicationData = getApplicationData(req.session);
+
+  const trust = getTrustByIdFromApp(appData, trustId);
+  if (trust?.unable_to_obtain_all_trust_info === "Yes"){
+    return true;
+  }
+  return false;
 };
 
 const hasBeneficialOwners = (appData: ApplicationData) => {

@@ -20,7 +20,8 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate
+  checkDatePreviousToFilingDate,
+  isUnableToObtainAllTrustInfo
 } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
@@ -101,6 +102,22 @@ const is_date_within_filing_period_trusts = (trustDateContext: dateContext, erro
       req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],
       error_message
     )),
+];
+
+const conditionalHistoricalBOEndDateValidations = (trustDateContext: dateContextWithCondition) => [
+  body()
+    .custom((value, { req }) => {
+      const isUnableToProvideAllTrustInfo: boolean = isUnableToObtainAllTrustInfo(req);
+      console.log("*****************  isUnableToObtainAllTrustInfo=" + isUnableToProvideAllTrustInfo + " *************************");
+      let validateCeasedDate = true;
+      if ((req.body["endDateDay"] === "" && req.body["endDateMonth"] === "" && req.body["endDateYear"] === "") && isUnableToProvideAllTrustInfo){
+        validateCeasedDate = false;
+      }
+      console.log("*****************  validateCeasedDate=" + validateCeasedDate + " *************************");
+      req.body['validateCeasedDate'] = validateCeasedDate.toString();
+      return true;
+    }),
+  ...conditionalDateValidations(trustDateContext),
 ];
 
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
@@ -307,6 +324,37 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
+const historicalBOEndDateConditionalContext: dateContextWithCondition = {
+  dayInput: {
+    name: "endDateDay",
+    errors: {
+      noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
+      wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "endDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
+      wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "endDateYear",
+    errors: {
+      noYearError: ErrorMessages.END_YEAR_HISTORICAL_BO,
+      wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "endDate",
+    callBack: checkHistoricalBOEndDate,
+  },
+  condition: { elementName: "validateCeasedDate", expectedValue: "true" },
+};
+
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
 
 export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(dateBecameIPIndividualBeneficialOwnerContext);
@@ -315,7 +363,7 @@ export const trustCreatedDateValidations = dateValidations(trustCreatedDateValid
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 
-export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+export const historicalBeneficialOwnerEndDate = conditionalHistoricalBOEndDateValidations(historicalBOEndDateConditionalContext);
 
 export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 

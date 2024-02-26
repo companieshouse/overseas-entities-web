@@ -134,14 +134,6 @@
       <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
       
       {% if isReview %}
-
-        {# Hidden field isTrustToBeCeased is needed by the validators to help decide what fields need validating #}
-        {% if isFeatureFlagCeaseTrustsEnabled %}
-          <input type="hidden" name="isTrustToBeCeased" value="{{ isTrustToBeCeased }}"/>
-        {% else %}
-          <input type="hidden" name="isTrustToBeCeased" value="false"/>
-        {% endif %}
-
         <input type="hidden" name="createdDateDay" value="{{ formData.createdDateDay }}"/>
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>
         <input type="hidden" name="createdDateYear" value="{{ formData.createdDateYear }}"/>

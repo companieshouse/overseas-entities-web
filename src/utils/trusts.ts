@@ -168,6 +168,12 @@ const getBoOtherAssignableToTrust = (
     .filter((bo: BeneficialOwnerOther) => bo.trustees_nature_of_control_types?.length);
 };
 
+const hasNoBoAssignableToTrust = (appData: ApplicationData): boolean => {
+  return [
+    ...getBoIndividualAssignableToTrust(appData),
+    ...getBoOtherAssignableToTrust(appData)].length === 0;
+};
+
 const getTrustBoIndividuals = (
   appData: ApplicationData,
   trustId: string,
@@ -492,6 +498,7 @@ export {
   saveTrustInApp,
   getBoIndividualAssignableToTrust,
   getBoOtherAssignableToTrust,
+  hasNoBoAssignableToTrust,
   getTrustBoIndividuals,
   getTrustBoOthers,
   getIndividualTrusteesFromTrust,

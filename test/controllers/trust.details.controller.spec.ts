@@ -50,6 +50,7 @@ import {
   getBoOtherAssignableToTrust,
   saveTrustInApp,
   getTrustByIdFromApp,
+  hasNoBoAssignableToTrust,
 } from '../../src/utils/trusts';
 import { Trust, TrustKey } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -187,6 +188,7 @@ describe('Trust Details controller', () => {
         createdYears: '9999',
         beneficialOwnersIds: ['bo1id', 'bo2id'],
       };
+      (hasNoBoAssignableToTrust as jest.Mock).mockReturnValue(false);
     });
 
     test('catch error when post data from page', async () => {

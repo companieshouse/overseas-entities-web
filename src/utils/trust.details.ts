@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import * as config from '../config';
 import { logger } from '../utils/logger';
-import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp, getTrustByIdFromApp } from '../utils/trusts';
+import { getBoIndividualAssignableToTrust, getBoOtherAssignableToTrust, getTrustArray, containsTrustData, saveTrustInApp, getTrustByIdFromApp, hasNoBoAssignableToTrust } from '../utils/trusts';
 import { getApplicationData, setExtraData } from '../utils/application.data';
 import * as mapperDetails from '../utils/trust/details.mapper';
 import * as mapperBo from '../utils/trust/beneficial.owner.mapper';
@@ -159,8 +159,9 @@ export const postTrustDetails = async (req: Request, res: Response, next: NextFu
       return res.render(pageProps.templateName, pageProps);
     }
 
+    const isTrustToBeCeased = hasNoBoAssignableToTrust(appData);
     //  map form data to session trust data
-    const details = mapperDetails.mapDetailToSession(req.body);
+    const details = mapperDetails.mapDetailToSession(req.body, isTrustToBeCeased);
     if (!details.trust_id) {
       details.trust_id = mapperDetails.generateTrustId(appData);
     }

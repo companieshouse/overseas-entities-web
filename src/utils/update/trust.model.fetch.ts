@@ -45,15 +45,15 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
     return;
   }
 
-  // const trusts: TrustData[] | undefined = await getTrustData(req, transactionId, overseasEntityId);
-  const trusts: TrustData[] | undefined = [
-    {
-      creationDate: "2021-11-15",
-      hashedTrustId: "12345",
-      trustName: "Trust Number One",
-      unableToObtainAllTrustInfoIndicator: false,
-    }
-  ];
+  const trusts: TrustData[] | undefined = await getTrustData(req, transactionId, overseasEntityId);
+  // const trusts: TrustData[] | undefined = [
+  //   {
+  //     creationDate: "2021-11-15",
+  //     hashedTrustId: "12345",
+  //     trustName: "Trust Number One",
+  //     unableToObtainAllTrustInfoIndicator: false,
+  //   }
+  // ];
 
   if (trusts === undefined || trusts.length === 0) {
     logger.info(`No trusts found for overseas entity ${overseasEntityId}`);
@@ -101,29 +101,29 @@ const fetchAndMapIndivdualTrustees = async (
   overseasEntityId: string,
   trust: Trust
 ) => {
-  // const individualTrustees = await getIndividualTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
-  const individualTrustees: IndividualTrusteeData[] = [
-    {
-      appointmentDate: "2022-01-17",
-      corporateIndicator: "false",
-      hashedTrusteeId: "12345",
-      trusteeForename1: "Bob",
-      trusteeSurname: "Smith",
-      trusteeTypeId: "5005",
-      dateOfBirth: "1972-04-21",
-      usualResidentialAddress: {
-        addressLine1: "Line1",
-        addressLine2: "line 2",
-        careOf: "careof",
-        country: "country",
-        locality: "locality",
-        poBox: "pobox",
-        postalCode: "postalcode",
-        premises: "premises",
-        region: "region"
-      }
-    }
-  ];
+  const individualTrustees = await getIndividualTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
+  // const individualTrustees: IndividualTrusteeData[] = [
+  //   {
+  //     appointmentDate: "2022-01-17",
+  //     corporateIndicator: "false",
+  //     hashedTrusteeId: "12345",
+  //     trusteeForename1: "Bob",
+  //     trusteeSurname: "Smith",
+  //     trusteeTypeId: "5005",
+  //     dateOfBirth: "1972-04-21",
+  //     usualResidentialAddress: {
+  //       addressLine1: "Line1",
+  //       addressLine2: "line 2",
+  //       careOf: "careof",
+  //       country: "country",
+  //       locality: "locality",
+  //       poBox: "pobox",
+  //       postalCode: "postalcode",
+  //       premises: "premises",
+  //       region: "region"
+  //     }
+  //   }
+  // ];
 
   if (individualTrustees === undefined || individualTrustees.length === 0) {
     logger.info(`No individual trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
@@ -209,9 +209,9 @@ const fetchAndMapCorporateTrustees = async (
   overseasEntityId: string,
   trust: Trust
 ) => {
-  // const corporateTrustees = await getCorporateTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
+  const corporateTrustees = await getCorporateTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
 
-  const corporateTrustees: CorporateTrusteeData[] = [];
+  // const corporateTrustees: CorporateTrusteeData[] = [];
 
   if (corporateTrustees === undefined || corporateTrustees.length === 0) {
     logger.info(`No corporate trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
@@ -290,14 +290,14 @@ export const retrieveTrustLinks = async (req: Request, appData: ApplicationData)
     return;
   }
 
-  // const trustLinks = await getTrustLinks(req, transactionId, overseasEntityId);
+  const trustLinks = await getTrustLinks(req, transactionId, overseasEntityId);
 
-  const trustLinks: TrustLinkData[] = [
-    {
-      hashedTrustId: "12345",
-      hashedCorporateBodyAppointmentId: "12345"
-    }
-  ];
+  // const trustLinks: TrustLinkData[] = [
+  //   {
+  //     hashedTrustId: "12345",
+  //     hashedCorporateBodyAppointmentId: "12345"
+  //   }
+  // ];
 
   if (trustLinks === undefined || trustLinks.length === 0) {
     logger.info(`No trust links found for overseas entity ${overseasEntityId}`);

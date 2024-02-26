@@ -97,7 +97,6 @@ const is_end_date_within_filing_period = (date_field_id: string, radio_button_id
 
 const is_date_within_filing_period_trusts = (trustDateContext: dateContext, error_message: string) => [
   body(trustDateContext.dateInput.name)
-    .if(body("myhidden").equals("true"))
     .custom((value, { req }) => checkDatePreviousToFilingDate(
       req,
       req.body[trustDateContext.dayInput.name], req.body[trustDateContext.monthInput.name], req.body[trustDateContext.yearInput.name],

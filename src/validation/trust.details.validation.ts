@@ -1,7 +1,35 @@
+import { NextFunction, Request, Response } from "express";
 import { body } from "express-validator";
 import { ErrorMessages } from "./error.messages";
 import { trustCreatedDateValidations, trustCeasedDateValidations } from "./fields/date.validation";
 import { VALID_CHARACTERS } from "./regex/regex.validation";
+import { ApplicationData } from "../model";
+import { getApplicationData } from "../utils/application.data";
+import { isActiveFeature } from "../utils/feature.flag";
+import * as config from "../config";
+import { logger } from "../utils/logger";
+import { hasNoBoAssignableToTrust } from "../utils/trusts";
+
+const setIsTrustToBeCeasedFlagOnBody = () => {
+  return (req: Request, _res: Response, next: NextFunction) => {
+    try {
+      if (!isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
+        return next();
+      }
+
+      const appData: ApplicationData = getApplicationData(req.session);
+
+      const isTrustToBeCeased = hasNoBoAssignableToTrust(appData) ? "true" : "false";
+      // Create a new object with the updated property
+      req.body = { ...req.body, isTrustToBeCeased };
+
+      return next();
+    } catch (error) {
+      logger.errorRequest(req, error);
+      return next(error);
+    }
+  };
+};
 
 export const trustDetails = [
   body("name")
@@ -19,6 +47,9 @@ export const trustDetails = [
 ];
 
 export const reviewTrustDetails = [
+  // need to set this flag so it can be checked in the other validators
+  setIsTrustToBeCeasedFlagOnBody(),
+
   body("name")
     .not().isEmpty({ ignore_whitespace: true }).withMessage(ErrorMessages.TRUST_NAME_2)
     .matches(VALID_CHARACTERS).withMessage(ErrorMessages.NAME_INVALID_CHARACTERS_TRUST)

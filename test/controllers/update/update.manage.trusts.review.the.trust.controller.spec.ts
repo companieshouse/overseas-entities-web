@@ -515,7 +515,26 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(ErrorMessages.DAY_AND_YEAR_OF_TRUST_CEASED);
     });
 
-    // TODO CEASED DATE FLAG OFF TEST
+    test(`renders the update-manage-trusts-review-the-trust page without ceased date validation when cease trusts feature flag is off`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS in trust.details.validation
+
+      // use app data with no trust associated BOs - i.e. no BOs have Trust nature of controls
+      mockGetApplicationData.mockReturnValue(appDataWithNoTrustNocBOs);
+
+      const resp = await request(app)
+        .post(UPDATE_MANAGE_TRUSTS_REVIEW_THE_TRUST_URL)
+        .send({
+          beneficialOwnersIds: [],
+          ceasedDateMonth: "11"
+        });
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
+      expect(resp.text).toContain(ERROR_LIST);
+      expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_BOS);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_AND_YEAR_OF_TRUST_CEASED);
+    });
 
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValue(false);

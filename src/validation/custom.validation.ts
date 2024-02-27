@@ -11,6 +11,7 @@ import { FilingDateKey } from '../model/date.model';
 import { DefaultErrorsSecondNationality } from "./models/second.nationality.error.model";
 import { isRemoveJourney } from "../utils/url";
 import { getTrustByIdFromApp } from "../utils/trusts" ;
+import { getTrustInReview } from "../utils/update/review_trusts";
 
 export const checkFieldIfRadioButtonSelected = (selected: boolean, errMsg: string, value: string = "") => {
   if ( selected && !value.trim() ) {
@@ -537,10 +538,17 @@ export const checkDatePreviousToFilingDate = (req, dateDay: string, dateMonth: s
 };
 
 export const isUnableToObtainAllTrustInfo = (req) => {
-  const trustId = req.params[ROUTE_PARAM_TRUST_ID];
-  const appData: ApplicationData = getApplicationData(req.session);
 
-  const trust = getTrustByIdFromApp(appData, trustId);
+  const appData: ApplicationData = getApplicationData(req.session);
+  let trust;
+  const trustInReview = getTrustInReview(appData);
+  // Check first if the trust is in review.
+  if (trustInReview) {
+    trust = trustInReview;
+  } else {
+    const trustId = req.params[ROUTE_PARAM_TRUST_ID];
+    trust = getTrustByIdFromApp(appData, trustId);
+  }
   if (trust?.unable_to_obtain_all_trust_info === "Yes"){
     return true;
   }

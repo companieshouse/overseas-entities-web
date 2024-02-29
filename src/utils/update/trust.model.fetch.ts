@@ -52,6 +52,18 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
   //     hashedTrustId: "12345",
   //     trustName: "Trust Number One",
   //     unableToObtainAllTrustInfoIndicator: false,
+  //   },
+  //   {
+  //     creationDate: "2021-11-15",
+  //     hashedTrustId: "12345",
+  //     trustName: "Trust Number Two",
+  //     unableToObtainAllTrustInfoIndicator: false,
+  //   },
+  //   {
+  //     creationDate: "2021-11-15",
+  //     hashedTrustId: "12345",
+  //     trustName: "Trust Number Three",
+  //     unableToObtainAllTrustInfoIndicator: false,
   //   }
   // ];
 

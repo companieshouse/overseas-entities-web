@@ -138,3 +138,13 @@ export const putTrustInChangeScenario = (appData: ApplicationData, trustId: stri
     };
   }
 };
+
+export const resetTrustInReviewPagesReviewed = (trustInReview: Trust) => {
+  const { review_status } = trustInReview || {};
+  if (review_status) {
+    review_status.reviewed_trust_details = false;
+    review_status.reviewed_former_bos = false;
+    review_status.reviewed_individuals = false;
+    review_status.reviewed_legal_entities = false;
+  }
+};

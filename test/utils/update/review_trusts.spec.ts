@@ -15,6 +15,7 @@ import {
   setTrustDetailsAsReviewed,
   moveTrustOutOfReview,
   putTrustInChangeScenario,
+  resetTrustInReviewPagesReviewed,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -599,5 +600,59 @@ describe('putTrustInChangeScenario', () => {
     };
 
     putTrustInChangeScenario(appData, '1');
+  });
+});
+
+describe('resetTrustInReviewPagesReviewed', () => {
+  test('resets the page reviewed data on a trust', () => {
+    const trust = {
+      trust_name: "Trust one",
+      review_status: {
+        reviewed_trust_details: true,
+        reviewed_former_bos: true,
+        reviewed_individuals: true,
+        reviewed_legal_entities: true
+      }
+    } as Trust;
+
+    resetTrustInReviewPagesReviewed(trust);
+
+    expect(trust.trust_name).toEqual("Trust one");
+    expect(trust.review_status?.reviewed_trust_details).toEqual(false);
+    expect(trust.review_status?.reviewed_former_bos).toEqual(false);
+    expect(trust.review_status?.reviewed_individuals).toEqual(false);
+    expect(trust.review_status?.reviewed_legal_entities).toEqual(false);
+  });
+
+  test('adds flags to trust review_status if there are none', () => {
+    const trust = {
+      trust_name: "Trust one",
+      review_status: { }
+    } as Trust;
+
+    resetTrustInReviewPagesReviewed(trust);
+
+    expect(trust.trust_name).toEqual("Trust one");
+    expect(trust.review_status?.reviewed_trust_details).toEqual(false);
+    expect(trust.review_status?.reviewed_former_bos).toEqual(false);
+    expect(trust.review_status?.reviewed_individuals).toEqual(false);
+    expect(trust.review_status?.reviewed_legal_entities).toEqual(false);
+  });
+
+  test('does not add flags to trust review_status if there is no review_status field', () => {
+    const trust = {
+      trust_name: "Trust one"
+    } as Trust;
+
+    resetTrustInReviewPagesReviewed(trust);
+
+    expect(trust).toStrictEqual(
+      {
+        trust_name: "Trust one"
+      } as Trust);
+  });
+
+  test('does not throw error if trust is undefined', () => {
+    expect(() => resetTrustInReviewPagesReviewed(undefined as unknown as Trust)).not.toThrow();
   });
 });

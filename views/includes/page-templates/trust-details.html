@@ -46,7 +46,8 @@
       {% if isReview %}
         <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
-
+        <br>
+        
         {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
           {% set fieldParam = {
             name: 'ceasedDate',

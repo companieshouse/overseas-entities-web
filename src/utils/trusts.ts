@@ -171,7 +171,8 @@ const getBoOtherAssignableToTrust = (
 const hasNoBoAssignableToTrust = (appData: ApplicationData): boolean => {
   return [
     ...getBoIndividualAssignableToTrust(appData),
-    ...getBoOtherAssignableToTrust(appData)].length === 0;
+    ...getBoOtherAssignableToTrust(appData)
+  ].length === 0;
 };
 
 const getTrustBoIndividuals = (

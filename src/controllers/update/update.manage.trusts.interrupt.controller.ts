@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 
 import { logger } from '../../utils/logger';
 import {
+  FEATURE_FLAG_ENABLE_CEASE_TRUSTS,
   UPDATE_BENEFICIAL_OWNER_TYPE_URL,
   UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
@@ -10,6 +11,7 @@ import { getTrustInReview, hasTrustsToReview, resetTrustInReviewPagesReviewed } 
 import { ApplicationData } from '../../model';
 import { getApplicationData } from '../../utils/application.data';
 import { Trust } from '../../model/trust.model';
+import { isActiveFeature } from '../../utils/feature.flag';
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -30,7 +32,9 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
 
     // reset the page visited flags for the current trust in review so user can review data
     // if they have gone back to an earlier screen and changed something that might affect the trust
-    resetTrustFlagsIfTrustInReview(req);
+    if (isActiveFeature(FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
+      resetTrustFlagsIfTrustInReview(req);
+    }
 
     return res.redirect(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
   } catch (error) {

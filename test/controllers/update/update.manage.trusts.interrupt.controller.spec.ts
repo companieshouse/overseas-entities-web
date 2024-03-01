@@ -133,5 +133,19 @@ describe('Update - Manage Trusts - Interrupt', () => {
       expect(mockGetTrustInReview).not.toBeCalled();
       expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
     });
+
+    test('if has a trust in review, will reset the reviewed page flags before redirect to review the trust page', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
+      expect(mockHasTrustsToReview).not.toBeCalled();
+      expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
+    });
   });
 });

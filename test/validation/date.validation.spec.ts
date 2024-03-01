@@ -13,8 +13,8 @@ import { checkBirthDate,
   checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkDate,
   checkTrustDate,
   checkYearFieldForErrors,
-  isYearEitherMissingOrCorrectLength, 
-  customValidations} from '../../src/validation/custom.validation';
+  isYearEitherMissingOrCorrectLength,
+  customValidations } from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
 import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition, setValidateCeasedDateFlag } from '../../src/validation/fields/helper/date.validation.helper';
 import { NextFunction } from 'express';

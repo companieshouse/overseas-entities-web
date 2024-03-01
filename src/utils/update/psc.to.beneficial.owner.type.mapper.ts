@@ -13,7 +13,6 @@ export const mapPscToBeneficialOwnerTypeIndividual = (psc: CompanyPersonWithSign
   const result: BeneficialOwnerIndividual = {
     id: psc.links?.self,
     ch_reference: mapSelfLink(psc.links?.self),
-    //    ch_reference: "12345",
     first_name: mapBOIndividualName(psc.nameElements),
     last_name: psc.nameElements?.surname,
     nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),

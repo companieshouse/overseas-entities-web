@@ -46,26 +46,6 @@ const retrieveTrusts = async (req: Request, appData: ApplicationData) => {
   }
 
   const trusts: TrustData[] | undefined = await getTrustData(req, transactionId, overseasEntityId);
-  // const trusts: TrustData[] | undefined = [
-  //   {
-  //     creationDate: "2021-11-15",
-  //     hashedTrustId: "12345",
-  //     trustName: "Trust Number One",
-  //     unableToObtainAllTrustInfoIndicator: false,
-  //   },
-  //   {
-  //     creationDate: "2021-11-15",
-  //     hashedTrustId: "12345",
-  //     trustName: "Trust Number Two",
-  //     unableToObtainAllTrustInfoIndicator: false,
-  //   },
-  //   {
-  //     creationDate: "2021-11-15",
-  //     hashedTrustId: "12345",
-  //     trustName: "Trust Number Three",
-  //     unableToObtainAllTrustInfoIndicator: false,
-  //   }
-  // ];
 
   if (trusts === undefined || trusts.length === 0) {
     logger.info(`No trusts found for overseas entity ${overseasEntityId}`);
@@ -114,28 +94,6 @@ const fetchAndMapIndivdualTrustees = async (
   trust: Trust
 ) => {
   const individualTrustees = await getIndividualTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
-  // const individualTrustees: IndividualTrusteeData[] = [
-  //   {
-  //     appointmentDate: "2022-01-17",
-  //     corporateIndicator: "false",
-  //     hashedTrusteeId: "12345",
-  //     trusteeForename1: "Bob",
-  //     trusteeSurname: "Smith",
-  //     trusteeTypeId: "5005",
-  //     dateOfBirth: "1972-04-21",
-  //     usualResidentialAddress: {
-  //       addressLine1: "Line1",
-  //       addressLine2: "line 2",
-  //       careOf: "careof",
-  //       country: "country",
-  //       locality: "locality",
-  //       poBox: "pobox",
-  //       postalCode: "postalcode",
-  //       premises: "premises",
-  //       region: "region"
-  //     }
-  //   }
-  // ];
 
   if (individualTrustees === undefined || individualTrustees.length === 0) {
     logger.info(`No individual trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
@@ -223,8 +181,6 @@ const fetchAndMapCorporateTrustees = async (
 ) => {
   const corporateTrustees = await getCorporateTrustees(req, transactionId, overseasEntityId, trust.ch_reference ?? "");
 
-  // const corporateTrustees: CorporateTrusteeData[] = [];
-
   if (corporateTrustees === undefined || corporateTrustees.length === 0) {
     logger.info(`No corporate trustees found for overseas entity ${overseasEntityId} and trust ${trust.ch_reference ?? trust.trust_id}`);
     return;
@@ -303,13 +259,6 @@ export const retrieveTrustLinks = async (req: Request, appData: ApplicationData)
   }
 
   const trustLinks = await getTrustLinks(req, transactionId, overseasEntityId);
-
-  // const trustLinks: TrustLinkData[] = [
-  //   {
-  //     hashedTrustId: "12345",
-  //     hashedCorporateBodyAppointmentId: "12345"
-  //   }
-  // ];
 
   if (trustLinks === undefined || trustLinks.length === 0) {
     logger.info(`No trust links found for overseas entity ${overseasEntityId}`);

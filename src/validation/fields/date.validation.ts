@@ -20,12 +20,9 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate,
-  isUnableToObtainAllTrustInfo
-} from "../custom.validation";
+  checkDatePreviousToFilingDate} from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
-import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
-import { NextFunction, Request, Response } from "express";
+import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -104,25 +101,6 @@ const is_date_within_filing_period_trusts = (trustDateContext: dateContext, erro
       error_message
     )),
 ];
-
-const conditionalHistoricalBODateValidations = (trustDateContext: dateContextWithCondition) => [
-  setValidateCeasedDateFlag(),
-  ...conditionalDateValidations(trustDateContext),
-];
-
-function setValidateCeasedDateFlag() {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const isUnableToProvideAllTrustInfo: boolean = isUnableToObtainAllTrustInfo(req);
-    console.log("*****************  isUnableToObtainAllTrustInfo=" + isUnableToProvideAllTrustInfo + " *************************");
-    let validateCeasedDate = true;
-    if ((req.body["endDateDay"] === "" && req.body["endDateMonth"] === "" && req.body["endDateYear"] === "") && isUnableToProvideAllTrustInfo) {
-      validateCeasedDate = false;
-    }
-    console.log("*****************  validateCeasedDate=" + validateCeasedDate + " *************************");
-    req.body['validateCeasedDate'] = validateCeasedDate.toString();
-    return next();
-  };
-}
 
 export const ceased_date_validations = is_still_active_validations("ceased_date", "is_still_bo", ErrorMessages.CEASED_DATE_BEFORE_START_DATE);
 
@@ -374,4 +352,3 @@ export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations
 export const filingPeriodTrustStartDateValidations = is_date_within_filing_period_trusts(historicalBOStartDateContext, ErrorMessages.START_DATE_BEFORE_FILING_DATE);
 
 export const filingPeriodTrustCeaseDateValidations = is_date_within_filing_period_trusts(historicalBOEndDateContext, ErrorMessages.CEASED_DATE_BEFORE_FILING_DATE);
-

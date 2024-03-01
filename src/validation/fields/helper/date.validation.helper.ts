@@ -1,5 +1,6 @@
 import { body } from "express-validator";
-import { DayFieldErrors, MonthFieldErrors, YearFieldErrors, checkDayFieldForErrors, checkMonthFieldForErrors, checkYearFieldForErrors } from "../../custom.validation";
+import { DayFieldErrors, MonthFieldErrors, YearFieldErrors, checkDayFieldForErrors, checkMonthFieldForErrors, checkYearFieldForErrors, isUnableToObtainAllTrustInfo } from "../../custom.validation";
+import { NextFunction } from "express";
 
 export const dateValidations = (dateContext: dateContext) => {
   return [
@@ -43,6 +44,41 @@ export const conditionalDateValidations = (dateContextWithCondition: dateContext
   ];
 };
 
+export const conditionalHistoricalBODateValidations = (trustDateContext: dateContextWithCondition) => [
+  setValidateCeasedDateFlag(trustDateContext),
+  ...conditionalDateValidations(trustDateContext),
+];
+
+// export const setValidateCeasedDateFlag = (trustDateContext: dateContextWithCondition) => [
+//   body()
+//     .custom((value, { req }) => {
+//       const isUnableToProvideAllTrustInfo: boolean = isUnableToObtainAllTrustInfo(req);
+//       let validateCeasedDate = true;
+//       if ((req.body[trustDateContext.dayInput.name] === "" && req.body[trustDateContext.monthInput.name] === "" && req.body[trustDateContext.yearInput.name] === "") && isUnableToProvideAllTrustInfo) {
+//         validateCeasedDate = false;
+//       }
+//       req.body['validateCeasedDate'] = validateCeasedDate.toString();
+//       return true;
+//     }),
+// ];
+// export const getApplicationData = (session: Session | undefined): ApplicationData => {
+//   return session?.getExtraData(APPLICATION_DATA_KEY) || {} as ApplicationData;
+// };
+export const setValidateCeasedDateFlag = (trustDateContext: dateContextWithCondition) => {
+  console.log("Hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+  return (req, resp, next: NextFunction) => {
+    console.log("Hello Again!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    const isUnableToProvideAllTrust: boolean = isUnableToObtainAllTrustInfo(req);
+    console.log("*****************  isUnableToObtainAllTrustInfo=" + isUnableToProvideAllTrust + " *************************");
+    let validateCeasedDate = true;
+    if ((req.body[trustDateContext.dayInput.name] === "" && req.body[trustDateContext.monthInput.name] === "" && req.body[trustDateContext.yearInput.name] === "") && isUnableToProvideAllTrust) {
+      validateCeasedDate = false;
+    }
+    console.log("*****************  validateCeasedDate=" + validateCeasedDate + " *************************");
+    req.body['validateCeasedDate'] = validateCeasedDate.toString();
+    return next();
+  };
+};
 export type dateContext = {
   dayInput: {name: string, errors: DayFieldErrors},
   monthInput: {name: string, errors: MonthFieldErrors},
@@ -51,3 +87,4 @@ export type dateContext = {
 };
 
 export type dateContextWithCondition = dateContext & {condition: {elementName: string, expectedValue: string}};
+

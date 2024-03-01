@@ -13,9 +13,11 @@ import { checkBirthDate,
   checkHistoricalBOEndDate, checkHistoricalBOStartDate, checkIdentityDate, checkMonthFieldForErrors, checkMoreThanOneDateOfBirthFieldIsNotMissing, checkOptionalDateDetails, checkDate,
   checkTrustDate,
   checkYearFieldForErrors,
-  isYearEitherMissingOrCorrectLength } from '../../src/validation/custom.validation';
+  isYearEitherMissingOrCorrectLength, 
+  customValidations} from '../../src/validation/custom.validation';
 import { ErrorMessages } from '../../src/validation/error.messages';
-import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition } from '../../src/validation/fields/helper/date.validation.helper';
+import { dateValidations, dateContext, conditionalDateValidations, dateContextWithCondition, setValidateCeasedDateFlag } from '../../src/validation/fields/helper/date.validation.helper';
+import { NextFunction } from 'express';
 
 const mockIf = jest.fn();
 const mockCustom = jest.fn();
@@ -164,6 +166,54 @@ describe('Test to validate date validator', () => {
     expect(mockIf).toBeCalledTimes(10);
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
+  });
+
+  // TODO mocking not working on this test. Maybe something to do with anonymous functions.
+  test.skip('should test setValidateCeasedDateFlag success', () => {
+    const fieldNames = ["endDateDay", "endDateMonth", "endDateYear", "endDate"];
+    const mockDateValidationsContext: dateContextWithCondition = {
+      dateInput: {
+        name: fieldNames[3],
+        callBack: checkDate,
+      },
+      dayInput: {
+        name: fieldNames[0],
+        errors: {
+          noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
+          wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
+          noRealDay: ErrorMessages.INVALID_DAY,
+        }
+      },
+      monthInput: {
+        name: fieldNames[1],
+        errors: {
+          noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
+          wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
+          noRealMonth: ErrorMessages.INVALID_MONTH,
+        }
+      },
+      yearInput: {
+        name: fieldNames[2],
+        errors: {
+          noYearError: ErrorMessages.END_YEAR_HISTORICAL_BO,
+          wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
+        }
+      },
+      condition: {
+        elementName: "validateCeasedDate",
+        expectedValue: "true"
+      }
+    };
+    const req = {} as Request;
+    const resp = {} as Response;
+    const next = {} as NextFunction;
+    const myFunc = setValidateCeasedDateFlag(mockDateValidationsContext);
+    const spyIsUnableToObtainAllTrustInfo = jest.spyOn(customValidations, "isUnableToObtainAllTrustInfo");
+    spyIsUnableToObtainAllTrustInfo.mockImplementation((_req) => { return false; });
+    myFunc(req, resp, next);
+    expect(spyIsUnableToObtainAllTrustInfo).toHaveBeenCalledTimes(1);
+    spyIsUnableToObtainAllTrustInfo.mockRestore();
+
   });
 });
 
@@ -611,5 +661,5 @@ describe("should chek date functions for custom validation", () => {
   test("should test checkDateValueIsValid throws error for 1/1/0999", () => {
     expect(() => checkDateValueIsValid(errorMsg, "1", "1", "0999")).toThrow(errorMsg);
   });
-
 });
+

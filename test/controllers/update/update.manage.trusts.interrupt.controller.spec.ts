@@ -134,11 +134,9 @@ describe('Update - Manage Trusts - Interrupt', () => {
       expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
     });
 
-    test('if has a trust in review, will reset the reviewed page flags before redirect to review the trust page', async () => {
+    test('if cease date flag is off, it will not reset the reviewed page flags before redirect to review the trust page', async () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
-
-      mockHasTrustsToReview.mockReturnValueOnce(true);
 
       const resp = await request(app).post(UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
 

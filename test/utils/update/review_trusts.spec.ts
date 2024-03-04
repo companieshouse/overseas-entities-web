@@ -15,7 +15,7 @@ import {
   setTrustDetailsAsReviewed,
   moveTrustOutOfReview,
   putTrustInChangeScenario,
-  resetTrustInReviewPagesReviewed,
+  resetPagesReviewed,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -615,7 +615,7 @@ describe('resetTrustInReviewPagesReviewed', () => {
       }
     } as Trust;
 
-    resetTrustInReviewPagesReviewed(trust);
+    resetPagesReviewed(trust);
 
     expect(trust.trust_name).toEqual("Trust one");
     expect(trust.review_status?.reviewed_trust_details).toEqual(false);
@@ -630,7 +630,7 @@ describe('resetTrustInReviewPagesReviewed', () => {
       review_status: { }
     } as Trust;
 
-    resetTrustInReviewPagesReviewed(trust);
+    resetPagesReviewed(trust);
 
     expect(trust.trust_name).toEqual("Trust one");
     expect(trust.review_status?.reviewed_trust_details).toEqual(false);
@@ -644,7 +644,7 @@ describe('resetTrustInReviewPagesReviewed', () => {
       trust_name: "Trust one"
     } as Trust;
 
-    resetTrustInReviewPagesReviewed(trust);
+    resetPagesReviewed(trust);
 
     expect(trust).toStrictEqual(
       {
@@ -653,6 +653,6 @@ describe('resetTrustInReviewPagesReviewed', () => {
   });
 
   test('does not throw error if trust is undefined', () => {
-    expect(() => resetTrustInReviewPagesReviewed(undefined as unknown as Trust)).not.toThrow();
+    expect(() => resetPagesReviewed(undefined as unknown as Trust)).not.toThrow();
   });
 });

@@ -7,7 +7,7 @@ import {
   UPDATE_MANAGE_TRUSTS_INTERRUPT_PAGE,
   UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL,
 } from '../../config';
-import { getTrustInReview, hasTrustsToReview, resetTrustInReviewPagesReviewed } from '../../utils/update/review_trusts';
+import { getTrustInReview, hasTrustsToReview, resetPagesReviewed } from '../../utils/update/review_trusts';
 import { ApplicationData } from '../../model';
 import { getApplicationData } from '../../utils/application.data';
 import { Trust } from '../../model/trust.model';
@@ -47,7 +47,7 @@ const resetTrustFlagsIfTrustInReview = (req: Request) => {
   if (hasTrustsToReview(appData)) {
     const trustInReview = getTrustInReview(appData) as Trust;
     if (trustInReview) {
-      resetTrustInReviewPagesReviewed(trustInReview);
+      resetPagesReviewed(trustInReview);
     }
   }
 };

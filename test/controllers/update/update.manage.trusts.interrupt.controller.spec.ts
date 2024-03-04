@@ -21,7 +21,7 @@ import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
-import { getTrustInReview, hasTrustsToReview, resetTrustInReviewPagesReviewed } from '../../../src/utils/update/review_trusts';
+import { getTrustInReview, hasTrustsToReview, resetPagesReviewed } from '../../../src/utils/update/review_trusts';
 import { Trust } from '../../../src/model/trust.model';
 
 const dummyTrust = {} as Trust;
@@ -47,7 +47,7 @@ mockHasTrustsToReview.mockReturnValue(false);
 const mockGetTrustInReview = getTrustInReview as jest.Mock;
 mockGetTrustInReview.mockReturnValue(dummyTrust);
 
-const mockResetTrustInReviewPagesReviewed = resetTrustInReviewPagesReviewed as jest.Mock;
+const mockResetPagesReviewed = resetPagesReviewed as jest.Mock;
 
 describe('Update - Manage Trusts - Interrupt', () => {
   beforeEach(() => {
@@ -105,7 +105,7 @@ describe('Update - Manage Trusts - Interrupt', () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-      expect(mockResetTrustInReviewPagesReviewed).toBeCalledWith(dummyTrust);
+      expect(mockResetPagesReviewed).toBeCalledWith(dummyTrust);
     });
 
     test('if has a trust in review, but no trust returned will redirect to review the trust page', async () => {
@@ -118,7 +118,7 @@ describe('Update - Manage Trusts - Interrupt', () => {
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
-      expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
+      expect(mockResetPagesReviewed).not.toBeCalled();
     });
 
     test('if has no trust in review, will redirect to review the trust page', async () => {
@@ -131,7 +131,7 @@ describe('Update - Manage Trusts - Interrupt', () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
       expect(mockGetTrustInReview).not.toBeCalled();
-      expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
+      expect(mockResetPagesReviewed).not.toBeCalled();
     });
 
     test('if cease date flag is off, it will not reset the reviewed page flags before redirect to review the trust page', async () => {
@@ -143,7 +143,7 @@ describe('Update - Manage Trusts - Interrupt', () => {
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_MANAGE_TRUSTS_ORCHESTRATOR_URL);
       expect(mockHasTrustsToReview).not.toBeCalled();
-      expect(mockResetTrustInReviewPagesReviewed).not.toBeCalled();
+      expect(mockResetPagesReviewed).not.toBeCalled();
     });
   });
 });

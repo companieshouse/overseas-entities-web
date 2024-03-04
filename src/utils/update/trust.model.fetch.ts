@@ -107,7 +107,8 @@ const fetchAndMapIndivdualTrustees = async (
 };
 
 export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
-  if (trustee.ceasedDate !== undefined) {
+  const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
+  if (trusteeRoleType === RoleWithinTrustType.FORMER_BENEFICIAL_OWNER) {
     mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
   }
@@ -125,7 +126,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_year: dateOfBirth?.year ?? "",
     nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
     second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
-    type: mapTrusteeType(trustee.trusteeTypeId),
+    type: trusteeRoleType,
 
     ura_address_premises: "",
     ura_address_line_1: "",
@@ -193,7 +194,8 @@ const fetchAndMapCorporateTrustees = async (
 };
 
 export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
-  if (trustee.ceasedDate !== undefined) {
+  const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
+  if (trusteeRoleType === RoleWithinTrustType.FORMER_BENEFICIAL_OWNER) {
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
@@ -202,7 +204,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
   const corporateTrustee: TrustCorporate = {
     id: ((trust.CORPORATES ?? []).length + 1).toString(),
     ch_references: trustee.hashedTrusteeId,
-    type: mapTrusteeType(trustee.trusteeTypeId),
+    type: trusteeRoleType,
     name: trustee.trusteeName,
     date_became_interested_person_day: appointmentDate?.day ?? "",
     date_became_interested_person_month: appointmentDate?.month ?? "",
@@ -308,7 +310,7 @@ const linkBoToTrust = (beneficialOwner: BeneficialOwnerIndividual | BeneficialOw
   beneficialOwner.trust_ids.push(trust.trust_id);
 };
 
-const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType | undefined => {
+const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
   switch (trusteeTypeId) {
       case "5005":
         return RoleWithinTrustType.INTERESTED_PERSON;
@@ -319,14 +321,8 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType | undefined 
       case "5002":
         return RoleWithinTrustType.BENEFICIARY;
       case "5001":
-        /*
-          Type 5001 is not a valid type for an individual or corporate trustee. Instances of individual or corporate
-          trustees that have this trusteeTypeId are the result of incorrect data originally submitted through the
-          trust spreadsheet (which has now been superseded by web screens). In these instances we do not display the type.
-          Data fixes should prevent these instances from being retrieved.
-        */
-        logger.info(`Warning - invalid data. Trustee type ${trusteeTypeId} found when mapping trustee data`);
-        return undefined;
+        // Type 5001 is only a valid trustee type for an former beneficial owner.
+        return RoleWithinTrustType.FORMER_BENEFICIAL_OWNER;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

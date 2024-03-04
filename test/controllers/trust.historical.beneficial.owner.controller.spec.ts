@@ -283,11 +283,12 @@ describe('Trust Historical Beneficial Owner Controller', () => {
 
     test('renders the current page with end date error message', async () => {
       // Given
-      mockHistBORequest.endDateDay = "";
-      mockHistBORequest.endDateMonth = "";
-      mockHistBORequest.endDateYear = "";
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
       // When
-      const resp = await request(app).post(pageWithParamsUrl).send(mockHistBORequest);
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
       // Then
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(HISTORICAL_BO_TEXTS.title);
@@ -302,13 +303,14 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       // Given
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
-      mockHistBORequest.endDateDay = "";
-      mockHistBORequest.endDateMonth = "";
-      mockHistBORequest.endDateYear = "";
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
       (hasTrustsToReview as jest.Mock).mockReturnValue(true);
       (getTrustInReview as jest.Mock).mockReturnValue(mockTrust1Data);
       // When
-      const resp = await request(app).post(pageWithParamsUrl).send(mockHistBORequest);
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
       // Then
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).not.toContain(ErrorMessages.ENTER_END_DATE_HISTORICAL_BO);
@@ -326,13 +328,14 @@ describe('Trust Historical Beneficial Owner Controller', () => {
       // Given
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
-      mockHistBORequest.endDateDay = "";
-      mockHistBORequest.endDateMonth = "";
-      mockHistBORequest.endDateYear = "";
+      const historicalBORequest = { ...mockHistBORequest };
+      historicalBORequest.endDateDay = "";
+      historicalBORequest.endDateMonth = "";
+      historicalBORequest.endDateYear = "";
       (hasTrustsToReview as jest.Mock).mockReturnValue(false);
       (getTrustByIdFromApp as jest.Mock).mockReturnValue(mockTrust2Data);
       // When
-      const resp = await request(app).post(pageWithParamsUrl).send(mockHistBORequest);
+      const resp = await request(app).post(pageWithParamsUrl).send(historicalBORequest);
       // Then
       expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);

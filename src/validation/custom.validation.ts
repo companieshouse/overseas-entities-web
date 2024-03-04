@@ -680,7 +680,3 @@ export const checkFieldIfRadioButtonSelectedAndFieldsEmpty = (isPrimaryField: bo
   }
 };
 
-export const customValidations = {
-  isUnableToObtainAllTrustInfo,
-};
-

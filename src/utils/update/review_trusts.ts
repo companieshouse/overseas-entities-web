@@ -139,7 +139,7 @@ export const putTrustInChangeScenario = (appData: ApplicationData, trustId: stri
   }
 };
 
-export const resetTrustInReviewPagesReviewed = (trustInReview: Trust) => {
+export const resetPagesReviewed = (trustInReview: Trust) => {
   const { review_status } = trustInReview || {};
   if (review_status) {
     review_status.reviewed_trust_details = false;

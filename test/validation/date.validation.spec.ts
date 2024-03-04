@@ -165,7 +165,6 @@ describe('Test to validate date validator', () => {
     expect(mockCustom).toBeCalledTimes(4);
     expect(mockEquals).toBeCalledTimes(4);
   });
-
 });
 
 describe("test date method", () => {
@@ -613,4 +612,3 @@ describe("should chek date functions for custom validation", () => {
     expect(() => checkDateValueIsValid(errorMsg, "1", "1", "0999")).toThrow(errorMsg);
   });
 });
-

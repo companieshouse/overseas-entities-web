@@ -10,6 +10,9 @@ jest.mock("../../src/utils/feature.flag" );
 jest.mock('../../src/middleware/service.availability.middleware');
 jest.mock("../../src/utils/url");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
@@ -116,6 +119,8 @@ import { ManagingOfficerKey } from "../../src/model/managing.officer.model";
 import { TrustKey } from "../../src/model/trust.model";
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getUrlWithParamsToPath } from "../../src/utils/url";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue( false );

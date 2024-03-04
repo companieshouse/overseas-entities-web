@@ -104,6 +104,7 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+import { removeJourneyMiddleware } from "../middleware/navigation/remove/remove.journey.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
@@ -116,6 +117,8 @@ import { validateStatements, statementValidationErrorsGuard, summaryPagesGuard }
 const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
+
+router.use(removeJourneyMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);

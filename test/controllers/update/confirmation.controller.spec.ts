@@ -7,6 +7,9 @@ jest.mock('../../../src/utils/session');
 jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.beneficial.owners.or.managing.officers.update.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { companyAuthentication } from "../../../src/middleware/company.authentication.middleware";
 import request from "supertest";
@@ -42,6 +45,8 @@ import { hasBOsOrMOsUpdate } from "../../../src/middleware/navigation/update/has
 
 const req = {} as Request;
 const res = { render: jest.fn() as any } as Response;
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;

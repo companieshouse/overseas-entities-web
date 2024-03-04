@@ -611,4 +611,5 @@ describe("should chek date functions for custom validation", () => {
   test("should test checkDateValueIsValid throws error for 1/1/0999", () => {
     expect(() => checkDateValueIsValid(errorMsg, "1", "1", "0999")).toThrow(errorMsg);
   });
+
 });

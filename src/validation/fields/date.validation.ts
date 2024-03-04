@@ -307,33 +307,7 @@ const historicalBOEndDateContext: dateContext = {
 };
 
 const historicalBOEndDateConditionalContext: dateContextWithCondition = {
-  dayInput: {
-    name: "endDateDay",
-    errors: {
-      noDayError: ErrorMessages.END_DAY_HISTORICAL_BO,
-      wrongDayLength: ErrorMessages.END_DAY_LENGTH_HISTORICAL_BO,
-      noRealDay: ErrorMessages.INVALID_DAY,
-    } as DayFieldErrors,
-  },
-  monthInput: {
-    name: "endDateMonth",
-    errors: {
-      noMonthError: ErrorMessages.END_MONTH_HISTORICAL_BO,
-      wrongMonthLength: ErrorMessages.END_MONTH_LENGTH_HISTORICAL_BO,
-      noRealMonth: ErrorMessages.INVALID_MONTH,
-    } as MonthFieldErrors,
-  },
-  yearInput: {
-    name: "endDateYear",
-    errors: {
-      noYearError: ErrorMessages.END_YEAR_HISTORICAL_BO,
-      wrongYearLength: ErrorMessages.END_YEAR_LENGTH_HISTORICAL_BO
-    } as YearFieldErrors,
-  },
-  dateInput: {
-    name: "endDate",
-    callBack: checkHistoricalBOEndDate,
-  },
+  ...historicalBOEndDateContext,
   condition: { elementName: "validateCeasedDate", expectedValue: "true" },
 };
 

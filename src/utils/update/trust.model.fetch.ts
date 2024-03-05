@@ -108,7 +108,7 @@ const fetchAndMapIndivdualTrustees = async (
 
 export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
   const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
-  if (trusteeRoleType === RoleWithinTrustType.FORMER_BENEFICIAL_OWNER) {
+  if (trusteeRoleType === RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER) {
     mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
   }
@@ -195,7 +195,7 @@ const fetchAndMapCorporateTrustees = async (
 
 export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
   const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
-  if (trusteeRoleType === RoleWithinTrustType.FORMER_BENEFICIAL_OWNER) {
+  if (trusteeRoleType === RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER) {
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
@@ -321,8 +321,8 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5002":
         return RoleWithinTrustType.BENEFICIARY;
       case "5001":
-        // Type 5001 is only a valid trustee type for an former beneficial owner.
-        return RoleWithinTrustType.FORMER_BENEFICIAL_OWNER;
+        // Type 5001 is only a valid trustee type for a historical beneficial owner.
+        return RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

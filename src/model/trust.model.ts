@@ -51,7 +51,7 @@ export interface TrustReviewStatus {
 export interface TrustIndividual {
   id?: string;
   ch_references?: string;
-  type: RoleWithinTrustType | undefined;
+  type: RoleWithinTrustType;
   forename: string;
   other_forenames: string;
   surname: string;
@@ -123,7 +123,7 @@ export type TrustHistoricalBeneficialOwner =
 export type TrustCorporate = {
   id?: string
   ch_references?: string;
-  type: string | undefined;
+  type: string;
   name: string;
   date_became_interested_person_day?: string;
   date_became_interested_person_month?: string;

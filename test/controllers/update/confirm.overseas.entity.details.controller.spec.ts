@@ -6,6 +6,9 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock("../../../src/utils/feature.flag" );
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { beforeEach, jest, describe } from "@jest/globals";
 import * as config from "../../../src/config";
 import app from "../../../src/app";
@@ -40,6 +43,8 @@ import {
 } from "../../__mocks__/session.mock";
 import { UpdateKey } from "../../../src/model/update.type.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 mockIsActiveFeature.mockReturnValue(false);

@@ -7,6 +7,9 @@ jest.mock('../../../src/utils/application.data');
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -79,6 +82,8 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { DateTime } from "luxon";
 import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.availability.middleware';
 import { logger } from "../../../src/utils/logger";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

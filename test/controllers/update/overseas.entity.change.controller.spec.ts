@@ -13,6 +13,9 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/utils/update/trust.model.fetch");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -55,6 +58,8 @@ import { getCompanyProfile } from '../../../src/service/company.profile.service'
 import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;

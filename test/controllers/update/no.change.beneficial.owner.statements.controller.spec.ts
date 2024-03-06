@@ -7,6 +7,9 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -24,6 +27,8 @@ import { BeneficialOwnersStatementType } from "@companieshouse/api-sdk-node/dist
 import { UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE } from "../../../src/config";
 import { BeneficialOwnerStatementKey } from "../../../src/model/beneficial.owner.statement.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 

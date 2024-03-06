@@ -161,7 +161,7 @@ export enum ErrorMessages {
   START_MONTH_LENGTH_HISTORICAL_BO = "The date they became a beneficial owner month must include 1 or 2 numbers",
   START_END_DATE_HISTORICAL_BO = "The date they became a beneficial owner month must be before the end date",
   END_MONTH_AND_YEAR_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a month and year",
-  END_DAY_AND_YEAR_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a month and year",
+  END_DAY_AND_YEAR_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a day and year",
   END_DAY_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a day",
   END_MONTH_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a month",
   END_YEAR_HISTORICAL_BO = "The date they stopped being a beneficial owner must include a year",

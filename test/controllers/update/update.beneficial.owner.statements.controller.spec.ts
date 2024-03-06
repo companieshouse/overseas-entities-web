@@ -8,6 +8,9 @@ jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middlew
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock('../../../src/utils/feature.flag');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -39,6 +42,8 @@ import * as config from "../../../src/config";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { TrustKey } from "../../../src/model/trust.model";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 

@@ -749,7 +749,7 @@ describe("Test fetching and mapping of Trust data", () => {
       trusteeForename1: "",
       trusteeSurname: "",
       corporateIndicator: "",
-      trusteeTypeId: "5001"
+      trusteeTypeId: "5002"
     } as unknown as IndividualTrusteeData;
     mapIndividualTrusteeData(trusteeData, trustMock);
     const historicalTrusteeData = {
@@ -765,7 +765,7 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "3",
       trusteeName: "",
       corporateIndicator: "",
-      trusteeTypeId: "5001"
+      trusteeTypeId: "5005"
     } as unknown as CorporateTrusteeData;
     mapCorporateTrusteeData(corporateTrusteeData, trustMock);
     const historicalCorporateTrusteeData: CorporateTrusteeData = {
@@ -839,11 +839,11 @@ describe("Test fetching and mapping of Trust data", () => {
       hashedTrusteeId: "1",
     } as unknown as IndividualTrusteeData;
 
-    trustMock.INDIVIDUALS = [];
+    trustMock.HISTORICAL_BO = [];
     trusteeData.trusteeTypeId = "5001";
     mapIndividualTrusteeData(trusteeData, trustMock);
-    if (trustMock.INDIVIDUALS) {
-      expect(trustMock.INDIVIDUALS[0].type).toEqual(undefined);
+    if (trustMock.HISTORICAL_BO) {
+      expect(trustMock.HISTORICAL_BO.length).toEqual(1);
     } else {
       fail();
     }

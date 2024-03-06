@@ -20,10 +20,9 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate
-} from "../custom.validation";
+  checkDatePreviousToFilingDate } from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
-import { conditionalDateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
+import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
 
 // to prevent more than 1 error reported on the date fields we check if the year is valid before doing some checks.
 // This means that the year check is checked before some others
@@ -307,6 +306,11 @@ const historicalBOEndDateContext: dateContext = {
   },
 };
 
+const historicalBOEndDateConditionalContext: dateContextWithCondition = {
+  ...historicalBOEndDateContext,
+  condition: { elementName: "validateCeasedDate", expectedValue: "true" },
+};
+
 export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsContext);
 
 export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(dateBecameIPIndividualBeneficialOwnerContext);
@@ -315,7 +319,7 @@ export const trustCreatedDateValidations = dateValidations(trustCreatedDateValid
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 
-export const historicalBeneficialOwnerEndDate = dateValidations(historicalBOEndDateContext);
+export const historicalBeneficialOwnerEndDate = conditionalHistoricalBODateValidations(historicalBOEndDateConditionalContext);
 
 export const dateBecameIPLegalEntityBeneficialOwner = conditionalDateValidations(dateBecameIPLegalEntityBeneficialOwnerContext);
 

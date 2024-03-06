@@ -171,6 +171,7 @@ export enum ErrorMessages {
   DATE_BEFORE_START_DATE = "Date must be on or after the appointed date",
   CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the appointed date",
   TRUST_CEASED_DATE_BEFORE_START_DATE = "Ceased date must be on or after the start date",
+  TRUST_CEASED_DATE_BEFORE_CREATED_DATE = "The date the trust stopped being associated with this overseas entity must be on or after the created date",
   RESIGNED_ON_BEFORE_START_DATE = "Resigned on date must be on or after the appointed date",
   START_DATE_BEFORE_FILING_DATE = "Start date must be before or on the date of the update statement",
   CEASED_DATE_BEFORE_FILING_DATE = "Ceased date must be before or on the date of the update statement",

@@ -348,7 +348,17 @@ export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
 
-export const trustCeasedDateValidations = conditionalDateValidations(trustCeasedDateValidationsContext);
+export const trustCeasedDateValidations = [
+  ...conditionalDateValidations(trustCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if(body("isTrustToBeCeased").equals("true"))
+    .custom((value, { req }) => checkFirstDateOnOrAfterSecondDate(
+      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+      req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"],
+      ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
+    ))
+];
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 

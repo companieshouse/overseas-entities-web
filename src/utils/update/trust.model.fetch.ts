@@ -321,7 +321,6 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5002":
         return RoleWithinTrustType.BENEFICIARY;
       case "5001":
-        // Type 5001 is only a valid trustee type for a historical beneficial owner.
         return RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);

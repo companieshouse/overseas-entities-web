@@ -51,9 +51,9 @@ export const conditionalHistoricalBODateValidations = (trustDateContext: dateCon
 
 export const setValidateCeasedDateFlag = (trustDateContext: dateContextWithCondition) => {
   return (req: Request, resp: Response, next: NextFunction) => {
-    const isUnableToProvideAllTrust: boolean = isUnableToObtainAllTrustInfo(req);
+    const isUnableToProvideAllTrustInfo: boolean = isUnableToObtainAllTrustInfo(req);
     let validateCeasedDate = "true";
-    if ((req.body[trustDateContext.dayInput.name] === "" && req.body[trustDateContext.monthInput.name] === "" && req.body[trustDateContext.yearInput.name] === "") && isUnableToProvideAllTrust) {
+    if ((req.body[trustDateContext.dayInput.name] === "" && req.body[trustDateContext.monthInput.name] === "" && req.body[trustDateContext.yearInput.name] === "") && isUnableToProvideAllTrustInfo) {
       validateCeasedDate = "false";
     }
     req.body['validateCeasedDate'] = validateCeasedDate;

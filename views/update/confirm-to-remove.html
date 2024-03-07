@@ -1,7 +1,7 @@
 {% extends "update-layout.html" %}
 
-{% set title = "Are you sure you want to remove " + boMoName + "?" %}
-
+{% set title = "Are you sure you want to remove beneficial owner or managing officer?" %}
+{% set dynamicTitle = "Are you sure you want to remove " + boMoName + "?" %}
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
 {% endblock %}
@@ -19,7 +19,7 @@
           name: "do_you_want_to_remove",
           fieldset: {
             legend: {
-              text: title,
+              text: dynamicTitle,
               isPageHeading: true,
               classes: "govuk-fieldset__legend--xl"
             }

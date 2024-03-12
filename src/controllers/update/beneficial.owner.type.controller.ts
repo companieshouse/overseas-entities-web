@@ -22,7 +22,6 @@ import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trust
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
-import { FEATURE_FLAG_ENABLE_CEASE_TRUSTS } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -84,11 +83,10 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
         await saveAndContinue(req, session, false);
       }
 
-      // reset the page visited flags for the trusts that have been reviewed so user can review data again
-      // if they have gone back to an earlier screen and changed something that might affect the trust
-      // if no trusts have been reviewed yet then no trusts should get moved by this
-      if (isActiveFeature(FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
-        const appData: ApplicationData = getApplicationData(req.session);
+      // Move any trusts that have been reviewed back into review so user can review data again if
+      // they have gone back to an earlier screen and changed something that might affect the trust.
+      // If no trusts have been reviewed yet then no trusts should get moved by this
+      if (isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
         moveReviewableTrustsIntoReview(appData);
       }
 

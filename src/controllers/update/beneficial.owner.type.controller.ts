@@ -17,11 +17,12 @@ import { checkAndReviewManagingOfficers } from "../../utils/update/review.managi
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { hasTrustsToReview } from "../../utils/update/review_trusts";
+import { hasTrustsToReview, moveReviewableTrustsIntoReview } from "../../utils/update/review_trusts";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
 import { Session } from "@companieshouse/node-session-handler";
+import { FEATURE_FLAG_ENABLE_CEASE_TRUSTS } from "../../config";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -81,6 +82,14 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
         await retrieveTrustData(req, appData);
         setExtraData(req.session, appData);
         await saveAndContinue(req, session, false);
+      }
+
+      // reset the page visited flags for the trusts that have been reviewed so user can review data again
+      // if they have gone back to an earlier screen and changed something that might affect the trust
+      // if no trusts have been reviewed yet then no trusts should get moved by this
+      if (isActiveFeature(FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
+        const appData: ApplicationData = getApplicationData(req.session);
+        moveReviewableTrustsIntoReview(appData);
       }
 
       if (hasTrustsToReview(appData)) {

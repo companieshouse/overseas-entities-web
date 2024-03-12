@@ -15,7 +15,7 @@ import {
   setTrustDetailsAsReviewed,
   moveTrustOutOfReview,
   putTrustInChangeScenario,
-  resetPagesReviewed,
+  moveReviewableTrustsIntoReview,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -603,56 +603,123 @@ describe('putTrustInChangeScenario', () => {
   });
 });
 
-describe('resetTrustInReviewPagesReviewed', () => {
-  test('resets the page reviewed data on a trust', () => {
-    const trust = {
+describe('moveReviewableTrustsIntoReview', () => {
+  test('moves trusts with ch_reference attribute from appData.trusts to appData.update.review_trusts', () => {
+    const trust1 = {
+      trust_id: "1",
+      trust_name: "Trust one with ch_reference",
+      ch_reference: "123",
+    } as Trust;
+
+    const trust2 = {
+      trust_id: "2",
+      trust_name: "Trust two",
+    } as Trust;
+
+    const trust3 = {
+      trust_id: "3",
+      trust_name: "Trust three with ch_reference",
+      ch_reference: "456",
+    } as Trust;
+
+    const trust4 = {
+      trust_id: "4",
+      trust_name: "Trust four",
+    } as Trust;
+
+    const appData: ApplicationData = {
+      trusts: [
+        trust1,
+        trust2,
+        trust3,
+        trust4
+      ],
+      update: { }
+    };
+
+    moveReviewableTrustsIntoReview(appData);
+
+    expect(appData.trusts?.length).toEqual(2);
+    expect(appData.update?.review_trusts?.length).toEqual(2);
+
+    expect(appData.update?.review_trusts).toContain(trust1);
+    expect(appData.update?.review_trusts).toContain(trust3);
+
+    expect(appData.trusts).toContain(trust2);
+    expect(appData.trusts).toContain(trust4);
+
+    const reviewTrust1 = appData.update?.review_trusts?.find(trust => trust.trust_id === "1");
+    expect(reviewTrust1?.review_status?.in_review).toEqual(false);
+    expect(reviewTrust1?.review_status?.reviewed_trust_details).toEqual(false);
+    expect(reviewTrust1?.review_status?.reviewed_former_bos).toEqual(false);
+    expect(reviewTrust1?.review_status?.reviewed_individuals).toEqual(false);
+    expect(reviewTrust1?.review_status?.reviewed_legal_entities).toEqual(false);
+
+    const reviewTrust3 = appData.update?.review_trusts?.find(trust => trust.trust_id === "3");
+    expect(reviewTrust3?.review_status?.in_review).toEqual(false);
+    expect(reviewTrust3?.review_status?.reviewed_trust_details).toEqual(false);
+    expect(reviewTrust3?.review_status?.reviewed_former_bos).toEqual(false);
+    expect(reviewTrust3?.review_status?.reviewed_individuals).toEqual(false);
+    expect(reviewTrust3?.review_status?.reviewed_legal_entities).toEqual(false);
+
+    const addedTrust2 = appData.trusts?.find(trust => trust.trust_id === "2");
+    expect(addedTrust2?.review_status).toBeUndefined();
+
+    const addedTrust4 = appData.trusts?.find(trust => trust.trust_id === "4");
+    expect(addedTrust4?.review_status).toBeUndefined();
+  });
+
+  test('should not move trusts from appData.trusts to appData.update.review_trusts if they don`t have ch_reference', () => {
+    const trust1 = {
+      trust_id: "1",
       trust_name: "Trust one",
-      review_status: {
-        reviewed_trust_details: true,
-        reviewed_former_bos: true,
-        reviewed_individuals: true,
-        reviewed_legal_entities: true
+    } as Trust;
+
+    const trust2 = {
+      trust_id: "2",
+      trust_name: "Trust two",
+    } as Trust;
+
+    const trust3 = {
+      trust_id: "3",
+      trust_name: "Trust three with ch_reference",
+      ch_reference: "456",
+    } as Trust;
+
+    const trust4 = {
+      trust_id: "4",
+      trust_name: "Trust four with ch_reference",
+      ch_reference: "123",
+    } as Trust;
+
+    const appData: ApplicationData = {
+      trusts: [
+        trust1,
+        trust2,
+      ],
+      update: {
+        review_trusts: [
+          trust3,
+          trust4
+        ]
       }
-    } as Trust;
+    };
 
-    resetPagesReviewed(trust);
+    expect(appData.trusts?.length).toEqual(2);
+    expect(appData.update?.review_trusts?.length).toEqual(2);
 
-    expect(trust.trust_name).toEqual("Trust one");
-    expect(trust.review_status?.reviewed_trust_details).toEqual(false);
-    expect(trust.review_status?.reviewed_former_bos).toEqual(false);
-    expect(trust.review_status?.reviewed_individuals).toEqual(false);
-    expect(trust.review_status?.reviewed_legal_entities).toEqual(false);
+    expect(appData.update?.review_trusts).toContain(trust3);
+    expect(appData.update?.review_trusts).toContain(trust4);
+
+    expect(appData.trusts).toContain(trust1);
+    expect(appData.trusts).toContain(trust2);
   });
 
-  test('adds flags to trust review_status if there are none', () => {
-    const trust = {
-      trust_name: "Trust one",
-      review_status: { }
-    } as Trust;
+  test('should throw error if no update object exists when trying to move trusts', () => {
+    const appData = {
+      trusts: []
+    } as ApplicationData;
 
-    resetPagesReviewed(trust);
-
-    expect(trust.trust_name).toEqual("Trust one");
-    expect(trust.review_status?.reviewed_trust_details).toEqual(false);
-    expect(trust.review_status?.reviewed_former_bos).toEqual(false);
-    expect(trust.review_status?.reviewed_individuals).toEqual(false);
-    expect(trust.review_status?.reviewed_legal_entities).toEqual(false);
-  });
-
-  test('does not add flags to trust review_status if there is no review_status field', () => {
-    const trust = {
-      trust_name: "Trust one"
-    } as Trust;
-
-    resetPagesReviewed(trust);
-
-    expect(trust).toStrictEqual(
-      {
-        trust_name: "Trust one"
-      } as Trust);
-  });
-
-  test('does not throw error if trust is undefined', () => {
-    expect(() => resetPagesReviewed(undefined as unknown as Trust)).not.toThrow();
+    expect(() => moveReviewableTrustsIntoReview(appData)).toThrowError("No update object exists on appData when trying to move trusts back into review");
   });
 });

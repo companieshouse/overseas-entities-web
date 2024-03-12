@@ -139,12 +139,32 @@ export const putTrustInChangeScenario = (appData: ApplicationData, trustId: stri
   }
 };
 
-export const resetPagesReviewed = (trustInReview: Trust) => {
-  const { review_status } = trustInReview || {};
-  if (review_status) {
-    review_status.reviewed_trust_details = false;
-    review_status.reviewed_former_bos = false;
-    review_status.reviewed_individuals = false;
-    review_status.reviewed_legal_entities = false;
+export const moveReviewableTrustsIntoReview = (appData: ApplicationData) => {
+  if (!appData.update) {
+    throw new Error("No update object exists on appData when trying to move trusts back into review");
   }
+
+  // Separate trusts based on whether they have a ch_reference
+  const trustsToMoveToReview: Trust[] = appData.trusts?.filter(trust => trust.ch_reference) ?? [];
+  const trustsThatHaveBeenAdded: Trust[] = appData.trusts?.filter(trust => !trust.ch_reference) ?? [];
+
+  // reset the review status on trusts to be reviewed again
+  for (const trust of trustsToMoveToReview) {
+    trust.review_status = {
+      in_review: false,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false,
+    };
+  }
+
+  // Initialize review_trusts array if not already present
+  appData.update.review_trusts ??= [];
+
+  // add the trusts to review again to the start of the review_trusts list
+  appData.update.review_trusts = [...trustsToMoveToReview, ...appData.update.review_trusts];
+
+  // set the trusts that have been added in this submission back as the appData.trusts
+  appData.trusts = trustsThatHaveBeenAdded;
 };

@@ -150,13 +150,7 @@ export const moveReviewableTrustsIntoReview = (appData: ApplicationData) => {
 
   // reset the review status on trusts to be reviewed again
   for (const trust of trustsToMoveToReview) {
-    trust.review_status = {
-      in_review: false,
-      reviewed_trust_details: false,
-      reviewed_former_bos: false,
-      reviewed_individuals: false,
-      reviewed_legal_entities: false,
-    };
+    resetTrustReviewStatus(trust);
   }
 
   // Initialize review_trusts array if not already present
@@ -167,4 +161,23 @@ export const moveReviewableTrustsIntoReview = (appData: ApplicationData) => {
 
   // set the trusts that have been added in this submission back as the appData.trusts
   appData.trusts = trustsThatHaveBeenAdded;
+};
+
+export const resetReviewStatusOnAllTrustsToBeReviewed = (appData: ApplicationData) => {
+  const reviewTrusts = appData.update?.review_trusts ?? [];
+  for (const trust of reviewTrusts) {
+    resetTrustReviewStatus(trust);
+  }
+};
+
+const resetTrustReviewStatus = (trust: Trust) => {
+  if (trust) {
+    trust.review_status = {
+      in_review: false,
+      reviewed_trust_details: false,
+      reviewed_former_bos: false,
+      reviewed_individuals: false,
+      reviewed_legal_entities: false
+    };
+  }
 };

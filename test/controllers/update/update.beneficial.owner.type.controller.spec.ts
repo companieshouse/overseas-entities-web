@@ -65,7 +65,7 @@ import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.oth
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
-import { hasTrustsToReview, moveReviewableTrustsIntoReview } from '../../../src/utils/update/review_trusts';
+import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
@@ -100,6 +100,8 @@ const mockSaveAndContinue = saveAndContinue as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 
 const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
+
+const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -283,6 +285,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(mockMoveReviewableTrustsIntoReview).toHaveBeenCalled();
+      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
@@ -305,6 +308,7 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
       expect(mockMoveReviewableTrustsIntoReview).not.toHaveBeenCalled();
+      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).not.toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);

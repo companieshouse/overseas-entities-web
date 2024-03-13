@@ -16,6 +16,7 @@ import {
   moveTrustOutOfReview,
   putTrustInChangeScenario,
   moveReviewableTrustsIntoReview,
+  resetReviewStatusOnAllTrustsToBeReviewed,
 } from '../../../src/utils/update/review_trusts';
 
 describe('Manage trusts - review trusts utils tests', () => {
@@ -721,5 +722,70 @@ describe('moveReviewableTrustsIntoReview', () => {
     } as ApplicationData;
 
     expect(() => moveReviewableTrustsIntoReview(appData)).toThrowError("No update object exists on appData when trying to move trusts back into review");
+  });
+});
+
+describe('resetReviewStatusOnAllTrustsToBeReviewed', () => {
+  test('should rest review_status object on all trusts in review_trusts', () => {
+    const appData: ApplicationData = {
+      update: {
+        review_trusts: [
+          {
+            trust_id: "1",
+            trust_name: "Trust one",
+          } as Trust,
+          {
+            trust_id: "2",
+            trust_name: "Trust two",
+            review_status: {
+              in_review: true,
+              reviewed_former_bos: true,
+              reviewed_individuals: true,
+              reviewed_legal_entities: true,
+              reviewed_trust_details: true
+            }
+          } as Trust,
+        ]
+      }
+    };
+
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
+
+    const reviewTrusts = appData.update?.review_trusts ?? [];
+    const trust1 = reviewTrusts[0];
+    expect(trust1.review_status?.in_review).toEqual(false);
+    expect(trust1.review_status?.reviewed_former_bos).toEqual(false);
+    expect(trust1.review_status?.reviewed_individuals).toEqual(false);
+    expect(trust1.review_status?.reviewed_legal_entities).toEqual(false);
+    expect(trust1.review_status?.reviewed_trust_details).toEqual(false);
+
+    const trust2 = reviewTrusts[1];
+    expect(trust2.review_status?.in_review).toEqual(false);
+    expect(trust2.review_status?.reviewed_former_bos).toEqual(false);
+    expect(trust2.review_status?.reviewed_individuals).toEqual(false);
+    expect(trust2.review_status?.reviewed_legal_entities).toEqual(false);
+    expect(trust2.review_status?.reviewed_trust_details).toEqual(false);
+  });
+
+  test('should do nothing if review_trusts is empty', () => {
+    const appData: ApplicationData = {
+      update: {
+        review_trusts: []
+      }
+    } as ApplicationData;
+
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
+
+    expect(appData.update?.review_trusts?.length).toEqual(0);
+  });
+
+  test('should do nothing if review_trusts is undefined', () => {
+    const appData: ApplicationData = {
+      update: { }
+    } as ApplicationData;
+
+    resetReviewStatusOnAllTrustsToBeReviewed(appData);
+
+    expect(appData.update?.review_trusts).toBeUndefined();
   });
 });

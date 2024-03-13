@@ -252,24 +252,24 @@ const trustCeasedDateValidationsContext: dateContextWithCondition = {
   dayInput: {
     name: "ceasedDateDay",
     errors: {
-      noDayError: ErrorMessages.DAY_OF_TRUST_CEASED,
-      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_TRUST_CEASED,
+      noDayError: ErrorMessages.DAY_OF_CEASED_TRUST,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST,
       noRealDay: ErrorMessages.INVALID_DAY,
     } as DayFieldErrors,
   },
   monthInput: {
     name: "ceasedDateMonth",
     errors: {
-      noMonthError: ErrorMessages.MONTH_OF_TRUST_CEASED,
-      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_TRUST_CEASED,
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_TRUST,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST,
       noRealMonth: ErrorMessages.INVALID_MONTH,
     } as MonthFieldErrors,
   },
   yearInput: {
     name: "ceasedDateYear",
     errors: {
-      noYearError: ErrorMessages.YEAR_OF_TRUST_CEASED,
-      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_TRUST_CEASED
+      noYearError: ErrorMessages.YEAR_OF_CEASED_TRUST,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
     } as YearFieldErrors,
   },
   dateInput: {

@@ -268,7 +268,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "11",
           ceasedDateYear: "2021"
         },
-        ErrorMessages.DAY_OF_TRUST_CEASED
+        ErrorMessages.DAY_OF_CEASED_TRUST
       ],
       [
         "missing ceased date MONTH error message",
@@ -276,7 +276,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateDay: "11",
           ceasedDateYear: "2021"
         },
-        ErrorMessages.MONTH_OF_TRUST_CEASED
+        ErrorMessages.MONTH_OF_CEASED_TRUST
       ],
       [
         "missing ceased date YEAR error message",
@@ -284,7 +284,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateDay: "11",
           ceasedDateMonth: "5"
         },
-        ErrorMessages.YEAR_OF_TRUST_CEASED
+        ErrorMessages.YEAR_OF_CEASED_TRUST
       ],
       [
         "invalid ceased date YEAR length error message",
@@ -293,7 +293,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "5",
           ceasedDateYear: "21"
         },
-        ErrorMessages.YEAR_LENGTH_OF_TRUST_CEASED
+        ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
       ],
       [
         "invalid ceased date DAY length error message",
@@ -302,7 +302,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "5",
           ceasedDateYear: "21"
         },
-        ErrorMessages.DAY_LENGTH_OF_TRUST_CEASED
+        ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST
       ],
       [
         "invalid ceased date MONTH length error message",
@@ -311,7 +311,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "544",
           ceasedDateYear: "21"
         },
-        ErrorMessages.MONTH_LENGTH_OF_TRUST_CEASED
+        ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST
       ],
       [
         "invalid ceased date error message",
@@ -320,7 +320,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "2",
           ceasedDateYear: "2023"
         },
-        ErrorMessages.INVALID_DATE_OF_TRUST_CEASED
+        ErrorMessages.INVALID_DATE_OF_CEASED_TRUST
       ],
       [
         "future ceased date error message",
@@ -329,28 +329,28 @@ describe('Update - Manage Trusts - Review the trust', () => {
           ceasedDateMonth: "2",
           ceasedDateYear: "9024"
         },
-        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST_CEASED
+        ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST
       ],
       [
         "day and month ceased date missing error message",
         {
           ceasedDateYear: "2023"
         },
-        ErrorMessages.DAY_AND_MONTH_OF_TRUST_CEASED
+        ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST
       ],
       [
         "month and year ceased date missing error message",
         {
           ceasedDateDay: "23"
         },
-        ErrorMessages.MONTH_AND_YEAR_OF_TRUST_CEASED
+        ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST
       ],
       [
         "day and year ceased date missing error message",
         {
           ceasedDateMonth: "11"
         },
-        ErrorMessages.DAY_AND_YEAR_OF_TRUST_CEASED
+        ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST
       ],
       [
         "ceased date must not be before creation date error message",
@@ -401,7 +401,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).not.toContain(ErrorMessages.TRUST_INVOLVED_BOS);
-      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_TRUST_CEASED);
+      expect(resp.text).not.toContain(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST);
     });
 
     test(`renders the update-manage-trusts-review-the-trust page with NO ceased date error message when ceased date is same as created date`, async () => {
@@ -446,7 +446,7 @@ describe('Update - Manage Trusts - Review the trust', () => {
       expect(resp.text).toContain(UPDATE_REVIEW_THE_TRUST);
       expect(resp.text).toContain(ERROR_LIST);
       expect(resp.text).toContain(ErrorMessages.TRUST_INVOLVED_BOS);
-      expect(resp.text).not.toContain(ErrorMessages.DAY_AND_YEAR_OF_TRUST_CEASED);
+      expect(resp.text).not.toContain(ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST);
     });
 
     test('when feature flag is off, 404 is returned', async () => {

@@ -99,7 +99,7 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       mockIsActiveFeature.mockReturnValueOnce(true);
       mockIsActiveFeature.mockReturnValueOnce(ceasedDateFeatureFlagValue); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
 
-      // trust with ch_references indicates a reviewed trust
+      // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
       mockGetApplicationData.mockReturnValue({
         ...APPLICATION_DATA_MOCK,
         [TrustKey]: [

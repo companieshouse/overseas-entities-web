@@ -17,7 +17,7 @@ import { checkAndReviewManagingOfficers } from "../../utils/update/review.managi
 import { ManagingOfficerCorporateKey } from "../../model/managing.officer.corporate.model";
 import { ManagingOfficerKey } from "../../model/managing.officer.model";
 import { isActiveFeature } from "../../utils/feature.flag";
-import { hasTrustsToReview, moveReviewableTrustsIntoReview } from "../../utils/update/review_trusts";
+import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from "../../utils/update/review_trusts";
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from "../../utils/trusts";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../utils/save.and.continue";
@@ -88,6 +88,7 @@ export const postSubmit = async (req: Request, res: Response, next: NextFunction
       // If no trusts have been reviewed yet then no trusts should get moved by this
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_CEASE_TRUSTS)) {
         moveReviewableTrustsIntoReview(appData);
+        resetReviewStatusOnAllTrustsToBeReviewed(appData);
       }
 
       if (hasTrustsToReview(appData)) {

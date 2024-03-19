@@ -1,8 +1,15 @@
 {% if userEmail %}
+  
+  {% set signOutPath = 'sign-out?page=' + templateName %}
+  
+  {% if journey === 'remove' %}
+    {% set signOutPath = signOutPath + '&' + OE_CONFIGS.JOURNEY_QUERY_PARAM + '=' + OE_CONFIGS.JourneyType.remove %}
+  {% endif %}
+  
   <ul id="navigation">
     <li class="content-email">{{ userEmail }}</li>
     <li>
-      <a class="govuk-link" href="{{ url }}sign-out?page={{ templateName }}" data-event-id="signout">Sign out</a>
+      <a class="govuk-link" href="{{ url }}{{ signOutPath }}" data-event-id="signout">Sign out</a>
     </li>
   </ul>
   <hr class="govuk-section-break govuk-section-break--visible">

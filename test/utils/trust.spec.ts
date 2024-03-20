@@ -73,6 +73,19 @@ describe('Trust Utils method tests', () => {
     id: '9002',
   } as BeneficialOwnerIndividual;
 
+  const mockBoIndividualCeasedWithTrusteeNoc = {
+    id: '9003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    }
+  } as BeneficialOwnerIndividual;
+
   const mockBoOle1 = {
     id: '8001',
   } as BeneficialOwnerOther;
@@ -83,6 +96,19 @@ describe('Trust Utils method tests', () => {
     trust_ids: [
       trustId,
     ],
+  } as BeneficialOwnerOther;
+
+  const mockBoOleCeasedWithTrusteeNoc = {
+    id: '8003',
+    trustees_nature_of_control_types: ['dummyType' as NatureOfControlType],
+    trust_ids: [
+      trustId,
+    ],
+    ceased_date: {
+      day: "1",
+      month: "2",
+      year: "2020"
+    }
   } as BeneficialOwnerOther;
 
   let mockAppData = {};
@@ -109,6 +135,11 @@ describe('Trust Utils method tests', () => {
   });
 
   test('test get Bo Individuals assignable to Trust', () => {
+    const mockAppDataWithACeasedIndividualBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoIndividualCeasedWithTrusteeNoc);
+
     expect(getBoIndividualAssignableToTrust(mockAppData)).toEqual([mockBoIndividual1]);
   });
 
@@ -117,6 +148,11 @@ describe('Trust Utils method tests', () => {
   });
 
   test('test get Bo other legal assignable to Trust', () => {
+    const mockAppDataWithACeasedOtherBO = {
+      ...mockAppData
+    };
+    mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoOleCeasedWithTrusteeNoc);
+
     expect(getBoOtherAssignableToTrust(mockAppData)).toEqual([mockBoOle2]);
   });
 

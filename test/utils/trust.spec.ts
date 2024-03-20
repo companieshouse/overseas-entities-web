@@ -140,7 +140,7 @@ describe('Trust Utils method tests', () => {
     };
     mockAppDataWithACeasedIndividualBO[BeneficialOwnerIndividualKey].push(mockBoIndividualCeasedWithTrusteeNoc);
 
-    expect(getBoIndividualAssignableToTrust(mockAppData)).toEqual([mockBoIndividual1]);
+    expect(getBoIndividualAssignableToTrust(mockAppDataWithACeasedIndividualBO)).toEqual([mockBoIndividual1]);
   });
 
   test('test get Bo other legal assigned to trust', () => {
@@ -153,7 +153,7 @@ describe('Trust Utils method tests', () => {
     };
     mockAppDataWithACeasedOtherBO[BeneficialOwnerOtherKey].push(mockBoOleCeasedWithTrusteeNoc);
 
-    expect(getBoOtherAssignableToTrust(mockAppData)).toEqual([mockBoOle2]);
+    expect(getBoOtherAssignableToTrust(mockAppDataWithACeasedOtherBO)).toEqual([mockBoOle2]);
   });
 
   test('test get Bo other legal assigned to trust', () => {

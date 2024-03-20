@@ -20,7 +20,7 @@ import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import { Session } from '@companieshouse/node-session-handler';
 import request from "supertest";
-import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR } from "../__mocks__/text.mock";
+import { ANY_MESSAGE_ERROR, PAGE_TITLE_ERROR, TRUST_CEASED_DATE_TEXT, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT } from "../__mocks__/text.mock";
 import { APPLICATION_DATA_MOCK } from '../__mocks__/session.mock';
 import app from "../../src/app";
 import {
@@ -50,6 +50,7 @@ import {
   getBoOtherAssignableToTrust,
   saveTrustInApp,
   getTrustByIdFromApp,
+  hasNoBoAssignableToTrust,
 } from '../../src/utils/trusts';
 import { Trust, TrustKey } from '../../src/model/trust.model';
 import { BeneficialOwnerIndividualKey } from '../../src/model/beneficial.owner.individual.model';
@@ -187,6 +188,7 @@ describe('Trust Details controller', () => {
         createdYears: '9999',
         beneficialOwnersIds: ['bo1id', 'bo2id'],
       };
+      (hasNoBoAssignableToTrust as jest.Mock).mockReturnValue(false);
     });
 
     test('catch error when post data from page', async () => {
@@ -457,6 +459,25 @@ describe('Trust Details controller', () => {
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.title);
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
+    });
+
+    test(`successfully access GET method and does not show ceased date when feature flag is true`, async () => {
+      // The ceased date should only be visible when the page is in review mode on the update journey so
+      // check it doesn't show in this registration journey
+      mockIsActiveFeature.mockReturnValueOnce(false); // SHOW_SERVICE_OFFLINE_PAGE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_ROE_UPDATE
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+
+      const resp = await request(app).get(pageUrl);
+
+      expect(resp.status).toEqual(constants.HTTP_STATUS_OK);
+      expect(resp.text).toContain(TRUST_DETAILS_TEXTS.title);
+      expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
     test(`successfully access GET with params method`, async () => {
@@ -466,6 +487,8 @@ describe('Trust Details controller', () => {
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.title);
       expect(resp.text).toContain(TRUST_DETAILS_TEXTS.subtitle);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
     });
 
     test('successful POST submission to same page', async () => {

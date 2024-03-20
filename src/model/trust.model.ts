@@ -30,6 +30,9 @@ export interface Trust {
   creation_date_day: string;
   creation_date_month: string;
   creation_date_year: string;
+  ceased_date_day?: string;
+  ceased_date_month?: string;
+  ceased_date_year?: string;
   unable_to_obtain_all_trust_info: string; // "Yes" or "No" required on the spreadsheet solution so we can NOT use yesNoResponse
   INDIVIDUALS?: TrustIndividual[];
   HISTORICAL_BO?: TrustHistoricalBeneficialOwner[];

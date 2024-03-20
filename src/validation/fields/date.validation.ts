@@ -20,7 +20,9 @@ import {
   checkCeasedDateOnOrAfterStartDate,
   checkStartDateBeforeDOB,
   checkFirstDateOnOrAfterSecondDate,
-  checkDatePreviousToFilingDate } from "../custom.validation";
+  checkDatePreviousToFilingDate,
+  checkTrustCeasedDate
+} from "../custom.validation";
 import { ErrorMessages } from "../error.messages";
 import { conditionalDateValidations, conditionalHistoricalBODateValidations, dateContext, dateContextWithCondition, dateValidations } from "./helper/date.validation.helper";
 
@@ -246,6 +248,40 @@ const trustCreatedDateValidationsContext: dateContext = {
   },
 };
 
+const trustCeasedDateValidationsContext: dateContextWithCondition = {
+  dayInput: {
+    name: "ceasedDateDay",
+    errors: {
+      noDayError: ErrorMessages.DAY_OF_CEASED_TRUST,
+      wrongDayLength: ErrorMessages.DAY_LENGTH_OF_CEASED_TRUST,
+      noRealDay: ErrorMessages.INVALID_DAY,
+    } as DayFieldErrors,
+  },
+  monthInput: {
+    name: "ceasedDateMonth",
+    errors: {
+      noMonthError: ErrorMessages.MONTH_OF_CEASED_TRUST,
+      wrongMonthLength: ErrorMessages.MONTH_LENGTH_OF_CEASED_TRUST,
+      noRealMonth: ErrorMessages.INVALID_MONTH,
+    } as MonthFieldErrors,
+  },
+  yearInput: {
+    name: "ceasedDateYear",
+    errors: {
+      noYearError: ErrorMessages.YEAR_OF_CEASED_TRUST,
+      wrongYearLength: ErrorMessages.YEAR_LENGTH_OF_CEASED_TRUST
+    } as YearFieldErrors,
+  },
+  dateInput: {
+    name: "ceasedDate",
+    callBack: checkTrustCeasedDate,
+  },
+  condition: {
+    elementName: "isTrustToBeCeased",
+    expectedValue: "true"
+  }
+};
+
 const historicalBOStartDateContext: dateContext = {
   dayInput: {
     name: "startDateDay",
@@ -316,6 +352,18 @@ export const dateOfBirthValidations = dateValidations(dateOfBirthValidationsCont
 export const dateBecameIPIndividualBeneficialOwner = conditionalDateValidations(dateBecameIPIndividualBeneficialOwnerContext);
 
 export const trustCreatedDateValidations = dateValidations(trustCreatedDateValidationsContext);
+
+export const trustCeasedDateValidations = [
+  ...conditionalDateValidations(trustCeasedDateValidationsContext),
+
+  body("ceasedDate")
+    .if(body("isTrustToBeCeased").equals("true"))
+    .custom((value, { req }) => checkFirstDateOnOrAfterSecondDate(
+      req.body["ceasedDateDay"], req.body["ceasedDateMonth"], req.body["ceasedDateYear"],
+      req.body["createdDateDay"], req.body["createdDateMonth"], req.body["createdDateYear"],
+      ErrorMessages.TRUST_CEASED_DATE_BEFORE_CREATED_DATE
+    ))
+];
 
 export const historicalBeneficialOwnerStartDate = dateValidations(historicalBOStartDateContext);
 

@@ -33,7 +33,7 @@ import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_PRESENTER_CHANGE_EMAIL
 import { ANY_MESSAGE_ERROR, BENEFICIAL_OWNER_HEADING, CONTINUE_BUTTON_TEXT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENT, NO_CHANGE_REVIEW_STATEMENT_BENEFICIAL_OWNER_STATEMENTS_CEASED_TITLE, NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, NO_CHANGE_REVIEW_STATEMENT_WHO_CAN_WE_CONTACT, PRINT_BUTTON_TEXT, REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_TITLE, REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE, REMOVE_OVERSEAS_ENTITY_PRESENTER_PAGE_TITLE, REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE, SERVICE_UNAVAILABLE, UPDATE_CHECK_YOUR_ANSWERS_CONTACT_DETAILS } from "../../__mocks__/text.mock";
 import { OverseasEntityKey, Transactionkey } from "../../../src/model/data.types.model";
 import { ErrorMessages } from "../../../src/validation/error.messages";
-import { DateAsStrings, getTodaysDate } from "../../../src/utils/date";
+import { getTodaysDate } from "../../../src/utils/date";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -70,7 +70,7 @@ describe("Update review overseas entity information controller tests", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" } as DateAsStrings);
+    mockGetTodaysDate.mockReturnValue({ day: "5", month: "4", year: "2024" });
     mockGetApplicationData.mockReturnValue({
       ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
     });

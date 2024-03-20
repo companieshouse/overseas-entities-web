@@ -24,8 +24,8 @@ import { serviceAvailabilityMiddleware } from '../../../src/middleware/service.a
 import { getApplicationData } from '../../../src/utils/application.data';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 
-import { APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK, APPLICATION_DATA_MOCK } from '../../__mocks__/session.mock';
-import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADING, UPDATE_TELL_US_ABOUT_TRUST_QUESTION, ERROR_LIST } from '../../__mocks__/text.mock';
+import { APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK, APPLICATION_DATA_MOCK, APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } from '../../__mocks__/session.mock';
+import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TELL_US_ABOUT_TRUST_HEADING, UPDATE_TELL_US_ABOUT_TRUST_QUESTION, ERROR_LIST, TRUST_CEASED_DATE_TEXT, TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { saveAndContinue } from '../../../src/utils/save.and.continue';
 
@@ -51,8 +51,8 @@ describe('Update - Trusts - Tell us about the trust', () => {
   });
 
   describe('GET tests', () => {
-    test('when feature flag is on, and there are trusts page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('when manage trusts feature flag is on, and there are trusts page is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_MOCK } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
@@ -63,8 +63,8 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when feature flag is on, and there are no trusts page is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(true);
+    test('when manage trusts feature flag is on, and there are no trusts page is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_TRUSTS_MOCK } );
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
       expect(resp.status).toEqual(200);
@@ -75,8 +75,23 @@ describe('Update - Trusts - Tell us about the trust', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
-    test('when feature flag is off, 404 is returned', async () => {
-      mockIsActiveFeature.mockReturnValueOnce(false);
+    test('when cease trusts feature flag is on and no associated BOs, ceased date should not be shown as page is not in review mode', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockGetApplicationData.mockReturnValue( { ...APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK } );
+
+      const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_HEADING);
+      expect(resp.text).toContain(UPDATE_TELL_US_ABOUT_TRUST_QUESTION);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).not.toContain(TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT);
+      expect(resp.text).not.toContain(TRUST_CEASED_DATE_TEXT);
+    });
+
+    test('when manage trusts feature flag is off, 404 is returned', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
       const resp = await request(app).get(UPDATE_TRUSTS_TELL_US_ABOUT_IT_URL);
 
       expect(resp.status).toEqual(404);

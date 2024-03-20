@@ -65,7 +65,7 @@ import { BeneficialOwnerOtherKey } from '../../../src/model/beneficial.owner.oth
 import { UpdateKey } from '../../../src/model/update.type.model';
 import { isActiveFeature } from '../../../src/utils/feature.flag';
 import { checkEntityRequiresTrusts, getTrustLandingUrl } from '../../../src/utils/trusts';
-import { hasTrustsToReview } from '../../../src/utils/update/review_trusts';
+import { hasTrustsToReview, moveReviewableTrustsIntoReview, resetReviewStatusOnAllTrustsToBeReviewed } from '../../../src/utils/update/review_trusts';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
 
@@ -98,6 +98,10 @@ const mockRetrieveTrustData = retrieveTrustData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
 
 const mockSetExtraData = setExtraData as jest.Mock;
+
+const mockMoveReviewableTrustsIntoReview = moveReviewableTrustsIntoReview as jest.Mock;
+
+const mockResetReviewStatusOnAllTrustsToBeReviewed = resetReviewStatusOnAllTrustsToBeReviewed as jest.Mock;
 
 describe("BENEFICIAL OWNER TYPE controller", () => {
   let appData;
@@ -259,6 +263,52 @@ describe("BENEFICIAL OWNER TYPE controller", () => {
       expect(mockSetExtraData).toHaveBeenCalled();
       expect(mockSaveAndContinue).toHaveBeenCalled();
       expect(mockHasTrustsToReview).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('moves reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on and cease trusts flag on', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockMoveReviewableTrustsIntoReview).toHaveBeenCalled();
+      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).toHaveBeenCalled();
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);
+    });
+
+    test('does not move reviewable trusts into review and redirects to manage trusts interrupt if manage trusts feature flag is on and cease trusts flag off', async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(false); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockRetrieveTrustData.mockReturnValueOnce(Promise.resolve());
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+      mockSetExtraData.mockReturnValueOnce(null);
+      mockGetApplicationData.mockReturnValueOnce({ update: { trust_data_fetched: false } });
+
+      mockHasTrustsToReview.mockReturnValueOnce(true);
+
+      const resp = await request(app).post(config.UPDATE_BENEFICIAL_OWNER_TYPE_SUBMIT_URL);
+
+      expect(mockRetrieveTrustData).toHaveBeenCalled();
+      expect(mockSetExtraData).toHaveBeenCalled();
+      expect(mockSaveAndContinue).toHaveBeenCalled();
+      expect(mockHasTrustsToReview).toHaveBeenCalled();
+      expect(mockMoveReviewableTrustsIntoReview).not.toHaveBeenCalled();
+      expect(mockResetReviewStatusOnAllTrustsToBeReviewed).not.toHaveBeenCalled();
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toContain(config.UPDATE_MANAGE_TRUSTS_INTERRUPT_URL);

@@ -8,6 +8,9 @@ jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/utils/save.and.continue');
 jest.mock("../../../src/utils/feature.flag" );
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -78,6 +81,8 @@ import { hasUpdatePresenter } from "../../../src/middleware/navigation/update/ha
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { ManagingOfficerCorporate, ManagingOfficerCorporateKey } from '../../../src/model/managing.officer.corporate.model';
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockHasUpdatePresenterMiddleware = hasUpdatePresenter as jest.Mock;
 mockHasUpdatePresenterMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

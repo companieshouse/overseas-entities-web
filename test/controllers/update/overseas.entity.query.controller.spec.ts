@@ -7,6 +7,9 @@ jest.mock("../../../src/service/company.profile.service");
 jest.mock("../../../src/utils/update/company.profile.mapper.to.overseas.entity");
 jest.mock("../../../src/utils/update/beneficial_owners_managing_officers_data_fetch");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import * as config from "../../../src/config";
 import app from "../../../src/app";
 import request from "supertest";
@@ -32,6 +35,8 @@ import { ApplicationData } from "../../../src/model";
 const testOENumber = "OE123456";
 const invalidOENUmberError = "OE number must be &quot;OE&quot; followed by 6 digits";
 const notFoundOENumberError = "An Overseas Entity with OE number &quot;" + testOENumber + "&quot; was not found";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
@@ -62,6 +67,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(OVERSEAS_ENTITY_QUERY_PAGE_TITLE);
       expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain('href="test"');
     });
 
     test(`renders the ${config.OVERSEAS_ENTITY_QUERY_PAGE} page for the Remove journey`, async () => {
@@ -73,6 +79,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
       expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain('href="test"');
     });
 
     test('catch error when rendering the page', async () => {
@@ -144,7 +151,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     });
 
-    test('redirects to confirm page for valid oe number', async () => {
+    test('redirects to confirm page for valid oe number in update journey', async () => {
       mockGetApplicationData.mockReturnValue({});
       mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
       mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
@@ -158,6 +165,20 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.header.location).toEqual(config.UPDATE_AN_OVERSEAS_ENTITY_URL + config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE);
     });
 
+    test('redirects to confirm page for valid oe number in remove journey', async () => {
+      mockGetApplicationData.mockReturnValue({});
+      mockGetCompanyProfile.mockReturnValueOnce(companyProfileQueryMock);
+      mockMapCompanyProfileToOverseasEntity.mockReturnValueOnce({});
+
+      const resp = await request(app)
+        .post(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`)
+        .send({ entity_number: 'OE111129' });
+      expect(resp.status).toEqual(302);
+      expect(mockRetrieveBoAndMoData).toHaveBeenCalledTimes(1);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(resp.header.location).toEqual(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    });
+
     test("catch error when posting data", async () => {
       mockLoggerDebugRequest.mockImplementationOnce( () => { throw new Error(ANY_MESSAGE_ERROR); });
       const resp = await request(app)
@@ -167,5 +188,26 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
+
+    const values_without_trim = [' OE123456', 'OE123456 ', ' OE123456 '];
+
+    test.each(values_without_trim)(
+      "trims the whitespaces and allows user to continue", async (input_value) => {
+        const resp = await request(app)
+          .post(config.OVERSEAS_ENTITY_QUERY_URL)
+          .send({ entity_number: input_value.trim() });
+        expect(resp.status).toEqual(200);
+        expect(resp.text).not.toContain(invalidOENUmberError);
+      });
+
+    test.each(values_without_trim)(
+      "trims the whitespaces and allows user to continue when on remove journey", async (input_value) => {
+        const resp = await request(app)
+          .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
+          .send({ entity_number: input_value.trim() });
+        expect(resp.status).toEqual(200);
+        expect(resp.text).not.toContain(invalidOENUmberError);
+      });
   });
+
 });

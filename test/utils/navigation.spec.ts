@@ -6,12 +6,26 @@ import { Request } from "express";
 import * as config from "../../src/config";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from '../../src/model/who.is.making.filing.model';
 
-import { NAVIGATION, getEntityBackLink, getSoldLandFilterBackLink, getUpdateOrRemoveBackLink } from "../../src/utils/navigation";
+import {
+  NAVIGATION,
+  getEntityBackLink,
+  getSoldLandFilterBackLink,
+  getUpdateOrRemoveBackLink,
+  getSecureUpdateFilterBackLink,
+  getOverseasEntityPresenterBackLink,
+  getUpdateReviewStatementBackLink
+} from "../../src/utils/navigation";
+
 import { isActiveFeature } from "../../src/utils/feature.flag";
 import { getApplicationData } from "../../src/utils/application.data";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
+
+const mockRemoveRequest = { } as Request;
+mockRemoveRequest["query"] = {
+  "journey": "remove"
+};
 
 describe("NAVIGATION utils", () => {
 
@@ -37,12 +51,41 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`getRemoveBackLink returns a URL with the 'journey' query parameter present when on the Remove journey`, () => {
-    const mockRequest = { } as Request;
-    mockRequest["query"] = {
-      "journey": "remove"
-    };
-    const removeBackLink = getUpdateOrRemoveBackLink(mockRequest, config.UPDATE_LANDING_PAGE_URL);
+    const removeBackLink = getUpdateOrRemoveBackLink(mockRemoveRequest, config.UPDATE_LANDING_PAGE_URL);
     expect(removeBackLink).toEqual(`${config.UPDATE_LANDING_PAGE_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const backLink = getSecureUpdateFilterBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getSecureUpdateFilterBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getSecureUpdateFilterBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_LANDING_PAGE_URL);
+  });
+
+  test(`getOverseasEntityPresenterBackLink returns the correct URL with the 'journey' query parameter present when on the Remove journey`, () => {
+    const backLink = getOverseasEntityPresenterBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`getOverseasEntityPresenterBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getOverseasEntityPresenterBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`getUpdateReviewStatementBackLink returns the correct URL when not on the Remove journey`, () => {
+    const mockRequest = { query: {} } as Request;
+    const backLink = getUpdateReviewStatementBackLink(mockRequest);
+    expect(backLink).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`getUpdateReviewStatementBackLink returns the correct URL when on the Remove journey`, () => {
+    const backLink = getUpdateReviewStatementBackLink(mockRemoveRequest);
+    expect(backLink).toEqual(config.REMOVE_CONFIRM_STATEMENT_URL);
   });
 
   test(`NAVIGATION returns ${config.LANDING_PAGE_URL} when calling previousPage on ${config.STARTING_NEW_URL} object`, () => {
@@ -166,9 +209,20 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.SECURE_UPDATE_FILTER_URL);
   });
 
+  test(`NAVIGATION returns ${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL} with 'journey' param set when calling previousPage on ${config.SECURE_UPDATE_FILTER_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.SECURE_UPDATE_FILTER_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
   test(`NAVIGATION returns ${config.UPDATE_FILING_DATE_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object`, () => {
-    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_FILING_DATE_URL);
+  });
+
+  test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_PRESENTER_URL} object for the remove journey`, () => {
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_PRESENTER_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} when calling previousPage on ${config.UPDATE_FILING_DATE_URL} object`, () => {
@@ -177,7 +231,8 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
@@ -188,12 +243,13 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, () => {
-    const mockRequest = { } as Request;
-    mockRequest["query"] = {
-      "journey": "remove"
-    };
-    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
+    const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+  });
+
+  test(`NAVIGATION returns ${config.OVERSEAS_ENTITY_QUERY_URL} with 'journey' param set when calling previousPage on ${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(`${config.OVERSEAS_ENTITY_QUERY_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_TYPE_URL} when calling previousPage on ${config.UPDATE_BENEFICIAL_OWNER_INDIVIDUAL_URL} object`, () => {
@@ -247,8 +303,14 @@ describe("NAVIGATION utils", () => {
   });
 
   test(`NAVIGATION returns ${config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object`, () => {
-    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage();
+    const mockRequest = { query: {} } as Request;
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL);
+  });
+
+  test(`NAVIGATION returns ${config.REMOVE_CONFIRM_STATEMENT_URL} when calling previousPage on ${config.UPDATE_REVIEW_STATEMENT_URL} object for Remove journey`, () => {
+    const navigation = NAVIGATION[config.UPDATE_REVIEW_STATEMENT_URL].previousPage(undefined, mockRemoveRequest);
+    expect(navigation).toEqual(config.REMOVE_CONFIRM_STATEMENT_URL);
   });
 
   test(`NAVIGATION returns ${config.UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL} when calling previousPage on ${config.UPDATE_REVIEW_INDIVIDUAL_MANAGING_OFFICER_URL_WITH_PARAM_URL} object`, () => {

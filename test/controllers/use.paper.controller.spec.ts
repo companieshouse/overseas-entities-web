@@ -27,6 +27,8 @@ describe("USE PAPER controller", () => {
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.LANDING_PAGE_URL);
       expect(resp.text).toContain(APPLY_PAPER_FORM_HEADING);
+      expect(resp.text).toContain("enquiries@companieshouse.gov.uk");
+      expect(resp.text).toContain("You must register the overseas entity on paper to keep this information protected.");
     });
   });
 });

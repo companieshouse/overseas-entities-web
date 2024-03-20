@@ -23,6 +23,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
         journey: config.JourneyType.remove,
         backLinkUrl: `${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
         templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+        chsUrl: process.env.CHS_URL,
         [EntityNumberKey]: appData[EntityNumberKey]
       });
     }
@@ -30,6 +31,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.OVERSEAS_ENTITY_QUERY_PAGE, {
       backLinkUrl: config.UPDATE_INTERRUPT_CARD_URL,
       templateName: config.OVERSEAS_ENTITY_QUERY_PAGE,
+      chsUrl: process.env.CHS_URL,
       [EntityNumberKey]: appData[EntityNumberKey]
     });
   } catch (error) {
@@ -54,7 +56,12 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
       await addOeToApplicationData(req, appData, entityNumber, companyProfile);
     }
 
+    if (isRemoveJourney(req)) {
+      return res.redirect(`${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+    }
+
     return res.redirect(config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL);
+
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

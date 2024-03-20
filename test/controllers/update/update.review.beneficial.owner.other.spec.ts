@@ -6,6 +6,9 @@ jest.mock('../../../src/middleware/company.authentication.middleware');
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import {
   UPDATE_BENEFICIAL_OWNER_TYPE_PAGE,
   UPDATE_REVIEW_BENEFICIAL_OWNER_OTHER_PAGE,
@@ -35,6 +38,8 @@ import { NextFunction } from "express";
 import { logger } from "../../../src/utils/logger";
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockCompanyAuthenticationMiddleware = companyAuthentication as jest.Mock;
 mockCompanyAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

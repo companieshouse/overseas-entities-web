@@ -13,6 +13,9 @@ jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/utils/feature.flag");
 jest.mock("../../../src/utils/update/trust.model.fetch");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -24,6 +27,7 @@ import { saveAndContinue } from "../../../src/utils/save.and.continue";
 import { getApplicationData, setExtraData } from "../../../src/utils/application.data";
 import {
   APPLICATION_DATA_MOCK,
+  APPLICATION_DATA_REMOVE_MOCK,
   APPLICATION_DATA_MOCK_WITHOUT_UPDATE,
   COMPANY_NUMBER,
   RESET_DATA_FOR_NO_CHANGE_RESPONSE,
@@ -31,7 +35,15 @@ import {
   RESET_DATA_FOR_CHANGE_RESPONSE,
 } from '../../__mocks__/session.mock';
 import { UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_PAGE, UPDATE_NO_CHANGE_BENEFICIAL_OWNER_STATEMENTS_URL, WHO_IS_MAKING_UPDATE_URL } from '../../../src/config';
-import { ANY_MESSAGE_ERROR, RADIO_BUTTON_NO_SELECTED, RADIO_BUTTON_YES_SELECTED, SERVICE_UNAVAILABLE, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT, UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE } from '../../__mocks__/text.mock';
+import {
+  ANY_MESSAGE_ERROR,
+  RADIO_BUTTON_NO_SELECTED,
+  RADIO_BUTTON_YES_SELECTED,
+  SERVICE_UNAVAILABLE,
+  UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT,
+  UPDATE_DO_YOU_WANT_TO_CHANGE_OE_TITLE,
+  REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE
+} from '../../__mocks__/text.mock';
 import { logger } from '../../../src/utils/logger';
 import { ErrorMessages } from '../../../src/validation/error.messages';
 import { NoChangeKey } from '../../../src/model/update.type.model';
@@ -46,6 +58,8 @@ import { getCompanyProfile } from '../../../src/service/company.profile.service'
 import { getBeneficialOwnersPrivateData } from '../../../src/service/private.overseas.entity.details';
 import { retrieveTrustData } from "../../../src/utils/update/trust.model.fetch";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockGetCompanyProfile = getCompanyProfile as jest.Mock;
 const mockGetBeneficialOwnersPrivateData = getBeneficialOwnersPrivateData as jest.Mock;
@@ -125,6 +139,20 @@ describe("Overseas entity do you want to change your OE controller", () => {
     });
   });
 
+  describe("GET remove journey tests", () => {
+    test(`that ${UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE} page is rendered`, async() => {
+      mockGetApplicationData.mockReturnValue({ ...APPLICATION_DATA_REMOVE_MOCK });
+
+      const resp = await request(app).get(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
+      expect(resp.text).toContain(COMPANY_NUMBER);
+      expect(resp.text).toContain(REMOVE_DO_YOU_WANT_TO_CHANGE_OE_TITLE);
+      expect(resp.text).toContain(UPDATE_DO_YOU_WANT_TO_CHANGE_OE_NO_TEXT);
+      expect(resp.text).not.toContain(RADIO_BUTTON_NO_SELECTED);
+    });
+  });
+
   describe("POST tests", () => {
 
     test("retrieve trust data is not called if feature disabled and no update model data", async () => {
@@ -199,11 +227,18 @@ describe("Overseas entity do you want to change your OE controller", () => {
       expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
     });
 
-    test("validation error when posting", async () => {
+    test("validation error when posting on Update journey", async () => {
       mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
       const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(ErrorMessages.SELECT_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
+    });
+
+    test("validation error when posting on Remove journey", async () => {
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_REMOVE_MOCK });
+      const resp = await request(app).post(UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL);
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(ErrorMessages.SELECT_REMOVE_DO_YOU_WANT_TO_MAKE_OE_CHANGE);
     });
 
     test("catch error when posting the page", async () => {

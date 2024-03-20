@@ -6,6 +6,9 @@ jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/utils/application.data');
 jest.mock('../../../src/middleware/service.availability.middleware');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { describe, expect, jest, test, beforeEach } from "@jest/globals";
 import request from "supertest";
@@ -19,6 +22,8 @@ import { companyAuthentication } from "../../../src/middleware/company.authentic
 import { createAndLogErrorRequest, logger } from "../../../src/utils/logger";
 import { ANY_MESSAGE_ERROR, FOUND_REDIRECT_TO, MESSAGE_ERROR, SERVICE_UNAVAILABLE } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockAuthenticationMiddleware = authentication as jest.Mock;

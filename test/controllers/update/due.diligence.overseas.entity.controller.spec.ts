@@ -6,6 +6,9 @@ jest.mock('../../../src/middleware/navigation/update/has.who.is.making.update.mi
 jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/utils/save.and.continue');
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { describe, expect, test, jest, beforeEach } from "@jest/globals";
 import { NextFunction, Request, Response } from "express";
 import request from "supertest";
@@ -55,6 +58,8 @@ import {
   OVERSEAS_ENTITY_DUE_DILIGENCE_SUPERVISORY_NAME_LABEL_TEXT,
   ALL_THE_OTHER_INFORMATION_ON_PUBLIC_REGISTER,
 } from "../../__mocks__/text.mock";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetApplicationData = setApplicationData as jest.Mock;

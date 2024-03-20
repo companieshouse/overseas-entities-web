@@ -18,7 +18,8 @@ import {
   checkActiveBOExists,
   hasAddedOrCeasedBO,
   checkActiveMOExists,
-  allManagingOfficers
+  allManagingOfficers,
+  getRemove
 } from "../../src/utils/application.data";
 import {
   APPLICATION_DATA_UPDATE_BO_MOCK,
@@ -57,7 +58,7 @@ import {
   PARAM_MANAGING_OFFICER_INDIVIDUAL
 } from "../..//src/config";
 import { ADDRESS } from "../__mocks__/fields/address.mock";
-import { beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
+import { ApplicationData, beneficialOwnerIndividualType, dataType, entityType } from "../../src/model";
 import { ServiceAddressKeys } from '../../src/model/address.model';
 import { BeneficialOwnerGov, BeneficialOwnerGovKey } from '../../src/model/beneficial.owner.gov.model';
 import { BeneficialOwnerIndividualKey } from "../../src/model/beneficial.owner.individual.model";
@@ -569,4 +570,19 @@ describe("Application data utils", () => {
     expect(checkActiveMOExists(appData)).toBe(expectedResult);
   });
 
+  test("getRemove returns an empty object if appData is empty", () => {
+    const removeObject = getRemove({} as ApplicationData);
+    expect(removeObject).toStrictEqual({});
+  });
+
+  test("getRemove returns an empty object if appData.remove is undefined", () => {
+    const removeObject = getRemove({ remove: undefined } as ApplicationData);
+    expect(removeObject).toStrictEqual({});
+  });
+
+  test("getRemove returns remove object", () => {
+    const removeObject = { has_sold_all_land: '1' };
+    const returnedRemoveObject = getRemove({ remove: removeObject } as ApplicationData);
+    expect(returnedRemoveObject).toStrictEqual(removeObject);
+  });
 });

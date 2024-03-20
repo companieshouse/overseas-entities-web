@@ -75,28 +75,29 @@ GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP co
 
 Key             |  Description               | Example Value
 ----------------|--------------------------- |-------------------------
-ACCOUNT_URL | URL to account service | `http://account.url`
-API_URL | URL to API call | `http://api.url`
+ACCOUNT_URL | URL to account service | `http://account-ch-gov-uk:4000`
+API_URL | URL to API call | `http://api.chs.local:4001`
 CACHE_SERVER | Redis cache server | redis
-CDN_HOST | CDN host | cdn.host
+CDN_HOST | CDN host | cdn.chs.local
 CHS_API_KEY | CHS API key for SDK call | key
-CHS_URL | CHS local url | `http://url`
-COOKIE_DOMAIN | The domain of the cookie | `http://url.local`
+CHS_URL | CHS local url | `http://chs.local`
+COOKIE_DOMAIN | The domain of the cookie | `chs.local`
 COOKIE_NAME | The name of the cookie | __SID
 COOKIE_SECRET | The shared secret used in validating/calculating the session cookie signature | secret
-INTERNAL_API_URL | Internal API URL | `http://api.url`
-LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter`
+INTERNAL_API_URL | Internal API URL | `http://api.chs.local:4001`
+LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter?start=0`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
 REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `http://gov-uk-external-remove-guidance-page`
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
 PAYMENT_FEE | Payment Fee | 100
-UPDATE_PAYMENT_FEE | Update Payment Fee | 100
-PIWIK_URL | Matomo URL | `http://url`
-PIWIK_SITE_ID | Matomo Site ID | 1
-PIWIK_START_GOAL_ID | Matomo Start goal ID | 2
-PIWIK_UPDATE_START_GOAL_ID | Matomo Update Start goal ID | 3
+UPDATE_PAYMENT_FEE | Update Payment Fee | 120
+PIWIK_URL | Matomo URL | `https://matomo.platform.aws.chdev.org`
+PIWIK_SITE_ID | Matomo Site ID | 24
+PIWIK_START_GOAL_ID | Matomo Start goal ID | 3
+PIWIK_UPDATE_START_GOAL_ID | Matomo Update Start goal ID | 10
+PIWIK_REMOVE_START_GOAL_ID | Matomo Remove Start goal ID | 19
 SHOW_SERVICE_OFFLINE_PAGE | Feature Flag | false
 VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf`
 

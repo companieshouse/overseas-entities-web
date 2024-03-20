@@ -44,6 +44,7 @@ import {
   addTrust,
   removeSoldAllLandFilter,
   removeIsEntityRegisteredOwner,
+  removeConfirmStatement,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -103,6 +104,7 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+import { removeJourneyMiddleware } from "../middleware/navigation/remove/remove.journey.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
@@ -115,6 +117,8 @@ import { validateStatements, statementValidationErrorsGuard, summaryPagesGuard }
 const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
+
+router.use(removeJourneyMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
@@ -1072,6 +1076,11 @@ router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL)
   .all(authentication)
   .get(removeIsEntityRegisteredOwner.get)
   .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
+
+router.route(config.REMOVE_CONFIRM_STATEMENT_URL)
+  .all(authentication)
+  .get(removeConfirmStatement.get)
+  .post(...validator.removeConfirmStatement, checkValidations, removeConfirmStatement.post);
 
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(

@@ -17,6 +17,7 @@ export const PIWIK_URL = getEnvironmentValue("PIWIK_URL");
 export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const PIWIK_UPDATE_START_GOAL_ID = getEnvironmentValue("PIWIK_UPDATE_START_GOAL_ID");
+export const PIWIK_REMOVE_START_GOAL_ID = getEnvironmentValue("PIWIK_REMOVE_START_GOAL_ID");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const UPDATE_PAYMENT_FEE = getEnvironmentValue("UPDATE_PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
@@ -146,6 +147,7 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validat
 export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
 export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-entity-registered-owner";
 export const REMOVE_CANNOT_USE_PAGE = "remove-cannot-use";
+export const REMOVE_CONFIRM_STATEMENT_PAGE = "remove-confirm-statement";
 
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
@@ -172,6 +174,10 @@ export const ROUTE_PARAM_TRANSACTION_ID = "transactionId";
 export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
 export const LANDING_PAGE_QUERY_PARAM = "start";
 export const JOURNEY_QUERY_PARAM = "journey";
+export const PREVIOUS_PAGE_QUERY_PARAM = "previousPage";
+
+export const BUTTON_OPTION_YES = '1';
+export const BUTTON_OPTION_NO = '0';
 
 export enum JourneyType {
   register = "register",
@@ -301,9 +307,12 @@ export const UPDATE_STATEMENT_VALIDATION_ERRORS_URL = UPDATE_AN_OVERSEAS_ENTITY_
 export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
 
 // REMOVE overseas entity routes
-export const REMOVE_SOLD_ALL_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SOLD_ALL_LAND_FILTER_PAGE;
-export const REMOVE_CANNOT_USE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_CANNOT_USE_PAGE;
-export const REMOVE_IS_ENTITY_REGISTERED_OWNER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE;
+export const REMOVE_SECTION = "remove/";
+export const REMOVE_URL_IDENTIFIER = "/" + REMOVE_SECTION;
+export const REMOVE_SOLD_ALL_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_SOLD_ALL_LAND_FILTER_PAGE;
+export const REMOVE_CANNOT_USE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_CANNOT_USE_PAGE;
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE;
+export const REMOVE_CONFIRM_STATEMENT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_CONFIRM_STATEMENT_PAGE;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

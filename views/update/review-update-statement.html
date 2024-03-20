@@ -1,7 +1,15 @@
 {% extends "update-layout.html" %}
 {% import "includes/date-macros.html" as dateMacros %}
 
-{% set title = "Review update statement before submitting" %}
+{% if (journey == "remove") %}
+  {% set isRemoveJourney = true %}
+{% endif %}
+
+{% if isRemoveJourney %}
+  {% set title = "Review the information before submitting" %}
+{% else %}
+  {% set title = "Review update statement before submitting" %}
+{% endif %}
 
 {% block pageTitle %}
   {% include "includes/update-page-title.html" %}
@@ -19,6 +27,22 @@
   {% endif %}
 {% endset %}
 
+{% set hasSoldAllLand %}
+  {% if appData.remove.has_sold_all_land == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set IsListedAsPropertyOwner %}
+  {% if appData.remove.is_listed_as_property_owner == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
 {% set noChange %}
   {% if appData.update.no_change == 1 %}
     No, I do not need to make changes
@@ -26,6 +50,10 @@
 {% endset %}
 
 {% set updateStatementDate = dateMacros.formatDate(appData.update.filing_date["day"], appData.update.filing_date["month"], appData.update.filing_date["year"]) %}
+
+{% if isRemoveJourney %}
+  {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
+{% endif %}
 
 {% set identifiedStatementText %}
     {% if appData.beneficial_owners_statement == "ALL_IDENTIFIED_ALL_DETAILS" %}
@@ -70,10 +98,30 @@
         {% endif %}
       </span>
 
-      <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+      {% if isRemoveJourney %}
+        <h1 class="govuk-heading-xl">Review the information before submitting</h1>
+      {% else %}
+        <h1 class="govuk-heading-xl">Review the information before submitting this update statement</h1>
+      {% endif %}
 
       {{ govukSummaryList({
         rows: [
+          {
+            key: {
+              text: "Has the overseas entity disposed of all its property or land in the UK?"
+            },
+            value: {
+              text: hasSoldAllLand
+            }
+          } if isRemoveJourney,
+          {
+            key: {
+              text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
+            },
+            value: {
+              text: IsListedAsPropertyOwner
+            }
+          } if isRemoveJourney,
           {
             key: {
               text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
@@ -90,7 +138,7 @@
                 isProtectedInformation,
                 "nochange-changelink-beneficial-owner-review-statement-button"
               ) ]
-            }
+            } if not isRemoveJourney
           },
           {
             key: {
@@ -109,7 +157,7 @@
                 "nochange-changelink-filingdate-review-statement-button"
               ) ]
             }
-          },
+          } if not isRemoveJourney,
           {
             key: {
               text: "Do you need to make any changes to this overseas entity?"
@@ -127,10 +175,34 @@
                 "nochange-changelink-entity-review-statement-button"
               ) ]
             }
-          }
+          } if not isRemoveJourney
         ]
     }) }}
+    <br>
 
+    {% if isRemoveJourney %}
+      <h2 class="govuk-heading-l">Changes to the overseas entity</h2>
+      {{ govukSummaryList({
+        rows: [
+          {
+            key: {
+              text: "Do you need to make any changes to this overseas entity?"
+            },
+            value: {
+              text: noChange
+            },
+            attributes: {
+              "data-event-id": "nochange-changelink-entity-review-statement-button"
+            }
+          }
+        ]
+      }) }}
+      <br>
+    {% endif %}
+
+    {% if isRemoveJourney %}
+      {% set hidePresenterChangeLink = true %}
+    {% endif %}
     {% include "includes/check-your-answers/presenter.html" %}
     <br>
 
@@ -164,7 +236,7 @@
               identifiedStatementText,
               "nochange-changelink-registrable-beneficial-owner-statement-button"
             ) ]
-          }
+          } if not isRemoveJourney
         }
       ]
   }) }}
@@ -189,7 +261,7 @@
               ceasedStatementText,
               "nochange-changelink-ceased-beneficial-owner-statement-button"
             ) ]
-          }
+          } if not isRemoveJourney
         }
       ]
   }) }}
@@ -250,6 +322,12 @@
 
   {% endif %}
 
+    {% if isRemoveJourney %}
+      {% set isStatementCorrectText = "Is all the information in this application correct?" %}
+    {% else %}
+      {% set isStatementCorrectText = "Is all the information in this update statement correct?" %}
+    {% endif %}
+
       <br>
       <form method="post">
         {{ govukRadios({
@@ -259,7 +337,7 @@
           name: "no_change_review_statement",
           fieldset: {
           legend: {
-            text: "Is all the information in this update statement correct?",
+            text: isStatementCorrectText,
             classes: "govuk-fieldset__legend--l"
           }
           },
@@ -282,6 +360,10 @@
             }
           ]
           }) }}
+
+          {% if isRemoveJourney %}
+            <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
+          {% endif %}
 
         <div class="govuk-button-group">
           {{ govukButton({

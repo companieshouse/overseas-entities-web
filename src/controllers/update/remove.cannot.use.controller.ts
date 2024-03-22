@@ -15,7 +15,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.REMOVE_CANNOT_USE_PAGE, {
       journey: config.JourneyType.remove,
       backLinkUrl,
-      templateName: config.REMOVE_CANNOT_USE_PAGE
+      templateName: config.REMOVE_CANNOT_USE_PAGE,
+      url: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`, // used in sign-out-user-banner to build correct url for sign out page
+      signOutPreviousPagePrefix: config.REMOVE_SIGN_OUT_PREFIX
     });
   } catch (error) {
     logger.errorRequest(req, error);

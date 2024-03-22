@@ -16,7 +16,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
       journey: config.JourneyType.remove,
       backLinkUrl: `${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
       templateName: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE,
-      [IsListedAsPropertyOwnerKey]: remove?.[IsListedAsPropertyOwnerKey]
+      [IsListedAsPropertyOwnerKey]: remove?.[IsListedAsPropertyOwnerKey],
+      url: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}`, // used in sign-out-user-banner to build correct url for sign out page
+      signOutPreviousPagePrefix: config.REMOVE_SIGN_OUT_PREFIX
     });
   } catch (error) {
     next(error);

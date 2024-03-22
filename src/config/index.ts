@@ -223,6 +223,7 @@ export const PAYMENT_FAILED_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAIL
 
 export const ACCOUNTS_SIGN_OUT_URL = `${ACCOUNT_URL}/signout`;
 export const REMOVE = "/remove";
+export const REMOVE_SIGN_OUT_PREFIX = "remove/";
 
 export const TRUSTS_URL = "trusts";
 export const TRUST_ENTRY_URL = REGISTER_AN_OVERSEAS_ENTITY_URL + TRUSTS_URL;

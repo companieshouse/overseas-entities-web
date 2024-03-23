@@ -6,8 +6,9 @@
   
   {% if journey === 'remove' %}
     {% set pagePrefix = signOutPreviousPagePrefix if signOutPreviousPagePrefix else '' %}
+    {% set extraParams = signOutExtraQueryParams if signOutExtraQueryParams else '' %}
     {% set removeJourneyParam = '&' + OE_CONFIGS.JOURNEY_QUERY_PARAM + '=' + OE_CONFIGS.JourneyType.remove %}
-    {% set signOutPath = basePath + pagePrefix + templateName + removeJourneyParam %}
+    {% set signOutPath = basePath + pagePrefix + templateName + removeJourneyParam + extraParams %}
   {% endif %}
   
   <ul id="navigation">

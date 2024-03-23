@@ -13,7 +13,30 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
     if (isRemoveJourney(req)) {
       journey = config.JourneyType.remove;
-      previousPage += config.JOURNEY_REMOVE_QUERY_PARAM;
+
+      const removeJourneyQueryParam = `${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`;
+
+      // Create an array to hold the query parameters
+      const queryParams: string[] = [];
+
+      for (const param in req.query) {
+        if (param === "page") {
+          continue;
+        }
+        if (Object.prototype.hasOwnProperty.call(req.query, param)) {
+          queryParams.push(`${param}=${req.query[param]}`);
+        }
+      }
+
+      // Add the removeJourneyQueryParam if it's not already in the query string
+      if (!queryParams.includes(removeJourneyQueryParam)) {
+        queryParams.unshift(removeJourneyQueryParam);
+      }
+
+      // Join the query parameters with '&' and prepend with '?'
+      const newQueryString = '?' + queryParams.join('&');
+
+      previousPage += newQueryString;
     }
 
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {

@@ -58,11 +58,27 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
+      let signOutPreviousPagePrefix = "";
+      let signOutExtraQueryParams = "";
+
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
       if (isRemoveJourney(req)) {
         journey = config.JourneyType.remove;
+        if (req.originalUrl.includes(`/${config.REMOVE_SECTION}`)) {
+          signOutPreviousPagePrefix = config.REMOVE_SECTION;
+        }
+        signOutExtraQueryParams = req.originalUrl.split('?')[1] ?? "";
+        if (signOutExtraQueryParams.includes(`${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`)) {
+          signOutExtraQueryParams = signOutExtraQueryParams.replace(`${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`, '');
+          if (signOutExtraQueryParams.startsWith('&')) {
+            signOutExtraQueryParams = signOutExtraQueryParams.substring(1);
+          }
+          if (signOutExtraQueryParams.endsWith('&')) {
+            signOutExtraQueryParams = signOutExtraQueryParams.slice(0, -1);
+          }
+        }
       }
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -80,7 +96,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           journey,
           errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
-          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req)
+          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
+          signOutPreviousPagePrefix,
+          signOutExtraQueryParams
         });
       }
 
@@ -94,6 +112,8 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...req.body,
         ...dates,
         journey,
+        signOutPreviousPagePrefix,
+        signOutExtraQueryParams,
         errors
       });
     }

@@ -12,7 +12,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     const previousPage = req.query[config.PREVIOUS_PAGE_QUERY_PARAM];
     if (previousPage) {
       backLinkUrl = `${previousPage}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
-      signOutExtraQueryParams = `&${config.PREVIOUS_PAGE_QUERY_PARAM}=${previousPage}`;
+      signOutExtraQueryParams = `${config.PREVIOUS_PAGE_QUERY_PARAM}=${previousPage}`;
     }
 
     return res.render(config.REMOVE_CANNOT_USE_PAGE, {

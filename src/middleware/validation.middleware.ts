@@ -24,7 +24,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
-import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
+import { getSignOutQueryParamsForRemoveJourney, getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -69,16 +69,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         if (req.originalUrl.includes(`/${config.REMOVE_SECTION}`)) {
           signOutPreviousPagePrefix = config.REMOVE_SECTION;
         }
-        signOutExtraQueryParams = req.originalUrl.split('?')[1] ?? "";
-        if (signOutExtraQueryParams.includes(`${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`)) {
-          signOutExtraQueryParams = signOutExtraQueryParams.replace(`${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`, '');
-          if (signOutExtraQueryParams.startsWith('&')) {
-            signOutExtraQueryParams = signOutExtraQueryParams.substring(1);
-          }
-          if (signOutExtraQueryParams.endsWith('&')) {
-            signOutExtraQueryParams = signOutExtraQueryParams.slice(0, -1);
-          }
-        }
+        signOutExtraQueryParams = getSignOutQueryParamsForRemoveJourney(req);
       }
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

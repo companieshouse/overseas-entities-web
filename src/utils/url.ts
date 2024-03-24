@@ -43,3 +43,21 @@ export const isRemoveJourney = (req: Request): boolean => {
 
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };
+
+export const getSignOutQueryParamsForRemoveJourney = (req: Request) => {
+  let queryParams = req.originalUrl.split('?')[1] ?? "";
+  const removeJourneyQueryParam = `${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`;
+
+  // if query params already contains the remove journey param then remove it as sign-out-user-banner.html will re-add it
+  if (queryParams.includes(removeJourneyQueryParam)) {
+    queryParams = queryParams.replace(removeJourneyQueryParam, '');
+    // if it has been removed, remove any left over '&' at start or end of string
+    if (queryParams.startsWith('&')) {
+      queryParams = queryParams.substring(1);
+    }
+    if (queryParams.endsWith('&')) {
+      queryParams = queryParams.slice(0, -1);
+    }
+  }
+  return queryParams;
+};

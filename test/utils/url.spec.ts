@@ -197,4 +197,27 @@ describe("Url utils tests", () => {
       expect(result).toBeFalsy();
     });
   });
+
+  describe("getQueryParamsMinusRemoveJourney tests", () => {
+    test("returns query params", () => {
+      req["originalUrl"] = "http://update-an-overseas-entity/somepage?index=2&previousPage=startpage";
+      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
+
+      expect(result).toEqual("index=2&previousPage=startpage");
+    });
+
+    test("removes all occurrences of journey=remove query param", () => {
+      req["originalUrl"] = "http://update-an-overseas-entity/somepage?journey=remove&index=2&journey=remove&previousPage=startpage&journey=remove";
+      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
+
+      expect(result).toEqual("index=2&previousPage=startpage");
+    });
+
+    test("returns empty string if no query params", () => {
+      req["originalUrl"] = "http://update-an-overseas-entity/somepage";
+      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
+
+      expect(result).toEqual("");
+    });
+  });
 });

@@ -24,7 +24,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
-import { getSignOutQueryParamsForRemoveJourney, getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
+import { getQueryParamsMinusRemoveJourney, getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -69,7 +69,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         if (req.originalUrl.includes(`/${config.REMOVE_SECTION}`)) {
           signOutPreviousPagePrefix = config.REMOVE_SECTION;
         }
-        signOutExtraQueryParams = getSignOutQueryParamsForRemoveJourney(req);
+        signOutExtraQueryParams = getQueryParamsMinusRemoveJourney(req);
       }
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {

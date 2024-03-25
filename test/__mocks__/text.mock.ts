@@ -262,6 +262,9 @@ export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_PAGE_WINDOW_TITLE = "Review the i
 export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_OE_CHANGE_TEXT = "Changes to the overseas entity";
 export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_IS_INFO_CORRECT = "Is all the information in this application correct?";
 export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT = "All information submitted must be correct on";
+export const REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before submitting";
+export const REMOVE_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
+export const REMOVE_ANY_TRUSTS_INVOLVED_HEADING = "Are there any trusts involved in the overseas entity?";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

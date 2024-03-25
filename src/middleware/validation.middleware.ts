@@ -69,6 +69,7 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         if (req.originalUrl.includes(`/${config.REMOVE_SECTION}`)) {
           signOutPreviousPagePrefix = config.REMOVE_SECTION;
         }
+        // need to remove the journey param if there is one as the sign-out-user-banner will add one if on remove journey
         const queryParams: string[] = getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
         signOutExtraQueryParams = queryParams.join('&');
       }

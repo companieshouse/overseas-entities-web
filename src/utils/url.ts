@@ -44,24 +44,17 @@ export const isRemoveJourney = (req: Request): boolean => {
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };
 
-export const getQueryParamsMinusRemoveJourney = (req: Request) => {
-  let queryParams = req.originalUrl.split('?')[1] ?? "";
-  const removeJourneyQueryParam = `${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`;
-
-  // if query params already contains the remove journey param then remove it as sign-out-user-banner.html will re-add it
-  if (queryParams.includes(removeJourneyQueryParam)) {
-    // remove all occurences of journey=remove
-    queryParams = queryParams.split(removeJourneyQueryParam).join('');
-    // replace any instances of > 1 & that have been left after the removal with &
-    if (queryParams.includes('&&')) {
-      queryParams = queryParams.replace(/&+/g, "&");
+export const getQueryParamsWithExclusion = (req: Request, paramToExclude: string) => {
+  // Create an array to hold the query parameters
+  const queryParams: string[] = [];
+  // populate the array with the query params
+  for (const param in req.query) {
+    // we want to exclude the paramToExclude
+    if (param === paramToExclude) {
+      continue;
     }
-    // remove any left over '&' at start or end of string
-    if (queryParams.startsWith('&')) {
-      queryParams = queryParams.substring(1);
-    }
-    if (queryParams.endsWith('&')) {
-      queryParams = queryParams.slice(0, -1);
+    if (Object.prototype.hasOwnProperty.call(req.query, param)) {
+      queryParams.push(`${param}=${req.query[param]}`);
     }
   }
   return queryParams;

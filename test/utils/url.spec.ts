@@ -198,24 +198,33 @@ describe("Url utils tests", () => {
     });
   });
 
-  describe("getQueryParamsMinusRemoveJourney tests", () => {
+  describe("getQueryParamsWithExclusion tests", () => {
     test("returns query params", () => {
-      req["originalUrl"] = "http://update-an-overseas-entity/somepage?index=2&previousPage=startpage";
-      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
-
+      req["query"] = {
+        "index": "2",
+        "previousPage": "startpage"
+      };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
       expect(result).toEqual("index=2&previousPage=startpage");
     });
 
     test("removes all occurrences of journey=remove query param", () => {
-      req["originalUrl"] = "http://update-an-overseas-entity/somepage?journey=remove&journey=remove&journey=remove&index=2&journey=remove&journey=remove&previousPage=startpage&journey=remove";
-      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
+      req["query"] = {
+        "journey": "remove",
+        "index": "2",
+        "previousPage": "startpage"
+      };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
 
       expect(result).toEqual("index=2&previousPage=startpage");
     });
 
-    test("returns empty string if no query params", () => {
-      req["originalUrl"] = "http://update-an-overseas-entity/somepage";
-      const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
+    test("returns empty array if no query params", () => {
+      req["query"] = { };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
 
       expect(result).toEqual("");
     });

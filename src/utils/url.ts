@@ -52,9 +52,9 @@ export const getQueryParamsMinusRemoveJourney = (req: Request) => {
   if (queryParams.includes(removeJourneyQueryParam)) {
     // remove all occurences of journey=remove
     queryParams = queryParams.split(removeJourneyQueryParam).join('');
-    // replace any && that have been left after the removal with &
+    // replace any instances of > 1 & that have been left after the removal with &
     if (queryParams.includes('&&')) {
-      queryParams = queryParams.replace(/&&/g, "&");
+      queryParams = queryParams.replace(/&+/g, "&");
     }
     // remove any left over '&' at start or end of string
     if (queryParams.startsWith('&')) {

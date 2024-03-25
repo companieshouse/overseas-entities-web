@@ -207,7 +207,7 @@ describe("Url utils tests", () => {
     });
 
     test("removes all occurrences of journey=remove query param", () => {
-      req["originalUrl"] = "http://update-an-overseas-entity/somepage?journey=remove&index=2&journey=remove&previousPage=startpage&journey=remove";
+      req["originalUrl"] = "http://update-an-overseas-entity/somepage?journey=remove&journey=remove&journey=remove&index=2&journey=remove&journey=remove&previousPage=startpage&journey=remove";
       const result = urlUtils.getQueryParamsMinusRemoveJourney(req);
 
       expect(result).toEqual("index=2&previousPage=startpage");

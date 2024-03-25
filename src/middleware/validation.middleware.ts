@@ -24,7 +24,7 @@ import { ApplicationData } from "../model/application.model";
 import { getBeneficialOwnerList } from "../utils/trusts";
 import { isActiveFeature } from "../utils/feature.flag";
 import * as config from "../config";
-import { getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
+import { getQueryParamsWithExclusion, getUrlWithParamsToPath, isRemoveJourney } from "../utils/url";
 
 export function checkValidations(req: Request, res: Response, next: NextFunction) {
   try {
@@ -58,11 +58,20 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
       }
       const entityNumber = appData?.[EntityNumberKey];
 
+      let signOutPreviousPagePrefix = "";
+      let signOutExtraQueryParams = "";
+
       // The journey property may already be part of the page form data/body so get it from there and override it if we are on a remove journey
       // Then when we pass it back into the template, make sure it is below/after the req.body fields so it overrides the req.body value
       let journey = req.body["journey"];
-      if (isRemoveJourney(req)){
+      if (isRemoveJourney(req)) {
         journey = config.JourneyType.remove;
+        if (req.originalUrl.includes(`/${config.REMOVE_SECTION}`)) {
+          signOutPreviousPagePrefix = config.REMOVE_SECTION;
+        }
+        // need to remove the journey param if there is one as the sign-out-user-banner will add one if on remove journey
+        const queryParams: string[] = getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+        signOutExtraQueryParams = queryParams.join('&');
       }
 
       if (isActiveFeature(config.FEATURE_FLAG_ENABLE_REDIS_REMOVAL)) {
@@ -80,7 +89,9 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
           journey,
           errors,
           FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
-          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req)
+          activeSubmissionBasePath: getUrlWithParamsToPath(config.ACTIVE_SUBMISSION_BASE_PATH, req),
+          signOutPreviousPagePrefix,
+          signOutExtraQueryParams
         });
       }
 
@@ -94,6 +105,8 @@ export function checkValidations(req: Request, res: Response, next: NextFunction
         ...req.body,
         ...dates,
         journey,
+        signOutPreviousPagePrefix,
+        signOutExtraQueryParams,
         errors
       });
     }

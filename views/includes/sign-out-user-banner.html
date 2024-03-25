@@ -1,8 +1,21 @@
 {% if userEmail %}
+  
+  {% set basePath = 'sign-out?page=' %}
+
+  {% set signOutPath = basePath + templateName %}
+  
+  {% if journey === 'remove' %}
+    {% set url = url if url else OE_CONFIGS.UPDATE_AN_OVERSEAS_ENTITY_URL %}
+    {% set pagePrefix = signOutPreviousPagePrefix if signOutPreviousPagePrefix else '' %}
+    {% set extraParams = '&' + signOutExtraQueryParams if signOutExtraQueryParams else '' %}
+    {% set removeJourneyParam = '&' + OE_CONFIGS.JOURNEY_QUERY_PARAM + '=' + OE_CONFIGS.JourneyType.remove %}
+    {% set signOutPath = basePath + pagePrefix + templateName + removeJourneyParam + extraParams %}
+  {% endif %}
+  
   <ul id="navigation">
     <li class="content-email">{{ userEmail }}</li>
     <li>
-      <a class="govuk-link" href="{{ url }}sign-out?page={{ templateName }}" data-event-id="signout">Sign out</a>
+      <a class="govuk-link" href="{{ url }}{{ signOutPath }}" data-event-id="signout">Sign out</a>
     </li>
   </ul>
   <hr class="govuk-section-break govuk-section-break--visible">

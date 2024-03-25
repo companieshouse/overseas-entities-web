@@ -197,4 +197,36 @@ describe("Url utils tests", () => {
       expect(result).toBeFalsy();
     });
   });
+
+  describe("getQueryParamsWithExclusion tests", () => {
+    test("returns query params", () => {
+      req["query"] = {
+        "index": "2",
+        "previousPage": "startpage"
+      };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
+      expect(result).toEqual("index=2&previousPage=startpage");
+    });
+
+    test("removes all occurrences of journey=remove query param", () => {
+      req["query"] = {
+        "journey": "remove",
+        "index": "2",
+        "previousPage": "startpage"
+      };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
+
+      expect(result).toEqual("index=2&previousPage=startpage");
+    });
+
+    test("returns empty array if no query params", () => {
+      req["query"] = { };
+      const queryParams: string[] = urlUtils.getQueryParamsWithExclusion(req, config.JOURNEY_QUERY_PARAM);
+      const result = queryParams.join("&");
+
+      expect(result).toEqual("");
+    });
+  });
 });

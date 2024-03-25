@@ -43,3 +43,19 @@ export const isRemoveJourney = (req: Request): boolean => {
 
   return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
 };
+
+export const getQueryParamsWithExclusion = (req: Request, paramToExclude: string): string[] => {
+  // Create an array to hold the query parameters
+  const queryParams: string[] = [];
+  // populate the array with the query params
+  for (const param in req.query) {
+    // we want to exclude the paramToExclude
+    if (param === paramToExclude) {
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(req.query, param)) {
+      queryParams.push(`${param}=${req.query[param]}`);
+    }
+  }
+  return queryParams;
+};

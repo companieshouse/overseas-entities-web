@@ -2,15 +2,41 @@ import { NextFunction, Request, Response } from "express";
 import { createAndLogErrorRequest, logger } from "../../utils/logger";
 import * as config from "../../config";
 import { isActiveFeature } from "../../utils/feature.flag";
+import { getQueryParamsWithExclusion, isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
+
+    let journey = config.JourneyType.update;
+    let previousPage = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`;
+
+    if (isRemoveJourney(req)) {
+      journey = config.JourneyType.remove;
+
+      const removeJourneyQueryParam = `${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`;
+
+      // we want to copy any query params (minus the 'page' param) and add them to the url that will take us to the previous page.
+      // This is so we can render the previous page with the params it needs
+
+      const queryParams: string[] = getQueryParamsWithExclusion(req, "page");
+
+      // Add the removeJourneyQueryParam if it's not already in the query string
+      if (!queryParams.includes(removeJourneyQueryParam)) {
+        queryParams.unshift(removeJourneyQueryParam);
+      }
+
+      // Join the query parameters with '&' and prepend with '?'
+      const newQueryString = '?' + queryParams.join('&');
+      // add the query params to the url for the previous page
+      previousPage += newQueryString;
+    }
+
     return res.render(config.UPDATE_SIGN_OUT_PAGE, {
-      previousPage: `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${req.query["page"]}`,
+      previousPage,
       url: config.UPDATE_AN_OVERSEAS_ENTITY_URL,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME),
-      journey: config.JourneyType.update
+      journey
     });
   } catch (error) {
     logger.errorRequest(req, error);

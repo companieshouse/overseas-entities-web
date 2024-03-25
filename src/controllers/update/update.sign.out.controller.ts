@@ -16,6 +16,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
       const removeJourneyQueryParam = `${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`;
 
+      // we want to copy any query params (minus the 'page' param) and add them to the url that will take us to the previous page.
+      // This is so we can render the previous page with the params it needs
+
       // Create an array to hold the query parameters
       const queryParams: string[] = [];
       // populate the array with the query params

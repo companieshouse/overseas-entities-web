@@ -52,16 +52,16 @@ export const getQueryParamsMinusRemoveJourney = (req: Request) => {
   if (queryParams.includes(removeJourneyQueryParam)) {
     // remove all occurences of journey=remove
     queryParams = queryParams.split(removeJourneyQueryParam).join('');
-    // if it has been removed, remove any left over '&' at start or end of string
+    // replace any && that have been left after the removal with &
+    if (queryParams.includes('&&')) {
+      queryParams = queryParams.replace(/&&/g, "&");
+    }
+    // remove any left over '&' at start or end of string
     if (queryParams.startsWith('&')) {
       queryParams = queryParams.substring(1);
     }
     if (queryParams.endsWith('&')) {
       queryParams = queryParams.slice(0, -1);
-    }
-    // replace any && that have been left after the removal with &
-    if (queryParams.includes('&&')) {
-      queryParams = queryParams.replace(/&&/g, "&");
     }
   }
   return queryParams;

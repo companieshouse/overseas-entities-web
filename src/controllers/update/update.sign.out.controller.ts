@@ -18,8 +18,9 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
       // Create an array to hold the query parameters
       const queryParams: string[] = [];
-
+      // populate the array with the query params
       for (const param in req.query) {
+        // we don't want to include the 'page' param that was used to tell this controller where to return to
         if (param === "page") {
           continue;
         }
@@ -35,7 +36,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
       // Join the query parameters with '&' and prepend with '?'
       const newQueryString = '?' + queryParams.join('&');
-
+      // add the query params to the url for the previous page
       previousPage += newQueryString;
     }
 

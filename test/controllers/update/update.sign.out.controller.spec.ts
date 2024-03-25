@@ -65,18 +65,18 @@ describe("SIGN OUT controller", () => {
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
     });
 
-    test(`renders the ${config.UPDATE_SIGN_OUT_PAGE} page correctly, when FEATURE_FLAG_ENABLE_ROE_REMOVE is active`, async () => {
+    test(`renders the ${config.UPDATE_SIGN_OUT_PAGE} page correctly on Remove journey`, async () => {
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME
 
       const resp = await request(app)
-        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}&${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
+        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}&${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}&previousPage=start`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_HELP_DETAILS_TEXT);
       expect(resp.text).toContain(UPDATE_SIGN_OUT_DROPDOWN_TEXT);
-      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SOLD_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}&amp;previousPage=start`);
     });
 
   });

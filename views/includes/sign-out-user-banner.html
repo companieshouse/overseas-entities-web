@@ -1,8 +1,6 @@
 {% if userEmail %}
 
-  {% set basePath = 'sign-out?page=' %}
-
-  {% set signOutPath = basePath + templateName %}
+  {% set signOutPath = 'sign-out?page=' + templateName %}
 
   {% if journey === 'remove' %}
     {% set url = url if url else OE_CONFIGS.UPDATE_AN_OVERSEAS_ENTITY_URL %}

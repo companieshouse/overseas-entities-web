@@ -2,6 +2,7 @@ jest.mock('../../../src/utils/feature.flag');
 jest.mock("ioredis");
 jest.mock("../../../src/utils/logger");
 jest.mock('../../../src/middleware/service.availability.middleware');
+jest.mock("../../../src/utils/url");
 
 import { ErrorMessages } from "../../../src/validation/error.messages";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
@@ -23,6 +24,7 @@ import {
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { NextFunction, Request, Response } from "express";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
+import { getPreviousPageUrl, isRemoveJourney } from "../../../src/utils/url";
 
 const mockIsActiveFeature = isActiveFeature as jest.Mock;
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
@@ -30,10 +32,14 @@ mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Respons
 const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 const previousPage = `${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SECURE_UPDATE_FILTER_PAGE}`;
+const mockGetPreviousPageUrl = getPreviousPageUrl as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 describe("SIGN OUT controller", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGetPreviousPageUrl.mockReturnValue(previousPage);
+    mockIsRemoveJourney.mockReturnValue(false);
   });
   describe("GET tests", () => {
     test(`renders the ${config.SIGN_OUT_PAGE} page, when FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME is active,  with ${config.SECURE_UPDATE_FILTER_PAGE} as back link`, async () => {
@@ -63,6 +69,21 @@ describe("SIGN OUT controller", () => {
       const resp = await request(app).get(config.UPDATE_SIGN_OUT_URL);
       expect(resp.status).toEqual(500);
       expect(resp.text).toContain(SERVICE_UNAVAILABLE);
+    });
+
+    test(`renders the ${config.UPDATE_SIGN_OUT_PAGE} page correctly on Remove journey`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_UPDATE_SAVE_AND_RESUME
+      mockIsRemoveJourney.mockReturnValue(true);
+
+      const resp = await request(app)
+        .get(`${config.UPDATE_SIGN_OUT_URL}?page=${config.SOLD_LAND_FILTER_PAGE}&${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_HINT_TEXT);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_HELP_DETAILS_TEXT);
+      expect(resp.text).toContain(UPDATE_SIGN_OUT_DROPDOWN_TEXT);
+      expect(resp.text).toContain(previousPage);
     });
   });
 

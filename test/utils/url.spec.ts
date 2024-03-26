@@ -1,4 +1,5 @@
 jest.mock('../../src/utils/application.data');
+jest.mock("../../src/utils/logger");
 
 import { request } from "express";
 import * as config from "../../src/config";
@@ -195,6 +196,34 @@ describe("Url utils tests", () => {
       const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeFalsy();
+    });
+  });
+
+  describe("getPreviousPageUrl tests", () => {
+    test("returns correct previous page from request headers", () => {
+      req["rawHeaders"] = ["Referer", `http://host-name${config.WHO_IS_MAKING_FILING_URL}`];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      // Check that the "http://host-name" absolute URL prefix has been stripped off when setting the previousPage URL
+      expect(previousPage).toEqual(config.WHO_IS_MAKING_FILING_URL);
+    });
+
+    test("does not return a potentially malicious previous page URL", () => {
+      req["rawHeaders"] = ["Referer", `http://host-name/illegal-path`];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      // Check that the "http://host-name/illegal-path" url is not returned
+      expect(previousPage).toBeUndefined();
+    });
+
+    test("returns undefined if no url found in headers", () => {
+      req["rawHeaders"] = ["Referer", ""];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      expect(previousPage).toBeUndefined();
     });
   });
 });

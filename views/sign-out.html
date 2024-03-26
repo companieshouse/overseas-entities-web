@@ -21,7 +21,7 @@
 
 {% if saveAndResume and (journey == "register") %}
   {% set hintText = "We will save your application." %}
-{% elif saveAndResume and (journey == "update") %}
+{% elif saveAndResume and (journey == "update" or journey == "remove") %}
   {% set hintText = "We will save your filing." %}
 {% else %}
   {% set hintText = "Your answers will not be saved. You will need to start again if you want to "+journey+" an overseas entity and tell us about its beneficial owners." %}
@@ -85,30 +85,30 @@
           <span class="govuk-details__summary-text">
             {% if journey === "register" %}
               How do I find my saved applications?
-            {% elif journey === "update" %}
+            {% elif journey === "update" or journey === "remove" %}
               How do I find my saved filing?
             {% endif %}
           </span>
           </summary>  
           <div class="govuk-details__text">
             {% if journey === "register" %}
-            Sign in to your Companies House account and select Your filings to access your saved applications.
-            {% elif journey === "update" %}
-            When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
+              Sign in to your Companies House account and select Your filings to access your saved applications.
+            {% elif journey === "update" or journey === "remove" %}
+              When you sign back in to this service, we'll ask you if you want to continue with a saved filing.
             {% endif %}
           </div>
         </details>
       {% endif %}
       
       {% if journey === "register" %}
-      {% include "includes/continue-button.html" %}
-      {% elif journey === "update" %}
-      {{ govukButton({
-        text: "Save and sign out",
-        attributes: {
-          "id": "submit"
-        }
-      }) }}
+        {% include "includes/continue-button.html" %}
+      {% elif journey === "update" or journey === "remove" %}
+        {{ govukButton({
+          text: "Save and sign out",
+          attributes: {
+            "id": "submit"
+          }
+        }) }}
       {% endif %}
       
 

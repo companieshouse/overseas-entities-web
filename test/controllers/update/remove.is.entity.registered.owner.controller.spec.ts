@@ -30,7 +30,11 @@ import { IsListedAsPropertyOwnerKey } from "../../../src/model/data.types.model"
 mockRemoveJourneyMiddleware.mockClear();
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
-mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
+mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => {
+  // Add userEmail to res.locals to make sign-out url appear
+  res.locals.userEmail = "userEmail";
+  return next();
+});
 const mockServiceAvailabilityMiddleware = serviceAvailabilityMiddleware as jest.Mock;
 mockServiceAvailabilityMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
 
@@ -53,6 +57,7 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
     });
@@ -120,6 +125,7 @@ describe("Remove registered owner controller", () => {
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_ENTITY_IS_ON_REGISTRY);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
     });
 
     test("catch error on current page for POST method", async () => {

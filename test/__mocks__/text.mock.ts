@@ -265,6 +265,10 @@ export const REMOVE_NO_CHANGE_REVIEW_STATEMENT_DATE_TEXT = "All information subm
 export const REMOVE_CHECK_YOUR_ANSWERS_PAGE_TITLE = "Check your answers before submitting";
 export const REMOVE_SECURE_FILTER_PAGE_HEADING = "Do any beneficial owners or managing officers have personal information protected at Companies House?";
 export const REMOVE_ANY_TRUSTS_INVOLVED_HEADING = "Are there any trusts involved in the overseas entity?";
+export const REMOVE_STATEMENT_DECLARATION = "I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land, as outlined in Section 9 of the Economic Crime (Transparency and Enforcement) Act 2022.";
+export const REMOVE_SOLD_ALL_LAND_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-sold-all-land-filter";
+export const REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-is-entity-registered-owner";
+export const REMOVE_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

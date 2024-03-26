@@ -67,8 +67,11 @@ import {
   REMOVE_IS_ENTITY_REGISTERED_OWNER_TITLE,
   CONTINUE_BUTTON_TEXT,
   PRINT_BUTTON_TEXT,
-  REMOVE_ANY_TRUSTS_INVOLVED_HEADING,
   REMOVE_SECURE_FILTER_PAGE_HEADING,
+  REMOVE_STATEMENT_DECLARATION,
+  REMOVE_SOLD_ALL_LAND_CHANGE_LINK,
+  REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK,
+  REMOVE_SECURE_REGISTER_CHANGE_LINK,
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -83,7 +86,9 @@ import {
   BENEFICIAL_OWNER_GOV_OBJECT_MOCK_WITH_CH_REF,
   BENEFICIAL_OWNER_OTHER_OBJECT_MOCK_WITH_CH_REF,
   APPLICATION_DATA_REMOVE_BO_MOCK,
-  APPLICATION_DATA_CH_REF_REMOVE_MOCK
+  APPLICATION_DATA_CH_REF_REMOVE_MOCK,
+  OVERSEAS_NAME_MOCK,
+  COMPANY_NUMBER
 } from "../../__mocks__/session.mock";
 import { DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/due.diligence.mock";
 import { OVERSEAS_ENTITY_DUE_DILIGENCE_OBJECT_MOCK } from "../../__mocks__/overseas.entity.due.diligence.mock";
@@ -449,7 +454,12 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(PRINT_BUTTON_TEXT);
       expect(resp.text).toContain(REMOVE_CONFIRM_STATEMENT_URL);
       expect(resp.text).toContain(REMOVE_SECURE_FILTER_PAGE_HEADING);
-      expect(resp.text).toContain(REMOVE_ANY_TRUSTS_INVOLVED_HEADING);
+      expect(resp.text).toContain(REMOVE_STATEMENT_DECLARATION);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_CHANGE_LINK);
+      expect(resp.text).toContain(REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK);
+      expect(resp.text).toContain(REMOVE_SECURE_REGISTER_CHANGE_LINK);
+      expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
+      expect(resp.text).toContain(COMPANY_NUMBER);
 
     });
 

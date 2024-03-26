@@ -35,14 +35,6 @@
   {% endif %}
 {% endset %}
 
-{% set anyTrustsInvolved %}
-  {% if appData.any_trusts_involved == 1 %}
-    Yes
-  {% else %}
-    No
-  {% endif %}
-{% endset %}
-
 {% set removeStatementText %}
   I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land, as outlined in Section 9 of the Economic Crime (Transparency and Enforcement) Act 2022.
 {% endset %}
@@ -65,101 +57,76 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
-      <span class="govuk-caption-xl govuk-!-padding-bottom-1">
-        {% if appData.entity_name %}
-            {{ appData.entity_name }}
-        {% else %}
-            {{ entityName }}
-        {% endif %}
-        -
-        {% if appData.entity_number %}
-            {{ appData.entity_number }}
-        {% else %}
-            {{ entityNumber }}
-        {% endif %}
-      </span>
+      {% if isRemoveJourney %}
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">
+          {% if appData.entity_name %}
+              {{ appData.entity_name }}
+          {% else %}
+              {{ entityName }}
+          {% endif %}
+          -
+          {% if appData.entity_number %}
+              {{ appData.entity_number }}
+          {% else %}
+              {{ entityNumber }}
+          {% endif %}
+        </span>
+      {% endif %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>
 
       {% if isRemoveJourney %}
-      {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Has the overseas entity disposed of all its property or land in the UK?"
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Has the overseas entity disposed of all its property or land in the UK?"
+              },
+              value: {
+                text: hasSoldAllLand
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_SOLD_ALL_LAND_FILTER_URL,
+                  hasSoldAllLand,
+                  "has-sold-all-land-change-link"
+                ) ]
+              }
             },
-            value: {
-              text: hasSoldAllLand
+            {
+              key: {
+                text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
+              },
+              value: {
+                text: IsListedAsPropertyOwner
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+                  IsListedAsPropertyOwner,
+                  "is-listed-property-owner-change-link"
+                ) ]
+              }
             },
-            attributes: {
-              "data-event-id": "has-sold-all-land-change-link"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.REMOVE_SOLD_ALL_LAND_FILTER_URL,
-                hasSoldAllLand,
-                "has-sold-all-land-change-link"
-              ) ]
+            {
+              key: {
+                text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+              },
+              value: {
+                text: isProtectedInformation
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+                  isProtectedInformation,
+                  "is-protected-information-change-link"
+                ) ]
+              }
             }
-          },
-          {
-            key: {
-              text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
-            },
-            value: {
-              text: IsListedAsPropertyOwner
-            },
-            attributes: {
-              "data-event-id": "is-listed-property-owner-change-link"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
-                IsListedAsPropertyOwner,
-                "is-listed-property-owner-change-link"
-              ) ]
-            }
-          },
-          {
-            key: {
-              text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
-            },
-            value: {
-              text: isProtectedInformation
-            },
-            attributes: {
-              "data-event-id": "is-protected-information-change-link"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
-                isProtectedInformation,
-                "is-protected-information-change-link"
-              ) ]
-            }
-          },
-          {
-            key: {
-              text: "Are there any trusts involved in the overseas entity?"
-            },
-            value: {
-              text: anyTrustsInvolved
-            },
-            attributes: {
-              "data-event-id": "any-trusts-involved-change-link"
-            },
-            actions: {
-              items: [ CREATE_CHANGE_LINK(
-                OE_CONFIGS.UPDATE_ANY_TRUSTS_INVOLVED_URL,
-                anyTrustsInvolved,
-                "any-trusts-involved-change-link"
-              ) ]
-            }
-          }
-        ]
-      }) }}
-      <br>
-    {% endif %}
+          ]
+        }) }}
+        <br>
+      {% endif %}
 
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
@@ -283,9 +250,6 @@
               },
               value: {
                 text: 	removeStatementText
-              },
-              attributes: {
-                "data-event-id": "remove-statement-declaration-change-link"
               },
               actions: {
                 items: [ CREATE_CHANGE_LINK(

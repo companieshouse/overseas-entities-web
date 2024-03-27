@@ -1,6 +1,48 @@
 {% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
 
-{% set title = "Check your answers before sending your application" %}
+{% if (journey == "remove") %}
+  {% set isRemoveJourney = true %}
+{% endif %}
+
+{% if isRemoveJourney %}
+  {% set title = "Check your answers before submitting" %}
+{% else %}
+  {% set title = "Check your answers before sending your application" %}
+{% endif %}
+
+{% set hasSoldAllLand %}
+  {% if appData.remove.has_sold_all_land == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set IsListedAsPropertyOwner %}
+  {% if appData.remove.is_listed_as_property_owner == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set isProtectedInformation %}
+  {% if appData.is_secure_register == 1 %}
+    Yes
+  {% else %}
+    No
+  {% endif %}
+{% endset %}
+
+{% set removeStatementText %}
+  I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land, as outlined in Section 9 of the Economic Crime (Transparency and Enforcement) Act 2022.
+{% endset %}
+
+{% if isRemoveJourney %}
+  {% set removeStatementDate = dateMacros.formatDate(pageParams.today["day"], pageParams.today["month"], pageParams.today["year"]) %}
+{% endif %}
+
 {% set updateStatementValidationEnabled = OE_CONFIGS.FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION === "true" %}
 
 {% block pageTitle %}
@@ -15,7 +57,64 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
+      {% if isRemoveJourney %}
+        <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
+      {% endif %}
+
       <h1 class="govuk-heading-xl">{{ title }}</h1>
+
+      {% if isRemoveJourney %}
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Has the overseas entity disposed of all its property or land in the UK?"
+              },
+              value: {
+                text: hasSoldAllLand
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_SOLD_ALL_LAND_FILTER_URL,
+                  hasSoldAllLand,
+                  "has-sold-all-land-change-link"
+                ) ]
+              }
+            },
+            {
+              key: {
+                text: "Is the overseas entity currently listed on any land registry records as the registered owner of property or land in the UK?"
+              },
+              value: {
+                text: IsListedAsPropertyOwner
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL,
+                  IsListedAsPropertyOwner,
+                  "is-listed-property-owner-change-link"
+                ) ]
+              }
+            },
+            {
+              key: {
+                text: "Do any beneficial owners or managing officers have personal information protected at Companies House?"
+              },
+              value: {
+                text: isProtectedInformation
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.SECURE_UPDATE_FILTER_URL,
+                  isProtectedInformation,
+                  "is-protected-information-change-link"
+                ) ]
+              }
+            }
+          ]
+        }) }}
+        <br>
+      {% endif %}
 
       {% include "includes/check-your-answers/presenter.html" %}
       {% include "includes/check-your-answers/verification-checks.html" %}
@@ -126,6 +225,33 @@
       {% if updateStatementValidationEnabled %}
         <br>
         {% include "includes/check-your-answers/beneficial-owner-statements.html" %}
+      {% endif %}
+
+      {% if isRemoveJourney %}
+        <h2 class="govuk-heading-m">Removal statement</h2>
+
+        {{ govukSummaryList({
+          rows: [
+            {
+              key: {
+                text: "Statement"
+              },
+              value: {
+                text: 	removeStatementText
+              },
+              actions: {
+                items: [ CREATE_CHANGE_LINK(
+                  OE_CONFIGS.REMOVE_CONFIRM_STATEMENT_URL,
+                  removeStatementText,
+                  "remove-statement-declaration-change-link"
+                ) ]
+              }
+            }
+          ]
+      }) }}
+
+      <p class="govuk-body">All information submitted must be correct on <strong>{{ removeStatementDate }}.</strong></p>
+      
       {% endif %}
 
       <br>

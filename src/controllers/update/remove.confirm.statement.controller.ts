@@ -34,7 +34,11 @@ export const post = async (req: Request, res: Response, next: NextFunction) => {
 
     await saveAndContinue(req, req.session as Session, false);
 
-    return res.redirect(`${config.UPDATE_REVIEW_STATEMENT_URL}`);
+    const inNoChangeJourney = !!appData.update?.no_change;
+    const nextPage = inNoChangeJourney ? `${config.UPDATE_REVIEW_STATEMENT_URL}` : `${config.UPDATE_CHECK_YOUR_ANSWERS_URL}`;
+
+    return res.redirect(nextPage);
+
   } catch (error) {
     next(error);
   }

@@ -85,16 +85,25 @@ describe("Remove confirmation statement controller", () => {
       expect(resp.text).toContain(ErrorMessages.SELECT_TO_CONFIRM_REMOVE_STATEMENT);
     });
 
-    test(`redirects to the ${config.UPDATE_REVIEW_STATEMENT_URL} page when checkbox is selected`, async () => {
-      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_REMOVE_MOCK);
+    test.each([
+      [config.UPDATE_REVIEW_STATEMENT_URL, "no change journey", true ],
+      [config.UPDATE_CHECK_YOUR_ANSWERS_URL, "change journey", false ]
+    ])(`redirects to the %s page when checkbox is selected and on %s`, async (redirectUrl, journeyType, isNoChange) => {
+      const APP_DATA_REMOVE_CHANGE_JOURNEY_MOCK = { ...APPLICATION_DATA_REMOVE_MOCK };
+
+      if (APP_DATA_REMOVE_CHANGE_JOURNEY_MOCK.update){
+        APP_DATA_REMOVE_CHANGE_JOURNEY_MOCK.update.no_change = isNoChange;
+      }
+
+      mockGetApplicationData.mockReturnValue(APP_DATA_REMOVE_CHANGE_JOURNEY_MOCK);
 
       const resp = await request(app)
         .post(`${config.REMOVE_CONFIRM_STATEMENT_URL}`)
         .send({ removal_confirmation: 1 });
 
       expect(resp.status).toEqual(302);
-      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.UPDATE_REVIEW_STATEMENT_URL}`);
-      expect(resp.header.location).toEqual(`${config.UPDATE_REVIEW_STATEMENT_URL}`);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${redirectUrl}`);
+      expect(resp.header.location).toEqual(`${redirectUrl}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
       expect(mockGetRemove).toHaveBeenCalledTimes(1);

@@ -4,7 +4,9 @@
 
   {% if journey === 'remove' %}
     {# Set the first part sign-out url, if we don't then it will append /sign-out to the current url, but the signout path should be /update-an-overseas-entity/sign-out #}
+    {# as the Remove journey re-uses the sign-out page by adding a journey=remove query parameter #}
     {# Some pages might provide a specific url variable so we will use that and if not provided use the default /update-an-overseas-entity #}
+    
     {% set url = url if url else OE_CONFIGS.UPDATE_AN_OVERSEAS_ENTITY_URL %}
     {% set removeJourneyParam = '&' + OE_CONFIGS.JOURNEY_QUERY_PARAM + '=' + OE_CONFIGS.JourneyType.remove %}
     {% set signOutPath = signOutPath + removeJourneyParam %}

@@ -42,7 +42,11 @@ export const isRemoveJourney = (req: Request): boolean => {
     return true;
   }
 
-  return req.query[config.JOURNEY_QUERY_PARAM] === config.JourneyType.remove;
+  // if there are multiple journey query params in the url, the values will be comma separated eg remove,remove if there are 2 journey=remove in the url
+  // split(",") will convert to an array, if there is only 1 value it will be array of 1, if no journey param, it will be empty array etc.
+  // Then we can check if array contains 'remove'
+  const journeyQueryParam: string = req.query[config.JOURNEY_QUERY_PARAM]?.toString() ?? "";
+  return journeyQueryParam.split(",").includes(config.JourneyType.remove);
 };
 
 export function getPreviousPageUrl(req: Request, basePath: string) {

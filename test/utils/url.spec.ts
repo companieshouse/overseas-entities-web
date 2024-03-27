@@ -80,11 +80,15 @@ describe("Url utils tests", () => {
 
   describe("isRemoveJourney tests", () => {
 
-    test("returns true if app data not present in session and query param journey=remove", () => {
+    test.each([
+      ['journey=remove', 'remove'],
+      ['journey=remove&journey=remove', 'remove,remove'],
+      ['journey=remove&journey=update', 'remove,update']
+    ])("returns true if app data not present in session and query param %s", (_description, reqQueryValue) => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
 
       req["query"] = {
-        "journey": "remove"
+        "journey": reqQueryValue
       };
 
       const result = urlUtils.isRemoveJourney(req);
@@ -164,9 +168,12 @@ describe("Url utils tests", () => {
       expect(result).toBeFalsy();
     });
 
-    test("returns false if query param journey is a string other than remove", () => {
+    test.each([
+      ["update"],
+      ["removes"]
+    ])("returns false if query param journey is a string other than remove - %s", (journeyQueryParamValue) => {
       req["query"] = {
-        "journey": "update"
+        "journey": journeyQueryParamValue
       };
       const result = urlUtils.isRemoveJourney(req);
 

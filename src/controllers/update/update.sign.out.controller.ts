@@ -10,6 +10,8 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
 
   if (isRemoveJourney(req)) {
     journey = config.JourneyType.remove;
+    // some sign-out back links don't work if just using the template name, some need other path structures and query params
+    // so use the same apprach as the Registration journey and get the previous page url from the request headers
     previousPage = getPreviousPageUrl(req, config.UPDATE_AN_OVERSEAS_ENTITY_URL);
   }
 

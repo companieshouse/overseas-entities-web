@@ -58,19 +58,7 @@
     <div class="govuk-grid-column-two-thirds-from-desktop">
 
       {% if isRemoveJourney %}
-        <span class="govuk-caption-xl govuk-!-padding-bottom-1">
-          {% if appData.entity_name %}
-              {{ appData.entity_name }}
-          {% else %}
-              {{ entityName }}
-          {% endif %}
-          -
-          {% if appData.entity_number %}
-              {{ appData.entity_number }}
-          {% else %}
-              {{ entityNumber }}
-          {% endif %}
-        </span>
+        <span class="govuk-caption-l govuk-!-padding-bottom-1">{{ appData.entity_name }} - {{ appData.entity_number }}</span>
       {% endif %}
 
       <h1 class="govuk-heading-xl">{{ title }}</h1>

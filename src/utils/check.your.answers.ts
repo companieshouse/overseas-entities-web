@@ -154,7 +154,11 @@ const getBackLinkUrl = (isNoChangeJourney: boolean, hasAnyBosWithTrusteeNocs: bo
   } else {
     let backLinkUrl: string;
     backLinkUrl = (isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_TRUSTS) && hasAnyBosWithTrusteeNocs) ? UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL : UPDATE_BENEFICIAL_OWNER_TYPE_URL;
-    backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL : backLinkUrl;
+    if (isRemove) {
+      backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? REMOVE_CONFIRM_STATEMENT_URL : backLinkUrl;
+    } else {
+      backLinkUrl = isActiveFeature(FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION) ? UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL : backLinkUrl;
+    }
     return backLinkUrl;
   }
 };

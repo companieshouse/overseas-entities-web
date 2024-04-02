@@ -269,6 +269,7 @@ export const REMOVE_STATEMENT_DECLARATION = "I confirm that the overseas entity 
 export const REMOVE_SOLD_ALL_LAND_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-sold-all-land-filter";
 export const REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-is-entity-registered-owner";
 export const REMOVE_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
+export const REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/remove/remove-confirm-statement";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

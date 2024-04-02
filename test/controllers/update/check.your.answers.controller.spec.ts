@@ -72,6 +72,7 @@ import {
   REMOVE_SOLD_ALL_LAND_CHANGE_LINK,
   REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK,
   REMOVE_SECURE_REGISTER_CHANGE_LINK,
+  REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK,
 } from "../../__mocks__/text.mock";
 import {
   ERROR,
@@ -460,6 +461,7 @@ describe("CHECK YOUR ANSWERS controller", () => {
       expect(resp.text).toContain(REMOVE_SECURE_REGISTER_CHANGE_LINK);
       expect(resp.text).toContain(OVERSEAS_NAME_MOCK);
       expect(resp.text).toContain(COMPANY_NUMBER);
+      expect(resp.text).toContain(REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK);
 
     });
 

@@ -4,7 +4,7 @@ import { ApplicationData } from "../model";
 import { getApplicationData } from "./application.data";
 import { Session } from "@companieshouse/node-session-handler";
 import { IsRemoveKey } from "../model/data.types.model";
-import { logger } from "./logger";
+import { createAndLogErrorRequest, logger } from "./logger";
 
 export const getUrlWithTransactionIdAndSubmissionId = (url: string, transactionId: string, submissionId: string): string => {
   url = url
@@ -43,10 +43,15 @@ export const isRemoveJourney = (req: Request): boolean => {
   }
 
   // if there are multiple journey query params in the url, the values will be comma separated eg remove,remove if there are 2 journey=remove in the url
-  // split(",") will convert to an array, if there is only 1 value it will be array of 1, if no journey param, it will be empty array etc.
+  // split(",") will convert to an array, if there is only 1 value it will be array of 1, if no journey param it will be an array containing an empty string.
   // Then we can check if array contains 'remove'
   const journeyQueryParam: string = req.query[config.JOURNEY_QUERY_PARAM]?.toString() ?? "";
-  return journeyQueryParam.split(",").includes(config.JourneyType.remove);
+  const journeyQueryParamsArray: string[] = journeyQueryParam.split(",");
+
+  if (journeyQueryParamsArray?.length > 1) {
+    throw createAndLogErrorRequest(req, "More than one journey query parameter found in url " + encodeURI(req.originalUrl));
+  }
+  return journeyQueryParamsArray.includes(config.JourneyType.remove);
 };
 
 export function getPreviousPageUrl(req: Request, basePath: string) {

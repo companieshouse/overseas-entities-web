@@ -6,8 +6,10 @@ import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
 import { getApplicationData } from '../../src/utils/application.data';
 import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+import { createAndLogErrorRequest } from "../../src/utils/logger";
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 
 describe("Url utils tests", () => {
   const req = request;
@@ -15,6 +17,7 @@ describe("Url utils tests", () => {
   const SUBMISSION_ID = "1234-abcd";
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req["query"] = {};
   });
 
@@ -80,7 +83,7 @@ describe("Url utils tests", () => {
 
   describe("isRemoveJourney tests", () => {
 
-    test("returns true if app data not present in session and query param journey=remove", () => {
+    test("returns true if app data not present in session and query param journey=remove (singular journey param)", () => {
       mockGetApplicationData.mockReturnValueOnce(undefined);
 
       req["query"] = {
@@ -90,6 +93,21 @@ describe("Url utils tests", () => {
       const result = urlUtils.isRemoveJourney(req);
 
       expect(result).toBeTruthy();
+    });
+
+    test.each([
+      ['journey=remove&journey=remove', 'remove,remove'],
+      ['journey=remove&journey=update', 'remove,update']
+    ])("throws error if app data not present in session and journey query param %s (more than one journey param)", (params, reqQueryValue) => {
+      mockGetApplicationData.mockReturnValueOnce(undefined);
+
+      req["query"] = {
+        "journey": reqQueryValue
+      };
+      req.originalUrl = `http://testurl?${params}`;
+
+      expect(() => urlUtils.isRemoveJourney(req)).toThrowError();
+      expect(mockCreateAndLogErrorRequest.mock.calls[0][1]).toEqual(`More than one journey query parameter found in url ${req.originalUrl}`);
     });
 
     test("returns true if is_remove is undefined in session data and query param journey=remove", () => {
@@ -164,9 +182,12 @@ describe("Url utils tests", () => {
       expect(result).toBeFalsy();
     });
 
-    test("returns false if query param journey is a string other than remove", () => {
+    test.each([
+      ["update"],
+      ["removes"]
+    ])("returns false if query param journey is a string other than remove - %s", (journeyQueryParamValue) => {
       req["query"] = {
-        "journey": "update"
+        "journey": journeyQueryParamValue
       };
       const result = urlUtils.isRemoveJourney(req);
 

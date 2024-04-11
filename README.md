@@ -91,8 +91,8 @@ REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `http://gov-uk-external-remov
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
-PAYMENT_FEE | Payment Fee | 100
-UPDATE_PAYMENT_FEE | Update Payment Fee | 120
+PAYMENT_FEE | Payment Fee | 234
+UPDATE_PAYMENT_FEE | Update Payment Fee | 234
 PIWIK_URL | Matomo URL | `https://matomo.platform.aws.chdev.org`
 PIWIK_SITE_ID | Matomo Site ID | 24
 PIWIK_START_GOAL_ID | Matomo Start goal ID | 3

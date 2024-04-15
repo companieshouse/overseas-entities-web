@@ -2,6 +2,8 @@
 
 Web front-end for the **register an overseas entity and tell us about its beneficial owners** service. Link to the live page [here](https://www.gov.uk/guidance/register-an-overseas-entity)
 </br>
+Web front-end for the **file an overseas entity update statement** service. Link to the live page [here](https://www.gov.uk/guidance/file-an-overseas-entity-update-statement)
+</br>
 Web front-end for the **apply to remove an overseas entity from the register** service. Link to the live page [here](https://www.gov.uk/guidance/remove-an-overseas-entity)
 </br>
 ## Overseas entities architecture

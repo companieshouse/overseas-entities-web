@@ -1,0 +1,63 @@
+{% extends "update-layout.html" %}
+{% import "includes/date-macros.html" as dateMacros %}
+
+{% set title = "Owned land filter" %}
+
+{% set displayRegistrationDate = dateMacros.formatDate(update.date_of_creation["day"], update.date_of_creation["month"], update.date_of_creation["year"]) %}
+
+{% block pageTitle %}
+{% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        {% include "includes/list/errors.html" %}
+
+        <div class="govuk-!-margin-bottom-5">
+            <strong class="govuk-tag"> New Information</strong>
+        </div>
+        <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ entity_name }} - {{ entity_number }}</span>
+
+        <h1 class="govuk-heading-xl">Was the overseas entity a registered proprietor of UK property or land during the relevant period?</h1>
+
+        <div class="govuk-inset-text">
+            The relevant period is between <strong>28 February 2022</strong> and <strong>{{displayRegistrationDate}}</strong>
+        </div>
+
+        <form method="post">
+
+            {{ govukRadios({
+            errorMessage: errors.update.owned.land.filter if errors,
+            idPrefix: "owned_land_relevant_period",
+            name: "owned_land_relevant_period",
+            fieldset: {
+            legend: {
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+            },
+            items: [
+            {
+            value: 1,
+            text: "Yes",
+            checked: owned_land_relevant_period === 1
+            },
+            {
+            value: 0,
+            text: "No",
+            checked: owned_land_relevant_period === 0
+            }
+            ]
+            }) }}
+
+            {% include "includes/save-and-continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

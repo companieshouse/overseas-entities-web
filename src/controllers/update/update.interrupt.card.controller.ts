@@ -33,7 +33,7 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     if (isRemoveJourney(req)){
       return res.redirect(`${config.OVERSEAS_ENTITY_QUERY_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
     }
-    return res.redirect(config.OVERSEAS_ENTITY_QUERY_PAGE);
+    return res.redirect(config.UPDATE_OWNED_LAND_FILTER_URL);
   } catch (error) {
     logger.errorRequest(req, error);
     next(error);

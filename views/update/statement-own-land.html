@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+
+{% block pageTitle %}
+registered proprietor of UK property? - {{ SERVICE_NAME }} - GOV.UK
+{% endblock %}
+
+{% block backLink %}
+{% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        {% include "includes/list/errors.html" %}
+
+        <form method="post">
+
+            {{ govukRadios({
+            errorMessage: errors.update.owned.land.filter if errors,
+            idPrefix: "owned_land",
+            name: "owned_land_filter",
+            fieldset: {
+            legend: {
+            text: "Was the overseas entity a registered proprietor of UK property or land during the relevant period?",
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--xl"
+            }
+            },
+            items: [
+            {
+            value: "yes",
+            text: "Yes",
+            checked: owned_land === "yes"
+            },
+            {
+            value: "no",
+            text: "No",
+            checked: owned_land === "no"
+            }
+            ]
+            }) }}
+
+            {% include "includes/continue-button.html" %}
+        </form>
+    </div>
+</div>
+
+{% endblock %}

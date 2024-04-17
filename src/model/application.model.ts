@@ -41,6 +41,7 @@ export interface ApplicationData {
     update?: updateType.Update;
     remove?: removeType.Remove;
     is_remove?: boolean;
+    has_owned_land?: string;
 }
 
 export const ApplicationDataArrayType = [

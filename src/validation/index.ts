@@ -37,6 +37,7 @@ import { reviewUpdateStatementChange, statementResolution } from "./update/revie
 import { removeSoldAllLandFilter } from "./update/remove.sold.all.land.filter.validation";
 import { removeIsEntityRegisteredOwner } from "./update/remove.is.entity.registered.owner.validation";
 import { removeConfirmStatement } from "./update/remove.confirm.statement.validation";
+import { updateOwnedLand } from "./update/update.owned.land.filter.validation";
 export const validator = {
   soldLandFilter,
   secureRegisterFilter,
@@ -89,5 +90,6 @@ export const validator = {
   statementResolution,
   removeSoldAllLandFilter,
   removeIsEntityRegisteredOwner,
-  removeConfirmStatement
+  removeConfirmStatement,
+  updateOwnedLand
 };

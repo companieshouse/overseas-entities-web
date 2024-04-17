@@ -101,6 +101,7 @@ import {
   updateManageTrustsIndividualsOrEntitiesInvolved,
   updatePaymentFailed,
   updateManageTrustsTellUsAboutTheLegalEntity,
+  updateOwnedLand,
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
@@ -533,6 +534,11 @@ router.route(config.UPDATE_INTERRUPT_CARD_URL)
   .all(authentication)
   .get(updateInterruptCard.get)
   .post(updateInterruptCard.post);
+
+router.route(config.UPDATE_OWNED_LAND_FILTER_URL)
+  .all(authentication)
+  .get(updateOwnedLand.get)
+  .post(...validator.updateOwnedLand, checkValidations, updateOwnedLand.post);
 
 router.get(config.UPDATE_CONFIRMATION_URL, authentication, companyAuthentication, navigation.hasBOsOrMOsUpdate, updateConfirmation.get);
 

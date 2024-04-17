@@ -10,7 +10,7 @@ import request from "supertest";
 
 import app from "../../../src/app";
 import { JOURNEY_REMOVE_QUERY_PARAM, UPDATE_INTERRUPT_CARD_URL, OVERSEAS_ENTITY_QUERY_URL, UPDATE_ANY_TRUSTS_INVOLVED_URL, SECURE_UPDATE_FILTER_URL } from "../../../src/config";
-import { INTERRUPT_CARD_PAGE_TITLE, REMOVE_INTERRUPT_CARD_TEXT } from "../../__mocks__/text.mock";
+import { INTERRUPT_CARD_PAGE_TITLE, REMOVE_INTERRUPT_CARD_TEXT, BEFORE_START_PAGE_LINK_AUTHENTICATION, BEFORE_START_PAGE_LINK_VERIFICATION } from "../../__mocks__/text.mock";
 
 import {
   ANY_MESSAGE_ERROR,
@@ -45,8 +45,8 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
       expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
       expect(resp.text).not.toContain(REMOVE_INTERRUPT_CARD_TEXT);
-      expect(resp.text).not.toContain('https://www.gov.uk/guidance/remove-an-overseas-entity#authentication');
-      expect(resp.text).not.toContain('https://www.gov.uk/guidance/remove-an-overseas-entity#verification');
+      expect(resp.text).not.toContain(BEFORE_START_PAGE_LINK_AUTHENTICATION);
+      expect(resp.text).not.toContain(BEFORE_START_PAGE_LINK_VERIFICATION);
     });
 
     test(`renders the update-interrupt-card page for remove journey`, async () => {
@@ -59,8 +59,8 @@ describe("UPDATE INTERRUPT CARD controller", () => {
       expect(resp.text).toContain(SECURE_UPDATE_FILTER_URL);
       expect(resp.text).not.toContain(UPDATE_ANY_TRUSTS_INVOLVED_URL);
       expect(resp.text).toContain(REMOVE_INTERRUPT_CARD_TEXT);
-      expect(resp.text).toContain('https://www.gov.uk/guidance/remove-an-overseas-entity#authentication');
-      expect(resp.text).toContain('https://www.gov.uk/guidance/remove-an-overseas-entity#verification');
+      expect(resp.text).toContain(BEFORE_START_PAGE_LINK_AUTHENTICATION);
+      expect(resp.text).toContain(BEFORE_START_PAGE_LINK_VERIFICATION);
     });
 
     test(`renders the update-interrupt-card page with back link to update-any-trusts-involved if flag off`, async () => {

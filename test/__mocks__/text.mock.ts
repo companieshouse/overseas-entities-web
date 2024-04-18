@@ -270,6 +270,8 @@ export const REMOVE_SOLD_ALL_LAND_CHANGE_LINK = "/update-an-overseas-entity/remo
 export const REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-is-entity-registered-owner";
 export const REMOVE_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
 export const REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/remove/remove-confirm-statement";
+export const BEFORE_START_PAGE_LINK_AUTHENTICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#how-to-get-an-authentication-code";
+export const BEFORE_START_PAGE_LINK_VERIFICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#verify";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

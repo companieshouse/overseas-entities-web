@@ -4,13 +4,16 @@
   {% extends "layout.html" %}
   {% set titleTemplate = "includes/page-title.html" %}
   {% set surveyPage = "roe-confirmation" %}
+  {% set dataEventId = "register-survey-link" %}
 {% else %}
   {% extends "update-layout.html" %}
   {% set titleTemplate = "includes/update-page-title.html" %}
   {% if isUpdate %}
     {% set surveyPage = "oe-update-conf" %}
+    {% set dataEventId = "update-survey-link" %}
   {% else %}
     {% set surveyPage = "oe-remove-confirmation" %}
+    {% set dataEventId = "remove-survey-link" %}
   {% endif %}
 {% endif %}
 
@@ -76,7 +79,7 @@
       {% endif %}
 
       <p class="govuk-body">
-        <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/{{ surveyPage }}/">What did you think of this service?</a> (takes 30 seconds)
+        <a class="govuk-link" href="https://www.smartsurvey.co.uk/s/{{ surveyPage }}/" data-event-id="{{ dataEventId }}">What did you think of this service?</a> (takes 30 seconds)
       </p>
 
     </div>

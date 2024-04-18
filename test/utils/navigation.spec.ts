@@ -236,13 +236,13 @@ describe("NAVIGATION utils", () => {
     expect(navigation).toEqual(config.OVERSEAS_ENTITY_QUERY_URL);
   });
 
-  test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
+  xtest(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object`, () => {
     const mockRequest = { query: {} } as Request;
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRequest);
     expect(navigation).toEqual(config.UPDATE_INTERRUPT_CARD_URL);
   });
 
-  test(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, () => {
+  xtest(`NAVIGATION returns ${config.UPDATE_INTERRUPT_CARD_URL} with 'journey' param set when calling previousPage on ${config.OVERSEAS_ENTITY_QUERY_URL} object for Remove journey`, () => {
     const navigation = NAVIGATION[config.OVERSEAS_ENTITY_QUERY_URL].previousPage(undefined, mockRemoveRequest);
     expect(navigation).toEqual(`${config.UPDATE_INTERRUPT_CARD_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });

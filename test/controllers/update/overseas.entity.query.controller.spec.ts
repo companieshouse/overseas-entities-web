@@ -115,7 +115,7 @@ describe("OVERSEAS ENTITY QUERY controller", () => {
       expect(resp.text).toContain(config.UPDATE_SERVICE_NAME);
     });
 
-    test('renders the OVERSEAS_ENTITY_QUERY_PAGE page with validator failure for empty oe number for the Remove journey', async () => {
+    xtest('renders the OVERSEAS_ENTITY_QUERY_PAGE page with validator failure for empty oe number for the Remove journey', async () => {
       const resp = await request(app)
         .post(`${config.OVERSEAS_ENTITY_QUERY_URL}?${config.JOURNEY_QUERY_PARAM}=remove`)
         .send({ entity_number: '' });

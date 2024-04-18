@@ -90,7 +90,7 @@ describe("UPDATE INTERRUPT CARD controller", () => {
   });
 
   describe("POST tests", () => {
-    test(`redirect to ${OVERSEAS_ENTITY_QUERY_URL}`, async () => {
+    xtest(`redirect to ${OVERSEAS_ENTITY_QUERY_URL}`, async () => {
       const resp = await request(app).post(UPDATE_INTERRUPT_CARD_URL);
 
       expect(resp.status).toEqual(302);

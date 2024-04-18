@@ -1814,6 +1814,11 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_CH_REF_REMOVE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  [IsRemoveKey]: true,
+};
+
 export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
   overseas_entity_id: '123',
   transaction_id: '345',

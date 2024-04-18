@@ -30,7 +30,7 @@ describe("Remove cannot use this service page", () => {
     expect(resp.text).toContain("https://www.gov.uk/guidance/file-an-overseas-entity-update-statement");
     expect(resp.text).toContain("https://www.gov.uk/contact-companies-house");
     expect(resp.text).toContain(config.REMOVE_SERVICE_NAME);
-    expect(resp.text).toContain(`${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
+    expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}${config.SIGN_OUT_PAGE}?page=${config.REMOVE_CANNOT_USE_PAGE}`);
     expect(resp.text).toContain(`${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
   });
 });

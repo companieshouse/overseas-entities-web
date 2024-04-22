@@ -3,7 +3,27 @@
 
     {% include "includes/list/errors.html" %}
 
+    {# Check if there are any beneficial owners. If the length of the 'beneficialOwners' array is 0, then 'isTrustToBeCeased' will be true #}
+    {# and can be used to show the ceased date - only for 'review' mode (review mode is only in update journey) #}
+    {% set isTrustToBeCeased = pageData.beneficialOwners | length == 0 %}
+
     {% if isReview %}
+      {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
+        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+          <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+              Important
+            </h2>
+          </div>
+          <div class="govuk-notification-banner__content">
+            <p class="govuk-notification-banner__heading">
+              This trust is no longer associated with a beneficial owner and will be removed.</p>
+            <p>Review the trust information and make sure it is correct as at the date the trust stopped being associated with the overseas entity.</p>
+            <p>If you don't want to remove this trust, you need to change the nature of control for the beneficial owner it is associated with, or link it to a new beneficial owner.</p>
+          </div>
+        </div>
+      {% endif %}
+
       <span class="govuk-caption-xl govuk-!-padding-bottom-1">{{ formData.name }}</span>
     {% endif %}
     <h1 class="govuk-heading-xl">{{ pageParams.title }}</h1>
@@ -27,6 +47,21 @@
         <h1 class="govuk-heading-m govuk-!-margin-0">Date the trust was created:</h1>
         <label class="govuk-label govuk-!-margin-bottom-7">{{ formatted_creation_date }}</label>
         <br>
+        
+        {% if isTrustToBeCeased and isFeatureFlagCeaseTrustsEnabled %}
+          {% set fieldParam = {
+            name: 'ceasedDate',
+            label: 'When did this trust stop being associated with the overseas entity?',
+            hint: "For example, 27 3 2007. This trust's information must be correct to this date.",
+            error: errors.ceasedDate if errors,
+            value: {
+              'Day': formData.ceasedDateDay,
+              'Month': formData.ceasedDateMonth,
+              'Year': formData.ceasedDateYear
+            }
+          } %}
+          {% include "includes/inputs/date-input.html" %}
+        {% endif %}
       {% else %}
         {% set fieldParam = {
           name: 'createdDate',
@@ -98,6 +133,7 @@
       }) }}
 
       <input type="hidden" name="trustId" value="{{ formData.trustId }}"/>
+      
       {% if isReview %}
         <input type="hidden" name="createdDateDay" value="{{ formData.createdDateDay }}"/>
         <input type="hidden" name="createdDateMonth" value="{{ formData.createdDateMonth }}"/>

@@ -323,6 +323,20 @@ export const checkTrustDate = (dayStr: string = "", monthStr: string = "", yearS
   return true;
 };
 
+export const checkTrustCeasedDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
+  const dateFieldErrors = {
+    completelyEmptyDateError: ErrorMessages.ENTER_DATE_OF_TRUST_CEASED,
+    noDayAndMonthError: ErrorMessages.DAY_AND_MONTH_OF_CEASED_TRUST,
+    noMonthAndYearError: ErrorMessages.MONTH_AND_YEAR_OF_CEASED_TRUST,
+    noDayAndYearError: ErrorMessages.DAY_AND_YEAR_OF_CEASED_TRUST,
+  };
+
+  checkDateFieldsForErrors(dateFieldErrors, dayStr, monthStr, yearStr);
+  checkAllDateFieldsArePresent(dayStr, monthStr, yearStr) && checkDateValueIsValid(ErrorMessages.INVALID_DATE_OF_CEASED_TRUST, dayStr, monthStr, yearStr);
+  checkDateIsInPastOrToday(ErrorMessages.DATE_NOT_IN_PAST_OR_TODAY_OF_CEASED_TRUST, dayStr, monthStr, yearStr);
+  return true;
+};
+
 export const checkHistoricalBOStartDate = (dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const dateFieldErrors = {
     completelyEmptyDateError: ErrorMessages.ENTER_START_DATE_HISTORICAL_BO,

@@ -61,12 +61,9 @@ export const VERIFICATION_CHECKS_PERSON = "Person responsible for overseeing ver
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const CONFIRMATION_NUMBER_OF_DAYS = "14 days";
 export const CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW = "What you need to do now";
-export const TRANSACTION_API_REQUEST_ERROR_MSG = "Transaction API request returned no";
 export const UNAUTHORISED = "Unauthorised";
 export const BAD_REQUEST = "Bad Request";
-export const HTTP_STATUS_CODE_500 = "Http status code 500";
 export const ERROR_REFRESH_TOKEN = "Error on refresh token";
-export const TRANSACTION_ERROR = "Transaction API request returned no response";
 export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Entity, transactionId =";
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";

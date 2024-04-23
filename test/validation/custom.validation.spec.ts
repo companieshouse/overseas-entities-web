@@ -9,6 +9,7 @@ import { Request } from "express";
 import { Session } from '@companieshouse/node-session-handler';
 import { Trust } from "../../src/model/trust.model";
 import { ROUTE_PARAM_TRUST_ID } from "../../src/config/index";
+import { DefaultErrorsSecondNationality } from "../../src/validation/models/second.nationality.error.model";
 
 const public_register_name = MAX_80 + "1";
 const public_register_jurisdiction = MAX_80;
@@ -177,11 +178,11 @@ describe('tests for custom Date fields', () => {
   });
 
   test('should throw error for checkSecondNationality nationality and secon nationality longer than 50 characters', () => {
-    expect(() => custom.checkSecondNationality("The amazing republic of Zamunda", "Another amazing republic of Zamunda", { lengthError: errors.lengthError })).toThrowError( errors.lengthError);
+    expect(() => custom.checkSecondNationality("The amazing republic of Zamunda", "Another amazing republic of Zamunda", { lengthError: errors.lengthError } as DefaultErrorsSecondNationality)).toThrowError( errors.lengthError);
   });
 
   test('should throw error for checkSecondNationality when nationality same as second nationality', () => {
-    expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError })).toThrowError(errors.sameError);
+    expect(() => custom.checkSecondNationality("Zamunda", "Zamunda", { sameError: errors.sameError } as DefaultErrorsSecondNationality)).toThrowError(errors.sameError);
   });
 
   test("should return truthy value for checkPublicRegisterJurisdictionLength when register field not selected", () => {

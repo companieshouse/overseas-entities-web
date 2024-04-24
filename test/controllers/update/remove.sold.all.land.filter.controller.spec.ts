@@ -18,7 +18,7 @@ import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
-  REMOVE_NEW_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
+  REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -58,7 +58,7 @@ describe("Remove sold all land filter controller", () => {
       const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(REMOVE_NEW_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain("What does 'relevant property or land' mean?");
@@ -74,7 +74,7 @@ describe("Remove sold all land filter controller", () => {
       const resp = await request(app).get(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(REMOVE_NEW_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain("What does 'relevant property or land' mean?");
@@ -132,7 +132,7 @@ describe("Remove sold all land filter controller", () => {
       const resp = await request(app).post(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
 
       expect(resp.status).toEqual(200);
-      expect(resp.text).toContain(REMOVE_NEW_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.SELECT_IF_REMOVE_SOLD_ALL_LAND_FILTER);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);

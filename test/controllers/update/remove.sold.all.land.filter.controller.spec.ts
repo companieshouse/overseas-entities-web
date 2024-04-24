@@ -18,7 +18,10 @@ import {
   ANY_MESSAGE_ERROR,
   FOUND_REDIRECT_TO,
   PAGE_TITLE_ERROR,
+  REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT,
+  REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT,
   REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE,
+  REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT,
   SERVICE_UNAVAILABLE,
 } from "../../__mocks__/text.mock";
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
@@ -61,9 +64,9 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("What does 'relevant property or land' mean?");
-      expect(resp.text).toContain("This means property or land in the UK that was bought on or after:");
-      expect(resp.text).toContain("1 January 1999 in England and Wales");
+      expect(resp.text).toContain(REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT);
+      expect(resp.text).toContain(REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT);
+      expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
       expect(resp.text).toContain(`${config.UPDATE_AN_OVERSEAS_ENTITY_URL}sign-out?page=${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE}&amp;${config.JOURNEY_QUERY_PARAM}=${config.JourneyType.remove}`);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);
@@ -77,9 +80,9 @@ describe("Remove sold all land filter controller", () => {
       expect(resp.text).toContain(REMOVE_SOLD_ALL_LAND_FILTER_PAGE_TITLE);
       expect(resp.text).toContain(REMOVE_SERVICE_NAME);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
-      expect(resp.text).toContain("What does 'relevant property or land' mean?");
-      expect(resp.text).toContain("This means property or land in the UK that was bought on or after:");
-      expect(resp.text).toContain("1 January 1999 in England and Wales");
+      expect(resp.text).toContain(REMOVE_WHAT_IS_RELEVANT_PROPERTY_OR_LAND_TEXT);
+      expect(resp.text).toContain(REMOVE_RELEVANT_PROPERTY_OR_LAND_DEFINED_TEXT);
+      expect(resp.text).toContain(REMOVE_PROPERTY_BOUGHT_ON_OR_AFTER_DATE_TEXT);
       expect(resp.text).toContain("value=\"1\" checked");
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
       expect(mockGetApplicationData).toHaveBeenCalledTimes(1);

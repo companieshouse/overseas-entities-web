@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 
 import { logger } from '../utils/logger';
 import {
+  JOURNEY_QUERY_PARAM,
+  JourneyType,
+  JOURNEY_REMOVE_QUERY_PARAM,
   UPDATE_LANDING_URL,
   SOLD_LAND_FILTER_URL,
   REGISTER_AN_OVERSEAS_ENTITY_URL,
@@ -22,7 +25,7 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
     if (!checkUserSignedIn(req.session)) {
       logger.infoRequest(req, 'User not authenticated, redirecting to sign in page, status_code=302');
 
-      const returnToUrl = getReturnToUrl(req.path);
+      const returnToUrl = getReturnToUrl(req);
 
       return res.redirect(`/signin?return_to=${returnToUrl}`);
     }
@@ -39,8 +42,9 @@ export const authentication = (req: Request, res: Response, next: NextFunction):
   }
 };
 
-function getReturnToUrl(path: string) {
+function getReturnToUrl(req: Request) {
   let returnToUrl = SOLD_LAND_FILTER_URL;
+  const path = req.path;
 
   if (path === STARTING_NEW_URL || path.endsWith(`/${RESUME}`) || path === UPDATE_CONTINUE_WITH_SAVED_FILING_URL) {
     if (!path.startsWith(REGISTER_AN_OVERSEAS_ENTITY_URL) && !path.startsWith(UPDATE_AN_OVERSEAS_ENTITY_URL)) {
@@ -48,9 +52,17 @@ function getReturnToUrl(path: string) {
     }
 
     returnToUrl = path;
+
+    if (req.query[JOURNEY_QUERY_PARAM] === JourneyType.remove) {
+      // Ensure that user is placed on the Remove (not Update) journey after logging in by re-adding the 'journey=remove'
+      // URL query parameter and note that the URL now needs to encoded due to the presence of the additional '?'
+      returnToUrl = encodeURIComponent(returnToUrl + JOURNEY_REMOVE_QUERY_PARAM);
+    }
   } else if (path.startsWith(UPDATE_LANDING_URL)) {
     returnToUrl = SECURE_UPDATE_FILTER_URL;
   }
+
+  logger.debug("returnToUrl is " + returnToUrl);
 
   return returnToUrl;
 }

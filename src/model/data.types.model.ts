@@ -44,8 +44,6 @@ export const InputDateKeys: string[] = [
   "year"
 ];
 
-export const LANDING_PAGE_QUERY_PARAM = "start";
-
 export const EntityNameKey = "entity_name";
 
 // BOs and MOs ID field name
@@ -85,3 +83,9 @@ export const EntityNumberKey = "entity_number";
 export const UpdateModelKey = "update";
 export const DoYouWantToRemoveKey = "do_you_want_to_remove";
 export const AnyTrustsInvolvedKey = "any_trusts_involved";
+
+// Remove Journey
+export const IsRemoveKey = "is_remove";
+export const IsListedAsPropertyOwnerKey = "is_listed_as_property_owner";
+export const HasSoldAllLandKey = "has_sold_all_land";
+export const IsNotProprietorOfLandKey = "is_not_proprietor_of_land";

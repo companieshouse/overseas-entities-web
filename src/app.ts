@@ -26,6 +26,7 @@ app.set("dev", config.NODE_ENV === "development");
 const nunjucksEnv = nunjucks.configure([
   "views",
   "views/update",
+  "views/update/remove",
   "node_modules/govuk-frontend/",
   "node_modules/govuk-frontend/components",
 ], {
@@ -35,6 +36,7 @@ const nunjucksEnv = nunjucks.configure([
 nunjucksEnv.addGlobal("CDN_HOST", config.CDN_HOST);
 nunjucksEnv.addGlobal("SERVICE_NAME", config.SERVICE_NAME);
 nunjucksEnv.addGlobal("UPDATE_SERVICE_NAME", config.UPDATE_SERVICE_NAME);
+nunjucksEnv.addGlobal("REMOVE_SERVICE_NAME", config.REMOVE_SERVICE_NAME);
 nunjucksEnv.addGlobal("OE_CONFIGS", config);
 nunjucksEnv.addGlobal("ERROR_MESSAGES", ErrorMessages);
 nunjucksEnv.addGlobal("COUNTRY_FILTER", countryFilter );
@@ -44,6 +46,7 @@ nunjucksEnv.addGlobal("PIWIK_URL", config.PIWIK_URL);
 nunjucksEnv.addGlobal("PIWIK_SITE_ID", config.PIWIK_SITE_ID);
 nunjucksEnv.addGlobal("PIWIK_START_GOAL_ID", config.PIWIK_START_GOAL_ID);
 nunjucksEnv.addGlobal("PIWIK_UPDATE_START_GOAL_ID", config.PIWIK_UPDATE_START_GOAL_ID);
+nunjucksEnv.addGlobal("PIWIK_REMOVE_START_GOAL_ID", config.PIWIK_REMOVE_START_GOAL_ID);
 nunjucksEnv.addGlobal("MATOMO_ASSET_PATH", `//${config.CDN_HOST}`);
 
 app.use(express.json());

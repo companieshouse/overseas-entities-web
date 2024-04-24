@@ -1,11 +1,25 @@
+jest.mock('../../src/utils/application.data');
+jest.mock("../../src/utils/logger");
+
 import { request } from "express";
 import * as config from "../../src/config";
 import * as urlUtils from "../../src/utils/url";
+import { getApplicationData } from '../../src/utils/application.data';
+import { APPLICATION_DATA_MOCK } from "../__mocks__/session.mock";
+import { createAndLogErrorRequest } from "../../src/utils/logger";
+
+const mockGetApplicationData = getApplicationData as jest.Mock;
+const mockCreateAndLogErrorRequest = createAndLogErrorRequest as jest.Mock;
 
 describe("Url utils tests", () => {
   const req = request;
   const TRANSACTION_ID = "987654321";
   const SUBMISSION_ID = "1234-abcd";
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    req["query"] = {};
+  });
 
   describe("getUrlWithTransactionIdAndOverseasEntityId tests", () => {
 
@@ -64,6 +78,173 @@ describe("Url utils tests", () => {
 
       const response = urlUtils.transactionIdAndSubmissionIdExistInRequest(req);
       expect(response).toEqual(false);
+    });
+  });
+
+  describe("isRemoveJourney tests", () => {
+
+    test("returns true if app data not present in session and query param journey=remove (singular journey param)", () => {
+      mockGetApplicationData.mockReturnValueOnce(undefined);
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test.each([
+      ['journey=remove&journey=remove', 'remove,remove'],
+      ['journey=remove&journey=update', 'remove,update']
+    ])("throws error if app data not present in session and journey query param %s (more than one journey param)", (params, reqQueryValue) => {
+      mockGetApplicationData.mockReturnValueOnce(undefined);
+
+      req["query"] = {
+        "journey": reqQueryValue
+      };
+      req.originalUrl = `http://testurl?${params}`;
+
+      expect(() => urlUtils.isRemoveJourney(req)).toThrowError();
+      expect(mockCreateAndLogErrorRequest.mock.calls[0][1]).toEqual(`More than one journey query parameter found in url ${req.originalUrl}`);
+    });
+
+    test("returns true if is_remove is undefined in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is null in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: null
+        }
+      );
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is true in session data and query param journey=register", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: true
+        }
+      );
+
+      req["query"] = {
+        "journey": "register"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns true if is_remove is true in session data and query param journey not defined", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: true
+        }
+      );
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeTruthy();
+    });
+
+    test("returns false if is_remove is false in session data and query param journey=remove", () => {
+      mockGetApplicationData.mockReturnValueOnce(
+        { ...APPLICATION_DATA_MOCK,
+          is_remove: false
+        }
+      );
+
+      req["query"] = {
+        "journey": "remove"
+      };
+
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test.each([
+      ["update"],
+      ["removes"]
+    ])("returns false if query param journey is a string other than remove - %s", (journeyQueryParamValue) => {
+      req["query"] = {
+        "journey": journeyQueryParamValue
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if query param journey is undefined", () => {
+      req["query"] = {
+        "journey": undefined
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if query param journey is not present", () => {
+      req["query"] = {
+        "question": "answer"
+      };
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+
+    test("returns false if request has empty query params object", () => {
+      req["query"] = {};
+      const result = urlUtils.isRemoveJourney(req);
+
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe("getPreviousPageUrl tests", () => {
+    test("returns correct previous page from request headers", () => {
+      req["rawHeaders"] = ["Referer", `http://host-name${config.WHO_IS_MAKING_FILING_URL}`];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      // Check that the "http://host-name" absolute URL prefix has been stripped off when setting the previousPage URL
+      expect(previousPage).toEqual(config.WHO_IS_MAKING_FILING_URL);
+    });
+
+    test("does not return a potentially malicious previous page URL", () => {
+      req["rawHeaders"] = ["Referer", `http://host-name/illegal-path`];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      // Check that the "http://host-name/illegal-path" url is not returned
+      expect(previousPage).toBeUndefined();
+    });
+
+    test("returns undefined if no url found in headers", () => {
+      req["rawHeaders"] = ["Referer", ""];
+
+      const previousPage = urlUtils.getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
+
+      expect(previousPage).toBeUndefined();
     });
   });
 });

@@ -2,7 +2,10 @@
 
 Web front-end for the **register an overseas entity and tell us about its beneficial owners** service. Link to the live page [here](https://www.gov.uk/guidance/register-an-overseas-entity)
 </br>
-
+Web front-end for the **file an overseas entity update statement** service. Link to the live page [here](https://www.gov.uk/guidance/file-an-overseas-entity-update-statement)
+</br>
+Web front-end for the **apply to remove an overseas entity from the register** service. Link to the live page [here](https://www.gov.uk/guidance/remove-an-overseas-entity)
+</br>
 ## Overseas entities architecture
 
 Simplified view of the architecture and does not show all services, components and infrastructure
@@ -36,7 +39,7 @@ The only local development mode available, that includes account, redis and othe
 3. Run `./bin/chs-dev development enable overseas-entities-web` (this will allow you to make changes in real time).
 4. Run docker using `tilt up` in the docker-chs-development directory.
 5. Use spacebar in the command line to open tilt window - wait for overseas-entities-web to become green.(If you have credential errors then  you may not be logged into `eu-west-2`.)
-6. Open your browser and go to page <http://chs.local/register-an-overseas-entity>
+6. Open your browser and go to <http://chs.local/register-an-overseas-entity/starting-new> for the ROE Registration journey, <http://chs.local/update-an-overseas-entity/continue-with-saved-filing> for the ROE Update journey or <http://chs.local/update-an-overseas-entity/continue-with-saved-filing?journey=remove> for the ROE Remove journey (each of these is the first page that would be displayed, if navigating from the GOV UK external ROE guidance screens).
 
 Environment variables used to configure this service in docker are located in the file `services/modules/overseas-entities/overseas-entities-web.docker-compose.yaml`
 
@@ -68,33 +71,36 @@ Method | Path | Description
 --- | --- | ---
 GET | `/register-an-overseas-entity` | Returns the landing page for the Register an overseas entity, starting point to different other pages to register an OE. URLs path [here](./src/routes/index.ts).
 GET | `/update-an-overseas-entity` | Returns the landing page for updating an overseas entity. URLs path [here](./src/routes/index.ts).
+GET | `/update-an-overseas-entity/continue-with-saved-filing?journey=remove` | Returns the landing page for removing an overseas entity. URLs path [here](./src/routes/index.ts).
 GET | `/register-an-overseas-entity/healthcheck` | Returns responds with HTTP code `200` and a `OK` message body
 
 ### Common Config variables (No feature flags)
 
 Key             |  Description               | Example Value
 ----------------|--------------------------- |-------------------------
-ACCOUNT_URL | URL to account service | `http://account.url`
-API_URL | URL to API call | `http://api.url`
+ACCOUNT_URL | URL to account service | `http://account-ch-gov-uk:4000`
+API_URL | URL to API call | `http://api.chs.local:4001`
 CACHE_SERVER | Redis cache server | redis
-CDN_HOST | CDN host | cdn.host
+CDN_HOST | CDN host | cdn.chs.local
 CHS_API_KEY | CHS API key for SDK call | key
-CHS_URL | CHS local url | `http://url`
-COOKIE_DOMAIN | The domain of the cookie | `http://url.local`
+CHS_URL | CHS local url | `http://chs.local`
+COOKIE_DOMAIN | The domain of the cookie | `chs.local`
 COOKIE_NAME | The name of the cookie | __SID
 COOKIE_SECRET | The shared secret used in validating/calculating the session cookie signature | secret
-INTERNAL_API_URL | Internal API URL | `http://api.url`
-LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter`
+INTERNAL_API_URL | Internal API URL | `http://api.chs.local:4001`
+LANDING_PAGE_URL | Register OE landing Page | `/register-an-overseas-entity/sold-land-filter?start=0`
 UPDATE_LANDING_PAGE_URL | Update OE landing Page | `/update-an-overseas-entity/overseas-entity-query`
+REMOVE_LANDING_PAGE_URL | Remove OE landing Page | `/update-an-overseas-entity/continue-with-saved-filing?journey=remove`
 LOG_LEVEL | LOG level | DEBUG
 OAUTH2_CLIENT_ID | OAUTH2 client ID | client ID
 OAUTH2_CLIENT_SECRET | OAUTH2 client secret | secret
 PAYMENT_FEE | Payment Fee | 100
-UPDATE_PAYMENT_FEE | Update Payment Fee | 100
-PIWIK_URL | Matomo URL | `http://url`
-PIWIK_SITE_ID | Matomo Site ID | 1
-PIWIK_START_GOAL_ID | Matomo Start goal ID | 2
-PIWIK_UPDATE_START_GOAL_ID | Matomo Update Start goal ID | 3
+UPDATE_PAYMENT_FEE | Update Payment Fee | 120
+PIWIK_URL | Matomo URL | `https://matomo.platform.aws.chdev.org`
+PIWIK_SITE_ID | Matomo Site ID | 24
+PIWIK_START_GOAL_ID | Matomo Start goal ID | 3
+PIWIK_UPDATE_START_GOAL_ID | Matomo Update Start goal ID | 10
+PIWIK_REMOVE_START_GOAL_ID | Matomo Remove Start goal ID | 19
 SHOW_SERVICE_OFFLINE_PAGE | Feature Flag | false
 VF01_FORM_DOWNLOAD_URL | Overseas entity verification checks statement URL | `https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/1095139/OE_VF01.pdf`
 

@@ -7,11 +7,17 @@ jest.mock('../../../src/middleware/service.availability.middleware');
 jest.mock('../../../src/middleware/navigation/update/has.overseas.entity.middleware');
 jest.mock("../../../src/utils/feature.flag" );
 jest.mock('../../../src/utils/save.and.continue');
+jest.mock("../../../src/utils/url");
+
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
 
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
 import {
+  REMOVE_CONFIRM_STATEMENT_PAGE,
+  REMOVE_CONFIRM_STATEMENT_URL,
   UPDATE_BENEFICIAL_OWNER_BO_MO_REVIEW_URL,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_PAGE,
   UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL,
@@ -40,6 +46,9 @@ import { hasOverseasEntity } from "../../../src/middleware/navigation/update/has
 import { yesNoResponse } from "../../../src/model/data.types.model";
 import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { saveAndContinue } from "../../../src/utils/save.and.continue";
+import { isRemoveJourney } from "../../../src/utils/url";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockHasOverseasEntity = hasOverseasEntity as jest.Mock;
 mockHasOverseasEntity.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -60,6 +69,8 @@ const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
 const mockGetApplicationData = getApplicationData as jest.Mock;
 const mockSetExtraData = setExtraData as jest.Mock;
 const mockSaveAndContinue = saveAndContinue as jest.Mock;
+
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 describe("Update registrable beneficial owner controller tests", () => {
 
@@ -156,6 +167,38 @@ describe("Update registrable beneficial owner controller tests", () => {
       const resp = await request(app)
         .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
         .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.No });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`with statement validation off, redirects to the ${REMOVE_CONFIRM_STATEMENT_PAGE} when on the remove journey`, async () => {
+      mockIsRemoveJourney.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValueOnce(false);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
+      const resp = await request(app)
+        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.header.location).toEqual(REMOVE_CONFIRM_STATEMENT_URL);
+      expect(mockSetExtraData).toHaveBeenCalledTimes(1);
+      expect(mockSaveAndContinue).toHaveBeenCalledTimes(1);
+    });
+
+    test(`with statement validation on, redirects to the update-statement-validation-errors page when on the remove journey`, async () => {
+      mockIsRemoveJourney.mockReturnValueOnce(true);
+      mockGetApplicationData.mockReturnValueOnce({ ...APPLICATION_DATA_MOCK });
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockSaveAndContinue.mockReturnValueOnce(Promise.resolve());
+
+      const resp = await request(app)
+        .post(UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL)
+        .send({ [RegistrableBeneficialOwnerKey]: yesNoResponse.Yes });
 
       expect(resp.status).toEqual(302);
       expect(resp.header.location).toEqual(UPDATE_STATEMENT_VALIDATION_ERRORS_URL);

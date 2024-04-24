@@ -1,0 +1,52 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Confirm the removal statement - Apply to remove an overseas entity" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %} 
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      
+      {% include "includes/list/errors.html" %}
+
+      <form class="form" method="post">
+        <span class="govuk-caption-l">{{ entity_name }} - {{ entity_number }}</span>
+        {{ govukCheckboxes({
+          errorMessage: errors.removal_confirmation if errors,
+          idPrefix: "removal_confirmation",
+          name: "removal_confirmation",
+          fieldset: {
+            legend: {
+              text: "Confirm the removal statement",
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          items: [
+            {
+              value: "removal-declaration",
+              text: "I confirm that the overseas entity is not registered as the proprietor of a relevant interest in land. ",
+              attributes: {
+                "data-event-id": "confirm-oe-not-proprietor-of-land-tickbox"
+              }
+            }
+          ]
+        })}}
+
+        {{ govukInsetText({
+          html: '<h2 class="govuk-heading-m">What information we’ll show on the public register</h2>
+            <p>We will show this statement on the public Register of Overseas Entities.</p>'
+          })
+        }}
+        {% include "includes/save-and-continue-button.html" %}  
+      </form>
+    </div>
+  </div>
+{% endblock %}

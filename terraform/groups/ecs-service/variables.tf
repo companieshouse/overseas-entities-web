@@ -109,6 +109,9 @@ variable "piwik_start_goal_id" {
 variable "piwik_update_start_goal_id" {
   type        = string
 }
+variable "piwik_remove_start_goal_id" {
+  type        = string
+}
 variable "feature_flag_enable_update_statement_validation_05072023" {
   type        = string
 }
@@ -139,6 +142,9 @@ variable "feature_flag_enable_update_manage_trusts_29082023" {
 variable "feature_flag_enable_redis_removal_27092023" {
   type        = string
 }
+variable "feature_flag_enable_cease_trusts_19022024" {
+  type        = string
+}
 variable "landing_page_url" {
   type        = string
 }
@@ -149,6 +155,9 @@ variable "payment_fee" {
   type        = string
 }
 variable "update_landing_page_url" {
+  type        = string
+}
+variable "remove_landing_page_url" {
   type        = string
 }
 variable "update_payment_fee" {

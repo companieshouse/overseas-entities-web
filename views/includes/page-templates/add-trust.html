@@ -1,3 +1,11 @@
+{% macro trustStatus(trust) %}
+  {% if trust.ceased_date_day and trust.ceased_date_month and trust.ceased_date_year %}
+    Removed
+  {% else %}
+    Active
+  {% endif %}
+{% endmacro %}
+
 {% block content %}
 
   <div class="govuk-grid-row">
@@ -14,6 +22,9 @@
               {% set reviewedTrustsRows = (reviewedTrustsRows.push({
                 key: {
                   text: trust.trust_name
+                },
+                value: {
+                  text: trustStatus(trust) if isFeatureFlagCeaseTrustsEnabled
                 },
                 actions: {
                   items: [CREATE_CHANGE_LINK(
@@ -41,7 +52,7 @@
       {% if isUpdate %}
         {% set changeLink = OE_CONFIGS.UPDATE_TRUSTS_TELL_US_ABOUT_IT_PAGE %}
       {% else %}
-        {% if OE_CONFIGS.FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
+        {% if FEATURE_FLAG_ENABLE_REDIS_REMOVAL %}
           {% set changeLink = OE_CONFIGS.REGISTER_AN_OVERSEAS_ENTITY_URL + activeSubmissionBasePath + OE_CONFIGS.TRUSTS_URL %}
         {% else %}
           {% set changeLink = OE_CONFIGS.TRUST_DETAILS_URL %}
@@ -54,6 +65,9 @@
           {
             key: {
               text: trust.trust_name
+            },
+            value: {
+              text: trustStatus(trust) if isFeatureFlagCeaseTrustsEnabled
             },
             actions: {
               items: [ CREATE_CHANGE_LINK(

@@ -18,6 +18,7 @@ import { ErrorMessages } from '../../../src/validation/error.messages';
 import { serviceAvailabilityMiddleware } from "../../../src/middleware/service.availability.middleware";
 import { authentication } from "../../../src/middleware/authentication.middleware";
 import { logger } from "../../../src/utils/logger";
+import { REMOVE_LANDING_PAGE_URL, REMOVE_SERVICE_NAME, UPDATE_SERVICE_NAME } from "../../../src/config";
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );
@@ -33,17 +34,29 @@ describe("Continue with saved filing controller", () => {
   });
 
   describe("GET tests", () => {
-    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page`, async () => {
+    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page for the Update journey`, async () => {
       const resp = await request(app).get(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(UPDATE_SERVICE_NAME);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test(`renders the ${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE} page for the Remove journey`, async () => {
+      const resp = await request(app).get(`${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}?${config.JOURNEY_QUERY_PARAM}=remove`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
+      expect(resp.text).toContain(REMOVE_LANDING_PAGE_URL);
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
       expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe("POST tests", () => {
+  describe("POST tests for update journey", () => {
     test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
       const resp = await request(app)
         .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
@@ -74,6 +87,43 @@ describe("Continue with saved filing controller", () => {
       expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
       expect(resp.text).toContain(PAGE_TITLE_ERROR);
       expect(resp.text).toContain(ErrorMessages.UPDATE_SELECT_IF_CONTINUE_SAVED_FILING);
+      expect(resp.text).toContain(UPDATE_SERVICE_NAME);
+    });
+
+  });
+
+  describe("POST tests for Remove Journey", () => {
+
+    test(`redirects to the ${config.YOUR_FILINGS_PATH} page when yes is selected`, async () => {
+      const resp = await request(app)
+        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
+        .send({ continue_saved_filing: 'yes' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.YOUR_FILINGS_PATH}`);
+      expect(resp.header.location).toEqual(config.YOUR_FILINGS_PATH);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test(`redirects to the ${config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE} page when no is selected`, async () => {
+      const resp = await request(app)
+        .post(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL + '?journey=remove')
+        .send({ continue_saved_filing: 'no' });
+
+      expect(resp.status).toEqual(302);
+      expect(resp.text).toEqual(`${FOUND_REDIRECT_TO} ${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(resp.header.location).toEqual(`${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+      expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(1);
+    });
+
+    test("renders the current page with error message and correct page title for the Remove journey", async () => {
+      const resp = await request(app).post(`${config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain(CONTINUE_SAVED_FILING_PAGE_TITLE);
+      expect(resp.text).toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain(ErrorMessages.UPDATE_SELECT_IF_CONTINUE_SAVED_FILING);
+      expect(resp.text).toContain(REMOVE_SERVICE_NAME);
     });
   });
 });

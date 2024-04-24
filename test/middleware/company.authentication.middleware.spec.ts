@@ -1,6 +1,7 @@
 jest.mock("ioredis");
 jest.mock('../../src/service/transaction.service');
 jest.mock("../../src/utils/logger");
+jest.mock("../../src/utils/url");
 jest.mock("@companieshouse/web-security-node");
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
@@ -19,9 +20,12 @@ import { authMiddleware } from "@companieshouse/web-security-node";
 import { logger } from '../../src/utils/logger';
 import { ANY_MESSAGE_ERROR } from '../__mocks__/text.mock';
 import { MOCK_GET_UPDATE_TRANSACTION_RESPONSE } from '../__mocks__/transaction.mock';
+import { isRemoveJourney } from "../../src/utils/url";
 
 const mockLoggerErrorRequest = logger.errorRequest as jest.Mock;
 const mockLoggerInfoRequest = logger.infoRequest as jest.Mock;
+const mockLoggerDebugRequest = logger.debugRequest as jest.Mock;
+const mockIsRemoveJourney = isRemoveJourney as jest.Mock;
 
 let req = {} as Request;
 const transactionId = "123";
@@ -61,6 +65,28 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).not.toHaveBeenCalled();
   });
 
+  test(`should check that the journey is a remove journey`, async () => {
+    mockIsRemoveJourney.mockReturnValueOnce(true);
+    const mockLogInfoMsg = `Invoking company authentication with (${ COMPANY_NUMBER }) present in session`;
+    req = {
+      session: getSessionRequestWithExtraData(),
+      headers: {},
+      route: '',
+      method: '',
+      path: '/update-an-overseas-entity/presenter',
+      body: {}
+    } as Request;
+
+    await companyAuthentication(req, res, next);
+
+    expect(mockLoggerInfoRequest).toHaveBeenCalledTimes(1);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledTimes(2);
+    expect(mockLoggerDebugRequest).toHaveBeenCalledWith(req, "Remove journey proceed directly to the presenter page");
+    expect(mockLoggerInfoRequest).toHaveBeenCalledWith(req, mockLogInfoMsg);
+    expect(mockIsRemoveJourney).toHaveBeenCalledTimes(1);
+    expect(logger.errorRequest).not.toHaveBeenCalled();
+  });
+
   test("should call company authentication when no company number in session", async () => {
     const appData = { ...APPLICATION_DATA_MOCK };
     appData.entity_number = undefined;
@@ -70,7 +96,7 @@ describe('Company Authentication middleware', () => {
       route: '',
       method: '',
       path: '/update-an-overseas-entity/presenter',
-      body: {}
+      body: {},
     } as Request;
 
     await companyAuthentication(req, res, next);
@@ -192,7 +218,7 @@ describe('Company Authentication middleware', () => {
     expect(logger.errorRequest).toHaveBeenCalledTimes(1);
   });
 
-  test("should log error if no companuy number in trsansaction", async () => {
+  test("should log error if no company number in transaction", async () => {
     req = {
       session: getSessionRequestWithExtraData(),
       params: { transactionId: "123" } as Params,

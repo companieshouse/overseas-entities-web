@@ -21,7 +21,7 @@
         text: trustee.name
       },
       {
-        text: trusteeMacros.readableTrusteeRole(trustee.type)
+        text: trusteeMacros.readableTrusteeRole(trustee.type | upper)
       },
       {
         html: "<a href=" + changeLink + ">Change</a>",

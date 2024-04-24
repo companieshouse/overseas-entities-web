@@ -61,7 +61,7 @@ describe("TRUST INFORMATION controller", () => {
 
   describe("GET tests", () => {
     test(`renders the ${config.TRUST_INFO_PAGE} page`, async () => {
-      mockGetApplicationData.mockReturnValueOnce(APPLICATION_DATA_MOCK);
+      mockGetApplicationData.mockReturnValue(APPLICATION_DATA_MOCK);
       const resp = await request(app).get(config.TRUST_INFO_URL);
 
       expect(resp.status).toEqual(200);

@@ -22,6 +22,7 @@ import {
   managingOfficerCorporate,
   presenter,
   payment,
+  removeCannotUse,
   soldLandFilter,
   secureRegisterFilter,
   secureUpdateFilter,
@@ -41,6 +42,9 @@ import {
   trustLegalEntitybeneficialOwner,
   trustInterrupt,
   addTrust,
+  removeSoldAllLandFilter,
+  removeIsEntityRegisteredOwner,
+  removeConfirmStatement,
   resumeSubmission,
   overseasName,
   startingNew,
@@ -100,6 +104,7 @@ import {
 } from "../controllers";
 
 import { serviceAvailabilityMiddleware } from "../middleware/service.availability.middleware";
+import { removeJourneyMiddleware } from "../middleware/navigation/remove/remove.journey.middleware";
 import { authentication } from "../middleware/authentication.middleware";
 import { navigation } from "../middleware/navigation";
 import { checkTrustValidations, checkValidations } from "../middleware/validation.middleware";
@@ -112,6 +117,8 @@ import { validateStatements, statementValidationErrorsGuard, summaryPagesGuard }
 const router = Router();
 
 router.use(serviceAvailabilityMiddleware);
+
+router.use(removeJourneyMiddleware);
 
 router.get(config.HEALTHCHECK_URL, healthcheck.get);
 router.get(config.ACCESSIBILITY_STATEMENT_URL, accessibilityStatement.get);
@@ -1060,6 +1067,21 @@ router.route(config.UPDATE_CONTINUE_WITH_SAVED_FILING_URL)
   .get(updateContinueSavedFiling.get)
   .post(...validator.updateContinueSavedFiling, checkValidations, updateContinueSavedFiling.post);
 
+router.route(config.REMOVE_SOLD_ALL_LAND_FILTER_URL)
+  .all(authentication)
+  .get(removeSoldAllLandFilter.get)
+  .post(...validator.removeSoldAllLandFilter, checkValidations, removeSoldAllLandFilter.post);
+
+router.route(config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL)
+  .all(authentication)
+  .get(removeIsEntityRegisteredOwner.get)
+  .post(...validator.removeIsEntityRegisteredOwner, checkValidations, removeIsEntityRegisteredOwner.post);
+
+router.route(config.REMOVE_CONFIRM_STATEMENT_URL)
+  .all(authentication)
+  .get(removeConfirmStatement.get)
+  .post(...validator.removeConfirmStatement, checkValidations, removeConfirmStatement.post);
+
 router.route(config.UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL)
   .all(
     isFeatureDisabled(config.FEATURE_FLAG_ENABLE_UPDATE_TRUSTS),
@@ -1084,5 +1106,7 @@ router.route(config.UPDATE_STATEMENT_VALIDATION_ERRORS_URL)
   )
   .get(validateStatements, statementValidationErrorsGuard, updateStatementValidationErrors.get)
   .post(validateStatements, ...validator.statementResolution, updateStatementValidationErrors.post);
+
+router.get(config.REMOVE_CANNOT_USE_URL, authentication, removeCannotUse.get);
 
 export default router;

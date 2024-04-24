@@ -69,6 +69,7 @@ locals {
     { "name": "DEFAULT_SESSION_EXPIRATION", "value": "${var.default_session_expiration}" }, # TODO Is this needed?
     { "name": "PIWIK_START_GOAL_ID", "value": "${var.piwik_start_goal_id}" },
     { "name": "PIWIK_UPDATE_START_GOAL_ID", "value": "${var.piwik_update_start_goal_id}" },
+    { "name": "PIWIK_REMOVE_START_GOAL_ID", "value": "${var.piwik_remove_start_goal_id}" },
     { "name": "SHOW_SERVICE_OFFLINE_PAGE", "value": "${var.show_service_offline_page}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION_05072023", "value": "${var.feature_flag_enable_update_statement_validation_05072023}" },
     { "name": "FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022", "value": "${var.feature_flag_enable_save_and_resume_17102022}" },
@@ -80,10 +81,12 @@ locals {
     { "name": "FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH_28062023", "value": "${var.feature_flag_disable_update_private_data_fetch_28062023}" },
     { "name": "FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023", "value": "${var.feature_flag_enable_update_manage_trusts_29082023}" },
     { "name": "FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023", "value": "${var.feature_flag_enable_redis_removal_27092023}" },
+    { "name": "FEATURE_FLAG_ENABLE_CEASE_TRUSTS_19022024", "value": "${var.feature_flag_enable_cease_trusts_19022024}" },
     { "name": "LANDING_PAGE_URL", "value": "${var.landing_page_url}" },
     { "name": "LANDING_PAGE_STARTING_NEW_URL", "value": "${var.landing_page_starting_new_url}" },
     { "name": "PAYMENT_FEE", "value": "${var.payment_fee}" },
     { "name": "UPDATE_LANDING_PAGE_URL", "value": "${var.update_landing_page_url}" },
+    { "name": "REMOVE_LANDING_PAGE_URL", "value": "${var.remove_landing_page_url}" },
     { "name": "UPDATE_PAYMENT_FEE", "value": "${var.update_payment_fee}" },
     { "name": "VF01_FORM_DOWNLOAD_URL", "value": "${var.vf01_form_download_url}" }, 
     { "name": "API_URL", "value": "${var.api_url}" } # TODO Should this be a secret?

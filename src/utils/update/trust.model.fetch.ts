@@ -107,7 +107,8 @@ const fetchAndMapIndivdualTrustees = async (
 };
 
 export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: Trust) => {
-  if (trustee.ceasedDate !== undefined) {
+  const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
+  if (trusteeRoleType === RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER) {
     mapHistoricalIndividualTrusteeData(trustee, trust);
     return;
   }
@@ -125,7 +126,7 @@ export const mapIndividualTrusteeData = (trustee: IndividualTrusteeData, trust: 
     dob_year: dateOfBirth?.year ?? "",
     nationality: lowerCaseAllWordsExceptFirstLetters(nationalities[0]),
     second_nationality: nationalities.length > 1 ? lowerCaseAllWordsExceptFirstLetters(nationalities[1]) : undefined,
-    type: mapTrusteeType(trustee.trusteeTypeId),
+    type: trusteeRoleType,
 
     ura_address_premises: "",
     ura_address_line_1: "",
@@ -193,7 +194,8 @@ const fetchAndMapCorporateTrustees = async (
 };
 
 export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Trust) => {
-  if (trustee.ceasedDate !== undefined) {
+  const trusteeRoleType = mapTrusteeType(trustee.trusteeTypeId);
+  if (trusteeRoleType === RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER) {
     mapHistoricalCorporateTrusteeData(trustee, trust);
     return;
   }
@@ -202,7 +204,7 @@ export const mapCorporateTrusteeData = (trustee: CorporateTrusteeData, trust: Tr
   const corporateTrustee: TrustCorporate = {
     id: ((trust.CORPORATES ?? []).length + 1).toString(),
     ch_references: trustee.hashedTrusteeId,
-    type: mapTrusteeType(trustee.trusteeTypeId),
+    type: trusteeRoleType,
     name: trustee.trusteeName,
     date_became_interested_person_day: appointmentDate?.day ?? "",
     date_became_interested_person_month: appointmentDate?.month ?? "",
@@ -317,8 +319,9 @@ const mapTrusteeType = (trusteeTypeId: string): RoleWithinTrustType => {
       case "5003":
         return RoleWithinTrustType.SETTLOR;
       case "5002":
-      case "5001":
         return RoleWithinTrustType.BENEFICIARY;
+      case "5001":
+        return RoleWithinTrustType.HISTORICAL_BENEFICIAL_OWNER;
       default:
         throw new Error(`Trustee Type ${trusteeTypeId} not recognised`);
   }

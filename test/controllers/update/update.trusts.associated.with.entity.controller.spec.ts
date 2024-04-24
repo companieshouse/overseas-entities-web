@@ -27,6 +27,7 @@ import { APPLICATION_DATA_MOCK, TRUST } from '../../__mocks__/session.mock';
 import { PAGE_TITLE_ERROR, PAGE_NOT_FOUND_TEXT, UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING, UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING } from '../../__mocks__/text.mock';
 import { saveAndContinueButtonText } from '../../__mocks__/save.and.continue.mock';
 import { Trust, TrustKey } from '../../../src/model/trust.model';
+import { wordCount } from '../../utils/test.utils';
 
 const mockGetApplicationData = getApplicationData as jest.Mock;
 
@@ -87,6 +88,51 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
     });
 
+    test.each([
+      [
+        "when trust ceased date feature flag off, reviewed trust status will not", false, 0, 0
+      ],
+      [
+        "when trust ceased date feature flag on, reviewed trust status will", true, 1, 2
+      ],
+    ])('%s be shown in summary table', async (_, ceasedDateFeatureFlagValue, expectedRemovedCount, expectedActiveCount) => {
+      mockIsActiveFeature.mockReturnValueOnce(true);
+      mockIsActiveFeature.mockReturnValueOnce(ceasedDateFeatureFlagValue); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+
+      // trust with ch_references indicates a reviewable trust (ie it would be an existing trust that has come from chips)
+      mockGetApplicationData.mockReturnValue({
+        ...APPLICATION_DATA_MOCK,
+        [TrustKey]: [
+          TRUST,
+          {
+            // a ceased reviewed trust
+            ...TRUST,
+            ceased_date_day: "11",
+            ceased_date_month: "12",
+            ceased_date_year: "2022",
+            trust_id: "1",
+            ch_reference: "123"
+          } as Trust,
+          {
+            // an active (non ceased) reviewed trust
+            ...TRUST,
+            trust_id: "2",
+            ch_reference: "123"
+          } as Trust
+        ]
+      });
+
+      const resp = await request(app).get(UPDATE_TRUSTS_ASSOCIATED_WITH_THE_OVERSEAS_ENTITY_URL);
+
+      expect(resp.status).toEqual(200);
+      expect(resp.text).toContain('Trusts associated with the overseas entity');
+      expect(resp.text).toContain(UPDATE_TRUSTS_ASSOCIATED_ADDED_HEADING);
+      expect(resp.text).toContain(UPDATE_MANAGE_TRUSTS_REVIEWED_HEADING);
+      expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(wordCount("Removed", resp.text)).toEqual(expectedRemovedCount);
+      expect(wordCount("Active", resp.text)).toEqual(expectedActiveCount);
+    });
+
     test('when feature flag is off, 404 is returned', async () => {
       mockIsActiveFeature.mockReturnValue(false);
 
@@ -138,3 +184,4 @@ describe('Update - Trusts - Trusts associated with the overseas entity', () => {
     });
   });
 });
+

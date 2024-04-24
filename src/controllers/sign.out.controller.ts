@@ -4,17 +4,18 @@ import { createAndLogErrorRequest, logger } from "../utils/logger";
 import * as config from "../config";
 import { isActiveFeature } from "../utils/feature.flag";
 import { safeRedirect } from '../utils/http.ext';
+import { getPreviousPageUrl } from "../utils/url";
 
 export const get = (req: Request, res: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `GET ${config.SIGN_OUT_PAGE}`);
 
-    const previousPageUrl = getPreviousPageUrl(req);
+    const previousPageUrl = getPreviousPageUrl(req, config.REGISTER_AN_OVERSEAS_ENTITY_URL);
 
     return res.render(config.SIGN_OUT_PAGE, {
       previousPage: previousPageUrl,
       saveAndResume: isActiveFeature(config.FEATURE_FLAG_ENABLE_SAVE_AND_RESUME_17102022),
-      journey: "register"
+      journey: config.JourneyType.register
     });
   } catch (error) {
     logger.errorRequest(req, error);
@@ -41,20 +42,3 @@ export const post = (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-
-function getPreviousPageUrl(req: Request) {
-  const headers = req.rawHeaders;
-  const absolutePreviousPageUrl = headers.filter(item => item.includes(config.REGISTER_AN_OVERSEAS_ENTITY_URL))[0];
-
-  // Don't attempt to determine a relative previous page URL if no absolute URL is found
-  if (!absolutePreviousPageUrl) {
-    return absolutePreviousPageUrl;
-  }
-
-  const startingIndexOfRelativePath = absolutePreviousPageUrl.indexOf(config.REGISTER_AN_OVERSEAS_ENTITY_URL);
-  const relativePreviousPageUrl = absolutePreviousPageUrl.substring(startingIndexOfRelativePath);
-
-  logger.debugRequest(req, `Relative previous page URL is ${relativePreviousPageUrl}`);
-
-  return relativePreviousPageUrl;
-}

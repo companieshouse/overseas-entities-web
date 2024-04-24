@@ -295,7 +295,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     dateOfBirth: "1950-01-01",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
-    trusteeTypeId: "5004"
+    trusteeTypeId: "5001"
   },
   {
     hashedTrusteeId: "abscdefg",
@@ -304,7 +304,7 @@ export const FETCH_INDIVIDUAL_TRUSTEE_DATA_MOCK: IndividualTrusteeData[] = [
     dateOfBirth: "1988-12-01",
     nationality: "German",
     corporateIndicator: "N",
-    trusteeTypeId: "5001",
+    trusteeTypeId: "5002",
     appointmentDate: "2022-01-01",
     usualResidentialAddress: {
       addressLine1: "Park lane",
@@ -359,7 +359,7 @@ export const FETCH_CORPORATE_TRUSTEE_DATA_MOCK: CorporateTrusteeData[] = [
     corporateIndicator: "Y",
     appointmentDate: "2020-02-02",
     ceasedDate: "2020-03-03",
-    trusteeTypeId: "5005"
+    trusteeTypeId: "5001"
   },
   {
     hashedTrusteeId: "abcdefg",

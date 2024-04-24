@@ -22,7 +22,6 @@ import { ErrorMessages } from '../../src/validation/error.messages';
 import { deleteApplicationData, getApplicationData, setExtraData } from "../../src/utils/application.data";
 import { authentication } from "../../src/middleware/authentication.middleware";
 import { logger } from "../../src/utils/logger";
-import { LANDING_PAGE_QUERY_PARAM } from "../../src/model/data.types.model";
 
 const mockDeleteApplicationData = deleteApplicationData as jest.Mock;
 
@@ -54,7 +53,7 @@ describe("SOLD LAND FILTER controller", () => {
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to no`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ has_sold_land: 0 });
+      mockGetApplicationData.mockReturnValue({ has_sold_land: 0 });
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -63,7 +62,7 @@ describe("SOLD LAND FILTER controller", () => {
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page with radios selected to yes`, async () => {
-      mockGetApplicationData.mockReturnValueOnce({ has_sold_land: 1 });
+      mockGetApplicationData.mockReturnValue({ has_sold_land: 1 });
       const resp = await request(app).get(config.SOLD_LAND_FILTER_URL);
 
       expect(resp.status).toEqual(200);
@@ -72,9 +71,10 @@ describe("SOLD LAND FILTER controller", () => {
     });
 
     test(`renders the ${config.SOLD_LAND_FILTER_PAGE} page, and calling the deleteApplicationData
-     if the following query param is present ${LANDING_PAGE_QUERY_PARAM}=0`, async () => {
+     if the following query param is present ${config.LANDING_PAGE_QUERY_PARAM}=0`, async () => {
+      mockGetApplicationData.mockReturnValue({ });
       const resp = await request(app)
-        .get(`${config.SOLD_LAND_FILTER_URL}?${LANDING_PAGE_QUERY_PARAM}=0`);
+        .get(`${config.SOLD_LAND_FILTER_URL}?${config.LANDING_PAGE_QUERY_PARAM}=0`);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain(SOLD_LAND_FILTER_PAGE_TITLE);

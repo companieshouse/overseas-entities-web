@@ -3,7 +3,7 @@ import { Navigation } from "../model/navigation.model";
 import { ApplicationData } from "../model/application.model";
 import { WhoIsRegisteringType } from "../model/who.is.making.filing.model";
 import { isActiveFeature } from "./feature.flag";
-import { getUrlWithParamsToPath } from "./url";
+import { getUrlWithParamsToPath, isRemoveJourney } from "./url";
 import { Request } from "express";
 
 export const getEntityBackLink = (data: ApplicationData): string => {
@@ -19,6 +19,38 @@ export const getSoldLandFilterBackLink = (): string => {
     return config.LANDING_PAGE_URL;
   }
 };
+
+export const getUpdateOrRemoveBackLink = (req: Request, backLinkUrl: string): string => {
+  if (isRemoveJourney(req)) {
+    return `${backLinkUrl}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+  } else {
+    return backLinkUrl;
+  }
+};
+
+export const getSecureUpdateFilterBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return `${config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+  } else {
+    return config.UPDATE_LANDING_PAGE_URL;
+  }
+};
+
+export const getOverseasEntityPresenterBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return `${config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`;
+  } else {
+    return config.UPDATE_FILING_DATE_URL;
+  }
+};
+
+export const getUpdateReviewStatementBackLink = (req: Request): string => {
+  if (isRemoveJourney(req)) {
+    return config.REMOVE_CONFIRM_STATEMENT_URL;
+  }
+  return config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL;
+};
+
 export const NAVIGATION: Navigation = {
   [config.STARTING_NEW_URL]: {
     currentPage: config.STARTING_NEW_PAGE,
@@ -32,7 +64,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.SECURE_UPDATE_FILTER_URL]: {
     currentPage: config.SECURE_UPDATE_FILTER_PAGE,
-    previousPage: () => config.UPDATE_LANDING_PAGE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getSecureUpdateFilterBackLink(req),
     nextPage: [config.UPDATE_ANY_TRUSTS_INVOLVED_URL]
   },
   [config.UPDATE_INTERRUPT_CARD_URL]: {
@@ -42,7 +74,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_QUERY_URL]: {
     currentPage: config.OVERSEAS_ENTITY_QUERY_PAGE,
-    previousPage: () => config.UPDATE_INTERRUPT_CARD_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.UPDATE_INTERRUPT_CARD_URL),
     nextPage: [config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE]
   },
   [config.UPDATE_FILING_DATE_URL]: {
@@ -52,7 +84,7 @@ export const NAVIGATION: Navigation = {
   },
   [config.OVERSEAS_ENTITY_PRESENTER_URL]: {
     currentPage: config.UPDATE_PRESENTER_PAGE,
-    previousPage: () => config.UPDATE_FILING_DATE_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getOverseasEntityPresenterBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE]
   },
   [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL]: {
@@ -62,13 +94,13 @@ export const NAVIGATION: Navigation = {
   },
   [config.UPDATE_REVIEW_STATEMENT_URL]: {
     currentPage: config.UPDATE_REVIEW_STATEMENT_PAGE,
-    previousPage: () => config.UPDATE_NO_CHANGE_REGISTRABLE_BENEFICIAL_OWNER_URL,
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateReviewStatementBackLink(req),
     nextPage: [config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_URL, config.OVERSEAS_ENTITY_PAYMENT_WITH_TRANSACTION_URL]
   },
   [config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL]: {
     currentPage: config.CONFIRM_OVERSEAS_ENTITY_DETAILS_PAGE,
-    previousPage: () => config.OVERSEAS_ENTITY_QUERY_URL,
-    nextPage: [config.UPDATE_FILING_DATE_PAGE]
+    previousPage: (appData: ApplicationData, req: Request) => getUpdateOrRemoveBackLink(req, config.OVERSEAS_ENTITY_QUERY_URL),
+    nextPage: [config.UPDATE_FILING_DATE_PAGE, config.PRESENTER_URL]
   },
   [config.WHO_IS_MAKING_UPDATE_URL]: {
     currentPage: config.WHO_IS_MAKING_UPDATE_PAGE,
@@ -492,4 +524,19 @@ export const NAVIGATION: Navigation = {
       config.UPDATE_BENEFICIAL_OWNER_STATEMENTS_URL,
     ],
   },
+  [config.REMOVE_SOLD_ALL_LAND_FILTER_URL]: {
+    currentPage: config.REMOVE_SOLD_ALL_LAND_FILTER_PAGE,
+    previousPage: () => `${config.UPDATE_CONTINUE_WITH_SAVED_FILING_PAGE}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    nextPage: [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]
+  },
+  [config.REMOVE_IS_ENTITY_REGISTERED_OWNER_URL]: {
+    currentPage: config.REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE,
+    previousPage: () => `${config.REMOVE_SOLD_ALL_LAND_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`,
+    nextPage: [`${config.SECURE_UPDATE_FILTER_URL}${config.JOURNEY_REMOVE_QUERY_PARAM}`]
+  },
+  [config.REMOVE_CONFIRM_STATEMENT_URL]: {
+    currentPage: config.REMOVE_CONFIRM_STATEMENT_PAGE,
+    previousPage: () => `${config.UPDATE_REGISTRABLE_BENEFICIAL_OWNER_URL}`,
+    nextPage: [`${config.REMOVE_CANNOT_USE_URL}`]
+  }
 };

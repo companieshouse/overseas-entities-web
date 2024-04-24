@@ -12,11 +12,21 @@ import { reloadOE } from "./overseas.entity.query.controller";
 import { CompanyProfile } from "@companieshouse/api-sdk-node/dist/services/company-profile/types";
 import { isActiveFeature } from "../../utils/feature.flag";
 import { retrieveTrustData } from "../../utils/update/trust.model.fetch";
+import { isRemoveJourney } from "../../utils/url";
 
 export const get = (req: Request, resp: Response, next: NextFunction) => {
   try {
     logger.debugRequest(req, `${req.method} ${req.route.path}`);
     const appData: ApplicationData = getApplicationData(req.session);
+    if (isRemoveJourney(req)) {
+      return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
+        journey: config.JourneyType.remove,
+        backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
+        templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,
+        [NoChangeKey]: appData.update?.no_change,
+        ...appData,
+      });
+    }
     return resp.render(config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE, {
       backLinkUrl: config.OVERSEAS_ENTITY_PRESENTER_URL,
       templateName: config.UPDATE_DO_YOU_WANT_TO_MAKE_OE_CHANGE_PAGE,

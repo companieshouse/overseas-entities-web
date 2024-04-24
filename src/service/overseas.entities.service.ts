@@ -13,6 +13,9 @@ export const createOverseasEntity = async (
   transactionId: string,
   isSaveAndResumeFeatureActive: boolean = false
 ): Promise<string> => {
+
+  logger.infoRequest(req, `Calling 'postOverseasEntity' for transaction id '${transactionId}'`);
+
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "postOverseasEntity",
@@ -24,11 +27,11 @@ export const createOverseasEntity = async (
   );
 
   if (response.httpStatusCode !== 201) {
-    const errorMsg = `Something went wrong creating Overseas Entity, transactionId = ${transactionId} - ${JSON.stringify(response)}`;
+    const errorMsg = `'postOverseasEntity' for transaction id '${transactionId}' encountered an error - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `Created Overseas Entity, ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Response from 'postOverseasEntity' for transaction id '${transactionId}': ${JSON.stringify(response)}`);
 
   return response.resource.id;
 };
@@ -36,26 +39,28 @@ export const createOverseasEntity = async (
 export const updateOverseasEntity = async (req: Request, session: Session) => {
   const appData = getApplicationData(session);
 
-  const transactionID = appData[Transactionkey] as string;
-  const overseasEntityID = appData[OverseasEntityKey] as string;
+  const transactionId = appData[Transactionkey] as string;
+  const overseasEntityId = appData[OverseasEntityKey] as string;
+
+  logger.infoRequest(req, `Calling 'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
 
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "putOverseasEntity",
     req,
     session,
-    transactionID,
-    overseasEntityID,
+    transactionId,
+    overseasEntityId,
     appData
   );
 
   if (response.httpStatusCode !== 200) {
-    const errorContext = `Transaction Id: ${transactionID}, Overseas Entity Id: ${overseasEntityID}`;
-    const errorMsg = `Something went wrong with updating Overseas Entity, ${errorContext}, Response: ${JSON.stringify(response)}`;
+    const errorMsg = `'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}' encountered an error - ${JSON.stringify(response)}`;
+
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `Updated Overseas Entity, ${JSON.stringify(response)}`);
+  logger.infoRequest(req, `Response from 'putOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}': ${JSON.stringify(response)}`);
 };
 
 export const getOverseasEntity = async (
@@ -63,6 +68,9 @@ export const getOverseasEntity = async (
   transactionId: string,
   overseasEntityId: string
 ): Promise<ApplicationData> => {
+
+  logger.infoRequest(req, `Calling 'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}'`);
+
   const response = await makeApiCallWithRetry(
     "overseasEntity",
     "getOverseasEntity",
@@ -72,14 +80,12 @@ export const getOverseasEntity = async (
     overseasEntityId
   );
 
-  const infoMsg = `Transaction ID: ${transactionId}, OverseasEntity ID: ${overseasEntityId}`;
-
   if (response.httpStatusCode !== 200) {
-    const errorMsg = `Something went wrong getting Overseas Entity - ${infoMsg} - ${JSON.stringify(response)}`;
+    const errorMsg = `'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}' encountered an error - ${JSON.stringify(response)}`;
     throw createAndLogErrorRequest(req, errorMsg);
   }
 
-  logger.debugRequest(req, `Overseas Entity Retrieved - ${infoMsg}`);
+  logger.infoRequest(req, `Response from 'getOverseasEntity' for transaction id '${transactionId}' and overseas entity id '${overseasEntityId}': ${JSON.stringify(response)}`);
 
   return response.resource;
 };

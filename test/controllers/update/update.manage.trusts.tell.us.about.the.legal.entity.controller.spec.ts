@@ -142,7 +142,6 @@ mockGetApplicationData.mockReturnValue({
           reviewed_former_bos: false,
           reviewed_individuals: false,
           reviewed_legal_entities: false,
-          reviewed_trust_details: false,
         }
       } as Trust
     ]

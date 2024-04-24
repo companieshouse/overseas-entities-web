@@ -37,6 +37,7 @@ import {
   trustType,
   dueDiligenceType,
   updateType,
+  removeType
 } from "../../src/model";
 import {
   EntityNameKey,
@@ -48,6 +49,7 @@ import {
   PaymentKey,
   Transactionkey,
   yesNoResponse,
+  IsRemoveKey
 } from "../../src/model/data.types.model";
 import { TrustKey, Trust } from "../../src/model/trust.model";
 import { WhoIsRegisteringKey, WhoIsRegisteringType } from "../../src/model/who.is.making.filing.model";
@@ -1350,6 +1352,10 @@ export const UPDATE_OBJECT_MOCK: updateType.Update = {
   no_change: true
 };
 
+export const REMOVE_OBJECT_MOCK: removeType.Remove = {
+  is_not_proprietor_of_land: true
+};
+
 export const UPDATE_OBJECT_PRIVATE_DATA_MOCK: updateType.Update = {
   date_of_creation: { day: "1", month: "1", year: "2011" },
   filing_date: { day: "1", month: "1", year: "2022" },
@@ -1695,6 +1701,30 @@ export const APPLICATION_DATA_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_REMOVE_MOCK: ApplicationData = {
+  [EntityNameKey]: OVERSEAS_NAME_MOCK,
+  [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
+  [entityType.EntityKey]: ENTITY_OBJECT_MOCK,
+  [dueDiligenceType.DueDiligenceKey]: DUE_DILIGENCE_OBJECT_MOCK,
+  [beneficialOwnerStatementType.BeneficialOwnerStatementKey]: BENEFICIAL_OWNER_STATEMENT_OBJECT_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_OBJECT_MOCK ],
+  [beneficialOwnerGovType.BeneficialOwnerGovKey]: [ BENEFICIAL_OWNER_GOV_OBJECT_MOCK ],
+  [managingOfficerType.ManagingOfficerKey]: [ MANAGING_OFFICER_OBJECT_MOCK ],
+  [managingOfficerCorporateType.ManagingOfficerCorporateKey]: [ MANAGING_OFFICER_CORPORATE_OBJECT_MOCK ],
+  [WhoIsRegisteringKey]: WhoIsRegisteringType.AGENT,
+  [PaymentKey]: PAYMENT_OBJECT_MOCK,
+  [OverseasEntityKey]: OVERSEAS_ENTITY_ID,
+  [Transactionkey]: TRANSACTION_ID,
+  [HasSoldLandKey]: hasSoldLandKey,
+  [IsSecureRegisterKey]: isSecureRegisterKey,
+  [TrustKey]: [TRUST],
+  [EntityNumberKey]: COMPANY_NUMBER,
+  [updateType.UpdateKey]: UPDATE_OBJECT_MOCK,
+  [removeType.RemoveKey]: REMOVE_OBJECT_MOCK,
+  [IsRemoveKey]: true
+};
+
 export const APPLICATION_DATA_REGISTRATION_MOCK: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -1782,6 +1812,11 @@ export const APPLICATION_DATA_CH_REF_UPDATE_MOCK: ApplicationData = {
   [TrustKey]: [TRUST],
   [EntityNumberKey]: COMPANY_NUMBER,
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
+};
+
+export const APPLICATION_DATA_CH_REF_REMOVE_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_CH_REF_UPDATE_MOCK,
+  [IsRemoveKey]: true,
 };
 
 export const FETCH_BO_APPLICATION_DATA_MOCK: ApplicationData = {
@@ -1950,6 +1985,11 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK: ApplicationData = {
   [updateType.UpdateKey]: UPDATE_OBJECT_MOCK
 };
 
+export const APPLICATION_DATA_REMOVE_BO_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  [IsRemoveKey]: true,
+};
+
 export const APPLICATION_DATA_UPDATE_NO_BO_OR_MO_TO_REVIEW: ApplicationData = {
   [EntityNameKey]: OVERSEAS_NAME_MOCK,
   [presenterType.PresenterKey]: PRESENTER_OBJECT_MOCK,
@@ -1991,6 +2031,12 @@ export const APPLICATION_DATA_UPDATE_BO_MOCK_NO_USUAL_ADDRESS: ApplicationData =
 export const APPLICATION_DATA_EMPTY_BO_MOCK: ApplicationData = {
   ...APPLICATION_DATA_UPDATE_BO_MOCK,
   ...APPLICATION_DATA_UPDATE_BO_MOCK["beneficial_owners_individual"] = [ ]
+};
+
+export const APPLICATION_DATA_UPDATE_NO_BO_TRUSTEES_MOCK: ApplicationData = {
+  ...APPLICATION_DATA_UPDATE_BO_MOCK,
+  [beneficialOwnerIndividualType.BeneficialOwnerIndividualKey]: [ BENEFICIAL_OWNER_INDIVIDUAL_NO_TRUSTEE_OBJECT_MOCK ],
+  [beneficialOwnerOtherType.BeneficialOwnerOtherKey]: [ BENEFICIAL_OWNER_OTHER_NO_TRUSTEE_OBJECT_MOCK ]
 };
 
 export const APPLICATION_DATA_MULTIPLE_BO_MOCK: ApplicationData = {

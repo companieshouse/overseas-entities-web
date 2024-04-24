@@ -87,6 +87,16 @@ describe("Add Trust Controller Tests", () => {
           }),
         }),
       );
+      // check REDIS Removal flags not included
+      expect(mockRes.render).toBeCalledWith(
+        config.ADD_TRUST_PAGE,
+        expect.objectContaining({
+          pageData: expect.not.objectContaining({
+            FEATURE_FLAG_ENABLE_REDIS_REMOVAL: true,
+            activeSubmissionBasePath: MOCKED_URL
+          }),
+        }),
+      );
     });
 
     test('catch error when renders the page', () => {
@@ -108,7 +118,8 @@ describe("Add Trust Controller Tests", () => {
       mockGetUrlWithParamsToPath.mockReturnValueOnce(MOCKED_URL);
       (getApplicationData as jest.Mock).mockReturnValue(mockAppData);
 
-      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       get(mockReq, mockRes, mockNext);
 
       expect(mockRes.redirect).not.toBeCalled();
@@ -134,7 +145,8 @@ describe("Add Trust Controller Tests", () => {
         throw error;
       });
 
-      mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       get(mockReq, mockRes, mockNext);
 
@@ -198,6 +210,7 @@ describe("Add Trust Controller Tests", () => {
       // Arrange
       mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
       mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
       mockIsActiveFeature.mockReturnValueOnce(true);// FEATURE_FLAG_ENABLE_REDIS_REMOVAL
       (authentication as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
       (hasTrustDataRegister as jest.Mock).mockImplementation((_, __, next: NextFunction) => next());
@@ -222,12 +235,18 @@ describe("Add Trust Controller Tests", () => {
     });
 
     test(`successfully access GET method`, async () => {
+      mockIsActiveFeature.mockReturnValueOnce(false); // SERVICE OFFLINE FEATURE FLAG
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_TRUSTS_WEB
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_CEASE_TRUSTS
+      mockIsActiveFeature.mockReturnValueOnce(true); // FEATURE_FLAG_ENABLE_REDIS_REMOVAL
 
       const resp = await request(app).get(pageUrl);
 
       expect(resp.status).toEqual(200);
       expect(resp.text).toContain('Trusts associated with the overseas entity');
       expect(resp.text).not.toContain(PAGE_TITLE_ERROR);
+      expect(resp.text).toContain("Active");
+      expect(resp.text).not.toContain("Removed");
 
       expect(authentication).toBeCalledTimes(1);
       expect(hasTrustDataRegister).toBeCalledTimes(1);

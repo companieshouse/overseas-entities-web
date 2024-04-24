@@ -17,11 +17,13 @@ export const PIWIK_URL = getEnvironmentValue("PIWIK_URL");
 export const PIWIK_SITE_ID = getEnvironmentValue("PIWIK_SITE_ID");
 export const PIWIK_START_GOAL_ID = getEnvironmentValue("PIWIK_START_GOAL_ID");
 export const PIWIK_UPDATE_START_GOAL_ID = getEnvironmentValue("PIWIK_UPDATE_START_GOAL_ID");
+export const PIWIK_REMOVE_START_GOAL_ID = getEnvironmentValue("PIWIK_REMOVE_START_GOAL_ID");
 export const PAYMENT_FEE = getEnvironmentValue("PAYMENT_FEE");
 export const UPDATE_PAYMENT_FEE = getEnvironmentValue("UPDATE_PAYMENT_FEE");
 export const LANDING_PAGE_URL = getEnvironmentValue("LANDING_PAGE_URL");
 export const LANDING_PAGE_STARTING_NEW_URL = getEnvironmentValue("LANDING_PAGE_STARTING_NEW_URL");
 export const UPDATE_LANDING_PAGE_URL = getEnvironmentValue("UPDATE_LANDING_PAGE_URL");
+export const REMOVE_LANDING_PAGE_URL = getEnvironmentValue("REMOVE_LANDING_PAGE_URL");
 export const OAUTH2_CLIENT_ID = getEnvironmentValue(`OAUTH2_CLIENT_ID`);
 export const OAUTH2_CLIENT_SECRET = getEnvironmentValue(`OAUTH2_CLIENT_SECRET`);
 export const ACCOUNT_URL = getEnvironmentValue("ACCOUNT_URL");
@@ -30,6 +32,7 @@ export const VF01_FORM_DOWNLOAD_URL = getEnvironmentValue("VF01_FORM_DOWNLOAD_UR
 export const REFRESH_TOKEN_GRANT_TYPE = 'refresh_token';
 export const SERVICE_NAME = 'Register an overseas entity and tell us about its beneficial owners';
 export const UPDATE_SERVICE_NAME = 'File an overseas entity update statement';
+export const REMOVE_SERVICE_NAME = 'Apply to remove an overseas entity from the register';
 export const DESCRIPTION = "Overseas Entities Transaction";
 export const REFERENCE = "OverseasEntitiesReference";
 export const PAYMENT_REQUIRED_HEADER = "x-payment-required";
@@ -50,6 +53,7 @@ export const FEATURE_FLAG_DISABLE_UPDATE_PRIVATE_DATA_FETCH = getEnvironmentValu
 export const FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION = getEnvironmentValue('FEATURE_FLAG_ENABLE_UPDATE_STATEMENT_VALIDATION_05072023', 'false');
 export const FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS = getEnvironmentValue('FEATURE_FLAG_ENABLE_UPDATE_MANAGE_TRUSTS_29082023', 'false');
 export const FEATURE_FLAG_ENABLE_REDIS_REMOVAL = getEnvironmentValue('FEATURE_FLAG_ENABLE_REDIS_REMOVAL_27092023', 'false');
+export const FEATURE_FLAG_ENABLE_CEASE_TRUSTS = getEnvironmentValue('FEATURE_FLAG_ENABLE_CEASE_TRUSTS_19022024', 'false');
 
 // TEMPLATES
 export const ACCESSIBILITY_STATEMENT_PAGE = "accessibility-statement";
@@ -140,6 +144,12 @@ export const UPDATE_MANAGE_TRUSTS_TELL_US_ABOUT_THE_LEGAL_ENTITY_PAGE = 'update-
 export const UPDATE_MANAGE_TRUSTS_INDIVIDUALS_OR_ENTITIES_INVOLVED_PAGE = 'update-manage-trusts-individuals-or-entities-involved';
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE = "update-statement-validation-errors";
 
+// REMOVE TEMPLATES
+export const REMOVE_SOLD_ALL_LAND_FILTER_PAGE = "remove-sold-all-land-filter";
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE = "remove-is-entity-registered-owner";
+export const REMOVE_CANNOT_USE_PAGE = "remove-cannot-use";
+export const REMOVE_CONFIRM_STATEMENT_PAGE = "remove-confirm-statement";
+
 // URL PARAMS
 export const ROUTE_PARAM_TRUST_ID = "trustId";
 export const ROUTE_PARAM_BENEFICIAL_OWNER_ID = "boId";
@@ -163,6 +173,20 @@ export const REVIEW_OWNER_INDEX_PARAM = "?index=";
 export const UPDATE_REVIEW_OWNERS_PARAMS = REVIEW_OWNER_INDEX_PARAM + ID;
 export const ROUTE_PARAM_TRANSACTION_ID = "transactionId";
 export const ROUTE_PARAM_SUBMISSION_ID = "submissionId";
+export const LANDING_PAGE_QUERY_PARAM = "start";
+export const JOURNEY_QUERY_PARAM = "journey";
+export const PREVIOUS_PAGE_QUERY_PARAM = "previousPage";
+
+export const BUTTON_OPTION_YES = '1';
+export const BUTTON_OPTION_NO = '0';
+
+export enum JourneyType {
+  register = "register",
+  update = "update",
+  remove = "remove",
+}
+
+export const JOURNEY_REMOVE_QUERY_PARAM = `?${JOURNEY_QUERY_PARAM}=${JourneyType.remove}`;
 
 // ROUTING PATHs
 export const LANDING_URL = "/register-an-overseas-entity";
@@ -282,6 +306,14 @@ export const UPDATE_TRUSTS_SUBMIT_BY_PAPER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL +
 export const UPDATE_ANY_TRUSTS_INVOLVED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_ANY_TRUSTS_INVOLVED_PAGE;
 export const UPDATE_STATEMENT_VALIDATION_ERRORS_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + UPDATE_STATEMENT_VALIDATION_ERRORS_PAGE;
 export const UPDATE_PAYMENT_FAILED_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + PAYMENT_FAILED_PAGE;
+
+// REMOVE overseas entity routes
+export const REMOVE_SECTION = "remove/";
+export const REMOVE_URL_IDENTIFIER = "/" + REMOVE_SECTION;
+export const REMOVE_SOLD_ALL_LAND_FILTER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_SOLD_ALL_LAND_FILTER_PAGE;
+export const REMOVE_CANNOT_USE_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_CANNOT_USE_PAGE;
+export const REMOVE_IS_ENTITY_REGISTERED_OWNER_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_IS_ENTITY_REGISTERED_OWNER_PAGE;
+export const REMOVE_CONFIRM_STATEMENT_URL = UPDATE_AN_OVERSEAS_ENTITY_URL + REMOVE_SECTION + REMOVE_CONFIRM_STATEMENT_PAGE;
 
 // PAYMENT CONFIGs
 export const PAYMENT = "payment";

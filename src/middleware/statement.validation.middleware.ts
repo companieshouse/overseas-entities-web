@@ -7,6 +7,7 @@ import {
   UPDATE_CHECK_YOUR_ANSWERS_URL,
   UPDATE_REVIEW_STATEMENT_URL,
   SECURE_UPDATE_FILTER_URL,
+  REMOVE_CONFIRM_STATEMENT_URL,
 } from '../config';
 import { BeneficialOwnerStatementKey, BeneficialOwnersStatementType } from "../model/beneficial.owner.statement.model";
 import { ApplicationData } from "../model";
@@ -14,6 +15,7 @@ import { ErrorMessages } from "../validation/error.messages";
 import { Session } from "@companieshouse/node-session-handler";
 import { RegistrableBeneficialOwnerKey } from "../model/update.type.model";
 import { yesNoResponse } from "../model/data.types.model";
+import { isRemoveJourney } from "../utils/url";
 
 export const statementValidationErrorsGuard = (req: Request, res: Response, next: NextFunction) => {
   const hasStatementErrors = req['statementErrorList']?.length;
@@ -21,6 +23,10 @@ export const statementValidationErrorsGuard = (req: Request, res: Response, next
 
   if (flagEnabled && hasStatementErrors) {
     return next();
+  }
+
+  if (isRemoveJourney(req)) {
+    return res.redirect(REMOVE_CONFIRM_STATEMENT_URL);
   }
 
   const appData: ApplicationData = getApplicationData(req.session as Session);

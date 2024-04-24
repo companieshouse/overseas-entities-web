@@ -1,0 +1,59 @@
+{% extends "update-layout.html" %}
+
+{% set title = "Has the overseas entity disposed of all its property or land in the UK?" %}
+
+{% block pageTitle %}
+  {% include "includes/update-page-title.html" %}
+{% endblock %}
+
+{% block backLink %}
+  {% include "includes/back-link.html" %}
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% include "includes/list/errors.html" %}
+
+      <form method="post">
+        {{ govukRadios({
+          errorMessage: errors.has_sold_all_land if errors,
+          classes: "govuk-radios",
+          idPrefix: "has_sold_all_land",
+          name: "has_sold_all_land",
+          fieldset: {
+            legend: {
+              text: title,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--xl"
+            }
+          },
+          hint: {
+            text: "Select 'yes' if the entity has disposed of all its UK property or land, or if it has never owned any."
+          },
+          items: [
+            {
+              value: 1,
+              text: "Yes",
+              checked: has_sold_all_land == 1,
+              attributes: {
+                "data-event-id": "yes-has-sold-all-land"
+              }
+            },
+            {
+              value: 0,
+              text: "No",
+              checked: has_sold_all_land == 0,
+              attributes: {
+                "data-event-id": "no-has-sold-all-land"
+              }
+            }
+          ]
+        }) }}
+
+        {% include "includes/continue-button.html" %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

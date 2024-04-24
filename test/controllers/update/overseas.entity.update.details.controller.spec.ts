@@ -10,6 +10,9 @@ jest.mock("../../../src/utils/feature.flag" );
 jest.mock("../../../src/service/private.overseas.entity.details");
 jest.mock("../../../src/service/overseas.entities.service");
 
+// import remove journey middleware mock before app to prevent real function being used instead of mock
+import mockRemoveJourneyMiddleware from "../../__mocks__/remove.journey.middleware.mock";
+
 import { NextFunction, Request, Response } from "express";
 import { beforeEach, expect, jest, test, describe } from "@jest/globals";
 import request from "supertest";
@@ -45,6 +48,8 @@ import { isActiveFeature } from "../../../src/utils/feature.flag";
 import { getPrivateOeDetails } from "../../../src/service/private.overseas.entity.details";
 import { updateOverseasEntity } from "../../../src/service/overseas.entities.service";
 import { NAVIGATION } from "../../../src/utils/navigation";
+
+mockRemoveJourneyMiddleware.mockClear();
 
 const mockAuthenticationMiddleware = authentication as jest.Mock;
 mockAuthenticationMiddleware.mockImplementation((req: Request, res: Response, next: NextFunction) => next() );

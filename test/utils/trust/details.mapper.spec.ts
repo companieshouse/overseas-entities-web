@@ -117,24 +117,56 @@ describe('Trust Details page Mapper Service', () => {
       hasAllInfo: '0',
     } as Page.TrustDetailsForm;
 
+    const mockFormData3 = {
+      trustId: '999',
+      name: 'dummyName',
+      createdDateDay: '99',
+      createdDateMonth: '88',
+      createdDateYear: '2077',
+      ceasedDateDay: '15',
+      ceasedDateMonth: '04',
+      ceasedDateYear: '2022',
+      hasAllInfo: '0',
+    } as Page.TrustDetailsForm;
+
     test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when false)', () => {
-      expect(mapDetailToSession(mockFormData)).toEqual({
+      expect(mapDetailToSession(mockFormData, false)).toEqual({
         trust_id: mockFormData.trustId,
         trust_name: mockFormData.name,
         creation_date_day: mockFormData.createdDateDay,
         creation_date_month: mockFormData.createdDateMonth,
         creation_date_year: mockFormData.createdDateYear,
+        ceased_date_day: undefined,
+        ceased_date_month: undefined,
+        ceased_date_year: undefined,
         unable_to_obtain_all_trust_info: "No",
       });
     });
 
     test('mapDetailToSession should return object (verify mapping of unable_to_obtain_all_trust_info when true)', () => {
-      expect(mapDetailToSession(mockFormData2)).toEqual({
-        trust_id: mockFormData.trustId,
-        trust_name: mockFormData.name,
-        creation_date_day: mockFormData.createdDateDay,
-        creation_date_month: mockFormData.createdDateMonth,
-        creation_date_year: mockFormData.createdDateYear,
+      expect(mapDetailToSession(mockFormData2, false)).toEqual({
+        trust_id: mockFormData2.trustId,
+        trust_name: mockFormData2.name,
+        creation_date_day: mockFormData2.createdDateDay,
+        creation_date_month: mockFormData2.createdDateMonth,
+        creation_date_year: mockFormData2.createdDateYear,
+        ceased_date_day: undefined,
+        ceased_date_month: undefined,
+        ceased_date_year: undefined,
+        unable_to_obtain_all_trust_info: "Yes",
+      });
+    });
+
+    test('mapDetailToSession should return object including ceased date', () => {
+      expect(mapDetailToSession(mockFormData3, true)).toEqual({
+        trust_id: mockFormData3.trustId,
+        trust_name: mockFormData3.name,
+        creation_date_day: mockFormData3.createdDateDay,
+        creation_date_month: mockFormData3.createdDateMonth,
+        creation_date_year: mockFormData3.createdDateYear,
+        ceased_date_day: mockFormData3.ceasedDateDay,
+        ceased_date_month: mockFormData3.ceasedDateMonth,
+        ceased_date_year: mockFormData3.ceasedDateYear,
         unable_to_obtain_all_trust_info: "Yes",
       });
     });

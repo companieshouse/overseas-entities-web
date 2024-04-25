@@ -46,6 +46,9 @@ const mapDetailToPage = (
     createdDateDay: trustData.creation_date_day,
     createdDateMonth: trustData.creation_date_month,
     createdDateYear: trustData.creation_date_year,
+    ceasedDateDay: trustData.ceased_date_day,
+    ceasedDateMonth: trustData.ceased_date_month,
+    ceasedDateYear: trustData.ceased_date_year,
     hasAllInfo: unableToObtainAllTrustInfo,
     beneficialOwnersIds: trustBoIds,
   };
@@ -54,6 +57,7 @@ const mapDetailToPage = (
 //  to session mapping
 const mapDetailToSession = (
   formData: Page.TrustDetailsForm,
+  isTrustToBeCeased: boolean
 ): Trust => {
   const data = formData;
 
@@ -63,6 +67,9 @@ const mapDetailToSession = (
     creation_date_day: data.createdDateDay,
     creation_date_month: data.createdDateMonth,
     creation_date_year: data.createdDateYear,
+    ceased_date_day: isTrustToBeCeased ? data.ceasedDateDay : undefined,
+    ceased_date_month: isTrustToBeCeased ? data.ceasedDateMonth : undefined,
+    ceased_date_year: isTrustToBeCeased ? data.ceasedDateYear : undefined,
     unable_to_obtain_all_trust_info: (data.hasAllInfo === "0") ? "Yes" : "No",
   };
 };

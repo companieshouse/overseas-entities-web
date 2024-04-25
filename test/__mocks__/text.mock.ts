@@ -61,12 +61,9 @@ export const VERIFICATION_CHECKS_PERSON = "Person responsible for overseeing ver
 export const CONFIRMATION_PAGE_TITLE = "Application submitted";
 export const CONFIRMATION_NUMBER_OF_DAYS = "14 days";
 export const CONFIRMATION_WHAT_YOU_NEED_TO_DO_NOW = "What you need to do now";
-export const TRANSACTION_API_REQUEST_ERROR_MSG = "Transaction API request returned no";
 export const UNAUTHORISED = "Unauthorised";
 export const BAD_REQUEST = "Bad Request";
-export const HTTP_STATUS_CODE_500 = "Http status code 500";
 export const ERROR_REFRESH_TOKEN = "Error on refresh token";
-export const TRANSACTION_ERROR = "Transaction API request returned no response";
 export const CREATE_OE__MSG_ERROR = "Something went wrong creating Overseas Entity, transactionId =";
 export const FOUND_REDIRECT_TO = "Found. Redirecting to";
 export const REDIRECT_TO_SIGN_IN_PAGE = "User not authenticated, redirecting to sign in page, status_code=302";
@@ -153,6 +150,9 @@ export const SANCTIONS_HINT_TEXT_IT = "This means that it is subject to sanction
 export const TRUSTS_NOC_HEADING = "The beneficial owner is a trustee of a trust";
 export const EMAIL_ADDRESS_USE_AUTH_CODE_TEXT = "the authentication code, if requested - you'll need this to file online for the entity in future";
 export const TRUST_SUMMARY_HEADING = "Trusts associated with the overseas entity";
+export const TRUST_NOT_ASSOCIATED_WITH_BENEFICIAL_OWNER_TEXT = "This trust is no longer associated with a beneficial owner";
+export const TRUST_CEASED_DATE_TEXT = "When did this trust stop being associated with the overseas entity";
+export const TRUST_SELECT_TRUSTEES_TEXT = "Which of the overseas entity’s beneficial owners are trustees of this trust";
 
 export const CHANGE_LINK_INDIVIDUAL_BO_LABEL = "Individual beneficial owner ";
 export const CHANGE_LINK_INDIVIDUAL_BO_FIRST_NAME = CHANGE_LINK_INDIVIDUAL_BO_LABEL + "Ivan Drago - first name";
@@ -270,6 +270,8 @@ export const REMOVE_SOLD_ALL_LAND_CHANGE_LINK = "/update-an-overseas-entity/remo
 export const REMOVE_IS_OE_REGISTERED_OWNER_CHANGE_LINK = "/update-an-overseas-entity/remove/remove-is-entity-registered-owner";
 export const REMOVE_SECURE_REGISTER_CHANGE_LINK = "/update-an-overseas-entity/secure-update-filter";
 export const REMOVE_CHECK_YOUR_ANSWERS_BACK_LINK = "/update-an-overseas-entity/remove/remove-confirm-statement";
+export const BEFORE_START_PAGE_LINK_AUTHENTICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#how-to-get-an-authentication-code";
+export const BEFORE_START_PAGE_LINK_VERIFICATION = "https://www.gov.uk/guidance/remove-an-overseas-entity#verify";
 
 // Manage Trusts
 export const UPDATE_MANAGE_TRUSTS_REVIEW_FORMER_BO_TITLE = "Review former beneficial owners";

@@ -1,11 +1,12 @@
 import { DateTime } from "luxon";
-import { DateAsStrings, getTodaysDate } from "../../src/utils/date";
+import { getTodaysDate } from "../../src/utils/date";
+import { InputDate } from "../../src/model/data.types.model";
 
 describe("date utils tests", () => {
   test("getTodaysDate should return today's date", () => {
     const todayDateTime = DateTime.utc();
 
-    const todaysDate: DateAsStrings = getTodaysDate();
+    const todaysDate: InputDate = getTodaysDate();
 
     expect(typeof todaysDate.day).toEqual("string");
     expect(typeof todaysDate.month).toEqual("string");

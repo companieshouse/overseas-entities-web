@@ -555,7 +555,8 @@ describe("should chek date functions for custom validation", () => {
     [threeMonthsBack.day.toString(), threeMonthsBack.month.toString(), threeMonthsBack.year.toString()],
     [threeMonthsBackPlus.day.toString(), threeMonthsBackPlus.month.toString(), threeMonthsBackPlus.year.toString()],
     ["01", "02", "2023"],
-  ])("should test checkDateValueIsValid returns true", (_day, _month, _year) => {
+    ["1", "1", "2001"]
+  ])("should test checkDateValueIsValid returns true %s %s %s", (_day, _month, _year) => {
     expect(checkDateValueIsValid("", _day, _month, _year)).toBe(true);
   });
 

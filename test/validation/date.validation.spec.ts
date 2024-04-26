@@ -547,6 +547,7 @@ describe("should chek date functions for custom validation", () => {
     expect(checkDateOfBirthFieldsArePresent(_day, _month, _year)).toBeFalsy();
   });
 
+  // These dates should cause checkDateValueIsValid to be true
   test.each([
     [yesterday.day.toString(), yesterday.month.toString(), yesterday.year.toString()],
     [today.day.toString(), today.month.toString(), today.year.toString()],
@@ -558,6 +559,7 @@ describe("should chek date functions for custom validation", () => {
     expect(checkDateValueIsValid("", _day, _month, _year)).toBe(true);
   });
 
+  // These dates should cause checkDateValueIsValid to throw an error
   test.each([
     ["a", "b", "c"],
     ["12", "b", "2004"],

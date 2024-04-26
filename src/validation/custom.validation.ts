@@ -73,12 +73,12 @@ export const checkDateIsWithinLast3Months = (errMsg: string, day: string = "", m
 
 export const checkDateValueIsValid = (invalidDateErrMsg: string, dayStr: string = "", monthStr: string = "", yearStr: string = "") => {
   const dayMonthRegex = /^\d{1,2}$/; // string consisting of 1 or 2 digits only
-  const yearRegex = /^\d{4}$/; // string consisting of 4 digits only
 
   const day = parseInt(dayStr), month = parseInt(monthStr), year = parseInt(yearStr);
 
   if (isNaN(day) || isNaN(month) || isNaN(year) ||
-    !dayMonthRegex.test(dayStr) || !dayMonthRegex.test(monthStr) || !yearRegex.test(yearStr) ||
+    !dayMonthRegex.test(dayStr) || !dayMonthRegex.test(monthStr) ||
+    year.toString() !== yearStr ||
     !DateTime.utc(year, month, day).isValid) {
     throw new Error(invalidDateErrMsg);
   }

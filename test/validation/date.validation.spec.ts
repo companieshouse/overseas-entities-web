@@ -576,8 +576,8 @@ describe("should chek date functions for custom validation", () => {
     ["011", "1", "2023"],
     ["1", "013", "2023"],
     ["1", "1.0", "1990"],
-  ])("should test checkDateValueIsValid throws error", (_day, _month, _year) => {
-    expect(() => checkDateValueIsValid(errorMsg, _day, _month, _year)).toThrowError(errorMsg);
+  ])(`should test checkDateValueIsValid throws error %s %s %s`, (day, month, year) => {
+    expect(() => checkDateValueIsValid(errorMsg, day, month, year)).toThrowError(errorMsg);
   });
 
   test("should test checkDateValueIsValid throws error for no param", () => {

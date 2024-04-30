@@ -21,7 +21,7 @@ export const get = (req: Request, res: Response, next: NextFunction) => {
     return res.render(config.UPDATE_FILING_DATE_PAGE, {
       backLinkUrl: config.UPDATE_OVERSEAS_ENTITY_CONFIRM_URL,
       templateName: config.UPDATE_FILING_DATE_PAGE,
-      chsUrl: process.env.CHS_URL,
+      chsUrl: config.CHS_URL,
       ...appData,
       [FilingDateKey]: filingDate
     });
